@@ -1,0 +1,29 @@
+CREATE PROCEDURE [dbo].[sp_Fecha_Balance] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @Fecha AS VARCHAR(10), @Detalle AS VARCHAR(20) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 27/07/2023
+  DESCIPCION		: Inserta
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaracion de variables para el cursor
+    DECLARE @Cont INT=0;
+
+ -- Insertamos Fechas de procesos de Balancess si no existe
+	SELECT @Cont = COUNT(Detalle)
+	FROM Fechas_Balance 
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Detalle = @Detalle;
+
+	IF @@ROWCOUNT=1 AND @Cont=0
+	   BEGIN
+       -- Insertamos tipo de proceso 
+   		  INSERT INTO  Fechas_Balance (Periodo, Item, Detalle, Fecha_Inicial, Fecha_Final, Cerrado)
+ 		  VALUES (@Periodo, @Item, @Detalle, @Fecha, @Fecha, 0);
+	   END
+END

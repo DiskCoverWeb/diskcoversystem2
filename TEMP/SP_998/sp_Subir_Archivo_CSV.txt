@@ -1,0 +1,129 @@
+CREATE PROCEDURE [dbo].[sp_Subir_Archivo_CSV] 
+@strIPServidor VARCHAR(MAX), @PathFileCSV VARCHAR(MAX), @FileCSV VARCHAR(MAX), @Usuario VARCHAR(10), @TipoFile VARCHAR(2) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 10/04/2023
+  FECHA MODIFICACION: 15/03/2024
+  DESCIPCION		: Sube contenodo de un archivo con extension CSV para procesar plantillas
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notIFicacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @T_Asiento_CSV VARCHAR(MAX), @sSQL VARCHAR(MAX);
+
+	SET @T_Asiento_CSV = 'Asiento_CSV_' + @Usuario
+	
+	IF dbo.fn_Existe_Tabla(@T_Asiento_CSV) <> 0 EXECUTE('DROP TABLE '+@T_Asiento_CSV+';');
+	
+	SET @sSQL = (SELECT CASE
+	  			   WHEN @TipoFile = '05' THEN 
+				        'CREATE TABLE '+@T_Asiento_CSV+'(
+ 		  			     NUMERO VARCHAR(10),
+					     FECHA VARCHAR(11),
+					     DEBE VARCHAR(18),
+					     HABER VARCHAR(18),
+					     DESCRIPCION VARCHAR(160),
+					     ASIENTO VARCHAR(10),
+					     VALOR VARCHAR(14),
+					     RUC VARCHAR(13),
+					     emision VARCHAR(180));'
+				   WHEN @TipoFile = '15' THEN 
+				        'CREATE TABLE '+@T_Asiento_CSV+'(
+						 TD VARCHAR(3),
+ 		  			     FECHA VARCHAR(11),
+						 FACTURA_MES VARCHAR(17),
+						 VALOR VARCHAR(18),
+						 NO_RET VARCHAR(17),
+						 Cta_Abono VARCHAR(18),
+						 Tipo_Abono_Banco VARCHAR(40),
+						 CI_RUC_Codigo VARCHAR(13),
+						 Recibo_No VARCHAR(10),
+						 Cheque VARCHAR(16));'
+	  			   WHEN @TipoFile = '27' THEN 
+				        'CREATE TABLE '+@T_Asiento_CSV+'(
+ 		  			     TC VARCHAR(2),
+					     TS VARCHAR(2),
+						 FECHA VARCHAR(11),
+						 RUC VARCHAR(13),
+						 AUTORIZACION_SRI VARCHAR(49),
+						 COMP_RET_No VARCHAR(17),
+						 FACT_No VARCHAR(17),
+						 BENEFICIARIO VARCHAR(180),
+						 CONCEPTO VARCHAR(160),
+						 NO_OBJETO_IVA VARCHAR(18),
+						 SUBTOTAL_0 VARCHAR(18),
+						 SUBTOTAL_12 VARCHAR(18),
+						 TOTAL_IVA VARCHAR(18),
+						 TOTAL_FACTURA VARCHAR(18),
+						 TOTAL_IVA_B VARCHAR(18),
+						 TOTAL_IVA_S VARCHAR(18),
+						 PORC_RET VARCHAR(6),
+						 RET_FUENTE VARCHAR(18),
+						 PORC_RET_IVA VARCHAR(6),
+						 RET_IVA_B VARCHAR(18),
+						 RET_IVA_S VARCHAR(18),
+						 TOTAL_RETENCIONES VARCHAR(18),
+						 TOTAL_ABONO VARCHAR(18),
+						 COD_RET VARCHAR(5),
+						 Autorizacion_Ret VARCHAR(49),
+						 Caducidad_Fact VARCHAR(11),
+						 CTA_DEBITO VARCHAR(18),
+						 Cta_Caja VARCHAR(18),
+						 CHEQ_DEP VARCHAR(16),
+						 FormaPago VARCHAR(2),
+						 SUB_MOD_GASTO VARCHAR(11),
+						 SUB_MOD_CXP VARCHAR(14),
+						 COD_MES VARCHAR(16),
+						 Cta_IVA_Gasto VARCHAR(18),
+						 Fecha_Venc VARCHAR(11));'
+				   WHEN @TipoFile = '31' THEN
+				        'CREATE TABLE '+@T_Asiento_CSV+'(
+						 E_S VARCHAR(1),
+						 CANTIDAD VARCHAR(18),
+						 CODIGO_BARRA VARCHAR(25),
+						 CODIGO_INV VARCHAR(25),
+ 		  			     COSTO VARCHAR(18),
+						 CENTRO_DE_COSTO VARCHAR(18),
+						 RUBRO VARCHAR(10));'
+				   WHEN @TipoFile = '99' THEN 
+				        'CREATE TABLE '+@T_Asiento_CSV+'(
+ 		  			     FECHA VARCHAR(11), 
+						 TP VARCHAR(2),
+						 NUMERO VARCHAR(10),
+					     CTA_CONTABLE VARCHAR(18),
+						 BENEFICIARIO VARCHAR(180),
+					     CONCEPTO VARCHAR(160),
+						 DEBE VARCHAR(18),
+						 HABER VARCHAR(18),
+					     CI_RUC_P_SUBMOD VARCHAR(13),
+					     REFERENCIA VARCHAR(10));'
+				   ELSE 'CREATE TABLE '+@T_Asiento_CSV+'(ARCHIVO_NO_DEFINIDO VARCHAR(50));'
+				 END AS sSQL);
+	EXECUTE(@sSQL);
+	
+    IF @sSQL <> 'CREATE TABLE '+@T_Asiento_CSV+'(ARCHIVO_NO_DEFINIDO VARCHAR(50));'
+	   BEGIN
+		 IF @strIPServidor ='db.diskcoversystem.com'
+			BEGIN
+		 	  SET @FileCSV = '/home/ftpuser/ftp/files/' + @FileCSV
+			END
+		 ELSE
+			BEGIN
+			  SET @FileCSV = @PathFileCSV + @FileCSV
+			END
+		 SET @sSQL = 'BULK INSERT '+@T_Asiento_CSV+' FROM '''+@FileCSV+''' WITH (FIRSTROW=2,FIELDTERMINATOR='';'',ROWTERMINATOR=''\n'',TABLOCK);'
+		 EXECUTE(@sSQL);
+		 
+		 IF @TipoFile = '05'
+		    BEGIN
+			  EXECUTE('UPDATE '+@T_Asiento_CSV+' SET DESCRIPCION = REPLACE(DESCRIPCION,''+æ'',''Ñ'')');
+			END
+		 IF @TipoFile IN('27','99')
+		    BEGIN
+			  EXECUTE('UPDATE '+@T_Asiento_CSV+' SET BENEFICIARIO = REPLACE(BENEFICIARIO,''+æ'',''Ñ'')');
+			END
+	   END
+	EXEC sp_Eliminar_Blancos @T_Asiento_CSV
+END

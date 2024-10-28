@@ -1,0 +1,75 @@
+CREATE PROCEDURE [dbo].[sp_Listar_Tablas_con_Campos]
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 20/05/2024
+  FECHA MODIFICACION: 20/05/2024
+  DESCIPCION		: Lista Tablas Con Campos
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+	SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @NombreTabla VARCHAR(MAX), @sSQL NVARCHAR(MAX);
+	DECLARE @Campo varchar(50), @Tipo varchar(50), @Ancho varchar(50);
+	DECLARE @Longitud int;
+	DECLARE @Listar_Tabla_Campos VARCHAR(MAX)='';
+
+ -- Declaracion de Cursor para obtener las tablas de una base
+	DECLARE cTablas CURSOR FOR
+		SELECT name
+		FROM sysobjects
+		WHERE type='U'
+		ORDER BY name
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @NombreTabla
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	    SET @Listar_Tabla_Campos = @NombreTabla + CHAR(13);
+	 -- Declaración del cursor
+		DECLARE cCampos_Tabla CURSOR FOR
+			SELECT COL.name, TYP.name, COL.prec
+			FROM dbo.syscolumns COL
+			JOIN dbo.sysobjects OBJ ON OBJ.id = COL.id
+			JOIN dbo.systypes TYP ON TYP.xusertype = COL.xtype
+			LEFT JOIN dbo.sysforeignkeys FK ON FK.fkey = COL.colid AND FK.fkeyid=OBJ.id
+			LEFT JOIN dbo.sysobjects OBJ2 ON OBJ2.id = FK.rkeyid
+			LEFT JOIN dbo.syscolumns COL2 ON COL2.colid = FK.rkey AND COL2.id = OBJ2.id
+			WHERE OBJ.name = @NombreTabla
+			AND (OBJ.xtype='U' 
+			OR OBJ.xtype='V')
+	 -- Apertura del cursor
+		OPEN cCampos_Tabla
+	 -- Lectura de la primera fila del cursor
+		FETCH NEXT FROM cCampos_Tabla INTO @Campo, @Tipo, @Longitud
+		WHILE (@@FETCH_STATUS=0)
+		BEGIN
+		 -- Determinamos que tipo de dato tiene el campo
+			SET @Listar_Tabla_Campos = @Listar_Tabla_Campos + CHAR(9) + @Campo +' '+ @Tipo;
+			SET @Ancho = CASE @Tipo
+				WHEN 'nvarchar' THEN '(' + CAST(@Longitud As varchar) + ')' + CHAR(13)
+				WHEN 'varchar' THEN '(' + CAST(@Longitud As varchar) + ')' + CHAR(13)
+				ELSE CHAR(13)
+			END;
+			SET @Listar_Tabla_Campos = @Listar_Tabla_Campos + @Ancho
+
+		 -- Procesamos el siguiente Producto a mayorizar
+			FETCH NEXT FROM cCampos_Tabla INTO @Campo, @Tipo, @Longitud
+		END
+	 -- Cierre del cursor
+		CLOSE cCampos_Tabla
+	 -- Liberar los recursos
+		DEALLOCATE cCampos_Tabla
+		SET @Listar_Tabla_Campos = REPLACE(@Listar_Tabla_Campos,'(-1)','(max)')
+		PRINT @Listar_Tabla_Campos;
+
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @NombreTabla
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+END

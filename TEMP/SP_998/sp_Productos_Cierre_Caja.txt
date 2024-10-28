@@ -1,0 +1,23 @@
+CREATE PROCEDURE [dbo].[sp_Productos_Cierre_Caja] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @FechaDesde VARCHAR(10), @FechaHasta VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 15/05/2022
+  DESCIPCION		: Determina que productos se van a mayorizar para hacer el cierre de caja diario en el modulo de Facturacion
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Programacion de procesos
+ 	UPDATE Trans_Kardex
+	SET Procesado = 0
+	FROM Trans_Kardex As TK, Detalle_Factura As DF
+	WHERE DF.Item = @Item
+	AND DF.Periodo = @Periodo
+	AND DF.Fecha BETWEEN @FechaDesde AND @FechaHasta
+	AND TK.Item = DF.Item
+	AND TK.Periodo = DF.Periodo
+	AND TK.Codigo_Inv = DF.Codigo
+END

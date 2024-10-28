@@ -1,0 +1,49 @@
+CREATE PROCEDURE [dbo].[sp_Actualizar_Campo_Empresa] 
+@Item VARCHAR(3), @Dolar MONEY AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 30/01/2024
+  DESCIPCION		:
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Actualizar Datos por default de los Campos de la Empresa 
+    IF @Dolar>0
+       BEGIN
+			UPDATE Empresas
+			SET Cotizacion = @Dolar
+			WHERE Cotizacion = 0
+			AND Item = @Item;
+       END
+	UPDATE Empresas
+	SET Formato_Inventario = 'CC.CC.CCC.CCCCCC'
+	WHERE Formato_Inventario = '.';
+	
+	UPDATE Empresas
+	SET Formato_Activo = 'CC.CC.CCC.CCCCCC'
+	WHERE Formato_Activo = '.';
+	
+	UPDATE Empresas
+	SET Marca_Agua = 'DISKCOVER'
+	WHERE Marca_Agua = '.';
+
+	UPDATE Empresas
+	SET smtp_Servidor = 'mail.diskcoversystem.com', smtp_Puerto = 465, smtp_SSL = 1, smtp_UseAuntentificacion = 1, 
+	    Email_Conexion = 'informacion@diskcoversystem.com', Email_Contraseña = 'infoDlcjvl1210DiskCover'
+	WHERE smtp_Servidor = '.';
+
+	UPDATE Empresas
+	SET Razon_Social = Empresa
+	WHERE LEN(Razon_Social) = 1;
+
+	UPDATE Empresas
+	SET Nombre_Comercial = Razon_Social
+	WHERE LEN(Nombre_Comercial) = 1;
+
+	UPDATE Empresas
+	SET Logo_Tipo = 'DEFAULT'
+	WHERE LEN(Logo_Tipo) = 1;
+END

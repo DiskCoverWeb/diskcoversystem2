@@ -1,0 +1,72 @@
+CREATE PROCEDURE [dbo].[sp_Eliminar_Tablas_Temporales] 
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 20/08/2020
+  FECHA MODIFICACION: 22/04/2024
+  DESCIPCION		: Elimina las tablas temporales, que se utilizan para procesar comprobantes, Facturas y Reportes
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+    DECLARE @Si_No BIT;
+	DECLARE @Registros INT=0;
+	DECLARE @Tabla VARCHAR(100), @sSQL NVARCHAR(MAX)='';
+
+	CREATE TABLE #Temp (Tabla VARCHAR(100) NULL, Registros INT NULL) 
+
+ -- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT name 
+		FROM sysobjects 
+		WHERE type='U'
+		ORDER BY name
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Tabla
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+    -- Averiguamos si la tabla esta vacia entonces la eliminamos
+	   EXECUTE('INSERT INTO #Temp (Tabla, Registros) SELECT ''' + @Tabla + ''', COUNT(*) FROM ' + @Tabla + ' ');
+ 	-- Siguiente Tabla
+	   FETCH NEXT FROM cTablas INTO @Tabla
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+
+ -- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT Tabla, Registros
+		FROM #Temp
+		ORDER BY Tabla
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Tabla, @Registros
+	WHILE (@@FETCH_STATUS = 0 )
+	BEGIN
+	   SET @Si_No = 0
+    -- Si son tablas temporales Eliminar
+	   IF SUBSTRING(@Tabla, 1, 7) = 'Asiento' OR SUBSTRING(@Tabla, 1, 8) = 'Balances' OR SUBSTRING(@Tabla, 1, 5) = 'Tabla' OR SUBSTRING(@Tabla, 1, 4) = 'Tipo' OR 
+	      SUBSTRING(@Tabla, 1, 7) = 'Reporte' OR SUBSTRING(@Tabla, 1, 1) = 'Z' OR @Tabla = 'Saldo_Diarios' SET @Si_No = 1
+	   IF @Registros = 0 SET @Si_No = 1
+
+	-- Si es necesario eliminamos la tabla vacia      
+	   IF @Si_No = 1 EXECUTE('DROP TABLE [' + @Tabla + '];');
+
+ 	-- Siguiente Tabla
+	   FETCH NEXT FROM cTablas INTO @Tabla, @Registros
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+
+	DROP TABLE [#Temp];
+
+	DELETE FROM Accesos
+	WHERE Codigo LIKE 'ACCESO%';
+END

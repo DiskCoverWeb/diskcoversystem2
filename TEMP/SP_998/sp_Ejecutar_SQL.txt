@@ -1,0 +1,14 @@
+CREATE PROCEDURE [dbo].[sp_Ejecutar_SQL] 
+@sSQL NVARCHAR(MAX) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 04/04/2022
+  DESCIPCION		: Ejecuta una consulta solo de actualizacion o eliminacion
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON;
+    EXECUTE(@sSQL);
+    -- print @sSQL
+END

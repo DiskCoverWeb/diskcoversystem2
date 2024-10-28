@@ -1,0 +1,134 @@
+CREATE PROCEDURE [dbo].[sp_Actualiza_Transacciones_Kardex] 
+@EsCoop AS BIT, @ConSucursal AS BIT, @Item AS VARCHAR(3), @Periodo VARCHAR(10), @CodigoUsuario VARCHAR(10), @NumModulo VARCHAR(2), @DecPVP INT, @DecCosto INT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 09/07/2021
+  FECHA MODIFICACION: 09/07/2021
+  DESCIPCION		: Actualiza los totales de las transacciones con lo que presenta el kardex
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @sSQL VARCHAR(MAX), @sSubSQL VARCHAR(MAX);
+
+ -- Reindexando transacciones 
+	UPDATE Transacciones
+	SET Procesado = 0, Saldo = 0
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+
+	UPDATE Trans_SubCtas
+	SET Procesado = 0, Saldo_MN = 0
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+	
+	UPDATE Trans_Kardex
+	SET Procesado = 0 
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+
+	EXEC sp_Eliminar_Nulos 'Transacciones'
+	EXEC sp_Eliminar_Nulos 'Trans_SubCtas'
+	EXEC sp_Eliminar_Nulos 'Trans_Kardex'
+	EXEC sp_Mayorizar_Cuentas @EsCoop, @ConSucursal, @Item, @Periodo
+	EXEC sp_Mayorizar_Inventario @Item, @Periodo, @CodigoUsuario, @NumModulo, @DecPVP, @DecCosto
+
+ -- Verificando que transacciones de kardex no tienen la cuenta contable   
+	UPDATE Transacciones
+    SET X = '.' 
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+   
+    UPDATE Trans_Kardex
+    SET X = 'M' 
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+
+    DELETE 
+    FROM Asiento_K_FA 
+    WHERE Item = @Item
+    AND CodigoU = @CodigoUsuario  
+
+    UPDATE Trans_Kardex 
+    SET X = '.' 
+    FROM Transacciones As T, Trans_Kardex AS TK 
+    WHERE T.Periodo = @Periodo
+    AND T.Item  = @Item
+    AND T.Periodo = TK.Periodo 
+    AND T.Item = TK.Item 
+    AND T.TP = TK.TP 
+    AND T.Numero = TK.Numero 
+    AND T.Cta = TK.Cta_Inv
+
+    INSERT INTO Asiento_K_FA (TC, T_No, CTA_INVENTARIO, SALIDA, COSTO, TOTAL, TOTAL_IVA, Item, CodigoU) 
+    SELECT T.TP, T.Numero, T.Cta, T.Haber, COUNT(TK.Cta_Inv), SUM(TK.Valor_Total), ROUND(T.Haber-SUM(TK.Valor_Total),2,1), @Item, @CodigoUsuario
+    FROM Transacciones As T, Trans_Kardex AS TK 
+    WHERE T.Periodo = @Periodo
+    AND T.Item  = @Item
+    AND T.Haber > 0 
+    AND T.Periodo = TK.Periodo 
+    AND T.Item = TK.Item 
+    AND T.TP = TK.TP 
+    AND T.Numero = TK.Numero 
+    AND T.Cta = TK.Cta_Inv 
+    GROUP BY T.TP, T.Numero, T.Cta, T.Haber 
+    HAVING (T.Haber - SUM(TK.Valor_Total)) <> 0.00 
+    ORDER BY T.TP, T.Numero, T.Cta, T.Haber 
+   
+    DELETE 
+    FROM Asiento_K_FA 
+    WHERE Item = @Item
+    AND CodigoU = @CodigoUsuario 
+    AND TOTAL_IVA = 0 
+   
+    UPDATE Transacciones
+    SET X = 'M' 
+    FROM Transacciones As C, Asiento_K_FA AS AK 
+    WHERE C.Periodo = @Periodo
+    AND C.Item  = @Item
+    AND AK.CodigoU  = @CodigoUsuario
+    AND C.Item = AK.Item 
+    AND C.TP = AK.TC 
+    AND C.Numero = AK.T_No 
+
+ -- Actualizando Salidas y Entradas del Kardex
+ 	UPDATE Transacciones 
+	SET Haber=(SELECT SUM(TK.Valor_Total) 
+				FROM Trans_Kardex As TK 
+				WHERE TK.Item = @Item 
+				AND TK.Periodo = @Periodo
+				AND TK.Item = Transacciones.Item 
+				AND TK.Periodo = Transacciones.Periodo 
+				AND TK.TP = Transacciones.TP 
+				AND TK.Numero = Transacciones.Numero 
+				AND TK.Cta_Inv = Transacciones.Cta)
+	WHERE Item = @Item  
+	AND Periodo = @Periodo  
+	AND Haber > 0
+	AND X = 'M';
+
+	UPDATE Transacciones 
+	SET Debe=(SELECT SUM(TK.Valor_Total) 
+				FROM Trans_Kardex As TK 
+				WHERE TK.Item = @Item
+				AND TK.Periodo = @Periodo
+				AND TK.Item = Transacciones.Item 
+				AND TK.Periodo = Transacciones.Periodo
+				AND TK.TP = Transacciones.TP 
+				AND TK.Numero = Transacciones.Numero 
+				AND TK.Contra_Cta = Transacciones.Cta) 
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Debe > 0 
+    AND X = 'M';
+
+ 	UPDATE Transacciones
+	SET Debe = 0 
+	WHERE Debe IS NULL 
+
+ 	UPDATE Transacciones
+	SET Haber = 0 
+	WHERE Haber IS NULL 
+END

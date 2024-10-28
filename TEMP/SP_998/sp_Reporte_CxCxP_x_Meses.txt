@@ -1,0 +1,133 @@
+CREATE PROCEDURE [dbo].[sp_Reporte_CxCxP_x_Meses]
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @Cta AS VARCHAR(18), @CodigoUsuario AS VARCHAR(10), @FechaCorte AS VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 19/07/2022
+  FECHA MODIFICACION: 02/08/2022
+  DESCIPCION		: Resumen de CxC o CxP por Meses
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @NumMes TINYINT;
+	DECLARE @TotalBenef MONEY, @TotalMes MONEY, @Saldo MONEY;
+	DECLARE @Factura INT;
+	DECLARE @Anio VARCHAR(4), @sSQL VARCHAR(MAX), @TC VARCHAR(2), @Codigo VARCHAR(10);
+	DECLARE @Fecha DATETIME, @CodigoTemp VARCHAR(10), @Mes VARCHAR(3);    
+
+ -- Programacion de procesos
+	DELETE
+	FROM Reporte_CxCxP_x_Meses
+	WHERE Item = @Item 
+	AND CodigoU = @CodigoUsuario
+
+    SET @TC = '.'
+    SELECT @TC = TC
+	FROM Catalogo_Cuentas
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Codigo = @Cta
+	AND DG = 'D'
+
+ -- Declaración del cursor para saber los campos de la tabla temporal
+    IF @TC = 'C'
+	   BEGIN
+	     DECLARE cCampos_Tabla CURSOR FOR
+			SELECT Codigo, Factura, MIN(Fecha_E), SUM(Debitos)-SUM(Creditos)
+			FROM Trans_SubCtas
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha <= @FechaCorte
+			AND Cta = @Cta
+			AND T <> 'A'
+			GROUP BY Codigo, Factura
+			HAVING SUM(Debitos)-SUM(Creditos)<>0
+			ORDER BY Codigo, MIN(Fecha)
+	  -- Apertura del cursor
+	     OPEN cCampos_Tabla
+ 	   END
+	ELSE
+	   BEGIN
+	     DECLARE cCampos_Tabla CURSOR FOR
+			SELECT Codigo, Factura, MIN(Fecha_E), SUM(Creditos)-SUM(Debitos)
+			FROM Trans_SubCtas
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha <= @FechaCorte
+			AND Cta = @Cta
+			AND T <> 'A'
+			GROUP BY Codigo, Factura
+			HAVING SUM(Creditos)-SUM(Debitos)<>0
+			ORDER BY Codigo, MIN(Fecha)
+	  -- Apertura del cursor
+	     OPEN cCampos_Tabla
+	   END
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cCampos_Tabla INTO @Codigo, @Factura, @Fecha, @Saldo
+	SET @CodigoTemp = @Codigo
+	SET @NumMes = MONTH(@Fecha)
+	SET @Anio = CAST(YEAR(@Fecha) AS VARCHAR)
+	SET @Mes = dbo.fn_Mes_Strg(@NumMes,1,1) 
+	SET @TotalMes = 0
+	SET @TotalBenef = 0
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+    -- Determinamos que tipo de dato tiene el campo
+	   IF @Anio <> CAST(YEAR(@Fecha) AS VARCHAR) OR @NumMes <> MONTH(@Fecha) OR @CodigoTemp <> @Codigo 
+		  BEGIN 
+  			 SET @sSQL = 'INSERT INTO Reporte_CxCxP_x_Meses (Cta, CodigoB, Anio, Mes, Valor_x_Mes, Categoria, Mes_No, Beneficiario, CodigoU, Item) '
+			 		   + 'VALUES (''' + @Cta + ''', ''' + @CodigoTemp + ''', ''' + @Anio + ''', ''' + @Mes + ''', ' + CAST(@TotalMes AS VARCHAR) + ', ''CATEGORIA SIN ASIGNAR'',' 
+					   + CAST(@NumMes AS VARCHAR) + ',''.'', ''' + @CodigoUsuario + ''', ''' + @Item + ''');'
+			 EXECUTE(@sSQL)
+			 SET @NumMes = MONTH(@Fecha)
+			 SET @Anio = CAST(YEAR(@Fecha) AS VARCHAR)
+			 SET @Mes = dbo.fn_Mes_Strg(@NumMes,1,1) 
+			 SET @TotalMes = 0
+		     IF @CodigoTemp <> @Codigo 
+				BEGIN
+  				  SET @sSQL = 'INSERT INTO Reporte_CxCxP_x_Meses (Cta, CodigoB, Anio, Mes, Valor_x_Mes, Categoria, Mes_No, Beneficiario, CodigoU, Item) '
+			 				+ 'VALUES (''' + @Cta + ''', ''' + @CodigoTemp + ''', ''TOTAL'', '' '', ' + CAST(@TotalBenef AS VARCHAR) + ', '' '',' 
+							+ '99' + ',''.'',''' + @CodigoUsuario + + ''', ''' + @Item + ''');'
+				  EXECUTE(@sSQL)
+				  SET @NumMes = MONTH(@Fecha)
+				  SET @Anio = CAST(YEAR(@Fecha) AS VARCHAR)
+				  SET @Mes = dbo.fn_Mes_Strg(@NumMes,1,1) 
+				  SET @CodigoTemp = @Codigo
+				  SET @TotalBenef = 0
+				  SET @TotalMes = 0
+				END
+		  END
+	   SET @TotalBenef = @TotalBenef + @Saldo
+	   SET @TotalMes = @TotalMes + @Saldo 
+	-- Procesamos el siguiente registro
+	   FETCH NEXT FROM cCampos_Tabla INTO @Codigo, @Factura, @Fecha, @Saldo
+	END
+ -- Cierre del cursor
+	CLOSE cCampos_Tabla
+ -- Liberar los recursos
+	DEALLOCATE cCampos_Tabla
+  	SET @sSQL = 'INSERT INTO Reporte_CxCxP_x_Meses (Cta, CodigoB, Anio, Mes, Valor_x_Mes, Categoria, Mes_No, Beneficiario, CodigoU, Item) '
+			  + 'VALUES (''' + @Cta + ''', ''' + @CodigoTemp + ''', ''TOTAL'', '' '', ' + CAST(@TotalBenef AS VARCHAR) + ', '' '',' 
+			  + '99' + ',''.'',''' + @CodigoUsuario + + ''', ''' + @Item + ''');'
+	EXECUTE(@sSQL)
+
+ -- Actualizamos el nombre del Beneficiario
+    UPDATE Reporte_CxCxP_x_Meses
+	SET Beneficiario = SUBSTRING(C.Cliente,1,100)
+	FROM Reporte_CxCxP_x_Meses As R, Clientes As C
+	WHERE R.Item = @Item
+	AND R.Cta = @Cta
+	AND R.CodigoU = @CodigoUsuario
+	AND R.CodigoB = C.Codigo
+
+    UPDATE Reporte_CxCxP_x_Meses
+	SET Categoria = C.Actividad
+	FROM Reporte_CxCxP_x_Meses As R, Clientes As C
+	WHERE R.Item = @Item
+	AND R.Cta = @Cta
+	AND R.CodigoU = @CodigoUsuario
+	AND LEN(C.Actividad)>1
+	AND R.CodigoB = C.Codigo
+END

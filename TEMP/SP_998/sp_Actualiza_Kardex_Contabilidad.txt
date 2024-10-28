@@ -1,0 +1,187 @@
+CREATE PROCEDURE [dbo].[sp_Actualiza_Kardex_Contabilidad] 
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @FechaIni VARCHAR(10), @FechaFin VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 08/03/2023
+  FECHA MODIFICACION: 08/03/2023
+  DESCIPCION		: Actualiza el kardex con el contable
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaracion de variables necesarias 
+    DECLARE @sSQL VARCHAR(MAX);
+	DECLARE @TP VARCHAR(3), @tTP VARCHAR(3);
+	DECLARE @CtaInv VARCHAR(18), @ContraCta VARCHAR(18), @tCtaInv VARCHAR(18), @tContraCta VARCHAR(18);
+	DECLARE @TotConta MONEY, @TotInv MONEY, @TotContraCta MONEY;
+	DECLARE @Numero INT, @tNumero INT;
+
+ -- Declaración del cursor para las cuentas del Inventario en las entradas
+	DECLARE cCampos_Tabla CURSOR FOR
+		SELECT TK.TP, TK.Numero, TK.Cta_Inv, T.Debe, SUM(TK.Valor_Total) As E_Total 
+		FROM Trans_Kardex As TK, Transacciones AS T
+		WHERE TK.Item = @Item
+		AND TK.Periodo = @Periodo
+		AND TK.Fecha BETWEEN @FechaIni AND @FechaFin
+		AND TK.Entrada > 0
+		AND TK.Item = T.Item
+		AND TK.Periodo = T.Periodo
+		AND TK.TP = T.TP
+		AND TK.Numero = T.Numero
+		AND TK.Cta_Inv = T.Cta
+		GROUP BY TK.TP, TK.Numero, TK.Cta_Inv, T.Debe
+		HAVING T.Debe <> SUM(TK.Valor_Total)
+		ORDER BY TK.TP, TK.Numero, TK.Cta_Inv;
+ -- Apertura del cursor
+	OPEN cCampos_Tabla
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cCampos_Tabla INTO @TP, @Numero, @CtaInv, @TotConta, @TotInv
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+  	   UPDATE Transacciones
+	   SET Debe = @TotInv
+	   WHERE Item = @Item
+	   AND Periodo = @Periodo
+	   AND TP = @TP
+	   AND Numero = @Numero
+	   AND Cta = @CtaInv;
+	-- PRINT 'UPDATE ' + @TP + CAST(@Numero As VARCHAR) + ': ' + @CtaInv + ' = ' + CAST(@TotInv As VARCHAR)
+    -- Procesamos el siguiente Producto a mayorizar
+	   FETCH NEXT FROM cCampos_Tabla INTO @TP, @Numero, @CtaInv, @TotConta, @TotInv
+	END
+ -- Cierre del cursor
+	CLOSE cCampos_Tabla
+ -- Liberar los recursos
+	DEALLOCATE cCampos_Tabla
+
+ -- Declaración del cursor para las Cuentas por Pagar de la Compra
+	DECLARE cCampos_Tabla CURSOR FOR
+		SELECT TK.TP, TK.Numero, TK.Contra_Cta, T.Haber, SUM(TK.Valor_Total) As E_Total 
+		FROM Trans_Kardex As TK, Transacciones AS T
+		WHERE TK.Item = @Item
+		AND TK.Periodo = @Periodo
+		AND TK.Fecha BETWEEN @FechaIni AND @FechaFin
+		AND TK.Entrada > 0
+		AND TK.Item = T.Item
+		AND TK.Periodo = T.Periodo
+		AND TK.TP = T.TP
+		AND TK.Numero = T.Numero
+		AND TK.Contra_Cta = T.Cta
+		GROUP BY TK.TP, TK.Numero, TK.Contra_Cta, T.Haber
+		HAVING T.Haber <> SUM(TK.Valor_Total)
+		ORDER BY TK.TP, TK.Numero, TK.Contra_Cta;
+ -- Apertura del cursor
+	OPEN cCampos_Tabla
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cCampos_Tabla INTO @TP, @Numero, @ContraCta, @TotConta, @TotInv
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		UPDATE Transacciones
+		SET Haber = @TotInv
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND TP = @TP
+		AND Numero = @Numero
+		AND Cta = @ContraCta;
+
+ 		UPDATE Trans_SubCtas
+		SET Creditos = @TotInv
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND TP = @TP
+		AND Numero = @Numero
+		AND Cta = @ContraCta;
+	 --	PRINT '==-->> UPDATE ' + @TP + CAST(@Numero As VARCHAR) + ': ' + @ContraCta + ' = ' + CAST(@TotInv As VARCHAR)
+     -- Procesamos el siguiente Producto a mayorizar
+		FETCH NEXT FROM cCampos_Tabla INTO @TP, @Numero, @ContraCta, @TotConta, @TotInv
+	END
+ -- Cierre del cursor
+	CLOSE cCampos_Tabla
+ -- Liberar los recursos
+	DEALLOCATE cCampos_Tabla
+
+ -- Declaración del cursor para las cuentas del Inventario en las Salidas
+	DECLARE cCampos_Tabla CURSOR FOR
+		SELECT TK.TP, TK.Numero, TK.Cta_Inv, T.Haber, SUM(TK.Valor_Total) As E_Total 
+		FROM Trans_Kardex As TK, Transacciones AS T
+		WHERE TK.Item = @Item
+		AND TK.Periodo = @Periodo
+		AND TK.Fecha BETWEEN @FechaIni AND @FechaFin
+		AND TK.Salida > 0
+		AND TK.Item = T.Item
+		AND TK.Periodo = T.Periodo
+		AND TK.TP = T.TP
+		AND TK.Numero = T.Numero
+		AND TK.Cta_Inv = T.Cta
+		GROUP BY TK.TP, TK.Numero, TK.Cta_Inv, T.Haber
+		HAVING T.Haber <> SUM(TK.Valor_Total)
+		ORDER BY TK.TP, TK.Numero, TK.Cta_Inv;
+ -- Apertura del cursor
+	OPEN cCampos_Tabla
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cCampos_Tabla INTO @TP, @Numero, @CtaInv, @TotConta, @TotInv
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+  	   UPDATE Transacciones
+	   SET Haber = @TotInv
+	   WHERE Item = @Item
+	   AND Periodo = @Periodo
+	   AND TP = @TP
+	   AND Numero = @Numero
+	   AND Cta = @CtaInv;
+	-- PRINT '==-->> UPDATE ' + @TP + CAST(@Numero As VARCHAR) + ': ' + @CtaInv + ' = ' + CAST(@TotInv As VARCHAR)
+    -- Procesamos el siguiente Producto a mayorizar
+	   FETCH NEXT FROM cCampos_Tabla INTO @TP, @Numero, @CtaInv, @TotConta, @TotInv
+	END
+ -- Cierre del cursor
+	CLOSE cCampos_Tabla
+ -- Liberar los recursos
+	DEALLOCATE cCampos_Tabla
+
+ -- Declaración del cursor para las Cuentas de Costo de Venta con submodulos
+	DECLARE cCampos_Tabla CURSOR FOR
+		SELECT TK.TP, TK.Numero, TK.Contra_Cta, T.Debe, SUM(TK.Valor_Total) As E_Total 
+		FROM Trans_Kardex As TK, Transacciones AS T
+		WHERE TK.Item = @Item
+		AND TK.Periodo = @Periodo
+		AND TK.Fecha BETWEEN @FechaIni AND @FechaFin
+		AND TK.Salida > 0
+		AND TK.Item = T.Item
+		AND TK.Periodo = T.Periodo
+		AND TK.TP = T.TP
+		AND TK.Numero = T.Numero
+		AND TK.Contra_Cta = T.Cta
+		GROUP BY TK.TP, TK.Numero, TK.Contra_Cta, T.Debe
+		HAVING T.Debe <> SUM(TK.Valor_Total)
+		ORDER BY TK.TP, TK.Numero, TK.Contra_Cta;
+ -- Apertura del cursor
+	OPEN cCampos_Tabla
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cCampos_Tabla INTO @TP, @Numero, @ContraCta, @TotConta, @TotInv
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		UPDATE Transacciones
+		SET Debe = @TotInv
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND TP = @TP
+		AND Numero = @Numero
+		AND Cta = @ContraCta;
+
+ 		UPDATE Trans_SubCtas
+		SET Debitos = @TotInv
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND TP = @TP
+		AND Numero = @Numero
+		AND Cta = @ContraCta;
+	 --	PRINT 'UPDATE ' + @TP + CAST(@Numero As VARCHAR) + ': ' + @ContraCta + ' = ' + CAST(@TotInv As VARCHAR)
+     -- Procesamos el siguiente Producto a mayorizar
+		FETCH NEXT FROM cCampos_Tabla INTO @TP, @Numero, @ContraCta, @TotConta, @TotInv
+	END
+ -- Cierre del cursor
+	CLOSE cCampos_Tabla
+ -- Liberar los recursos
+	DEALLOCATE cCampos_Tabla
+END

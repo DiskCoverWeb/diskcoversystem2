@@ -1,0 +1,318 @@
+CREATE PROCEDURE [dbo].[sp_Grabar_Facturas_x_Lotes] 
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @NumModulo AS VARCHAR(2), @Usuario AS VARCHAR(10), @GrupoIni AS VARCHAR(10), @GrupoFin AS VARCHAR(10), @FechaDesde AS VARCHAR(10), 
+@FechaHasta AS VARCHAR(10), @FechaFacturar AS VARCHAR(10), @CodigoCxC AS VARCHAR(10), @NoMes AS INT, @AnioFA AS VARCHAR(10), @Tipo_Pago AS VARCHAR(2), 
+@Nota AS VARCHAR(100), @Observacion AS VARCHAR(100), @PorGrupo AS BIT, @CheqRangos AS BIT, @CheqFA AS BIT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 09/06/2024
+  FECHA MODIFICACION: 28/06/2024
+  DESCIPCION		: Genera facturas en lote por grupos, rango de fecha o por un mes y año
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notIFicacion de resultados del proceso
+	SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @ID INT=0, @Cont INT=0, @FacturaDesde INT=0, @FacturaHasta INT=0;
+	DECLARE @ImpMes BIT=0;
+	DECLARE @Porc_IVA REAL=0;
+	DECLARE @TC AS VARCHAR(2)='.', @Serie AS VARCHAR(6)='.', @Autorizacion AS VARCHAR(49)='.', @CtaCxC AS VARCHAR(18)='.', @Codigo VARCHAR(10), @CodigoFA VARCHAR(10);
+	DECLARE @FechaFA VARCHAR(10)='19000101', @Texto VARCHAR(MAX), @TextLinea VARCHAR(100), @sSQL VARCHAR(MAX);
+
+ -- EMPIEZA LA PROGRAMACION
+	SET @TextLinea = REPLICATE('-',120);
+
+	SELECT @TC=Fact, @Serie=Serie, @Autorizacion=Autorizacion, @CtaCxC=CxC, @ImpMes=Imp_Mes
+	FROM Catalogo_Lineas
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND TL <> 0
+	AND Codigo = @CodigoCxC;
+
+ -- Determinamos que rubros vamos a facturar
+    IF @TC <> '.' AND @Serie <> '.' AND @Autorizacion <> '.'
+	BEGIN
+	    IF @CheqFA = 0 SET @FechaFA = @FechaDesde ELSE SET @FechaFA = @FechaFacturar
+		
+	    SELECT TOP 1 @Porc_IVA = Porc/100 FROM Tabla_Por_ICE_IVA WHERE IVA <> 0 AND @FechaFA BETWEEN Fecha_Inicio AND Fecha_Final ORDER BY Porc DESC;
+
+		UPDATE Clientes_Facturacion
+		SET X = 'D'
+		WHERE Item = @Item;
+
+		UPDATE Clientes_Facturacion
+		SET X = '.'
+		FROM Clientes_Facturacion As CF, Clientes As C
+		WHERE CF.Item = @Item
+		AND CF.Codigo = C.Codigo;
+
+		INSERT INTO Clientes (Codigo, DirNumero, Grupo, Cliente, T, TD, CI_RUC, FA, CodigoU)
+		SELECT Codigo, Item, MAX(GrupoNo), 'ACTUALIZAR NOMBRE CORRECTO DE ' + Codigo, 'N', 'P', Codigo, 1, @Usuario
+		FROM Clientes_Facturacion
+		WHERE Item = @Item
+		AND X = 'D'
+		GROUP BY Codigo, Item;
+
+		EXEC sp_Eliminar_Nulos 'Clientes'
+
+		DELETE FROM Asiento_F
+		WHERE Item = @Item
+		AND CodigoU = @Usuario;
+
+		UPDATE Clientes_Facturacion
+		SET D = CP.IVA
+		FROM Clientes_Facturacion As CF, Catalogo_Productos As CP
+		WHERE CP.Item = @Item
+		AND CP.Periodo = @Periodo
+		AND CF.Item = CP.Item
+		AND CF.Codigo_Inv = CP.Codigo_Inv;
+
+		SELECT @FacturaDesde=Numero
+		FROM Codigos
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND Concepto = @TC+'_SERIE_'+@Serie;
+
+		SET @sSQL = 'INSERT INTO Asiento_F(Total_IVA, RUTA, Codigo_Cliente, TICKET, NoMes, CODIGO, PRECIO, Total_Desc, Total_Desc2, TOTAL, A_No, CANT, SERVICIO, CodBod, Item, CodigoU,
+					 Serie, Autorizacion, Cta, CODIGO_L, FECHA)
+					 SELECT CASE WHEN D = 0 THEN 0 ELSE (Valor-Descuento-Descuento2)*'+CAST(@Porc_IVA As VARCHAR)+' END, GrupoNo, Codigo, Periodo, Num_Mes, Codigo_Inv, Valor, Descuento,
+					 Descuento2, Valor-Descuento-Descuento2, ROW_NUMBER() OVER(ORDER BY Codigo, Periodo, Num_Mes, Codigo_Inv), 1, 0, ''01'', '''+@Item+''', '''+@Usuario+''', '''+@Serie+''',
+					 '''+@Autorizacion+''', '''+@CtaCxC+''', '''+@CodigoCxC+''', '''+@FechaFA+'''
+					 FROM Clientes_Facturacion 
+					 WHERE Item = ''' + @Item + '''
+					 AND T = ''N'' ';
+		IF @PorGrupo <> 0 
+		   BEGIN 
+			 SET @sSQL = @sSQL + 'AND GrupoNo = ''' + @GrupoIni + ''' '
+		   END
+		ELSE
+		   BEGIN
+			  If @CheqRangos <> 0 SET @sSQL = @sSQL + 'AND GrupoNo BETWEEN ''' + @GrupoIni + ''' and ''' + @GrupoFin + ''' '
+		   END
+		IF @CheqFA = 0
+		   SET @sSQL = @sSQL+
+					  'AND Num_Mes = ' + CAST(@NoMes AS VARCHAR) + ' 
+					   AND Periodo = ''' + @AnioFA + ''' ';
+		ELSE SET @sSQL = @sSQL + 'AND Fecha BETWEEN ''' + @FechaDesde + ''' AND ''' + @FechaHasta + ''' '
+		SET @sSQL = @sSQL +'ORDER BY GrupoNo, Codigo, Periodo, Num_Mes, Codigo_Inv '
+		EXECUTE(@sSQL);
+
+	 -- Declaración del cursor para Numeracion de Facturas
+		DECLARE cNum_Facturas CURSOR GLOBAL FOR
+			SELECT Codigo_Cliente, Numero, ID 
+			FROM Asiento_F
+			WHERE Item = @Item
+			AND CodigoU = @Usuario
+			ORDER BY Codigo_Cliente, CODIGO, A_No 
+		FOR UPDATE 
+		-- Apertura del cursor
+		OPEN cNum_Facturas
+		FETCH NEXT FROM cNum_Facturas INTO @Codigo, @Cont, @ID
+--		PRINT 'Mayorizando Cta: ' + @Cta
+		SET @CodigoFA = @Codigo
+		SET @FacturaHasta = @FacturaDesde
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+			IF @CodigoFA <> @Codigo
+			   BEGIN
+			     SET @FacturaHasta = @FacturaHasta + 1
+			     SET @CodigoFA = @Codigo
+			   END
+     		UPDATE Asiento_F
+ 			SET Numero = @FacturaHasta
+			WHERE CURRENT OF cNum_Facturas
+ 		 -- Siguien Registro 
+			FETCH NEXT FROM cNum_Facturas INTO @Codigo, @Cont, @ID
+		END
+	 -- Cierre del cursor
+		CLOSE cNum_Facturas
+	 -- Liberar los recursos
+		DEALLOCATE cNum_Facturas
+
+	 -- Actualizamos el Nombre del Producto y la cuenta de Ventas	
+		UPDATE Asiento_F
+		SET PRODUCTO = CP.Producto, Cta_Inv = CASE WHEN CP.IVA = 0 THEN CP.Cta_Ventas_0 ELSE CP.Cta_Ventas END 
+		FROM Asiento_F As AF, Catalogo_Productos As CP
+		WHERE CP.Item = @Item
+		AND CP.Periodo = @Periodo
+		AND AF.CodigoU = @Usuario
+		AND AF.Item = CP.Item
+		AND AF.CODIGO = CP.Codigo_Inv;
+
+	 -- Actualizamos el Nombre del Producto y la cuenta de Ventas	
+		UPDATE Asiento_F
+		SET Mes = DM.Dia_Mes
+		FROM Asiento_F As AF, Tabla_Dias_Meses As DM
+		WHERE AF.Item = @Item
+		AND AF.CodigoU = @Usuario
+		AND DM.Tipo='M'
+		AND AF.NoMes = DM.No_D_M;
+
+	 -- Procedemos a borrar facturas que por equibocacion o colgado del sistema se quedaron a medias
+		DELETE FROM Detalle_Factura
+        WHERE Factura BETWEEN @FacturaDesde and @FacturaHasta
+        AND Periodo = @Periodo
+        AND Item = @Item
+        AND TC = @TC
+        AND Serie = @Serie
+        AND Autorizacion = @Autorizacion;
+     
+		DELETE FROM Facturas
+        WHERE Factura BETWEEN @FacturaDesde and @FacturaHasta
+        AND Periodo = @Periodo
+        AND Item = @Item
+        AND TC = @TC
+        AND Serie = @Serie
+        AND Autorizacion = @Autorizacion;
+
+		UPDATE Asiento_F
+		SET Estado = 'X'
+		WHERE Item = @Item
+		AND CodigoU = @Usuario;
+
+		UPDATE Asiento_F
+		SET Estado = '.'
+		FROM Asiento_F As AF, Catalogo_Cuentas As CC
+		WHERE AF.Item = @Item
+		AND AF.CodigoU = @Usuario
+		AND CC.Periodo = @Periodo
+		AND AF.Item = CC.Item
+		AND AF.Cta_Inv = CC.Codigo;
+		
+	 -- Insertamos el detalle de las facturas a generar	
+		INSERT INTO Detalle_Factura(T, Periodo, Item, CodigoU, Porc_IVA, TC, Serie, Autorizacion, Factura, Fecha, Fecha_V, CodigoC, Codigo, CodigoL, Producto, Cantidad, Precio, Total, 
+									Total_IVA, Ticket, Total_Desc, Total_Desc2, Cta_Venta, CodBodega, Mes, Mes_No)
+		SELECT 'P', @Periodo, @Item, @Usuario, @Porc_IVA, @TC, @Serie, @Autorizacion, Numero, FECHA, FECHA, Codigo_Cliente, CODIGO, CODIGO_L, PRODUCTO, CANT, PRECIO, TOTAL, Total_IVA,
+			   TICKET, Total_Desc, Total_Desc2, Cta_Inv, CodBod, Mes, NoMes
+		FROM Asiento_F
+		WHERE Item = @Item
+		AND CodigoU = @Usuario
+		AND Estado = '.'
+		AND Numero BETWEEN @FacturaDesde and @FacturaHasta
+		ORDER BY A_No;
+
+		EXEC sp_Eliminar_Nulos 'Detalle_Factura'
+
+	 -- Insertamos el encabezado de las Facturas por Cliente
+	    --- , Anio_Mes, , Hora, , Total_MN, Saldo_MN  , SUM(PRECIO-Total_Desc-Total_Desc2+Total_IVA), SUM(PRECIO-Total_Desc-Total_Desc2+Total_IVA)
+		INSERT INTO Facturas (T, TDT, Periodo, Item, CodigoU, Porc_IVA, TC, Serie, Autorizacion, Tipo_Pago, Imp_Mes, Factura, Fecha, CodigoC, Cod_CxC, Cta_CxP, 
+							  SubTotal, Descuento, Descuento2, IVA)
+		SELECT 'P', 18, @Periodo, @Item, @Usuario, @Porc_IVA, @TC, @Serie, @Autorizacion, @Tipo_Pago, @ImpMes, Numero, FECHA, Codigo_Cliente, CODIGO_L, Cta,
+			   SUM(TOTAL), SUM(Total_Desc), SUM(Total_Desc2), SUM(Total_IVA)
+		FROM Asiento_F
+		WHERE Item = @Item
+		AND CodigoU = @Usuario
+		AND Estado = '.'
+		AND Numero BETWEEN @FacturaDesde and @FacturaHasta
+		GROUP BY Numero, FECHA, Codigo_Cliente, CODIGO_L, Cta
+		ORDER BY Numero, FECHA, Codigo_Cliente, CODIGO_L, Cta;
+
+		IF LEN(@Nota) > 1
+		   UPDATE Facturas
+		   SET Nota = @Nota
+		   WHERE Item = @Item
+		   AND Periodo = @Periodo
+		   AND TC = @TC
+		   AND Serie = @Serie
+		   AND Autorizacion = @Autorizacion
+		   AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		IF LEN(@Observacion) > 1
+		   UPDATE Facturas
+		   SET Observacion = @Observacion
+		   WHERE Item = @Item
+		   AND Periodo = @Periodo
+		   AND TC = @TC
+		   AND Serie = @Serie
+		   AND Autorizacion = @Autorizacion
+		   AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		EXEC sp_Eliminar_Nulos 'Facturas'
+
+		UPDATE Facturas
+		SET RUC_CI=CM.Cedula_R, TB=CM.TD, Razon_Social=CM.Representante, Direccion_RS=CM.Lugar_Trabajo_R, Telefono_RS=CM.Telefono_R
+		FROM Facturas As F, Clientes_Matriculas As CM
+		WHERE F.Item = @Item
+		AND F.Periodo = @Periodo
+		AND F.TC = @TC
+        AND F.Serie = @Serie
+        AND F.Autorizacion = @Autorizacion
+		AND F.Factura BETWEEN @FacturaDesde and @FacturaHasta
+		AND LEN(CM.Cedula_R) > 1
+		AND LEN(CM.Representante) > 1
+		AND CM.TD IN ('C','R','P')
+		AND F.Item = CM.Item
+		AND F.Periodo = CM.Periodo
+		AND F.CodigoC = CM.Codigo;
+
+		SET @Cont = 0;
+
+		SELECT @Cont = COUNT(*) 
+		FROM Clientes_Matriculas
+		WHERE Item = @Item
+		AND Periodo = @Periodo;
+
+		IF @Cont = 0 
+		   UPDATE Facturas
+		   SET RUC_CI=C.CI_RUC, TB=C.TD, Razon_Social=C.Cliente, Direccion_RS=C.Direccion, Telefono_RS=C.Telefono
+		   FROM Facturas As F, Clientes As C
+		   WHERE F.Item = @Item
+		   AND F.Periodo = @Periodo
+		   AND F.TC = @TC
+		   AND F.Serie = @Serie
+		   AND F.Autorizacion = @Autorizacion
+		   AND F.Factura BETWEEN @FacturaDesde and @FacturaHasta
+		   AND F.RUC_CI = '.'
+		   AND F.TB = '.'
+		   AND C.TD IN ('C','R','P')
+		   AND F.CodigoC = C.Codigo;
+
+		UPDATE Facturas
+		SET RUC_CI='9999999999999', TB='R', Razon_Social='CONSUMIDOR FINAL', Direccion_RS='SD', Telefono_RS='020000000'
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND TC = @TC
+        AND Serie = @Serie
+        AND Autorizacion = @Autorizacion
+		AND Factura BETWEEN @FacturaDesde and @FacturaHasta
+		AND RUC_CI = '.'
+		AND TB = '.';
+
+		--------------------------------------------------------------------------------------------------------
+		SET @FechaFA = CONVERT(VARCHAR(8), GETDATE(), 112)
+		EXEC sp_Actualiza_Saldo_De_Facturas @Item, @Periodo, @TC, @Serie, @FacturaDesde, @FacturaHasta, @FechaFA
+		--------------------------------------------------------------------------------------------------------
+
+		UPDATE Clientes_Facturacion
+		SET D = 0
+		WHERE Item = @Item;
+
+		UPDATE Clientes_Facturacion
+		SET D = 1
+		FROM Clientes_Facturacion As CF, Asiento_F As A
+		WHERE CF.Item = @Item
+		AND A.CodigoU = @Usuario
+		AND CF.Item = A.Item
+		AND CF.Periodo = A.TICKET 
+		AND CF.Num_Mes = A.NoMes
+		AND CF.Codigo = A.Codigo_Cliente;
+
+		DELETE FROM Clientes_Facturacion 
+		WHERE Item = @Item
+		AND D <> 0;
+
+		SET @Cont = 0;
+
+		SELECT @Cont = COUNT(*) 
+		FROM Asiento_F
+		WHERE Item = @Item
+		AND CodigoU = @Usuario;
+
+		IF @Cont > 0 
+		   UPDATE Codigos
+		   SET Numero = @FacturaHasta + 1
+		   WHERE Item = @Item
+		   AND Periodo = @Periodo
+		   AND Concepto = @TC+'_SERIE_'+@Serie;
+	END
+END

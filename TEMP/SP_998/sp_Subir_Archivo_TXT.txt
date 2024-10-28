@@ -1,0 +1,133 @@
+CREATE PROCEDURE [dbo].[sp_Subir_Archivo_TXT] 
+@strIPServidor VARCHAR(MAX), @PathFileTXT VARCHAR(MAX), @FileTXT VARCHAR(MAX), @Usuario VARCHAR(10), @Item VARCHAR(3), @TipoFile VARCHAR(5) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 05/07/2023
+  FECHA MODIFICACION: 05/07/2023
+  DESCIPCION		: Sube contenodo de un archivo con extension TXT
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notIFicacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @T_Asiento_TXT VARCHAR(MAX), @sSQL VARCHAR(MAX), @Tab VARCHAR(2)= CHAR(9);
+
+	SET @T_Asiento_TXT = 'Asiento_TXT_' + @Usuario
+
+	IF dbo.fn_Existe_Tabla(@T_Asiento_TXT) <> 0 EXECUTE('DROP TABLE '+@T_Asiento_TXT+';');
+
+	SET @sSQL = (SELECT CASE
+	  			   WHEN @TipoFile = 'SRI' THEN 
+				        'CREATE TABLE '+@T_Asiento_TXT+'(
+						 RUC_EMISOR VARCHAR(13),
+						 RAZON_SOCIAL_EMISOR VARCHAR(180),
+ 		  			     TIPO_COMPROBANTE VARCHAR(25),
+					     SERIE_COMPROBANTE VARCHAR(17), 
+					     CLAVE_ACCESO VARCHAR(50),
+						 FECHA_AUTORIZACION VARCHAR(20),
+					     FECHA_EMISION VARCHAR(11),
+					     IDENTIFICACION_RECEPTOR VARCHAR(13),
+						 VALOR_SIN_IMPUESTOS VARCHAR(18),
+						 IVA VARCHAR(18),
+						 IMPORTE_TOTAL VARCHAR(18),
+					     NUMERO_DOCUMENTO_MODIFICADO VARCHAR(49)
+						 );'
+				   ELSE 'CREATE TABLE '+@T_Asiento_TXT+'(ARCHIVO_NO_DEFINIDO VARCHAR(50));'
+				 END AS sSQL);
+	EXECUTE(@sSQL);
+    IF @sSQL <> 'CREATE TABLE '+@T_Asiento_TXT+'(ARCHIVO_NO_DEFINIDO VARCHAR(50));'
+	   BEGIN
+		 IF @strIPServidor ='db.diskcoversystem.com'
+			BEGIN
+		 	  SET @FileTXT = '/home/ftpuser/ftp/files/' + @FileTXT
+			END
+		 ELSE
+			BEGIN
+			  SET @FileTXT = @PathFileTXT + @FileTXT
+			END
+		 SET @sSQL = 'BULK INSERT '+@T_Asiento_TXT+' FROM '''+@FileTXT+''' 
+					  WITH(DATAFILETYPE = ''CHAR'', FIRSTROW=2, FIELDTERMINATOR=''\t'', ROWTERMINATOR=''0x0A'');'
+		 EXECUTE(@sSQL);
+		 IF @TipoFile = 'SRI'
+		    BEGIN
+			--EXECUTE('ALTER TABLE '+@T_Asiento_TXT+' DROP COLUMN column_b');
+			  --SET @sSQL = '['+@T_Asiento_TXT+'].[TIPO_COMPROBANTE]'
+			  --EXEC sp_RENAME @sSQL, 'PROCESAR', 'COLUMN'
+
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET TIPO_COMPROBANTE = REPLACE(TIPO_COMPROBANTE,''¾'',''o'')');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET RAZON_SOCIAL_EMISOR = REPLACE(RAZON_SOCIAL_EMISOR,''+æ'',''Ñ'')');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET IMPORTE_TOTAL = ''0'' WHERE IMPORTE_TOTAL IS NULL');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET NUMERO_DOCUMENTO_MODIFICADO = ''.'' WHERE NUMERO_DOCUMENTO_MODIFICADO IS NULL');
+			  --EXECUTE('UPDATE '+@T_Asiento_TXT+' SET PROCESAR = ''0''');
+
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET TIPO_COMPROBANTE = TRIM(TIPO_COMPROBANTE)');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET SERIE_COMPROBANTE = TRIM(SERIE_COMPROBANTE)');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET RUC_EMISOR = TRIM(RUC_EMISOR)');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET RAZON_SOCIAL_EMISOR = TRIM(RAZON_SOCIAL_EMISOR)');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET FECHA_EMISION = TRIM(FECHA_EMISION)');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET FECHA_AUTORIZACION = TRIM(FECHA_AUTORIZACION)');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET NUMERO_DOCUMENTO_MODIFICADO = TRIM(NUMERO_DOCUMENTO_MODIFICADO)');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET IDENTIFICACION_RECEPTOR = TRIM(IDENTIFICACION_RECEPTOR)');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET CLAVE_ACCESO = TRIM(CLAVE_ACCESO)');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET IMPORTE_TOTAL = TRIM(IMPORTE_TOTAL)');
+
+			  --Documento INT NULL,
+			  SET @sSQL='ALTER TABLE '+@T_Asiento_TXT+' ADD
+						 Hora_Aut NVARCHAR(8) NULL,
+						 Subtotal MONEY NULL,
+						 Total_IVA MONEY NULL,
+						 CodSustento NVARCHAR(2) NULL,
+						 Serie_Receptor NVARCHAR(6) NULL,
+						 
+						 Cod_Ret NVARCHAR(5) NULL,
+						 Porc_Ret FLOAT NULL,
+						 Porc_Ret_IVA_B FLOAT NULL,
+						 Porc_Ret_IVA_S FLOAT NULL,
+						 Cod_Ret_Bien TINYINT NULL,
+						 Cod_Ret_Servicio TINYINT NULL,
+						 Ret_IVA_B MONEY NULL,
+						 Ret_IVA_S MONEY NULL,
+						 Ret_Fuente MONEY NULL,
+						 Direccion_Emisor NVARCHAR(60) NULL,
+						 Cta_Debito NVARCHAR(18) NULL,
+						 Cta_Credito NVARCHAR(18) NULL,
+						 Cta_IVA_Gasto NVARCHAR(18) NULL,
+						 Cta_Ret_Fuente NVARCHAR(18) NULL,
+						 Cta_Ret_IVA_B NVARCHAR(18) NULL,
+						 Cta_Ret_IVA_S NVARCHAR(18) NULL,
+						 CodPorIva NVARCHAR(1) NULL,
+						 SubModulo NVARCHAR(10) NULL,
+						 Codigo_B NVARCHAR(10) NULL,
+						 Item NVARCHAR(3) NULL,
+						 ID INT IDENTITY NOT NULL PRIMARY KEY;';
+			  EXECUTE(@sSQL);
+
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET Item = '''+@Item+''' WHERE Item IS NULL');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET TIPO_COMPROBANTE = ''Factura al Gasto'' WHERE LEN(IDENTIFICACION_RECEPTOR)=10');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET TIPO_COMPROBANTE = ''Retencion'' WHERE TIPO_COMPROBANTE LIKE ''%RETENCI%'' ');
+			  
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET Hora_Aut = SUBSTRING(FECHA_AUTORIZACION,12,8) WHERE LEN(FECHA_AUTORIZACION)>=19');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET FECHA_AUTORIZACION = SUBSTRING(FECHA_AUTORIZACION,1,10) WHERE LEN(FECHA_AUTORIZACION)>=19');
+
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET FECHA_EMISION = CAST(CONVERT(DATE, FECHA_EMISION, 103) AS VARCHAR) WHERE FECHA_EMISION <> ''.'';');
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET FECHA_AUTORIZACION = CAST(CONVERT(DATE, FECHA_AUTORIZACION, 103) AS VARCHAR) WHERE FECHA_AUTORIZACION <> ''.'';');
+
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' 
+  					   SET Codigo_B = C.Codigo, Direccion_Emisor = TRIM(SUBSTRING(C.Direccion,1,60))
+					   FROM '+@T_Asiento_TXT+' As TXT, Clientes As C
+					   WHERE TXT.Item = '''+@Item+''' 
+					   AND TXT.RUC_EMISOR = C.CI_RUC;');
+
+			  EXECUTE('ALTER TABLE '+@T_Asiento_TXT+' ALTER COLUMN IMPORTE_TOTAL MONEY');
+			  EXECUTE('ALTER TABLE '+@T_Asiento_TXT+' ALTER COLUMN FECHA_EMISION DATETIME');
+			  EXECUTE('ALTER TABLE '+@T_Asiento_TXT+' ALTER COLUMN FECHA_AUTORIZACION DATETIME');
+			  --EXECUTE('ALTER TABLE '+@T_Asiento_TXT+' ALTER COLUMN PROCESAR BIT');
+			  EXEC sp_Eliminar_Nulos @T_Asiento_TXT;
+			END
+		 IF @TipoFile = '..'
+		    BEGIN
+			  EXECUTE('UPDATE '+@T_Asiento_TXT+' SET BENEFICIARIO = REPLACE(BENEFICIARIO,''+æ'',''Ñ'')');
+			END
+	   END
+END

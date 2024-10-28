@@ -1,0 +1,84 @@
+CREATE PROCEDURE [dbo].[sp_Insertar_Ctas_Cierre] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @NumModulo VARCHAR(2), @Usuario VARCHAR(10), @Codigo VARCHAR(18), @Valor MONEY, @TransNo INT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 21/03/2022
+  FECHA MODIFICACION: 22/03/2022
+  DESCIPCION		: Inserta asientos automaticos con el codigo y un valor
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ 
+ -- Declaramos Variables Temporales
+	DECLARE @ANo INT=0, @TempANo INT=0;
+	DECLARE @Debe MONEY=0, @Haber MONEY=0;
+	DECLARE @TC VARCHAR(2)='.', @Cta VARCHAR(18)='.', @Cuenta VARCHAR(90)='.';
+	DECLARE @TextLinea VARCHAR(100);
+
+ -- Sacamos el numero maximo
+	SELECT TOP 1 @TempANo=A_No
+	FROM Asiento
+	WHERE Item = @Item
+	AND CodigoU = @Usuario
+	AND T_No = @TransNo
+	ORDER BY A_No DESC
+
+	IF @Codigo='CXC'
+	   INSERT INTO Asiento (CODIGO, CUENTA, DEBE, HABER, Item, CodigoU, T_No, TC, A_No)
+	   VALUES (' ', 'GENERACION DE LA FACTURA', 0, 0, @Item, @Usuario, @TransNo, '.', 0)
+	IF @Codigo='ABONO'
+	   INSERT INTO Asiento (CODIGO, CUENTA, DEBE, HABER, Item, CodigoU, T_No, TC, A_No)
+	   VALUES (' ', 'ABONOS DE LA FACTURA', 0, 0, @Item, @Usuario, @TransNo, '.', 0)
+
+    EXEC sp_Eliminar_Nulos 'Asiento'
+
+ -- Redondeamos a 2 decimales el ingreso como lo requiere contabilidad
+    SET @Valor = ROUND(@Valor,2,0);
+
+ -- Leemos el tipo de cuenta en el catalogo
+    SELECT @TC=TC, @Cta=Codigo, @Cuenta=Cuenta
+	FROM Catalogo_Cuentas
+    WHERE Periodo = @Periodo
+    AND Item = @Item
+	AND @Codigo IN (Codigo,Codigo_Ext);
+	IF @Cta <> '.'
+       BEGIN
+		  SELECT @Debe=DEBE, @Haber=HABER, @ANo=A_No
+		  FROM Asiento
+		  WHERE Item = @Item
+		  AND CodigoU = @Usuario
+		  AND CODIGO = @Cta
+		  AND T_No = @TransNo
+		  ORDER BY CODIGO, A_No
+   		  IF (@ANo > 0)
+			 BEGIN
+			    IF @Valor > 0 SET @Debe = @Debe + @Valor
+				IF @Valor < 0 SET @Haber = @Haber - @Valor
+				IF @Valor <> 0
+				   BEGIN
+     				  UPDATE Asiento
+ 					  SET DEBE=@Debe, HABER=@Haber
+					  WHERE Item = @Item
+					  AND CodigoU = @Usuario
+					  AND CODIGO = @Cta
+					  AND T_No = @TransNo
+					  AND A_No = @ANo
+				   END
+			 END
+		  ELSE
+		     BEGIN
+			    SET @ANo = @TempANo + 1
+				IF @Valor > 0 SET @Debe =  @Valor
+				IF @Valor < 0 SET @Haber = - @Valor
+			    INSERT INTO Asiento (CODIGO, CUENTA, DEBE, HABER, Item, CodigoU, T_No, TC, A_No)
+				VALUES (@Cta, @Cuenta, @Debe, @Haber, @Item, @Usuario, @TransNo, @TC, @ANo)
+				EXEC sp_Eliminar_Nulos 'Asiento'
+			 END
+	   END
+    ELSE
+       BEGIN
+	      SET @TextLinea = 'Trans. No. ' + CAST(@TransNo As VARCHAR) + ', El Código: ' + @Codigo + ', no esta creado en el Plan de Cuentas'  
+	      EXEC sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	   END	
+END

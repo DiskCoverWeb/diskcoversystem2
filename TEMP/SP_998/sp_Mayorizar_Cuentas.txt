@@ -1,0 +1,218 @@
+CREATE PROCEDURE [dbo].[sp_Mayorizar_Cuentas] 
+@EsCoop AS BIT, @ConSucursal AS BIT, @Item AS VARCHAR(3), @Periodo AS VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 28/12/2021
+  DESCIPCION		: Mayoriza solo cuentas que se han procesado movimientos nuevos
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaracion de variables para el cursor
+    DECLARE @Fecha DATETIME;
+	DECLARE @Procesado BIT;
+	DECLARE @ID int, @Numero int;
+	DECLARE @Cta varchar(16), @CodigoSM varchar(16), @TP varchar(2), @SubModulo varchar(16);
+	DECLARE @Codigo varchar(18), @Cadena varchar(255);
+	DECLARE @Debe MONEY, @Haber MONEY, @Debe_ME MONEY, @Haber_ME MONEY, @Parcial_ME MONEY, @Saldo MONEY;
+	DECLARE @Saldo_ME MONEY, @Saldo_Act MONEY, @Saldo_Act_ME MONEY;
+	
+ -- Redondeamos a dos decimales los totales de cuentas y SubModulos
+    UPDATE Transacciones
+	SET Debe=ROUND(Debe,2,0), Haber=ROUND(Haber,2,0), Parcial_ME=ROUND(Parcial_ME,2,0), Saldo=ROUND(Saldo,2,0), Saldo_ME=ROUND(Saldo_ME,2,0)
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+ 
+    UPDATE Trans_SubCtas
+	SET Debitos=ROUND(Debitos,2,0), Creditos = ROUND(Creditos,2,0), Parcial_ME = ROUND(Parcial_ME,2,0), Saldo=ROUND(Saldo,2,0), Saldo_ME=ROUND(Saldo_ME,2,0)
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+
+ -- Determinamos las cuentas que no se han mayorizado
+    DELETE
+	FROM Trans_SubCtas 
+	WHERE Codigo IN ('datos.','.')
+
+	UPDATE Trans_SubCtas
+	SET TC = '.'
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+
+	UPDATE Catalogo_CxCxP
+	SET TC = CC.TC
+	FROM Catalogo_CxCxP As CCP, Catalogo_Cuentas CC
+	WHERE CCP.Item = @Item
+	AND CCP.Periodo = @Periodo
+	AND CCP.Item = CC.Item 
+	AND CCP.Periodo = CC.Periodo 
+	AND CCP.Cta = CC.Codigo
+
+	update Trans_SubCtas
+	SET TC = CS.TC
+	FROM Trans_SubCtas As TS, Catalogo_Cuentas CS
+	WHERE TS.Item = @Item
+	AND TS.Periodo = @Periodo
+	AND TS.Item = CS.Item 
+	AND TS.Periodo = CS.Periodo 
+	AND TS.Cta = CS.Codigo
+
+    UPDATE Catalogo_Cuentas
+	SET Procesado = 1
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+
+	UPDATE Catalogo_Cuentas 
+	SET Procesado = T.Procesado 
+	FROM Catalogo_Cuentas As C,Transacciones As T
+	WHERE C.Item = @Item
+	AND C.Periodo = @Periodo
+	AND T.Procesado = 0
+	AND T.T <> 'A' 
+	AND C.Periodo = T.Periodo 
+	AND C.Item = T.Item 
+	AND C.Codigo = T.Cta
+
+ -- Comenzamos a mayorizr las Cuentas Contables
+ 	DECLARE cCatalogo CURSOR FOR
+		SELECT Codigo
+		FROM Catalogo_Cuentas
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND Procesado = 0
+		AND LEN(Codigo) > 0
+		AND DG = 'D'
+		ORDER BY Codigo
+ -- Apertura del cursor
+	OPEN cCatalogo
+	FETCH NEXT FROM cCatalogo INTO @Codigo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	 -- Declaración del cursor para Transacciones 
+		DECLARE cTransacciones CURSOR GLOBAL FOR
+			SELECT Cta, Fecha, TP, Numero, Debe, Haber, Parcial_ME, Saldo, Saldo_ME, Procesado, ID
+			FROM Transacciones
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Cta = @Codigo
+			AND TP IN ('CD','CE','CI','ND','NC')
+			AND T <> 'A'
+			ORDER BY Cta,Fecha,TP,Numero,Debe DESC,Haber,ID
+		FOR UPDATE 
+	 -- Apertura del cursor
+		OPEN cTransacciones
+        SET @Saldo = 0
+		SET @Saldo_ME = 0
+		FETCH NEXT FROM cTransacciones INTO @Cta, @Fecha, @TP, @Numero, @Debe, @Haber, @Parcial_ME, @Saldo_Act, @Saldo_Act_ME, @Procesado, @ID
+--		PRINT 'Mayorizando Cta: ' + @Cta
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+--		    PRINT 'T: ' + CAST(@Fecha As varchar) + '  ' + @Cta +' - '+ @TP + ' ID = ' + CAST(@ID As varchar)
+         -- Determinamos los movimientos de las cuentas
+            IF @Parcial_ME >= 0 
+			   BEGIN
+				  SET @Debe_ME = @Parcial_ME
+				  SET @Haber_ME = 0
+			   END
+            ELSE
+			   BEGIN 
+				  SET @Haber_ME = -@Parcial_ME
+				  SET @Debe_ME = 0
+			   END
+         -- Calculamos los saldos por registro y fecha
+			SET @Saldo = dbo.fn_Mayorizar_Saldo_Cta(@EsCoop, @Cta, @Saldo, @Debe, @Haber)
+			SET @Saldo_ME = dbo.fn_Mayorizar_Saldo_Cta(@EsCoop, @Cta, @Saldo_ME, @Debe_ME, @Haber_ME)
+         -- Actualizamos saldo si es diferente al actual
+		    IF @Saldo <> @Saldo_Act OR @Saldo_ME <> @Saldo_Act_ME
+			BEGIN
+				UPDATE Transacciones 
+ 		        SET Saldo = @Saldo, Saldo_ME = @Saldo_ME
+				WHERE CURRENT OF cTransacciones 
+			END
+         -- Siguien Registro 
+			FETCH NEXT FROM cTransacciones INTO @Cta, @Fecha, @TP, @Numero, @Debe, @Haber, @Parcial_ME, @Saldo_Act, @Saldo_Act_ME, @Procesado, @ID
+		END
+	 -- Cierre del cursor
+		CLOSE cTransacciones
+	 -- Liberar los recursos
+		DEALLOCATE cTransacciones
+
+	 -- Declaración del cursor para Trans_SubCtas
+		DECLARE cTrans_SubCtas CURSOR FOR
+			SELECT Codigo, Cta, Fecha, TP, Numero, Debitos, Creditos, Parcial_ME, Saldo, Saldo_ME, Procesado, ID
+			FROM Trans_SubCtas
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Cta = @Codigo
+			AND TP IN ('CD','CE','CI','ND','NC')
+			AND T <> 'A'
+			ORDER BY Codigo, Fecha, TP, Numero, Factura, Debitos DESC, Creditos, ID
+	 -- Apertura del cursor
+		OPEN cTrans_SubCtas
+		FETCH NEXT FROM cTrans_SubCtas INTO @SubModulo, @Cta, @Fecha, @TP, @Numero, @Debe, @Haber, @Parcial_ME, @Saldo_Act, @Saldo_Act_ME, @Procesado, @ID
+        SET @Saldo = 0
+		SET @Saldo_ME = 0
+		SET @CodigoSM = @SubModulo
+--		PRINT 'Mayorizando SubCta: ' + @Cta + '  ' + @CodigoSM 
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+		    IF @CodigoSM <> @SubModulo
+			   BEGIN
+ 				  SET @Saldo = 0
+				  SET @Saldo_ME = 0
+				  SET @CodigoSM = @SubModulo
+--				  PRINT 'Mayorizando SubCta: ' + @Cta + '  ' + @CodigoSM 
+			   END
+		    --PRINT 'TS: ' + @SubModulo + '  ' + CAST(@Fecha As varchar) + '  ' + @Cta +' - '+ @TP + ' = ' + CAST(@ID As varchar)
+         -- Determinamos los movimientos de las cuentas
+            IF @Parcial_ME >= 0 
+			   BEGIN
+				  SET @Debe_ME = @Parcial_ME
+				  SET @Haber_ME = 0
+			   END
+            ELSE
+			   BEGIN 
+				  SET @Haber_ME = -@Parcial_ME
+				  SET @Debe_ME = 0
+			   END
+         -- Calculamos los saldos por registro y fecha
+			SET @Saldo = dbo.fn_Mayorizar_Saldo_Cta(@EsCoop, @Cta, @Saldo, @Debe, @Haber)
+			SET @Saldo_ME = dbo.fn_Mayorizar_Saldo_Cta(@EsCoop, @Cta, @Saldo_ME, @Debe_ME, @Haber_ME)
+         -- Actualizamos saldo si es diferente al actual
+		    IF @Saldo <> @Saldo_Act OR @Saldo_ME <> @Saldo_Act_ME
+			   BEGIN
+				  UPDATE Trans_SubCtas
+				  SET Saldo_MN = @Saldo, Saldo_ME = @Saldo_ME
+				  WHERE CURRENT OF cTrans_SubCtas
+			   END
+         -- Siguiente registro  
+		    FETCH NEXT FROM cTrans_SubCtas INTO @SubModulo, @Cta, @Fecha, @TP, @Numero, @Debe, @Haber, @Parcial_ME, @Saldo_Act, @Saldo_Act_ME, @Procesado, @ID
+		END
+	 -- Cierre del cursor
+		CLOSE cTrans_SubCtas
+	 -- Liberar los recursos
+		DEALLOCATE cTrans_SubCtas
+    
+	 -- Cuenta mayorizada con exito
+    	UPDATE Transacciones 
+ 	    SET Procesado = 1
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND Cta = @Codigo
+
+     -- SubCta Mayorizada con exito
+    	UPDATE Trans_SubCtas
+ 	    SET Procesado = 1
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND Cta = @Codigo
+
+     -- Seguimos a la proxima cuenta a mayorizar
+		FETCH NEXT FROM cCatalogo INTO @Codigo
+	END
+ -- Cierre del cursor
+	CLOSE cCatalogo
+ -- Liberar los recursos
+	DEALLOCATE cCatalogo
+END

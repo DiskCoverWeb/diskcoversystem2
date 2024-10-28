@@ -1,0 +1,189 @@
+CREATE PROCEDURE [dbo].[sp_Importar_Abonos_Facturas] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @Usuario VARCHAR(10), @NumModulo VARCHAR(2) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 17/01/2024
+  FECHA MODIFICACION: 17/01/2024
+  DESCIPCION		: Plantilla No. 15. Importa el contenido de la subida de un archivo CSV a la base de Datos de Abonos de Facturas.
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notIFicacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @ID INT=0;
+	DECLARE @Tabla_Asiento_CSV VARCHAR(MAX)='', @Recibo_No VARCHAR(18), @sID VARCHAR(18);
+	DECLARE @FechaMin DATETIME='19000101', @FechaMax DATETIME='19000101';
+	DECLARE @TextLinea VARCHAR(100), @sSQL NVARCHAR(MAX);
+	DECLARE @Codigo VARCHAR(10), @CodigoTemp VARCHAR(10), @CI_RUC VARCHAR(15), @TD VARCHAR(2)='.';
+
+	SET @TextLinea = REPLICATE('-',100);
+	SET @Tabla_Asiento_CSV = 'Asiento_CSV_' + @Usuario
+	IF dbo.fn_Existe_Tabla(@Tabla_Asiento_CSV) <> 0
+	   BEGIN
+      -- Declaracion de Cursor para Verificar tipo de documento en las facturas
+		 SET @sSQL = 'DECLARE cTabla CURSOR FOR
+ 					  SELECT TD
+					  FROM '+@Tabla_Asiento_CSV+' 
+					  WHERE TD <> ''.''';
+ 		 EXEC sp_executesql @sSQL
+	  -- Apertura del cursor
+		 OPEN cTabla
+		 FETCH NEXT FROM cTabla INTO @TD
+	  -- Cierre del cursor
+		 CLOSE cTabla
+ 	  -- Liberar los recursos
+		 DEALLOCATE cTabla
+
+		 IF @TD = '.' SET @TD = 'FA'
+
+         DELETE FROM Tabla_Temporal
+         WHERE Item = @Item
+         AND Modulo = @NumModulo
+         AND CodigoU = @Usuario;
+
+		 DELETE FROM Asiento_Min_Max 
+		 WHERE Item = @Item 
+		 AND CodigoU = @Usuario 
+		 AND Modulo = @NumModulo
+		 AND TP = @TD;
+
+		 UPDATE Trans_Abonos
+		 SET X = '.'
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND TP = @TD;
+
+	  -- Creamos campos necesarios	 
+ 		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD X NVARCHAR(1);');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD C NVARCHAR(1);');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD F NVARCHAR(1);');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD SERIE NVARCHAR(6);');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD FACTURA INT;');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD CTA_CXC NVARCHAR(18);');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD CODIGO NVARCHAR(10);');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD ID INT IDENTITY NOT NULL PRIMARY KEY;');
+
+	  -- Actualizamos datos por default
+	     EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET X = ''X'', C = ''X'', F = ''X'', SERIE = ''001001'', CODIGO = ''9999999999'', CTA_CXC  = ''.'', FACTURA = 0 WHERE X IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET VALOR = ''0'' WHERE VALOR IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET TD = ''FA'' WHERE TD IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET NO_RET = ''.'' WHERE NO_RET IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET NO_RET = ''.'' WHERE NO_RET='''';');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET Cta_Abono = ''.'' WHERE Cta_Abono IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET Recibo_No = ''_'' WHERE Recibo_No IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET Cheque = ''.'' WHERE Cheque IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET Tipo_Abono_Banco = ''EFECTIVO'' WHERE Tipo_Abono_Banco IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET CI_RUC_Codigo = ''9999999999'' WHERE CI_RUC_Codigo IS NULL;');
+
+	  -- Convertimos campos a tipos correctos	 
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET FECHA = CAST(CONVERT(DATE, FECHA, 103) AS VARCHAR) WHERE FECHA <> ''.'';');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET SERIE = SUBSTRING(FACTURA_MES,1,6) WHERE LEN(FACTURA_MES)>=8;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET FACTURA = CAST(SUBSTRING(FACTURA_MES,8,9) As INT) WHERE LEN(FACTURA_MES)>=8;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET Recibo_No = ''R''+dbo.fn_CNumero_Str_Ent(CAST(Recibo_No As INT), 9, ''0'') WHERE ISNUMERIC(Recibo_No)<>0;');
+
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ALTER COLUMN FECHA DATETIME');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ALTER COLUMN VALOR MONEY');
+
+		 
+      -- Declaracion de Cursor para Verificar tipo de documento en las facturas
+		 SET @sSQL = 'DECLARE cTabla CURSOR FOR
+ 					  SELECT ID
+					  FROM '+@Tabla_Asiento_CSV+' 
+					  WHERE Recibo_No = ''_''
+					  ORDER BY SERIE, FACTURA, FECHA';
+ 		 EXEC sp_executesql @sSQL
+	  -- Apertura del cursor
+		 OPEN cTabla
+		 FETCH NEXT FROM cTabla INTO @ID
+		 WHILE (@@FETCH_STATUS = 0)
+		 BEGIN
+		    SET @sID=CAST(@ID As VARCHAR);
+
+		    SELECT @Recibo_No = 'R'+dbo.fn_CNumero_Str_Ent(Numero, 9, '0')
+			FROM Codigos 
+			WHERE Item = @Item 
+		    AND Periodo = @Periodo
+			AND Concepto = 'Recibo_No';
+
+			EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET Recibo_No = ''' +@Recibo_No+''' WHERE ID = '+@sID+';');
+
+			UPDATE Codigos 
+			SET Numero = Numero +1
+			WHERE Item = @Item 
+		    AND Periodo = @Periodo
+			AND Concepto = 'Recibo_No';
+
+			FETCH NEXT FROM cTabla INTO @ID
+		 END
+	  -- Cierre del cursor
+		 CLOSE cTabla
+ 	  -- Liberar los recursos
+		 DEALLOCATE cTabla
+		 
+		 SET @sSQL = 'UPDATE '+@Tabla_Asiento_CSV+' 
+		              SET X = ''.'', CODIGO = C.Codigo 
+					  FROM '+@Tabla_Asiento_CSV+' As AE, Clientes As C 
+					  WHERE AE.CI_RUC_Codigo = C.CI_RUC;'
+		 EXECUTE(@sSQL);
+
+		 SET @sSQL = 'UPDATE '+@Tabla_Asiento_CSV+' 
+					  SET C = ''.''
+					  FROM '+@Tabla_Asiento_CSV+' As T, Catalogo_Cuentas As CC 
+					  WHERE CC.Item = '''+@Item+''' 
+					  AND CC.Periodo = '''+@Periodo+''' 
+					  AND CHARINDEX(''.'', T.Cta_Abono) <> 0
+					  AND T.Cta_Abono = CC.Codigo;'
+ 		 EXECUTE(@sSQL);
+
+		 SET @sSQL = 'UPDATE '+@Tabla_Asiento_CSV+' 
+					  SET F = ''.'', CTA_CXC = F.Cta_CxP
+					  FROM '+@Tabla_Asiento_CSV+' As T, Facturas As F
+					  WHERE F.Item = '''+@Item+''' 
+					  AND F.Periodo = '''+@Periodo+''' 
+					  AND F.TC = T.TD
+					  AND F.Serie = T.SERIE
+					  AND F.Factura = T.FACTURA;'
+ 		 EXECUTE(@sSQL);
+
+		 SET @sSQL = 'UPDATE Trans_Abonos
+					  SET X = ''D''
+					  FROM Trans_Abonos As TA, '+@Tabla_Asiento_CSV+' As T
+					  WHERE TA.Item = '''+@Item+''' 
+					  AND TA.Periodo = '''+@Periodo+''' 
+					  AND TA.TP = T.TD
+					  AND TA.Serie = T.SERIE
+					  AND TA.Factura = T.FACTURA
+					  AND TA.Fecha = T.FECHA
+					  AND TA.Abono = T.VALOR
+					  AND TA.Cta = T.Cta_Abono;'
+ 		 EXECUTE(@sSQL);
+
+		 DELETE FROM Trans_Abonos
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND TP = @TD
+		 AND X = 'D';
+
+		 SET @sSQL = 'INSERT INTO Trans_Abonos (T, Item, Periodo, CodigoU, Fecha, TP, Serie, Factura, Abono, CodigoC, Cta_CxP, Cta, Banco, Cheque, Recibo_No, X) 
+					  SELECT ''C'', '''+@Item+''', '''+@Periodo+''', '''+@Usuario+''', FECHA, TD, SERIE, FACTURA, VALOR, CODIGO, CTA_CXC, Cta_Abono, 
+					  UPPER(SUBSTRING(Tipo_Abono_Banco,1,40)), SUBSTRING(Cheque,1,16), SUBSTRING(Recibo_No,1,10), ''A'' 
+ 					  FROM '+@Tabla_Asiento_CSV+' 
+					  WHERE TD = '''+@TD+'''
+					  ORDER BY TD,SERIE,FACTURA;'
+		 EXECUTE(@sSQL);
+
+		 UPDATE Trans_Abonos
+		 SET Autorizacion = F.Autorizacion
+		 FROM Trans_Abonos As TA, Facturas AS F
+		 WHERE TA.X = 'A'
+		 AND TA.Item = @Item 
+		 AND TA.Periodo = @Periodo
+		 AND TA.TP = F.TC
+		 AND TA.Serie = F.Serie
+		 AND TA.Factura = F.Factura;
+
+		 EXEC sp_Eliminar_Nulos 'Trans_Abonos';
+		 EXEC sp_Actualizar_Saldos_Facturas @Item, @Periodo, @TD, '.', 0;
+	   END
+END

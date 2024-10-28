@@ -1,0 +1,21 @@
+CREATE PROCEDURE [dbo].[sp_Subir_Archivo_Plano] 
+@NombreTabla VARCHAR(MAX), @RutaArchivo VARCHAR(MAX), @SeparadorCampo VARCHAR(1)
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 20/08/2020
+  FECHA MODIFICACION: 20/08/2020
+  DESCIPCION		: Sube un archivo plano para actualiza
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @sSQL VARCHAR(MAX);
+ -- Programacion de procesos
+	SET @sSQL = 'BULK INSERT ' + @NombreTabla + ' '
+	          + 'FROM ''' + @RutaArchivo + ''' ' 
+			  + 'WITH (FIELDTERMINATOR = ''' + @SeparadorCampo + ''', ROWTERMINATOR = ''\n''); '
+	EXECUTE(@sSQL);
+END

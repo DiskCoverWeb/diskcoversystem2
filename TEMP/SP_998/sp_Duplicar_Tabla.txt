@@ -1,0 +1,61 @@
+CREATE PROCEDURE [dbo].[sp_Duplicar_Tabla]
+@NombreTablaOrigen VARCHAR(50),@NombreTablaDestino VARCHAR(50) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 03/02/2022
+  FECHA MODIFICACION: 03/02/2022
+  DESCIPCION		: Duplica una tabla completa con otro nombre
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+    DECLARE @Campo VARCHAR(60), @Tipo VARCHAR(60), @Coleccion VARCHAR(MAX), @sSQL VARCHAR(MAX);
+	DECLARE @Longitud INT;
+	
+	IF dbo.fn_Existe_Tabla(@NombreTablaOrigen) <> 0 
+	   BEGIN
+	   -- Creamos Tabla nueva
+	      IF dbo.fn_Existe_Tabla(@NombreTablaDestino) <> 0 EXECUTE('DROP TABLE ' + @NombreTablaDestino + ' '); 
+
+		  SET @sSQL = 'CREATE TABLE ' + @NombreTablaDestino + ' ('
+
+	   -- Declaracion de Cursor para determinar los campos del group by
+		  DECLARE cTabla CURSOR FOR
+			 SELECT COLUMN_NAME,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,COLLATION_NAME
+			 FROM Information_Schema.Columns
+			 WHERE TABLE_NAME = @NombreTablaOrigen
+	   -- Apertura del cursor
+		  OPEN cTabla
+		  FETCH NEXT FROM cTabla INTO @Campo, @Tipo, @Longitud, @Coleccion
+		  WHILE (@@FETCH_STATUS = 0)
+			BEGIN
+			   SET @sSQL = @sSQL + @Campo + ' ' + UPPER(@Tipo)
+			   IF @Campo = 'ID'
+			      BEGIN
+				    SET @sSQL = @sSQL + ' IDENTITY NOT NULL PRIMARY KEY, '
+				  END
+			   ELSE
+			      BEGIN
+				    IF @Longitud IS NULL 
+					   BEGIN
+					 	 SET @sSQL = @sSQL + ' NULL, '
+					   END
+				    ELSE
+					   BEGIN
+					 	SET @sSQL = @sSQL + '(' + CAST(@Longitud As VARCHAR) + ') COLLATE ' + @Coleccion + ' NULL, '
+					   END
+				  END
+ 			-- Siguiente registro  
+			   FETCH NEXT FROM cTabla INTO @Campo, @Tipo, @Longitud, @Coleccion
+			END
+  	   -- Cierre del cursor
+		  CLOSE cTabla
+	   -- Liberar los recursos
+		  DEALLOCATE cTabla
+		  SET @sSQL = SUBSTRING(@sSQL,1,LEN(@sSQL)-1)
+		  SET @sSQL = @sSQL + ')'
+		  EXECUTE(@sSQL);
+     END
+END

@@ -1,0 +1,190 @@
+CREATE PROCEDURE [dbo].[sp_Importar_Contabilidad] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @Usuario VARCHAR(10), @NumModulo VARCHAR(2), @TP VARCHAR(2) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 10/04/2023
+  FECHA MODIFICACION: 14/04/2023
+  DESCIPCION		: Plantilla No. 5. Importa el contenido de la subida de un archivo CSV a la base de Datos
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notIFicacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @NumeroMin INT=0, @NumeroMax INT=0;
+	DECLARE @Tabla_Asiento_CSV VARCHAR(MAX)='';
+	DECLARE @FechaMin DATETIME='19000101', @FechaMax DATETIME='19000101';
+	DECLARE @TextLinea VARCHAR(100), @sSQL VARCHAR(MAX), @DigitoVerificador VARCHAR(1);
+	DECLARE @Codigo VARCHAR(10), @CodigoTemp VARCHAR(10), @CI_RUC VARCHAR(15), @TD VARCHAR(1);
+	DECLARE @RUCNatural BIT;
+
+	SET @TextLinea = REPLICATE('-',100);
+	SET @Tabla_Asiento_CSV = 'Asiento_CSV_' + @Usuario
+	IF dbo.fn_Existe_Tabla(@Tabla_Asiento_CSV) <> 0
+	   BEGIN
+         DELETE FROM Tabla_Temporal
+         WHERE Item = @Item
+         AND Modulo = @NumModulo
+         AND CodigoU = @Usuario;
+
+		 DELETE FROM Asiento_Min_Max 
+		 WHERE Item = @Item 
+		 AND CodigoU = @Usuario 
+		 AND Modulo = @NumModulo
+		 AND TP = @TP;
+
+ 		 DELETE FROM Clientes
+		 WHERE Codigo LIKE '--%';
+		 
+ 		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD X NVARCHAR(1);');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD C NVARCHAR(1);');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD T_DEBE MONEY;');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD T_HABER MONEY;');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD ID INT IDENTITY NOT NULL PRIMARY KEY;');
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET X = ''X'' , C = ''X'', T_DEBE=0, T_HABER=0 WHERE ASIENTO <> ''.'';');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET DEBE = ''.'' WHERE DEBE IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET HABER = ''.'' WHERE HABER IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET T_DEBE = CAST(VALOR As MONEY) WHERE LEN(DEBE) > 1;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET T_HABER = CAST(VALOR As MONEY) WHERE LEN(HABER) > 1;');
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' 
+		          SET X = ''.'', RUC = C.Codigo 
+				  FROM '+@Tabla_Asiento_CSV+' As AE, Clientes As C 
+				  WHERE AE.RUC = C.CI_RUC;');
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' 
+		          SET X = ''.'', RUC = ''9999999999'' 
+				  FROM '+@Tabla_Asiento_CSV+' 
+				  WHERE RUC = ''9999999999999'';');
+
+		 EXECUTE('INSERT INTO Clientes (Codigo, Cliente, TD, CI_RUC) 
+				  SELECT ''--''+SUBSTRING(RUC,1,8), emision, ''P'', RUC
+				  FROM '+@Tabla_Asiento_CSV+' 
+				  WHERE X = ''X''
+				  GROUP BY RUC, emision 
+				  ORDER BY emision;');		 
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' 
+		          SET RUC = ''--''+SUBSTRING(RUC,1,8) 
+				  FROM '+@Tabla_Asiento_CSV+' 
+				  WHERE X = ''X'';');
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' 
+		 		  SET C = ''.'', DEBE = CC.Codigo 
+				  FROM '+@Tabla_Asiento_CSV+' As T, Catalogo_Cuentas As CC 
+				  WHERE CC.Item = '''+@Item+''' 
+				  AND CC.Periodo = '''+@Periodo+'''
+				  AND CHARINDEX(''.'', T.DEBE) = 0 
+				  AND T.DEBE = CC.Codigo_Ext;');
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' 
+				  SET C = ''.'', HABER = CC.Codigo 
+				  FROM '+@Tabla_Asiento_CSV+' As T, Catalogo_Cuentas As CC 
+				  WHERE CC.Item = '''+@Item+''' 
+				  AND CC.Periodo = '''+@Periodo+''' 
+				  AND CHARINDEX(''.'', T.HABER) = 0
+				  AND T.HABER = CC.Codigo_Ext;');
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' 
+				  SET C = ''.'' 
+				  FROM '+@Tabla_Asiento_CSV+' As T, Catalogo_Cuentas As CC 
+				  WHERE CC.Item = '''+@Item+''' 
+				  AND CC.Periodo = '''+@Periodo+''' 
+				  AND CHARINDEX(''.'', T.DEBE) <> 0 
+				  AND T.DEBE = CC.Codigo;');
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+'
+				  SET C = ''.''
+				  FROM '+@Tabla_Asiento_CSV+' As T, Catalogo_Cuentas As CC 
+				  WHERE CC.Item = '''+@Item+'''  
+				  AND CC.Periodo = '''+@Periodo+'''  
+				  AND CHARINDEX(''.'', T.HABER) <> 0 
+				  AND T.HABER = CC.Codigo;');
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET DEBE = ''1'' WHERE C = ''X'' AND LEN(DEBE) > 1;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET HABER = ''2'' WHERE C = ''X'' AND LEN(HABER) > 1;');
+
+		 EXECUTE('INSERT INTO Asiento_Min_Max (Item, CodigoU, Modulo, TP, FechaMin, FechaMax, NumeroMin, NumeroMax) 
+				  SELECT '''+@Item+''', '''+@Usuario+''', '''+@NumModulo+''', '''+@TP +''', CONVERT(DATE, MIN(FECHA), 103), CONVERT(DATE, MAX(FECHA), 103), MIN(ASIENTO), MAX(ASIENTO) 
+ 				  FROM '+@Tabla_Asiento_CSV+' 
+				  WHERE LEN(ASIENTO) > 0;');
+
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET DEBE = '''' WHERE DEBE = ''.'';')
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET HABER = '''' WHERE HABER = ''.'';')
+	
+		 SELECT @FechaMin=FechaMin, @FechaMax=FechaMax, @NumeroMin=NumeroMin, @NumeroMax=NumeroMax 
+		 FROM Asiento_Min_Max 
+		 WHERE Item = @Item 
+		 AND CodigoU = @Usuario 
+		 AND Modulo = @NumModulo 
+		 AND TP = @TP;
+	
+		 DELETE FROM Comprobantes
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND TP = @TP
+		 AND Numero BETWEEN @NumeroMin and @NumeroMax 
+		 AND Fecha BETWEEN @FechaMin and @FechaMax;
+
+		 DELETE FROM Transacciones
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND TP = @TP
+		 AND Numero BETWEEN @NumeroMin and @NumeroMax 
+		 AND Fecha BETWEEN @FechaMin and @FechaMax;
+
+		 EXECUTE('INSERT INTO Comprobantes (T, TP, Fecha, Numero, Codigo_B, Item, Periodo, CodigoU, Concepto) 
+				  SELECT ''N'', '''+ @TP +''', CONVERT(DATE, MAX(FECHA), 103), ASIENTO, RUC, ''' + @Item + ''', ''' + @Periodo + ''', ''' + @Usuario + ''', MAX(DESCRIPCION) 
+				  FROM '+@Tabla_Asiento_CSV+' 
+				  GROUP BY FECHA, ASIENTO, RUC;');
+
+		 EXECUTE('INSERT INTO Transacciones (T, TP, Fecha, Numero, Codigo_C, Item, Periodo, Detalle, Cta, Debe, Haber) 
+				  SELECT ''N'', '''+ @TP +''', CONVERT(DATE, FECHA, 103), ASIENTO, RUC, ''' + @Item + ''', ''' + @Periodo + ''', TRIM(SUBSTRING(DESCRIPCION,1,60)), CONCAT(DEBE,HABER), T_DEBE, T_HABER 
+				  FROM '+@Tabla_Asiento_CSV+' 
+				  ORDER BY FECHA, ASIENTO, RUC;');
+
+		 EXEC sp_Eliminar_Nulos 'Clientes';
+		 EXEC sp_Eliminar_Nulos 'Comprobantes';
+		 EXEC sp_Eliminar_Nulos 'Transacciones';
+		 EXEC sp_Eliminar_Nulos 'Trans_Air';
+		 EXEC sp_Eliminar_Nulos 'Trans_Compras';
+		 EXEC sp_Eliminar_Nulos 'Trans_SubCtas';
+
+      -- Declaracion de Cursor para Verificamos cuales de los beneficiarios son CI o RUC
+ 		 DECLARE cTabla CURSOR FOR
+			SELECT Codigo, CI_RUC, TD
+			FROM Clientes
+			WHERE Codigo LIKE '--%' 
+			ORDER BY Cliente
+	  -- Apertura del cursor
+		 OPEN cTabla
+		 FETCH NEXT FROM cTabla INTO @Codigo, @CI_RUC, @TD
+		 WHILE (@@FETCH_STATUS = 0)
+		 BEGIN
+		   EXEC sp_Digito_Verificador_Nuevo @CI_RUC, @Item, @CI_RUC OUTPUT, @CodigoTemp OUTPUT, @DigitoVerificador OUTPUT, @TD OUTPUT, @RUCNatural OUTPUT;
+		   IF @TD = 'C' OR @TD = 'R'
+		      BEGIN
+			     UPDATE Clientes
+				 SET Codigo = @CodigoTemp, TD = @TD, T = 'N'
+				 WHERE Codigo = @Codigo;
+
+			     UPDATE Comprobantes
+				 SET Codigo_B = @CodigoTemp 
+				 WHERE Codigo_B = @Codigo;
+
+			     UPDATE Transacciones
+				 SET Codigo_C = @CodigoTemp 
+				 WHERE Codigo_C = @Codigo;
+			  END
+ 		-- Siguiente registro  
+		   FETCH NEXT FROM cTabla INTO @Codigo, @CI_RUC, @TD
+		 END
+	  -- Cierre del cursor
+		 CLOSE cTabla
+ 	  -- Liberar los recursos
+		 DEALLOCATE cTabla
+
+		 EXECUTE('DELETE FROM '+@Tabla_Asiento_CSV+' WHERE RUC <> ''.'';');
+	   END
+END

@@ -1,0 +1,236 @@
+CREATE PROCEDURE [dbo].[sp_Leer_Datos_Cliente]
+@Item VARCHAR(3), @Periodo VARCHAR(10), @Codigo_CIRUC_Cliente VARCHAR(180), @Codigo_Encontrado VARCHAR(10) OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 13/07/2021
+  FECHA MODIFICACION: 19/11/2022
+  DESCIPCION		: Busca por Codigo, RUC o Beneficiario los datos en la tabla Clientes
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ 
+ -- Declaramos Variables Temporales
+	DECLARE @CodigoAux VARCHAR(10)='.', @TD VARCHAR(1)='.', @EmailProcesos VARCHAR(MAX)='.', @Emails VARCHAR(MAX)='.',@CtaAntCli VARCHAR(18);
+	DECLARE @Representante VARCHAR(MAX)='.', @CIRUCRepresentante VARCHAR(15)='.', @CodigoC VARCHAR(10)='.', @sSQL VARCHAR(MAX), @MiFecha VARCHAR(10);
+	DECLARE @ContRep INT=0;
+	DECLARE @Total MONEY=0, @Saldo MONEY=0;
+    
+	SET @MiFecha = CONVERT(VARCHAR(8), GETDATE(), 112)
+
+ -- Procedemos a insertar los datos en la tabla temporal si nos encontramos	
+	SELECT @EmailProcesos=(SELECT Email_Procesos FROM Empresas WHERE Item=@Item)
+
+ -- Buscamos al Beneficiario por Codigo	
+	SELECT @CodigoC=(SELECT TOP 1 Codigo FROM Clientes WHERE @Codigo_CIRUC_Cliente IN (Codigo,CI_RUC,Cliente))
+	
+	IF @CodigoC IS NULL SET @CodigoC='.'
+	IF @CodigoC<>'.' 
+	   BEGIN
+		  SELECT @TD=(SELECT TOP 1 TD FROM Clientes WHERE Codigo=@CodigoC) 
+		  SELECT @ContRep=(SELECT COUNT(Codigo) FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+		  IF @ContRep IS NULL SET @ContRep=0
+ 		  IF @ContRep>0
+			 BEGIN
+				UPDATE Clientes
+				SET Representante='CONSUMIDOR FINAL'
+				WHERE Codigo=@CodigoC
+
+				UPDATE Clientes
+				SET CI_RUC_R='9999999999999'
+				WHERE Codigo=@CodigoC
+			   
+				UPDATE Clientes
+				SET TD_R = 'R'
+				WHERE Codigo = @CodigoC
+
+			   IF @TD ='C' OR @TD ='R' OR @TD ='P' 
+				  BEGIN
+					 SELECT @Representante=(SELECT TOP 1 Representante FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC) 
+					 SELECT @CIRUCRepresentante=(SELECT TOP 1 Cedula_R FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+					 IF @Representante IS NULL SET @Representante='.'
+					 IF @CIRUCRepresentante IS NULL SET @CIRUCRepresentante='.'
+					 IF LEN(@Representante)>1 AND LEN(@CIRUCRepresentante)>1
+						BEGIN
+							UPDATE Clientes
+							SET Representante=(SELECT TOP 1 Representante FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+
+							UPDATE Clientes
+							SET CI_RUC_R=(SELECT TOP 1 Cedula_R FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+			   
+							UPDATE Clientes
+							SET TD_R=(SELECT TOP 1 TD FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+
+							UPDATE Clientes
+							SET Telefono_R=(SELECT TOP 1 Telefono_R FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+
+							UPDATE Clientes
+							SET TelefonoT=(SELECT TOP 1 Telefono_RS FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+
+							UPDATE Clientes
+							SET Tipo_Cta=(SELECT TOP 1 Tipo_Cta FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+
+							UPDATE Clientes
+							SET Cod_Banco=(SELECT TOP 1 Cod_Banco FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+
+							UPDATE Clientes
+							SET Cta_Numero=(SELECT TOP 1 Cta_Numero FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+
+							UPDATE Clientes
+							SET DireccionT=(SELECT TOP 1 Lugar_Trabajo_R FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+
+							UPDATE Clientes
+							SET Fecha_Cad=(SELECT TOP 1 Caducidad FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+
+							UPDATE Clientes
+							SET EmailR=(SELECT TOP 1 Email_R FROM Clientes_Matriculas WHERE Item=@Item AND Periodo=@Periodo AND Codigo=@CodigoC)
+							WHERE Codigo=@CodigoC
+						END
+			      END
+			 END
+          ELSE
+		     BEGIN
+			    IF @TD='C' OR @TD='R' OR @TD='P' 
+				  BEGIN
+					UPDATE Clientes
+					SET Representante='.'
+					WHERE Codigo=@CodigoC
+
+					UPDATE Clientes
+					SET CI_RUC_R='.'
+					WHERE Codigo=@CodigoC
+			   
+					UPDATE Clientes
+					SET TD_R='.'
+					WHERE Codigo=@CodigoC
+
+					UPDATE Clientes
+					SET Telefono_R=Telefono
+					WHERE Codigo=@CodigoC
+				  END
+			 END
+          SELECT @Emails=(SELECT TOP 1 Email+Email2+EmailR FROM Clientes WHERE Codigo=@CodigoC)
+          IF LEN(@EmailProcesos)>3 AND LEN(@Emails)<=3
+		     BEGIN   
+			   UPDATE Clientes SET Email=@EmailProcesos, Email2=@EmailProcesos, EmailR=@EmailProcesos 
+			   WHERE Codigo=@CodigoC
+		     END
+	   END
+
+ -- Actualizamos Anticipos Cliente
+/*
+    SET @CtaAntCli='0'
+    SET @CtaAntCli=(SELECT Codigo FROM Ctas_Proceso WHERE Item=@Item AND Periodo=@Periodo AND Detalle='Cta_Anticipos_Clientes') 
+
+    SET @Total=(SELECT SUM(Creditos-Debitos)
+ 			    FROM Trans_SubCtas 
+				WHERE Item=@Item 
+				AND Periodo=@Periodo 
+				AND Codigo=@CodigoC
+				AND Cta=@CtaAntCli
+				AND T<>'A')
+    IF NOT @Total IS NULL SET @Saldo=@Total
+
+	SET @Total=(SELECT SUM(Abono)
+				FROM Trans_Abonos 
+				WHERE Item=@Item 
+				AND Periodo=@Periodo 
+				AND CodigoC=@CodigoC
+				AND Cta=@CtaAntCli
+				AND C=0)
+	IF NOT @Total IS NULL SET @Saldo=@Saldo+@Total
+	
+	UPDATE Clientes 
+    SET Total_Anticipo=@Saldo
+	WHERE Codigo=@CodigoC
+*/
+ -- Actualizamos Deuda Pendiente del Cliente
+    SET @Saldo=0
+ 
+    SET @Total=(SELECT SUM(Saldo_MN) 
+				FROM Facturas 
+				WHERE Item=@Item 
+				AND Periodo=@Periodo 
+				AND T<>'A' 
+				AND CodigoC=@CodigoC) 
+	IF NOT @Total IS NULL SET @Saldo=@Total
+    
+	SET @Total=(SELECT SUM(Valor-Descuento-Descuento2) 
+	            FROM Clientes_Facturacion
+	            WHERE Item=@Item 
+				AND Periodo=@Periodo 
+				AND Fecha<=@MiFecha
+				AND Codigo=@CodigoC) 
+	IF NOT @Total IS NULL SET @Saldo=@Saldo+@Total
+
+	UPDATE Clientes
+    SET Saldo_Pendiente=@Saldo
+	WHERE Codigo=@CodigoC
+
+	UPDATE Clientes
+	SET Saldo_Pendiente=0
+	WHERE Saldo_Pendiente IS NULL
+
+	UPDATE Clientes
+	SET Representante='.'
+	WHERE Representante IS NULL
+
+	UPDATE Clientes
+	SET CI_RUC_R='.'
+	WHERE CI_RUC_R IS NULL
+			   
+	UPDATE Clientes
+	SET TD_R='.'
+	WHERE TD_R IS NULL
+
+	UPDATE Clientes
+	SET Telefono_R='.'
+	WHERE Telefono_R IS NULL
+
+	UPDATE Clientes
+	SET TelefonoT='.'
+	WHERE TelefonoT IS NULL
+
+	UPDATE Clientes
+	SET Tipo_Cta='.'
+	WHERE Tipo_Cta IS NULL
+
+	UPDATE Clientes
+	SET Cod_Banco=0
+	WHERE Cod_Banco IS NULL
+
+	UPDATE Clientes
+	SET Cta_Numero='.'
+	WHERE Cta_Numero IS NULL
+
+	UPDATE Clientes
+	SET DireccionT='.'
+	WHERE DireccionT IS NULL
+
+	UPDATE Clientes
+	SET Fecha_Cad='20000101'
+	WHERE Fecha_Cad IS NULL
+
+	UPDATE Clientes
+	SET Email=@EmailProcesos
+	WHERE Email IS NULL
+
+ -- Resultado del codigo encontrado
+	SET @Codigo_Encontrado=@CodigoC
+
+	UPDATE Clientes
+	SET EmailR=@EmailProcesos
+	WHERE EmailR IS NULL
+
+	SET @Codigo_Encontrado=@CodigoC
+END

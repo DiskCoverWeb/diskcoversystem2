@@ -1,0 +1,63 @@
+CREATE PROCEDURE [dbo].[sp_Actualizar_Tipo_Clientes]
+@Item VARCHAR(3), @Periodo VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 10/09/2022
+  FECHA MODIFICACION: 10/09/2022
+  DESCIPCION		: Actualiza datos del representante de los estudiantes
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ 
+ -- Determinamos el tipo de cliente que es
+    UPDATE Clientes
+	SET Tipo_Cliente = ''
+	WHERE Codigo <> '-'
+
+    UPDATE Clientes
+	SET Tipo_Cliente = @Item + ','
+	FROM Clientes As C INNER JOIN Facturas As F
+	ON C.Codigo = F.CodigoC
+	WHERE F.Item = @Item
+	AND F.Periodo = @Periodo
+
+    UPDATE Clientes
+	SET Tipo_Cliente = Tipo_Cliente + 'CXC,'
+	FROM Clientes As C INNER JOIN Catalogo_CxCxP As CXP
+	ON C.Codigo = CXP.Codigo
+	WHERE CXP.Item = @Item
+	AND CXP.Periodo = @Periodo
+	AND CXP.TC = 'C'
+
+    UPDATE Clientes
+	SET Tipo_Cliente = Tipo_Cliente + 'CXP,'
+	FROM Clientes As C INNER JOIN Catalogo_CxCxP As CXP
+	ON C.Codigo = CXP.Codigo
+	WHERE CXP.Item = @Item
+	AND CXP.Periodo = @Periodo
+	AND CXP.TC = 'P'
+
+    UPDATE Clientes
+	SET Tipo_Cliente = Tipo_Cliente + 'ROL,'
+	FROM Clientes As C INNER JOIN Catalogo_Rol_Pagos As CRP
+	ON C.Codigo = CRP.Codigo
+	WHERE CRP.Item = @Item
+	AND CRP.Periodo = @Periodo
+	AND CRP.TC = 'C'
+
+    UPDATE Clientes
+	SET Tipo_Cliente = Tipo_Cliente + 'AHR,'
+	FROM Clientes As C INNER JOIN Clientes_Datos_Extras As LB
+	ON C.Codigo = LB.Codigo
+	WHERE LB.Item = @Item
+	AND LB.Tipo_Dato = 'LIBRETAS'
+
+    UPDATE Clientes
+	SET Tipo_Cliente = Tipo_Cliente + 'DESC,'
+	FROM Clientes As C INNER JOIN Clientes_Datos_Extras As LB
+	ON C.Codigo = LB.Codigo
+	WHERE LB.Item = @Item
+	AND LB.Tipo_Dato = 'DIRECCION'
+	AND LB.Descuento > 0
+END

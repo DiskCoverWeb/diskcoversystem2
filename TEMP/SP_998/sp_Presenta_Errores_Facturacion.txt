@@ -1,0 +1,556 @@
+CREATE PROCEDURE [dbo].[sp_Presenta_Errores_Facturacion] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @FechaDesde VARCHAR(10), @FechaHasta VARCHAR(10), @DecCosto TinyInt, 
+@Usuario VARCHAR(10), @NumModulo VARCHAR(2), @ExisteErrores BIT OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 16/10/2019
+  FECHA MODIFICACION: 10/11/2022
+  DESCIPCION		: Determina errores al momento de hacer el cierre diario de facturacion
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ 
+ -- Declaramos Variables Temporales
+	DECLARE @Cont INT;
+	DECLARE @Texto VARCHAR(MAX), @TextLinea VARCHAR(100);
+
+	SET @TextLinea = REPLICATE('-',100)
+
+ -- Borramos la basura si la tuviera
+	DELETE FROM Tabla_Temporal
+    WHERE Item = @Item
+	AND Modulo = @NumModulo
+	AND CodigoU = @Usuario;
+
+ -- Eliminamos asiento de Kardex en Facturas
+    DELETE FROM Asiento_K_FA 
+	WHERE Item = @Item  
+	AND CodigoU = @Usuario;
+
+ -- Eliminacion de SubCtas de Modulo
+    DELETE FROM Trans_SubCtas 
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Codigo = '.'
+  	AND TP = '.' 
+	AND Numero=0;
+    
+	/*
+ -- Insertamos los productos de inventario que se generaron con FA
+    SET @sSQL = 'INSERT INTO Asiento_K_FA (TC, CODIGO_INV, PRODUCTO, CTA_INVENTARIO, CONTRA_CTA, BODEGA, '
+			  + 'ENTRADA, SALIDA, COSTO, TOTAL, TOTAL_IVA, UNIDAD, T_No, Item, CodigoU) '
+			  + 'SELECT CP.TC,TK.Codigo_Inv, CP.Producto, TK.Cta_Inv, TK.Contra_Cta, TK.CodBodega, '
+			  + 'SUM(TK.Entrada),0 , ROUND(AVG(TK.Costo),' + CAST(@DecCosto AS VARCHAR) + ',0), ROUND(SUM(TK.Valor_Total),2,0), '
+			  + 'SUM(Total_IVA), CP.Unidad, 96, ''' + @Item + ''', ''' + @Usuario + ''' '
+			  + 'FROM Trans_Kardex As TK, Catalogo_Productos As CP '
+			  + 'WHERE TK.Item = ''' + @Item + ''' '
+   			  + 'AND TK.Periodo = ''' + @Periodo + ''' '
+			  + 'AND TK.Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' '
+			  + 'AND SUBSTRING(TK.Detalle,1,3) = ''NC:'' '
+			  + 'AND TK.Factura > 0 '
+			  + 'AND TK.Entrada > 0 '
+			  + 'AND TK.Item = CP.Item '
+			  + 'AND TK.Periodo = CP.Periodo '
+			  + 'AND TK.Codigo_Inv = CP.Codigo_Inv '
+			  + 'GROUP BY CP.TC,TK.Codigo_Inv, CP.Producto, TK.Cta_Inv, TK.Contra_Cta, TK.CodBodega, CP.Unidad '
+			  + 'ORDER BY TK.Codigo_Inv, TK.CodBodega '
+	EXECUTE(@sSQL);
+     
+    SET @sSQL = 'INSERT INTO Asiento_K_FA (TC, CODIGO_INV, PRODUCTO, CTA_INVENTARIO, CONTRA_CTA, BODEGA, '
+			  + 'ENTRADA, SALIDA, COSTO, TOTAL, TOTAL_IVA, UNIDAD, T_No, Item, CodigoU) '
+			  + 'SELECT CP.TC,TK.Codigo_Inv, CP.Producto, TK.Cta_Inv, TK.Contra_Cta, TK.CodBodega, '
+			  + '0, SUM(TK.Salida), ROUND(AVG(TK.Costo),' + CAST(@DecCosto AS VARCHAR) + ',0), ROUND(SUM(TK.Valor_Total),2,0), '
+			  + '0, CP.Unidad, 97, ''' + @Item + ''', ''' + @Usuario + ''' '
+			  + 'FROM Trans_Kardex As TK, Catalogo_Productos As CP '
+			  + 'WHERE TK.Item = ''' + @Item + ''' '
+   			  + 'AND TK.Periodo = ''' + @Periodo + ''' '
+			  + 'AND TK.Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' '
+			  + 'AND SUBSTRING(TK.Detalle,1,3) = ''FA:'' '
+			  + 'AND TK.Factura > 0 '
+			  + 'AND TK.Salida > 0 '
+			  + 'AND TK.Item = CP.Item '
+			  + 'AND TK.Periodo = CP.Periodo '
+			  + 'AND TK.Codigo_Inv = CP.Codigo_Inv '
+			  + 'GROUP BY CP.TC,TK.Codigo_Inv, CP.Producto, TK.Cta_Inv, TK.Contra_Cta, TK.CodBodega, CP.Unidad '
+			  + 'ORDER BY TK.Codigo_Inv, TK.CodBodega '
+    EXECUTE(@sSQL);
+	*/
+
+ -- Fechas de Cierre CxC Años Anteriores
+    SELECT @Cont = COUNT(Periodo)
+    FROM Catalogo_Lineas 
+ 	WHERE Item = @Item 
+   	AND Periodo = @Periodo  
+	AND CxC <> CxC_Anterior 
+	GROUP BY CxC, CxC_Anterior;
+	IF @@ROWCOUNT>0 AND @Cont>0
+	   BEGIN
+          UPDATE Trans_Abonos 
+          SET Cta_CxP = F.Cta_CxP 
+          FROM Trans_Abonos As TA, Facturas As F 
+		  WHERE TA.Item = @Item  
+		  AND TA.Periodo = @Periodo 
+		  AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+		  AND TA.T <> 'A'
+		  AND TA.Item = F.Item 
+		  AND TA.Periodo = F.Periodo 
+		  AND TA.TP = F.TC 
+		  AND TA.Serie = F.Serie 
+		  AND TA.Factura = F.Factura 
+		  AND TA.Autorizacion = F.Autorizacion;
+	   END
+	
+ -- Codigo que no constan en el catalogo de Productos
+    UPDATE Detalle_Factura
+    SET X = '.'
+    WHERE Item = @Item
+    AND Periodo = @Periodo
+    AND Fecha BETWEEN @FechaDesde and @FechaHasta  
+	AND T <> 'A';
+  
+    UPDATE Detalle_Factura
+	SET X = 'P'
+    FROM Detalle_Factura As DF, Catalogo_Productos As CP 
+    WHERE DF.Item = @Item
+	AND DF.Periodo = @Periodo
+	AND DF.Fecha BETWEEN @FechaDesde and @FechaHasta  
+	AND DF.T <> 'A'
+	AND DF.Item = CP.Item
+	AND DF.Periodo = CP.Periodo
+	AND DF.Codigo = CP.Codigo_Inv;
+
+	SELECT @Cont=COUNT(*)
+	FROM Detalle_Factura 
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND T <> 'A'
+	AND X = '.';
+	IF @@ROWCOUNT>0 AND @Cont>0
+	  BEGIN
+ 		SET @Texto = 'Verifique el Producto de la(s) siguiente(s) Factura(s), no constan en el Catalogo de Productos:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+		SET @Texto = 'FECHA      TC SERIE-DOCUMENTO  AUTORIZACION                                      CODIGO PRODUCTO'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+		INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		SELECT @Item, @NumModulo, @Usuario, 
+		       dbo.fn_CFecha_Str(Fecha) + ' ' + TC + ' ' + Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') 
+			   + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + Codigo
+		FROM Detalle_Factura 
+		WHERE Periodo = @Periodo
+		AND Item = @Item
+		AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+		AND T <> 'A'
+		AND X = '.' 
+		ORDER BY TC, Serie, Factura
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	  END
+
+    UPDATE Facturas
+	SET X = '.'
+	WHERE Item = @Item
+	AND Periodo = @Periodo 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND T <> 'A'; 
+  
+    UPDATE Detalle_Factura 
+	SET X = '.'
+	WHERE Item = @Item
+	AND Periodo = @Periodo 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND T <> 'A';
+
+    UPDATE Trans_Abonos 
+	SET X = '.'
+	WHERE Item = @Item
+	AND Periodo = @Periodo 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta;
+
+    UPDATE Facturas
+	SET X = 'P'
+	FROM Facturas As F, Clientes As C
+	WHERE F.Item = @Item
+	AND F.Periodo = @Periodo 
+	AND F.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND F.T <> 'A'
+	AND F.CodigoC = C.Codigo;
+
+    UPDATE Detalle_Factura 
+	SET X = 'P' 
+	FROM Detalle_Factura As DF, Clientes As C 
+	WHERE DF.Item = @Item
+	AND DF.Periodo = @Periodo 
+	AND DF.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND DF.T <> 'A'
+	AND DF.CodigoC = C.Codigo;
+
+    UPDATE Trans_Abonos
+	SET X = 'P'
+	FROM Trans_Abonos As TA, Clientes As C
+	WHERE TA.Item = @Item
+	AND TA.Periodo = @Periodo 
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TA.CodigoC = C.Codigo
+	/*
+    UPDATE Facturas
+    SET CodigoC = '.'
+	WHERE Item = @Item
+	AND Periodo = @Periodo 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND X = '.'; 
+
+    UPDATE Detalle_Factura 
+	SET CodigoC = '.' 
+	WHERE Item = @Item
+	AND Periodo = @Periodo 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND X = '.';
+
+    UPDATE Trans_Abonos
+	SET CodigoC = '.'
+	WHERE Item = @Item
+	AND Periodo = @Periodo 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND X = '.';
+	*/
+	SELECT @Cont=COUNT(*)
+	FROM Facturas 
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND X = '.'
+	AND T <> 'A';
+	IF @@ROWCOUNT>0 AND @Cont>0
+	   BEGIN
+			SET @Texto = 'Factura(s) sin Codigo de Cliente, verifique o vuelva a registrarlas:'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			SET @Texto = 'FECHA      TC AUTORIZACION                                      SERIE-DOCUMENTO  CODIGO CLIENTE'
+		    EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+			INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+			SELECT @Item, @NumModulo, @Usuario, 
+					dbo.fn_CFecha_Str(Fecha) + ' ' + TC + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + 
+					Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') + ' ' + CodigoC 
+			FROM Facturas 
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+			AND X = '.'
+			AND T <> 'A'
+			GROUP BY Fecha,TC,Autorizacion,Serie,Factura,CodigoC 
+			ORDER BY TC,Serie,Factura;
+		   
+		    INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+			SELECT @Item, @NumModulo, @Usuario, 
+					dbo.fn_CFecha_Str(Fecha) + ' ' + TC + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + 
+					Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') + ' ' + CodigoC 
+			FROM Facturas 
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+			AND CodigoC = '.'
+			AND T <> 'A'
+			GROUP BY Fecha,TC,Autorizacion,Serie,Factura,CodigoC 
+			ORDER BY TC,Serie,Factura;
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	   END
+
+	SELECT @Cont=COUNT(*)
+	FROM Detalle_Factura 
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND X = '.'
+	AND T <> 'A';
+	IF @@ROWCOUNT>0 AND @Cont>0
+	   BEGIN
+			SET @Texto = 'Detalle de Factura(s) sin Codigo de Cliente, verifique o vuelva a registrarlas:'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			SET @Texto = 'FECHA      TC AUTORIZACION                                      SERIE-DOCUMENTO  CODIGO CLIENTE'
+		    EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+			INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		    SELECT @Item, @NumModulo, @Usuario,
+				   dbo.fn_CFecha_Str(Fecha) + ' ' + TC + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + 
+				   Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') + ' ' + CodigoC 
+			FROM Detalle_Factura 
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+			AND X = '.'
+			AND T <> 'A'
+			GROUP BY Fecha,TC,Autorizacion,Serie,Factura,CodigoC 
+			ORDER BY TC,Serie,Factura 
+			INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		    SELECT @Item, @NumModulo, @Usuario,
+				   dbo.fn_CFecha_Str(Fecha) + ' ' + TC + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + 
+				   Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') + ' ' + CodigoC 
+			FROM Detalle_Factura 
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+			AND CodigoC = '.'
+			AND T <> 'A'
+			GROUP BY Fecha,TC,Autorizacion,Serie,Factura,CodigoC 
+			ORDER BY TC,Serie,Factura 
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	   END
+
+	SELECT @Cont=COUNT(*)
+	FROM Trans_Abonos 
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND X = '.';
+	IF @@ROWCOUNT>0 AND @Cont>0
+	   BEGIN
+			SET @Texto = 'Abonos de Factura(s) sin Codigo de Cliente, verifique o vuelva a registrarlas:'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			SET @Texto = 'FECHA      TP AUTORIZACION                                      SERIE-DOCUMENTO  CODIGO CLIENTE'
+		    EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+			INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		    SELECT @Item, @NumModulo, @Usuario,
+				   dbo.fn_CFecha_Str(Fecha) + ' ' + TP + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + 
+				   Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') + ' ' + CodigoC 
+			FROM Trans_Abonos 
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+			AND X = '.'
+			GROUP BY Fecha,TP,Autorizacion,Serie,Factura,CodigoC 
+			ORDER BY TP,Serie,Factura 
+			INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		    SELECT @Item, @NumModulo, @Usuario,
+				   dbo.fn_CFecha_Str(Fecha) + ' ' + TP + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + 
+				   Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') + ' ' + CodigoC 
+			FROM Trans_Abonos 
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+			AND CodigoC = '.'
+			GROUP BY Fecha,TP,Autorizacion,Serie,Factura,CodigoC 
+			ORDER BY TP,Serie,Factura 
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	   END
+
+    UPDATE Trans_Abonos
+	SET Base_Imponible = F.SubTotal,Porc = (Abono/F.SubTotal)*100 
+	FROM Trans_Abonos As TA, Facturas As F 
+	WHERE TA.Item = @Item  
+	AND TA.Periodo = @Periodo
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND F.T <> 'A'
+	AND SUBSTRING(TA.Banco,1,16) = 'RETENCION FUENTE'
+	AND F.SubTotal > 0
+	AND TA.Base_Imponible <= 0
+	AND TA.Item = F.Item
+	AND TA.Periodo = F.Periodo
+	AND TA.TP = F.TC 
+	AND TA.Serie = F.Serie 
+	AND TA.Autorizacion = F.Autorizacion
+	AND TA.Factura = F.Factura
+	AND TA.CodigoC = F.CodigoC;
+  
+    UPDATE Trans_Abonos
+	SET Base_Imponible = F.IVA,Porc = (Abono/F.IVA)*100
+	FROM Trans_Abonos As TA, Facturas As F
+	WHERE TA.Item = @Item
+	AND TA.Periodo = @Periodo
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND F.T <> 'A'
+	AND SUBSTRING(TA.Banco,1,13) = 'RETENCION IVA'
+	AND TA.Base_Imponible <= 0
+	AND F.IVA > 0
+	AND TA.Item = F.Item
+	AND TA.Periodo = F.Periodo
+	AND TA.TP = F.TC
+	AND TA.Serie = F.Serie
+	AND TA.Autorizacion = F.Autorizacion
+	AND TA.Factura = F.Factura
+	AND TA.CodigoC = F.CodigoC;
+
+ -- Verificacion de Cuentas Contables en Facturas en CxC
+    UPDATE Facturas
+    SET X = '.'
+	WHERE Item = @Item
+	AND Periodo = @Periodo 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND T <> 'A';
+    
+    UPDATE Facturas
+    SET X = 'X'
+    FROM Facturas As T, Catalogo_Cuentas As C
+	WHERE T.Item = @Item
+	AND T.Periodo = @Periodo
+	AND T.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND T.TC IN ('FA','NV','CP','LC') 
+	AND T.T <> 'A'
+	AND C.DG = 'D'
+	AND T.Item = C.Item
+	AND T.Periodo = C.Periodo
+	AND T.Cta_CxP = C.Codigo;
+
+	SELECT @Cont=COUNT(*)
+	FROM Facturas
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND X = '.'
+	AND TC IN ('FA','NV','CP','LC')
+	AND T <> 'A';
+	IF @@ROWCOUNT>0 AND @Cont>0
+	   BEGIN
+ 			SET @Texto = 'Verifique las siguiente(s) Factura(s) donde la CxC no constan en el Catálogo:'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			SET @Texto = 'FECHA      TC AUTORIZACION                                      SERIE-DOCUMENTO  CXC CLIENTES'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+			INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		    SELECT @Item, @NumModulo, @Usuario,
+			dbo.fn_CFecha_Str(Fecha) + ' ' + TC + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') +
+			' ' + Cta_CxP
+			FROM Facturas
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta
+			AND X = '.'
+			AND TC IN ('FA','NV','CP','LC')
+			AND T <> 'A'
+			ORDER BY TC,Serie,Factura;
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	   END
+
+ -- Verificacion de Cuentas Contables en Abonos en CxC
+    UPDATE Trans_Abonos
+    SET X = '.'
+	WHERE Item = @Item 
+	AND Periodo = @Periodo 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta;
+    
+    UPDATE Trans_Abonos 
+    SET X = 'X'
+    FROM Trans_Abonos As T, Catalogo_Cuentas As C 
+	WHERE T.Item = @Item 
+	AND T.Periodo = @Periodo 
+	AND T.Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND T.TP IN ('FA','NV','CP','LC')
+	AND T.Cta_CxP = C.Codigo
+	AND T.Item = C.Item
+	AND T.Periodo = C.Periodo;
+
+	SELECT @Cont=COUNT(*)
+	FROM Trans_Abonos
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND X = '.' 
+	AND TP IN ('FA','NV','CP','LC') 
+	IF @@ROWCOUNT>0 AND @Cont>0
+	   BEGIN
+ 			SET @Texto = 'Abonos de las Facturas la CxC no existe en el Catálogo de Cuentas:'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			SET @Texto = 'FECHA      TC AUTORIZACION                                      SERIE-DOCUMENTO  CXC CLIENTES'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+			INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		    SELECT @Item, @NumModulo, @Usuario,
+			dbo.fn_CFecha_Str(Fecha) + ' ' + TP + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') + 
+			' ' + Cta_CxP
+			FROM Trans_Abonos
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+			AND X = '.' 
+			AND TP IN ('FA','NV','CP','LC') 
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	   END
+
+ -- Verificacion de Cuentas Contables en Abonos en CxC
+    UPDATE Trans_Abonos
+    SET X = '.'
+	WHERE Item = @Item 
+	AND Periodo = @Periodo 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta;
+    
+    UPDATE Trans_Abonos 
+    SET X = 'X'
+    FROM Trans_Abonos As T, Catalogo_Cuentas As C 
+	WHERE T.Item = @Item 
+	AND T.Periodo = @Periodo 
+	AND T.Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND T.TP IN ('FA','NV','CP','LC')
+	AND T.Cta = C.Codigo
+	AND T.Item = C.Item
+	AND T.Periodo = C.Periodo;
+
+	SELECT @Cont=COUNT(*)
+	FROM Trans_Abonos
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND X = '.' 
+	AND TP IN ('FA','NV','CP','LC') 
+	IF @@ROWCOUNT>0 AND @Cont>0
+	   BEGIN
+ 			SET @Texto = 'Abonos de las Facturas la Cuenta del Abono no existe en el Catálogo de Cuentas:'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			SET @Texto = 'FECHA      TC AUTORIZACION                                      SERIE-DOCUMENTO  CUENTA DE ABONO'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+			INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		    SELECT @Item, @NumModulo, @Usuario,
+			dbo.fn_CFecha_Str(Fecha) + ' ' + TP + ' ' + dbo.fn_Texto_Blanco(Autorizacion,49) + ' ' + Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') + 
+			' ' + Cta
+			FROM Trans_Abonos
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+			AND X = '.'
+			AND TP IN ('FA','NV','CP','LC') 
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	   END
+
+	SELECT @Cont=COUNT(*)
+	FROM Facturas 
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND Total_MN-ROUND(Con_IVA+Sin_IVA+IVA+Servicio-Descuento-Descuento2,2,0) <> 0 
+	AND TC IN ('FA','NV','CP','LC') 
+	AND T <> 'A';
+	IF @@ROWCOUNT>0 AND @Cont>0
+	   BEGIN
+  			SET @Texto = 'Verifique las siguientes Facturas/Notas de Venta Subtotales descuadrados:'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			SET @Texto = 'FECHA      TC AUTORIZACION                        SERIE-DOCUMENTO  TOTAL FACTURA    TOTAL DESCUADRE'
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+			INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		    SELECT @Item, @NumModulo, @Usuario,
+			dbo.fn_CFecha_Str(Fecha) + ' ' + TC + ' ' + dbo.fn_Texto_Blanco(SUBSTRING(Autorizacion,1,32),32) + '... ' + Serie + '-' + dbo.fn_CNumero_Str_Ent(Factura,9,'0') +
+		    ' ' + dbo.fn_CNumero_Str(Total_MN,10,2) + ' ' + dbo.fn_CNumero_Str(Total_MN-ROUND(Con_IVA+Sin_IVA+IVA+Servicio-Descuento-Descuento2,2,0),10,2)
+			FROM Facturas 
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+			AND Total_MN-ROUND(Con_IVA+Sin_IVA+IVA+Servicio-Descuento-Descuento2,2,0) <> 0 
+			AND TC IN ('FA','NV','CP','LC') 
+			AND T <> 'A'
+			ORDER BY TC,Serie,Factura,Autorizacion
+	   END
+ -- Determina si existen Errores que presentar
+ -- ==========================================
+	SET @ExisteErrores = 0
+	SELECT @Cont = COUNT(*)
+	FROM Tabla_Temporal 
+	WHERE Item = @Item  
+	AND Modulo = @NumModulo 
+	AND CodigoU = @Usuario;
+	IF @Cont > 0 SET @ExisteErrores = 1
+	RETURN @ExisteErrores
+END

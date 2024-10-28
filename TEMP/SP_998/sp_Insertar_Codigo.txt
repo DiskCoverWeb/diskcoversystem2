@@ -1,0 +1,17 @@
+CREATE PROCEDURE [dbo].[sp_Insertar_Codigo]
+@Item VARCHAR(3), @Periodo VARCHAR(10), @Concepto VARCHAR(20), @Numero INT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 17/02/2023
+  DESCIPCION		: Inserta un codigo nuevo en la Tabla Codigos si no existe
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Averiguamos y creamos si no existe el @Concepto
+	INSERT INTO Codigos (Item, Concepto, Numero, Periodo, X) 
+	SELECT @Item, @Concepto, @Numero, @Periodo, '.'
+	WHERE NOT EXISTS(SELECT 1 FROM Codigos WHERE Concepto = @Concepto AND Item = @Item AND Periodo = @Periodo)
+END

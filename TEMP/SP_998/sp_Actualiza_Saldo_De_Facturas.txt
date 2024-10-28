@@ -1,0 +1,332 @@
+CREATE PROCEDURE [dbo].[sp_Actualiza_Saldo_De_Facturas] 
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @TC AS VARCHAR(2), @Serie AS VARCHAR(6), @FacturaDesde AS INT, @FacturaHasta AS INT, @FechaCorte AS VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	 : Walter Vaca Prieto
+  FECHA CREACION	 : 01/06/2024
+  FECHA MODIFICACION : 12/06/2024
+  DESCIPCION		 : Reprocesa saldo de Facturas, cuando los saldos no estan bien cuadrados, presenta errores de Facturas en negativo.
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @DecPVP TINYINT=2, @DecCosto TINYINT=2, @DecIVA TINYINT=2, @DecCant TINYINT=2;
+
+ -- Programacion de procesos
+    IF LEN(@TC) = 2 AND LEN(@Serie) = 6 AND @FacturaDesde > 0 AND @FacturaHasta  > 0 AND @FacturaDesde <= @FacturaHasta
+	   BEGIN
+		 SELECT @DecPVP=Dec_PVP, @DecCosto=Dec_Costo, @DecIVA=Dec_IVA, @DecCant=Dec_Cant
+		 FROM Empresas
+		 WHERE Item = @Item;
+
+		 UPDATE Detalle_Factura 
+		 SET Total = ROUND(Cantidad*Precio,@DecPVP,0) 
+         WHERE Item = @Item 
+		 AND Periodo = @Periodo 
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+	
+		 UPDATE Detalle_Factura 
+		 SET Total_IVA = ROUND((Total-Total_Desc-Total_Desc2)*Porc_IVA,@DecIVA,0) 
+         WHERE Item = @Item 
+		 AND Periodo = @Periodo 
+		 AND T <> 'A'
+		 AND Total_IVA > 0
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+ 		 UPDATE Facturas 
+		 SET IVA = (SELECT ROUND(SUM(Total_IVA),2,0)
+					FROM Detalle_Factura
+					WHERE Detalle_Factura.Total_IVA > 0
+					AND Detalle_Factura.Item = Facturas.Item
+					AND Detalle_Factura.Periodo = Facturas.Periodo
+					AND Detalle_Factura.TC = Facturas.TC
+					AND Detalle_Factura.Serie = Facturas.Serie
+					AND Detalle_Factura.Factura = Facturas.Factura
+					AND Detalle_Factura.CodigoC = Facturas.CodigoC
+					AND Detalle_Factura.Autorizacion = Facturas.Autorizacion)
+         WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas
+		 SET Con_IVA = (SELECT ROUND(SUM(Total),2,0)
+						FROM Detalle_Factura
+						WHERE Detalle_Factura.Total_IVA > 0
+						AND Detalle_Factura.Item = Facturas.Item
+						AND Detalle_Factura.Periodo = Facturas.Periodo
+						AND Detalle_Factura.TC = Facturas.TC
+						AND Detalle_Factura.Serie = Facturas.Serie
+						AND Detalle_Factura.Factura = Facturas.Factura
+						AND Detalle_Factura.CodigoC = Facturas.CodigoC
+						AND Detalle_Factura.Autorizacion = Facturas.Autorizacion)
+         WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas
+		 SET Sin_IVA = (SELECT ROUND(SUM(Total),2,0)
+						FROM Detalle_Factura
+						WHERE Detalle_Factura.Total_IVA = 0
+						AND Detalle_Factura.Item = Facturas.Item
+						AND Detalle_Factura.Periodo = Facturas.Periodo
+						AND Detalle_Factura.TC = Facturas.TC
+						AND Detalle_Factura.Serie = Facturas.Serie
+						AND Detalle_Factura.Factura = Facturas.Factura
+						AND Detalle_Factura.CodigoC = Facturas.CodigoC
+						AND Detalle_Factura.Autorizacion = Facturas.Autorizacion)
+         WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+            
+		 UPDATE Facturas 
+		 SET Descuento = (SELECT ROUND(SUM(Total_Desc),2,0) 
+						  FROM Detalle_Factura 
+						  WHERE Detalle_Factura.Total_Desc > 0
+						  AND Detalle_Factura.Item = Facturas.Item 
+						  AND Detalle_Factura.Periodo = Facturas.Periodo
+						  AND Detalle_Factura.TC = Facturas.TC 
+						  AND Detalle_Factura.Serie = Facturas.Serie
+						  AND Detalle_Factura.Factura = Facturas.Factura
+						  AND Detalle_Factura.CodigoC = Facturas.CodigoC
+						  AND Detalle_Factura.Autorizacion = Facturas.Autorizacion) 
+         WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas 
+		 SET Descuento2 = (SELECT ROUND(SUM(Total_Desc2),2,0) 
+						   FROM Detalle_Factura 
+						   WHERE Detalle_Factura.Total_Desc2 > 0
+						   AND Detalle_Factura.Item = Facturas.Item 
+						   AND Detalle_Factura.Periodo = Facturas.Periodo
+						   AND Detalle_Factura.TC = Facturas.TC 
+						   AND Detalle_Factura.Serie = Facturas.Serie
+						   AND Detalle_Factura.Factura = Facturas.Factura
+						   AND Detalle_Factura.CodigoC = Facturas.CodigoC
+						   AND Detalle_Factura.Autorizacion = Facturas.Autorizacion) 
+         WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas 
+		 SET Desc_X = (SELECT ROUND(SUM(Total_Desc+Total_Desc2),2,0) 
+					   FROM Detalle_Factura 
+					   WHERE Detalle_Factura.Total_IVA > 0
+					   AND Detalle_Factura.Item = Facturas.Item 
+					   AND Detalle_Factura.Periodo = Facturas.Periodo
+					   AND Detalle_Factura.TC = Facturas.TC 
+					   AND Detalle_Factura.Serie = Facturas.Serie
+					   AND Detalle_Factura.Factura = Facturas.Factura
+					   AND Detalle_Factura.CodigoC = Facturas.CodigoC
+					   AND Detalle_Factura.Autorizacion = Facturas.Autorizacion) 
+         WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas 
+		 SET Desc_0 = (SELECT ROUND(SUM(Total_Desc+Total_Desc2),2,0) 
+					   FROM Detalle_Factura 
+					   WHERE Detalle_Factura.Total_IVA = 0
+					   AND Detalle_Factura.Item = Facturas.Item 
+					   AND Detalle_Factura.Periodo = Facturas.Periodo
+					   AND Detalle_Factura.TC = Facturas.TC 
+					   AND Detalle_Factura.Serie = Facturas.Serie
+					   AND Detalle_Factura.Factura = Facturas.Factura
+					   AND Detalle_Factura.CodigoC = Facturas.CodigoC
+					   AND Detalle_Factura.Autorizacion = Facturas.Autorizacion) 
+         WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+	
+ 		 UPDATE Facturas 
+		 SET IVA = 0 
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND IVA IS NULL;
+
+		 UPDATE Facturas 
+		 SET Con_IVA = 0 
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND Con_IVA IS NULL;
+	
+		 UPDATE Facturas 
+		 SET Sin_IVA = 0 
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND Sin_IVA IS NULL;
+
+		 UPDATE Facturas 
+		 SET Descuento = 0 
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND Descuento IS NULL;
+	
+		 UPDATE Facturas 
+		 SET Descuento2 = 0 
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND Descuento2 IS NULL;
+
+		 UPDATE Facturas 
+		 SET Desc_0 = 0 
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND Desc_0 IS NULL;
+
+		 UPDATE Facturas 
+		 SET Desc_X = 0 
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND Desc_X IS NULL;
+    
+		 UPDATE Facturas 
+		 SET Total_MN = ROUND(Con_IVA+Sin_IVA+IVA+Servicio-Descuento-Descuento2,2,0), SubTotal = ROUND(Con_IVA+Sin_IVA+Servicio-Descuento-Descuento2,2,0)
+		 WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas 
+		 SET Abonos_MN = (SELECT ROUND(SUM(Abono),2,0)
+						  FROM Trans_Abonos
+						  WHERE Trans_Abonos.Item = Facturas.Item 
+						  AND Trans_Abonos.Periodo = Facturas.Periodo
+						  AND Trans_Abonos.TP = Facturas.TC
+						  AND Trans_Abonos.Serie = Facturas.Serie
+						  AND Trans_Abonos.Factura = Facturas.Factura
+						  AND Trans_Abonos.CodigoC = Facturas.CodigoC
+						  AND Trans_Abonos.Autorizacion = Facturas.Autorizacion)
+         WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas 
+		 SET Abonos_MN = 0 
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND Abonos_MN IS NULL;
+		 
+		 UPDATE Facturas 
+		 SET Saldo_MN = ROUND(Total_MN - Abonos_MN,2,0)
+		 WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas 
+		 SET Abonos_MN = (SELECT ROUND(SUM(Abono),2,0) 
+						  FROM Trans_Abonos
+						  WHERE Trans_Abonos.Fecha <= @FechaCorte 
+						  AND Trans_Abonos.Item = Facturas.Item 
+						  AND Trans_Abonos.Periodo = Facturas.Periodo
+						  AND Trans_Abonos.TP = Facturas.TC
+						  AND Trans_Abonos.Serie = Facturas.Serie
+						  AND Trans_Abonos.Factura = Facturas.Factura
+						  AND Trans_Abonos.CodigoC = Facturas.CodigoC
+						  AND Trans_Abonos.Autorizacion = Facturas.Autorizacion) 
+         WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas 
+		 SET Abonos_MN = 0 
+		 WHERE Item = @Item 
+		 AND Periodo = @Periodo
+		 AND Abonos_MN IS NULL;
+		 
+		 UPDATE Facturas 
+		 SET Saldo_Actual = ROUND(Total_MN - Abonos_MN,2,0)
+		 WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas 
+		 SET T = 'C'
+		 WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND Saldo_MN <= 0
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Facturas 
+		 SET T = 'P'
+		 WHERE Item = @Item
+		 AND Periodo = @Periodo
+		 AND Saldo_MN > 0
+		 AND T <> 'A'
+		 AND TC = @TC
+		 AND Serie = @Serie
+		 AND Factura BETWEEN @FacturaDesde and @FacturaHasta;
+
+		 UPDATE Detalle_Factura
+		 SET T = F.T
+		 FROM Detalle_Factura As DF, Facturas As F
+		 WHERE F.Item = @Item
+		 AND F.Periodo = @Periodo
+		 AND F.Factura BETWEEN @FacturaDesde and @FacturaHasta
+		 AND F.T IN ('P','C')
+		 AND F.Item = DF.Item
+		 AND F.Periodo = DF.Periodo
+		 AND F.TC = DF.TC
+		 AND F.Serie = DF.Serie
+		 AND F.Factura = DF.Factura
+		 AND F.Autorizacion = DF.Autorizacion;
+
+		 UPDATE Trans_Abonos
+		 SET T = F.T
+		 FROM Trans_Abonos As DF, Facturas As F
+		 WHERE F.Item = @Item
+		 AND F.Periodo = @Periodo
+		 AND F.Factura BETWEEN @FacturaDesde and @FacturaHasta
+		 AND F.T IN ('P','C')
+		 AND F.Item = DF.Item
+		 AND F.Periodo = DF.Periodo
+		 AND F.TC = DF.TP
+		 AND F.Serie = DF.Serie
+		 AND F.Factura = DF.Factura
+		 AND F.Autorizacion = DF.Autorizacion;
+	   END
+END

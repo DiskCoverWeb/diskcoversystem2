@@ -1,0 +1,852 @@
+CREATE PROCEDURE [dbo].[sp_Actualizar_Datos_ATS]
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @FechaDesde AS VARCHAR(10), @FechaHasta AS VARCHAR(10), @Numero AS INT, @ATFisico BIT = 1 AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 05/06/2020
+  FECHA MODIFICACION: 05/08/2021
+  DESCIPCION		: Actualiza los Codigos, RUCs y dato por defaul de los Proveedores y Clientes, para el proceso de insertar las ventas,
+					  Liquidacion de Compras y Retenciones del mes del modulo de Facturacion, solo cuando estas no sean electronicas, 
+					  en esta actualizacion se aumenta la posibilidad de subir tambien lo electronico al archivo XML.
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaramos Variables Temporales
+	DECLARE @sSQL VARCHAR(MAX), @sNumero VARCHAR(12), @Codigo1 VARCHAR(3), @Codigo2 VARCHAR(3);
+	DECLARE @tRUC_CI VARCHAR(13), @tTB VARCHAR(1), @tRazon_Social VARCHAR(180), @tSerie VARCHAR(6);
+	DECLARE @RUC_CI VARCHAR(13), @TB VARCHAR(1), @Razon_Social VARCHAR(180), @Cheque VARCHAR(20), @Serie VARCHAR(6);
+	DECLARE @Total_NC MONEY, @PorcIVAS MONEY, @Total_RetIVAS MONEY, @Total_RetIVAB MONEY, @Total MONEY;
+    DECLARE @TBaseCero MONEY, @TTotal_IVA MONEY, @TBaseGravada MONEY, @TBaseSubTotal MONEY, @PorcIVAB MONEY;
+    DECLARE @Cont INT, @Cantidad INT, @tCantidad INT, @ID INT, @DAnt INT, @DSig INT, @DIni INT, @DFin INT, @Factura INT;
+    DECLARE @LineaSRI SMALLINT;
+    
+ -- Creamos Tabla temporal
+ -- collate Modern_Spanish_CI_AS
+    CREATE TABLE Item_Suc(Item VARCHAR(3));
+
+	INSERT INTO Item_Suc VALUES(@Item);
+
+	INSERT INTO Item_Suc(Item)
+	SELECT Sucursal
+	FROM Acceso_Sucursales
+	WHERE Item = @Item
+	AND No_ATS <> 0
+	AND Sucursal <> @Item
+	ORDER BY Sucursal;
+
+	UPDATE Facturas
+	SET X = '.'
+	WHERE Periodo = @Periodo 
+	AND Item = @Item
+	AND Fecha BETWEEN @FechaDesde AND @FechaHasta;
+
+	UPDATE Facturas
+	SET X = 'R'
+	FROM Facturas As F, Detalle_Factura As DF
+	WHERE F.Periodo = @Periodo 
+	AND F.Item = @Item
+	AND F.Fecha BETWEEN @FechaDesde AND @FechaHasta
+	AND DF.Codigo = '99.41'
+	AND F.TC = DF.TC
+	AND F.Serie = DF.Serie
+	AND F.Factura = DF.Factura
+	AND F.Item = DF.Item
+	AND F.Periodo = DF.Periodo;
+
+ -- Cambiamos a cadena de caracteres el numero
+	SET @sNumero = CAST(@Numero AS VARCHAR(12));
+
+ ----------------------------------------------------------------------------------------------- 
+ -- Enceramos las tablas segun el mes del ATS
+    DELETE FROM Trans_Anulados
+	WHERE Periodo = @Periodo
+ 	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.') 
+	AND TP = 'CD'
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND Numero = @Numero;
+
+    DELETE FROM Trans_Ventas
+	WHERE Periodo = @Periodo
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta;
+    
+    DELETE FROM Trans_Air 
+	WHERE Periodo = @Periodo  
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TP = 'CD'
+	AND Numero = @Numero 
+	AND Tipo_Trans = 'V';
+
+    DELETE FROM Trans_Compras 
+	WHERE Periodo = @Periodo
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND TP = 'CD' 
+	AND Numero = @Numero
+	AND TipoComprobante = 3;
+
+    DELETE FROM Trans_Air 
+	WHERE Periodo = @Periodo
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TP = 'CD'
+	AND Numero = @Numero
+	AND Tipo_Trans = 'C';
+
+ -----------------------------------------------------------------------------------------------
+ -- Inicializacion de variables para las NC
+    SET @Total = 0
+    SET @TBaseCero = 0
+    SET @TTotal_IVA = 0
+    SET @TBaseGravada = 0
+    SET @TBaseSubTotal = 0
+    SET @PorcIVAB = 0
+    SET @PorcIVAS = 0
+    SET @Total_RetIVAS = 0
+    SET @Total_RetIVAB = 0
+	SET @tCantidad = 0
+	SET @Cont = 0
+	
+ -- Declaracion de Cursor 
+	IF (@ATFisico <> 0)
+	  BEGIN  
+		DECLARE cNotaCredito CURSOR FOR 
+			SELECT F.RUC_CI, F.TB, F.Razon_Social, TA.Cheque, TA.Serie, SUM(TA.Abono) As Total_NC, COUNT(TA.Factura) As Cantidad
+			FROM Trans_Abonos AS TA, Facturas As F
+			WHERE TA.Periodo = @Periodo 
+			AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+			AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+			AND TA.Banco = 'NOTA DE CREDITO'
+			AND TA.T <> 'A'
+			AND F.TC IN ('FA','NV')
+			AND LEN(F.Autorizacion) < 13
+			AND TA.Item = F.Item
+			AND TA.Periodo = F.Periodo
+			AND TA.TP = F.TC
+			AND TA.Serie = F.Serie
+			AND TA.Factura = F.Factura
+			AND TA.CodigoC = F.CodigoC
+			GROUP BY F.RUC_CI, F.TB, F.Razon_Social, TA.Cheque, TA.Serie
+			ORDER BY F.RUC_CI, TA.Cheque DESC 
+	 -- Apertura del cursor
+		OPEN cNotaCredito
+      END
+	ELSE
+	  BEGIN
+		DECLARE cNotaCredito CURSOR FOR 
+			SELECT F.RUC_CI, F.TB, F.Razon_Social, TA.Cheque, TA.Serie, SUM(TA.Abono) As Total_NC, COUNT(TA.Factura) As Cantidad
+			FROM Trans_Abonos AS TA, Facturas As F
+			WHERE TA.Periodo = @Periodo 
+			AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+			AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+			AND TA.Banco = 'NOTA DE CREDITO'
+			AND TA.T <> 'A'
+			AND F.TC IN ('FA','NV')
+			AND TA.Item = F.Item
+			AND TA.Periodo = F.Periodo
+			AND TA.TP = F.TC
+			AND TA.Serie = F.Serie
+			AND TA.Factura = F.Factura
+			AND TA.CodigoC = F.CodigoC
+			GROUP BY F.RUC_CI, F.TB, F.Razon_Social, TA.Cheque, TA.Serie
+			ORDER BY F.RUC_CI, TA.Cheque DESC 
+	 -- Apertura del cursor
+		OPEN cNotaCredito
+	  END
+	FETCH NEXT FROM cNotaCredito INTO @RUC_CI, @TB, @Razon_Social, @Cheque, @Serie, @Total_NC, @Cantidad
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  IF @Cont = 0
+	     BEGIN
+		   SET @tRUC_CI = @RUC_CI
+		   SET @tTB = @TB
+		   SET @tRazon_Social = @Razon_Social
+		   SET @tSerie = @Serie
+		   SET @tCantidad = @Cantidad
+		   SET @Cont = 1
+	     END
+	  IF @tRUC_CI <> @RUC_CI
+	     BEGIN
+		 -- INSERTAR LA NC
+   		    SET @Codigo1 = SUBSTRING(@Serie, 1, 3)
+		    SET @Codigo2 = SUBSTRING(@Serie, 4, 3) 
+            SET @sSQL = 'INSERT INTO Trans_Ventas (Item, Periodo, RUC_CI, TB, Razon_Social, TipoComprobante, FechaRegistro, FechaEmision, Establecimiento, '
+					  + 'PuntoEmision, NumeroComprobantes, BaseImponible, BaseImpGrav, MontoIva, IvaPresuntivo, PorcentajeIva, RetPresuntiva, '
+					  + 'MontoIvaBienes, PorRetBienes, ValorRetBienes, Porc_Bienes, MontoIvaServicios, PorRetServicios, ValorRetServicios, ' 
+					  + 'Porc_Servicios, Linea_SRI, T, TP, Numero, Fecha) VALUE (''' + @Item + ''',''' + @Periodo + ''',''' + @tRUC_CI + ''','
+					  + '''' + @tTB + ''',''' + @Razon_Social + ''', 4,''' + @FechaHasta + ''',''' + @FechaHasta + ''',''' + @Codigo1 + ''','
+					  + '''' + @Codigo2 + ''',' + dbo.fn_NFormato(@tCantidad,10,0) + ',' + dbo.fn_NFormato(@TBaseCero,10,2) + ','
+					  + dbo.fn_NFormato(@TBaseGravada,10,2) + ',' + dbo.fn_NFormato(@TTotal_IVA,10,2) + ',''N'',2,''S'','
+					  + dbo.fn_NFormato(@Total_RetIVAB,10,2) + ',' + dbo.fn_NFormato(@PorcIVAB,10,2) + ',' + dbo.fn_NFormato(@Total_RetIVAB,10,2) + ','
+					  + '0,' + dbo.fn_NFormato(@Total_RetIVAS,10,2) + ',' + dbo.fn_NFormato(@PorcIVAS,10,2) + ',' + dbo.fn_NFormato(@Total_RetIVAS,10,2) + ','
+					  + '0, 0, ''N'', ''CD'', ' + @sNumero  + ',''' + @FechaHasta + ''') '
+            EXECUTE(@sSQL);
+
+		    SET @Total = 0
+		    SET @TBaseCero = 0
+		    SET @TTotal_IVA = 0
+		    SET @TBaseGravada = 0
+		    SET @TBaseSubTotal = 0
+		    SET @PorcIVAB = 0
+		    SET @PorcIVAS = 0
+		    SET @Total_RetIVAS = 0
+		    SET @Total_RetIVAB = 0
+		    SET @tCantidad = 0
+			SET @tRUC_CI = @RUC_CI
+			SET @tTB = @TB
+			SET @tRazon_Social = @Razon_Social
+			SET @tSerie = @Serie
+			SET @tCantidad = @Cantidad
+		 END
+      IF @Cheque ='VENTAS'
+		 BEGIN
+            SET @Total = @Total + @Total_NC
+            SET @TBaseSubTotal = @TBaseSubTotal + @Total_NC
+		 	SET @tCantidad = @Cantidad
+	     END
+      IF @Cheque ='I.V.A.' SET @TTotal_IVA = @TTotal_IVA + @Total_NC
+      IF @TTotal_IVA > 0 SET @TBaseGravada = @Total ELSE SET @TBaseCero = @Total
+
+   -- Siguiente registro  
+	  FETCH NEXT FROM cNotaCredito INTO @RUC_CI, @TB, @Razon_Social, @Cheque, @Serie, @Total_NC, @Cantidad
+	END
+    SET @sSQL = 'INSERT INTO Trans_Ventas (Item, Periodo, RUC_CI, TB, Razon_Social, TipoComprobante, FechaRegistro, FechaEmision, Establecimiento, '
+			  + 'PuntoEmision, NumeroComprobantes, BaseImponible, BaseImpGrav, MontoIva, IvaPresuntivo, PorcentajeIva, RetPresuntiva, '
+			  + 'MontoIvaBienes, PorRetBienes, ValorRetBienes, Porc_Bienes, MontoIvaServicios, PorRetServicios, ValorRetServicios, ' 
+			  + 'Porc_Servicios, Linea_SRI, T, TP, Numero, Fecha) VALUE (''' + @Item + ''',''' + @Periodo + ''',''' + @tRUC_CI + ''','
+			  + '''' + @tTB + ''',''' + @Razon_Social + ''', 4,''' + @FechaHasta + ''',''' + @FechaHasta + ''',''' + @Codigo1 + ''','
+			  + '''' + @Codigo2 + ''',' + dbo.fn_NFormato(@tCantidad,10,0) + ',' + dbo.fn_NFormato(@TBaseCero,10,2) + ','
+			  + dbo.fn_NFormato(@TBaseGravada,10,2) + ',' + dbo.fn_NFormato(@TTotal_IVA,10,2) + ',''N'',2,''S'','
+			  + dbo.fn_NFormato(@Total_RetIVAB,10,2) + ',' + dbo.fn_NFormato(@PorcIVAB,10,2) + ',' + dbo.fn_NFormato(@Total_RetIVAB,10,2) + ','
+			  + '0,' + dbo.fn_NFormato(@Total_RetIVAS,10,2) + ',' + dbo.fn_NFormato(@PorcIVAS,10,2) + ',' + dbo.fn_NFormato(@Total_RetIVAS,10,2) + ','
+			  + '0, 0, ''N'', ''CD'', ' + @sNumero  + ',''' + @FechaHasta + ''') '
+	EXECUTE(@sSQL);
+
+ -- Cierre del cursor
+	CLOSE cNotaCredito
+ -- Liberar los recursos
+	DEALLOCATE cNotaCredito
+
+ -- Actualizamos el codigo del Proveedor en las compras
+	UPDATE Trans_Compras
+	SET IdProv = C.Codigo_B
+	FROM Trans_Compras As TC, Comprobantes As C
+	WHERE TC.Periodo = @Periodo
+	AND TC.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND TC.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND LEN(C.Codigo_B) > 1 
+	AND TC.Fecha = C.Fecha 
+	AND TC.TP = C.TP 
+	AND TC.Numero = C.Numero
+	AND TC.Item = C.Item
+	AND TC.Periodo = C.Periodo;
+
+ -- Actualizamos el codigo del Proveedor en las retenciones de compras
+	UPDATE Trans_Air
+	SET IdProv = C.Codigo_B
+	FROM Trans_Air As TA, Comprobantes AS C
+	WHERE TA.Periodo = @Periodo
+	AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TA.Tipo_Trans = 'C'
+	AND LEN(C.Codigo_B) > 1 
+	AND TA.Fecha = C.Fecha 
+	AND TA.TP = C.TP 
+	AND TA.Numero = C.Numero 
+	AND TA.Item = C.Item 
+	AND TA.Periodo = C.Periodo;
+
+ -- Actualizamos Los datos de los Clientes
+	UPDATE Trans_Ventas
+	SET RUC_CI = C.CI_RUC, Razon_Social = C.Cliente, TB = C.TD
+	FROM Trans_Ventas As TV, Clientes AS C 
+	WHERE TV.Periodo = @Periodo
+	AND TV.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND TV.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TV.IdProv = C.Codigo;
+
+	UPDATE Trans_Air
+	SET RUC_CI = C.CI_RUC, Razon_Social = C.Cliente, TB = C.TD 
+	FROM Trans_Air As TA, Clientes AS C
+	WHERE TA.Periodo = @Periodo 
+	AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TA.IdProv = C.Codigo;
+
+    UPDATE Trans_Abonos
+	SET Base_Imponible = F.SubTotal,Porc = (Abono/F.SubTotal)*100
+	FROM Trans_Abonos As TA, Facturas As F
+	WHERE TA.Periodo = @Periodo 
+	AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND SUBSTRING(TA.Banco,1,16) = 'RETENCION FUENTE'
+	AND F.SubTotal > 0
+	AND TA.Base_Imponible <= 0
+	AND TA.TP = F.TC
+	AND TA.Item = F.Item
+	AND TA.Periodo = F.Periodo
+	AND TA.Factura = F.Factura
+	AND TA.CodigoC = F.CodigoC;
+     
+	UPDATE Trans_Abonos 
+	SET Base_Imponible = F.IVA,Porc = (Abono/F.IVA)*100 
+	FROM Trans_Abonos As TA,Facturas As F 
+	WHERE TA.Periodo = @Periodo 
+	AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND SUBSTRING(TA.Banco,1,13) = 'RETENCION IVA'
+	AND TA.Base_Imponible <= 0
+	AND F.IVA > 0
+	AND TA.TP = F.TC
+	AND TA.Item = F.Item
+	AND TA.Periodo = F.Periodo
+	AND TA.Factura = F.Factura
+	AND TA.CodigoC = F.CodigoC;
+
+	EXEC sp_Update_Default 'Clientes', @Item, @Periodo
+
+    UPDATE Catalogo_Rol_Pagos
+	SET Aplica = 'NA', Identificacion = '999', TIdentificacion = 'N', Condicion = '01'
+	WHERE Aplica = '.'
+	AND Periodo = @Periodo
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.');
+
+ -- Actualizamos las ventas tarifa cero y tarifa IVA
+    UPDATE Facturas
+	SET Desc_0 = (SELECT SUM(Total_Desc+Total_Desc2)
+	              FROM Detalle_Factura As DF
+	              WHERE DF.Total_IVA = 0
+	              AND DF.TC = Facturas.TC
+	              AND DF.Item = Facturas.Item
+	              AND DF.Periodo = Facturas.Periodo
+	              AND DF.Fecha = Facturas.Fecha
+	              AND DF.Factura = Facturas.Factura
+	              AND DF.CodigoC = Facturas.CodigoC
+	              AND DF.Serie = Facturas.Serie
+	              AND DF.Autorizacion = Facturas.Autorizacion)
+	WHERE Periodo = @Periodo
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TC IN ('FA','NV','LC')
+	AND T <> 'A';
+     
+    UPDATE Facturas 
+	SET Desc_X = (SELECT SUM(Total_Desc+Total_Desc2) 
+	              FROM Detalle_Factura As DF 
+	              WHERE DF.Total_IVA > 0 
+	              AND DF.TC = Facturas.TC 
+	              AND DF.Item = Facturas.Item 
+	              AND DF.Periodo = Facturas.Periodo 
+	              AND DF.Fecha = Facturas.Fecha 
+	              AND DF.Factura = Facturas.Factura 
+	              AND DF.CodigoC = Facturas.CodigoC 
+	              AND DF.Serie = Facturas.Serie 
+	              AND DF.Autorizacion = Facturas.Autorizacion) 
+	WHERE Periodo = @Periodo
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+    AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND TC IN ('FA','NV','LC')
+	AND T <> 'A' 
+	EXECUTE(@sSQL);
+    
+    UPDATE Facturas 
+    SET Desc_0 = 0 
+	WHERE Periodo = @Periodo 
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+    AND Desc_0 IS NULL
+	EXECUTE(@sSQL);
+
+	UPDATE Facturas
+    SET Desc_X = 0
+	WHERE Periodo = @Periodo
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+    AND Desc_X IS NULL;
+
+ -- LIQUIDACION DE COMPRAS RETENCION CERO COD 332 DEL MES
+    SET @sSQL = 'INSERT INTO Trans_Air (T, CodRet, BaseImp, Porcentaje, ValRet, EstabRetencion, PtoEmiRetencion, SecRetencion, AutRetencion, EstabFactura, '
+			  + 'PuntoEmiFactura, Factura_No, Item, Periodo, Cta_Retencion, IdProv, TP, Numero, Fecha, Tipo_Trans, RUC_CI, TB, Razon_Social, IDT) '
+			  + 'SELECT ''N'', ''332F'', Total_MN, 0, 0, ''000'', ''000'', 0, ''0'', SUBSTRING(Serie,1,3), SUBSTRING(Serie,4,3), Factura, ''' + @Item + ''', Periodo, ''0'', '
+			  + 'CodigoC, ''CD'', ' + @sNumero + ', ''' + @FechaHasta + ''', ''C'', RUC_CI, TB, Razon_Social, Factura As IDTF '
+			  + 'FROM Facturas '
+			  + 'WHERE Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' ' 
+			  + 'AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> ''.'') '
+			  + 'AND Periodo = ''' + @Periodo + ''' ' 
+			  + 'AND TC = ''LC'' '
+			  + 'AND T <> ''A'' '
+			  + 'ORDER BY RUC_CI, TB, Razon_Social '
+    EXECUTE(@sSQL);
+
+ -- INSERTAMOS LOS COMPROBANTES ANULADOS DE FA Y NV
+	UPDATE Facturas
+	SET X = 'I'
+	WHERE Periodo = @Periodo
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND T = 'A'
+
+	DECLARE cComprobantesAnulados CURSOR FOR
+		SELECT TC, Serie, Factura 
+		FROM Facturas
+		WHERE Periodo = @Periodo
+		AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+		AND Fecha BETWEEN @FechaDesde and @FechaHasta
+		AND T = 'A'
+		ORDER BY TC, Serie, Factura
+ -- Apertura del cursor
+	OPEN cComprobantesAnulados
+	FETCH NEXT FROM cComprobantesAnulados INTO @Codigo1, @Serie, @Factura
+	SET @DAnt = @Factura
+	SET @DIni = @Factura
+	SET @DFin = @Factura
+	SET @Codigo2 = @Codigo1
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+ 		SET @DSig = @Factura 
+		IF (@DSig - @DAnt) = 1
+		   BEGIN 
+     	       SET @DAnt = @DSig
+	    	   SET @DFin = @DSig
+		   END
+		ELSE
+			BEGIN
+			    SET @TB = '.' 
+			    IF @Codigo2 ='FA' SET @TB = '1'
+				IF @Codigo2 ='NV' SET @TB = '2'
+
+				SET @sSQL = 'INSERT INTO Trans_Anulados (TipoComprobante, Establecimiento, PuntoEmision, Secuencial1, Secuencial2, Autorizacion, '
+				 		  + 'FechaAnulacion, T, Item, Periodo, TP, Numero, Fecha, Linea_SRI) '
+				 		  + 'SELECT ' + @TB + ', SUBSTRING(Serie, 1, 3), SUBSTRING(Serie, 4, 3), MIN(Factura), MAX(Factura), Autorizacion, ''' + @FechaHasta + ''', '
+						  + '''N'',''' + @Item + ''',''.'',''CD'',' + @sNumero + ',''' + @FechaHasta + ''',(ROW_NUMBER() OVER(ORDER BY Autorizacion)) '
+						  + 'FROM Facturas ' 
+						  + 'WHERE T = ''A'' '
+						  + 'AND Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' ' 
+						  + 'AND Factura BETWEEN ' + CAST(@DIni As VARCHAR) + ' and ' + CAST(@DFin As VARCHAR) + ' ' 
+						  + 'AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> ''.'') '
+						  + 'AND Periodo = ''' + @Periodo + ''' ' 
+						  + 'AND TC = ''' + @Codigo2 + ''' '
+						  + 'AND X = ''I'' '
+				IF @ATFisico <> 0 SET @sSQL = @sSQL + 'AND LEN(Autorizacion) < 13 '
+				SET @sSQL = @sSQL + 'GROUP BY TC,Autorizacion,Serie '
+				IF @TB <> '.' EXECUTE(@sSQL);
+
+				UPDATE Facturas
+				SET X = '.'
+				WHERE Periodo = @Periodo
+				AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+				AND Fecha BETWEEN @FechaDesde and @FechaHasta
+				AND Factura BETWEEN @DIni and @DFin
+				AND T = 'A'
+
+				SET @DAnt = @DSig
+				SET @DIni = @DSig
+			    SET @DFin = @DSig
+			    SET @Codigo2 = @Codigo1 
+			END
+    -- Siguiente registro
+	   FETCH NEXT FROM cComprobantesAnulados INTO @Codigo1, @Serie, @Factura
+	END
+ -- Cierre del cursor
+	CLOSE cComprobantesAnulados
+ -- Liberar los recursos
+	DEALLOCATE cComprobantesAnulados
+	IF @DIni <= @DFin
+	   BEGIN
+		 SET @TB = '.' 
+		 IF @Codigo2 ='FA' SET @TB = '1'
+		 IF @Codigo2 ='NV' SET @TB = '2'
+
+	 	 SET @sSQL = 'INSERT INTO Trans_Anulados (TipoComprobante, Establecimiento, PuntoEmision, Secuencial1, Secuencial2, Autorizacion, '
+		   		   + 'FechaAnulacion, T, Item, Periodo, TP, Numero, Fecha, Linea_SRI) '
+				   + 'SELECT ' + @TB + ', SUBSTRING(Serie, 1, 3), SUBSTRING(Serie, 4, 3), MIN(Factura), MAX(Factura), Autorizacion, ''' + @FechaHasta + ''', '
+				   + '''N'',''' + @Item + ''',''.'',''CD'',' + @sNumero + ',''' + @FechaHasta + ''',(ROW_NUMBER() OVER(ORDER BY Autorizacion)) '
+				   + 'FROM Facturas ' 
+				   + 'WHERE T = ''A'' '
+				   + 'AND Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' ' 
+				   + 'AND Factura BETWEEN ' + CAST(@DIni As VARCHAR) + ' and ' + CAST(@DFin As VARCHAR) + ' ' 
+				   + 'AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> ''.'') '
+				   + 'AND Periodo = ''' + @Periodo + ''' ' 
+				   + 'AND TC = ''' + @Codigo2 + ''' '
+				   + 'AND X = ''I'' '
+		 IF @ATFisico <> 0 SET @sSQL = @sSQL + 'AND LEN(Autorizacion) < 13 '
+		 SET @sSQL = @sSQL + 'GROUP BY TC,Autorizacion,Serie '
+		 IF @TB <> '.' EXECUTE(@sSQL);
+	   END
+
+ -- LIQUIDACIONES DE COMPRAS DEL MES
+    INSERT INTO Trans_Compras (T, IdProv, DevIva, CodSustento, TipoComprobante, Establecimiento, PuntoEmision,Secuencial, Autorizacion, 
+	FechaEmision, FechaRegistro, FechaCaducidad, TP, Numero, Fecha, BaseImponible, BaseImpGrav, PorcentajeIva, MontoIva, Item, Periodo, 
+	PagoLocExt, PaisEfecPago, AplicConvDobTrib, PagExtSujRetNorLeg, FormaPago)
+	SELECT 'N', CodigoC, 'N', '02', 3, SUBSTRING(Serie,1,3), SUBSTRING(Serie,4,3), Factura, Autorizacion, Fecha, Fecha, Fecha, 'CD', 
+	@Numero, @FechaHasta, Total_MN, 0, 2, 0, @Item , Periodo, '01', 'NA', 'NA', 'NA', '01' 
+	FROM Facturas
+	WHERE Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND Periodo = @Periodo
+	AND TC = 'LC'
+	AND T <> 'A'
+	ORDER BY RUC_CI, TB, Razon_Social;
+
+ -- RETENCIONES VENTAS DEL MES
+    SET @sSQL = 'INSERT INTO Trans_Air (Item, Periodo, Tipo_Trans, Fecha, EstabFactura, PuntoEmiFactura, EstabRetencion, PtoEmiRetencion, SecRetencion, '
+			  + 'AutRetencion, BaseImp, ValRet, Porcentaje, Factura_No, T, TP, Numero, Linea_SRI, RUC_CI, TB, Razon_Social,CodRet) '
+			  + 'SELECT ''' + @Item + ''', TA.Periodo, ''V'', ''' + @FechaHasta + ''', SUBSTRING(TA.Serie,1,3), SUBSTRING(TA.Serie,4,3), ''001'', ''001'', '
+			  + '''0'', ''.'', SUM(TA.Base_Imponible), SUM(TA.Abono), ((SUM(TA.Abono)/SUM(TA.Base_Imponible)) * 100), COUNT(F.RUC_CI), ''N'', '
+			  + '''CD'', ' + @sNumero + ', 0, F.RUC_CI, F.TB, F.Razon_Social, SUBSTRING(TA.Banco,20,4) '
+			  + 'FROM Trans_Abonos As TA, Facturas As F '
+			  + 'WHERE TA.Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' ' 
+			  + 'AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> ''.'') '
+			  + 'AND TA.Periodo = ''' + @Periodo + ''' '
+			  + 'AND TA.TP IN (''FA'',''NV'') '
+			  + 'AND SUBSTRING(TA.Banco,1,16) = ''RETENCION FUENTE'' '
+	IF @ATFisico <> 0 SET @sSQL = @sSQL + 'AND LEN(TA.Autorizacion_R) < 13 '
+	SET @sSQL = @sSQL + 'AND F.T <> ''A'' '
+			  + 'AND TA.CodigoC = F.CodigoC '
+			  + 'AND TA.TP = F.TC '
+			  + 'AND TA.Serie = F.Serie '
+			  + 'AND TA.Factura = F.Factura '
+			  + 'AND TA.Item = F.Item '
+			  + 'AND TA.Periodo = F.Periodo '
+			  + 'GROUP BY TA.Periodo, F.RUC_CI, F.TB, F.Razon_Social, SUBSTRING(TA.Serie,1,3), SUBSTRING(TA.Serie,4,3), SUBSTRING(TA.Banco,20,4) '
+    EXECUTE(@sSQL);
+
+ -- RETENCIONES DE TARJETAS VENTAS DEL MES
+    SET @sSQL = 'INSERT INTO Trans_Air (Item, Periodo, Tipo_Trans, Fecha, EstabFactura, PuntoEmiFactura, EstabRetencion, PtoEmiRetencion, SecRetencion, '
+			  + 'AutRetencion, BaseImp, ValRet, Porcentaje, Factura_No, T, TP, Numero, Linea_SRI, RUC_CI, TB, Razon_Social, CodRet) '
+			  + 'SELECT ''' + @Item + ''', TA.Periodo, ''V'', ''' + @FechaHasta + ''', ''001'', ''001'', SUBSTRING(TA.Serie_R,1,3), SUBSTRING(TA.Serie_R,4,3), '
+			  + '''0'', ''.'', SUM(TA.Abono/1.12), SUM(TA.IRF_Ret), Porc_Ret, COUNT(CI_RUC), ''N'', ''CD'', ' + @SNumero + ',0 , '
+			  + 'C.CI_RUC, C.TD, C.Cliente, ''344'' '
+			  + 'FROM Trans_Abonos As TA, Clientes As C '
+			  + 'WHERE TA.Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' ' 
+			  + 'AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> ''.'') '
+			  + 'AND TA.Periodo = ''' + @Periodo + ''' ' 
+			  + 'AND TA.TP IN (''FA'',''NV'') '
+	IF @ATFisico <> 0 SET @sSQL = @sSQL + 'AND LEN(TA.Autorizacion) < 13 '
+	SET @sSQL = @sSQL + 'AND TA.Tipo_Cta = ''TJ'' '
+			  + 'AND Porc_Ret < 10 '
+			  + 'AND TA.T <> ''A'' '
+			  + 'AND TA.Codigo_Prov = C.Codigo '
+			  + 'GROUP BY TA.Periodo, TA.Porc_Ret, C.CI_RUC, C.TD, C.Cliente, SUBSTRING(TA.Serie_R,1,3), SUBSTRING(TA.Serie_R,4,3) '
+    EXECUTE(@sSQL);
+
+ -- VENTAS DEL MES
+    SET @sSQL = 'INSERT INTO Trans_Ventas (Item, Periodo, RUC_CI, TB, Razon_Social, TipoComprobante, FechaRegistro, FechaEmision, Fecha, '
+			  + 'Establecimiento, PuntoEmision, NumeroComprobantes, BaseImponible, BaseImpGrav, MontoIva, ValorRetBienes, ValorRetServicios, '
+			  + 'IvaPresuntivo, PorcentajeIva, RetPresuntiva, T, TP, Numero, Linea_SRI, Secuencial) '
+			  + 'SELECT ''' + @Item + ''', Periodo, RUC_CI, TB, Razon_Social,''18'', ''' + @FechaHasta + ''', ''' + @FechaHasta + ''', ''' + @FechaHasta + ''', '
+			  + 'SUBSTRING(Serie,1,3), SUBSTRING(Serie,4,3), COUNT(Factura), SUM(Sin_IVA-Desc_0), SUM(Con_IVA-Desc_X), SUM(IVA), SUM(Total_Ret_IVA_B), '
+			  + 'SUM(Total_Ret_IVA_S), ''N'', 2, ''S'', ''N'', ''CD'', ' + @sNumero + ', (ROW_NUMBER() OVER(ORDER BY Razon_Social)), 0 '
+			  + 'FROM Facturas '
+			  + 'WHERE Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' ' 
+			  + 'AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> ''.'') '
+			  + 'AND Periodo = ''' + @Periodo + ''' ' 
+			  + 'AND TC IN (''FA'',''NV'') '
+			  + 'AND X <> ''R'' '
+	IF @ATFisico <> 0 SET @sSQL = @sSQL + 'AND LEN(Autorizacion) < 13 '
+	SET @sSQL = @sSQL + 'AND T <> ''A'' '
+			  + 'GROUP BY Periodo, RUC_CI, TB, Razon_Social, SUBSTRING(Serie,1,3), SUBSTRING(Serie,4,3) '
+    EXECUTE(@sSQL);
+
+ -- REEMBOSOS
+    SET @sSQL = 'INSERT INTO Trans_Ventas (Item, Periodo, RUC_CI, TB, Razon_Social, TipoComprobante, FechaRegistro, FechaEmision, Fecha, '
+			  + 'Establecimiento, PuntoEmision, NumeroComprobantes, BaseImponible, BaseImpGrav, MontoIva, ValorRetBienes, ValorRetServicios, '
+			  + 'IvaPresuntivo, PorcentajeIva, RetPresuntiva, T, TP, Numero, Linea_SRI, Secuencial) '
+			  + 'SELECT ''' + @Item + ''', Periodo, RUC_CI, TB, Razon_Social,''41'', ''' + @FechaHasta + ''', ''' + @FechaHasta + ''', ''' + @FechaHasta + ''', '
+			  + 'SUBSTRING(Serie,1,3), SUBSTRING(Serie,4,3), COUNT(Factura), SUM(Sin_IVA-Desc_0), SUM(Con_IVA-Desc_X), SUM(IVA), SUM(Total_Ret_IVA_B), '
+			  + 'SUM(Total_Ret_IVA_S), ''N'', 2, ''S'', ''N'', ''CD'', ' + @sNumero + ', (ROW_NUMBER() OVER(ORDER BY Razon_Social)), 0 '
+			  + 'FROM Facturas '
+			  + 'WHERE Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' ' 
+			  + 'AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> ''.'') '
+			  + 'AND Periodo = ''' + @Periodo + ''' ' 
+			  + 'AND TC IN (''FA'',''NV'') '
+			  + 'AND X = ''R'' '
+	IF @ATFisico <> 0 SET @sSQL = @sSQL + 'AND LEN(Autorizacion) < 13 '
+	SET @sSQL = @sSQL + 'AND T <> ''A'' '
+			  + 'GROUP BY Periodo, RUC_CI, TB, Razon_Social, SUBSTRING(Serie,1,3), SUBSTRING(Serie,4,3) '
+    EXECUTE(@sSQL);
+
+ -- Actualizamos la linea del ATS en Retenciones
+    UPDATE Trans_Air
+	SET Linea_SRI = TV.Linea_SRI
+	FROM Trans_Air As TA, Trans_Ventas As TV
+	WHERE TA.Periodo = @Periodo
+	AND TA.Item = @Item 
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TA.Tipo_Trans = 'V'
+	AND TA.Item = TV.Item
+	AND TA.Periodo = TV.Periodo
+	AND TA.RUC_CI = TV.RUC_CI
+	AND TA.Fecha = TV.Fecha
+	AND TA.TP = TV.TP
+	AND TA.Numero = TV.Numero
+    EXECUTE(@sSQL);
+    
+    UPDATE Trans_Ventas
+	SET PorRetBienes = ROUND((ValorRetBienes/MontoIva)*100,0,0),PorRetServicios = ROUND((ValorRetServicios/MontoIva)*100,0,0)
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND MontoIva <> 0;
+    
+    UPDATE Trans_Ventas
+	SET MontoIvaBienes = ROUND((ValorRetBienes*100)/PorRetBienes,2,0)
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND PorRetBienes <> 0;
+    
+    UPDATE Trans_Ventas 
+    SET MontoIvaServicios = ROUND((ValorRetServicios*100)/PorRetServicios,2,0) 
+	WHERE Periodo = @Periodo
+	AND Item = @Item 
+	AND Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND PorRetServicios <> 0;
+
+ -- Actualizamos el codigo del Beneficiario
+    UPDATE Trans_Ventas
+    SET IdProv = C.Codigo
+    FROM Trans_Ventas As TV, Clientes As C
+	WHERE TV.Periodo = @Periodo
+	AND TV.Item = @Item
+	AND TV.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TV.RUC_CI = C.CI_RUC;
+
+    UPDATE Trans_Air
+	SET IdProv = C.Codigo
+	FROM Trans_Air As TA, Clientes As C
+	WHERE TA.Periodo = @Periodo
+	AND TA.Item = @Item
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta
+	AND TA.Tipo_Trans = 'V'
+	AND TA.RUC_CI = C.CI_RUC;
+
+ -- print @sSQL;
+	EXEC sp_Update_Default 'Trans_Compras', @Item, @Periodo
+
+ -- Eliminamos nulos en las tablas
+	EXEC dbo.sp_Eliminar_Nulos 'Trans_Anulados'
+	EXEC dbo.sp_Eliminar_Nulos 'Trans_Air'
+	EXEC dbo.sp_Eliminar_Nulos 'Trans_Compras'
+	EXEC dbo.sp_Eliminar_Nulos 'Trans_Ventas'
+
+ -- Encera las lineas del SRI de las Compras, Ventas, EXportaciones e Importaciones
+    UPDATE Trans_Anulados
+    SET Linea_SRI = -1
+    WHERE FechaAnulacion Between @FechaDesde and @FechaHasta
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+    AND Periodo = @Periodo
+    EXECUTE(@sSQL);
+
+    UPDATE Trans_Compras
+    SET Linea_SRI = -1
+    WHERE Fecha Between @FechaDesde and @FechaHasta
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+    AND Periodo = @Periodo;
+
+    UPDATE Trans_Air 
+    SET Linea_SRI = -1 
+    WHERE Fecha Between @FechaDesde and @FechaHasta
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+    AND Periodo = @Periodo;
+
+	UPDATE Trans_Ventas
+    SET Linea_SRI = -1
+    WHERE Fecha Between @FechaDesde and @FechaHasta
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+    AND Periodo = @Periodo;
+
+    UPDATE Trans_Importaciones
+    SET Linea_SRI = -1
+    WHERE Fecha Between @FechaDesde and @FechaHasta
+    AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND Periodo = @Periodo;
+
+    UPDATE Trans_Exportaciones
+	SET Linea_SRI = -1
+	WHERE Fecha Between @FechaDesde and @FechaHasta
+	AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND Periodo = @Periodo;
+
+ -- Pasamos a averiguar que beneficiario es incorrecto
+	UPDATE Facturas
+	SET RUC_CI = C.CI_RUC, TB = C.TD, Razon_Social = C.Cliente, Direccion_RS = C.Direccion
+	FROM Facturas As F, Clientes As C
+	WHERE F.Fecha Between @FechaDesde and @FechaHasta
+	AND F.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND F.Periodo = @Periodo
+	AND LEN(F.RUC_CI) = 1
+	AND LEN(F.Razon_Social) = 1
+	AND F.CodigoC = C.Codigo;
+
+ -- Pasamos a averiguar que beneficiario es incorrecto
+	UPDATE Trans_Air
+	SET Linea_SRI = 0
+	FROM Trans_Air As T, Clientes As C
+	WHERE T.Fecha Between @FechaDesde and @FechaHasta
+	AND T.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.') 
+	AND T.Periodo = @Periodo
+	AND T.IdProv = C.Codigo;
+
+	UPDATE Trans_Compras 
+	SET Linea_SRI = 0 
+	FROM Trans_Compras As T, Clientes As C 
+	WHERE T.Fecha Between @FechaDesde and @FechaHasta
+	AND T.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.') 
+	AND T.Periodo = @Periodo
+	AND T.IdProv = C.Codigo;
+
+	UPDATE Trans_Importaciones 
+	SET Linea_SRI = 0 
+	FROM Trans_Importaciones As T, Clientes As C
+	WHERE T.Fecha Between @FechaDesde and @FechaHasta
+	AND T.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND T.Periodo = @Periodo
+	AND T.IdFiscalProv = C.Codigo;
+
+	UPDATE Trans_Exportaciones 
+	SET Linea_SRI = 0
+	FROM Trans_Exportaciones As T, Clientes As C 
+	WHERE T.Fecha Between @FechaDesde and @FechaHasta
+	AND T.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND T.Periodo = @Periodo
+	AND T.IdFiscalProv = C.Codigo;
+
+    UPDATE Trans_Compras
+	SET Cod_Benef = dbo.fn_Abreviatura_Texto(C.Cliente)
+	FROM Trans_Compras As TC, Clientes As C
+	WHERE TC.Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND TC.IdProv = C.Codigo
+
+    UPDATE Trans_Exportaciones
+	SET Cod_Benef = dbo.fn_Abreviatura_Texto(C.Cliente)
+	FROM Trans_Exportaciones As TC, Clientes As C
+	WHERE TC.Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND TC.IdFiscalProv = C.Codigo
+
+    UPDATE Trans_Importaciones
+	SET Cod_Benef = dbo.fn_Abreviatura_Texto(C.Cliente)
+	FROM Trans_Importaciones As TC, Clientes As C
+	WHERE TC.Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND TC.IdFiscalProv = C.Codigo
+	
+	SET @Cont = 1
+ -- Declaración del cursor para numerar lineas de Trans_Anulados
+	DECLARE cNumerarLineasSRI CURSOR FOR
+	    SELECT Linea_SRI, ID
+        FROM Trans_Anulados 
+        WHERE Periodo = @Periodo 
+		AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+        AND FechaAnulacion BETWEEN @FechaDesde and @FechaHasta 
+        ORDER BY FechaAnulacion 
+    FOR UPDATE 
+	OPEN cNumerarLineasSRI
+ 	FETCH NEXT FROM cNumerarLineasSRI INTO @LineaSRI, @ID
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		UPDATE Trans_Anulados SET Linea_SRI = @Cont	WHERE CURRENT OF cNumerarLineasSRI
+		SET @Cont = @Cont + 1
+		FETCH NEXT FROM cNumerarLineasSRI INTO @LineaSRI, @ID
+	END
+ -- Cierre del cursor
+	CLOSE cNumerarLineasSRI
+ -- Liberar los recursos
+	DEALLOCATE cNumerarLineasSRI
+
+	SET @Cont = 1
+ -- Declaración del cursor para numerar lineas de Trans_Compras
+	DECLARE cNumerarLineasSRI CURSOR FOR
+	    SELECT Linea_SRI, ID
+        FROM Trans_Compras
+        WHERE Periodo = @Periodo 
+		AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+        AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+        ORDER BY TipoComprobante, Cod_Benef, Fecha
+    FOR UPDATE 
+	OPEN cNumerarLineasSRI
+ 	FETCH NEXT FROM cNumerarLineasSRI INTO @LineaSRI, @ID
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		UPDATE Trans_Compras SET Linea_SRI = @Cont	WHERE CURRENT OF cNumerarLineasSRI
+		SET @Cont = @Cont + 1
+		FETCH NEXT FROM cNumerarLineasSRI INTO @LineaSRI, @ID
+	END
+ -- Cierre del cursor
+	CLOSE cNumerarLineasSRI
+ -- Liberar los recursos
+	DEALLOCATE cNumerarLineasSRI
+
+	SET @Cont = 1
+ -- Declaración del cursor para numerar lineas de Trans_Exportaciones
+	DECLARE cNumerarLineasSRI CURSOR FOR
+	    SELECT Linea_SRI, ID
+        FROM Trans_Exportaciones
+        WHERE Periodo = @Periodo 
+		AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+        AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+        ORDER BY Cod_Benef, Fecha
+    FOR UPDATE 
+	OPEN cNumerarLineasSRI
+ 	FETCH NEXT FROM cNumerarLineasSRI INTO @LineaSRI, @ID
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		UPDATE Trans_Exportaciones SET Linea_SRI = @Cont WHERE CURRENT OF cNumerarLineasSRI
+		SET @Cont = @Cont + 1
+		FETCH NEXT FROM cNumerarLineasSRI INTO @LineaSRI, @ID
+	END
+ -- Cierre del cursor
+	CLOSE cNumerarLineasSRI
+ -- Liberar los recursos
+	DEALLOCATE cNumerarLineasSRI
+
+	SET @Cont = 1
+ -- Declaración del cursor para numerar lineas de Trans_Importaciones
+	DECLARE cNumerarLineasSRI CURSOR FOR
+	    SELECT Linea_SRI, ID
+        FROM Trans_Importaciones
+        WHERE Periodo = @Periodo 
+		AND Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+        AND Fecha BETWEEN @FechaDesde and @FechaHasta 
+        ORDER BY Cod_Benef, Fecha
+    FOR UPDATE 
+	OPEN cNumerarLineasSRI
+ 	FETCH NEXT FROM cNumerarLineasSRI INTO @LineaSRI, @ID
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		UPDATE Trans_Importaciones SET Linea_SRI = @Cont WHERE CURRENT OF cNumerarLineasSRI
+		SET @Cont = @Cont + 1
+		FETCH NEXT FROM cNumerarLineasSRI INTO @LineaSRI, @ID
+	END
+ -- Cierre del cursor
+	CLOSE cNumerarLineasSRI
+ -- Liberar los recursos
+	DEALLOCATE cNumerarLineasSRI
+
+	UPDATE Trans_Air
+	SET Linea_SRI = TC.Linea_SRI 
+	FROM Trans_Air AS TA, Trans_Compras As TC
+	WHERE TA.Periodo = @Periodo 
+	AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND TA.Tipo_Trans = 'C' 
+	AND TA.IdProv = TC.IdProv
+	AND TA.Numero = TC.Numero
+	AND TA.Fecha = TC.Fecha
+	AND TA.Factura_No = TC.Secuencial
+	AND TA.TP = TC.TP
+	
+	UPDATE Trans_Air
+	SET Linea_SRI = TI.Linea_SRI 
+	FROM Trans_Air AS TA, Trans_Importaciones As TI
+	WHERE TA.Periodo = @Periodo 
+	AND TA.Item IN (SELECT Item FROM Item_Suc WHERE Item <> '.')
+	AND TA.Fecha BETWEEN @FechaDesde and @FechaHasta 
+	AND TA.Tipo_Trans = 'I' 
+	AND TA.IdProv = TI.IdFiscalProv
+	AND TA.Numero = TI.Numero
+	AND TA.Fecha = TI.Fecha
+	AND TA.TP = TI.TP
+
+ -- Borramos la tabla temporal
+	DROP TABLE Item_Suc;
+END

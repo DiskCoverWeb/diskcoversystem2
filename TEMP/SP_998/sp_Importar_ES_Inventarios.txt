@@ -1,0 +1,112 @@
+CREATE PROCEDURE [dbo].[sp_Importar_ES_Inventarios] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @Usuario VARCHAR(10), @NumModulo VARCHAR(2), @FechaInventario VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 14/03/2024
+  FECHA MODIFICACION: 14/03/2024
+  DESCIPCION		: Plantilla No. 31. Importa el contenido de la subida de un archivo CSV a la base de Datos de Entradas o Salidas de Inventarios por la WEB.
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notIFicacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @ID INT=0;
+	DECLARE @Tabla_Asiento_CSV VARCHAR(MAX)='';
+	DECLARE @FechaMin DATETIME='19000101', @FechaMax DATETIME='19000101';
+	DECLARE @TextLinea VARCHAR(100), @sSQL NVARCHAR(MAX);
+	DECLARE @Codigo_Inv VARCHAR(25), @tCodigo_Inv VARCHAR(25), @ES VARCHAR(1);
+	DECLARE @CodBodega VARCHAR(2)='01', @CodMarca VARCHAR(25)='01';
+
+	SET @TextLinea = REPLICATE('-',100);
+	SET @Tabla_Asiento_CSV = 'Asiento_CSV_' + @Usuario
+	IF dbo.fn_Existe_Tabla(@Tabla_Asiento_CSV) <> 0
+	   BEGIN
+      -- Declaracion de Cursor para Verificar tipo de documento en las facturas
+         DELETE FROM Tabla_Temporal
+         WHERE Item = @Item
+         AND Modulo = @NumModulo
+         AND CodigoU = @Usuario;
+
+         DELETE FROM Asiento_K
+         WHERE Item = @Item
+         AND CodigoU = @Usuario
+		 AND T_No = 0;
+
+	  -- Creamos campos necesarios	 
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD CTA_INVENTARIO NVARCHAR(18);');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ADD ID INT IDENTITY NOT NULL PRIMARY KEY;');
+
+	  -- Actualizamos datos por default
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET E_S = ''S'' WHERE E_S IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET CANTIDAD = ''0'' WHERE CANTIDAD IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET COSTO = ''0'' WHERE COSTO IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET CODIGO_BARRA = ''.'' WHERE CODIGO_BARRA IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET CODIGO_INV = ''.'' WHERE CODIGO_INV IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET CTA_INVENTARIO = ''.'' WHERE CTA_INVENTARIO IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET CENTRO_DE_COSTO = ''.'' WHERE CENTRO_DE_COSTO IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET RUBRO = ''.'' WHERE RUBRO IS NULL;');
+		 EXECUTE('UPDATE '+@Tabla_Asiento_CSV+' SET RUBRO = REPLACE(RUBRO,CHAR(13),'''');');
+
+	  -- Convertimos campos a tipos correctos	 
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ALTER COLUMN CANTIDAD MONEY');
+		 EXECUTE('ALTER TABLE '+@Tabla_Asiento_CSV+' ALTER COLUMN COSTO FLOAT');
+
+      -- Declaracion de Cursor para Verificar tipo de documento en las facturas
+		 SET @sSQL = 'DECLARE cInventario CURSOR FOR
+ 					  SELECT E_S, CODIGO_INV
+					  FROM '+@Tabla_Asiento_CSV+' 
+					  WHERE CODIGO_INV <> ''.''
+					  ORDER BY CODIGO_INV';
+ 		 EXEC sp_executesql @sSQL;
+	  -- Apertura del cursor
+		 OPEN cInventario
+		 FETCH NEXT FROM cInventario INTO @ES, @Codigo_Inv;
+		 WHILE (@@FETCH_STATUS = 0)
+		 BEGIN
+			EXEC sp_Leer_Codigo_Inv @Item, @Periodo, @Codigo_Inv, @FechaInventario, @CodBodega, @CodMarca, @tCodigo_Inv OUTPUT
+			FETCH NEXT FROM cInventario INTO @ES, @Codigo_Inv;
+		 END
+	  -- Cierre del cursor5
+		 CLOSE cInventario
+ 	  -- Liberar los recursos
+		 DEALLOCATE cInventario
+		 IF @ES = 'S' 
+		    BEGIN
+ 			  SET @sSQL = 'UPDATE '+@Tabla_Asiento_CSV+' 
+						   SET COSTO = CP.Costo
+						   FROM '+@Tabla_Asiento_CSV+' AS TCSV, Catalogo_Productos As CP
+						   WHERE CP.Item = '''+@Item+''' 
+						   AND CP.Periodo = '''+@Periodo+''' 
+						   AND TCSV.CODIGO_INV = CP.Codigo_Inv;';
+ 			  EXEC sp_executesql @sSQL;
+		    END
+		 SET @sSQL = 'UPDATE '+@Tabla_Asiento_CSV+' 
+					  SET CTA_INVENTARIO = CP.Cta_Inventario
+					  FROM '+@Tabla_Asiento_CSV+' AS TCSV, Catalogo_Productos As CP
+					  WHERE CP.Item = '''+@Item+''' 
+					  AND CP.Periodo = '''+@Periodo+''' 
+					  AND TCSV.CODIGO_INV = CP.Codigo_Inv;';
+ 		 EXEC sp_executesql @sSQL;
+		 IF @ES = 'S' SET @ES = '2' ELSE SET @ES = '1';
+
+		 SET @sSQL = 'INSERT INTO Asiento_K (TC, CODIGO_INV, DH, CANT_ES, VALOR_UNIT, VALOR_TOTAL, CANTIDAD, CTA_INVENTARIO, CONTRA_CTA, CodBod, CodMar, Item, CodigoU, SUBCTA, Fecha_Fab, A_No) 
+					  SELECT ''P'', CODIGO_INV, '''+@ES+''', CANTIDAD, COSTO, ROUND(COSTO*CANTIDAD,2,0), CANTIDAD, TRIM(CTA_INVENTARIO), TRIM(CENTRO_DE_COSTO), '''+@CodBodega+''', '''+@CodMarca+''', 
+					  '''+@Item+''', '''+@Usuario+''', RUBRO, '''+@FechaInventario+''', ID 
+ 					  FROM '+@Tabla_Asiento_CSV+' 
+					  WHERE CODIGO_INV <> ''.''
+					  ORDER BY ID;';
+		 EXECUTE(@sSQL);
+
+		 UPDATE Asiento_K
+		 SET PRODUCTO = CP.Producto, UNIDAD = CP.Unidad
+		 FROM Asiento_K As AK, Catalogo_Productos As CP
+		 WHERE CP.Item = @Item
+		 AND CP.Periodo = @Periodo
+		 AND AK.CodigoU = @Usuario
+		 AND AK.Item = CP.Item
+		 AND AK.CODIGO_INV = CP.Codigo_Inv;
+
+		 EXEC sp_Eliminar_Nulos 'Asiento_K';
+	   END
+END

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.1.0">
+  <infoTributaria>
+    <ambiente>1</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>FUNDACION DE AYUDA SOCIAL BAQ PRUEBAS</razonSocial>
+    <nombreComercial>FUNDACION DE AYUDA SOCIAL BAQ PRUEBAS</nombreComercial>
+    <ruc>1791921429001</ruc>
+    <claveAcceso>0909202401179192142900110010020000000621234567819</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>002</ptoEmi>
+    <secuencial>000000062</secuencial>
+    <dirMatriz>AV PEDRO VICENTE MALDONADO S15283 Y BALZAR</dirMatriz>
+    <contribuyenteRimpe>CONTRIBUYENTE RÉGIMEN RIMPE</contribuyenteRimpe>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>09/09/2024</fechaEmision>
+    <dirEstablecimiento>AV PEDRO VICENTE MALDONADO S15283 Y BALZAR</dirEstablecimiento>
+    <obligadoContabilidad>SI</obligadoContabilidad>
+    <tipoIdentificacionComprador>07</tipoIdentificacionComprador>
+    <razonSocialComprador>CONSUMIDOR FINAL</razonSocialComprador>
+    <identificacionComprador>9999999999999</identificacionComprador>
+    <totalSinImpuestos>0.42</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>0</codigoPorcentaje>
+        <descuentoAdicional>0.00</descuentoAdicional>
+        <baseImponible>0.42</baseImponible>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>0.42</importeTotal>
+    <moneda>DOLAR</moneda>
+    <pagos>
+      <pago>
+        <formaPago>01</formaPago>
+        <total>0.42</total>
+      </pago>
+    </pagos>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>FA.99</codigoPrincipal>
+      <descripcion>SERVICION VARIOS</descripcion>
+      <unidadMedida>DOLAR</unidadMedida>
+      <cantidad>1.000000</cantidad>
+      <precioUnitario>0.420000</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>0.42</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <tarifa>0</tarifa>
+          <baseImponible>0.42</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Beneficiario">FERRER DUARTE BRIGMARY CHIQUINQUIRA</campoAdicional>
+    <campoAdicional nombre="Ubicacion">CXC</campoAdicional>
+    <campoAdicional nombre="Email">financierobaq17@gmailcom</campoAdicional>
+    <campoAdicional nombre="seriePuntoEmision">001002</campoAdicional>
+    <campoAdicional nombre="PlacaVehiculo">.</campoAdicional>
+    <campoAdicional nombre="CtaEstablecimiento">.</campoAdicional>
+  </infoAdicional>
+</factura>

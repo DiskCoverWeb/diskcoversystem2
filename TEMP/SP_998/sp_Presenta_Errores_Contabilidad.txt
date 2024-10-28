@@ -1,0 +1,404 @@
+CREATE PROCEDURE [dbo].[sp_Presenta_Errores_Contabilidad] 
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @Usuario AS VARCHAR(10), @NumModulo AS VARCHAR(2), @ExisteErrores AS BIT OUTPUT AS
+/*
+  AUTOR             : Walter Vaca Prieto
+  FECHA DE CREACION : 20/05/2019
+  FECHA MODIFICACION: 11/07/2023
+  DESCIPCION        : Presenta posibles errores de procesamiento y digitacion
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaramos Variables Temporales
+	DECLARE @Cont INT;
+	DECLARE @Texto VARCHAR(MAX), @TextLinea VARCHAR(100);
+
+	SET @TextLinea = REPLICATE('-',100)
+
+ -- Borramos la basura si la tuviera
+	DELETE FROM Tabla_Temporal
+    WHERE Item = @Item
+	AND Modulo = @NumModulo
+	AND CodigoU = @Usuario;
+ 
+ -- ============================================================================================
+ -- Determinamos comprobantes descuadrados de la sumatoria entre el Debe y Haber (partida doble)
+ -- ============================================================================================
+	SELECT @Cont = COUNT(Numero)
+	FROM Transacciones
+	WHERE Periodo = @Periodo 
+	AND Item = @Item
+	AND T <> 'A'
+	GROUP BY TP,Fecha,Numero 
+	HAVING SUM(Debe) <> SUM(Haber);
+	IF @Cont>0 AND @@ROWCOUNT>0
+	BEGIN
+ 		SET @Texto = 'DESCUADRE DE COMPROBANTES. VERIFIQUE LOS SIGUIENTES COMPROBANTES:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		SET @Texto = 'FECHA      TP NUMERO   TOTAL DEBE       TOTAL HABER'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto                         
+ 		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+		INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		SELECT @Item, @NumModulo, @Usuario, 
+		dbo.fn_CFecha_Str(Fecha) + ' ' + TP + ' ' + dbo.fn_CNumero_Str_Ent(Numero,8,'0') + ' ' + dbo.fn_CNumero_Str(SUM(Debe),10,2) + ' ' + dbo.fn_CNumero_Str(SUM(Haber),10,2)
+		FROM Transacciones
+		WHERE T <> 'A'
+		AND TP IN ('CD','CE','CI','ND','NC')
+		AND Periodo = @Periodo 
+		AND Item = @Item
+		GROUP BY TP,Fecha,Numero 
+		HAVING SUM(Debe) <> SUM(Haber) 
+		ORDER BY TP,Fecha,Numero;
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea;
+	END
+
+ -- ============================================================================================
+ -- Determinamos si existe cuentas que faltan en el Catalogo de Cuentas
+ -- ============================================================================================
+    UPDATE Transacciones
+    SET X = '.' 
+    WHERE Periodo = @Periodo
+    AND Item = @Item
+	AND T <> 'A';
+  
+ -- Verificar cuantas cuentas estan en el catalogo  
+    UPDATE Transacciones 
+    SET X = 'X' 
+    FROM Transacciones As T,Catalogo_Cuentas As CC 
+    WHERE T.Periodo = @Periodo
+    AND T.Item = @Item
+	AND T.T <> 'A'
+    AND T.Cta = CC.Codigo 
+    AND T.Item = CC.Item
+    AND T.Periodo = CC.Periodo;
+  
+	SELECT @Cont = COUNT(Numero)
+	FROM Transacciones
+	WHERE Periodo = @Periodo 
+	AND Item = @Item
+	AND X = '.'
+	AND T <> 'A';
+	IF @Cont>0 AND @@ROWCOUNT>0
+	BEGIN
+ 		SET @Texto = 'ESTAS CUENTAS FALTAN EN EL CATALOGO:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		SET @Texto = 'CODIGO CONTABLE    FECHA      TP NUMERO'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+		INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		SELECT @Item, @NumModulo, @Usuario, 
+		dbo.fn_Texto_Blanco(Cta,18) + ' ' + dbo.fn_CFecha_Str(Fecha) + ' ' + TP + ' ' + dbo.fn_CNumero_Str_Ent(Numero,8,'0')
+		FROM Transacciones
+		WHERE Periodo = @Periodo 
+		AND Item = @Item
+		AND X = '.'
+		AND T <> 'A'
+		ORDER BY Cta, TP, Fecha, Numero;
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	END
+ 
+ -- ============================================================================================
+ -- Verificando Descuadre en Submodulos
+ -- ============================================================================================
+    UPDATE Trans_SubCtas 
+    SET X = '.'
+    WHERE Periodo = @Periodo 
+    AND Item = @Item;
+
+    UPDATE Trans_SubCtas
+    SET X = 'X' 
+    FROM Trans_SubCtas As T, Catalogo_CxCxP As CC
+    WHERE T.Periodo = @Periodo 
+    AND T.Item = @Item
+    AND T.Codigo = CC.Codigo 
+    AND T.TC = CC.TC 
+    AND T.Item = CC.Item 
+    AND T.Periodo = CC.Periodo; 
+   
+    UPDATE Trans_SubCtas 
+    SET X = 'X' 
+    FROM Trans_SubCtas As T, Catalogo_SubCtas As CC
+    WHERE T.Periodo = @Periodo 
+    AND T.Item = @Item
+    AND T.Codigo = CC.Codigo 
+    AND T.TC = CC.TC 
+    AND T.Item = CC.Item 
+    AND T.Periodo = CC.Periodo; 
+   
+    UPDATE Trans_SubCtas 
+    SET X = 'X' 
+    WHERE Periodo = @Periodo 
+    AND Item = @Item
+    AND Codigo = '.';
+
+	SELECT @Cont = COUNT(Numero)
+	FROM Trans_SubCtas
+	WHERE Periodo = @Periodo 
+	AND Item = @Item
+	AND X = '.'
+	AND T <> 'A'
+	GROUP BY TP, Numero, Cta, TC, Fecha, Codigo
+	ORDER BY TP, Numero, Cta, TC, Fecha, Codigo;
+	IF @Cont>0 AND @@ROWCOUNT>0
+	BEGIN
+ 		SET @Texto = 'ERROR DE SUBMODULOS, MODIFIQUE LOS SIGUIENTES COMPROBANTES:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		SET @Texto = 'TC TP NUMERO   FECHA      CODIGO     CODIGO CONTABLE'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+		INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		SELECT @Item, @NumModulo, @Usuario, 		
+		TC + '  ' + TP + ' ' + dbo.fn_CNumero_Str_Ent(Numero,8,'0') + ' ' + dbo.fn_CFecha_Str(Fecha) 
+		+ ' ' + dbo.fn_Texto_Blanco(Codigo,10) + ' ' + Cta
+		FROM Trans_SubCtas
+		WHERE Periodo = @Periodo 
+		AND Item = @Item
+		AND X = '.'
+		AND T <> 'A'
+		GROUP BY TP, Numero, Cta, TC, Fecha, Codigo
+		ORDER BY TP, Numero, Cta, TC, Fecha, Codigo;
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	END
+
+ -- ================================================================================================
+ -- Verifica Errores de totales de SubCtas con Contabilidad de Debe con Debitos y Haber con Creditos
+ -- ================================================================================================
+	SELECT @Cont = COUNT(T.TP)
+	FROM Transacciones AS T, Trans_SubCtas AS TS
+	WHERE T.Periodo = @Periodo 
+	AND T.Item = @Item
+	AND T.T <> 'A'
+	AND T.Debe <> 0
+	AND T.Item = TS.Item 
+	AND T.Periodo = TS.Periodo 
+	AND T.Cta = TS.Cta 
+	AND T.Fecha = TS.Fecha 
+	AND T.TP = TS.TP
+	AND T.Numero = TS.Numero 
+	GROUP BY T.Fecha, T.TP, T.Numero, TS.TC, T.Cta, T.Debe
+	HAVING T.Debe <> SUM(TS.Debitos);
+	IF @Cont>0 AND @@ROWCOUNT>0
+	BEGIN
+ 		SET @Texto = 'ERROR DE TOTALES EN SUBMODULOS, MODIFIQUE LOS SIGUIENTES COMPROBANTES:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		SET @Texto = 'TC TP NUMERO   FECHA      DEBE             DEBITOS          CUENTA CONTABLE'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+		INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		SELECT @Item, @NumModulo, @Usuario, 
+		dbo.fn_Texto_Blanco(TS.TC,2) + ' ' + T.TP + ' ' + dbo.fn_CNumero_Str_Ent(T.Numero,8,'0') + ' ' + dbo.fn_CFecha_Str(T.Fecha) + ' ' + 
+		dbo.fn_CNumero_Str(T.Debe,10,2) + ' ' + dbo.fn_CNumero_Str(SUM(TS.Debitos),10,2) + ' ' + T.Cta
+		FROM Transacciones AS T, Trans_SubCtas AS TS
+		WHERE T.Periodo = @Periodo 
+		AND T.Item = @Item
+		AND T.T <> 'A'
+		AND T.Debe <> 0
+		AND T.Item = TS.Item 
+		AND T.Periodo = TS.Periodo 
+		AND T.Cta = TS.Cta 
+		AND T.Fecha = TS.Fecha 
+		AND T.TP = TS.TP
+		AND T.Numero = TS.Numero 
+		GROUP BY T.Fecha, T.TP, T.Numero, TS.TC, T.Cta, T.Debe
+		HAVING T.Debe <> SUM(TS.Debitos) 
+		ORDER BY T.Fecha, T.TP, T.Numero, TS.TC, T.Cta, T.Debe;
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea;
+	END
+    --------------------------------------------------------------------------------
+	SELECT @Cont = COUNT(T.TP)
+	FROM Transacciones AS T, Trans_SubCtas AS TS
+	WHERE T.Periodo = @Periodo 
+	AND T.Item = @Item
+	AND T.T <> 'A'
+	AND T.Haber <> 0
+	AND T.Item = TS.Item 
+	AND T.Periodo = TS.Periodo 
+	AND T.Cta = TS.Cta 
+	AND T.Fecha = TS.Fecha 
+	AND T.TP = TS.TP
+	AND T.Numero = TS.Numero 
+	GROUP BY T.Fecha, T.TP, T.Numero, TS.TC, T.Cta, T.Haber
+	HAVING T.Haber <> SUM(TS.Creditos);
+	IF @Cont>0 AND @@ROWCOUNT>0
+	BEGIN
+ 		SET @Texto = 'ERROR DE TOTALES EN SUBMODULOS, MODIFIQUE LOS SIGUIENTES COMPROBANTES:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		SET @Texto = 'TC TP NUMERO   FECHA      HABER            CREDITOS         CUENTA CONTABLE'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+		INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		SELECT @Item, @NumModulo, @Usuario, 
+		dbo.fn_Texto_Blanco(TS.TC,2) + ' ' + T.TP + ' ' + dbo.fn_CNumero_Str_Ent(T.Numero,8,'0') + ' ' + dbo.fn_CFecha_Str(T.Fecha) + ' ' + 
+		dbo.fn_CNumero_Str(T.Haber,10,2) + ' ' + dbo.fn_CNumero_Str(SUM(TS.Creditos),10,2) + ' ' + T.Cta
+		FROM Transacciones AS T, Trans_SubCtas AS TS
+		WHERE T.Periodo = @Periodo 
+		AND T.Item = @Item
+		AND T.T <> 'A'
+		AND T.Haber <> 0
+		AND T.Item = TS.Item 
+		AND T.Periodo = TS.Periodo 
+		AND T.Cta = TS.Cta 
+		AND T.Fecha = TS.Fecha 
+		AND T.TP = TS.TP
+		AND T.Numero = TS.Numero 
+		GROUP BY T.Fecha, T.TP, T.Numero, TS.TC, T.Cta, T.Haber
+		HAVING T.Haber <> SUM(TS.Creditos) 
+		ORDER BY T.Fecha, T.TP, T.Numero, TS.TC, T.Cta, T.Haber;
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea;
+	END
+
+ -- ============================================================================================
+ -- Verifica Errores de totales de SubCtas con Transacciones borradas
+ -- ============================================================================================
+    UPDATE Transacciones
+    SET X = '.'
+    WHERE Periodo = @Periodo
+    AND Item = @Item;
+
+    UPDATE Transacciones
+    SET X = 'S'
+	FROM Transacciones As T, Catalogo_Cuentas As CC
+    WHERE T.Periodo = @Periodo
+    AND T.Item = @Item
+	AND CC.TC IN ('CC','C','P','I','G')
+    AND T.Periodo = CC.Periodo
+    AND T.Item = CC.Item
+	AND T.Cta = CC.Codigo;
+  
+    UPDATE Transacciones 
+    SET X = '.'
+    FROM Transacciones As T, Trans_SubCtas As TS
+    WHERE T.Periodo = @Periodo 
+    AND T.Item = @Item
+	AND T.Item = TS.Item 
+    AND T.Periodo = TS.Periodo 
+	AND T.Cta = TS.Cta 
+    AND T.TP = TS.TP
+    AND T.Numero = TS.Numero
+    AND T.Fecha = TS.Fecha;
+
+	SELECT @Cont = COUNT(TP)
+	FROM Transacciones
+	WHERE Periodo = @Periodo 
+	AND Item = @Item
+	AND X = 'S'
+	AND T <> 'A'
+	GROUP BY TP;
+	IF @Cont>0 AND @@ROWCOUNT>0
+	BEGIN
+ 		SET @Texto = 'ERROR DE TOTALES EN TRANSACCIONES, MODIFIQUE LOS SIGUIENTES COMPROBANTES:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		SET @Texto = 'TP NUMERO   FECHA      DEBE             HABER            CUENTA CONTABLE    TIPO DE ERROR'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+		INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		SELECT @Item, @NumModulo, @Usuario, 
+		       TP + ' ' + dbo.fn_CNumero_Str_Ent(Numero,8,'0') + ' ' + dbo.fn_CFecha_Str(Fecha) + ' ' +
+			   dbo.fn_CNumero_Str(Debe,10,2) + ' ' + dbo.fn_CNumero_Str(Haber,10,2) + ' ' + Cta + REPLICATE(' ',18-LEN(Cta)) + ' Cuenta no existe en el submodulo'
+		FROM Transacciones
+		WHERE Periodo = @Periodo 
+		AND Item = @Item
+		AND X = 'S'
+		AND T <> 'A'
+		ORDER BY Fecha, TP, Numero, Cta;
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	END
+
+ -- ============================================================================================
+ -- Verificar Cta que no se encuentran en el asiento
+ -- ============================================================================================
+	UPDATE Trans_SubCtas
+	SET X = 'X'
+	WHERE Periodo = @Periodo 
+    AND Item = @Item
+	
+	UPDATE Trans_SubCtas
+	SET X = '.'
+	FROM Trans_SubCtas As TS, Transacciones As T
+	WHERE TS.Periodo = @Periodo 
+    AND TS.Item = @Item
+	AND TS.Fecha = T.Fecha
+	AND TS.TP = T.TP
+	AND TS.Numero = T.Numero
+	AND TS.Cta = T.Cta;
+
+	SELECT @Cont = COUNT(Cta)
+	FROM Trans_SubCtas
+	WHERE Periodo = @Periodo 
+	AND Item = @Item
+	AND X = 'X'
+	AND T <> 'A'
+    IF @Cont>0 AND @@ROWCOUNT>0
+	BEGIN
+        SET @Texto = 'ERROR DE CUENTAS DE SUBMODULOS QUE NO SE ENCUENTRAN EN TRANSACCIONES:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		SET @Texto = 'TC TP NUMERO   FECHA      DEBITOS          CREDITOS          CUENTA CONTABLE'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+        INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		SELECT @Item, @NumModulo, @Usuario, 
+		       dbo.fn_Texto_Blanco(TC,2) + ' ' + TP + ' ' + dbo.fn_CNumero_Str_Ent(Numero,8,'0') + ' ' + dbo.fn_CFecha_Str(Fecha) + ' ' +
+			   dbo.fn_CNumero_Str(Debitos,10,2) + ' ' + dbo.fn_CNumero_Str(Creditos,10,2) + ' ' + ' ' + Cta
+		FROM Trans_SubCtas
+	    WHERE Periodo = @Periodo 
+		AND Item = @Item
+		AND X = 'X'
+		AND T <> 'A'
+		ORDER BY TP,Numero,Fecha,Cta
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+    END  
+
+ -- ============================================================================================
+ -- Verificar cuentas de grupo en Contabilidad
+ -- ============================================================================================
+ 	SELECT @Cont = COUNT(*)
+	FROM Transacciones As T, Catalogo_Cuentas As CC
+	WHERE T.Periodo = @Periodo 
+	AND T.Item = @Item
+	AND CC.DG = 'G'
+	AND T.T <> 'A'
+	AND T.Item = CC.Item 
+	AND T.Periodo = CC.Periodo 
+	AND T.Cta = CC.Codigo 
+	IF @Cont>0 AND @@ROWCOUNT>0
+	BEGIN
+ 		SET @Texto = 'ESTAS CUENTAS NO DEBERIAN SER DE GRUPO PORQUE TIENEN MOVIMIENTOS VERIFIQUE:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		SET @Texto = 'TP NUMERO   FECHA      TC CODIGO CONTABLE    NOMBRE DE LA CUENTA'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+
+		INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		SELECT @Item, @NumModulo, @Usuario, 
+		      T.TP + ' ' + dbo.fn_CNumero_Str_Ent(T.Numero,8,'0') + ' ' + dbo.fn_CFecha_Str(T.Fecha) + ' ' + dbo.fn_Texto_Blanco(CC.TC,2) + ' ' + 
+			  dbo.fn_Texto_Blanco(T.Cta,18) + ' ' + CC.Cuenta
+		FROM Transacciones As T, Catalogo_Cuentas As CC
+		WHERE T.Periodo = @Periodo 
+		AND T.Item = @Item
+		AND CC.DG = 'G'
+		AND T.T <> 'A'
+		AND T.Item = CC.Item 
+		AND T.Periodo = CC.Periodo 
+		AND T.Cta = CC.Codigo 
+		ORDER BY T.TP, T.Numero, T.Fecha, T.Cta, CC.TC
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+	END
+ 
+ -- Determina si existen Errores que presentar
+	SET @ExisteErrores = 0
+	SELECT @Cont = COUNT(*)
+	FROM Tabla_Temporal 
+	WHERE Item = @Item  
+	AND Modulo = @NumModulo 
+	AND CodigoU = @Usuario;
+	IF @Cont > 0 SET @ExisteErrores = 1
+	RETURN @ExisteErrores
+END

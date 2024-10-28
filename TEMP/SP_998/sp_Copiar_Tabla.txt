@@ -1,0 +1,80 @@
+CREATE PROCEDURE [dbo].[sp_Copiar_Tabla] 
+@NombreTabla VARCHAR(50),@ItemOld VARCHAR(3),@ItemNew VARCHAR(3),@PeriodoOld VARCHAR(10),@PeriodoNew VARCHAR(10)
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 14/12/2021
+  FECHA MODIFICACION: 14/12/202021
+  DESCIPCION		: Copia Tabla de una empresa a otra
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaracion de variables necesarias 
+    DECLARE @Campo varchar(50), @Tipo varchar(50), @sSQL varchar(MAX), @sSQLDel varchar(MAX);
+	DECLARE @SiPeriodo BIT;
+
+ -- Programacion de procesos
+    SET @sSQL = ''
+	SET @sSQLDel = ''
+	SET @SiPeriodo = 0
+
+ -- Declaración del cursor
+	DECLARE cCampos_Tabla CURSOR FOR
+		SELECT COL.name AS Campo
+		FROM dbo.syscolumns COL
+		JOIN dbo.sysobjects OBJ ON OBJ.id = COL.id
+		JOIN dbo.systypes TYP ON TYP.xusertype = COL.xtype
+		LEFT JOIN dbo.sysforeignkeys FK ON FK.fkey = COL.colid AND FK.fkeyid=OBJ.id
+		LEFT JOIN dbo.sysobjects OBJ2 ON OBJ2.id = FK.rkeyid
+		LEFT JOIN dbo.syscolumns COL2 ON COL2.colid = FK.rkey AND COL2.id = OBJ2.id
+		WHERE OBJ.name = @NombreTabla
+		AND NOT COL.name IN ('Item','ID')
+		AND (OBJ.xtype='U' 
+		OR OBJ.xtype='V')
+ -- Apertura del cursor
+	OPEN cCampos_Tabla
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cCampos_Tabla INTO @Campo
+	WHILE (@@FETCH_STATUS = 0 )
+	BEGIN
+	 -- Averiguamos cuantos registros del campo tienen nulos
+		IF @Campo = 'Periodo' SET @SiPeriodo = 1 ELSE SET @sSQL = @sSQL + @Campo + ', '
+
+     -- Procesamos el siguiente Producto a mayorizar
+		FETCH NEXT FROM cCampos_Tabla INTO @Campo
+	END
+ -- Cierre del cursor
+	CLOSE cCampos_Tabla
+ -- Liberar los recursos
+	DEALLOCATE cCampos_Tabla
+
+ -- Procedemos a copiar datos de la tabla de una empresa a otra
+	IF LEN(@sSQL) > 1 
+	   BEGIN 
+		  SET @sSQLDel = 'DELETE ' 
+		               + 'FROM ' + @NombreTabla + ' '
+				  	   + 'WHERE Item = ''' + @ItemNew  + ''' '
+		  IF @SiPeriodo = 1	SET @sSQLDel = @sSQLDel + 'AND Periodo = ''' + @PeriodoNew + ''' '
+	   
+	      SET @sSQL = SUBSTRING(@sSQL,1,LEN(@sSQL)-1) 
+		  IF @SiPeriodo = 1
+		     BEGIN
+				SET @sSQL = 'INSERT INTO ' + @NombreTabla + ' (Item, Periodo, ' + @sSQL + ') '
+				  		  + 'SELECT ''' + @ItemNew + ''', ''' + @PeriodoNew + ''', ' + @sSQL + ' '
+						  + 'FROM ' + @NombreTabla + ' '
+						  + 'WHERE Item = ''' + @ItemOld  + ''' '
+						  + 'AND Periodo = ''' + @PeriodoOld + ''' '
+		     END
+		  ELSE
+		     BEGIN
+				SET @sSQL = 'INSERT INTO ' + @NombreTabla + ' (Item, ' + @sSQL + ') '
+				  		  + 'SELECT ''' + @ItemNew + ''', ' + @sSQL + ' '
+						  + 'FROM ' + @NombreTabla + ' '
+						  + 'WHERE Item = ''' + @ItemOld  + ''' '
+			 END
+		  EXECUTE(@sSQLDel);
+		  EXECUTE(@sSQL);
+	   END
+END

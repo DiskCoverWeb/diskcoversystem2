@@ -1,0 +1,32 @@
+CREATE PROCEDURE [dbo].[sp_Reindexar_Periodo] 
+@Item AS VARCHAR(3), @Periodo VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 14/09/2020
+  FECHA MODIFICACION: 30/03/2021
+  DESCIPCION		: Reindexa el periodo contable que ingresa como parametro
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Programacion de procesos
+	UPDATE Transacciones
+	SET Procesado = 0, Saldo = 0
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+
+	UPDATE Trans_SubCtas
+	SET Procesado = 0, Saldo_MN = 0
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+	
+	UPDATE Trans_Kardex
+	SET Procesado = 0 
+	WHERE Periodo = @Periodo
+	AND Item = @Item
+
+	EXEC sp_Eliminar_Nulos 'Transacciones'
+	EXEC sp_Eliminar_Nulos 'Trans_SubCtas'
+	EXEC sp_Eliminar_Nulos 'Trans_Kardex'
+END

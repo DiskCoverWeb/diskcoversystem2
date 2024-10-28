@@ -1,0 +1,635 @@
+CREATE PROCEDURE [dbo].[sp_Reporte_Rol_Pagos_Colectivo]
+@Item VARCHAR(3), @Periodo VARCHAR(10), @CodigoUsuario VARCHAR(10), @FechaIniRol VARCHAR(10), @FechaFinRol VARCHAR(10), @GrupoRol VARCHAR(15), @OrdenAlfabetico BIT,
+@ListaCampos VARCHAR(MAX) OUTPUT, @SumatoriaCampos VARCHAR(MAX) OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 20/01/2023
+  FECHA MODIFICACION: 20/01/2023
+  DESCIPCION		: Genera el Rol de Pagos Colectivo, donde se resume el rol de pagos individual en forma colecta y horizontal
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @NumMes TINYINT;
+	DECLARE @NoId INT, @Cont INT;
+	DECLARE @TotalMes MONEY;
+	DECLARE @Porc REAL=0, @IESS_Per REAL=0, @IESS_Pat REAL=0, @IESS_Ext REAL=0, @Sueldo_Basico REAL=0, @Canasta_Ba REAL=0;
+	DECLARE @Codigo VARCHAR(21), @Anio VARCHAR(4), @Campo VARCHAR(50), @Cta_Impuesto_Renta_Empleado VARCHAR(18)='0', @TipoCta VARCHAR(2);
+	DECLARE @Campos_Tabla NVARCHAR(MAX) = '', @DatosCero NVARCHAR(MAX)='', @Sumatoria NVARCHAR(MAX)='', @sSQL NVARCHAR(MAX);
+	
+ -- Programacion de procesos
+	SET @Cta_Impuesto_Renta_Empleado = dbo.fn_Leer_Seteos_Ctas(@Item, @Periodo, 'Cta_Impuesto_Renta_Empleado');
+
+ 	SELECT @IESS_Per = Porc/100 FROM Tabla_Por_ICE_IVA WHERE Codigo = 'IESS_Per' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+	SELECT @IESS_Pat = Porc/100 FROM Tabla_Por_ICE_IVA WHERE Codigo = 'IESS_Pat' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+	SELECT @IESS_Ext = Porc/100 FROM Tabla_Por_ICE_IVA WHERE Codigo = 'IESS_ExtC' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+
+	SELECT @Canasta_Ba = Porc FROM Tabla_Por_ICE_IVA WHERE Codigo = 'Canasta_Ba' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+	SELECT @Sueldo_Basico = Porc FROM Tabla_Por_ICE_IVA WHERE Codigo = 'Sueldo_Bas' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+
+	UPDATE Catalogo_Cuentas 
+	SET Cod_Rol_Pago = CR.Cod_Rol_Pago, I_E_Emp = CR.I_E 
+	FROM Catalogo_Cuentas AS CC, Catalogo_Rol_Rubros As CR 
+	WHERE CC.Item = @Item
+	AND CC.Periodo = @Periodo
+	AND CC.DG = 'D'
+	AND CC.Item = CR.Item 
+	AND CC.Periodo = CR.Periodo 
+	AND CC.Codigo = CR.Cta;
+
+	SET @ListaCampos = 'No,C_I,Nombre_Empleado,Fecha_Ing,Grupo_Rol,Dias,SN,FR,ExtC,Horas,Horas_Ext,Cheque_No,Salario,Hor_Ext,Decimo_III_G,Decimo_IV_G,Fon_Res_G,'
+
+	SET @sSQL = 'CREATE TABLE Reporte_Rol_Colectivo (
+			     No INT NULL, 
+				 C_I NVARCHAR(10) NULL, 
+				 Nombre_Empleado NVARCHAR(60) NULL, 
+				 Fecha_Ing DATETIME NULL, 
+				 Grupo_Rol NVARCHAR(30) NULL, 
+				 Dias TINYINT NULL, 
+				 SN NVARCHAR(1) NULL, 
+				 FR BIT NULL, 
+				 ExtC BIT NULL, 
+				 Horas FLOAT NULL, 
+				 Horas_Ext TINYINT NULL, 
+				 Cheque_No NVARCHAR(16) NULL, 
+				 Salario MONEY NULL, 
+				 Hor_Ext MONEY NULL, 
+				 Decimo_III_G MONEY NULL, 
+				 Decimo_IV_G MONEY NULL, 
+				 Fon_Res_G MONEY NULL, '
+
+ -- Declaracion de Cursor para Ingresos Rol de Pagos
+ ---------------------------------------------------
+	DECLARE cIngRolPagos CURSOR FOR
+		SELECT Cod_Rol_Pago
+		FROM Catalogo_Cuentas
+		WHERE Item <> '000'
+		AND Periodo = @Periodo
+		AND Cod_Rol_Pago <> '.'
+		AND I_E_Emp = 'I'
+		GROUP BY Cod_Rol_Pago
+		ORDER BY Cod_Rol_Pago
+ -- Apertura del cursor
+	OPEN cIngRolPagos
+	FETCH NEXT FROM cIngRolPagos INTO @Campo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  IF CHARINDEX(@Campo+' ', @sSQL)=0 
+		 BEGIN
+ 			SET @sSQL = @sSQL + @Campo + ' MONEY NULL, '
+			SET @ListaCampos = @ListaCampos + @Campo + ','
+			SET @Sumatoria = @Sumatoria + @Campo + '+'
+			SET @DatosCero = @DatosCero + @Campo + ' = 0,'
+		 END
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cIngRolPagos INTO @Campo
+	END
+ -- Cierre del cursor
+	CLOSE cIngRolPagos
+ -- Liberar los recursos
+	DEALLOCATE cIngRolPagos
+
+ -- Declaracion de Cursor para Ingresos Rol de Pagos por CxP
+ -----------------------------------------------------------
+	DECLARE cIngRolPagosCxP CURSOR FOR
+		SELECT CxP.TC, 'C'+CxP.TC+'_'+REPLACE(CxP.Cta, '.', '_')
+		FROM  Catalogo_CxCxP AS CxP, Catalogo_Rol_Pagos AS CRP 
+		WHERE CxP.Periodo = @Periodo
+		AND CxP.Item = @Item
+		AND CxP.TC = 'P'
+		AND CXP.Item = CRP.Item
+		and CxP.Periodo = CRP.Periodo 
+		AND CxP.Codigo = CRP.Codigo
+		GROUP BY CxP.TC, CxP.Cta
+		ORDER BY CxP.TC, CxP.Cta
+ -- Apertura del cursor
+	OPEN cIngRolPagosCxP
+	FETCH NEXT FROM cIngRolPagosCxP INTO @TipoCta, @Campo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  IF CHARINDEX(@Campo+' ', @sSQL)=0 
+		 BEGIN
+			SET @sSQL = @sSQL + @Campo + ' MONEY NULL, '
+			SET @ListaCampos = @ListaCampos + @Campo + ','
+			SET @Sumatoria = @Sumatoria + @Campo + '+'
+			SET @DatosCero = @DatosCero + @Campo + ' = 0,'
+		 END
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cIngRolPagosCxP INTO @TipoCta, @Campo
+	END
+ -- Cierre del cursor
+	CLOSE cIngRolPagosCxP
+ -- Liberar los recursos
+	DEALLOCATE cIngRolPagosCxP
+
+    SET @ListaCampos = @ListaCampos + 'I,Porc_Apo_Per,Aporte_Per,Porc_Ext_C,Aporte_Ext_C,'
+	SET @sSQL = @sSQL + '
+				I NVARCHAR(1) NULL, 
+				Porc_Apo_Per REAL NULL, 
+				Aporte_Per MONEY NULL, 
+				Porc_Ext_C REAL NULL, 
+				Aporte_Ext_C MONEY NULL, '
+    
+ -- Declaracion de Cursor para Egresos Rol de Pagos
+ --------------------------------------------------
+	DECLARE cEgrRolPagos CURSOR FOR
+		SELECT Cod_Rol_Pago
+		FROM Catalogo_Cuentas
+		WHERE Item <> '000'
+		AND Periodo = @Periodo
+		AND Cod_Rol_Pago <> '.'
+		AND I_E_Emp = 'E'
+		GROUP BY Cod_Rol_Pago
+		ORDER BY Cod_Rol_Pago
+ -- Apertura del cursor
+	OPEN cEgrRolPagos
+	FETCH NEXT FROM cEgrRolPagos INTO @Campo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  IF CHARINDEX(@Campo+' ', @sSQL)=0 
+		 BEGIN
+			SET @sSQL = @sSQL + @Campo + ' MONEY NULL, '
+			SET @ListaCampos = @ListaCampos + @Campo + ','
+			SET @Sumatoria = @Sumatoria + @Campo + '+'
+			SET @DatosCero = @DatosCero + @Campo + ' = 0,'
+		 END
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cEgrRolPagos INTO @Campo
+	END
+ -- Cierre del cursor
+	CLOSE cEgrRolPagos
+ -- Liberar los recursos
+	DEALLOCATE cEgrRolPagos
+
+ -- Campo para Egreso del IMPUESTO A LA RENTA EMPLEADOS si fuera el caso
+    SET @Campo = 'Imp_Renta'
+	SET @sSQL = @sSQL + @Campo + ' MONEY NULL, '
+	SET @ListaCampos = @ListaCampos + @Campo + ','
+	SET @Sumatoria = @Sumatoria + @Campo + '+'
+	SET @DatosCero = @DatosCero + @Campo + ' = 0,'
+
+ -- Declaracion de Cursor para Egresos Rol de Pagos por CxC
+ -----------------------------------------------------------
+	DECLARE cIngRolPagosCxC CURSOR FOR
+		SELECT CxP.TC, 'C'+CxP.TC+'_'+REPLACE(CxP.Cta, '.', '_') 
+		FROM  Catalogo_CxCxP AS CxP, Catalogo_Rol_Pagos AS CRP 
+		WHERE CxP.Periodo = @Periodo
+		AND CxP.Item = @Item
+		AND CxP.TC = 'C'
+		AND CXP.Item = CRP.Item
+		and CxP.Periodo = CRP.Periodo 
+		AND CxP.Codigo = CRP.Codigo
+		GROUP BY CxP.TC, CxP.Cta
+		ORDER BY CxP.TC, CxP.Cta
+ -- Apertura del cursor
+	OPEN cIngRolPagosCxC
+	FETCH NEXT FROM cIngRolPagosCxC INTO @TipoCta, @Campo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  IF CHARINDEX(@Campo+' ', @sSQL)=0 
+		 BEGIN
+			SET @sSQL = @sSQL + @Campo + ' MONEY NULL, '
+			SET @ListaCampos = @ListaCampos + @Campo + ','
+			SET @Sumatoria = @Sumatoria + @Campo + '+'
+			SET @DatosCero = @DatosCero + @Campo + ' = 0,'
+		 END
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cIngRolPagosCxC INTO @TipoCta, @Campo
+	END
+ -- Cierre del cursor
+	CLOSE cIngRolPagosCxC
+ -- Liberar los recursos
+	DEALLOCATE cIngRolPagosCxC
+
+ -- Datos Netamente informativos
+ -------------------------------
+    SET @ListaCampos = @ListaCampos + 'II,Fon_Res_P,Porc_Ret,Retencion_No,Porc_Apo_Pat,Aporte_Pat,Decimo_III,Decimo_IV,Fon_Res_P,Vacaciones,Neto_Recibir,Firma,Fecha,Codigo,CodigoU,Item,ID'
+	SET @sSQL = @sSQL + '
+	          II NVARCHAR(1) NULL, 
+			  Porc_Ret REAL NULL, 
+			  Retencion_No INT NULL, 
+			  Porc_Apo_Pat REAL NULL, 
+			  Aporte_Pat MONEY NULL, 
+	          Decimo_III MONEY NULL, 
+			  Decimo_IV MONEY NULL, 
+			  Fon_Res_P MONEY NULL, 
+			  Vacaciones MONEY NULL, 
+	          Neto_Recibir MONEY NULL, 
+			  Firma NVARCHAR(20) NULL, 
+			  Fecha DATETIME NULL, 
+			  Codigo NVARCHAR(10) NULL, 
+			  CodigoU NVARCHAR(10) NULL, 
+			  Item NVARCHAR(10) NULL,
+			  ID INT IDENTITY NOT NULL PRIMARY KEY);'
+
+	SET @Campos_Tabla = dbo.fn_Leer_Campos_Tabla ('Reporte_Rol_Colectivo') 
+	IF @Campos_Tabla <> @ListaCampos 
+	   BEGIN
+		  IF dbo.fn_Existe_Tabla('Reporte_Rol_Colectivo') <> 0 EXECUTE('DROP TABLE Reporte_Rol_Colectivo;')
+		  EXECUTE(@sSQL)
+	   END 
+	ELSE EXECUTE('DELETE FROM Reporte_Rol_Colectivo WHERE Item = ''' + @Item + ''' AND CodigoU = ''' + @CodigoUsuario + ''';')
+ -- ROW_NUMBER() OVER(ORDER BY CR.Grupo_Rol, C.Cliente)		    
+	SET @sSQL = 'INSERT INTO Reporte_Rol_Colectivo (No, I, II, Firma, Nombre_Empleado, Fecha_Ing, Grupo_Rol, SN, FR, ExtC, C_I, Salario, Codigo, Item, CodigoU, Fecha) 
+				 SELECT 0, ''|'', ''|'', '''', C.Cliente, CR.Fecha, CR.Grupo_Rol, CR.SN, CR.Pagar_Fondo_Reserva, CR.ExtC, C.CI_RUC, CR.Salario, CR.Codigo, CR.Item, ''' + @CodigoUsuario + ''', ''' + @FechaFinRol + ''' 
+				 FROM Clientes As C, Catalogo_Rol_Pagos As CR, Catalogo_Rol_Cuentas As CRC 
+				 WHERE CR.Item = ''' + @Item + ''' 
+				 AND CR.Periodo = ''' + @Periodo + ''' 
+				 AND CR.Fecha <= ''' + @FechaFinRol + ''' 
+				 AND CR.T = ''N'' 
+				 AND CR.Salario > 0 '
+	IF @GrupoRol <> 'TODOS' SET @sSQL = @sSQL + 'AND CR.Grupo_Rol = ''' + @GrupoRol + ''' '
+	SET	@sSQL = @sSQL + '
+				AND CR.Item = CRC.Item 
+				AND CR.Periodo = CRC.Periodo 
+				AND CR.Codigo = C.Codigo 
+				AND CR.Grupo_Rol = CRC.Grupo_Rol 
+				GROUP BY C.Cliente, CR.Fecha, CR.Grupo_Rol, CR.SN, CR.Pagar_Fondo_Reserva, CR.ExtC, C.CI_RUC, CR.Salario, CR.Codigo, CR.Item
+				UNION 
+				SELECT 0, ''|'', ''|'', '''', C.Cliente, CR.Fecha, CR.Grupo_Rol, CR.SN, CR.Pagar_Fondo_Reserva, CR.ExtC, C.CI_RUC, CR.Salario, CR.Codigo, CR.Item, ''' + @CodigoUsuario + ''', ''' + @FechaFinRol + ''' 
+				FROM Clientes As C, Catalogo_Rol_Pagos As CR, Catalogo_Rol_Cuentas As CRC 
+				WHERE CR.Item = ''' + @Item + ''' 
+				AND CR.Periodo = ''' + @Periodo + ''' 
+				AND CR.FechaC BETWEEN ''' + @FechaIniRol + ''' AND ''' + @FechaFinRol + ''' 
+				AND CR.T = ''R'' 
+				AND CR.Salario > 0 '
+	IF @GrupoRol <> 'TODOS' SET @sSQL = @sSQL + 'AND CR.Grupo_Rol = ''' + @GrupoRol + ''' '
+	SET	@sSQL = @sSQL + '
+				AND CR.Item = CRC.Item 
+				AND CR.Periodo = CRC.Periodo 
+				AND CR.Codigo = C.Codigo 
+				AND CR.Grupo_Rol = CRC.Grupo_Rol 
+				GROUP BY C.Cliente, CR.Fecha, CR.Grupo_Rol, CR.SN, CR.Pagar_Fondo_Reserva, CR.ExtC, C.CI_RUC, CR.Salario, CR.Codigo, CR.Item '
+	EXECUTE(@sSQL)
+
+	SET @Cont=1;
+ -- Declaracion de Cursor para las Trans_SubCtas
+	SET @sSQL = 'DECLARE cRolColectivo CURSOR GLOBAL FOR
+				 SELECT No, Codigo
+				 FROM Reporte_Rol_Colectivo
+				 WHERE Item = ''' + @Item + '''
+				 AND CodigoU = ''' + @CodigoUsuario + ''' '
+    IF @OrdenAlfabetico <> 0 SET @sSQL = @sSQL + 'ORDER BY Nombre_Empleado FOR UPDATE ' ELSE SET @sSQL = @sSQL + 'ORDER BY Grupo_Rol, Nombre_Empleado FOR UPDATE ';
+ -- Apertura del cursor
+ 	EXEC sp_executesql @sSQL
+	OPEN cRolColectivo
+	FETCH NEXT FROM cRolColectivo INTO @NoId, @Codigo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	   SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+ 					SET No = ' + dbo.fn_Num_Strg(@Cont) + '
+	                WHERE CURRENT OF cRolColectivo '
+	   EXEC sp_executesql @sSQL
+
+	   SET @Cont = @Cont + 1;
+	-- Siguiente registro  
+	   FETCH NEXT FROM cRolColectivo INTO @NoId, @Codigo
+	END
+ -- Cierre del cursor
+	CLOSE cRolColectivo
+ -- Liberar los recursos
+	DEALLOCATE cRolColectivo
+
+ -- Insertamos Rubros para Totalizar cada campo del Rol
+	SET @sSQL = 'INSERT INTO Reporte_Rol_Colectivo (No,I,II,Firma, Nombre_Empleado, Fecha_Ing, Grupo_Rol, SN, FR, ExtC, C_I, Salario, Codigo, Item, CodigoU, Fecha) 
+	             VALUES (999,''|'', ''|'', '''',''TOTAL ROL PAGOS'', ''' + @FechaFinRol + ''', ''z=->'', 0, 0, 0, ''.'', 0, ''_'', ''' + @Item + ''',''' + @CodigoUsuario + ''', ''' + @FechaFinRol + ''') '
+    EXECUTE(@sSQL)
+
+	SET	@sSQL = 'UPDATE Reporte_Rol_Colectivo 
+  			     SET Porc_Apo_Pat = ' + dbo.fn_Num_Real_Strg(@IESS_Per + @IESS_Pat) + ' 
+				 WHERE Item  = ''' + @Item + ''' 
+				 AND CodigoU = ''' + @CodigoUsuario + ''' 
+			     AND Fecha = ''' + @FechaFinRol + ''' 
+				 AND SN = ''2'' '
+    EXECUTE(@sSQL)
+
+	SET	@sSQL = 'UPDATE Reporte_Rol_Colectivo 
+  				 SET Porc_Apo_Per = ' + dbo.fn_Num_Real_Strg(@IESS_Per) + ', Porc_Apo_Pat = ' + dbo.fn_Num_Real_Strg(@IESS_Pat) + ' 
+				 WHERE Item  = ''' + @Item + ''' 
+				 AND CodigoU = ''' + @CodigoUsuario + ''' 
+				 AND Fecha = ''' + @FechaFinRol + ''' 
+				 AND SN = ''1'' '
+    EXECUTE(@sSQL)
+
+	SET	@sSQL = 'UPDATE Reporte_Rol_Colectivo 
+  				 SET Porc_Ext_C = ' + dbo.fn_Num_Real_Strg(@IESS_Ext) + ' 
+				 WHERE Item  = ''' + @Item + ''' 
+				 AND CodigoU = ''' + @CodigoUsuario + ''' 
+				 AND Fecha = ''' + @FechaFinRol + ''' 
+				 AND ExtC <> 0 '
+    EXECUTE(@sSQL)
+
+	EXEC dbo.sp_Eliminar_Nulos 'Reporte_Rol_Colectivo'
+
+ -- Declaracion de Cursor para Ingresos Rol de Pagos
+	DECLARE cDatosPer CURSOR FOR
+		SELECT Cod_Rol_Pago 
+		FROM Trans_Rol_de_Pagos 
+		WHERE Fecha_D >= @FechaIniRol
+		AND Fecha_H <= @FechaFinRol
+		AND Item = @Item
+		AND Periodo = @Periodo
+		AND Tipo_Rubro = 'PER' 
+		AND Ingresos > 0 
+		AND Dias > 0
+		GROUP BY Cod_Rol_Pago
+		ORDER BY Cod_Rol_Pago
+ -- Apertura del cursor
+	OPEN cDatosPer
+	FETCH NEXT FROM cDatosPer INTO @Codigo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	   SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+	  				SET ' + @Codigo + ' = TRP.Ingresos, Dias = TRP.Dias, Horas = TRP.Horas 
+				    FROM Reporte_Rol_Colectivo AS RRC, Trans_Rol_de_Pagos AS TRP 
+				    WHERE TRP.Fecha_D >= ''' + @FechaIniRol + ''' 
+				    AND TRP.Fecha_H <= ''' + @FechaFinRol + ''' 
+				    AND TRP.Item  = ''' + @Item + ''' 
+				    AND TRP.Periodo = ''' + @Periodo + ''' 
+				    AND TRP.Cod_Rol_Pago = ''' + @codigo + ''' 
+				    AND TRP.Tipo_Rubro = ''PER'' 
+				    AND TRP.Dias > 0 
+				    AND TRP.Ingresos > 0 
+				    AND RRC.CodigoU = ''' + @CodigoUsuario + ''' 
+				    AND RRC.Item = TRP.Item 
+				    AND RRC.Codigo = TRP.Codigo 
+				    AND RRC.Fecha = TRP.Fecha_H '
+	   EXECUTE(@sSQL)
+
+	   SET @sSQL = 'UPDATE Reporte_Rol_Colectivo
+				    SET ' + @Codigo + ' = (SELECT SUM(' + @Codigo + ') 
+				    						FROM Reporte_Rol_Colectivo 
+				    		                WHERE Item = ''' + @Item + ''' 
+				    						AND CodigoU = ''' + @CodigoUsuario + ''' 
+				    						AND No <> 999) 
+				    WHERE Item = ''' + @Item + ''' 
+				    AND CodigoU = ''' + @CodigoUsuario + ''' 
+				    AND No = 999 '
+		EXECUTE(@sSQL)
+
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cDatosPer INTO @Codigo
+	END
+ -- Cierre del cursor
+	CLOSE cDatosPer
+ -- Liberar los recursos
+	DEALLOCATE cDatosPer
+ --	print REPLICATE('-',100)
+
+ -- Declaracion de Cursor para Ingresos Rol de Pagos
+	DECLARE cDatosPer CURSOR FOR
+		SELECT Cod_Rol_Pago 
+		FROM Trans_Rol_de_Pagos 
+		WHERE Fecha_D >= @FechaIniRol
+		AND Fecha_H <= @FechaFinRol
+		AND Item = @Item
+		AND Periodo = @Periodo
+		AND Tipo_Rubro = 'PER' 
+		AND Ingresos > 0 
+		AND Dias = 0
+		GROUP BY Cod_Rol_Pago
+		ORDER BY Cod_Rol_Pago
+ -- Apertura del cursor
+	OPEN cDatosPer
+	FETCH NEXT FROM cDatosPer INTO @Codigo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+				   SET ' + @Codigo + ' = (SELECT SUM(TRP.Ingresos) 
+					                      FROM Trans_Rol_de_Pagos AS TRP 
+										  WHERE TRP.Fecha_D >= ''' + @FechaIniRol + ''' 
+										  AND TRP.Fecha_H <= ''' + @FechaFinRol + ''' 
+										  AND TRP.Item  = ''' + @Item + ''' 
+										  AND TRP.Periodo = ''' + @Periodo + ''' 
+										  AND TRP.Cod_Rol_Pago = ''' + @codigo + ''' 
+										  AND TRP.Tipo_Rubro = ''PER'' 
+										  AND TRP.Ingresos > 0 
+										  AND TRP.Dias = 0 
+										  AND Reporte_Rol_Colectivo.CodigoU = ''' + @CodigoUsuario + ''' 
+										  AND TRP.Item = Reporte_Rol_Colectivo.Item 
+										  AND TRP.Codigo = Reporte_Rol_Colectivo.Codigo 
+										  AND TRP.Fecha_H = Reporte_Rol_Colectivo.Fecha) 
+				   WHERE Item = ''' + @Item + ''' 
+				   AND CodigoU = ''' + @CodigoUsuario + ''' '
+	  EXECUTE(@sSQL)
+
+	  SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+				   SET ' + @Codigo + ' = 0 
+				   WHERE Item = ''' + @Item + ''' 
+				   AND CodigoU = ''' + @CodigoUsuario + ''' 
+				   AND ' + @Codigo + ' IS NULL '
+	  EXECUTE(@sSQL)
+
+	  SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+				   SET ' + @Codigo + ' = (SELECT SUM(' + @Codigo + ') 
+				   						FROM Reporte_Rol_Colectivo 
+				   		                WHERE Item = ''' + @Item + ''' 
+				   						AND CodigoU = ''' + @CodigoUsuario + ''' 
+				   						AND No <> 999) 
+				   WHERE Item = ''' + @Item + ''' 
+				   AND CodigoU = ''' + @CodigoUsuario + ''' 
+				   AND No = 999 '
+	  EXECUTE(@sSQL)
+   -- Siguiente registro  
+	  FETCH NEXT FROM cDatosPer INTO @Codigo
+	END
+ -- Cierre del cursor
+	CLOSE cDatosPer
+ -- Liberar los recursos
+	DEALLOCATE cDatosPer
+
+ -- Declaracion de Cursor para Egresos Rol de Pagos
+	DECLARE cDatosPer CURSOR FOR
+		SELECT Cod_Rol_Pago 
+		FROM Trans_Rol_de_Pagos 
+		WHERE Fecha_D >= @FechaIniRol
+		AND Fecha_H <= @FechaFinRol
+		AND Item = @Item
+		AND Periodo = @Periodo
+		AND Tipo_Rubro = 'PER' 
+		AND Egresos > 0 
+		GROUP BY Cod_Rol_Pago
+		ORDER BY Cod_Rol_Pago
+ -- Apertura del cursor
+	OPEN cDatosPer
+	FETCH NEXT FROM cDatosPer INTO @Codigo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	    IF @Codigo ='Neto_Recibir'
+		   BEGIN
+			SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+						 SET ' + @Codigo + ' = TRP.Egresos, Cheque_No = dbo.fn_SinEspacios_Der(TRP.Cheq_Dep_Transf,'' '') 
+						 FROM Reporte_Rol_Colectivo AS RRC, Trans_Rol_de_Pagos AS TRP 
+						 WHERE TRP.Fecha_D >= ''' + @FechaIniRol + ''' 
+						 AND TRP.Fecha_H <= ''' + @FechaFinRol + ''' 
+						 AND TRP.Item  = ''' + @Item + ''' 
+						 AND TRP.Periodo = ''' + @Periodo + ''' 
+					     AND TRP.Cod_Rol_Pago = ''' + @codigo + ''' 
+						 AND TRP.Tipo_Rubro = ''PER'' 
+						 AND RRC.CodigoU = ''' + @CodigoUsuario + ''' 
+						 AND RRC.Item = TRP.Item 
+						 AND RRC.Codigo = TRP.Codigo 
+						 AND RRC.Fecha = TRP.Fecha_H '
+			EXECUTE(@sSQL)
+		   END	
+	    ELSE
+		   BEGIN
+			SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+					     SET ' + @Codigo + ' = (SELECT SUM(TRP.Egresos) 
+					                            FROM Trans_Rol_de_Pagos AS TRP 
+					     						WHERE TRP.Fecha_D >= ''' + @FechaIniRol + ''' 
+				  	     						AND TRP.Fecha_H <= ''' + @FechaFinRol + ''' 
+					     						AND TRP.Item  = ''' + @Item + ''' 
+					     						AND TRP.Periodo = ''' + @Periodo + ''' 
+					     						AND TRP.Cod_Rol_Pago = ''' + @codigo + ''' 
+					     						AND TRP.Tipo_Rubro = ''PER'' 
+					     						AND TRP.Egresos > 0 
+					     						AND Reporte_Rol_Colectivo.CodigoU = ''' + @CodigoUsuario + ''' 
+					     						AND TRP.Item = Reporte_Rol_Colectivo.Item 
+					     						AND TRP.Codigo = Reporte_Rol_Colectivo.Codigo 
+					     						AND TRP.Fecha_H = Reporte_Rol_Colectivo.Fecha) 
+					     WHERE Item = ''' + @Item + ''' 
+					     AND CodigoU = ''' + @CodigoUsuario + ''' '
+			EXECUTE(@sSQL)
+
+			SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+					     SET ' + @Codigo + ' = 0 
+					     WHERE Item = ''' + @Item + ''' 
+					     AND CodigoU = ''' + @CodigoUsuario + ''' 
+					     AND ' + @Codigo + ' IS NULL '
+			EXECUTE(@sSQL)
+		   END
+		SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+				     SET ' + @Codigo + ' = (SELECT SUM(' + @Codigo + ') 
+				     						FROM Reporte_Rol_Colectivo 
+				     		                WHERE Item = ''' + @Item + ''' 
+				     						AND CodigoU = ''' + @CodigoUsuario + ''' 
+				     						AND No <> 999) 
+				     WHERE Item = ''' + @Item + ''' 
+				     AND CodigoU = ''' + @CodigoUsuario + ''' 
+				     AND No = 999 '
+		EXECUTE(@sSQL)
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cDatosPer INTO @Codigo
+	END
+ -- Cierre del cursor
+	CLOSE cDatosPer
+ -- Liberar los recursos
+	DEALLOCATE cDatosPer
+
+ -- Declaracion de Cursor para Egresos Rol de Pagos
+	DECLARE cDatosPatPro CURSOR FOR
+		SELECT Cod_Rol_Pago 
+		FROM Trans_Rol_de_Pagos 
+		WHERE Fecha_D >= @FechaIniRol
+		AND Fecha_H <= @FechaFinRol
+		AND Item = @Item
+		AND Periodo = @Periodo
+		AND Tipo_Rubro IN ('PAT','PRO')
+		AND Egresos > 0 
+		GROUP BY Cod_Rol_Pago
+		ORDER BY Cod_Rol_Pago
+ -- Apertura del cursor
+	OPEN cDatosPatPro
+	FETCH NEXT FROM cDatosPatPro INTO @Codigo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+				     SET ' + @Codigo + ' = TRP.Egresos 
+				     FROM Reporte_Rol_Colectivo AS RRC, Trans_Rol_de_Pagos AS TRP 
+				     WHERE TRP.Fecha_D >= ''' + @FechaIniRol + ''' 
+				     AND TRP.Fecha_H <= ''' + @FechaFinRol + ''' 
+				     AND TRP.Item  = ''' + @Item + ''' 
+				     AND TRP.Periodo = ''' + @Periodo + ''' 
+				     AND TRP.Cod_Rol_Pago = ''' + @codigo + ''' 
+				     AND TRP.Tipo_Rubro IN (''PAT'',''PRO'') 
+				     AND TRP.Egresos > 0 
+				     AND RRC.CodigoU = ''' + @CodigoUsuario + ''' 
+				     AND RRC.Item = TRP.Item 
+				     AND RRC.Codigo = TRP.Codigo 
+				     AND RRC.Fecha = TRP.Fecha_H '
+		EXECUTE(@sSQL)
+
+		SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+				     SET ' + @Codigo + ' = (SELECT SUM(' + @Codigo + ') 
+				     						FROM Reporte_Rol_Colectivo 
+				     		                WHERE Item = ''' + @Item + ''' 
+				      						AND CodigoU = ''' + @CodigoUsuario + ''' 
+				      						AND No <> 999) 
+				     WHERE Item = ''' + @Item + ''' 
+				     AND CodigoU = ''' + @CodigoUsuario + ''' 
+				     AND No = 999 '
+		EXECUTE(@sSQL)
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cDatosPatPro INTO @Codigo
+	END
+ -- Cierre del cursor
+	CLOSE cDatosPatPro
+ -- Liberar los recursos
+	DEALLOCATE cDatosPatPro
+
+    EXEC dbo.sp_Eliminar_Nulos 'Reporte_Rol_Colectivo'
+
+	CREATE TABLE #Valor_Mes(TotalMes MONEY);
+
+ -- Parametros de salida del SP
+    SET @ListaCampos = 'No,C_I,Nombre_Empleado,Fecha_Ing,Grupo_Rol,Dias,SN,FR,ExtC,Horas,Horas_Ext,Cheque_No,'
+	SET @Sumatoria = 'Grupo_Rol,'
+
+ -- Declaracion de Cursor 
+	DECLARE cCampoX CURSOR FOR
+		SELECT COLUMN_NAME, DATA_TYPE
+		FROM Information_Schema.Columns
+		WHERE TABLE_NAME = 'Reporte_Rol_Colectivo'
+ -- Apertura del cursor
+	OPEN cCampoX
+	FETCH NEXT FROM cCampoX INTO @campo, @Codigo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	    DELETE FROM #Valor_Mes
+
+		IF @Campo = 'I' SET @ListaCampos = @ListaCampos + 'I,'
+		IF @Campo = 'II' SET @ListaCampos = @ListaCampos + 'II,'
+		IF @Campo = 'Porc_Apo_Per' SET @ListaCampos = @ListaCampos + 'Porc_Apo_Per,'
+		IF @Campo = 'Porc_Ext_C' SET @ListaCampos = @ListaCampos + 'Porc_Ext_C,'
+		IF @Campo = 'Porc_Ret' SET @ListaCampos = @ListaCampos + 'Porc_Ret,'
+		IF @Campo = 'Retencion_No' SET @ListaCampos = @ListaCampos + 'Retencion_No,'
+		IF @Campo = 'Porc_Apo_Pat' SET @ListaCampos = @ListaCampos + 'Porc_Apo_Pat,'
+		IF @Codigo ='money'
+		   BEGIN
+			 SET @sSQL = 'INSERT INTO #Valor_Mes 
+						  SELECT ' + @Campo + ' 
+						  FROM Reporte_Rol_Colectivo 
+						  WHERE Item = ''' + @Item + ''' 
+						  AND CodigoU = ''' + @CodigoUsuario + ''' 
+						  AND No = 999 '
+		     EXECUTE(@sSQL)
+
+			 SET @TotalMes = (SELECT TotalMes FROM #Valor_Mes)
+	         IF @TotalMes <> 0 
+			    BEGIN
+			      SET @ListaCampos = @ListaCampos + @Campo + ','
+				  SET @Sumatoria = @Sumatoria + 'SUM(' + @Campo + ') As ' + @Campo + '_,' 
+			    END
+		   END
+		FETCH NEXT FROM cCampoX INTO @campo, @Codigo
+	END
+ -- Cierre del cursor
+	CLOSE cCampoX
+ -- Liberar los recursos
+	DEALLOCATE cCampoX
+
+	SET @sSQL = 'UPDATE Reporte_Rol_Colectivo 
+				 SET I = ''|'', II = ''|'' 
+				 WHERE Item = ''' + @Item + ''' 
+				 AND CodigoU = ''' + @CodigoUsuario + ''' '
+	EXECUTE(@sSQL)
+
+	DROP TABLE #Valor_Mes;
+	
+	SET @ListaCampos = @ListaCampos + 'Codigo, Firma'
+	SET @SumatoriaCampos = SUBSTRING(@Sumatoria,1,LEN(@Sumatoria)-1) 
+--	PRINT @ListaCampos;
+END

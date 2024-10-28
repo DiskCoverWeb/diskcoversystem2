@@ -1,0 +1,290 @@
+CREATE PROCEDURE [dbo].[sp_Listar_Comprobante] 
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @CodigoUsuario AS VARCHAR(10), @TransNo AS INT, @TP AS VARCHAR(2), @Numero AS INT,
+@RetNueva AS BIT OUTPUT, @SerieR AS VARCHAR(6) OUTPUT, @Retencion AS INT OUTPUT, @AutorizacionR AS VARCHAR(49) OUTPUT, 
+@CtasModificar AS VARCHAR(MAX) OUTPUT, @CodigoInvModificar AS VARCHAR(MAX) OUTPUT, @LnNo AS SMALLINT OUTPUT, @LnSCNo AS SMALLINT OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 29/07/2022
+  FECHA MODIFICACION: 25/04/2023
+  DESCIPCION		: Inserta las transacciones para modificar o copiar un comprobante
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaracion de variables necesarias 
+    DECLARE @sSQL VARCHAR(MAX), @Fecha VARCHAR(10), @Cta VARCHAR(18), @Codigo VARCHAR(10), @CodigoInv VARCHAR(25)
+	DECLARE @SC_No INT, @Cont INT
+
+ -- Obtenemos datos importantes del Comprbante
+    SELECT @Fecha = CONVERT(VARCHAR,Fecha,12)
+	FROM Comprobantes
+    WHERE Numero = @Numero
+    AND TP = @TP
+    AND Item = @Item
+    AND Periodo = @Periodo;
+
+	SET @LnNo=0;
+	SET @LnSCNo=0;
+	SET @RetNueva=1;
+	SET @SerieR='.';
+	SET @Retencion=0;
+	SET @AutorizacionR='.';
+	SET @CtasModificar='';
+	SET @CodigoInvModificar='';
+
+ -- Llenar Cuentas de Transacciones
+    SET @sSQL = 'INSERT INTO Asiento (TC,CODIGO, CUENTA, ME, PARCIAL_ME, DEBE, HABER, CHEQ_DEP, EFECTIVIZAR, DETALLE, CODIGO_C, Item, T_No, CodigoU, A_No) '
+         + 'SELECT Ca.TC,T.Cta, Ca.Cuenta, Ca.ME, Parcial_ME, Debe, Haber, Cheq_Dep, T.Fecha_Efec, T.Detalle, T.Codigo_C, Ca.Item, ' + CAST(@TransNo As VARCHAR) + ','
+         + ' ''' + @CodigoUsuario + ''', ROW_NUMBER() OVER(ORDER BY Cta ASC) '
+         + 'FROM Transacciones As T, Catalogo_Cuentas As Ca '
+         + 'WHERE T.Numero = ' + CAST(@Numero As VARCHAR) + ' '
+         + 'AND T.TP = ''' + @TP + ''' '
+         + 'AND T.Item = ''' + @Item + ''' '
+         + 'AND T.Periodo = ''' + @Periodo + ''' '
+         + 'AND T.Item = Ca.Item '
+         + 'AND T.Cta = Ca.Codigo '
+         + 'AND T.Periodo = Ca.Periodo '
+         + 'ORDER BY T.ID '
+	EXECUTE(@sSQL)
+
+ -- Insertamos los Bancos si los tuviera el comprobantes 
+    SET @sSQL = 'INSERT INTO Asiento_B (CTA_BANCO,BANCO,ME,CHEQ_DEP,EFECTIVIZAR,VALOR,Item,T_No,CodigoU) '
+          + 'SELECT T.Cta,Ca.Cuenta,Ca.ME,Cheq_Dep,Fecha_Efec,Haber-Debe,Ca.Item,' + CAST(@TransNo As VARCHAR) + ',''' + @CodigoUsuario + ''' '
+          + 'FROM Transacciones As T, Catalogo_Cuentas As Ca '
+          + 'WHERE T.Numero = ' + CAST(@Numero As VARCHAR) + ' '
+          + 'AND T.TP = ''' + @TP + ''' '
+          + 'AND T.Item = ''' + @Item + ''' '
+          + 'AND T.Periodo = ''' + @Periodo + ''' '
+          + 'AND LEN(Cheq_Dep) > 1 '
+          + 'AND T.Item = Ca.Item '
+          + 'AND T.Cta = Ca.Codigo '
+          + 'AND T.Periodo = Ca.Periodo '
+          + 'ORDER BY T.ID '
+    EXECUTE(@sSQL)
+
+ -- Listar las Retenciones Air
+    SET @sSQL = 'INSERT INTO Asiento_Air (CodRet, BaseImp, Porcentaje, ValRet, EstabRetencion, PtoEmiRetencion, SecRetencion, AutRetencion, '
+          + 'Cta_Retencion, EstabFactura, PuntoEmiFactura, Factura_No, IdProv, Item, CodigoU, T_No, A_No, Tipo_Trans, FechaEmiRet) '
+          + 'SELECT CodRet, BaseImp, Porcentaje, ValRet, EstabRetencion, PtoEmiRetencion, SecRetencion, AutRetencion, Cta_Retencion, EstabFactura, '
+          + 'PuntoEmiFactura, Factura_No, IdProv, Item, ''' + @CodigoUsuario + ''', ' + CAST(@TransNo As VARCHAR) + ', ROW_NUMBER() OVER(ORDER BY IdProv ASC), ''C'', '''
+          + @Fecha + ''' '
+          + 'FROM Trans_Air '
+          + 'WHERE Numero = ' + CAST(@Numero As VARCHAR) + ' '
+          + 'AND TP = ''' + @TP + ''' '
+          + 'AND Item = ''' + @Item + ''' '
+          + 'AND Periodo = ''' + @Periodo + ''' '
+          + 'AND Tipo_Trans = ''C'' '
+          + 'ORDER BY ID '
+    EXECUTE(@sSQL)
+
+ -- Listar las Compras
+    SET @sSQL = 'INSERT INTO Asiento_Compras (IdProv, DevIva, CodSustento, TipoComprobante, Establecimiento, PuntoEmision, Secuencial, Autorizacion, FechaEmision, '
+          + 'FechaRegistro, FechaCaducidad, BaseNoObjIVA, BaseImponible, BaseImpGrav, PorcentajeIva, MontoIva, BaseImpIce, PorcentajeIce, MontoIce, '
+          + 'MontoIvaBienes, PorRetBienes, ValorRetBienes, MontoIvaServicios, PorRetServicios, ValorRetServicios, Cta_Servicio, Cta_Bienes, Porc_Bienes, '
+          + 'Porc_Servicios, DocModificado, FechaEmiModificado, EstabModificado, PtoEmiModificado, SecModificado, AutModificado, ContratoPartidoPolitico, '
+          + 'MontoTituloOneroso, MontoTituloGratuito, Item, PagoLocExt, PaisEfecPago, AplicConvDobTrib, PagExtSujRetNorLeg, FormaPago , Clave_Acceso_NCD, '
+          + 'Devolucion, CodigoU, T_No, A_No) '
+          + 'SELECT IdProv, DevIva, CodSustento, TipoComprobante, Establecimiento, PuntoEmision, Secuencial, Autorizacion, FechaEmision, '
+          + 'FechaRegistro, FechaCaducidad, BaseNoObjIVA, BaseImponible, BaseImpGrav, PorcentajeIva, MontoIva, BaseImpIce, PorcentajeIce, MontoIce, '
+          + 'MontoIvaBienes, PorRetBienes, ValorRetBienes, MontoIvaServicios, PorRetServicios, ValorRetServicios, Cta_Servicio, Cta_Bienes, Porc_Bienes, '
+          + 'Porc_Servicios, DocModificado, FechaEmiModificado, EstabModificado, PtoEmiModificado, SecModificado, AutModificado, ContratoPartidoPolitico, '
+          + 'MontoTituloOneroso, MontoTituloGratuito, Item, PagoLocExt, PaisEfecPago, AplicConvDobTrib, PagExtSujRetNorLeg, FormaPago , Clave_Acceso_NCD, '
+          + 'Devolucion, ''' + @CodigoUsuario + ''', ' + CAST(@TransNo As VARCHAR) + ', ROW_NUMBER() OVER(ORDER BY IdProv ASC) '
+          + 'FROM Trans_Compras '
+          + 'WHERE Numero = ' + CAST(@Numero As VARCHAR) + ' '
+          + 'AND TP = ''' + @TP + ''' '
+          + 'AND Item = ''' + @Item + ''' '
+          + 'AND Periodo = ''' + @Periodo + ''' '
+          + 'ORDER BY ID '
+    EXECUTE(@sSQL)
+
+ -- Listar las Exportaciones
+    SET @sSQL = 'INSERT INTO Asiento_Exportaciones (Codigo, ExportacionDe, TipoComprobante, FechaEmbarque, NumeroDctoTransporte, IdFiscalProv, '
+          + 'ValorFOB, DevIva, FacturaExportacion, ValorFOBComprobante, DistAduanero, Anio, Regimen, Correlativo, Verificador, Establecimiento, '
+          + 'PuntoEmision, Secuencial, Autorizacion, FechaEmision, FechaRegistro, Item, CodigoU, T_No, A_No, CtasxCobrar) '
+          + 'SELECT Codigo, ExportacionDe, TipoComprobante, FechaEmbarque, NumeroDctoTransporte, IdFiscalProv, ValorFOB, DevIva, FacturaExportacion, '
+          + 'ValorFOBComprobante, DistAduanero, Anio, Regimen, Correlativo, Verificador, Establecimiento, PuntoEmision, Secuencial, Autorizacion, '
+          + 'FechaEmision, FechaRegistro, Item, '' + @CodigoUsuario + '', ' + CAST(@TransNo As VARCHAR) + ', ROW_NUMBER() OVER(ORDER BY IdFiscalProv ASC), ''.'' '
+          + 'FROM Trans_Exportaciones '
+          + 'WHERE Numero = ' + CAST(@Numero As VARCHAR) + ' '
+          + 'AND TP = ''' + @TP + ''' '
+          + 'AND Item = ''' + @Item + ''' '
+          + 'AND Periodo = ''' + @Periodo + ''' '
+          + 'ORDER BY ID '
+    EXECUTE(@sSQL)
+
+ -- Listar las Importaciones
+    SET @sSQL = 'INSERT INTO Asiento_Importaciones (CodSustento, ImportacionDe, FechaLiquidacion, TipoComprobante, DistAduanero, Anio, Regimen, '
+          + 'Correlativo, Verificador, IdFiscalProv, ValorCIF, BaseImponible, BaseImpGrav, PorcentajeIva, MontoIva, BaseImpIce, PorcentajeIce, '
+          + 'MontoIce, Item, CodigoU, T_No, A_No) '
+          + 'SELECT CodSustento, ImportacionDe, FechaLiquidacion, TipoComprobante, DistAduanero, Anio, Regimen, Correlativo, Verificador, '
+          + 'IdFiscalProv, ValorCIF, BaseImponible, BaseImpGrav, PorcentajeIva, MontoIva, BaseImpIce, PorcentajeIce, '
+          + 'MontoIce, Item, '' + @CodigoUsuario + '', ' + CAST(@TransNo As VARCHAR) + ', ROW_NUMBER() OVER(ORDER BY IdFiscalProv ASC) '
+          + 'FROM Trans_Importaciones '
+          + 'WHERE Numero = ' + CAST(@Numero As VARCHAR) + ' '
+          + 'AND TP = ''' + @TP + ''' '
+          + 'AND Item = ''' + @Item + ''' '
+          + 'AND Periodo = ''' + @Periodo + ''' '
+          + 'ORDER BY ID '
+    EXECUTE(@sSQL)
+
+ -- Llenar SubCuentas de CxC, CxP, Gastos, Ingresos y Centro de Costos
+    SET @sSQL = 'INSERT INTO Asiento_SC (FECHA_V, TC, Codigo, Factura, Prima, Valor, Valor_Me, Detalle_SubCta, Cta, TM, DH, Item, T_No, CodigoU, SC_No) '
+          + 'SELECT Fecha_V, TC, Codigo, Factura, Prima, Debitos, Parcial_ME, Detalle_SubCta, Cta, ''1'', ''1'', Item, ' + CAST(@TransNo As VARCHAR) + ', ''' + @CodigoUsuario 
+          + ''', ROW_NUMBER() OVER(ORDER BY Cta ASC) '
+          + 'FROM Trans_SubCtas '
+          + 'WHERE Numero = ' + CAST(@Numero As VARCHAR) + ' '
+          + 'AND TP = ''' + @TP + ''' '
+          + 'AND Item = ''' + @Item + ''' '
+          + 'AND Periodo = ''' + @Periodo + ''' '
+          + 'AND Debitos > 0 '
+          + 'ORDER BY ID '
+    EXECUTE(@sSQL)
+     
+    SET @sSQL = 'INSERT INTO Asiento_SC (FECHA_V, TC, Codigo, Factura, Prima, Valor, Valor_Me, Detalle_SubCta, Cta, TM, DH, Item, T_No, CodigoU, SC_No) '
+          + 'SELECT Fecha_V, TC, Codigo, Factura, Prima, Creditos, Parcial_ME, Detalle_SubCta, Cta, ''1'', ''2'', Item, ' + CAST(@TransNo As VARCHAR) + ', ''' + @CodigoUsuario 
+          + ''', ROW_NUMBER() OVER(ORDER BY Cta ASC) '
+          + 'FROM Trans_SubCtas '
+          + 'WHERE Numero = ' + CAST(@Numero As VARCHAR) + ' '
+          + 'AND TP = ''' + @TP + ''' '
+          + 'AND Item = ''' + @Item + ''' '
+          + 'AND Periodo = ''' + @Periodo + ''' '
+          + 'AND Creditos > 0 '
+          + 'ORDER BY ID '
+    EXECUTE(@sSQL)
+     
+    SET @sSQL = 'UPDATE Asiento_SC '
+          + 'SET TM = ''2'' '
+          + 'WHERE Item = ''' + @Item + ''' '
+          + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+          + 'AND T_No = ' + CAST(@TransNo As VARCHAR) + ' '
+          + 'AND Valor_Me > 0 '
+    EXECUTE(@sSQL)
+     
+    SET @sSQL = 'UPDATE Asiento_SC '
+          + 'SET Beneficiario = SUBSTRING(Detalle,1,60) '
+          + 'FROM Asiento_SC As A, Catalogo_SubCtas AS CS '
+          + 'WHERE CS.Item = ''' + @Item + ''' '
+          + 'AND CS.Periodo = ''' + @Periodo + ''' '
+          + 'AND A.CodigoU = ''' + @CodigoUsuario + ''' '
+          + 'AND A.T_No = ' + CAST(@TransNo As VARCHAR) + ' '
+          + 'AND A.Item = CS.Item '
+          + 'AND A.Codigo = CS.Codigo '
+    EXECUTE(@sSQL)
+     
+    SET @sSQL = 'UPDATE Asiento_SC '
+          + 'SET Beneficiario = SUBSTRING(Cliente,1,60) '
+          + 'FROM Asiento_SC As A, Clientes AS C '
+          + 'WHERE A.Item = ''' + @Item + ''' '
+          + 'AND A.CodigoU = ''' + @CodigoUsuario + ''' '
+          + 'AND A.T_No = ' + CAST(@TransNo As VARCHAR) + ' '
+          + 'AND A.Codigo = C.Codigo '
+    EXECUTE(@sSQL)
+
+    EXEC sp_Eliminar_Nulos 'Asiento'
+    EXEC sp_Eliminar_Nulos 'Asiento_B'
+    EXEC sp_Eliminar_Nulos 'Asiento_SC'
+    EXEC sp_Eliminar_Nulos 'Asiento_Air'
+    EXEC sp_Eliminar_Nulos 'Asiento_Compras'
+	EXEC sp_Eliminar_Nulos 'Asiento_Exportaciones'
+	EXEC sp_Eliminar_Nulos 'Asiento_Importaciones'
+	SET @Cont = 1
+	
+	/*
+	SELECT @CtasModificar = CONCAT(COALESCE(@CtasModificar + '',','), CODIGO)
+    FROM Asiento 
+	WHERE Item = @Item 
+	AND CodigoU = @CodigoUsuario 
+	AND T_No = @TransNo 
+	GROUP BY CODIGO;
+	*/
+	SET @LnNo = (SELECT COUNT(CODIGO) FROM Asiento WHERE Item = @Item AND CodigoU = @CodigoUsuario AND T_No = @TransNo)+1;
+	SET @LnSCNo = (SELECT COUNT(Cta) FROM Asiento_SC WHERE Item = @Item AND CodigoU = @CodigoUsuario AND T_No = @TransNo)+1;
+  
+ -- Declaración del cursor
+	DECLARE cAsientos CURSOR GLOBAL FOR
+		SELECT CODIGO 
+        FROM Asiento
+        WHERE Item = @Item
+        AND CodigoU = @CodigoUsuario 
+        AND T_No = @TransNo 
+        GROUP BY CODIGO
+		ORDER BY CODIGO
+ -- Apertura del cursor
+	OPEN cAsientos
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cAsientos INTO @Cta 
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  SET @CtasModificar = @CtasModificar + '''' + @Cta + ''','
+   -- Procesamos el siguiente Producto a mayorizar
+	  FETCH NEXT FROM cAsientos INTO @Cta
+	END
+ -- Cierre del cursor
+	CLOSE cAsientos
+ -- Liberar los recursos
+	DEALLOCATE cAsientos
+
+ -- Declaración del cursor
+	DECLARE cAsientos CURSOR GLOBAL FOR
+		SELECT Cta, Codigo, SC_No 
+        FROM Asiento_SC
+        WHERE Item = @Item
+        AND CodigoU = @CodigoUsuario 
+        AND T_No = @TransNo 
+        ORDER BY Cta, Beneficiario, SC_No
+	FOR UPDATE 
+ -- Apertura del cursor
+	OPEN cAsientos
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cAsientos INTO @Cta, @Codigo, @SC_No 
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  IF CHARINDEX(@Cta, @CtasModificar) = 0 SET @CtasModificar = @CtasModificar + '''' + @Cta + ''','
+	  UPDATE Asiento_SC
+ 	  SET SC_No = @Cont
+	  WHERE CURRENT OF cAsientos
+	  SET @Cont = @Cont + 1
+   -- Procesamos el siguiente Producto a mayorizar
+	  FETCH NEXT FROM cAsientos INTO @Cta, @Codigo, @SC_No
+	END
+ -- Cierre del cursor
+	CLOSE cAsientos
+ -- Liberar los recursos
+	DEALLOCATE cAsientos
+
+ -- Declaración del cursor
+	DECLARE cKardex CURSOR GLOBAL FOR
+		SELECT Codigo_Inv
+        FROM Trans_Kardex
+        WHERE Item = @Item
+		AND Periodo = @Periodo
+        AND Numero = @Numero
+        AND TP = @TP 
+        GROUP BY Codigo_Inv
+		ORDER BY Codigo_Inv
+ -- Apertura del cursor
+	OPEN cKardex
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cKardex INTO @CodigoInv
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  SET @CodigoInvModificar = @CodigoInvModificar + '''' + @CodigoInv + ''','
+   -- Procesamos el siguiente Producto a mayorizar
+	  FETCH NEXT FROM cKardex INTO @CodigoInv
+	END
+ -- Cierre del cursor
+	CLOSE cKardex
+ -- Liberar los recursos
+	DEALLOCATE cKardex
+
+    SELECT @SerieR=CONCAT(EstabRetencion,PtoEmiRetencion), @Retencion=MAX(SecRetencion), @AutorizacionR=AutRetencion
+	FROM Asiento_Air
+    WHERE Item = @Item
+    AND CodigoU = @CodigoUsuario
+    AND T_No = @TransNo 
+	GROUP BY EstabRetencion, PtoEmiRetencion, SecRetencion, AutRetencion;
+    
+	IF @SerieR <> '.' AND @AutorizacionR <> '.' SET @RetNueva=0;
+END

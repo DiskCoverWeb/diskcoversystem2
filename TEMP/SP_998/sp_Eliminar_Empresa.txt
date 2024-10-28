@@ -1,0 +1,54 @@
+CREATE PROCEDURE [dbo].[sp_Eliminar_Empresa] 
+@Item AS VARCHAR(3)
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 08/12/2020
+  FECHA MODIFICACION: 08/12/2020
+  DESCIPCION		: Elimina datos de una empresa
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ -- Declacion de Variales
+	DECLARE @Tabla VARCHAR(MAX), @Columna VARCHAR(MAX), @sSQL VARCHAR(MAX);
+ -- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT name 
+		FROM sysobjects 
+		WHERE type='U'
+		ORDER BY name
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Tabla
+	WHILE (@@FETCH_STATUS = 0 )
+	BEGIN
+	 -- Declaracion de Cursor del campo Item
+		DECLARE cCampoItem CURSOR FOR
+			SELECT COLUMN_NAME
+			FROM Information_Schema.Columns
+			WHERE TABLE_NAME = @Tabla
+			AND COLUMN_NAME = 'Item'
+	 -- Apertura del cursor
+		OPEN cCampoItem
+		FETCH NEXT FROM cCampoItem INTO @Columna
+		IF (@@FETCH_STATUS = 0 )
+		BEGIN
+  		   SET @sSQL = 'DELETE '
+		             + 'FROM ' + @Tabla + ' '
+			    	 + 'WHERE Item = ''' + @Item + ''' '
+		   EXECUTE(@sSQL);
+		END
+	 -- Cierre del cursor
+		CLOSE cCampoItem
+	 -- Liberar los recursos
+		DEALLOCATE cCampoItem
+
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @Tabla
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+END

@@ -1,0 +1,117 @@
+CREATE PROCEDURE [dbo].[sp_Actualizar_Tablas_Generales] 
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 17/08/2020
+  FECHA MODIFICACION: 17/08/2020
+  DESCIPCION		: Actualiza las tablas generales con la nueva version
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+    DECLARE @CampoX BIT;
+	DECLARE @Longitud INT;
+	DECLARE @Tabla VARCHAR(MAX), @TablaUpdate VARCHAR(MAX), @Columna VARCHAR(MAX), @Campos VARCHAR(MAX), @sSQL VARCHAR(MAX), @sSQLX VARCHAR(MAX), @sJoins VARCHAR(MAX);
+
+ -- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT name 
+		FROM sysobjects 
+		WHERE type='U'
+		AND name LIKE 'Z%'
+		ORDER BY name
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Tabla
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	 -- Primero actualizamos la bandera que nos dira si ese registro ya existe  
+	    SET @CampoX = 0
+	    SET @Campos = ''
+		SET @TablaUpdate = SUBSTRING(@Tabla,2,LEN(@Tabla))
+
+	 -- Declaracion de Cursor 
+		DECLARE cCampoX CURSOR FOR
+			SELECT COLUMN_NAME
+			FROM Information_Schema.Columns
+			WHERE TABLE_NAME = @Tabla
+			AND COLUMN_NAME = 'X'
+	 -- Apertura del cursor
+		OPEN cCampoX
+		FETCH NEXT FROM cCampoX INTO @Columna
+		IF (@@FETCH_STATUS = 0)
+		BEGIN
+		   SET @CampoX = 1
+  		   SET @sSQL = 'UPDATE ' + @Tabla + ' '
+			    	 + 'SET X = ''X'' '
+		   EXECUTE(@sSQL);
+		END
+	 -- Cierre del cursor
+		CLOSE cCampoX
+	 -- Liberar los recursos
+		DEALLOCATE cCampoX
+
+		SET @sJoins = 'UPDATE ' + @Tabla + ' '
+		            + 'SET X = ''.'' '
+					+ 'FROM ' + @Tabla + ' As Z, ' + @TablaUpdate + ' As T '
+					+ 'WHERE Z.X = ''X'' '
+	 -- Declaracion de Cursor 
+		DECLARE cCamposTabla CURSOR FOR
+			SELECT COLUMN_NAME, CHARACTER_MAXIMUM_LENGTH
+			FROM Information_Schema.Columns
+			WHERE TABLE_NAME = @Tabla
+			AND NOT COLUMN_NAME IN ('X','ID')
+	 -- Apertura del cursor
+		OPEN cCamposTabla
+		FETCH NEXT FROM cCamposTabla INTO @Columna, @Longitud
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+		    SET @Campos = @Campos + @Columna + ', '
+			IF @Longitud <> -1 SET @sJoins = @sJoins + 'AND Z.' + @Columna + ' = ' + 'T.' + @Columna + ' '
+ 		 -- Siguiente registro  
+			FETCH NEXT FROM cCamposTabla INTO @Columna, @Longitud
+		END
+	 -- Cierre del cursor
+		CLOSE cCamposTabla
+	 -- Liberar los recursos
+		DEALLOCATE cCamposTabla
+		SET @Campos = SUBSTRING(@Campos,1,LEN(@Campos)-1)
+		IF @CampoX = 1 
+		   BEGIN
+		       SET @Campos = @Campos + ', X'
+			   EXECUTE(@sJoins);
+
+			   SET @sSQLX = 'DELETE '
+			              + 'FROM ' + @Tabla + ' '
+						  + 'WHERE X = ''.'' ' 
+			   EXECUTE(@sSQLX);
+		   END
+     -- Procedemos a insertar los datos de la nueva actualizacion
+  		SET @sSQL = 'INSERT INTO ' + @TablaUpdate + ' (' + @Campos + ') '
+				  + 'SELECT ' + @Campos + ' FROM '+ @Tabla + ' '
+		EXECUTE(@sSQL);
+
+  		SET @sSQL = 'DROP TABLE [' + @Tabla + ']; '
+		EXECUTE(@sSQL);
+
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @Tabla
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+
+ -- Procedemos a actualizar por default los indices para que se mayorice desde cero
+	UPDATE Transacciones
+	SET Procesado = 0, Saldo = 0
+	WHERE Periodo = '.'
+	UPDATE Trans_SubCtas
+	SET Procesado = 0, Saldo_MN = 0
+	where Periodo = '.'
+	UPDATE Trans_Kardex
+	SET Procesado = 0 
+	WHERE Periodo = '.'
+END

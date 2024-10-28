@@ -1,0 +1,135 @@
+CREATE PROCEDURE [dbo].[sp_Actualizar_Datos_Representantes]
+@Item VARCHAR(3), @Periodo VARCHAR(10), @MasGrupos BIT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 14/07/2021
+  FECHA MODIFICACION: 15/09/2022
+  DESCIPCION		: Actualiza datos del representante de los estudiantes
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ 
+ -- Declaramos Variables Temporales
+	DECLARE @sSQL VARCHAR(MAX) = '';
+	DECLARE @ContCF INT = 0, @ContFA INT = 0;
+
+	SELECT @ContCF = COUNT(Codigo)
+	FROM Clientes_Matriculas
+	WHERE Item = @Item 
+	AND Periodo = @Periodo 
+	AND LEN(Representante) > 1
+	AND LEN(Cedula_R) > 1
+	IF @ContCF>0 
+	BEGIN 
+	 -- Determinamos si existe estudiantes en esta base
+		SET @sSQL = 'UPDATE Clientes '
+				  + 'SET FA = 1 '
+				  + 'FROM Clientes As C INNER JOIN Clientes_Matriculas As CM '
+				  + 'ON C.Codigo = CM.Codigo '
+				  + 'WHERE CM.Item = ''' + @Item + ''' '
+				  + 'AND CM.Periodo = ''' + @Periodo + ''' '
+				  + 'AND C.FA = 0 '
+		IF @MasGrupos = 1 SET @sSQL = @sSQL + 'AND C.DirNumero = ''' + @Item + ''' '
+	 -- EXECUTE(@sSQL)
+	
+	 -- Asignamos los grupos a los clientes de prefacturas
+		SET @sSQL = 'UPDATE Clientes_Facturacion ' 
+				  + 'SET GrupoNo = C.Grupo '
+				  + 'FROM Clientes_Facturacion As CF INNER JOIN Clientes As C '
+				  + 'ON CF.Codigo = C.Codigo '
+				  + 'WHERE CF.Item =  ''' + @Item + ''' '
+				  + 'AND CF.Periodo = ''' + @Periodo + ''' '
+				  + 'AND CF.GrupoNo <> C.Grupo '
+		IF @MasGrupos = 1 SET @sSQL = @sSQL + 'AND C.DirNumero = ''' + @Item + ''' '
+		EXECUTE(@sSQL)
+
+	 -- Buscamos al Beneficiario por Codigo
+ 		UPDATE Clientes
+		SET Representante=CF.Representante, CI_RUC_R=CF.Cedula_R, TD_R=CF.TD, Telefono_R=CF.Telefono_RS,
+		TelefonoT=CF.Telefono_RS, DireccionT=CF.Lugar_Trabajo_R, EmailR=CF.Email_R
+		FROM Clientes As C INNER JOIN Clientes_Matriculas As CF
+		ON C.Codigo = CF.Codigo
+		WHERE CF.Item = @Item 
+		AND CF.Periodo = @Periodo 
+		AND LEN(CF.Representante) > 1
+		AND LEN(CF.Cedula_R) > 1
+		AND C.TD IN ('C','R','P')
+		AND C.Representante <> CF.Representante
+
+ 		UPDATE Clientes
+		SET Cod_Banco=CF.Cod_Banco 
+		FROM Clientes As C INNER JOIN Clientes_Matriculas As CF
+		ON C.Codigo = CF.Codigo
+		WHERE CF.Item = @Item 
+		AND CF.Periodo = @Periodo 
+		AND LEN(CF.Representante) > 1
+		AND LEN(CF.Cedula_R) > 1
+		AND C.TD IN ('C','R','P')
+		AND C.Cod_Banco <> CF.Cod_Banco
+
+ 		UPDATE Clientes
+		SET Cta_Numero=CF.Cta_Numero
+		FROM Clientes As C INNER JOIN Clientes_Matriculas As CF
+		ON C.Codigo = CF.Codigo
+		WHERE CF.Item = @Item 
+		AND CF.Periodo = @Periodo 
+		AND LEN(CF.Representante) > 1
+		AND LEN(CF.Cedula_R) > 1
+		AND C.TD IN ('C','R','P')
+		AND C.Cta_Numero <> CF.Cta_Numero
+		
+ 		UPDATE Clientes
+		SET Fecha_Cad=CF.Caducidad
+		FROM Clientes As C INNER JOIN Clientes_Matriculas As CF
+		ON C.Codigo = CF.Codigo
+		WHERE CF.Item = @Item 
+		AND CF.Periodo = @Periodo 
+		AND LEN(CF.Representante) > 1
+		AND LEN(CF.Cedula_R) > 1
+		AND C.TD IN ('C','R','P')
+		AND C.Fecha_Cad <> CF.Caducidad
+
+ 		UPDATE Clientes
+		SET Tipo_Cta=CF.Tipo_Cta
+		FROM Clientes As C INNER JOIN Clientes_Matriculas As CF
+		ON C.Codigo = CF.Codigo
+		WHERE CF.Item = @Item 
+		AND CF.Periodo = @Periodo 
+		AND LEN(CF.Representante) > 1
+		AND LEN(CF.Cedula_R) > 1
+		AND C.TD IN ('C','R','P')
+		AND C.Tipo_Cta <> CF.Tipo_Cta
+		
+		UPDATE Clientes
+		SET Representante = 'CONSUMIDOR FINAL', CI_RUC_R = '9999999999999', TD_R = 'R', DireccionT = 'SD'
+		WHERE NOT TD IN ('C','R','P')
+		AND FA <> 0
+	END
+
+ -- Actualizamos Deuda Pendiente del Cliente
+	SELECT @ContFA = COUNT(T)
+	FROM Facturas
+	WHERE Item = @Item 
+	AND Periodo = @Periodo 
+	IF @ContFA>0 
+	 BEGIN 
+		UPDATE Clientes 
+		SET Saldo_Pendiente = (SELECT SUM(Saldo_MN) 
+							  FROM Facturas As F 
+							  WHERE F.Item = @Item
+							  AND F.Periodo = @Periodo 
+							  AND F.Saldo_MN <> 0
+							  AND F.T <> 'A' 
+							  AND F.CodigoC = Clientes.Codigo) 
+		WHERE T = 'N'
+	 END
+
+    UPDATE Clientes
+	SET TD = 'R'
+	WHERE Codigo = '9999999999'
+
+	UPDATE Clientes
+	SET Saldo_Pendiente = 0
+	WHERE Saldo_Pendiente IS NULL
+END

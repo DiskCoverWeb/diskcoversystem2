@@ -1,0 +1,560 @@
+CREATE PROCEDURE [dbo].[sp_Reporte_CxC_Cuotas] 
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10),@CodigoUsuario AS VARCHAR(10), @EjercicioFiscal AS VARCHAR(4), @FechaInicio AS VARCHAR(10), @FechaCorte AS VARCHAR(10), 
+@GrupoINo VARCHAR(10) = 'Todos', @GrupoFNo VARCHAR(10) = 'Todos', @Resumido BIT = 1, 
+@SubTotal MONEY OUTPUT, @TotalAnticipo MONEY OUTPUT, @TotalCxC MONEY OUTPUT, @ListaCampos VARCHAR(MAX) OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 20/09/2020
+  FECHA MODIFICACION: 22/03/2021
+  DESCIPCION		: Inserta en una tabla temporal las cuotas de Prefacturacion que se encuentra en Clientes_Facturacion en forma horizontal
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @NumMes TINYINT;
+	DECLARE @TotalMes MONEY;
+	DECLARE @Anio VARCHAR(4), @Campo VARCHAR(50), @Sumatoria VARCHAR(MAX), @sSQL VARCHAR(MAX), @Grupo VARCHAR(10);
+	DECLARE @Campos_Tabla VARCHAR(MAX) = '', @DatosCero VARCHAR(MAX), @PeriodoInicial VARCHAR(4), @CtaAnticipo VARCHAR(18) = '.';
+
+ -- Programacion de procesos
+    SELECT @CtaAnticipo = Codigo 
+	FROM Ctas_Proceso
+	WHERE Detalle = 'Cta_Anticipos_Clientes'
+	AND Item = @Item
+	AND Periodo = @Periodo;
+    
+	IF @CtaAnticipo IS NULL SET @CtaAnticipo = '.'
+
+    IF @FechaInicio = @FechaCorte SET @PeriodoInicial = '1900' ELSE SET @PeriodoInicial = YEAR(@FechaInicio)
+
+    IF dbo.fn_Existe_Tabla('Reporte_CxC_Cuotas') <> 0
+	BEGIN
+     -- Declaración del cursor para saber los campos de la tabla temporal
+		DECLARE cCampos_Tabla CURSOR FOR
+			SELECT COL.name AS Campo
+			FROM dbo.syscolumns COL
+			JOIN dbo.sysobjects OBJ ON OBJ.id = COL.id
+			JOIN dbo.systypes TYP ON TYP.xusertype = COL.xtype
+			LEFT JOIN dbo.sysforeignkeys FK ON FK.fkey = COL.colid AND FK.fkeyid=OBJ.id
+			LEFT JOIN dbo.sysobjects OBJ2 ON OBJ2.id = FK.rkeyid
+			LEFT JOIN dbo.syscolumns COL2 ON COL2.colid = FK.rkey AND COL2.id = OBJ2.id
+			WHERE OBJ.name = 'Reporte_CxC_Cuotas'
+			AND (OBJ.xtype='U' 
+			OR OBJ.xtype='V')
+	 -- Apertura del cursor
+		OPEN cCampos_Tabla
+	 -- Lectura de la primera fila del cursor
+		FETCH NEXT FROM cCampos_Tabla INTO @Campo
+		WHILE (@@FETCH_STATUS = 0 )
+		BEGIN
+		 -- Determinamos que tipo de dato tiene el campo   
+		 -- Procesamos el siguiente Producto a mayorizar
+		    SET @Campos_Tabla = @Campos_Tabla + @Campo + ','
+			FETCH NEXT FROM cCampos_Tabla INTO @Campo
+		END
+	 -- Cierre del cursor
+		CLOSE cCampos_Tabla
+	 -- Liberar los recursos
+		DEALLOCATE cCampos_Tabla
+		SET @Campos_Tabla = SUBSTRING(@Campos_Tabla,1,LEN(@Campos_Tabla)-1)
+	END
+
+    SET @Sumatoria = ''
+	SET @DatosCero = ''
+	SET @ListaCampos = 'No,Cliente,Codigo,'
+
+	SET @sSQL = 'CREATE TABLE Reporte_CxC_Cuotas ('
+			  + 'No INT NULL, '
+	          + 'Cliente NVARCHAR(100) NULL, '
+ -- Declaracion de Cursor para sacar la prefacturacion de los clientes
+    IF @Resumido = 1
+	BEGIN
+		DECLARE cCrearTabla CURSOR FOR
+			SELECT Periodo
+			FROM Clientes_Facturacion 
+			WHERE Item = @Item
+			AND Periodo < @EjercicioFiscal
+			GROUP BY Periodo
+			ORDER BY Periodo
+	 -- Apertura del cursor
+		OPEN cCrearTabla
+		FETCH NEXT FROM cCrearTabla INTO @Anio
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+		   SET @Campo = 'CxC_' + @Anio 
+		   SET @ListaCampos = @ListaCampos + @Campo + ','
+		   SET @Sumatoria = @Sumatoria + @Campo + '+'
+		   SET @DatosCero = @DatosCero + @Campo + ' = 0,'
+		   SET @sSQL = @sSQL + @Campo + ' MONEY NULL, '
+ 		-- Siguiente registro  
+		   FETCH NEXT FROM cCrearTabla INTO @Anio
+		END
+	 -- Cierre del cursor
+		CLOSE cCrearTabla
+	 -- Liberar los recursos
+		DEALLOCATE cCrearTabla
+	END
+    ELSE
+    BEGIN
+	 -- Declaracion de Cursor para sacar la prefacturacion de los clientes
+		DECLARE cCrearTabla CURSOR FOR
+			SELECT Periodo, Num_Mes 
+			FROM Clientes_Facturacion 
+			WHERE Item = @Item
+			AND Periodo < @EjercicioFiscal
+			GROUP BY Periodo, Num_Mes 
+			ORDER BY Periodo, Num_Mes 
+	 -- Apertura del cursor
+		OPEN cCrearTabla
+		FETCH NEXT FROM cCrearTabla INTO @Anio, @NumMes
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+		   SET @Campo = dbo.fn_Mes_Strg(@NumMes,1,0) + '_' + @Anio 
+		   SET @ListaCampos = @ListaCampos + @Campo + ','
+		   SET @Sumatoria = @Sumatoria + @Campo + '+'
+		   SET @DatosCero = @DatosCero + @Campo + ' = 0,'
+		   SET @sSQL = @sSQL + @Campo + ' MONEY NULL, '
+ 		-- Siguiente registro  
+		   FETCH NEXT FROM cCrearTabla INTO @Anio, @NumMes
+		END
+	 -- Cierre del cursor
+		CLOSE cCrearTabla
+	 -- Liberar los recursos
+		DEALLOCATE cCrearTabla
+	END
+
+ -- Declaracion de Cursor para sacar la prefacturacion de los clientes
+	DECLARE cCrearTabla CURSOR FOR
+		SELECT Periodo, Num_Mes 
+		FROM Clientes_Facturacion 
+		WHERE Item = @Item
+		AND Periodo >= @EjercicioFiscal
+		GROUP BY Periodo, Num_Mes 
+		ORDER BY Periodo, Num_Mes 
+ -- Apertura del cursor
+	OPEN cCrearTabla
+	FETCH NEXT FROM cCrearTabla INTO @Anio, @NumMes
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		SET @Campo = dbo.fn_Mes_Strg(@NumMes,1,0) + '_' + @Anio 
+		SET @ListaCampos = @ListaCampos + @Campo + ','
+		SET @Sumatoria = @Sumatoria + @Campo + '+'
+		SET @DatosCero = @DatosCero + @Campo + ' = 0,'
+		SET @sSQL = @sSQL + @Campo + ' MONEY NULL, '
+     -- Siguiente registro  
+		FETCH NEXT FROM cCrearTabla INTO @Anio, @NumMes
+	END
+ -- Cierre del cursor
+	CLOSE cCrearTabla
+ -- Liberar los recursos
+	DEALLOCATE cCrearTabla
+
+    SET @Sumatoria = SUBSTRING(@Sumatoria,1,LEN(@Sumatoria)-1)
+    SET @DatosCero = SUBSTRING(@DatosCero,1,LEN(@DatosCero)-1)
+	SET @ListaCampos = @ListaCampos + 'SubTotal,Anticipos,Abonos,Total,Detalle_Grupo,GrupoNo,CodigoU,Item,E'
+
+	SET @sSQL = @sSQL 
+	          + 'SubTotal MONEY NULL, '
+			  + 'Anticipos MONEY NULL, '
+			  + 'Abonos MONEY NULL, '
+			  + 'Total MONEY NULL, '
+			  + 'Detalle_Grupo NVARCHAR(60) NULL, '
+			  + 'GrupoNo NVARCHAR(10) NULL, '
+			  + 'Codigo NVARCHAR(10) NULL, '
+			  + 'CodigoU NVARCHAR(10) NULL,'
+			  + 'Item NVARCHAR(10) NULL,'
+			  + 'E BIT NULL);'
+
+	IF @Campos_Tabla <> @ListaCampos 
+	   BEGIN
+		  IF dbo.fn_Existe_Tabla('Reporte_CxC_Cuotas') <> 0  EXECUTE('DROP TABLE Reporte_CxC_Cuotas;')
+		  EXECUTE(@sSQL)
+	   END 
+	ELSE EXECUTE('DELETE FROM Reporte_CxC_Cuotas WHERE Item = ''' + @Item + ''' AND CodigoU = ''' + @CodigoUsuario + ''';')
+
+	SET @sSQL = 'INSERT INTO Reporte_CxC_Cuotas (No, GrupoNo, Codigo, Cliente, Detalle_Grupo, Item, CodigoU) '
+			  + 'SELECT ROW_NUMBER() OVER(PARTITION BY C.Grupo ORDER BY C.Grupo, C.Cliente), C.Grupo, CF.Codigo, UPPER(C.Cliente), C.Direccion, CF.Item,''' + @CodigoUsuario + ''' '
+			  + 'FROM Clientes_Facturacion As CF, Clientes As C '
+			  + 'WHERE CF.Item = ''' + @Item + ''' '
+	IF @GrupoINo <> 'Todos' SET @sSQL = @sSQL + 'AND C.Grupo BETWEEN ''' + @GrupoINo + ''' AND ''' + @GrupoFNo + ''' '
+	SET	@sSQL = @sSQL 
+		      + 'AND CF.Codigo = C.Codigo '
+			  + 'GROUP BY C.Grupo,CF.Codigo,C.Cliente,C.Direccion,CF.Item '
+			  + 'ORDER BY C.Grupo,C.Cliente '
+    EXECUTE(@sSQL)
+	
+	SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+			  + 'SET ' + @DatosCero + ' '
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+	EXECUTE(@sSQL)
+
+ -- Colocamos cero a los valores nulos de los descuentos
+ 	SET @sSQL = 'UPDATE Clientes_Facturacion '
+			  + 'SET Valor = 0 '
+		 	  + 'WHERE Valor IS NULL '
+		 	  + 'AND Item = ''' + @Item + ''' '
+	EXECUTE(@sSQL)
+
+ 	SET @sSQL = 'UPDATE Clientes_Facturacion '
+			  + 'SET Descuento = 0 '
+		 	  + 'WHERE Descuento IS NULL '
+		 	  + 'AND Item = ''' + @Item + ''' '
+	EXECUTE(@sSQL)
+
+ 	SET @sSQL = 'UPDATE Clientes_Facturacion '
+			  + 'SET Descuento2 = 0 '
+		 	  + 'WHERE Descuento2 IS NULL '
+		 	  + 'AND Item = ''' + @Item + ''' '
+	EXECUTE(@sSQL)
+
+ 	SET @sSQL = 'UPDATE Clientes '
+			  + 'SET Saldo_Pendiente = 0 '
+		 	  + 'WHERE Saldo_Pendiente <> 0 '
+    IF @GrupoINo <> 'Todos' SET @sSQL = @sSQL + 'AND Grupo BETWEEN ''' + @GrupoINo + ''' AND ''' + @GrupoFNo + ''' '
+	EXECUTE(@sSQL)
+
+ -- Declaracion de Cursor para sacar la prefacturacion de los clientes, es donde se empieza ha llenar los datos
+    IF @Resumido = 1
+	BEGIN
+	 -- Declaracion de Cursor 
+		DECLARE cActualizaTabla CURSOR FOR
+			SELECT Periodo
+			FROM Clientes_Facturacion 
+			WHERE Item = @Item
+			AND Periodo < @EjercicioFiscal
+			AND Periodo >= @PeriodoInicial
+			GROUP BY Periodo
+			ORDER BY Periodo
+	 -- Apertura del cursor
+		OPEN cActualizaTabla
+		FETCH NEXT FROM cActualizaTabla INTO @Anio
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+			SET @Campo = 'CxC_' + @Anio
+			SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+					  + 'SET ' + @Campo + ' = (SELECT SUM(CF.Valor - CF.Descuento - CF.Descuento2) '
+					  + '                      FROM Clientes_Facturacion As CF '
+					  + '                      WHERE CF.Item = ''' + @Item + ''' '
+					  + '                      AND CF.Periodo = ''' + @Anio + ''' '
+					  + '                      AND Reporte_CxC_Cuotas.Item = ''' + @Item + ''' '
+					  + '                      AND Reporte_CxC_Cuotas.CodigoU = ''' + @CodigoUsuario + ''' '
+					  + '                      AND CF.Codigo = Reporte_CxC_Cuotas.Codigo '
+					  + '                      AND CF.Item = Reporte_CxC_Cuotas.Item) '
+					  + 'WHERE Item = ''' + @Item + ''' '
+					  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+			EXECUTE(@sSQL)
+
+		 -- Actualizamos Datos en nulos   
+ 			SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+		 			  + 'SET ' + @Campo + ' = 0 '
+		 			  + 'WHERE ' + @Campo + ' IS NULL '
+		 			  + 'AND Item = ''' + @Item + ''' '
+			EXECUTE(@sSQL)
+
+ 		 -- Siguiente registro  
+			FETCH NEXT FROM cActualizaTabla INTO @Anio
+		END
+	 -- Cierre del cursor
+		CLOSE cActualizaTabla
+	 -- Liberar los recursos
+		DEALLOCATE cActualizaTabla
+	END
+	ELSE
+	BEGIN
+	 -- Declaracion de Cursor 
+		DECLARE cActualizaTabla CURSOR FOR
+			SELECT Periodo, Num_Mes 
+			FROM Clientes_Facturacion 
+			WHERE Item = @Item
+			AND Periodo < @EjercicioFiscal
+			AND Periodo >= @PeriodoInicial
+			GROUP BY Periodo, Num_Mes 
+			ORDER BY Periodo, Num_Mes 
+	 -- Apertura del cursor
+		OPEN cActualizaTabla
+		FETCH NEXT FROM cActualizaTabla INTO @Anio, @NumMes
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+			SET @Campo =  dbo.fn_Mes_Strg(@NumMes,1,0) + '_' + @Anio 
+			SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+					  + 'SET ' + @Campo + ' = (SELECT SUM(CF.Valor - CF.Descuento - CF.Descuento2) '
+					  + '                      FROM Clientes_Facturacion As CF '
+					  + '                      WHERE CF.Item = ''' + @Item + ''' '
+					  + '                      AND CF.Periodo = ''' + @Anio + ''' '
+					  + '                      AND CF.Num_Mes = ' + dbo.fn_Num_Strg(@NumMes) + ' '
+					  + '                      AND Reporte_CxC_Cuotas.Item = ''' + @Item + ''' '
+					  + '                      AND Reporte_CxC_Cuotas.CodigoU = ''' + @CodigoUsuario + ''' '
+					  + '                      AND CF.Codigo = Reporte_CxC_Cuotas.Codigo '
+					  + '                      AND CF.Item = Reporte_CxC_Cuotas.Item) '
+					  + 'WHERE Item = ''' + @Item + ''' '
+					  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+			EXECUTE(@sSQL)
+
+		 -- Actualizamos Datos en nulos   
+ 			SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+		 			  + 'SET ' + @Campo + ' = 0 '
+		 			  + 'WHERE ' + @Campo + ' IS NULL '
+		 			  + 'AND Item = ''' + @Item + ''' '
+			EXECUTE(@sSQL)
+
+ 		 -- Siguiente registro  
+			FETCH NEXT FROM cActualizaTabla INTO @Anio, @NumMes
+		END
+	 -- Cierre del cursor
+		CLOSE cActualizaTabla
+	 -- Liberar los recursos
+		DEALLOCATE cActualizaTabla
+	END
+
+ -- Declaracion de Cursor 
+	DECLARE cActualizaTabla CURSOR FOR
+		SELECT Periodo, Num_Mes 
+		FROM Clientes_Facturacion 
+		WHERE Item = @Item
+		AND Periodo >= @EjercicioFiscal
+		AND Fecha <= @FechaCorte
+		GROUP BY Periodo, Num_Mes 
+		ORDER BY Periodo, Num_Mes 
+ -- Apertura del cursor
+	OPEN cActualizaTabla
+	FETCH NEXT FROM cActualizaTabla INTO @Anio, @NumMes
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		SET @Campo = dbo.fn_Mes_Strg(@NumMes,1,0) + '_' + @Anio 
+		SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+				  + 'SET ' + @Campo + ' = (SELECT SUM(CF.Valor - CF.Descuento - CF.Descuento2) '
+				  + '                      FROM Clientes_Facturacion As CF '
+				  + '                      WHERE CF.Item = ''' + @Item + ''' '
+				  + '                      AND CF.Periodo = ''' + @Anio + ''' '
+				  + '                      AND CF.Num_Mes = ' + dbo.fn_Num_Strg(@NumMes) + ' '
+				  + '                      AND Reporte_CxC_Cuotas.CodigoU = ''' + @CodigoUsuario + ''' '
+				  + '                      AND CF.Codigo = Reporte_CxC_Cuotas.Codigo '
+				  + '                      AND CF.Item = Reporte_CxC_Cuotas.Item) '
+				  + 'WHERE Item = ''' + @Item + ''' '
+				  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+	    EXECUTE(@sSQL)
+
+	 -- Actualizamos Datos en nulos   
+ 	    SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+		 		  + 'SET ' + @Campo + ' = 0 '
+		 		  + 'WHERE ' + @Campo + ' IS NULL '
+		 		  + 'AND Item = ''' + @Item + ''' '
+	    EXECUTE(@sSQL)
+
+ 	 -- Siguiente registro  
+	    FETCH NEXT FROM cActualizaTabla INTO @Anio, @NumMes
+	END
+ -- Cierre del cursor
+	CLOSE cActualizaTabla
+ -- Liberar los recursos
+	DEALLOCATE cActualizaTabla
+
+	SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+			  + 'SET SubTotal = ' + @Sumatoria + ' '
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+	EXECUTE(@sSQL)
+
+	SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+			  + 'SET Anticipos = (SELECT SUM(TS.Creditos - TS.Debitos) '
+			  + '                 FROM Trans_SubCtas As TS '
+			  + '                 WHERE TS.Item = ''' + @Item + ''' '
+			  + '                 AND TS.Periodo = ''' + @Periodo + ''' '
+			  + '                 AND TS.Cta = ''' + @CtaAnticipo + ''' '
+			  + '                 AND TS.T <> ''A'' '
+			  + '                 AND Reporte_CxC_Cuotas.CodigoU = ''' + @CodigoUsuario + ''' '
+			  + '                 AND TS.Codigo = Reporte_CxC_Cuotas.Codigo '
+			  + '                 AND TS.Item = Reporte_CxC_Cuotas.Item) '
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+	EXECUTE(@sSQL)
+
+	SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+			  + 'SET Abonos = (SELECT SUM(TS.Abono) '
+			  + '              FROM Trans_Abonos As TS '
+			  + '              WHERE TS.Item = ''' + @Item + ''' '
+			  + '              AND TS.Periodo = ''' + @Periodo + ''' '
+			  + '              AND TS.Cta = ''' + @CtaAnticipo + ''' '
+			  + '              AND TS.C = 0 '
+			  + '              AND Reporte_CxC_Cuotas.CodigoU = ''' + @CodigoUsuario + ''' '
+			  + '              AND TS.CodigoC = Reporte_CxC_Cuotas.Codigo '
+			  + '              AND TS.Item = Reporte_CxC_Cuotas.Item) '
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+	EXECUTE(@sSQL)
+
+ -- Actualizamos Datos en nulos   
+ 	SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+		 	  + 'SET Anticipos = 0 '
+		 	  + 'WHERE Anticipos IS NULL '
+		 	  + 'AND Item = ''' + @Item + ''' '
+	EXECUTE(@sSQL)
+
+ 	SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+		 	  + 'SET Abonos = 0 '
+		 	  + 'WHERE Abonos IS NULL '
+		 	  + 'AND Item = ''' + @Item + ''' '
+	EXECUTE(@sSQL)	
+
+	SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+			  + 'SET Anticipos = Anticipos - Abonos '
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+	EXECUTE(@sSQL)
+
+	SET @sSQL = 'UPDATE Reporte_CxC_Cuotas '
+			  + 'SET Total = SubTotal - Anticipos '
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+	EXECUTE(@sSQL)
+
+	CREATE TABLE #Valor_Mes(TotalMes MONEY);
+
+	SET @ListaCampos = 'No, Cliente, '
+    IF @Resumido = 1
+	BEGIN
+	 -- Declaracion de Cursor 
+		DECLARE cActualizaTabla CURSOR FOR
+			SELECT Periodo 
+			FROM Clientes_Facturacion 
+			WHERE Item = @Item
+			AND Periodo < @EjercicioFiscal
+			AND Fecha <= @FechaCorte
+			GROUP BY Periodo
+			ORDER BY Periodo
+	 -- Apertura del cursor
+		OPEN cActualizaTabla
+		FETCH NEXT FROM cActualizaTabla INTO @Anio
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+		   DELETE FROM #Valor_Mes
+		   SET @Campo = 'CxC_' + @Anio 
+		   SET @sSQL = 'INSERT INTO #Valor_Mes '
+					 + 'SELECT SUM(' + @Campo + ') '
+					 + 'FROM Reporte_CxC_Cuotas '
+					 + 'WHERE Item = ''' + @Item + ''' '
+					 + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+		   EXECUTE(@sSQL)
+		   SET @TotalMes = (SELECT TotalMes FROM #Valor_Mes)
+		  --IF @TotalMes IS NULL OR @TotalMes = 0 EXECUTE('ALTER TABLE Reporte_CxC_Cuotas_' + @Item + ' DROP COLUMN ' + @Campo + ';')
+		   IF @TotalMes <> 0 SET @ListaCampos = @ListaCampos + @Campo + ', '
+
+ 		-- Siguiente registro  
+		   FETCH NEXT FROM cActualizaTabla INTO @Anio
+		END
+	 -- Cierre del cursor
+		CLOSE cActualizaTabla
+	 -- Liberar los recursos
+		DEALLOCATE cActualizaTabla
+	END
+	ELSE
+	BEGIN
+	 -- Declaracion de Cursor 
+		DECLARE cActualizaTabla CURSOR FOR
+			SELECT Periodo, Num_Mes 
+			FROM Clientes_Facturacion 
+			WHERE Item = @Item
+			AND Periodo < @EjercicioFiscal
+			AND Fecha <= @FechaCorte
+			GROUP BY Periodo, Num_Mes 
+			ORDER BY Periodo, Num_Mes 
+	 -- Apertura del cursor
+		OPEN cActualizaTabla
+		FETCH NEXT FROM cActualizaTabla INTO @Anio, @NumMes
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+		   DELETE FROM #Valor_Mes
+		   SET @Campo = dbo.fn_Mes_Strg(@NumMes,1,0) + '_' + @Anio 
+		   SET @sSQL = 'INSERT INTO #Valor_Mes '
+					 + 'SELECT SUM(' + @Campo + ') '
+					 + 'FROM Reporte_CxC_Cuotas '
+					 + 'WHERE Item = ''' + @Item + ''' '
+					 + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+		   EXECUTE(@sSQL)
+		   SET @TotalMes = (SELECT TotalMes FROM #Valor_Mes)
+		  --IF @TotalMes IS NULL OR @TotalMes = 0 EXECUTE('ALTER TABLE Reporte_CxC_Cuotas_' + @Item + ' DROP COLUMN ' + @Campo + ';')
+		   IF @TotalMes <> 0 SET @ListaCampos = @ListaCampos + @Campo + ', '
+
+ 		-- Siguiente registro  
+		   FETCH NEXT FROM cActualizaTabla INTO @Anio, @NumMes
+		END
+	 -- Cierre del cursor
+		CLOSE cActualizaTabla
+	 -- Liberar los recursos
+		DEALLOCATE cActualizaTabla
+	END
+
+ -- Declaracion de Cursor 
+	DECLARE cActualizaTabla CURSOR FOR
+		SELECT Periodo, Num_Mes 
+		FROM Clientes_Facturacion 
+		WHERE Item = @Item
+		AND Periodo >= @EjercicioFiscal
+		AND Fecha <= @FechaCorte
+		GROUP BY Periodo, Num_Mes 
+		ORDER BY Periodo, Num_Mes 
+ -- Apertura del cursor
+	OPEN cActualizaTabla
+	FETCH NEXT FROM cActualizaTabla INTO @Anio, @NumMes
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	   DELETE FROM #Valor_Mes
+	   SET @Campo = dbo.fn_Mes_Strg(@NumMes,1,0) + '_' + @Anio 
+	   SET @sSQL = 'INSERT INTO #Valor_Mes '
+	             + 'SELECT SUM(' + @Campo + ') '
+				 + 'FROM Reporte_CxC_Cuotas '
+				 + 'WHERE Item = ''' + @Item + ''' '
+				 + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+       EXECUTE(@sSQL)
+	   SET @TotalMes = (SELECT TotalMes FROM #Valor_Mes)
+	  --IF @TotalMes IS NULL OR @TotalMes = 0 EXECUTE('ALTER TABLE Reporte_CxC_Cuotas_' + @Item + ' DROP COLUMN ' + @Campo + ';')
+	   IF @TotalMes <> 0 SET @ListaCampos = @ListaCampos + @Campo + ', '
+
+ 	-- Siguiente registro  
+	   FETCH NEXT FROM cActualizaTabla INTO @Anio, @NumMes
+	END
+ -- Cierre del cursor
+	CLOSE cActualizaTabla
+ -- Liberar los recursos
+	DEALLOCATE cActualizaTabla
+
+	DROP TABLE #Valor_Mes;
+
+ -- Eliminamos Registro con valoes cero
+	DELETE 
+	FROM Reporte_CxC_Cuotas 
+	WHERE Item = @Item
+	AND CodigoU = @CodigoUsuario
+	AND SubTotal = 0
+
+ 	SET @sSQL = 'UPDATE Clientes '
+			  + 'SET Saldo_Pendiente = RCC.Total '
+			  + 'FROM Clientes As C, Reporte_CxC_Cuotas As RCC '
+		 	  + 'WHERE RCC.Item = ''' + @Item + ''' '
+			  + 'AND RCC.CodigoU = ''' + @CodigoUsuario + ''' '
+		 	  + 'AND C.Codigo = RCC.Codigo '
+	EXECUTE(@sSQL)
+
+ -- Parametros de salida del SP
+	SET @ListaCampos = @ListaCampos + 'SubTotal, Anticipos, Total, Detalle_Grupo, GrupoNo '
+	
+	SELECT @SubTotal = (SELECT SUM(SubTotal) 
+					    FROM Reporte_CxC_Cuotas 
+						WHERE Item = @Item
+						AND CodigoU = @CodigoUsuario)
+	SELECT @TotalAnticipo = (SELECT SUM(Anticipos) 
+  							FROM Reporte_CxC_Cuotas 
+							WHERE Item = @Item
+							AND CodigoU = @CodigoUsuario)
+	SELECT @TotalCxC = (SELECT SUM(Total) 
+					    FROM Reporte_CxC_Cuotas 
+						WHERE Item = @Item
+						AND CodigoU = @CodigoUsuario)
+	IF @SubTotal IS NULL SET @SubTotal = 0
+	IF @TotalAnticipo IS NULL SET @TotalAnticipo = 0
+    IF @TotalCxC IS NULL SET @TotalCxC = 0
+--	PRINT @ListaCampos;
+END

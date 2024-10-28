@@ -1,0 +1,73 @@
+CREATE PROCEDURE [dbo].[sp_Actualiza_Cuentas_Escalonadas]
+@Item VARCHAR(3), @Periodo VARCHAR(10), @Usuario AS VARCHAR(10), @NumModulo AS VARCHAR(2) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 07/06/2023
+  FECHA MODIFICACION: 07/06/2023
+  DESCIPCION		: Inserta cuentas mas escalonadas y verifica que este bien el escalonamiento de cuentas
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+	DECLARE @Codigo VARCHAR(18), @CodigoSup VARCHAR(18), @CodigoAux VARCHAR(18), @TextLinea VARCHAR(120);
+	DECLARE @Cont INT = 0;
+
+	SET @TextLinea = REPLICATE('-',120)
+
+ -- Borramos la basura si la tuviera
+	DELETE 
+    FROM Tabla_Temporal
+    WHERE Item = @Item
+	AND Modulo = @NumModulo
+	AND CodigoU = @Usuario;
+
+ -- Declaracion de Cursor 
+	DECLARE cCatalogoCuentas CURSOR FOR
+		SELECT Codigo
+		FROM Catalogo_Cuentas
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND ISNUMERIC(SUBSTRING(Codigo,1,1)) <> 0 
+		ORDER BY Codigo
+ -- Apertura del cursor
+	OPEN cCatalogoCuentas
+	FETCH NEXT FROM cCatalogoCuentas INTO @Codigo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	 -- Primero actualizamos la bandera que nos dira si ese registro ya existe 
+	    --PRINT 'Codigo: ' + @Codigo
+		WHILE LEN(@Codigo) > 1
+		BEGIN
+		  SET @CodigoSup = '.'
+		  SET @CodigoAux = dbo.fn_Codigo_Cuenta_Sup(@Codigo)
+		  SELECT @CodigoSup = Codigo
+		  FROM Catalogo_Cuentas
+		  WHERE Item = @Item
+		  AND Periodo = @Periodo
+		  AND Codigo = dbo.fn_Codigo_Cuenta_Sup(@Codigo)
+		  IF @CodigoSup = '.' 
+		     BEGIN
+			    INSERT INTO Catalogo_Cuentas (DG, TC, Item, Periodo, Codigo, Cuenta) 
+				VALUES ('G', 'N', @Item, @Periodo, @CodigoAux, 'NINGUNA CUENTA')
+				IF @Cont = 0 
+				   BEGIN
+				      SET @Cont = 1;
+					  SET @TextLinea = 'Verifique El Catalogo de Cuentas en los siguientes Codigos:'
+					  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+				   END
+ 		 	    SET @TextLinea = 'Codigo Insertado: ' + @CodigoAux
+			    EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+			 END
+		  --PRINT @CodigoSup
+		  SET @Codigo = @CodigoSup
+		END
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cCatalogoCuentas INTO @Codigo
+	END
+ -- Cierre del cursor
+	CLOSE cCatalogoCuentas
+ -- Liberar los recursos
+	DEALLOCATE cCatalogoCuentas
+	EXEC sp_Eliminar_Nulos 'Catalogo_Cuentas'
+END

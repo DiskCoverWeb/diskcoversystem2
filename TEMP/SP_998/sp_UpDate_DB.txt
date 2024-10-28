@@ -1,0 +1,84 @@
+CREATE PROCEDURE [dbo].[sp_UpDate_DB] 
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 29/08/2020
+  FECHA MODIFICACION: 29/08/2020
+  DESCIPCION		:
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ -- Declacion de Variales
+	DECLARE @NombreTabla VARCHAR(70), @vEnter VARCHAR(2);
+	DECLARE @sSQL VARCHAR(MAX), @CampoDatos VARCHAR(MAX), @CampoSQL VARCHAR(MAX), @lstTCadena VARCHAR(MAX), @lstCadena VARCHAR(MAX);
+	DECLARE @lnuPosEnter INT;
+
+ -- Valores generales
+    SET @vEnter = CHAR(13)+CHAR(10)
+
+ -- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT Clave_Acceso
+		FROM Trans_Documentos
+		WHERE Item ='000'
+		AND TD ='UD'
+		ORDER BY Clave_Acceso
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @NombreTabla
+	WHILE (@@FETCH_STATUS = 0 )
+	BEGIN
+	    SET @sSQL = 'DELETE '
+				  + 'FROM ' + @NombreTabla + ' '
+        EXECUTE(@sSQL)
+	 -- print 'Procesando Tabla Temporal: ' + @NombreTabla 
+	 -- Programacion de procesos
+ 		SET @lstTCadena = (SELECT Documento_Autorizado 
+						   FROM Trans_Documentos 
+						   WHERE TD = 'UD' 
+						   AND Clave_Acceso = @NombreTabla) 
+	 -- Procedemos a recojer los datos a partir de la segunda linea
+	    SET @lstTCadena = REPLACE(@lstTCadena, '^', '''') 
+		SET @lstTCadena = REPLACE(@lstTCadena, ';', ',')
+		SET @lstTCadena = REPLACE(@lstTCadena, '(', '[')
+ 	    SET @lstTCadena = REPLACE(@lstTCadena, ')', ']')
+		SET @lnuPosEnter = CHARINDEX(@vEnter, @lstTCadena) 
+		SET @CampoSQL = SUBSTRING(@lstTCadena,1,@lnuPosEnter-1)
+		SET @lstTCadena = SUBSTRING(@lstTCadena,@lnuPosEnter+2,LEN(@lstTCadena))
+		SET @lstCadena = @lstTCadena
+		SET @CampoDatos = ''
+		WHILE LEN(@lstTCadena) > 0
+		BEGIN
+			SET @lnuPosEnter = CHARINDEX(@vEnter, @lstTCadena) 
+			IF @lnuPosEnter <> 0 
+			   BEGIN
+				   SET @lstCadena = SUBSTRING(@lstTCadena, 1, @lnuPosEnter-1)
+				   SET @CampoDatos = @CampoDatos + '(' + @lstCadena + '),' --+ @vEnter
+				   IF LEN(@CampoDatos) > 7168
+					  BEGIN
+						SET @sSQL = 'INSERT INTO ' + @NombreTabla + ' (' +  @CampoSQL + ') VALUES ' + @CampoDatos 
+						SET @sSQL = SUBSTRING(@sSQL,1,LEN(@sSQL)-1)
+					 --	PRINT dbo.fn_Num_Strg(LEN(@sSQL)) + '<->' +  @sSQL
+						EXECUTE(@sSQL)
+						SET @CampoDatos = ''
+					  END
+				   SET @lstTCadena = SUBSTRING(@lstTCadena,@lnuPosEnter+2,LEN(@lstTCadena))
+			   END
+			ELSE SET @lstTCadena = ''
+		END
+		IF LEN(@CampoDatos )>1
+		   BEGIN
+			  SET @sSQL = 'INSERT INTO ' + @NombreTabla + ' (' +  @CampoSQL + ') VALUES ' + @CampoDatos 
+			  SET @sSQL = SUBSTRING(@sSQL,1,LEN(@sSQL)-1)
+		   -- PRINT dbo.fn_Num_Strg(LEN(@sSQL)) + '->' +  @sSQL
+			  EXECUTE(@sSQL)
+		   END
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @NombreTabla
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+END

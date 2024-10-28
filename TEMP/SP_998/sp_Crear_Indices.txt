@@ -1,0 +1,127 @@
+CREATE PROCEDURE [dbo].[sp_Crear_Indices] 
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 26/09/2022
+  FECHA MODIFICACION: 26/09/2022
+  DESCIPCION		: Creacion de indices y claves primarias de todas las tablas
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+    DECLARE @SiIncremento INT;
+	DECLARE @sSQL VARCHAR(MAX), @Tabla VARCHAR(MAX), @Campos VARCHAR(MAX), @Columna VARCHAR(MAX);
+
+ -- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT name 
+		FROM sysobjects 
+		WHERE type='U'
+		AND name NOT LIKE 'Z%'
+		ORDER BY name
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Tabla
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	 -- Primero actualizamos la bandera que nos dira si ese registro ya existe  
+	    SET @Campos = ''
+
+	 -- Declaracion de Cursor 
+		DECLARE cCampoX CURSOR FOR
+			SELECT COLUMN_NAME
+			FROM Information_Schema.Columns
+			WHERE TABLE_NAME = @Tabla
+	 -- Apertura del cursor
+		OPEN cCampoX
+		FETCH NEXT FROM cCampoX INTO @Columna
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+           IF @Columna = 'CI_RUC' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'CI_RUC_R' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'RUC_CI' SET @Campos = @Campos + @Columna + ','
+		   IF @Columna = 'Cedula_R' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Codigo' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'CodigoC' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'CodigoU' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'CodigoDr' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Codigo_B' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Codigo_Inv' SET @Campos = @Campos + @Columna + ','
+		   IF @Columna = 'Codigo_Ext' SET @Campos = @Campos + @Columna + ','
+		   IF @Columna = 'Codigo_Barra' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Cod_Ejec' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Cliente' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Representante' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Factura' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Numero' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Secuencial_R' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Cta' SET @Campos = @Campos + @Columna + ','
+		   IF @Columna = 'Cta_Inv' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Cta_CxP' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Cta_Venta' SET @Campos = @Campos + @Columna + ','
+		   IF @Columna = 'Contra_Cta' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Fecha' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Serie' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Serie_R' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Serie_FA' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Serie_LC' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Serie_NC' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Serie_No' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'TP' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'TC' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Item' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Periodo' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Orden_No' SET @Campos = @Campos + @Columna + ','
+		   IF @Columna = 'Grupo' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'GrupoNo' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'Grupo_No' SET @Campos = @Campos + @Columna + ','
+		   IF @Columna = 'Detalle_SubCta' SET @Campos = @Campos + @Columna + ','
+		   IF @Columna = 'Clave' SET @Campos = @Campos + @Columna + ','
+		   IF @Columna = 'Cuenta' SET @Campos = @Campos + @Columna + ','
+           IF @Columna = 'ID'
+			  BEGIN
+ 				 SELECT C.COLUMN_NAME
+				 FROM Information_Schema.TABLE_CONSTRAINTS PK, Information_Schema.KEY_COLUMN_USAGE C
+				 WHERE PK.TABLE_NAME = @Tabla
+				 AND CONSTRAINT_TYPE = 'PRIMARY KEY'
+				 AND C.TABLE_NAME = PK.TABLE_NAME
+				 AND C.CONSTRAINT_NAME = PK.CONSTRAINT_NAME 
+				 IF (@@ROWCOUNT <= 0)
+				    BEGIN
+					   SET @SiIncremento = IDENT_SEED(@Tabla) 
+					   IF @SiIncremento <> 0
+					      SET @sSQL = 'ALTER TABLE [' + @Tabla + '] ADD PRIMARY KEY (ID);'
+					   ELSE
+					      SET @sSQL = 'ALTER TABLE [' + @Tabla + '] ID IDENTITY NOT NULL PRIMARY KEY;'
+					   EXECUTE(@sSQL)
+				    END 
+              END 
+		   FETCH NEXT FROM cCampoX INTO @Columna
+		END
+	 -- Cierre del cursor
+		CLOSE cCampoX
+	 -- Liberar los recursos
+		DEALLOCATE cCampoX
+		IF LEN(@Campos) > 1 SET @Campos = SUBSTRING(@Campos,1,LEN(@Campos)-1)
+		
+        SELECT tab.name as tablename, ind.name as indexname 
+        FROM sys.Indexes ind 
+        INNER JOIN sys.tables tab ON ind.object_id = tab.object_id 
+        WHERE NOT ind.Name IS NULL 
+        AND tab.name = @Tabla
+        AND ind.name = 'IDX_' + @Tabla
+		IF @@ROWCOUNT <= 0 AND LEN(@Campos) > 1 
+		   BEGIN
+		      SET @sSQL ='CREATE INDEX IDX_' + @Tabla + ' ON ' + @Tabla + ' (' + @Campos + ');'
+			  EXECUTE(@sSQL)
+		   END
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @Tabla
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+END

@@ -1,0 +1,63 @@
+CREATE PROCEDURE [dbo].[sp_Eliminar_Nulos] 
+@NombreTabla VARCHAR(50) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 30/04/2019
+  DESCIPCION		: Elimina los nulos de los campos en una tabla
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaracion de variables necesarias 
+    DECLARE @Campo varchar(50), @Tipo varchar(50), @ClaseTipo varchar(2), @sSQL varchar(MAX);
+ -- Declaración del cursor
+	DECLARE cCampos_Tabla CURSOR FOR
+		SELECT COL.name AS Campo, TYP.name AS Tipo
+		FROM dbo.syscolumns COL
+		JOIN dbo.sysobjects OBJ ON OBJ.id = COL.id
+		JOIN dbo.systypes TYP ON TYP.xusertype = COL.xtype
+		LEFT JOIN dbo.sysforeignkeys FK ON FK.fkey = COL.colid AND FK.fkeyid=OBJ.id
+		LEFT JOIN dbo.sysobjects OBJ2 ON OBJ2.id = FK.rkeyid
+		LEFT JOIN dbo.syscolumns COL2 ON COL2.colid = FK.rkey AND COL2.id = OBJ2.id
+		WHERE OBJ.name = @NombreTabla
+		AND (OBJ.xtype='U' 
+		OR OBJ.xtype='V')
+ -- Apertura del cursor
+	OPEN cCampos_Tabla
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cCampos_Tabla INTO @Campo, @Tipo
+	WHILE (@@FETCH_STATUS = 0 )
+	BEGIN
+	 -- Determinamos que tipo de dato tiene el campo   
+	    SET @ClaseTipo = 'S'
+	    IF @Tipo = 'nvarchar' SET @ClaseTipo = 'S'
+		IF @Tipo = 'smallint' SET @ClaseTipo = 'N'
+		IF @Tipo = 'bit' SET @ClaseTipo = 'N'
+		IF @Tipo = 'money' SET @ClaseTipo = 'N'
+		IF @Tipo = 'float' SET @ClaseTipo = 'N'
+		IF @Tipo = 'real' SET @ClaseTipo = 'N'
+		IF @Tipo = 'int' SET @ClaseTipo = 'N'
+		IF @Tipo = 'tinyint' SET @ClaseTipo = 'N'
+		IF @Tipo = 'smallint' SET @ClaseTipo = 'N'
+		IF @Tipo = 'datetime' SET @ClaseTipo = 'F'
+	 -- IF @Tipo = '' SET @ClaseTipo = 'N'
+	 -- Averiguamos cuantos registros del campo tienen nulos
+	    IF @Campo <> 'ID'
+		   BEGIN
+			 SET @sSQL = 'UPDATE ' + @NombreTabla + ' ' 
+			 IF @ClaseTipo = 'S' SET @sSQL = @sSQL + 'SET ' + @Campo + ' = ''.'' '
+		 	 IF @ClaseTipo = 'N' SET @sSQL = @sSQL + 'SET ' + @Campo + ' = 0 '
+			 IF @ClaseTipo = 'F' SET @sSQL = @sSQL + 'SET ' + @Campo + ' = ''' + CONVERT(VARCHAR(24),GETDATE(),112)  + ''' '
+			 SET @sSQL = @sSQL + 'WHERE ' + @Campo + ' IS NULL;'
+   			 EXECUTE(@sSQL);
+		   END
+     -- Procesamos el siguiente Producto a mayorizar
+		FETCH NEXT FROM cCampos_Tabla INTO @Campo, @Tipo
+	END
+ -- Cierre del cursor
+	CLOSE cCampos_Tabla
+ -- Liberar los recursos
+	DEALLOCATE cCampos_Tabla
+END

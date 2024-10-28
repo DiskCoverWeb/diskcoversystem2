@@ -1,0 +1,97 @@
+CREATE PROCEDURE [dbo].[sp_Respaldar_Empresa]
+@Item AS VARCHAR(3), @Ruta_Respaldo VARCHAR(128) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 09/09/2021
+  FECHA MODIFICACION: 09/09/2021
+  DESCIPCION		: Respalda los datos de una empresa
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ -- Declacion de Variales
+	DECLARE @BaseDatos VARCHAR(MAX), @Tabla VARCHAR(MAX), @Clave VARCHAR(MAX), @Columna VARCHAR(MAX), @sSQL VARCHAR(MAX), @Fecha varchar(MAX), @Archivo varchar(MAX);
+	DECLARE @Registros INT = 0;
+
+ -- Eliminar Indices
+    EXEC sp_Eliminar_Indices 
+
+ -- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT name 
+		FROM sysobjects 
+		WHERE type='U'
+		ORDER BY name
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Tabla
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	    IF SUBSTRING(@Tabla,1,7) = 'Asiento'
+		   BEGIN
+			  EXECUTE('DROP TABLE ' + @Tabla + ' ');
+		   END
+		ELSE
+		   BEGIN
+		   -- Declaracion de Cursor del campo Item
+			  DECLARE cCampoItem CURSOR FOR
+				 SELECT COLUMN_NAME
+				 FROM Information_Schema.Columns
+				 WHERE TABLE_NAME = @Tabla
+				 AND COLUMN_NAME = 'Item'
+		   -- Apertura del cursor
+			  OPEN cCampoItem
+			  FETCH NEXT FROM cCampoItem INTO @Columna
+			  IF (@@FETCH_STATUS = 0)
+			     BEGIN 
+					EXECUTE('DELETE FROM ' + @Tabla + ' WHERE Item <> ''' + @Item + ''' ');
+				 END
+		   -- Cierre del cursor
+			  CLOSE cCampoItem
+		   -- Liberar los recursos
+			  DEALLOCATE cCampoItem
+
+			  EXECUTE('ALTER TABLE ' + @Tabla + ' DROP COLUMN IF EXISTS ID ');
+		   END
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @Tabla
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+	
+-- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT sysobjects.Name
+		FROM sysobjects
+		INNER JOIN sysindexes ON sysobjects.id = sysindexes.id
+		WHERE type = 'U'
+		AND sysindexes.IndId < 2
+		AND sysindexes.Rows = 0
+		ORDER BY sysobjects.Name
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Tabla
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	    EXECUTE('DROP TABLE ' + @Tabla + ' ');
+     -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @Tabla
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+
+	SET @BaseDatos = DB_NAME();
+	
+	EXECUTE('ALTER DATABASE ' + @BaseDatos + ' SET RECOVERY SIMPLE;');
+	DBCC SHRINKDATABASE (@BaseDatos, 1); 
+	EXECUTE('ALTER DATABASE ' + @BaseDatos + ' SET RECOVERY FULL;');
+	SET @Fecha = SUBSTRING(CONVERT(Varchar(MAX), GETDATE(),120),1,10) 
+	SET @Archivo = @Ruta_Respaldo + @BaseDatos + '_Empresa_' + @Item + '_' + @Fecha + '.bak'
+
+	SET @Tabla = 'FullBackup_of_' + @BaseDatos;
+	BACKUP DATABASE @BaseDatos TO DISK = @archivo WITH FORMAT, MEDIANAME = 'D_SQLServerBackups', NAME = @Tabla; 
+END

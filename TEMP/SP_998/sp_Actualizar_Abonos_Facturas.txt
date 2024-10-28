@@ -1,0 +1,583 @@
+CREATE PROCEDURE [dbo].[sp_Actualizar_Abonos_Facturas] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @NumModulo VARCHAR(2), @Usuario VARCHAR(10), @TC VARCHAR(2), @Serie VARCHAR(6), 
+@Factura INT, @FechaCorte VARCHAR(10), @FechaDesde VARCHAR(10), @FechaHasta VARCHAR(10), @SaldoReal AS BIT, @PorFecha AS BIT,
+@ExisteErrores BIT OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 18/07/2019
+  FECHA MODIFICACION: 02/04/2022
+  DESCIPCION		: Actualiza saldo de Facturas, cuando los saldos no estan bien cuadrados, presenta errores de Facturas
+                      en negativo.
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notIFicacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @ID INT, @Cont INT = 0;
+	DECLARE @T VARCHAR(1), @EsFacturaIndividual VARCHAR(MAX)='', @EsFacturaIndividualF VARCHAR(MAX)='', @EsAbonoIndividual VARCHAR(MAX)='', @EsAbonoIndividualF VARCHAR(MAX)='';
+	DECLARE @FechaIni VARCHAR(10)='19000101', @FechaFin VARCHAR(10)='19000101', @FechaTemp VARCHAR(10)='19000101';
+	DECLARE @Codigo VARCHAR(10), @Cliente VARCHAR(180);
+	DECLARE @Texto VARCHAR(MAX), @TextLinea VARCHAR(100), @sSQL VARCHAR(MAX);
+
+	SET @TextLinea = REPLICATE('-',100);
+
+ -- Determinamos las fechas de cierre
+    IF (@PorFecha <> 0) And (@FechaDesde <= @FechaHasta) 
+	   BEGIN
+          SET @FechaIni = @FechaDesde
+          SET @FechaFin = @FechaHasta
+	   END
+    ELSE
+	   BEGIN
+          SET @FechaFin = @FechaHasta
+		  SET @FechaIni = (SELECT CONVERT(varchar,MIN(Fecha),112) 
+						   FROM Facturas 
+						   WHERE Item = @Item
+						   AND Periodo = @Periodo 
+						   AND Fecha <= @FechaCorte
+						   AND T <> 'A')
+
+		  SET @FechaTemp = (SELECT CONVERT(varchar,MIN(Fecha),112) 
+						    FROM Trans_Abonos
+						    WHERE Item = @Item
+						    AND Periodo = @Periodo 
+						    AND Fecha <= @FechaCorte
+						    AND T <> 'A')
+		  IF @FechaTemp < @FechaIni SET @FechaIni = @FechaTemp
+		  IF @FechaIni > @FechaFin SET @FechaFin = @FechaIni
+       END
+	
+ -- Programacion de procesos
+    IF Len(@TC) = 2 And Len(@Serie) = 6 And @Factura > 0
+	   BEGIN
+		   SET @EsFacturaIndividual = 'AND TC = ''' + @TC + ''' '
+									+ 'AND Serie = ''' + @Serie + ''' '
+									+ 'AND Factura = ' + CAST(@Factura AS VARCHAR(10)) + ' '
+		   SET @EsFacturaIndividualF = 'AND F.TC = ''' + @TC + ''' '
+									 + 'AND F.Serie = ''' + @Serie + ''' '
+									 + 'AND F.Factura = ' + CAST(@Factura AS VARCHAR(10)) + ' '
+		   SET @EsAbonoIndividual = 'AND TP = ''' + @TC + ''' '
+							 	  + 'AND Serie = ''' + @Serie + ''' '
+								  + 'AND Factura = ' + CAST(@Factura AS VARCHAR(10)) + ' '
+		   SET @EsAbonoIndividualF = 'AND F.TP = ''' + @TC + ''' '
+							 	  + 'AND F.Serie = ''' + @Serie + ''' '
+								  + 'AND F.Factura = ' + CAST(@Factura AS VARCHAR(10)) + ' '
+	   END
+
+ -- Actualizamos el Tipo de Cuenta de los Abonos
+ 	SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Cta_Venta = ''.'' '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+			  + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + @EsFacturaIndividual
+	EXECUTE(@sSQL);
+
+    SET @sSQL = 'UPDATE Trans_Abonos '
+              + 'SET Tipo_Cta = CC.TC '
+              + 'FROM Trans_Abonos As F, Catalogo_Cuentas As CC '
+			  + 'WHERE F.Item = ''' + @Item + ''' '
+			  + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+			  + 'AND F.Tipo_Cta <> CC.TC '
+			  + @EsAbonoIndividualF
+			  + 'AND F.Item = CC.Item '
+			  + 'AND F.Periodo = CC.Periodo '
+			  + 'AND F.Cta = CC.Codigo '
+    EXECUTE(@sSQL);
+
+	SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Cod_CxC = CL.Codigo '
+			  + 'FROM Facturas As F, Catalogo_Lineas As CL '
+              + 'WHERE F.Item = ''' + @Item + ''' '
+              + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + @EsFacturaIndividualF 
+			  + 'AND F.Cod_CxC = ''.'' '
+			  + 'AND CL.TL <> 0 '
+			  + 'AND F.TC = CL.Fact '
+			  + 'AND F.Serie = CL.Serie '
+              + 'AND F.Item = CL.Item '
+              + 'AND F.Periodo = CL.Periodo '
+	EXECUTE(@sSQL);
+
+	SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Cta_Venta = CL.Cta_Venta '
+			  + 'FROM Facturas As F, Catalogo_Lineas As CL '
+              + 'WHERE F.Item = ''' + @Item + ''' '
+              + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + @EsFacturaIndividualF
+			  + 'AND LEN(CL.Cta_Venta) > 1 '
+			  + 'AND F.TC = CL.Fact '
+			  + 'AND F.Serie = CL.Serie '
+              + 'AND F.Item = CL.Item '
+              + 'AND F.Periodo = CL.Periodo '
+	EXECUTE(@sSQL);
+
+	SET @sSQL = 'UPDATE Detalle_Factura '
+			  + 'SET CodigoL = CL.Codigo '
+			  + 'FROM Detalle_Factura As F, Catalogo_Lineas As CL '
+              + 'WHERE F.Item = ''' + @Item + ''' '
+              + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+			  + 'AND F.CodigoL = ''.'' '
+			  + 'AND CL.TL <> 0 '
+			  + @EsFacturaIndividualF 
+			  + 'AND F.TC = CL.Fact '
+			  + 'AND F.Serie = CL.Serie '
+              + 'AND F.Item = CL.Item '
+              + 'AND F.Periodo = CL.Periodo '
+	EXECUTE(@sSQL);
+
+	SET @sSQL = 'UPDATE Detalle_Factura '
+			  + 'SET Cta_Venta = CP.Cta_Ventas_0 '
+			  + 'FROM Detalle_Factura As F, Catalogo_Productos As CP '
+              + 'WHERE F.Item = ''' + @Item + ''' '
+              + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+			  + 'AND LEN(CP.Cta_Ventas_0) > 1 '
+			  + 'AND F.Total_IVA = 0 '
+			  + @EsFacturaIndividualF
+			  + 'AND F.Codigo = CP.Codigo_Inv '
+              + 'AND F.Item = CP.Item '
+              + 'AND F.Periodo = CP.Periodo '
+	EXECUTE(@sSQL);
+
+	SET @sSQL = 'UPDATE Detalle_Factura '
+			  + 'SET Cta_Venta = CP.Cta_Ventas '
+			  + 'FROM Detalle_Factura As F, Catalogo_Productos As CP '
+              + 'WHERE F.Item = ''' + @Item + ''' '
+              + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+			  + 'AND LEN(CP.Cta_Ventas) > 1 '
+			  + 'AND F.Total_IVA > 0 '
+			  + @EsFacturaIndividualF
+			  + 'AND F.Codigo = CP.Codigo_Inv '
+              + 'AND F.Item = CP.Item '
+              + 'AND F.Periodo = CP.Periodo '
+	EXECUTE(@sSQL);
+
+	SET @sSQL = 'UPDATE Detalle_Factura '
+			  + 'SET Cta_Venta = CL.Cta_Venta '
+			  + 'FROM Detalle_Factura As F, Catalogo_Lineas As CL '
+              + 'WHERE F.Item = ''' + @Item + ''' '
+              + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+			  + 'AND LEN(CL.Cta_Venta) > 1 '
+			  + @EsFacturaIndividualF
+			  + 'AND F.TC = CL.Fact '
+			  + 'AND F.Serie = CL.Serie '
+              + 'AND F.Item = CL.Item '
+              + 'AND F.Periodo = CL.Periodo '
+	EXECUTE(@sSQL);
+
+ -- Actualizamos los ejecutivos de Ventas que no se han activado en Roles de Pago
+    SET @sSQL = 'UPDATE Clientes '
+              + 'SET X = ''.'' '
+              + 'WHERE Codigo <> ''.'' '
+    EXECUTE(@sSQL);
+        
+    SET @sSQL = 'UPDATE Clientes '
+              + 'SET X = ''C'' '
+              + 'FROM Clientes As C, Facturas As F '
+              + 'WHERE F.Item = ''' + @Item + ''' '
+              + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + @EsFacturaIndividualF 
+              + 'AND C.Codigo = F.Cod_Ejec '
+    EXECUTE(@sSQL);
+
+    SET @sSQL = 'UPDATE Clientes '
+              + 'SET X = ''A'' '
+              + 'FROM Clientes As C, Accesos As A '
+              + 'WHERE C.Codigo = A.Codigo '
+    EXECUTE(@sSQL);
+
+ -- Declaracion de Cursor para sacar los errores del Rol de Pagos
+	DECLARE cCursor CURSOR FOR
+		SELECT Codigo, Cliente 
+		FROM Clientes 
+		WHERE X = 'C' 
+		ORDER BY T 
+ -- Apertura del cursor
+	OPEN cCursor
+	FETCH NEXT FROM cCursor INTO @Codigo, @Cliente 
+	WHILE (@@FETCH_STATUS = 0 )
+	BEGIN
+	 -- Ingresamos los calculos
+	    IF @Cont = 0 
+		   BEGIN 
+			 EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+ 			 SET @Texto = 'ASIGNE ESTAS PERSONAS A NOMINA:'
+		     SET @Cont = @Cont + 1 
+		   END
+        EXEC dbo.sp_Insertar_Acceso @Codigo, @Codigo,'.', @Cliente, '.'
+        SET @Texto = @Codigo + ' - ' + @Cliente
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cCursor INTO @Codigo, @Cliente
+	END
+ -- Cierre del cursor
+	CLOSE cCursor
+ -- Liberar los recursos
+	DEALLOCATE cCursor
+    
+ -- Enceramos los SubTotales
+    SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Total_Abonos = 0,'
+			  + 'Total_Efectivo = 0,'
+			  + 'Total_Banco = 0,'
+			  + 'Otros_Abonos = 0,'
+			  + 'Total_Ret_Fuente = 0,'
+			  + 'Total_Ret_IVA_B = 0,'
+			  + 'Total_Ret_IVA_S = 0, '
+			  + 'Saldo_Actual = Total_MN, '
+			  + 'Fecha_C = Fecha, '
+			  + 'Fecha_R = Fecha '
+			  + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+			  + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+     
+ -- Actualizamos fecha y el Abono de la Retencion Fuente
+    SET @sSQL = 'UPDATE Facturas '
+              + 'SET Fecha_R=TA.Fecha, Serie_R=TA.Serie_R, Secuencial_R=TA.Cheque, Autorizacion_R=TA.Autorizacion_R '
+              + 'FROM Facturas As F, Trans_Abonos As TA '
+			  + 'WHERE F.Item = ''' + @Item + ''' '
+              + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.T <> ''A'' '
+			  + 'AND TA.Tipo_Cta = ''CF'' '
+			  + 'AND TA.Fecha <= ''' + @FechaFin + ''' '
+			  + @EsFacturaIndividualF
+			  + 'AND Fecha_R <> TA.Fecha '
+			  + 'AND F.TC = TA.TP '
+			  + 'AND F.Item = TA.Item '
+			  + 'AND F.Periodo = TA.Periodo '
+			  + 'AND F.Serie = TA.Serie '
+			  + 'AND F.Factura = TA.Factura '
+			  + 'AND F.Autorizacion = TA.Autorizacion '
+			  + 'AND F.CodigoC = TA.CodigoC '
+    EXECUTE(@sSQL);
+
+ -- Actualizamos pagos en Ret Fuente
+	SET @sSQL = 'UPDATE Facturas '
+              + 'SET Total_Ret_Fuente = (SELECT ROUND(SUM(TA.Abono),2,0) '
+              + '                       FROM Trans_Abonos As TA '
+              + '                       WHERE TA.Item = ''' + @Item + ''' '
+              + '                       AND TA.Periodo = ''' + @Periodo + ''' '
+			  + '                       AND TA.Fecha <= ''' + @FechaFin + ''' '
+			  + '                       AND TA.Tipo_Cta = ''CF'' '
+              + '                       AND TA.Item = Facturas.Item '
+              + '                       AND TA.Periodo = Facturas.Periodo '
+              + '                       AND TA.TP = Facturas.TC '
+              + '                       AND TA.Serie = Facturas.Serie '
+              + '                       AND TA.Factura = Facturas.Factura '
+              + '                       AND TA.Autorizacion = Facturas.Autorizacion) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + 'AND T <> ''A'' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+
+ -- Actualizamos el Abono de la Retencion IVA Bienes
+	SET @sSQL = 'UPDATE Facturas '
+              + 'SET Total_Ret_IVA_B = (SELECT ROUND(SUM(TA.Abono),2,0) '
+              + '                       FROM Trans_Abonos As TA '
+              + '                       WHERE TA.Item = ''' + @Item + ''' '
+              + '                       AND TA.Periodo = ''' + @Periodo + ''' '
+			  + '                       AND TA.Fecha <= ''' + @FechaFin + ''' '
+			  + '                       AND TA.Tipo_Cta = ''CB'' '
+              + '                       AND TA.Item = Facturas.Item '
+              + '                       AND TA.Periodo = Facturas.Periodo '
+              + '                       AND TA.TP = Facturas.TC '
+              + '                       AND TA.Serie = Facturas.Serie '
+              + '                       AND TA.Factura = Facturas.Factura '
+              + '                       AND TA.Autorizacion = Facturas.Autorizacion) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + 'AND T <> ''A'' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+
+ -- Actualizamos el Abono de la Retencion IVA Servicios
+	SET @sSQL = 'UPDATE Facturas '
+              + 'SET Total_Ret_IVA_S = (SELECT ROUND(SUM(TA.Abono),2,0) '
+              + '                       FROM Trans_Abonos As TA '
+              + '                       WHERE TA.Item = ''' + @Item + ''' '
+              + '                       AND TA.Periodo = ''' + @Periodo + ''' '
+			  + '                       AND TA.Fecha <= ''' + @FechaFin + ''' '
+			  + '                       AND TA.Tipo_Cta = ''CI'' '
+              + '                       AND TA.Item = Facturas.Item '
+              + '                       AND TA.Periodo = Facturas.Periodo '
+              + '                       AND TA.TP = Facturas.TC '
+              + '                       AND TA.Serie = Facturas.Serie '
+              + '                       AND TA.Factura = Facturas.Factura '
+              + '                       AND TA.Autorizacion = Facturas.Autorizacion) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + 'AND T <> ''A'' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+
+ -- Actualizamos pagos en Efectivo
+	SET @sSQL = 'UPDATE Facturas '
+              + 'SET Total_Efectivo = (SELECT ROUND(SUM(TA.Abono),2,0) '
+              + '                      FROM Trans_Abonos As TA '
+              + '                      WHERE TA.Item = ''' + @Item + ''' '
+              + '                      AND TA.Periodo = ''' + @Periodo + ''' '
+			  + '                      AND TA.Fecha <= ''' + @FechaFin + ''' '
+			  + '                      AND TA.Tipo_Cta = ''CJ'' '
+              + '                      AND TA.Item = Facturas.Item '
+              + '                      AND TA.Periodo = Facturas.Periodo '
+              + '                      AND TA.TP = Facturas.TC '
+              + '                      AND TA.Serie = Facturas.Serie '
+              + '                      AND TA.Factura = Facturas.Factura '
+              + '                      AND TA.Autorizacion = Facturas.Autorizacion) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + 'AND T <> ''A'' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+
+ -- Actualizamos pagos en Bancos
+	SET @sSQL = 'UPDATE Facturas '
+              + 'SET Total_Banco = (SELECT ROUND(SUM(TA.Abono),2,0) '
+              + '                   FROM Trans_Abonos As TA '
+              + '                   WHERE TA.Item = ''' + @Item + ''' '
+              + '                   AND TA.Periodo = ''' + @Periodo + ''' '
+			  + '                   AND TA.Fecha <= ''' + @FechaFin + ''' '
+			  + '                   AND TA.Tipo_Cta = ''BA'' '
+              + '                   AND TA.Item = Facturas.Item '
+              + '                   AND TA.Periodo = Facturas.Periodo '
+              + '                   AND TA.TP = Facturas.TC '
+              + '                   AND TA.Serie = Facturas.Serie '
+              + '                   AND TA.Factura = Facturas.Factura '
+              + '                   AND TA.Autorizacion = Facturas.Autorizacion) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + 'AND T <> ''A'' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+
+ -- Actualizamos pagos en Otros Abonos
+	SET @sSQL = 'UPDATE Facturas '
+              + 'SET Otros_Abonos = (SELECT ROUND(SUM(TA.Abono),2,0) '
+              + '                    FROM Trans_Abonos As TA '
+              + '                    WHERE TA.Item = ''' + @Item + ''' '
+              + '                    AND TA.Periodo = ''' + @Periodo + ''' '
+			  + '                    AND TA.Fecha <= ''' + @FechaFin + ''' '
+			  + '                    AND NOT TA.Tipo_Cta IN (''CB'',''CI'',''CF'',''CJ'',''BA'') '
+              + '                    AND TA.Item = Facturas.Item '
+              + '                    AND TA.Periodo = Facturas.Periodo '
+              + '                    AND TA.TP = Facturas.TC '
+              + '                    AND TA.Serie = Facturas.Serie '
+              + '                    AND TA.Factura = Facturas.Factura '
+              + '                    AND TA.Autorizacion = Facturas.Autorizacion) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + 'AND T <> ''A'' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+
+ -- Actualizamos pagos en Cheques Posfechados
+	SET @sSQL = 'UPDATE Facturas '
+              + 'SET Chq_Posf = (SELECT ROUND(SUM(TA.Abono),2,0) '
+              + '                FROM Trans_Abonos As TA '
+              + '                WHERE TA.Item = ''' + @Item + ''' '
+              + '                AND TA.Periodo = ''' + @Periodo + ''' '
+			  + '                AND TA.Fecha > ''' + @FechaFin + ''' '
+			  + '                AND TA.Tipo_Cta = ''BA'' '
+              + '                AND TA.Item = Facturas.Item '
+              + '                AND TA.Periodo = Facturas.Periodo '
+              + '                AND TA.TP = Facturas.TC '
+              + '                AND TA.Serie = Facturas.Serie '
+              + '                AND TA.Factura = Facturas.Factura '
+              + '                AND TA.Autorizacion = Facturas.Autorizacion) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + 'AND T <> ''A'' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+        
+ -- Actualizando Fecha de Cancelacion de Facturas
+	SET @sSQL = 'UPDATE Facturas '
+              + 'SET Fecha_C = (SELECT MAX(Fecha) '
+              + '              FROM Trans_Abonos As TA '
+              + '              WHERE TA.Item = ''' + @Item + ''' '
+              + '              AND TA.Periodo = ''' + @Periodo + ''' '
+			  + '              AND TA.Fecha <= ''' + @FechaFin + ''' '
+              + '              AND TA.Item = Facturas.Item '
+              + '              AND TA.Periodo = Facturas.Periodo '
+              + '              AND TA.TP = Facturas.TC '
+              + '              AND TA.Serie = Facturas.Serie '
+              + '              AND TA.Factura = Facturas.Factura '
+              + '              AND TA.Autorizacion = Facturas.Autorizacion) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+              + 'AND T <> ''A'' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+
+ -- Actualizamos Datos en nulos   
+    SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Total_Efectivo = 0 '
+			  + 'WHERE Total_Efectivo IS NULL '
+			  + 'AND Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL);
+
+    SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Total_Ret_Fuente = 0 '
+			  + 'WHERE Total_Ret_Fuente IS NULL '
+			  + 'AND Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL);
+
+    SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Total_Ret_IVA_S = 0 '
+			  + 'WHERE Total_Ret_IVA_S IS NULL '
+			  + 'AND Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL);
+
+    SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Total_Ret_IVA_B = 0 '
+			  + 'WHERE Total_Ret_IVA_B IS NULL '
+			  + 'AND Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL);
+	
+    SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Total_Banco = 0 '
+			  + 'WHERE Total_Banco IS NULL '
+			  + 'AND Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL);
+    
+    SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Otros_Abonos = 0 '
+			  + 'WHERE Otros_Abonos IS NULL '
+			  + 'AND Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL);
+      
+    SET @sSQL = 'UPDATE Facturas '
+			  + 'SET Fecha_C = Fecha '
+			  + 'WHERE Fecha_C IS NULL '
+			  + 'AND Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL);
+
+    SET @sSQL = 'UPDATE Facturas '
+              + 'SET Chq_Posf = 0 '
+              + 'WHERE Chq_Posf IS NULL '
+			  + 'AND Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL);
+
+ -- Totalizando Saldos de Factura
+    SET @sSQL = 'UPDATE Facturas '
+              + 'SET Total_Abonos = Total_Efectivo + Total_Banco + Total_Ret_Fuente + Total_Ret_IVA_B + Total_Ret_IVA_S + Otros_Abonos '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha <= ''' + @FechaFin + ''' '
+              + @EsFacturaIndividual 
+              + 'AND T <> ''A'' '
+    EXECUTE(@sSQL);
+        
+    SET @sSQL = 'UPDATE Facturas '
+              + 'SET Saldo_Actual = ROUND(Total_MN - Total_Abonos,2,0) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND Fecha <= ''' + @FechaFin + ''' '
+              + 'AND T <> ''A'' '
+			  + @EsFacturaIndividual 
+    EXECUTE(@sSQL);
+    
+    IF @SaldoReal <> 0 
+	   BEGIN
+ 		  SET @sSQL = 'UPDATE Facturas '
+				    + 'SET Saldo_MN = Saldo_Actual '
+				    + 'WHERE Item = ''' + @Item + ''' '
+				    + 'AND Periodo = ''' + @Periodo + ''' '
+				    + @EsFacturaIndividual 
+				    + 'AND T <> ''A'' '
+				    + 'AND Saldo_MN <> Saldo_Actual '
+		  EXECUTE(@sSQL);
+    
+		  SET @sSQL = 'UPDATE Facturas '
+					+ 'SET T = ''C'' '
+					+ 'WHERE Item = ''' + @Item + ''' '
+					+ 'AND Periodo = ''' + @Periodo + ''' '
+					+ 'AND Saldo_MN <= 0 '
+					+ 'AND T <> ''A'' '
+					+ @EsFacturaIndividual
+		  EXECUTE(@sSQL);
+      
+		  SET @sSQL = 'UPDATE Facturas '
+					+ 'SET T = ''P'' '
+					+ 'WHERE Item = ''' + @Item + ''' '
+					+ 'AND Periodo = ''' + @Periodo + ''' '
+					+ 'AND Saldo_MN > 0 '
+					+ 'AND T <> ''A'' '
+					+ @EsFacturaIndividual
+		  EXECUTE(@sSQL);
+	 
+	   -- Actualizando Estado de las facturas
+		  SET @sSQL = 'UPDATE Detalle_Factura '
+					+ 'SET T = F.T '
+					+ 'FROM Detalle_Factura As DF, Facturas As F '
+					+ 'WHERE DF.Item = ''' + @Item + ''' '
+					+ 'AND DF.Periodo = ''' + @Periodo + ''' '
+					+ 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+					+ @EsFacturaIndividualF 
+					+ 'AND DF.Item = F.Item '
+					+ 'AND DF.Periodo = F.Periodo '
+					+ 'AND DF.Factura = F.Factura '
+					+ 'AND DF.TC = F.TC '
+					+ 'AND DF.Serie = F.Serie '
+					+ 'AND DF.Autorizacion = F.Autorizacion '
+		  EXECUTE(@sSQL);
+           
+		  SET @sSQL = 'UPDATE Trans_Abonos '
+					+ 'SET T = F.T '
+					+ 'FROM Trans_Abonos As DF, Facturas As F '
+					+ 'WHERE DF.Item = ''' + @Item + ''' '
+					+ 'AND DF.Periodo = ''' + @Periodo + ''' '
+					+ 'AND F.Fecha BETWEEN ''' + @FechaIni + ''' AND ''' + @FechaFin + ''' '
+					+ @EsFacturaIndividualF 
+					+ 'AND DF.Item = F.Item '
+					+ 'AND DF.Periodo = F.Periodo '
+					+ 'AND DF.Factura = F.Factura '
+					+ 'AND DF.Autorizacion = F.Autorizacion '
+					+ 'AND DF.Serie = F.Serie '
+					+ 'AND DF.TP = F.TC '
+		  EXECUTE(@sSQL);
+       END 
+
+ -- SET @Texto =  @FechaIni + char(9) + @FechaFin  
+ -- EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+
+ -- Determina si existen Errores que presentar
+	SET @ExisteErrores = 0
+	SET @sSQL = 'SELECT Texto ' 
+ 	          + 'FROM Tabla_Temporal ' 
+              + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND Modulo = ''' + @NumModulo + ''' '
+              + 'AND CodigoU = ''' + @Usuario + ''' '
+	EXECUTE(@sSQL);
+	IF @@ROWCOUNT > 0 SET @ExisteErrores = 1
+	SET @ExisteErrores = 1
+	RETURN @ExisteErrores
+END

@@ -1,0 +1,522 @@
+CREATE PROCEDURE [dbo].[sp_Mayorizar_Inventario] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @Usuario VARCHAR(10), @NumModulo VARCHAR(2), @DecPVP INT, @DecCosto INT, @FechaCorte VARCHAR(10), @TipoKardex VARCHAR(6) OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 16/09/2022
+  DESCIPCION		: Mayoriza los kardex de los productos de inventario
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notIFicacion de resultados del proceso
+    SET NOCOUNT ON
+ -- Declaracion de variables para el cursor
+    DECLARE @Fecha DATETIME;
+	DECLARE @Serie varchar(6), @Codigo_Inv varchar(25), @TP varchar(2), @TC varchar(2), @CodBodega varchar(2);
+	DECLARE @TextLinea varchar(100), @Texto varchar(100), @Producto varchar(130), @sSQL varchar(MAX);
+	DECLARE @CtaInv varchar(18), @CtaCosto varchar(18), @CtaInvK varchar(18), @CtaCostoK varchar(18);
+	DECLARE @ID int, @Cont int, @ContErr int, @Numero int, @Factura int;
+	DECLARE @Entrada FLOAT, @Salida FLOAT, @Valor_Unitario FLOAT, @Costo FLOAT, @Existencia FLOAT, @ValorUnitAnt FLOAT, @ValorUnit FLOAT;
+	DECLARE @SaldoActual MONEY, @Valor_Total MONEY, @Total MONEY, @StockAct MONEY, @StockAnt MONEY, @SaldoAnterior MONEY;
+	DECLARE @Procesado BIT, @SiMayorizo BIT;
+	SET @TextLinea = REPLICATE('-',100)
+	SET @ContErr=0
+	SET @TipoKardex = ''
+
+ -- Si la empresa maneja inventario procesamos caso contrario no
+	SELECT Cta_Inv, COUNT(Cta_Inv) As CCta_Inv 
+    FROM Trans_Kardex 
+    WHERE Item = @Item
+    AND Periodo = @Periodo
+    GROUP BY Cta_Inv
+	IF @@ROWCOUNT > 0 
+	BEGIN
+	 -- Eliminamos nulos 
+		EXEC sp_Eliminar_Nulos 'Trans_Kardex'
+
+	 -- Actualizamos Bodega por default
+		UPDATE Trans_Kardex 
+		SET CodBodega ='01'
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND LEN(CodBodega) = 1;
+
+	 -- Actualizamos Bodega por default
+		UPDATE Detalle_Factura
+		SET CodBodega ='01'
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND LEN(CodBodega) = 1;
+
+	 -- Actualizamos productos a facturar
+ 		UPDATE Catalogo_Productos 
+		SET INV = 1
+		FROM Catalogo_Productos As CP, Detalle_Factura As DF
+		WHERE CP.Item = @Item
+		AND CP.Periodo = @Periodo
+		AND CP.Item = DF.Item
+		AND CP.Periodo = DF.Periodo
+		AND CP.Codigo_Inv = DF.Codigo
+
+	 -- Actualizamos detalle de comprobantes en el producto
+		UPDATE Trans_Kardex 
+		SET Detalle = SUBSTRING(C.Concepto,1,100) 
+		FROM Trans_Kardex As TK,Comprobantes As C
+		WHERE TK.Item = @Item
+		AND TK.Periodo = @Periodo
+		AND TK.Detalle = '.' 
+		AND TK.TC = '.'
+		AND TK.Serie = '.' 
+		AND TK.Factura = 0 
+		AND TK.Item = C.Item 
+		AND TK.Periodo = C.Periodo 
+		AND TK.TP = C.TP 
+		AND TK.Numero = C.Numero 
+		AND TK.Fecha = C.Fecha;
+
+	 -- Borramos Productos mal procesados
+		DELETE
+		FROM Catalogo_Productos 
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND LEN(Codigo_Inv) < 2;
+   
+	 -- Actualizamos productos grupales son cuentas de proceso
+		UPDATE Catalogo_Productos 
+		SET Cta_Inventario = '0', Cta_Costo_Venta = '0', Cta_Ventas = '0', Cta_Ventas_0 = '0', INV = 1
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND TC = 'I';
+
+	 -- Redondeamos PVP y Costo del Producto  
+		UPDATE Trans_Kardex 
+		SET Valor_Unitario = ROUND(Valor_Unitario,@DecPVP,0), Costo = ROUND(Costo,@DecCosto,0) 
+		WHERE Item = @Item
+		AND Periodo = @Periodo;
+
+	 -- Actualizamos Totales de Entrada y Salida por sus PVP y Costos
+		UPDATE Trans_Kardex 
+		SET Valor_Total = ROUND(Valor_Unitario * Entrada,2,0), Total = ROUND(Costo * Entrada,2,0) 
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND Entrada > 0 
+		AND T <> 'A';
+ 
+	 -- Tambien salidas  
+		UPDATE Trans_Kardex 
+		SET Valor_Total = ROUND(Valor_Unitario * Salida,2,0), Total = ROUND(Costo * Salida,2,0) 
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND Salida > 0 
+		AND T <> 'A';
+ 
+	 -- Determinando Productos a mayorizar
+		UPDATE Catalogo_Productos 
+		SET Procesado = 1
+		WHERE Item = @Item
+		AND Periodo = @Periodo;
+
+	 -- Verificamos cuales son los productos a mayorizar  
+		UPDATE Catalogo_Productos 
+		SET Procesado = TK.Procesado 
+		FROM Catalogo_Productos As CP, Trans_Kardex As TK 
+		WHERE TK.Item = @Item
+		AND TK.Periodo = @Periodo
+		AND TK.Procesado = 0
+		AND CP.Periodo = TK.Periodo 
+		AND CP.Item = TK.Item 
+		AND CP.Codigo_Inv = TK.Codigo_Inv;
+
+	 -- Actualizamos que Tipo de Cuenta esta asignado a las ventas
+		UPDATE Catalogo_Productos 
+		SET Tipo_SubMod = CC.TC 
+		FROM Catalogo_Productos As CP, Catalogo_Cuentas As CC 
+		WHERE CP.Item = @Item
+		AND CP.Periodo = @Periodo
+		AND CP.Tipo_SubMod <> CC.TC
+		AND CP.Item = CC.Item
+		AND CP.Periodo = CC.Periodo
+		AND CP.Cta_Ventas_0 = CC.Codigo;
+
+		UPDATE Catalogo_Productos 
+		SET Tipo_SubMod = CC.TC 
+		FROM Catalogo_Productos As CP, Catalogo_Cuentas As CC 
+		WHERE CP.Item = @Item
+		AND CP.Periodo = @Periodo
+		AND CP.Tipo_SubMod <> CC.TC
+		AND CP.Item = CC.Item
+		AND CP.Periodo = CC.Periodo
+		AND CP.Cta_Ventas = CC.Codigo;
+
+	 -- Declaración del cursor para listar productos a mayorizar
+		DECLARE cCatalogo CURSOR FOR
+			SELECT CP.Codigo_Inv, CP.Cta_Inventario, CP.Cta_Costo_Venta, COUNT(TK.Codigo_Inv)
+			FROM Catalogo_Productos As CP, Trans_Kardex As TK 
+			WHERE CP.Item = @Item
+			AND CP.Periodo = @Periodo
+			AND CP.Procesado = 0
+			AND CP.TC = 'P'
+			AND CP.Item = TK.Item
+			AND CP.Periodo = TK.Periodo
+			AND CP.Codigo_Inv = TK.Codigo_Inv 
+			GROUP BY CP.Codigo_Inv, CP.Cta_Inventario, CP.Cta_Costo_Venta
+			HAVING COUNT(TK.Codigo_Inv) > 0 
+			ORDER BY CP.Codigo_Inv 
+	 -- Apertura del cursor
+		OPEN cCatalogo
+	 -- Lectura de la primera fila del cursor
+		FETCH NEXT FROM cCatalogo INTO @Codigo_Inv, @CtaInv, @CtaCosto, @Cont;
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+			SET @Cont=0;
+			SET @StockAct = 0
+		 -- Declaración del cursor para Trans_Kardex
+			DECLARE cTrans_Kardex CURSOR GLOBAL FOR
+				SELECT Codigo_Inv,Cta_Inv,Contra_Cta,CodBodega,Fecha,Entrada,Salida,TP,Numero,Existencia,Valor_Unitario,Costo,Valor_Total,Total,TC,Serie,Factura,ID
+				FROM Trans_Kardex
+				WHERE Item = @Item
+				AND Periodo = @Periodo
+				AND Codigo_Inv = @Codigo_Inv
+				AND T <> 'A'
+				ORDER BY Fecha,Entrada DESC,Salida,TP,Numero,ID
+			FOR UPDATE 
+		 -- Apertura del cursor
+			OPEN cTrans_Kardex
+			FETCH NEXT FROM cTrans_Kardex INTO @Codigo_Inv, @CtaInvK, @CtaCostoK, @CodBodega, @Fecha, @Entrada, @Salida, @TP, @Numero, @Existencia, @Valor_Unitario, @Costo, @Valor_Total, @Total, @TC, @Serie, @Factura, @ID
+	--		PRINT 'Mayorizando Cta: ' + @Cta
+			SET @ValorUnitAnt = 0
+			SET @SiMayorizo = -1
+			WHILE (@@FETCH_STATUS = 0)
+			BEGIN
+				IF @Cont=0 
+				   BEGIN
+					  SET @StockAct = ROUND(@Entrada - @Salida,2,0)
+					  SET @StockAnt = @StockAct
+					  IF @Entrada > 0 
+						 BEGIN
+							SET @ValorUnit = ABS(ROUND(@Valor_Unitario, @DecCosto, 0))
+							SET @Total = ROUND(@Entrada * @ValorUnit, 2, 0)
+						 END
+					  IF @Salida > 0 
+						 BEGIN 
+							SET @ValorUnit = ABS(ROUND(@Costo, @DecCosto, 0))
+							SET @Total = ROUND(@Salida * @ValorUnit, 2, 0) 
+							SET @SiMayorizo = 0
+							IF @ContErr=0
+							   BEGIN 
+ 								  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+ 								  SET @Texto = 'PRODUCTOS DE INVENTARIO SIN TOTALIZAR CORRECTAMENTE:'
+								  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+								  SET @ContErr = @ContErr + 1
+								END
+							SET @Texto = 'Codigo Inv: ' + @Codigo_Inv
+							EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+						 END
+					  SET @SaldoAnterior = ROUND(@StockAct * @ValorUnit,2,0)
+					  SET @SaldoActual = @SaldoAnterior
+					  SET @ValorUnitAnt = @ValorUnit
+					  SET @Cont = @Cont + 1
+				   END
+				ELSE
+				   BEGIN
+					  SET @StockAct = ROUND(@StockAct + @Entrada - @Salida, 2, 0)
+  					  IF @Entrada > 0
+						 BEGIN
+							SET @Total = ROUND(@Entrada * @Valor_Unitario, 2, 0)
+							SET @SaldoActual = ROUND(@SaldoAnterior + @Total, 2, 0)
+						 END
+					  IF @Salida > 0 
+						 BEGIN
+							SET @Total = ROUND(@Salida * @ValorUnitAnt, 2, 0)
+							SET @SaldoActual = ROUND(@SaldoAnterior - @Total, 2, 0)
+						 END
+					  IF @StockAct <> 0 
+						 BEGIN
+							SET @ValorUnit = ABS(ROUND(@SaldoActual / @StockAct, @DecCosto, 0))
+						 --	PRINT @SaldoActual / @StockAct + ' - ' + @DecCosto 
+						 END
+					  ELSE 
+						 BEGIN 
+  							SET @ValorUnit = ABS(ROUND(@ValorUnitAnt, @DecCosto, 0))
+							SET @SaldoActual = 0
+						 END
+				   END
+			 -- Procedemos a actualizar los costos
+				IF @Salida>0 AND LEN(@TC)=2 AND LEN(@Serie)=6 AND LEN(@Factura)>0
+				   BEGIN
+					 IF @CtaInvK <> @CtaInv OR @CtaCostoK <> @CtaCosto 
+						BEGIN
+				  		  SET @CtaInvK = @CtaInv 
+						  SET @CtaCostoK = @CtaCosto 
+						END
+				   END
+				IF @Entrada > 0
+				   BEGIN
+     				  UPDATE Trans_Kardex
+ 					  SET Existencia = @StockAct, Costo = @ValorUnit, Total = @SaldoActual, Valor_Total = @Total 
+					  WHERE CURRENT OF cTrans_Kardex
+				   END
+				IF @Salida > 0 
+				   BEGIN      
+     				  UPDATE Trans_Kardex
+ 					  SET Existencia = @StockAct, Costo = @ValorUnit, Total = @SaldoActual, Valor_Total = @Total, Valor_Unitario = @ValorUnit,
+						  Cta_Inv = @CtaInvK, Contra_Cta = @CtaCostoK
+					  WHERE CURRENT OF cTrans_Kardex
+				   END
+			 -- Guardamos saldos anteriores
+   				SET @ValorUnitAnt = @ValorUnit
+				SET @SaldoAnterior = @SaldoActual
+			 -- Siguien Registro 
+				FETCH NEXT FROM cTrans_Kardex INTO @Codigo_Inv, @CtaInvK, @CtaCostoK, @CodBodega, @Fecha, @Entrada, @Salida, @TP, @Numero, @Existencia, @Valor_Unitario, @Costo, @Valor_Total, @Total, @TC, @Serie, @Factura, @ID
+			END
+		 -- Cierre del cursor
+			CLOSE cTrans_Kardex
+		 -- Liberar los recursos
+			DEALLOCATE cTrans_Kardex
+
+		 -- Cuenta mayorizada con exito si no empieza con salidas iniciales
+			IF @SiMayorizo<>0
+			   BEGIN
+    			  UPDATE Trans_Kardex
+ 				  SET Procesado = 1
+				  WHERE Item = @Item
+				  AND Periodo = @Periodo
+				  AND Codigo_Inv = @Codigo_Inv
+			   END
+		 -- Procesamos el siguiente Producto a mayorizar
+			FETCH NEXT FROM cCatalogo INTO @Codigo_Inv, @CtaInv, @CtaCosto, @Cont;
+		END
+	 -- Cierre del cursor
+		CLOSE cCatalogo
+	 -- Liberar los recursos
+		DEALLOCATE cCatalogo
+
+	 -- Agrupamos Codigos solo lo de Inventario
+ 		UPDATE Catalogo_Productos 
+		SET X = '.'
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+
+ 		UPDATE Catalogo_Productos 
+		SET X = 'C'
+		FROM Catalogo_Productos As CP, Trans_Kardex As TK 
+		WHERE CP.Item = @Item
+		AND CP.Periodo = @Periodo
+		AND CP.Item = TK.Item
+		AND CP.Periodo = TK.Periodo
+		AND CP.Codigo_Inv = TK.Codigo_Inv 
+
+	 -- Declaración del cursor
+		DECLARE cCatalogo CURSOR FOR
+			SELECT Codigo_Inv 
+			FROM Catalogo_Productos 
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND TC = 'P'
+			AND X = 'C'
+			ORDER BY Codigo_Inv
+	 -- Apertura del cursor
+		OPEN cCatalogo
+	 -- Lectura de la primera fila del cursor
+		FETCH NEXT FROM cCatalogo INTO @Codigo_Inv
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+			SET @sSQL = 'UPDATE Catalogo_Productos '
+						+ 'SET Costo = (SELECT TOP 1 Costo '
+						+ '             FROM Trans_Kardex '
+						+ '             WHERE Item = ''' + @Item + ''' '
+						+ '             AND Periodo = ''' + @Periodo + ''' '
+						+ '             AND Fecha <= ''' + @FechaCorte + ''' '
+						+ '             AND Codigo_Inv = ''' + @Codigo_Inv + ''' '
+						+ '             AND T <> ''A'' '
+						+ '             ORDER BY Fecha DESC,TP DESC, Numero DESC,ID DESC) ' 
+						+ 'WHERE Item = ''' + @Item + ''' '
+						+ 'AND Periodo = ''' + @Periodo + ''' '
+						+ 'AND Codigo_Inv = ''' + @Codigo_Inv + ''' '
+			EXECUTE(@sSQL)
+
+			SET @sSQL = 'UPDATE Catalogo_Productos '
+						+ 'SET Valor_Unit = (SELECT TOP 1 Valor_Unitario '
+						+ '                  FROM Trans_Kardex '
+						+ '                  WHERE Item = ''' + @Item + ''' '
+						+ '                  AND Periodo = ''' + @Periodo + ''' '
+						+ '                  AND Fecha <= ''' + @FechaCorte + ''' '
+						+ '                  AND Codigo_Inv = ''' + @Codigo_Inv + ''' '
+						+ '                  AND T <> ''A'' '
+						+ '                  ORDER BY Fecha DESC,TP DESC, Numero DESC,ID DESC) ' 
+						+ 'WHERE Item = ''' + @Item + ''' '
+						+ 'AND Periodo = ''' + @Periodo + ''' '
+						+ 'AND Codigo_Inv = ''' + @Codigo_Inv + ''' '
+			EXECUTE(@sSQL)
+
+		 -- Siguien Registro 
+			FETCH NEXT FROM cCatalogo INTO @Codigo_Inv
+		END
+	 -- Cierre del cursor
+		CLOSE cCatalogo
+	 -- Liberar los recursos
+		DEALLOCATE cCatalogo
+
+ 		UPDATE Catalogo_Productos
+		SET Costo = 0
+		WHERE Item = @Item 
+		AND Periodo = @Periodo
+		AND Codigo_Inv = @Codigo_Inv
+		AND Costo IS NULL
+
+ 		UPDATE Catalogo_Productos
+		SET Valor_Unit = 0
+		WHERE Item = @Item 
+		AND Periodo = @Periodo
+		AND Codigo_Inv = @Codigo_Inv
+		AND Valor_Unit IS NULL
+
+	 -- Agrupamos Codigos solo lo de Inventario
+ 		UPDATE Catalogo_Productos 
+		SET X = '.'
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+
+	 -- Actualizamos los grupo de inventarios
+ 		UPDATE Catalogo_Productos 
+		SET X = 'M'
+		FROM Catalogo_Productos As CP, Trans_Kardex As TK 
+		WHERE CP.Item = @Item
+		AND CP.Periodo = @Periodo
+		AND CP.Item = TK.Item
+		AND CP.Periodo = TK.Periodo
+		AND CP.Codigo_Inv = TK.Codigo_Inv 
+
+	 -- Declaración del cursor
+		DECLARE cCatalogo CURSOR FOR
+			SELECT Codigo_Inv 
+			FROM Catalogo_Productos 
+			WHERE Item = @Item
+			AND Periodo = @Periodo
+			AND TC = 'P'
+			AND X = 'M'
+			AND LEN(Cta_Inventario) > 1 
+			AND LEN(Cta_Costo_Venta) > 1 
+			ORDER BY Codigo_Inv
+	 -- Apertura del cursor
+		OPEN cCatalogo
+	 -- Lectura de la primera fila del cursor
+		FETCH NEXT FROM cCatalogo INTO @Codigo_Inv
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+  			WHILE LEN(@Codigo_Inv)>1
+			BEGIN
+				SET @Codigo_Inv = dbo.fn_Codigo_Cuenta_Sup(@Codigo_Inv)
+
+				SET @sSQL = 'UPDATE Catalogo_Productos '
+			 	  		  + 'SET INV = 1 '
+						  + 'WHERE Item = ''' + @Item + ''' '
+						  + 'AND Periodo = ''' + @Periodo + ''' '
+						  + 'AND Codigo_Inv = ''' + @Codigo_Inv + ''' '
+						  + 'AND INV = 0 '
+ 				EXECUTE(@sSQL);
+
+				SET @sSQL = 'UPDATE Catalogo_Productos '
+			 	  		  + 'SET X = ''M'' '
+						  + 'WHERE Item = ''' + @Item + ''' '
+						  + 'AND Periodo = ''' + @Periodo + ''' '
+						  + 'AND Codigo_Inv = ''' + @Codigo_Inv + ''' '
+						  + 'AND X <> ''M'' '
+ 				EXECUTE(@sSQL);
+			END
+		 -- Siguien Registro 
+			FETCH NEXT FROM cCatalogo INTO @Codigo_Inv
+		END
+	 -- Cierre del cursor
+		CLOSE cCatalogo
+	 -- Liberar los recursos
+		DEALLOCATE cCatalogo
+
+     -- Generamos lista de errores en la mayorizacion
+        UPDATE Detalle_Factura
+        SET X = 'X'
+        WHERE Item = @Item
+        AND Periodo = @Periodo
+        
+        UPDATE Detalle_Factura
+        SET X = '.'
+        FROM Detalle_Factura As DF, Trans_Kardex As K
+        WHERE DF.Item = @Item
+        AND DF.Periodo = @Periodo
+        AND DF.T <> 'A'
+        AND DF.Item = K.Item
+        AND DF.Periodo = K.Periodo
+        AND DF.TC = K.TC
+        AND DF.Serie = K.Serie
+        AND DF.Factura = K.Factura
+        AND DF.Fecha = K.Fecha
+        AND DF.Codigo = K.Codigo_Inv
+        AND DF.Cantidad = K.Salida 
+        
+        SELECT @Fecha=MIN(Fecha) 
+        FROM Comprobantes
+        WHERE Item = @Item
+        AND Periodo = @Periodo
+        AND T <> 'A' 
+
+		SET @Cont = 0
+
+	 -- Declaracion de Cursor Errores
+		DECLARE cErrores CURSOR FOR
+			SELECT DF.Fecha, DF.TC, DF.Serie, DF.Factura, DF.Codigo, CP.Producto 
+			FROM Detalle_Factura As DF, Catalogo_Productos As CP 
+			WHERE DF.Item = @Item
+			AND DF.Periodo = @Periodo
+			AND DF.Fecha >= @Fecha
+			AND DF.X = 'X' 
+			AND DF.T <> 'A' 
+			AND LEN(CP.Cta_Inventario) > 2 
+			AND LEN(CP.Cta_Costo_Venta) > 2 
+			AND DF.Item = CP.Item 
+			AND DF.Periodo = CP.Periodo 
+			AND DF.Codigo = CP.Codigo_Inv 
+			ORDER BY DF.Fecha, DF.TC, DF.Serie, DF.Factura, DF.Codigo
+	 -- Apertura del cursor
+		OPEN cErrores
+		FETCH NEXT FROM cErrores INTO @Fecha, @TC, @Serie, @Factura, @Codigo_Inv, @Producto
+		WHILE (@@FETCH_STATUS = 0)
+		BEGIN
+	     -- Ingresamos texto del titulo de error
+			IF @Cont=0
+			   BEGIN
+		 		  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+ 		 		  SET @Texto = 'VERIFIQUE LAS SIGUIENTES FACTURAS, NO SE ENCUENTRAN EN EL KARDEX:'
+				  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+				  SET @Cont=@Cont+1;
+			   END
+		 -- Ingresamos los calculos
+		    SET @texto = CONVERT(VARCHAR,@Fecha,103) + CHAR(9) + @TC + ':' + @Serie + '-' + CAST(@Factura As VARCHAR) + CHAR(9) + ' => ' + @Codigo_Inv + CHAR(9) + @Producto		     
+			EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+		 -- Siguiente registro  
+			FETCH NEXT FROM cErrores INTO @Fecha, @TC, @Serie, @Factura, @Codigo_Inv, @Producto
+		END
+	 -- Cierre del cursor
+		CLOSE cErrores
+	 -- Liberar los recursos
+		DEALLOCATE cErrores
+
+	 -- Averiguamos que tipo de Kardex se maneja
+		SELECT @Total = (SELECT COUNT(Serie_No)
+						 FROM Trans_Kardex
+						 WHERE Item = @Item
+						 AND Periodo = @Periodo 
+						 AND LEN(Serie_No) > 1)
+		IF @Total IS NULL SET @Total = 0
+		IF @Total > 0 SET @TipoKardex = 'SERIE'
+		IF @TipoKardex = ''
+		   BEGIN
+ 			  SELECT @Total = (SELECT COUNT(Codigo_Barra)
+							   FROM Trans_Kardex
+							   WHERE Item = @Item
+							   AND Periodo = @Periodo 
+							   AND LEN(Codigo_Barra) > 1)
+			  IF @Total IS NULL SET @Total = 0
+			  IF @Total > 0 SET @TipoKardex = 'BARRA'
+		   END
+		IF @TipoKardex = '' SET @TipoKardex = 'CODIGO'
+	END
+END

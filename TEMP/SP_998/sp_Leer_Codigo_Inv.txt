@@ -1,0 +1,220 @@
+CREATE PROCEDURE [dbo].[sp_Leer_Codigo_Inv] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @BuscarCodigo VARCHAR(130), @FechaInventario VARCHAR(10), @CodBodega VARCHAR(2), @CodMarca VARCHAR(25), @CodigoDeInv VARCHAR(25) OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 22/04/2021
+  FECHA MODIFICACION: 27/11/2022
+  DESCIPCION		: Retorna en una tabla temporal tipo, los datos de un producto si este existe
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ 
+ -- Declaramos Variables Temporales
+    DECLARE @Por_Barra BIT = 0;
+	DECLARE @Stock FLOAT = 0;
+	DECLARE @Con_Kardex INT = 0;
+	DECLARE @CodigoInvT VARCHAR(25) = '.', @CodigoInv VARCHAR(25) = '.', @CodigoBarra VARCHAR(25) = '.';
+	DECLARE @Cta_Inventario VARCHAR(18) = '.', @sSQL VARCHAR(MAX) = '';
+
+ -- Buscamos por Codigo_Barra en Kardex
+	SELECT @CodigoInv = Codigo_Inv
+	FROM Trans_Kardex
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Codigo_Barra = @BuscarCodigo
+
+    IF @CodigoInv <> '.' 
+	   BEGIN
+  		  SET @CodigoBarra = @BuscarCodigo
+		  SET @Por_Barra = 1
+	   END
+
+ -- Buscamos por Codigo_Barra en Catalogo_Productos
+	IF @CodigoInv = '.' 
+	   BEGIN
+		  SELECT @CodigoInv = Codigo_Inv 
+  		  FROM Catalogo_Productos 
+		  WHERE Item = @Item
+		  AND Periodo = @Periodo
+		  AND Codigo_Barra = @BuscarCodigo
+	   END
+
+	IF @CodigoInv <> '.' 
+	   BEGIN
+  		  SET @CodigoBarra = @BuscarCodigo
+		  SET @Por_Barra = 1
+	   END
+
+ -- Buscamos por: Producto, Codigo_Inv
+	IF @CodigoInv = '.' 
+	   BEGIN
+		  SELECT @CodigoInv = Codigo_Inv 
+		  FROM Catalogo_Productos 
+		  WHERE Item = @Item
+		  AND Periodo = @Periodo
+		  AND @BuscarCodigo IN (Producto,Codigo_Inv)
+	   END
+
+ -- Por Codigo_Inv Izquierdo
+    IF @CodigoInv = '.' 
+	   BEGIN
+		  SELECT @CodigoInv = Codigo_Inv 
+  		  FROM Catalogo_Productos 
+		  WHERE Item = @Item
+		  AND Periodo = @Periodo
+		  AND Codigo_Inv = dbo.fn_SinEspacios_Izq(@BuscarCodigo,' ')
+	   END
+
+ -- Por Codigo_Inv Derecho
+	IF @CodigoInv = '.' 
+	   BEGIN
+		  SELECT @CodigoInv = Codigo_Inv 
+ 		  FROM Catalogo_Productos 
+		  WHERE Item = @Item
+		  AND Periodo = @Periodo
+		  AND Codigo_Inv = dbo.fn_SinEspacios_Der(@BuscarCodigo,' ')
+	   END
+
+ --------------------------------------------------------------------
+ -- Si existe el producto pasamos a recolectar los datos del producto
+ --------------------------------------------------------------------
+ -- PRINT 'Codigo Encontrado: ' + @CodigoInv
+ 	IF @CodigoInv <> '.'
+	   BEGIN
+	   -- Si el codigo o producto existe actualizando los datos de costo y stock caso contrario ponemos por default datos 
+ 		  UPDATE Catalogo_Productos
+		  SET Codigo_Barra_K = Codigo_Barra, Con_Kardex = 0, Stock = 0, Costo = 0, Valor_Unit = PVP
+		  WHERE Item = @Item 
+		  AND Periodo = @Periodo
+		  AND Codigo_Inv = @CodigoInv 
+	   
+	   -- Verificamos si hay kardex ingresado
+	      SELECT @Con_Kardex = COUNT(Codigo_Inv)
+          FROM Trans_Kardex
+          WHERE Item = @Item 
+		  AND Periodo = @Periodo
+          AND Codigo_Inv = @CodigoInv
+
+       -- Obtenemos las cuentas de Ventas y de Inventario
+		  SELECT @Cta_Inventario = Cta_Inventario
+		  FROM Catalogo_Productos
+		  WHERE Item = @Item
+		  AND Periodo = @Periodo
+		  AND Codigo_Inv = @CodigoInv		   
+
+	   -- Si existe el codigo y es de invetario, procedemos a averiguar del producto el: costo, stock, etc.
+		  IF (LEN(@Cta_Inventario) > 1) AND (@Con_Kardex > 0)
+		     BEGIN
+			 -- Actualizamos que, SI maneja Kardex 
+  			    UPDATE Catalogo_Productos
+			    SET Con_Kardex = 1
+			    WHERE Item = @Item 
+			    AND Periodo = @Periodo
+			    AND Codigo_Inv = @CodigoInv
+
+			    SELECT @Stock = ROUND(SUM(Entrada)-SUM(Salida),2,0)
+				FROM Trans_Kardex
+				WHERE Item = @Item
+				AND Periodo = @Periodo
+				AND Fecha <= @FechaInventario
+				AND Codigo_Barra = @CodigoBarra
+				AND Codigo_Inv = @CodigoInv
+
+			    IF LEN(@CodigoBarra) > 1
+			      BEGIN
+			         SET @sSQL = 'UPDATE Catalogo_Productos '		   
+			                   + 'SET Codigo_Barra_K = ''' + @CodigoBarra + ''' '
+						       + 'WHERE Item = ''' + @Item + ''' '
+						       + 'AND Periodo = ''' + @Periodo + ''' '
+						       + 'AND Codigo_Inv = ''' + @CodigoInv + ''' '
+			         EXECUTE(@sSQL)
+			      END
+
+			    IF (@Stock <> 0) AND (@Por_Barra = 1)
+			      BEGIN
+					  SET @sSQL = 'UPDATE Catalogo_Productos '
+						 	    + 'SET Stock = ' + CAST(@Stock As VARCHAR) + ' '
+								+ 'WHERE Item = ''' + @Item + ''' '
+								+ 'AND Periodo = ''' + @Periodo + ''' '
+								+ 'AND Codigo_Inv = ''' + @CodigoInv + ''' '
+				  END
+			    ELSE
+			      BEGIN
+					  SET @sSQL = 'UPDATE Catalogo_Productos '
+						 	    + 'SET Stock = (SELECT ROUND(SUM(Entrada)-SUM(Salida),2,0) '
+								+ '             FROM Trans_Kardex '
+								+ '             WHERE Item = ''' + @Item + ''' '
+								+ '             AND Periodo = ''' + @Periodo + ''' '
+								+ '             AND Fecha <= ''' + @FechaInventario + ''' '
+								+ '             AND Codigo_Inv = ''' + @CodigoInv + ''' '
+								IF Len(@CodBodega) > 1 SET @sSQL = @sSQL + 'AND CodBodega = ''' + @CodBodega + ''' '
+								IF Len(@CodMarca) > 1 SET @sSQL = @sSQL + 'AND CodMarca = ''' + @CodMarca + ''' '
+								SET @sSQL = @sSQL + 'AND T <> ''A'') '
+								+ 'WHERE Item = ''' + @Item + ''' '
+								+ 'AND Periodo = ''' + @Periodo + ''' '
+								+ 'AND Codigo_Inv = ''' + @CodigoInv + ''' '
+                  END
+			    EXECUTE(@sSQL)
+
+			   SET @sSQL = 'UPDATE Catalogo_Productos '
+						 + 'SET Costo = (SELECT TOP 1 Costo '
+						 + '             FROM Trans_Kardex '
+						 + '             WHERE Item = ''' + @Item + ''' '
+						 + '             AND Periodo = ''' + @Periodo + ''' '
+						 + '             AND Fecha <= ''' + @FechaInventario + ''' '
+						 + '             AND Codigo_Inv = ''' + @CodigoInv + ''' '
+						 + '             AND T <> ''A'' '
+						 + '             ORDER BY Fecha DESC,TP DESC, Numero DESC,ID DESC) ' 
+						 + 'WHERE Item = ''' + @Item + ''' '
+						 + 'AND Periodo = ''' + @Periodo + ''' '
+						 + 'AND Codigo_Inv = ''' + @CodigoInv + ''' '
+			   EXECUTE(@sSQL)
+
+			   SET @sSQL = 'UPDATE Catalogo_Productos '
+						 + 'SET Valor_Unit = (SELECT TOP 1 Valor_Unitario '
+						 + '                  FROM Trans_Kardex '
+						 + '                  WHERE Item = ''' + @Item + ''' '
+						 + '                  AND Periodo = ''' + @Periodo + ''' '
+						 + '                  AND Fecha <= ''' + @FechaInventario + ''' '
+						 + '                  AND Codigo_Inv = ''' + @CodigoInv + ''' '
+						 + '                  AND T <> ''A'' '
+						 + '                  ORDER BY Fecha DESC,TP DESC, Numero DESC,ID DESC) ' 
+						 + 'WHERE Item = ''' + @Item + ''' '
+						 + 'AND Periodo = ''' + @Periodo + ''' '
+						 + 'AND Codigo_Inv = ''' + @CodigoInv + ''' '
+			   EXECUTE(@sSQL)
+
+  		    -- Actualizamos Datos en nulos   
+ 			   UPDATE Catalogo_Productos
+			   SET Codigo_Barra_K = '.'
+			   WHERE Item = @Item 
+			   AND Periodo = @Periodo
+			   AND Codigo_Inv = @CodigoInv 
+			   AND Codigo_Barra_K IS NULL
+
+ 			   UPDATE Catalogo_Productos
+			   SET Stock = 0
+			   WHERE Item = @Item 
+			   AND Periodo = @Periodo
+			   AND Codigo_Inv = @CodigoInv 
+			   AND Stock IS NULL
+
+ 			   UPDATE Catalogo_Productos
+			   SET Costo = 0
+			   WHERE Item = @Item 
+			   AND Periodo = @Periodo
+			   AND Codigo_Inv = @CodigoInv 
+			   AND Costo IS NULL
+
+ 			   UPDATE Catalogo_Productos
+			   SET Valor_Unit = 0
+			   WHERE Item = @Item 
+			   AND Periodo = @Periodo
+			   AND Codigo_Inv = @CodigoInv 
+			   AND Valor_Unit IS NULL
+		    END
+	   END
+ -- Devolvemos si encontro o no el codigo
+	SET @CodigoDeInv = @CodigoInv
+END

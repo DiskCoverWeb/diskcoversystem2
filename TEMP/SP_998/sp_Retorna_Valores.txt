@@ -1,0 +1,15 @@
+CREATE PROCEDURE [dbo].[sp_Retorna_Valores] 
+@DatoS VARCHAR(50) OUTPUT, @DatoI INT OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 30/04/2019
+  DESCIPCION		:
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+   SET @DatoS = @DatoS+' Esto es mas la cadena original';
+   SET @DatoI = @DatoI *2;
+END

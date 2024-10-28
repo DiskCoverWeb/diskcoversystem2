@@ -1,0 +1,185 @@
+CREATE PROCEDURE [dbo].[sp_Iniciar_Datos_Default] 
+@Item VARCHAR(3), @RUCEmpresa VARCHAR(13), @Periodo VARCHAR(10), @CodigoUsuario VARCHAR(10), @FechaC AS VARCHAR(10), @NumModulo VARCHAR(2), 
+@Cotizacion MONEY, @No_ATS VARCHAR(MAX) OUTPUT, @ListSucursales VARCHAR(MAX) OUTPUT, @NombreProvincia VARCHAR(35) OUTPUT, @ConSucursal BIT OUTPUT, 
+@SiUnidadEducativa BIT OUTPUT, @PorcIVA FLOAT OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 24/05/2024
+  DESCIPCION		: Seteos de datos iniciales por default de los accesos
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ -- Declaracion de variables para el cursor
+    DECLARE @Lst BIT;
+    DECLARE @T_No TINYINT;
+    DECLARE @ID INT, @Numero INT;
+    DECLARE @FechaSistema VARCHAR(8), @FechaAnt VARCHAR(8);
+    DECLARE @DC VARCHAR(1), @Concepto VARCHAR(20), @Detalle VARCHAR(45), @Codigo VARCHAR(18), @Campo VARCHAR(15);
+    DECLARE @CodigoProv VARCHAR(2), @tItem VARCHAR(3), @tPeriodo VARCHAR(10), @sSQL VARCHAR(MAX);
+
+	SET @FechaSistema = CONVERT(VARCHAR(8), GETDATE(), 112)
+    SET @FechaAnt = CONVERT(VARCHAR(8),Dateadd(yy,-1,@FechaC),112)
+
+ -- Averiguamos y creamos si no existen los Usuarios por default
+    EXEC dbo.sp_Insertar_Acceso '.','...','070216','.','informacion@diskcoversystem.com'
+    EXEC dbo.sp_Insertar_Acceso 'ACCESO01','Supervisor','070216','Supervidor General','informacion@diskcoversystem.com'
+    EXEC dbo.sp_Insertar_Acceso 'ACCESO02','Administrador','070216','Administrador de Red','informacion@diskcoversystem.com'
+    EXEC dbo.sp_Insertar_Acceso 'ACCESO03','Contador','070216','Contador General','informacion@diskcoversystem.com'
+    EXEC dbo.sp_Insertar_Acceso 'ACCESO04','Auxiliar','070216','Auxiliar de Agencia','informacion@diskcoversystem.com'
+    EXEC dbo.sp_Insertar_Acceso 'ACCESO05','Gerente','070216','Gerente General','informacion@diskcoversystem.com'
+    EXEC dbo.sp_Insertar_Acceso 'ACCESO06','Reabrir','070216','Reabrir Periodo','informacion@diskcoversystem.com'
+    EXEC dbo.sp_Insertar_Acceso 'ACCESO07','CierreMes','070216','Cierre de Meses','informacion@diskcoversystem.com'
+    EXEC dbo.sp_Insertar_Acceso 'ACCESO08','Bloqueos','070216','Bloqueos de Empresas','informacion@diskcoversystem.com'
+	EXEC dbo.sp_Insertar_Acceso 'ACCESO09','Cartera','999999','Cartera de Clientes','informacion@diskcoversystem.com'
+	EXEC dbo.sp_Insertar_Acceso 'ACCESO10','Actualizar','070216','Autorizar Procesos','informacion@diskcoversystem.com'
+    EXEC dbo.sp_Insertar_Acceso '0702164179','Walter','Dlcjvl1210','Walter Jalil Vaca Prieto','diskcover.system@gmail.com'
+ -- Actualizamos Datos por defaul de la Empresa si no esta seteada por dafault 
+    EXEC dbo.sp_Actualizar_Campo_Empresa @Item, @Cotizacion 
+ -- Declaración del cursor para Codigos
+    DECLARE cCodigos CURSOR FOR
+		SELECT Item, Concepto, Numero, Periodo, ID
+		FROM Codigos
+		WHERE Item = '000'
+		AND Periodo = '.'
+		ORDER BY Concepto, Numero, ID
+ -- Apertura del cursor
+    OPEN cCodigos
+    FETCH NEXT FROM cCodigos INTO @tItem, @Concepto, @Numero, @tPeriodo, @ID
+    WHILE (@@FETCH_STATUS = 0)
+    BEGIN
+ 		EXEC dbo.sp_Insertar_Codigo @Item, @Periodo, @Concepto, @Numero
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cCodigos INTO @tItem, @Concepto, @Numero, @tPeriodo, @ID
+    END
+ -- Cierre del cursor
+    CLOSE cCodigos
+ -- Liberar los recursos
+    DEALLOCATE cCodigos
+
+ -- Declaración del cursor para Ctas_Proceso
+    DECLARE cCtas_Proceso CURSOR FOR
+		SELECT Periodo, Item, T_No, DC, Detalle, Codigo, Campo, Lst, ID
+		FROM Ctas_Proceso
+		WHERE Item = '000'
+		AND Periodo = '.'
+		ORDER BY Detalle, Codigo, ID
+ -- Apertura del cursor
+    OPEN cCtas_Proceso
+    FETCH NEXT FROM cCtas_Proceso INTO @tPeriodo, @tItem, @T_No, @DC, @Detalle, @Codigo, @Campo, @Lst, @ID
+    WHILE (@@FETCH_STATUS = 0)
+    BEGIN
+		EXEC dbo.sp_Insertar_Ctas_Proceso @Item, @Periodo, @T_No, @DC, @Detalle, @Codigo, @Campo, @Lst
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cCtas_Proceso INTO @tPeriodo, @tItem, @T_No, @DC, @Detalle, @Codigo, @Campo, @Lst, @ID
+    END
+ -- Cierre del cursor
+    CLOSE cCtas_Proceso
+ -- Liberar los recursos
+    DEALLOCATE cCtas_Proceso
+ -------------------------------------------------------------------------------------
+ -- Determinamos si la empresa lleva sucursales y cuales son las que se adieren al ATS
+ -------------------------------------------------------------------------------------
+    SET @No_ATS = ''
+    SET @ListSucursales = ''
+    SET @ConSucursal = 0
+
+    DECLARE cAcceso_Sucursales CURSOR FOR
+		SELECT Sucursal, No_ATS 
+        FROM Acceso_Sucursales
+        WHERE Item = @Item
+        AND Item <> Sucursal 
+ -- Apertura del cursor
+    OPEN cAcceso_Sucursales
+    FETCH NEXT FROM cAcceso_Sucursales INTO @tItem, @Lst
+    WHILE (@@FETCH_STATUS = 0)
+    BEGIN
+	   SET @ConSucursal = 1
+	   SET @ListSucursales = CONCAT(@ListSucursales, '''', @tItem, ''',')
+	   IF @Lst <> 0 SET @No_ATS = CONCAT(@No_ATS, '''', @tItem, ''',')
+    -- Siguiente registro  
+	   FETCH NEXT FROM cAcceso_Sucursales INTO @tItem, @Lst
+    END
+ -- Cierre del cursor
+    CLOSE cAcceso_Sucursales
+ -- Liberar los recursos
+    DEALLOCATE cAcceso_Sucursales
+
+    IF LEN(@No_ATS) > 3 SET @No_ATS = SUBSTRING(@No_ATS, 1, LEN(@No_ATS) - 1)
+    IF LEN(@ListSucursales) > 3 SET @ListSucursales = SUBSTRING(@ListSucursales, 1, LEN(@ListSucursales) - 1)
+    IF @ListSucursales = '' SET @ListSucursales = CONCAT(@ListSucursales, '''', @tItem, '''')
+
+ -- Actualizamos la abreviatura del nombre del Usuario/Ejecutivo de Ventas
+    UPDATE Accesos
+    SET Cod_Ejec = dbo.fn_Abreviatura_Texto (Nombre_Completo)
+    WHERE LEN(Nombre_Completo) > 1
+    AND Cod_Ejec <> dbo.fn_Abreviatura_Texto (Nombre_Completo);
+
+ -- Actualizamos el Nombre del Ejecutivo en el Rol de Pagos
+    UPDATE Catalogo_Rol_Pagos
+    SET Ejecutivo = RTRIM(LTRIM(SUBSTRING(C.Cliente,1,60)))
+	FROM Catalogo_Rol_Pagos As CRP, Clientes As C
+    WHERE CRP.Codigo = C.Codigo 
+    AND Ejecutivo <> RTRIM(LTRIM(SUBSTRING(C.Cliente,1,60)))
+
+ -- Actualizamos la abreviatura del Ejecutivo en el Rol de Pagos
+    UPDATE Catalogo_Rol_Pagos
+    SET Cod_Ejec = dbo.fn_Abreviatura_Texto(Ejecutivo)
+    WHERE Cod_Ejec <> dbo.fn_Abreviatura_Texto(Ejecutivo);
+
+ -- Insertamos Gasto de Caja Chica Codigo por default si no existe
+	INSERT INTO Catalogo_SubCtas (Item, Periodo, X, TC, Codigo, Detalle, Presupuesto, Caja, Reembolso, Cta_Reembolso, 
+				Nivel, Agrupacion, Fecha_D, Fecha_H, Total, Porc, Bloquear)
+	SELECT @Item, @Periodo, '.', 'GC', '.', '.', 0, 0, '.', '0', '00', 0, '20000101', '20000101', 0, 0, 0
+	WHERE NOT EXISTS(SELECT 1 FROM Catalogo_SubCtas WHERE Item = @Item AND Periodo = @Periodo AND Codigo = '.')
+
+ -- Redondear Seteos Documentos a dos decimales
+    UPDATE Seteos_Documentos 
+	SET Pos_X = ROUND(Pos_X,2,0), Pos_Y = ROUND(Pos_Y,2,0) 
+	WHERE Item <> '.'
+
+ -- Eliminamos Serie de Documentos invalidos
+    DELETE FROM Codigos 
+	WHERE Concepto IN ('_SERIE_','FA_SERIE_','RE_SERIE_','NC_SERIE_','GR_SERIE_','LC_SERIE_',
+	                   '._SERIE_.','FA_SERIE_.','RE_SERIE_.','NC_SERIE_.','GR_SERIE_.','LC_SERIE_.')
+
+ -- Iniciamos la Tabla_Temporal de Errores en el sistema con este modulo
+    DELETE FROM Tabla_Temporal 
+    WHERE Item = @Item
+    AND Modulo = @NumModulo
+    AND CodigoU = @CodigoUsuario
+
+ -- Actualizamos las fechas de Vencimiento del la facturacion electronica
+    UPDATE Catalogo_Lineas
+    SET Vencimiento = @FechaC, Fecha = @FechaAnt 
+    WHERE Item = @Item
+    AND Periodo = @Periodo
+    AND Autorizacion = @RUCEmpresa
+
+	SELECT @PorcIVA = (SELECT TOP 1 ROUND(Porc/100,2,0)
+				 	   FROM Tabla_Por_ICE_IVA
+					   WHERE IVA <> 0
+					   AND @FechaSistema BETWEEN Fecha_Inicio AND Fecha_Final
+					   ORDER BY Porc DESC)
+    IF @PorcIVA IS NULL SET @PorcIVA = 0
+
+	SELECT @CodigoProv = (SELECT TOP 1 CProv FROM Empresas WHERE Item = @Item)
+	SET @NombreProvincia = '.'
+	IF @CodigoProv <> '.' 
+	   BEGIN
+	      SELECT @NombreProvincia = (SELECT Descripcion_Rubro 
+									 FROM Tabla_Naciones 
+									 WHERE CProvincia = @CodigoProv
+									 AND TR = 'P')
+	   END
+	IF @NombreProvincia IS NULL SET @NombreProvincia = '.'
+			
+    SET @SiUnidadEducativa = 0
+	SELECT @Numero = (SELECT COUNT(*)
+					  FROM Clientes_Matriculas 
+					  WHERE Item = @Item
+		              AND Periodo = @Periodo)
+    IF @Numero IS NULL SET @Numero = 0 
+    IF @Numero>1 SET @SiUnidadEducativa = 1
+END

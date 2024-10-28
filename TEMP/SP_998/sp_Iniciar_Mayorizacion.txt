@@ -1,0 +1,49 @@
+CREATE PROCEDURE [dbo].[sp_Iniciar_Mayorizacion]
+@ConSucursal AS BIT, @Item AS NVARCHAR(3), @Periodo AS NVARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 29/07/2019
+  FECHA MODIFICACION: 29/07/2019
+  DESCIPCION		: Inicializa los datos por default para empezar a mayorizar las cuentas
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+ -- Declaracion de variables para el cursor
+	DECLARE @ID int, @Numero int
+
+ -- Actualizamos por default las cuentas a mayorizar
+    UPDATE Catalogo_Cuentas
+    SET Procesado = -1
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+
+ -- Borramos la basura si la tuviera
+	DELETE 
+    FROM Trans_SubCtas
+    WHERE Codigo = 'datos.'
+	AND Item = @Item
+	AND Periodo = @Periodo
+
+ -- Verificamos si la base tiene con sucursales
+    IF @ConSucursal <> 0
+       Begin
+		  UPDATE Transacciones 
+		  SET Procesado = 0
+		  WHERE Item = @Item
+		  AND Periodo = @Periodo
+	   End
+
+ -- Determino que cuentas hay que mayorizar
+    UPDATE Catalogo_Cuentas
+    SET Procesado = T.Procesado
+	FROM Catalogo_Cuentas As CC, Transacciones As T
+    WHERE CC.Item = @Item
+    AND CC.Periodo = @Periodo
+	AND CC.DG = 'D'
+	AND T.Procesado = 0
+	AND T.T <> 'A'
+	AND CC.Item = T.Item
+	AND CC.Periodo = T.Periodo
+	AND CC.Codigo = T.Cta
+END

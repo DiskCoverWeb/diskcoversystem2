@@ -1,0 +1,324 @@
+CREATE PROCEDURE [dbo].[sp_Procesar_Balance] 
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @FechaDesde AS VARCHAR(10), @FechaHasta AS VARCHAR(10), 
+@EsCoop AS BIT, @ConSucursal AS BIT, @EsBalanceMes AS BIT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 28/07/2023
+  DESCIPCION		: Procesa Balance de Comprobacion y Balances externos por centro de costos
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaramos Variables Temporales
+	DECLARE @TSaldo_Anterior MONEY=0, @TSaldo_Actual MONEY=0, @TSaldo_Mes MONEY=0, @Saldo_Total MONEY=0;
+	DECLARE @TSaldo_Anterior_ME MONEY=0, @TSaldo_Actual_ME MONEY=0, @TotalCostos MONEY=0;
+	DECLARE @TotalActivo MONEY=0, @TotalPasivo MONEY=0, @TotalCapital MONEY=0, @TotalIngreso MONEY=0, @TotalEgreso MONEY=0;
+	DECLARE @Codigo VARCHAR(18), @Codigo_Ext VARCHAR(18), @Nivel VARCHAR(1), @sSQL VARCHAR(MAX);
+
+ -- Eliminamos Cuentas Temporales
+	DELETE
+	FROM Catalogo_Cuentas 
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND SUBSTRING(Codigo,1,1) = 'x';
+
+	UPDATE Catalogo_Cuentas
+	SET TB = '.' 
+	WHERE Item = @Item 
+	AND Periodo = @Periodo;
+
+	UPDATE Catalogo_Cuentas
+	SET TB = 'ES' 
+	WHERE Item = @Item 
+	AND Periodo = @Periodo
+	AND SUBSTRING(Codigo,1,1) IN ('1','2','3');
+
+	UPDATE Catalogo_Cuentas
+	SET TB = 'ER' 
+	WHERE Item = @Item 
+	AND Periodo = @Periodo
+	AND SUBSTRING(Codigo,1,1) IN ('4','5','6');
+
+	UPDATE Catalogo_Cuentas
+	SET TB = 'EO' 
+	WHERE Item = @Item 
+	AND Periodo = @Periodo
+	AND SUBSTRING(Codigo,1,1) IN ('7','8','9');
+
+ -- Insertamos Codigo que determina el Total de Pasivo y Patrimonio en ES
+    INSERT INTO  Catalogo_Cuentas (Codigo, Codigo_Ext, Cuenta, TB, DG, TC, Item, Periodo)
+	VALUES ('x', 'x', ' - TOTAL PASIVO Y PATRIMONIO', 'ES', 'G', 'N', @Item, @Periodo)
+ 
+ -- Insertamos Codigo que determina la Utilidad/Perdida en ES
+    INSERT INTO  Catalogo_Cuentas (Codigo, Codigo_Ext, Cuenta, TB, DG, TC, Item, Periodo)
+	VALUES ('xx', 'xx', ' - UTILIDAD/EXCEDENTE(Pérdida) DEL PERIODO', 'ES', 'G', 'N', @Item, @Periodo)
+ 
+ -- Insertamos Codigo que determina la Utilidad/Perdida en ES
+    INSERT INTO  Catalogo_Cuentas (Codigo, Codigo_Ext, Cuenta, TB, DG, TC, Item, Periodo)
+	VALUES ('x', 'x', ' - UTILIDAD/EXCEDENTE(Pérdida) DEL PERIODO', 'ER', 'G', 'N', @Item, @Periodo)
+
+ -- Eliminamos Periodos diferentes 31/12/2019
+	DELETE FROM Fechas_Balance 
+	WHERE Item = @Item 
+	AND Periodo = @Periodo
+	AND CAST(YEAR(Fecha_Final) AS VARCHAR(4)) <> SUBSTRING(@Periodo,7,4)
+	AND LEN(@Periodo) = 10;
+
+ -- Insertamos Fechas de procesos de Balancess si no existe
+    EXEC dbo.sp_Fecha_Balance @Item, @Periodo, @FechaHasta, 'Balance' 
+    EXEC dbo.sp_Fecha_Balance @Item, @Periodo, @FechaHasta, 'Balance Mesx'
+
+ -- Actualizamos Totales por default
+    UPDATE Catalogo_Cuentas 
+    SET Saldo_Anterior=0, Debitos=0, Creditos=0, Saldo_Mes=0, Saldo_Total=0, Saldo_Total_ME=0,
+	    Total_N6=0, Total_N5=0, Total_N4=0, Total_N3=0, Total_N2=0, Total_N1=0
+    WHERE Item = @Item
+    AND Periodo = @Periodo
+
+    UPDATE Catalogo_Cuentas
+    SET Total_N6=0.0001
+    WHERE Item = @Item
+    AND Periodo = @Periodo
+	AND LEN(Codigo) = 1 
+ 
+ -- Actualizamos Totales de Movimientos en Debitos
+	SET @sSQL = 'UPDATE Catalogo_Cuentas 
+			     SET Debitos = (SELECT SUM(T.Debe)
+			     FROM Transacciones As T, Comprobantes As C 
+			     WHERE T.Periodo = ''' + @Periodo + '''
+			     AND T.Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' '
+	IF @ConSucursal = 0 SET @sSQL = @sSQL + 'AND T.Item = ''' + @Item + ''' '
+	SET @sSQL = @sSQL
+			  + 'AND T.T = ''N''
+			     AND T.TP = C.TP
+			     AND T.Numero = C.Numero 
+			     AND T.Fecha = C.Fecha  
+			     AND T.Item = C.Item 
+			     AND T.Periodo = C.Periodo
+			     AND T.Cta = Catalogo_Cuentas.Codigo
+			     AND T.Item = Catalogo_Cuentas.Item  
+			     AND T.Periodo = Catalogo_Cuentas.Periodo)
+			     WHERE Periodo = ''' + @Periodo + '''
+			     AND Item = ''' + @Item + ''' '
+    EXECUTE(@sSQL);
+
+ -- Actualizamos Totales de Movimientos en Creditos
+	SET @sSQL = 'UPDATE Catalogo_Cuentas 
+			     SET Creditos = (SELECT SUM(T.Haber)
+			     FROM Transacciones As T, Comprobantes As C 
+			     WHERE T.Periodo = ''' + @Periodo + '''
+			     AND T.Fecha BETWEEN ''' + @FechaDesde + ''' and ''' + @FechaHasta + ''' '
+	IF @ConSucursal = 0 SET @sSQL = @sSQL + 'AND T.Item = ''' + @Item + ''' '
+	SET @sSQL = @sSQL
+			  + 'AND T.T = ''N''
+			     AND T.TP = C.TP
+			     AND T.Numero = C.Numero 
+			     AND T.Fecha = C.Fecha  
+			     AND T.Item = C.Item 
+			     AND T.Periodo = C.Periodo
+			     AND T.Cta = Catalogo_Cuentas.Codigo
+			     AND T.Item = Catalogo_Cuentas.Item  
+			     AND T.Periodo = Catalogo_Cuentas.Periodo)
+			     WHERE Periodo = ''' + @Periodo + '''
+			     AND Item = ''' + @Item + ''' '
+    EXECUTE(@sSQL);
+
+ -- Actualizamos saldos Totales de Moneda Local 
+	SET @sSQL = 'UPDATE Catalogo_Cuentas 
+			     SET Saldo_Total = (SELECT TOP 1 T.Saldo
+			     FROM Transacciones As T, Comprobantes As C 
+			     WHERE T.Periodo = ''' + @Periodo + ''' ' 
+	IF @EsBalanceMes = 1 SET @sSQL = @sSQL + 'AND T.Fecha BETWEEN ''' + @FechaDesde +''' and ''' + @FechaHasta + ''' '
+    ELSE SET @sSQL = @sSQL + 'AND T.Fecha <= ''' + @FechaHasta + ''' '
+	IF @ConSucursal = 0 SET @sSQL = @sSQL + 'AND T.Item = ''' + @Item + ''' '
+	SET @sSQL = @sSQL
+			  + 'AND T.T = ''N''
+			     AND T.TP = C.TP
+			     AND T.Numero = C.Numero 
+			     AND T.Fecha = C.Fecha  
+			     AND T.Item = C.Item 
+			     AND T.Periodo = C.Periodo
+			     AND T.Cta = Catalogo_Cuentas.Codigo
+			     AND T.Item = Catalogo_Cuentas.Item  
+			     AND T.Periodo = Catalogo_Cuentas.Periodo
+				 ORDER BY T.Cta, T.Fecha DESC, T.TP DESC, T.Numero DESC, T.Debe, T.Haber DESC, T.ID DESC)
+			     WHERE Periodo = ''' + @Periodo + '''
+			     AND Item = ''' + @Item + ''' '
+    EXECUTE(@sSQL);
+
+ -- Actualizamos saldos Totales de Moneda Extranjera
+	SET @sSQL = 'UPDATE Catalogo_Cuentas 
+			     SET Saldo_Total_ME = (SELECT TOP 1 T.Saldo_ME
+			     FROM Transacciones As T, Comprobantes As C 
+			     WHERE T.Periodo = ''' + @Periodo + ''' ' 
+	IF @EsBalanceMes = 1 SET @sSQL = @sSQL + 'AND T.Fecha BETWEEN ''' + @FechaDesde +''' and ''' + @FechaHasta + ''' '
+    ELSE SET @sSQL = @sSQL + 'AND T.Fecha <= ''' + @FechaHasta + ''' '
+	IF @ConSucursal = 0 SET @sSQL = @sSQL + 'AND T.Item = ''' + @Item + ''' '
+	SET @sSQL = @sSQL
+			  + 'AND T.T = ''N''
+			     AND T.TP = C.TP
+			     AND T.Numero = C.Numero 
+			     AND T.Fecha = C.Fecha  
+			     AND T.Item = C.Item 
+			     AND T.Periodo = C.Periodo
+			     AND T.Cta = Catalogo_Cuentas.Codigo
+			     AND T.Item = Catalogo_Cuentas.Item  
+			     AND T.Periodo = Catalogo_Cuentas.Periodo
+				 ORDER BY T.Cta, T.Fecha DESC, T.TP DESC, T.Numero DESC, T.Debe, T.Haber DESC, T.ID DESC)
+			     WHERE Periodo = ''' + @Periodo + '''
+			     AND Item = ''' + @Item + ''' '
+    EXECUTE(@sSQL);
+
+ -- Eliminamos nulos en las tablas
+    EXEC sp_Eliminar_Nulos 'Catalogo_Cuentas'
+
+ -- Actualizamos Saldos anteriores 
+    IF @EsCoop = 1
+	  BEGIN
+		UPDATE Catalogo_Cuentas 
+		SET Saldo_Anterior = ROUND(Saldo_Total + Creditos - Debitos,2,0)
+		WHERE Periodo = @Periodo
+		AND Item = @Item
+		AND SUBSTRING(Codigo,1,1) IN ('1','4','6','8')
+
+		UPDATE Catalogo_Cuentas 
+		SET Saldo_Anterior = ROUND(Saldo_Total + Debitos - Creditos,2,0)
+		WHERE Periodo = @Periodo
+		AND Item = @Item
+		AND SUBSTRING(Codigo,1,1) IN ('2','3','5','7','9')
+	  END
+	ELSE
+	  BEGIN
+		UPDATE Catalogo_Cuentas 
+		SET Saldo_Anterior = ROUND(Saldo_Total + Creditos - Debitos,2,0)
+		WHERE Periodo = @Periodo
+		AND Item = @Item
+		AND SUBSTRING(Codigo,1,1) IN ('1','5','6','8')
+
+		UPDATE Catalogo_Cuentas 
+		SET Saldo_Anterior = ROUND(Saldo_Total + Debitos - Creditos,2,0)
+		WHERE Periodo = @Periodo
+		AND Item = @Item
+		AND SUBSTRING(Codigo,1,1) IN ('2','3','4','7','9')
+	  END
+
+ -- Declaración del cursor para Catalogo de Cuentas
+	DECLARE cCatalogo_Cuentas CURSOR FOR
+		SELECT Codigo, Codigo_Ext, Saldo_Total, Saldo_Total_ME 
+		FROM Catalogo_Cuentas
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND DG = 'D'
+		AND (Saldo_Total + Saldo_Total_ME ) <> 0
+		ORDER BY Codigo DESC;
+ -- Apertura del cursor
+	OPEN cCatalogo_Cuentas
+	FETCH NEXT FROM cCatalogo_Cuentas INTO @Codigo, @Codigo_Ext, @TSaldo_Actual, @TSaldo_Actual_ME
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	    SET @Nivel = dbo.fn_Nivel_Cta(@Codigo)
+		SET @sSQL = 'UPDATE Catalogo_Cuentas
+				     SET Total_N' + @Nivel + ' = Total_N' + @Nivel + ' + ' + CAST(@TSaldo_Actual AS VARCHAR(14)) + ' 
+				     WHERE Codigo = ''' + @Codigo + ''' 
+				     AND Item = ''' + @Item + ''' 
+				     AND Periodo = ''' + @Periodo + ''' '
+        --PRINT @sSQL
+		EXECUTE(@sSQL); 
+	    WHILE LEN(@Codigo)> 1
+		BEGIN
+		   SET @Codigo = dbo.fn_Codigo_Cuenta_Sup(@Codigo)
+		   SET @Nivel = dbo.fn_Nivel_Cta(@Codigo)
+	       --PRINT 'NIVEL: ' + @Nivel + ' =-> ' + @Codigo 
+		   SET @sSQL = 'UPDATE Catalogo_Cuentas 
+					    SET Saldo_Total = Saldo_Total + ' + CAST(@TSaldo_Actual AS VARCHAR(14)) + ',
+					    Saldo_Total_ME = Saldo_Total_ME + ' + CAST(@TSaldo_Actual_ME AS VARCHAR(14)) + ',
+					    Total_N' + @Nivel + ' = Total_N' + @Nivel + ' + ' + CAST(@TSaldo_Actual AS VARCHAR(14)) + ' 
+					    WHERE Codigo = ''' + @Codigo + ''' 
+					    AND Item = ''' + @Item + ''' 
+					    AND Periodo = ''' + @Periodo + ''' '
+           --PRINT @sSQL
+		   EXECUTE(@sSQL); 
+		END
+ 	 -- Siguiente registro 
+		FETCH NEXT FROM cCatalogo_Cuentas INTO @Codigo, @Codigo_Ext, @TSaldo_Actual, @TSaldo_Actual_ME
+	END
+ -- Cierre del cursor
+	CLOSE cCatalogo_Cuentas
+ -- Liberar los recursos
+	DEALLOCATE cCatalogo_Cuentas
+
+ -- Declaracion del Cursor para saber la Utilidad o Perdida del Ejercicio
+	DECLARE cTotalesBalance CURSOR FOR
+		SELECT Codigo, ROUND(Saldo_Total, 2,0)
+		FROM Catalogo_Cuentas
+		WHERE Periodo = @Periodo 
+		AND Item = @Item
+		AND LEN(Codigo) = 1
+		AND DG = 'G'
+ -- Apertura del cursor de las Transacciones
+	OPEN cTotalesBalance
+	FETCH NEXT FROM cTotalesBalance INTO @Codigo, @Saldo_Total
+	WHILE (@@FETCH_STATUS = 0 )
+	BEGIN
+	   IF @Codigo = '1' SET @TotalActivo = @Saldo_Total
+       IF @Codigo = '2' SET @TotalPasivo = @Saldo_Total
+       IF @Codigo = '3' SET @TotalCapital = @Saldo_Total
+       IF @Codigo = '4'
+	      BEGIN
+	        If @EsCoop <> 0 SET @TotalEgreso = @Saldo_Total Else SET @TotalIngreso = @Saldo_Total
+          END
+       IF @Codigo = '5'
+	      BEGIN
+	        If @EsCoop <> 0 SET @TotalIngreso = @Saldo_Total Else SET @TotalEgreso = @Saldo_Total
+		  END
+       IF @Codigo = '6' SET @TotalCostos = @Saldo_Total
+	   		   
+ 	 -- Siguiente registro 
+		FETCH NEXT FROM cTotalesBalance INTO @Codigo, @Saldo_Total
+	END
+ -- Cierre del cursor
+	CLOSE cTotalesBalance
+ -- Liberar los recursos
+	DEALLOCATE cTotalesBalance
+
+ -- Enceramos las cuentas Generales en los Movimientos
+	SET @sSQL = 'UPDATE Catalogo_Cuentas 
+			     SET Debitos = 0.00, Creditos = 0.00 
+			     WHERE Item = ''' + @Item + ''' 
+  			     AND Periodo = ''' + @Periodo + ''' 
+			     AND DG = ''G'' '
+	EXECUTE(@sSQL); 
+    
+	SET @sSQL = 'UPDATE Catalogo_Cuentas 
+		         SET Total_N1 = ' + CAST((@TotalPasivo + @TotalCapital) AS VARCHAR(14)) + ' 
+			     WHERE Item = ''' + @Item + ''' 
+  			     AND Periodo = ''' + @Periodo + ''' 
+			     AND TB = ''ES'' 
+			     AND Codigo = ''x'' '
+	EXECUTE(@sSQL); 
+  
+	SET @sSQL = 'UPDATE Catalogo_Cuentas 
+			     SET Total_N1 = ' + CAST((@TotalIngreso - @TotalEgreso - @TotalCostos) AS VARCHAR(14)) + ' 
+			     WHERE Item = ''' + @Item + ''' 
+  			     AND Periodo = ''' + @Periodo + ''' 
+			     AND TB = ''ES'' 
+			     AND Codigo = ''xx'' '
+	EXECUTE(@sSQL); 
+  
+	SET @sSQL = 'UPDATE Catalogo_Cuentas 
+			     SET Total_N1 = ' + CAST((@TotalIngreso - @TotalEgreso - @TotalCostos) AS VARCHAR(14)) + ' 
+			     WHERE Item = ''' + @Item + ''' 
+  			     AND Periodo = ''' + @Periodo + ''' 
+			     AND TB = ''ER'' 
+			     AND Codigo = ''x'' '
+	EXECUTE(@sSQL);
+
+	SET @sSQL = 'UPDATE Fechas_Balance 
+	             SET Fecha_Inicial = ''' + @FechaDesde + ''', Fecha_Final = ''' + @FechaHasta + ''', Cerrado = 0 
+			     WHERE Item = ''' + @Item + ''' 
+                 AND Periodo = ''' + @Periodo + ''' '
+    IF @EsBalanceMes = 0 SET @sSQL = @sSQL + 'AND Detalle = ''Balance'' ' ELSE SET @sSQL = @sSQL + 'AND Detalle = ''Balance Mes'' '
+	EXECUTE(@sSQL);
+END

@@ -1,0 +1,542 @@
+CREATE PROCEDURE [dbo].[sp_Procesar_Balance_Analitico_Mensual] 
+@TipoBalance AS VARCHAR(2), @ConSubModulos AS BIT = 1, @Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @CodigoUsuario AS VARCHAR(10), @FechaDesde AS VARCHAR(10), @FechaHasta AS VARCHAR(10), 
+@ListaMeses VARCHAR(MAX) OUTPUT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 10/10/2020
+  FECHA MODIFICACION: 08/08/2023
+  DESCIPCION		: Procesamos el Estado de Situacion Analito Mensual, presenta el estado de la Empresa cronologicamente por meses
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @NumMes TINYINT, @MesTope TINYINT;
+	DECLARE @TotalMes MONEY, @Total1 MONEY, @Total2 MONEY, @Total3 MONEY, @Total4 MONEY, @Total5 MONEY, @Total6 MONEY;
+	DECLARE @Total7 MONEY, @Total8 MONEY, @Total9 MONEY;
+	DECLARE @Cta_Aux VARCHAR(18), @Campo VARCHAR(50), @Sumatoria VARCHAR(MAX), @sSQL NVARCHAR(MAX), @Mes VARCHAR(10), @TipoCta VARCHAR(1);
+	DECLARE @FechaMes VARCHAR(11), @Cta_Temp VARCHAR(18), @Campos_Tabla VARCHAR(MAX) = '', @DatosCero VARCHAR(MAX), @ListaCampos VARCHAR(MAX);
+	DECLARE @Codigo VARCHAR(10), @sValor VARCHAR(18);
+ 
+ -- Creamos la Tabla Temporal que 
+	CREATE TABLE #Valor_Mes(TotalMes MONEY);
+
+ -- Programacion de procesos
+    SET @MesTope = MONTH(@FechaHasta)
+    SET @Campos_Tabla = dbo.fn_Leer_Campos_Tabla('Reporte_Analitico_Mensual')
+
+    SET @Sumatoria = ''
+	SET @DatosCero = ''
+	SET @ListaCampos = 'TB,DG,TC,Cta,Cta_Aux,Codigo,Codigo_Aux,Detalle_Cuenta,Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre,'
+				     + 'Diciembre,Total,Presupuesto,Diferencia,CodigoU,Item,Periodo,X'
+
+	SET @sSQL = 'CREATE TABLE Reporte_Analitico_Mensual(
+				 TB NVARCHAR(2) NULL, 
+				 DG NVARCHAR(1) NULL, 
+				 TC NVARCHAR(2) NULL, 
+				 Cta NVARCHAR(18) NULL, 
+				 Cta_Aux NVARCHAR(18) NULL, 
+				 Codigo NVARCHAR(10) NULL, 
+				 Codigo_Aux NVARCHAR(60) NULL, 
+				 Detalle_Cuenta NVARCHAR(90) NULL, 
+				 Enero MONEY NULL, 
+				 Febrero MONEY NULL, 
+				 Marzo MONEY NULL, 
+				 Abril MONEY NULL, 
+				 Mayo MONEY NULL, 
+				 Junio MONEY NULL, 
+				 Julio MONEY NULL, 
+				 Agosto MONEY NULL, 
+				 Septiembre MONEY NULL, 
+				 Octubre MONEY NULL, 
+				 Noviembre MONEY NULL, 
+				 Diciembre MONEY NULL, 
+				 Total MONEY NULL, 
+				 Presupuesto MONEY NULL, 
+				 Diferencia MONEY NULL, 
+				 CodigoU NVARCHAR(10) NULL, 
+				 Item NVARCHAR(3) NULL, 
+				 Periodo NVARCHAR(10) NULL,
+				 X NVARCHAR(1) NULL)'
+		
+	IF @Campos_Tabla <> @ListaCampos 
+	   BEGIN
+	     EXECUTE('DROP TABLE IF EXISTS Reporte_Analitico_Mensual')
+		 EXECUTE(@sSQL)
+	   END
+	ELSE EXECUTE('DELETE FROM Reporte_Analitico_Mensual 
+				  WHERE Item = ''' + @Item + ''' 
+				  AND CodigoU = ''' + @CodigoUsuario + ''' 
+				  AND Periodo = ''' + @Periodo + ''' ')
+
+ -- Procedemos a llenar los datos del Resumen Analito Mensual con las cuentas
+	SET @sSQL = 'INSERT INTO Reporte_Analitico_Mensual(TB,Cta,Codigo_Aux,Codigo,Detalle_Cuenta,CodigoU,TC,DG,Presupuesto,Item,Cta_Aux,Periodo,'
+	          + 'Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre,Diciembre,Total,Diferencia,X) '
+			  + 'SELECT ''' + @TipoBalance + ''', Codigo, Codigo AS Cod1,''.'',SUBSTRING(Cuenta,1,80),''' + @CodigoUsuario + ''',TC,DG,Presupuesto,''' + @Item + ''',Codigo AS Cod2,''' + @Periodo + ''','
+			  + '0,0,0,0,0,0,0,0,0,0,0,0,0,0,''.'' '
+			  + 'FROM Catalogo_Cuentas '
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    IF @TipoBalance = 'ES' SET @sSQL = @sSQL + 'AND SUBSTRING(Codigo,1,1) IN (''1'',''2'',''3'') ' ELSE SET @sSQL = @sSQL + 'AND SUBSTRING(Codigo,1,1) IN (''4'',''5'',''6'',''7'',''8'',''9'') '
+	SET @sSQL = @sSQL + 'ORDER BY Codigo '
+	EXECUTE(@sSQL)
+
+	IF @ConSubModulos = 1
+	 BEGIN
+		SET @sSQL = 'INSERT INTO Reporte_Analitico_Mensual(TB,Cta,Codigo_Aux,Codigo,Detalle_Cuenta,CodigoU,TC,DG,Presupuesto,Item,Cta_Aux,Periodo,'
+				  + 'Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre,Diciembre,Total,Diferencia,X) '
+				  + 'SELECT ''' + @TipoBalance + ''',Cta,Cta + ''.'' + Codigo, Codigo,'' *'',''' + @CodigoUsuario + ''',''.'',''D'',0,''' + @Item + ''',Cta,''' + @Periodo + ''','
+				  + '0,0,0,0,0,0,0,0,0,0,0,0,0,0,''.'' '
+				  + 'FROM Trans_SubCtas '
+				  + 'WHERE Item = ''' + @Item + ''' '
+				  + 'AND Periodo = ''' + @Periodo + ''' '
+		IF @TipoBalance = 'ES' SET @sSQL = @sSQL + 'AND SUBSTRING(Cta,1,1) IN (''1'',''2'',''3'') ' ELSE SET @sSQL = @sSQL + 'AND SUBSTRING(Cta,1,1) IN (''4'',''5'',''6'',''7'',''8'',''9'') '
+		SET @sSQL = @sSQL + 'GROUP BY Cta, Codigo '
+		EXECUTE(@sSQL)
+     END
+
+	SET @sSQL = 'INSERT INTO Reporte_Analitico_Mensual(TB,Cta,Codigo_Aux,Codigo,Detalle_Cuenta,CodigoU,TC,DG,Presupuesto,Item,Cta_Aux,Periodo,'
+			  + 'Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre,Diciembre,Total,Diferencia,X) '
+			  + 'VALUES (''' + @TipoBalance + ''',''(+/-)'',''9.9.99.99.99.999'',''.'',''UTILIDAD O PERDIDA'',''' + @CodigoUsuario + ''',''N'',''G'',0,''' + @Item + ''',''.'',''' + @Periodo + ''','
+			  + '0,0,0,0,0,0,0,0,0,0,0,0,0,0,'','') '
+	EXECUTE(@sSQL)
+
+	EXECUTE('UPDATE Reporte_Analitico_Mensual 
+	SET X = ''X''
+	FROM Reporte_Analitico_Mensual AS RAM, Transacciones AS T
+	WHERE T.Item = ''' + @Item + '''
+	AND T.Periodo = ''' + @Periodo + '''
+	AND T.Item = RAM.Item
+	AND T.Periodo = RAM.Periodo
+	AND T.Cta = RAM.Cta_Aux');
+
+	EXECUTE('UPDATE Reporte_Analitico_Mensual 
+	SET X = ''X''
+	FROM Reporte_Analitico_Mensual AS RAM, Trans_SubCtas AS TS
+	WHERE TS.Item = ''' + @Item + '''
+	AND TS.Periodo = ''' + @Periodo + '''
+	AND TS.Item = RAM.Item
+	AND TS.Periodo = RAM.Periodo
+	AND TS.Cta = RAM.Cta_Aux');
+
+	EXECUTE('DELETE FROM Reporte_Analitico_Mensual 
+	WHERE Item = ''' + @Item + '''
+	AND Periodo = ''' + @Periodo + '''
+	AND CodigoU = ''' + @CodigoUsuario + '''
+	AND Cta LIKE ''x%'' ');
+
+    EXECUTE('UPDATE Reporte_Analitico_Mensual
+    SET Detalle_Cuenta = ''* '' + RTRIM(LTRIM(SUBSTRING(C.Cliente,1,78)))
+    FROM Reporte_Analitico_Mensual As SD, Clientes As C
+	WHERE SD.Codigo <> ''.''
+	AND SD.Codigo = C.Codigo');
+ 
+	EXECUTE('UPDATE Reporte_Analitico_Mensual
+	SET TC = CP.TC
+	FROM Reporte_Analitico_Mensual As RAM, Catalogo_CxCxP As CP
+	WHERE RAM.Item = ''' + @Item + '''
+	AND RAM.Periodo = ''' + @Periodo + '''
+	AND RAM.CodigoU = ''' + @CodigoUsuario + '''
+	AND SUBSTRING(Cta_Aux,1,1) IN (''1'',''2'',''3'')
+	AND RAM.Codigo = CP.Codigo');
+
+    EXECUTE('UPDATE Reporte_Analitico_Mensual
+    SET TC = C.TC, Detalle_Cuenta = ''* '' + RTRIM(LTRIM(SUBSTRING(C.Detalle,1,78)))
+    FROM Reporte_Analitico_Mensual As SD, Catalogo_SubCtas As C
+	WHERE C.Item = ''' + @Item + '''
+	AND C.Periodo = ''' + @Periodo + '''
+	AND SD.Codigo <> ''.''
+	AND SD.Codigo = C.Codigo');
+	
+    EXECUTE('UPDATE Reporte_Analitico_Mensual
+	SET Cta = ''  ''
+	WHERE Item = ''' + @Item + ''' 
+	AND Periodo = ''' + @Periodo + '''
+	AND CodigoU = ''' + @CodigoUsuario + '''
+	AND Codigo <> ''.'' ');
+
+ -- Declaracion de Cursor para las Transacciones
+    SET @sSQL = 'DECLARE cTipoBalance CURSOR FOR
+ 				 SELECT Cta_Aux
+				 FROM Reporte_Analitico_Mensual 
+				 WHERE Item = ''' + @Item + '''
+				 AND Periodo = ''' + @Periodo + ''' 
+				 AND CodigoU = ''' + @CodigoUsuario + ''' 
+				 AND TB = ''' + @TipoBalance + '''
+				 AND DG = ''D''
+				 AND Codigo = ''.''
+				 AND X = ''X''
+				 ORDER BY Cta_Aux ';
+ 	EXEC sp_executesql @sSQL
+ -- Apertura del cursor
+	OPEN cTipoBalance
+	FETCH NEXT FROM cTipoBalance INTO @Cta_Aux
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  SET @NumMes = 1
+	  WHILE (@NumMes<=@MesTope)
+	  BEGIN
+	     SET @FechaMes = dbo.fn_Ultimo_Dia_Mes(dbo.fn_CInt_Strg(YEAR(@FechaDesde)) + dbo.fn_CNumero_Str_Ent(@NumMes,2,'0') + '01')
+	     IF @NumMes=@MesTope SET @FechaMes = @FechaHasta
+		 SET @Mes =  dbo.fn_Mes_Strg(@NumMes,0,0)
+		 SET @TipoCta = SUBSTRING(@Cta_Aux,1,1)
+		 
+	  -- PRINT '(' + @TipoCta + ') Cta = ' + @Cta_Aux + ', Mes No. ' + @Mes + ': '+ dbo.fn_CInt_Strg(@NumMes) + ' - ' + @FechaMes
+		 SET @Sumatoria = 'SELECT '
+		 IF @TipoCta IN ('1','2','3') SET @Sumatoria = @Sumatoria + 'TOP 1 Saldo '
+		 IF @TipoCta IN ('4','8','9') SET @Sumatoria = @Sumatoria + 'SUM(Haber - Debe) '
+		 IF @TipoCta IN ('5','6','7') SET @Sumatoria = @Sumatoria + 'SUM(Debe - Haber) '
+		 SET @Sumatoria = @Sumatoria 
+		                + 'FROM Transacciones '
+				        + 'WHERE Item = ''' + @Item + ''' '
+						+ 'AND Periodo = ''' + @Periodo + ''' '
+						+ 'AND Cta = ''' + @Cta_Aux + ''' '
+						+ 'AND T <> ''A'' '
+		 IF @TipoCta IN ('1','2','3') 
+		    BEGIN
+		      SET @Sumatoria = @Sumatoria 
+			                 + 'AND Fecha <= ''' + @FechaMes + ''' '
+			                 + 'ORDER BY Fecha DESC,TP DESC,Numero DESC,Debe,Haber DESC,ID DESC '
+		    END
+         ELSE
+		    BEGIN
+			  SET @Sumatoria = @Sumatoria 
+			                 + 'AND MONTH(Fecha) = ' + dbo.fn_CInt_Strg(@NumMes) + ' '
+			                 + 'AND Fecha BETWEEN ''' + @FechaDesde + ''' AND ''' + @FechaHasta + ''' '
+            END
+		 
+		 SET @TotalMes = 0
+
+	  -- print 'INSERT INTO #Valor_Mes ' + @Sumatoria
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @TotalMes = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @TotalMes IS NULL SET @TotalMes = 0
+		 SET @sValor = dbo.fn_CMoney_Strg(@TotalMes)
+		 IF @TotalMes <> 0 
+ 		    BEGIN
+			  SET @Cta_Temp = @Cta_Aux  	 		  
+			  WHILE (@Cta_Temp <> '0')
+			  BEGIN
+				  SET @sSQL = 'UPDATE Reporte_Analitico_Mensual '
+						    + 'SET ' + @Mes + ' = ' + @Mes + ' + ' + @sValor + ' '
+						    + 'WHERE Item = ''' + @Item + ''' '
+						    + 'AND Periodo = ''' + @Periodo + ''' '
+						    + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+						    + 'AND Cta = ''' + @Cta_Temp + ''' '
+						    + 'AND Codigo = ''.'' '
+				  EXECUTE(@sSQL)
+
+				  IF @TipoBalance = 'ES'
+					BEGIN   
+						SET @sSQL = 'UPDATE Reporte_Analitico_Mensual '
+								  + 'SET Total = ' + @Mes + ' ' 
+								  + 'WHERE Item = ''' + @Item + ''' '
+								  + 'AND Periodo = ''' + @Periodo + ''' '
+								  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+								  + 'AND Cta = ''' + @Cta_Temp + ''' '
+								  + 'AND Codigo = ''.'' '
+					END 
+				  ELSE
+					BEGIN
+						SET @sSQL = 'UPDATE Reporte_Analitico_Mensual '
+								  + 'SET Total = Total + ' + @sValor + ' ' 
+								  + 'WHERE Item = ''' + @Item + ''' '
+								  + 'AND Periodo = ''' + @Periodo + ''' '
+								  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+								  + 'AND Cta = ''' + @Cta_Temp + ''' '
+								  + 'AND Codigo = ''.'' '
+					END
+				  EXECUTE(@sSQL)
+				  SET @Cta_Temp = dbo.fn_Codigo_Cuenta_Sup(@Cta_Temp)
+			  END
+		    END
+		 SET @NumMes = @NumMes + 1 
+	  END
+ 	-- Siguiente registro  
+	   FETCH NEXT FROM cTipoBalance INTO @Cta_Aux
+	END
+ -- Cierre del cursor
+	CLOSE cTipoBalance
+ -- Liberar los recursos
+	DEALLOCATE cTipoBalance
+	
+ -- Declaracion de Cursor para las Trans_SubCtas
+	SET @sSQL = 'DECLARE cTipoBalance CURSOR FOR
+				 SELECT Cta_Aux, Codigo
+				 FROM Reporte_Analitico_Mensual
+				 WHERE Item = ''' + @Item + '''
+				 AND Periodo = ''' + @Periodo + ''' 
+				 AND CodigoU = ''' + @CodigoUsuario + ''' 
+				 AND TB = ''' + @TipoBalance + '''
+				 AND DG = ''D''
+				 AND Codigo <> ''.''
+				 ORDER BY Cta_Aux, Codigo ';
+ -- Apertura del cursor
+ 	EXEC sp_executesql @sSQL
+	OPEN cTipoBalance
+	FETCH NEXT FROM cTipoBalance INTO @Cta_Aux, @Codigo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	  SET @NumMes = 1
+	  WHILE (@NumMes<=@MesTope)
+	  BEGIN
+	     SET @FechaMes = dbo.fn_Ultimo_Dia_Mes(dbo.fn_CInt_Strg(YEAR(@FechaDesde)) + dbo.fn_CNumero_Str_Ent(@NumMes,2,'0') + '01')
+	     IF @NumMes=@MesTope SET @FechaMes = @FechaHasta
+	     --PRINT 'Mes No. ' + dbo.fn_CInt_Strg(@NumMes)  
+		 SET @Mes = dbo.fn_Mes_Strg(@NumMes,0,0)
+		 SET @TipoCta = SUBSTRING(@Cta_Aux,1,1)
+		 
+		 SET @Sumatoria = 'SELECT '
+		 IF @TipoCta IN('1','2','3') SET @Sumatoria = @Sumatoria + 'TOP 1 Saldo_MN '
+		 IF @TipoCta IN('4','8','9') SET @Sumatoria = @Sumatoria + 'SUM(Creditos - Debitos) '
+		 IF @TipoCta IN('5','6','7') SET @Sumatoria = @Sumatoria + 'SUM(Debitos - Creditos) '
+		 SET @Sumatoria = @Sumatoria 
+		                + 'FROM Trans_SubCtas '
+				        + 'WHERE Item = ''' + @Item + ''' '
+						+ 'AND Periodo = ''' + @Periodo + ''' '
+						+ 'AND Cta = ''' + @Cta_Aux + ''' '
+						+ 'AND Codigo = ''' + @Codigo + ''' '
+						+ 'AND T <> ''A'' '
+		 IF @TipoCta = '1' OR @TipoCta = '2' OR @TipoCta = '3' 
+		    BEGIN
+		      SET @Sumatoria = @Sumatoria 
+			                 + 'AND Fecha <= ''' + @FechaMes + ''' '
+			                 + 'ORDER BY Codigo DESC, Cta, Fecha DESC, TP DESC, Numero DESC, Factura DESC, Debitos, Creditos DESC, ID DESC '
+		    END
+         ELSE
+		    BEGIN
+			  SET @Sumatoria = @Sumatoria 
+			                 + 'AND MONTH(Fecha) = ' + dbo.fn_CInt_Strg(@NumMes) + ' '
+			                 + 'AND Fecha BETWEEN ''' + @FechaDesde + ''' AND ''' + @FechaHasta + ''' '							 
+            END
+
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+
+		 SET @TotalMes = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @TotalMes IS NULL SET @TotalMes = 0
+		 SET @sValor = dbo.fn_CMoney_Strg(@TotalMes)
+		 IF @TotalMes <> 0
+		   BEGIN
+			 SET @sSQL = 'UPDATE Reporte_Analitico_Mensual '
+					   + 'SET ' + @Mes + ' = ' + @sValor + ' '
+					   + 'WHERE Item = ''' + @Item + ''' '
+					   + 'AND Periodo = ''' + @Periodo + ''' '
+					   + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+					   + 'AND Cta_Aux = ''' + @Cta_Aux + ''' '
+					   + 'AND Codigo = ''' + @Codigo + ''' '
+			 EXECUTE(@sSQL)
+
+			 SET @sSQL = 'UPDATE Reporte_Analitico_Mensual '
+			 IF (@TipoBalance = 'ER') SET @sSQL = @sSQL + 'SET Total = Total + ' + @sValor + ' ' ELSE SET @sSQL = @sSQL + 'SET Total = ' + @sValor + ' '
+			 SET @sSQL = @sSQL
+			 		   + 'WHERE Item = ''' + @Item + ''' '
+					   + 'AND Periodo = ''' + @Periodo + ''' '
+					   + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+					   + 'AND Cta_Aux = ''' + @Cta_Aux + ''' '
+					   + 'AND Codigo = ''' + @Codigo + ''' '
+			EXECUTE(@sSQL)
+		   END
+		 SET @NumMes = @NumMes + 1 
+	   END
+	-- Siguiente registro  
+	   FETCH NEXT FROM cTipoBalance INTO @Cta_Aux, @Codigo
+	END
+ -- Cierre del cursor
+	CLOSE cTipoBalance
+ -- Liberar los recursos
+	DEALLOCATE cTipoBalance
+
+    EXECUTE('UPDATE Reporte_Analitico_Mensual
+	SET Presupuesto = TP.Presupuesto
+	FROM Reporte_Analitico_Mensual As RAM, Trans_Presupuestos As TP
+    WHERE RAM.Item = ''' + @Item + '''
+	AND RAM.Periodo = ''' + @Periodo + '''
+	AND RAM.CodigoU = ''' + @CodigoUsuario + '''
+	AND RAM.Item = TP.Item
+	AND RAM.Periodo = TP.Periodo
+	AND RAM.Cta_Aux = TP.Cta
+	AND RAM.Codigo = TP.Codigo');
+	  
+	SET @NumMes = MONTH(@FechaDesde)
+	WHILE (@NumMes<=@MesTope)
+	BEGIN
+	     SET @Mes =  dbo.fn_Mes_Strg(@NumMes,0,0)
+		 SET @Campos_Tabla = 'SELECT ' + @Mes + ' '
+		                   + 'FROM Reporte_Analitico_Mensual '
+				           + 'WHERE Item = ''' + @Item + ''' '
+						   + 'AND Periodo = ''' + @Periodo + ''' '
+						   + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+						   + 'AND TB = ''' + @TipoBalance + ''' '
+
+		 SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''1'' '
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @Total1 = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @Total1 IS NULL SET @Total1 = 0
+
+		 SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''2'' '
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @Total2 = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @Total2 IS NULL SET @Total2 = 0
+
+		 SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''3'' '
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @Total3 = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @Total3 IS NULL SET @Total3 = 0
+
+		 SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''4'' '
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @Total4 = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @Total4 IS NULL SET @Total4 = 0
+
+		 SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''5'' '
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @Total5 = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @Total5 IS NULL SET @Total5 = 0
+
+		 SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''6'' '
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @Total6 = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @Total6 IS NULL SET @Total6 = 0
+
+		 SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''7'' '
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @Total7 = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @Total7 IS NULL SET @Total7 = 0
+
+		 SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''8'' '
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @Total8 = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @Total8 IS NULL SET @Total8 = 0
+
+		 SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''9'' '
+		 DELETE FROM #Valor_Mes
+	     EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+		 SET @Total9 = (SELECT TotalMes FROM #Valor_Mes)
+		 IF @Total9 IS NULL SET @Total9 = 0
+
+		 IF @TipoBalance = 'ES' SET @sValor = dbo.fn_CMoney_Strg(@Total1 - @Total2 - @Total3) ELSE SET @sValor = dbo.fn_CMoney_Strg(@Total4 - @Total5 - @Total6) 
+
+	     SET @sSQL = 'UPDATE Reporte_Analitico_Mensual '
+				   + 'SET ' + @Mes + ' = ' + @sValor + ' ' 
+				   + 'WHERE Item = ''' + @Item + ''' '
+				   + 'AND Periodo = ''' + @Periodo + ''' '
+				   + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+				   + 'AND TB = ''' + @TipoBalance + ''' '
+				   + 'AND Cta = ''(+/-)'' '
+		EXECUTE(@sSQL)
+--        PRINT @sSQL
+		SET @NumMes = @NumMes + 1 
+	END  
+
+	SET @Mes =  'Total'
+	SET @Campos_Tabla = 'SELECT ' + @Mes + ' '
+		              + 'FROM Reporte_Analitico_Mensual '
+				      + 'WHERE Item = ''' + @Item + ''' '
+				  	  + 'AND Periodo = ''' + @Periodo + ''' '
+					  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+					  + 'AND TB = ''' + @TipoBalance + ''' '
+
+	SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''1'' '
+	DELETE FROM #Valor_Mes
+	EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+	SET @Total1 = (SELECT TotalMes FROM #Valor_Mes)
+	IF @Total1 IS NULL SET @Total1 = 0
+
+	SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''2'' '
+	DELETE FROM #Valor_Mes
+	EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+	SET @Total2 = (SELECT TotalMes FROM #Valor_Mes)
+	IF @Total2 IS NULL SET @Total2 = 0
+
+	SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''3'' '
+	DELETE FROM #Valor_Mes
+	EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+	SET @Total3 = (SELECT TotalMes FROM #Valor_Mes)
+	IF @Total3 IS NULL SET @Total3 = 0
+
+	SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''4'' '
+	DELETE FROM #Valor_Mes
+	EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+	SET @Total4 = (SELECT TotalMes FROM #Valor_Mes)
+	IF @Total4 IS NULL SET @Total4 = 0
+
+	SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''5'' '
+	DELETE FROM #Valor_Mes
+	EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+	SET @Total5 = (SELECT TotalMes FROM #Valor_Mes)
+	IF @Total5 IS NULL SET @Total5 = 0
+
+	SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''6'' '
+	DELETE FROM #Valor_Mes
+	EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+	SET @Total6 = (SELECT TotalMes FROM #Valor_Mes)
+	IF @Total6 IS NULL SET @Total6 = 0
+
+	SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''7'' '
+	DELETE FROM #Valor_Mes
+	EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+	SET @Total7 = (SELECT TotalMes FROM #Valor_Mes)
+	IF @Total7 IS NULL SET @Total7 = 0
+
+	SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''8'' '
+	DELETE FROM #Valor_Mes
+	EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+	SET @Total8 = (SELECT TotalMes FROM #Valor_Mes)
+	IF @Total8 IS NULL SET @Total8 = 0
+
+	SET @Sumatoria = @Campos_Tabla + 'AND Cta = ''9'' '
+	DELETE FROM #Valor_Mes
+	EXECUTE('INSERT INTO #Valor_Mes ' + @Sumatoria)
+	SET @Total9 = (SELECT TotalMes FROM #Valor_Mes)
+	IF @Total9 IS NULL SET @Total9 = 0
+
+	IF @TipoBalance = 'ES' SET @sValor = dbo.fn_CMoney_Strg(@Total1 - @Total2 - @Total3) ELSE SET @sValor = dbo.fn_CMoney_Strg(@Total4 - @Total5 - @Total6) 
+
+	SET @sSQL = 'UPDATE Reporte_Analitico_Mensual '
+			  + 'SET ' + @Mes + ' = ' + @sValor + ' ' 
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+			  + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+			  + 'AND TB = ''' + @TipoBalance + ''' '
+			  + 'AND Cta = ''(+/-)'' '
+	EXECUTE(@sSQL)
+
+	EXECUTE('DELETE FROM Reporte_Analitico_Mensual
+	WHERE Item = ''' + @Item + '''
+	AND Periodo = ''' + @Periodo + '''
+	AND CodigoU = ''' + @CodigoUsuario + '''
+	AND TB = ''' + @TipoBalance + '''
+	AND (ABS(Enero)+ABS(Febrero)+ABS(Marzo)+ABS(Abril)+ABS(Mayo)+ABS(Junio)+ABS(Julio)+
+	    ABS(Agosto)+ABS(Septiembre)+ABS(Octubre)+ABS(Noviembre)+ABS(Diciembre)+ABS(Presupuesto))=0');
+
+	EXECUTE('UPDATE Reporte_Analitico_Mensual
+	SET Diferencia = Total - Presupuesto
+	WHERE Item = ''' + @Item + '''
+	AND Periodo = ''' + @Periodo + '''
+	AND CodigoU = ''' + @CodigoUsuario + '''
+	AND TB = ''' + @TipoBalance + ''' ');
+
+	DROP TABLE #Valor_Mes;
+
+    SET @ListaCampos = 'SELECT Cta, Detalle_Cuenta, '
+
+	SET @NumMes = MONTH(@FechaDesde)
+	WHILE (@NumMes<=@MesTope)
+	BEGIN
+	     SET @ListaCampos = @ListaCampos + dbo.fn_Mes_Strg(@NumMes,0,0)	+ ', '
+		 SET @NumMes = @NumMes + 1 
+	END  
+	SET @ListaCampos = @ListaCampos + 'Total, Presupuesto, Diferencia, DG, TC '
+    SET @ListaMeses = @ListaCampos
+END

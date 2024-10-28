@@ -1,0 +1,209 @@
+CREATE PROCEDURE [dbo].[sp_Update_Default] 
+@nombreTabla VARCHAR(50), @Item AS VARCHAR(3), @Periodo AS VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 11/07/2020
+  FECHA MODIFICACION: 12/07/2020
+  DESCIPCION		: Actualiza los datos que por defult debe tener los campos para su mejor procesamiento
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaramos Variables Temporales
+	DECLARE @sSQL VARCHAR(MAX), @AND_Item AS VARCHAR(20);
+	
+	IF @Item <> '.' SET @AND_Item = 'AND Item = ''' + @Item + ''' ' ELSE SET @AND_Item = ''
+
+ --	print @nombreTabla
+	IF @nombreTabla = 'Catalogo_Rol_Pagos'
+	   BEGIN
+		  SET @sSQL = 'UPDATE Catalogo_Rol_Pagos '
+                    + 'SET Aplica = ''NA'', Identificacion = ''999'', TIdentificacion = ''N'', Condicion = ''01'' '
+                    + 'WHERE Aplica = ''.'' '
+				    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+	   END
+	IF @nombreTabla = 'Clientes'
+	   BEGIN
+ 		  SET @sSQL = 'UPDATE Clientes '
+					+ 'SET Tipo_Pasaporte = ''00'' '
+					+ 'WHERE TD = ''O'' '
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Clientes '
+					+ 'SET Tipo_Pasaporte = ''01'' '
+					+ 'WHERE TD = ''C'' '
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Clientes '
+					+ 'SET Tipo_Pasaporte = ''02'' '
+					+ 'WHERE TD = ''R'' '
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Clientes '
+					+ 'SET Tipo_Pasaporte = ''01'' '
+					+ 'WHERE Tipo_Pasaporte = ''.'' '
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Clientes '
+					+ 'SET Parte_Relacionada = ''NO'' '
+					+ 'WHERE Parte_Relacionada = ''.'' '
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Clientes '
+					+ 'SET Archivo_Foto = ''SINFOTO'' '
+					+ 'WHERE Archivo_Foto = ''.'' '
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Clientes '
+					+ 'SET Pais = ''593'' '
+					+ 'WHERE Pais = ''.'' '
+		  EXECUTE(@sSQL);
+	   END
+	IF @nombreTabla = 'Empresas'
+	   BEGIN
+          SET @sSQL = 'UPDATE Empresas '
+                    + 'SET Email_Conexion = ''infosistema@diskcoversystem.com'', Email_Contraseña = ''infoDlcjvl1210DiskCover'' '
+                    + 'WHERE Email_Conexion = ''.'' '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'UPDATE Empresas '
+                    + 'SET Dec_PVP = 2 '
+                    + 'WHERE Dec_PVP <= 0 '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'UPDATE Empresas '
+                    + 'SET Dec_Costo = 2 '
+                    + 'WHERE Dec_Costo <= 0 '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'UPDATE Empresas '
+                    + 'SET Dec_IVA = 2 '
+                    + 'WHERE Dec_IVA <= 0 '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'UPDATE Empresas '
+                  + 'SET Dec_Cant = 2 '
+                  + 'WHERE Dec_Cant <= 0 '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'UPDATE Empresas '
+                    + 'SET Formato_Cuentas = ''C.C.CC.CC.CC.CCC'' '
+                    + 'WHERE Formato_Cuentas = ''.'' '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'UPDATE Empresas '
+                    + 'SET Ambiente = ''0'' '
+                    + 'WHERE Ambiente = ''.'' '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'UPDATE Empresas '
+                    + 'SET Formato_Inventario = ''CC.CC.CC.CC.CCCC'' '
+                    + 'WHERE Formato_Inventario = ''.'' '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'UPDATE Empresas '
+                    + 'SET Formato_Activo = ''CC.CC.CCC.CCCCCC'' '
+                    + 'WHERE Formato_Activo = ''.'' '
+          EXECUTE(@sSQL);
+	   END
+    IF @nombreTabla = 'Seteos_Documentos'
+	   BEGIN
+          SET @sSQL = 'DELETE '
+                    + 'FROM Seteos_Documentos '
+                    + 'WHERE TP = ''RD'' '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'DELETE '
+                    + 'FROM Seteos_Documentos '
+                    + 'WHERE LEN(TP) > 2 '
+                    + 'AND Item = ''000'' '
+          EXECUTE(@sSQL);
+	   END
+    IF @nombreTabla = 'Ctas_Proceso'
+	   BEGIN
+          SET @sSQL = 'DELETE '
+                    + 'FROM Ctas_Proceso '
+                    + 'WHERE SUBSTRING(Detalle,1,7) = ''Cta_Rol'' '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'DELETE '
+                    + 'FROM Ctas_Proceso '
+                    + 'WHERE SUBSTRING(Detalle,1,6) = ''Total_'' '
+          EXECUTE(@sSQL);
+          SET @sSQL = 'DELETE '
+                    + 'FROM Ctas_Proceso '
+                    + 'WHERE Detalle IN (''Diferencial'',''Fondo_Emergencia'',''Neto_a_Recibir'') '
+          EXECUTE(@sSQL);
+	   END
+	IF @nombreTabla = 'Trans_Compras'
+	   BEGIN
+		  SET @sSQL = 'UPDATE Trans_Compras '
+			  	    + 'SET PagoLocExt = ''01'' '
+				    + 'WHERE PagoLocExt = ''.'' '
+				    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Trans_Compras '
+					+ 'SET PaisEfecPago = ''NA'' '
+					+ 'WHERE PaisEfecPago = ''.'' '
+				    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Trans_Compras '
+					+ 'SET AplicConvDobTrib = ''NA'' '
+					+ 'WHERE AplicConvDobTrib = ''.'' '
+				    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Trans_Compras '
+					+ 'SET PagExtSujRetNorLeg = ''NA'' '
+					+ 'WHERE PagExtSujRetNorLeg = ''.'' '
+				    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Trans_Compras '
+					+ 'SET FormaPago = ''01'' '
+					+ 'WHERE FormaPago = ''.'' '
+				    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Trans_Compras '
+					+ 'SET FormaPago = ''01'' '
+					+ 'WHERE FormaPago = ''00'' '
+				    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+	   END
+	IF @nombreTabla = 'Trans_Kardex'
+	   BEGIN
+		  SET @sSQL = 'UPDATE Trans_Kardex '
+                    + 'SET Procesado = 0 '
+                    + 'WHERE Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+	   END
+	IF @nombreTabla = 'Trans_SubCtas'
+	   BEGIN
+		  SET @sSQL = 'UPDATE Trans_SubCtas '
+					+ 'SET Fecha = ''19000101'' '
+					+ 'WHERE Fecha < ''19000101'' '
+				    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Trans_SubCtas '
+					+ 'SET Fecha_V = ''19000101'' '
+					+ 'WHERE Fecha_V < ''19000101'' '
+				    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+		  SET @sSQL = 'UPDATE Trans_SubCtas '
+                    + 'SET Procesado = 0, Saldo_MN = 0 '
+                    + 'WHERE Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+	   END
+	IF @nombreTabla = 'Trans_Ventas'
+	   BEGIN
+		  SET @sSQL = 'UPDATE Trans_Ventas '
+                    + 'SET Tipo_Pago = ''01'' '
+					+ 'WHERE LEN(Tipo_Pago) <= 1 '
+                    + 'AND Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+	   END
+	IF @nombreTabla = 'Transacciones'
+	   BEGIN
+		  SET @sSQL = 'UPDATE Transacciones '
+                    + 'SET Procesado = 0 '
+                    + 'WHERE Periodo = ''' + @Periodo + ''' ' 
+ 				    + @AND_Item
+		  EXECUTE(@sSQL);
+	   END
+END

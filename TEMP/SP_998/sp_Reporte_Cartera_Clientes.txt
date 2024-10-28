@@ -1,0 +1,282 @@
+CREATE PROCEDURE [dbo].[sp_Reporte_Cartera_Clientes] 
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10), @CodigoUsuario AS VARCHAR(10), @CodigoCliente VARCHAR(10) = 'Todos', @FechaInicio AS VARCHAR(10), @FechaCorte AS VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 07/05/2022
+  FECHA MODIFICACION: 06/02/2024
+  DESCIPCION		: Genera un reporte del Estado de Cuentas de Clientes (Cartera)
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @sSQL VARCHAR(MAX);
+	DECLARE @CodigoC VARCHAR(10), @TC VARCHAR(2), @Serie VARCHAR(6), @CodigoU VARCHAR(10);
+	DECLARE @vCodigoC VARCHAR(10), @vTC VARCHAR(2), @vSerie VARCHAR(6), @Items VARCHAR(3);
+	DECLARE @RangoFecha VARCHAR(50), @RangoFechaCF VARCHAR(50);
+	DECLARE @Factura INT, @vFactura INT, @Ln INT, @Anio INT;
+	DECLARE @Mes TINYINT;
+	DECLARE @Cargos MONEY, @Abonos MONEY, @Saldo MONEY, @vSaldo MONEY = 0;
+	DECLARE @Fecha DATETIME;
+ 
+ -- Programacion de procesos
+    -- Abonos, Saldo,
+	DELETE
+	FROM Reporte_Cartera_Clientes 
+	WHERE Item = @Item
+	AND CodigoU = @CodigoUsuario
+
+	IF @FechaInicio < @FechaCorte 
+	   BEGIN
+		  SET @RangoFecha = 'AND Fecha BETWEEN ''' + @FechaInicio + ''' and ''' + @FechaCorte + ''' ' 
+		  SET @RangoFechaCF = 'AND CF.Fecha BETWEEN ''' + @FechaInicio + ''' and ''' + @FechaCorte + ''' ' 
+	   END
+	ELSE  
+	   BEGIN
+		  SET @RangoFecha = 'AND Fecha <= ''' + @FechaCorte + ''' '
+		  SET @RangoFechaCF = 'AND CF.Fecha <= ''' + @FechaCorte + ''' '
+	   END
+
+ -- Actualizamos el estado de las facturas
+    SET @sSQL = 'UPDATE Facturas '
+			  + 'SET T = ''P'' '
+			  + 'WHERE Item = ''' + @Item + ''' '
+   			  + 'AND Periodo = ''' + @Periodo + ''' '
+			  + 'AND Fecha BETWEEN ''' + @FechaInicio + ''' and ''' + @FechaCorte + ''' ' 
+			  + 'AND Saldo_MN > 0 '
+			  + 'AND T <> ''A'' '
+	EXECUTE(@sSQL);
+
+    SET @sSQL = 'UPDATE Facturas '
+		      + 'SET T = ''C'' '
+			  + 'WHERE Item = ''' + @Item + ''' '
+   			  + 'AND Periodo = ''' + @Periodo + ''' '
+			  + 'AND Fecha BETWEEN ''' + @FechaInicio + ''' and ''' + @FechaCorte + ''' ' 
+			  + 'AND Saldo_MN <= 0 '
+			  + 'AND T <> ''A'' '
+    EXECUTE(@sSQL);
+
+    SET @sSQL = 'UPDATE Detalle_Factura '
+			  + 'SET T = F.T '
+			  + 'FROM Detalle_Factura As DF, Facturas As F '
+			  + 'WHERE DF.Item = ''' + @Item + ''' '
+   			  + 'AND DF.Periodo = ''' + @Periodo + ''' '
+			  + 'AND DF.Fecha BETWEEN ''' + @FechaInicio + ''' and ''' + @FechaCorte + ''' ' 
+			  + 'AND DF.TC = F.TC '
+			  + 'AND DF.Serie = F.Serie '
+			  + 'AND DF.Factura = F.Factura '
+			  + 'AND DF.Autorizacion = F.Autorizacion '
+			  + 'AND DF.CodigoC = F.CodigoC '
+			  + 'AND DF.Periodo = F.Periodo '
+			  + 'AND DF.Item = F.Item '
+			  + 'AND DF.T <> F.T '
+    EXECUTE(@sSQL);
+
+    SET @sSQL = 'UPDATE Trans_Abonos '
+			  + 'SET T = F.T '
+			  + 'FROM Trans_Abonos As DF, Facturas As F '
+			  + 'WHERE F.Item = ''' + @Item + ''' '
+   			  + 'AND F.Periodo = ''' + @Periodo + ''' '
+			  + 'AND F.Fecha BETWEEN ''' + @FechaInicio + ''' and ''' + @FechaCorte + ''' ' 
+			  + 'AND DF.TP = F.TC '
+			  + 'AND DF.Serie = F.Serie '
+			  + 'AND DF.Factura = F.Factura '
+			  + 'AND DF.Autorizacion = F.Autorizacion '
+			  + 'AND DF.CodigoC = F.CodigoC '
+			  + 'AND DF.Periodo = F.Periodo '
+			  + 'AND DF.Item = F.Item '
+			  + 'AND DF.T <> F.T '
+    EXECUTE(@sSQL);
+
+ -- Total Ventas
+    SET @sSQL = 'INSERT INTO Reporte_Cartera_Clientes (TC, Fecha, Serie, Factura, Anio, Mes, Detalle, Cargos, CodigoC, CodigoU, Item, T) '
+	          + 'SELECT TC, Fecha, Serie, Factura, SUBSTRING(Ticket,1,4), CAST(Mes_No As VARCHAR), SUBSTRING(Producto,1,60), Total, CodigoC, '
+              + '''' + @CodigoUsuario + ''', ''' + @Item + ''', ''P'' '
+              + 'FROM Detalle_Factura '
+              + 'WHERE Item = ''' + @Item + ''' '
+			  + @RangoFecha
+			  + 'AND T <> ''A'' '
+			  + 'AND TC IN (''NV'',''FA'',''DO'') '
+    IF @CodigoCliente <> 'Todos' SET @sSQL = @sSQL + 'AND CodigoC = ''' + @CodigoCliente + ''' '
+    SET @sSQL = @sSQL + 'GROUP BY CodigoC, TC, Fecha, Serie, Factura, Producto, Ticket, Mes_No, Total '
+	          + 'ORDER BY CodigoC, TC, Fecha, Serie, Factura, Producto, Ticket, Mes_No, Total '
+	EXECUTE(@sSQL)
+
+ -- Total Descuento 1
+    SET @sSQL = 'INSERT INTO Reporte_Cartera_Clientes (TC, Fecha, Serie, Factura, Anio, Mes, Detalle, Abonos, CodigoC, CodigoU, Item, T) '
+	          + 'SELECT TC, Fecha, Serie, Factura, SUBSTRING(Ticket,1,4), CAST(Mes_No As VARCHAR), SUBSTRING(CONCAT(''Descuento: '',Producto),1,60), SUM(Total_Desc), CodigoC, '
+              + '''' + @CodigoUsuario + ''', ''' + @Item + ''', ''P'' '
+              + 'FROM Detalle_Factura '
+              + 'WHERE Item = ''' + @Item + ''' '
+			  + @RangoFecha
+			  + 'AND Total_Desc <> 0 '
+			  + 'AND T <> ''A'' '
+			  + 'AND TC IN (''NV'',''FA'',''DO'') '
+    IF @CodigoCliente <> 'Todos' SET @sSQL = @sSQL + 'AND CodigoC = ''' + @CodigoCliente + ''' '
+    SET @sSQL = @sSQL 
+			  + 'GROUP BY CodigoC, TC, Fecha, Serie, Factura, Producto, Ticket, Mes_No '
+	          + 'ORDER BY CodigoC, TC, Fecha, Serie, Factura, Producto, Ticket, Mes_No '
+	EXECUTE(@sSQL)
+
+ -- Total Descuento PP(2)
+    SET @sSQL = 'INSERT INTO Reporte_Cartera_Clientes (TC, Fecha, Serie, Factura, Anio, Mes, Detalle, Abonos, CodigoC, CodigoU, Item, T) '
+	          + 'SELECT TC, Fecha, Serie, Factura, SUBSTRING(Ticket,1,4), CAST(Mes_No As VARCHAR), SUBSTRING(CONCAT(''Descuento PP: '',Producto),1,60), SUM(Total_Desc2), CodigoC, '
+              + '''' + @CodigoUsuario + ''', ''' + @Item + ''', ''P'' '
+              + 'FROM Detalle_Factura '
+              + 'WHERE Item = ''' + @Item + ''' '
+			  + @RangoFecha
+			  + 'AND Total_Desc2 <> 0 '
+			  + 'AND T <> ''A'' '
+			  + 'AND TC IN (''NV'',''FA'',''DO'') '
+    IF @CodigoCliente <> 'Todos' SET @sSQL = @sSQL + 'AND CodigoC = ''' + @CodigoCliente + ''' '
+    SET @sSQL = @sSQL 
+			  + 'GROUP BY CodigoC, TC, Fecha, Serie, Factura, Producto, Ticket, Mes_No '
+	          + 'ORDER BY CodigoC, TC, Fecha, Serie, Factura, Producto, Ticket, Mes_No '
+	EXECUTE(@sSQL)
+
+ -- Total IVA  
+    SET @sSQL = 'INSERT INTO Reporte_Cartera_Clientes (TC, Fecha, Serie, Factura, Anio, Mes, Detalle, Cargos, CodigoC, CodigoU, Item, T) '
+	          + 'SELECT TC, Fecha, Serie, Factura, ''9999'', ''97'', ''IMPUESTO GRAVADO IVA '', SUM(Total_IVA), CodigoC, '
+              + '''' + @CodigoUsuario + ''', ''' + @Item + ''', ''P'' '
+              + 'FROM Detalle_Factura '
+              + 'WHERE Item = ''' + @Item + ''' '
+			  + @RangoFecha
+			  + 'AND Total_IVA <> 0 '
+			  + 'AND T <> ''A'' '
+			  + 'AND TC IN (''NV'',''FA'',''DO'') '
+    IF @CodigoCliente <> 'Todos' SET @sSQL = @sSQL + 'AND CodigoC = ''' + @CodigoCliente + ''' '
+    SET @sSQL = @sSQL 
+			  + 'GROUP BY CodigoC, TC, Fecha, Serie, Factura '
+	          + 'ORDER BY CodigoC, TC, Fecha, Serie, Factura '
+	EXECUTE(@sSQL)
+
+	UPDATE Trans_Abonos
+	SET X = '.'
+	WHERE Item = @Item 
+
+	UPDATE Facturas
+	SET X = '.'
+	WHERE Item = @Item 
+
+	UPDATE Trans_Abonos
+	SET X = 'A'
+	FROM Trans_Abonos As TA, Reporte_Cartera_Clientes As RCC
+	WHERE TA.Item = @Item 
+	AND RCC.CodigoU = @CodigoUsuario
+	AND TA.Item = RCC.Item
+	AND TA.TP = RCC.TC
+	AND TA.Serie  = RCC.Serie
+	AND TA.Factura  = RCC.Factura
+
+	UPDATE Facturas
+	SET X = 'A'
+	FROM Facturas As TA, Reporte_Cartera_Clientes As RCC
+	WHERE TA.Item = @Item 
+	AND RCC.CodigoU = @CodigoUsuario
+	AND TA.Item = RCC.Item
+	AND TA.TC = RCC.TC
+	AND TA.Serie  = RCC.Serie
+	AND TA.Factura  = RCC.Factura
+
+ -- Total Abonos
+    SET @sSQL = 'INSERT INTO Reporte_Cartera_Clientes (TC, Fecha, Serie, Factura, Anio, Mes, Detalle, Abonos, CodigoC, CodigoU, Item, T) '
+	          + 'SELECT TP, Fecha, Serie, Factura, ''9999'', ''98'', SUBSTRING(CONCAT(''- DOC. '',Banco,'', '',Cheque),1,60), Abono, CodigoC, '
+              + '''' + @CodigoUsuario + ''', ''' + @Item + ''', ''P'' '
+              + 'FROM Trans_Abonos '
+              + 'WHERE Item = ''' + @Item + ''' '
+			  + @RangoFecha
+			  + 'AND Abono <> 0 '
+			  + 'AND X = ''A'' '
+			  + 'AND TP IN (''NV'',''FA'',''DO'') '
+    IF @CodigoCliente <> 'Todos' SET @sSQL = @sSQL + 'AND CodigoC = ''' + @CodigoCliente + ''' '
+    SET @sSQL = @sSQL 
+			  + 'GROUP BY CodigoC, TP, Fecha, Serie, Factura, Abono, Banco, Cheque '
+	          + 'ORDER BY CodigoC, TP, Fecha, Serie, Factura, Banco, Abono, Cheque '
+	EXECUTE(@sSQL)
+
+ -- Saldo Total
+    SET @sSQL = 'INSERT INTO Reporte_Cartera_Clientes (TC, Fecha, Serie, Factura, Anio, Mes, Detalle, Abonos, CodigoC, CodigoU, Item, T, X) '
+	          + 'SELECT TC, Fecha, Serie, Factura, ''9999'', ''99'', REPLICATE('' '',39) + ''S A L D O   T O T A L'', 0, CodigoC, '
+              + '''' + @CodigoUsuario + ''', ''' + @Item + ''', ''P'', ''T'' '
+              + 'FROM Facturas '
+              + 'WHERE Item = ''' + @Item + ''' '
+			  + @RangoFecha
+			  + 'AND X = ''A'' '
+			  + 'AND TC IN (''NV'',''FA'',''DO'') '
+    IF @CodigoCliente <> 'Todos' SET @sSQL = @sSQL + 'AND CodigoC = ''' + @CodigoCliente + ''' '
+    SET @sSQL = @sSQL 
+			  + 'GROUP BY CodigoC, TC, Fecha, Serie, Factura '
+			  + 'ORDER BY CodigoC, TC, Fecha, Serie, Factura '
+	EXECUTE(@sSQL)
+
+ -- Total PreFacturas
+    SET @sSQL = 'INSERT INTO Reporte_Cartera_Clientes (TC, Fecha, Serie, Factura, Anio, Mes, Detalle, Cargos, Abonos, CodigoC, CodigoU, Item, T) '
+	          + 'SELECT ''PF'', CF.Fecha, ''999999'', 0, CF.Periodo, CAST(CF.Num_Mes As VARCHAR), SUBSTRING(CONCAT(''-> Por Facturar '', CP.Producto), 1 ,60), '
+			  + 'CF.Valor, CF.Descuento + CF.Descuento2, CF.Codigo, ''' + @CodigoUsuario + ''', ''' + @Item + ''', ''P'' '
+              + 'FROM Clientes_Facturacion As CF, Catalogo_Productos As CP '
+              + 'WHERE CP.Item = ''' + @Item + ''' '
+			  + 'AND CP.Periodo = ''' + @Periodo + ''' '
+			  + @RangoFechaCF
+			  + 'AND CF.Valor <> 0 '
+			  + 'AND CF.T <> ''A'' '
+    IF @CodigoCliente <> 'Todos' SET @sSQL = @sSQL + 'AND CF.Codigo = ''' + @CodigoCliente + ''' '
+    SET @sSQL = @sSQL 
+	          + 'AND CP.Item = CF.Item '
+			  + 'AND CP.Codigo_Inv = CF.Codigo_Inv '
+	          + 'ORDER BY CF.Codigo, CF.Fecha, CF.Periodo, CF.Num_Mes '
+	EXECUTE(@sSQL)
+
+ -- Saldo Total PreFacturas
+    SET @sSQL = 'INSERT INTO Reporte_Cartera_Clientes (TC, Fecha, Serie, Factura, Anio, Mes, Detalle, Saldo, CodigoC, CodigoU, Item, T, X) '
+	          + 'SELECT ''PF'', ''' + @FechaCorte + ''', ''999999'', 0, ''9999'', ''99'', REPLICATE('' '',39) + ''S A L D O   T O T A L'', 0, Codigo, ''' + @CodigoUsuario + ''', ''' + @Item + ''', ''P'', ''T'' '
+              + 'FROM Clientes_Facturacion '
+              + 'WHERE Item = ''' + @Item + ''' '
+			  + @RangoFecha
+			  + 'AND Valor <> 0 '
+			  + 'AND T <> ''A'' '
+    IF @CodigoCliente <> 'Todos' SET @sSQL = @sSQL + 'AND Codigo = ''' + @CodigoCliente + ''' '
+    SET @sSQL = @sSQL 
+	          + 'GROUP BY Codigo '
+	EXECUTE(@sSQL)
+
+	EXEC sp_Eliminar_Nulos 'Reporte_Cartera_Clientes'
+
+    UPDATE Reporte_Cartera_Clientes
+	SET Mes = '0' + Mes
+	WHERE LEN(Mes) = 1
+
+ -- Actualizamos Saldos por Factura o Prefacturacion
+	SET @sSQL = 'UPDATE Reporte_Cartera_Clientes '
+              + 'SET Saldo = (SELECT ROUND(SUM(Cargos)-SUM(Abonos),2,0) '
+              + '             FROM Reporte_Cartera_Clientes As RCC '
+              + '             WHERE RCC.Item = ''' + @Item + ''' '
+              + '             AND RCC.CodigoU = ''' + @CodigoUsuario + ''' '
+			  + '             AND Mes <> ''99'' '
+              + '             AND RCC.Item = Reporte_Cartera_Clientes.Item '
+			  + '             AND RCC.TC = Reporte_Cartera_Clientes.TC '
+              + '             AND RCC.CodigoC = Reporte_Cartera_Clientes.CodigoC '
+			  + '             AND RCC.Serie = Reporte_Cartera_Clientes.Serie '
+              + '             AND RCC.Factura = Reporte_Cartera_Clientes.Factura) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND CodigoU = ''' + @CodigoUsuario + ''' '
+              + 'AND Mes = ''99'' '
+    EXECUTE(@sSQL);
+
+	UPDATE Reporte_Cartera_Clientes
+	SET Saldo = 0
+	WHERE Item = @Item
+	AND CodigoU = @CodigoUsuario 
+	AND Saldo IS NULL;
+
+	UPDATE Reporte_Cartera_Clientes
+	SET T = F.T 
+	FROM Reporte_Cartera_Clientes As RC, Facturas As F
+	WHERE RC.Item = @Item
+	AND RC.CodigoU = @CodigoUsuario 
+	AND F.T <> 'P'
+	AND RC.TC = F.TC
+	AND RC.Serie = F.Serie 
+	AND RC.Factura  = F.Factura
+	AND RC.CodigoC = F.CodigoC 
+END

@@ -1,0 +1,112 @@
+CREATE PROCEDURE [dbo].[sp_Actualizar_Saldos_Facturas] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @TC VARCHAR(2), @Serie VARCHAR(6), @Factura INT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 12/07/2021
+  FECHA MODIFICACION: 18/01/2022
+  DESCIPCION		: Actualiza saldo de Facturas sin importar el tipo de abonos
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notIFicacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @EsFacturaIndividual VARCHAR(MAX), @EsFacturaIndividualF VARCHAR(MAX);
+	DECLARE @sSQL VARCHAR(MAX), @sSubSQL VARCHAR(MAX);
+
+ -- Programacion de procesos
+    SET @EsFacturaIndividual = ''
+    SET @EsFacturaIndividualF = ''
+
+    IF LEN(@TC) = 2 AND LEN(@Serie) = 6 AND @Factura > 0
+	   BEGIN
+		   SET @EsFacturaIndividual = 'AND TC = ''' + @TC + ''' '
+									+ 'AND Serie = ''' + @Serie + ''' '
+									+ 'AND Factura = ' + CAST(@Factura AS VARCHAR(10)) + ' '
+
+		   SET @EsFacturaIndividualF = 'AND F.TC = ''' + @TC + ''' '
+									 + 'AND F.Serie = ''' + @Serie + ''' '
+									 + 'AND F.Factura = ' + CAST(@Factura AS VARCHAR(10)) + ' '
+	   END
+
+ -- Actualizamos pagos en Efectivo
+	SET @sSQL = 'UPDATE Facturas '
+              + 'SET Total_Abonos = (SELECT ROUND(SUM(TA.Abono),2,0) '
+              + '                    FROM Trans_Abonos As TA '
+              + '                    WHERE TA.Item = ''' + @Item + ''' '
+              + '                    AND TA.Periodo = ''' + @Periodo + ''' '
+			  + '                    AND TA.Item = Facturas.Item '
+              + '                    AND TA.Periodo = Facturas.Periodo '
+              + '                    AND TA.TP = Facturas.TC '
+              + '                    AND TA.Serie = Facturas.Serie '
+              + '                    AND TA.Factura = Facturas.Factura '
+              + '                    AND TA.Autorizacion = Facturas.Autorizacion) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND T <> ''A'' '
+              + @EsFacturaIndividual
+    EXECUTE(@sSQL);
+                          
+ -- Actualizamos Datos en nulos   
+    UPDATE Facturas
+	SET Total_Abonos = 0
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Total_Abonos IS NULL;
+	         
+ -- Totalizando Saldos de Factura
+    SET @sSQL = 'UPDATE Facturas '
+              + 'SET Saldo_Actual = ROUND(Total_MN - Total_Abonos,2,0), Saldo_MN = ROUND(Total_MN - Total_Abonos,2,0) '
+              + 'WHERE Item = ''' + @Item + ''' '
+              + 'AND Periodo = ''' + @Periodo + ''' '
+              + 'AND T <> ''A'' '
+			  + @EsFacturaIndividual 
+    EXECUTE(@sSQL);
+	
+	SET @sSQL = 'UPDATE Facturas '
+		  	  + 'SET T = ''C'' '
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+			  + 'AND Saldo_MN <= 0 '
+			  + 'AND T <> ''A'' '
+			  + @EsFacturaIndividual
+	EXECUTE(@sSQL);
+      
+	SET @sSQL = 'UPDATE Facturas '
+			  + 'SET T = ''P'' '
+			  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+			  + 'AND Saldo_MN > 0 '
+			  + 'AND T <> ''A'' '
+			  + @EsFacturaIndividual
+	EXECUTE(@sSQL);
+	 
+ -- Actualizando Estado de las facturas
+	SET @sSQL = 'UPDATE Detalle_Factura '
+			  + 'SET T = F.T '
+			  + 'FROM Detalle_Factura As DF INNER JOIN Facturas As F '
+			  + 'ON DF.Item = F.Item '
+			  + 'AND DF.Periodo = F.Periodo '
+			  + 'AND DF.Factura = F.Factura '
+			  + 'AND DF.TC = F.TC '
+			  + 'AND DF.Serie = F.Serie '
+			  + 'AND DF.Autorizacion = F.Autorizacion '
+			  + 'WHERE DF.Item = ''' + @Item + ''' '
+			  + 'AND DF.Periodo = ''' + @Periodo + ''' '
+			  + @EsFacturaIndividualF 
+	EXECUTE(@sSQL);
+           
+	SET @sSQL = 'UPDATE Trans_Abonos '
+			  + 'SET T = F.T '
+			  + 'FROM Trans_Abonos As DF INNER JOIN Facturas As F '
+			  + 'ON DF.Item = F.Item '
+			  + 'AND DF.Periodo = F.Periodo '
+			  + 'AND DF.Factura = F.Factura '
+			  + 'AND DF.Autorizacion = F.Autorizacion '
+			  + 'AND DF.Serie = F.Serie '
+			  + 'AND DF.TP = F.TC '
+			  + 'WHERE DF.Item = ''' + @Item + ''' '
+			  + 'AND DF.Periodo = ''' + @Periodo + ''' '
+			  + @EsFacturaIndividualF 
+	EXECUTE(@sSQL);
+END

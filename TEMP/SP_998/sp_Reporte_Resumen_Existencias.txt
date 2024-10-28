@@ -1,0 +1,167 @@
+CREATE PROCEDURE [dbo].[sp_Reporte_Resumen_Existencias] 
+@Item AS VARCHAR(3), @Periodo AS VARCHAR(10),@FechaInicial AS VARCHAR(10), @FechaFinal AS VARCHAR(10), @CodBod AS VARCHAR(2) 
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 11/12/2021
+  FECHA MODIFICACION: 11/12/2021
+  DESCIPCION		: Procesa Resumen de Existencia
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @NumMes TINYINT;
+	DECLARE @DecPVP VARCHAR(14), @DecCosto VARCHAR(14);
+	DECLARE @ValorTotal MONEY;
+	DECLARE @CodigoInv VARCHAR(25), @Campo VARCHAR(50), @Sumatoria VARCHAR(MAX), @sSQL VARCHAR(MAX), @Grupo VARCHAR(10);
+	DECLARE @Campos_Tabla VARCHAR(MAX) = '', @DatosCero VARCHAR(MAX), @PeriodoInicial VARCHAR(4), @CtaAnticipo VARCHAR(18) = '.';
+ 
+ -- Programacion de procesos
+	EXEC sp_Eliminar_Nulos 'Trans_Kardex'
+
+    UPDATE Catalogo_Productos 
+    SET Stock_Anterior=0, Entradas=0, Salidas=0, Stock_Actual=0, Promedio=0, Valor_Total=0 
+	WHERE Item = @Item
+	AND Periodo = @Periodo;
+    
+	UPDATE Detalle_Factura
+    SET CodBodega = '01'
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+    AND CodBodega = '.';
+ 
+ 	UPDATE Trans_Kardex
+    SET CodBodega = '01'
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+    AND CodBodega = '.';
+
+	SELECT @DecPVP = (SELECT CAST(Dec_PVP As VARCHAR) FROM Empresas WHERE Item = @Item);
+	SELECT @DecCosto = (SELECT CAST(Dec_Costo As VARCHAR) FROM Empresas WHERE Item = @Item);
+
+
+	IF @DecPVP IS NULL SET @DecPVP = '2';
+	IF @DecCosto IS NULL SET @DecCosto = '2';
+
+ -- Procesando Stock_Anterior
+	SET @sSQL = 'UPDATE Catalogo_Productos '
+              + 'SET Stock_Anterior = (SELECT ROUND(SUM(Entrada)-SUM(Salida),2,0) '
+              + '                      FROM Trans_Kardex '
+              + '                      WHERE Trans_Kardex.Fecha < ''' + @FechaInicial + ''' '
+              + '                      AND Trans_Kardex.Item = Catalogo_Productos.Item '
+              + '                      AND Trans_Kardex.Periodo = Catalogo_Productos.Periodo '
+              + '                      AND Trans_Kardex.Codigo_Inv = Catalogo_Productos.Codigo_Inv) '
+		  	  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL)
+
+ -- Procesando Entradas
+	SET @sSQL = 'UPDATE Catalogo_Productos '
+              + 'SET Entradas = (SELECT ROUND(SUM(Entrada),2,0) '
+              + '                FROM Trans_Kardex '
+              + '                WHERE Trans_Kardex.Fecha BETWEEN ''' + @FechaInicial + ''' and ''' + @FechaFinal + ''' '
+              + '                AND Trans_Kardex.Item = Catalogo_Productos.Item '
+              + '                AND Trans_Kardex.Periodo = Catalogo_Productos.Periodo '
+              + '                AND Trans_Kardex.Codigo_Inv = Catalogo_Productos.Codigo_Inv) '
+		  	  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL)
+                
+ -- Procesando Salidas
+	SET @sSQL = 'UPDATE Catalogo_Productos '
+              + 'SET Salidas = (SELECT ROUND(SUM(Salida),2,0) '
+              + '               FROM Trans_Kardex '
+              + '               WHERE Trans_Kardex.Fecha BETWEEN ''' + @FechaInicial + ''' and ''' + @FechaFinal + ''' '
+              + '               AND Trans_Kardex.Item = Catalogo_Productos.Item '
+              + '               AND Trans_Kardex.Periodo = Catalogo_Productos.Periodo '
+              + '               AND Trans_Kardex.Codigo_Inv = Catalogo_Productos.Codigo_Inv) '
+		  	  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL)
+                                
+ -- Procesando Stock_Actual Inventario
+    UPDATE Catalogo_Productos
+    SET Stock_Anterior = 0
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+    AND Stock_Anterior IS NULL 
+
+    UPDATE Catalogo_Productos
+    SET Entradas = 0
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+    AND Entradas IS NULL
+                  
+    UPDATE Catalogo_Productos
+    SET Salidas = 0
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+    AND Salidas IS NULL 
+                  
+    UPDATE Catalogo_Productos
+    SET Stock_Actual = ROUND(Stock_Anterior + Entradas - Salidas,2,0)
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+
+ -- Promedio
+	SET @sSQL = 'UPDATE Catalogo_Productos '
+              + 'SET Promedio = (SELECT TOP 1 ROUND(Costo,' + @DecCosto + ',0) '
+              + '                FROM Trans_Kardex '
+			  + '                WHERE Trans_Kardex.Fecha <= ''' + @FechaFinal + ''' '
+			  + '                AND Trans_Kardex.Item = ''' + @Item + ''' '
+			  + '                AND Trans_Kardex.Periodo = ''' + @Periodo + ''' '
+              + '                AND Trans_Kardex.T <> ''A'' '
+              + '                AND Trans_Kardex.Item = Catalogo_Productos.Item '
+              + '                AND Trans_Kardex.Periodo = Catalogo_Productos.Periodo '
+              + '                AND Trans_Kardex.Codigo_Inv = Catalogo_Productos.Codigo_Inv '
+			  + '                ORDER BY Fecha DESC, Entrada, Salida DESC, TP DESC, Numero DESC, ID DESC) '
+		  	  + 'WHERE Item = ''' + @Item + ''' '
+			  + 'AND Periodo = ''' + @Periodo + ''' '
+    EXECUTE(@sSQL)
+
+	UPDATE Catalogo_Productos
+    SET Promedio = 0
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+    AND Promedio IS NULL 
+
+ 	UPDATE Catalogo_Productos
+    SET Valor_Total =  ROUND(Promedio * Stock_Actual,2,0)
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+    AND Stock_Actual <> 0;
+
+ -- Declaracion de Cursor para sacar la prefacturacion de los clientes
+	DECLARE cMayorizarKardex CURSOR FOR
+		SELECT Codigo_Inv,Valor_Total 
+        FROM Catalogo_Productos 
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+        AND Stock_Actual <> 0 
+        AND TC = 'P' 
+        ORDER BY Codigo_Inv
+ -- Apertura del cursor
+	OPEN cMayorizarKardex
+	FETCH NEXT FROM cMayorizarKardex INTO @CodigoInv, @ValorTotal
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+  		WHILE LEN(@CodigoInv)>1
+		  BEGIN
+			SET @CodigoInv = dbo.fn_Codigo_Cuenta_Sup(@CodigoInv)
+			SET @sSQL = 'UPDATE Catalogo_Productos '
+					  + 'SET Valor_Total  = Valor_Total  + ' + CAST(@ValorTotal AS VARCHAR(14)) + ' '
+					  + 'WHERE Codigo_Inv = ''' + @CodigoInv + ''' '
+					  + 'AND Item = ''' + @Item + ''' '
+					  + 'AND Periodo = ''' + @Periodo + ''' '
+ 			EXECUTE(@sSQL); 
+		  END
+     -- Siguiente registro  
+		FETCH NEXT FROM cMayorizarKardex INTO @CodigoInv, @ValorTotal
+	END
+ -- Cierre del cursor
+	CLOSE cMayorizarKardex
+ -- Liberar los recursos
+	DEALLOCATE cMayorizarKardex
+END

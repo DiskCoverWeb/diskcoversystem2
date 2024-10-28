@@ -1,0 +1,36 @@
+CREATE PROCEDURE [dbo].[sp_subir_salario] 
+(@incre money) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 30/04/2019
+  DESCIPCION		:
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Ejemplo de Cursores Actualizar datos
+	Declare @incremento Money ,@Saldo Money, @Factura int, @ID int
+Declare c cursor GLOBAL for 
+   SELECT Saldo, Factura, ID 
+   FROM Trans_SubCtas
+   WHERE Periodo = '.' 
+   AND Codigo = '035500453'
+FOR UPDATE
+Open c
+fetch c into @Saldo, @Factura, @ID
+while(@@fetch_status=0)
+begin
+    if @Factura <> 1329
+       begin
+ 		 set @incremento = round((@Saldo*@incre)/100,2,0)
+		 UPDATE Trans_SubCtas
+		 set Saldo = Saldo + @incremento
+		 where current of c
+	   end
+	fetch c into @Saldo, @Factura, @ID
+end
+close c
+deallocate c
+END

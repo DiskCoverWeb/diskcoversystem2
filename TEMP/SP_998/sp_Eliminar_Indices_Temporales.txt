@@ -1,0 +1,77 @@
+CREATE PROCEDURE [dbo].[sp_Eliminar_Indices_Temporales]
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 08/09/2022
+  FECHA MODIFICACION: 08/09/2022
+  DESCIPCION		: Elimina los indices de las tablas
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaracion de variables necesarias 
+    DECLARE @tablename VARCHAR(MAX), @indexname VARCHAR(MAX), @Clave VARCHAR(MAX);
+
+ -- Declaración del cursor
+	DECLARE cCampos_Tabla CURSOR FOR
+		SELECT tab.name as tablename, ind.name as indexname
+		FROM sys.Indexes ind
+		INNER JOIN sys.tables tab
+		ON ind.object_id = tab.object_id
+		WHERE NOT ind.name IS NULL
+		AND ind.name LIKE 'IDX_%'
+		ORDER BY tab.name, ind.name
+ -- Apertura del cursor
+	OPEN cCampos_Tabla
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cCampos_Tabla INTO @tablename, @indexname
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+        EXECUTE('DROP INDEX ' + @tablename + '.' + @indexname + ';');
+     -- print @sSQL
+     -- Procesamos el siguiente indice
+		FETCH NEXT FROM cCampos_Tabla INTO @tablename, @indexname
+	END
+ -- Cierre del cursor
+	CLOSE cCampos_Tabla
+ -- Liberar los recursos
+	DEALLOCATE cCampos_Tabla
+
+ -- Declaracion de Cursor Eliminar Claves Primarias
+	DECLARE cTablas CURSOR FOR
+		SELECT i.name, OBJECT_NAME(ic.OBJECT_ID) 
+		FROM sys.indexes AS i
+		INNER JOIN sys.index_columns AS ic ON i.OBJECT_ID = ic.OBJECT_ID
+		AND i.index_id = ic.index_id 
+		WHERE i.is_primary_key = 1
+		AND i.name LIKE 'PK__Asiento%'
+		UNION
+		SELECT i.name, OBJECT_NAME(ic.OBJECT_ID) 
+		FROM sys.indexes AS i
+		INNER JOIN sys.index_columns AS ic ON i.OBJECT_ID = ic.OBJECT_ID
+		AND i.index_id = ic.index_id 
+		WHERE i.is_primary_key = 1
+		AND i.name LIKE 'PK__Tabla%'
+		UNION
+		SELECT i.name, OBJECT_NAME(ic.OBJECT_ID) 
+		FROM sys.indexes AS i
+		INNER JOIN sys.index_columns AS ic ON i.OBJECT_ID = ic.OBJECT_ID
+		AND i.index_id = ic.index_id 
+		WHERE i.is_primary_key = 1
+		AND i.name LIKE 'PK__Tipo%'
+		ORDER BY i.name
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Clave, @tablename
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		EXECUTE('ALTER TABLE ' + @tablename + ' DROP ' + @Clave + ';');
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @Clave, @tablename
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+END

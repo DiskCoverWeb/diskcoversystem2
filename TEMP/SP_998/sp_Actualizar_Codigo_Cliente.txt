@@ -1,0 +1,124 @@
+CREATE PROCEDURE [dbo].[sp_Actualizar_Codigo_Cliente]
+@CodigoNew VARCHAR(10), @CodigoOld VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 25/09/2021
+  FECHA MODIFICACION: 25/09/2021
+  DESCIPCION		: Permite actualizar codigos nuevos en viejos cuando hay duplicados de Clientes
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @sSQL VARCHAR(MAX), @TextLinea VARCHAR(100) = REPLICATE('-',100);
+
+ -- Programacion de procesos
+	UPDATE Comprobantes 
+	SET Codigo_B = @CodigoNew
+	WHERE Codigo_B = @CodigoOld;
+   
+	UPDATE Catalogo_CxCxP
+	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+   
+	UPDATE Catalogo_SubCtas 
+ 	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+   
+	UPDATE Catalogo_Rol_Pagos 
+	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+   
+	UPDATE Detalle_Factura 
+	SET CodigoC = @CodigoNew
+	WHERE CodigoC = @CodigoOld;
+   
+	UPDATE Facturas 
+	SET CodigoC = @CodigoNew
+	WHERE CodigoC = @CodigoOld;
+      
+	UPDATE Clientes_Matriculas
+	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+      
+	UPDATE Clientes_Facturacion
+	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+   
+	UPDATE Trans_Abonos
+	SET CodigoC = @CodigoNew
+	WHERE CodigoC = @CodigoOld;
+   
+	UPDATE Trans_Aduanas
+	SET CodigoC = @CodigoNew
+	WHERE CodigoC = @CodigoOld;
+   
+	UPDATE Trans_Comision
+	SET CodigoC = @CodigoNew
+	WHERE CodigoC = @CodigoOld;
+   
+	UPDATE Trans_Cuotas
+	SET CodigoC = @CodigoNew
+	WHERE CodigoC = @CodigoOld;
+      
+	UPDATE Trans_Kardex
+	SET Codigo_P = @CodigoNew
+	WHERE Codigo_P = @CodigoOld;
+   
+	UPDATE Trans_Actas
+	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+   
+	UPDATE Trans_Notas
+	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+   
+	UPDATE Trans_Pedidos
+	SET CodigoC = @CodigoNew
+	WHERE CodigoC = @CodigoOld;
+      
+	UPDATE Trans_Rol_Horas
+	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+   
+	UPDATE Trans_Rol_Pagos
+	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+   
+	UPDATE Trans_SubCtas
+	SET Codigo = @CodigoNew
+	WHERE Codigo = @CodigoOld;
+   
+	UPDATE Prestamos
+	SET Cuenta_No = @CodigoNew
+	WHERE Cuenta_No = @CodigoOld;
+   
+	UPDATE Trans_Prestamos
+	SET Cuenta_No = @CodigoNew
+	WHERE Cuenta_No = @CodigoOld;
+   
+	UPDATE Transacciones
+	SET Codigo_C = @CodigoNew
+	WHERE Codigo_C = @CodigoOld;
+   
+	UPDATE Trans_Air
+	SET IdProv = @CodigoNew
+	WHERE IdProv = @CodigoOld;
+   
+	UPDATE Trans_Compras
+	SET IdProv = @CodigoNew
+	WHERE IdProv = @CodigoOld;
+   
+	UPDATE Trans_Ventas
+	SET IdProv = @CodigoNew
+	WHERE IdProv = @CodigoOld;
+   
+	UPDATE Trans_Exportaciones
+	SET IdFiscalProv = @CodigoNew
+	WHERE IdFiscalProv = @CodigoOld;
+   
+	UPDATE Trans_Importaciones
+	SET IdFiscalProv = @CodigoNew
+	WHERE IdFiscalProv = @CodigoOld;
+END

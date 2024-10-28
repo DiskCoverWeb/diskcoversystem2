@@ -1,0 +1,899 @@
+CREATE PROCEDURE [dbo].[sp_Procesar_Rol_Pagos_del_Mes]
+@Item VARCHAR(3), @Periodo VARCHAR(10), @NumModulo VARCHAR(2), @CodigoUsuario VARCHAR(10), @FechaIniRol VARCHAR(10), @FechaFinRol VARCHAR(10), @GrupoRol VARCHAR(15), @DCCxP VARCHAR(18), @No_Cheque INT
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 01/03/2024
+  FECHA MODIFICACION: 20/06/2024
+  DESCIPCION		: Genera el Rol de Pagos individual de cada empleado y ademas con sus Cuentas por Cobrar o por Pagar de submodulos. En Trans_No = 100, 101 y 102 seran solo 
+					  para este modulo
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+	SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @OrdenAlfabetico BIT = 1;
+	DECLARE @NumMes TINYINT;
+	DECLARE @TransNo INT=100, @Cont INT=0, @ID INT=0;
+	DECLARE @TotalMes MONEY;
+	DECLARE @PorcCF REAL=0, @IESS_Per REAL=0, @IESS_Pat REAL=0, @IESS_Total REAL=0, @IESS_ExtC REAL=0, @IESS_FR REAL=0, @Sueldo_Basico REAL=0, @Canasta_Ba REAL=0, @FraccionBasica REAL=0;
+	DECLARE @Codigo VARCHAR(15), @Campo VARCHAR(50), @Cta_Aux VARCHAR(18)='.', @TipoCta VARCHAR(2) = 'N', @Cta_Impuesto_Renta_Empleado VARCHAR(18) = '0', @CodigoU VARCHAR(10);
+	DECLARE @Anio VARCHAR(4)=CAST(YEAR(@FechaIniRol) As VARCHAR), @Primer_Dia_Anio VARCHAR(10) = CAST(YEAR(@FechaIniRol) As VARCHAR)+'0101';
+	DECLARE @Sumatoria NVARCHAR(MAX), @sSQL NVARCHAR(MAX), @Campos_Tabla NVARCHAR(MAX) = '', @DatosCero VARCHAR(MAX), @Texto VARCHAR(MAX), @TextLinea VARCHAR(100);
+
+ -- Programacion de procesos
+ 	SELECT @IESS_Per=Porc/100 FROM Tabla_Por_ICE_IVA WHERE Codigo = 'IESS_Per' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+	SELECT @IESS_Pat=Porc/100 FROM Tabla_Por_ICE_IVA WHERE Codigo = 'IESS_Pat' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+	SELECT @IESS_FR=Porc/100 FROM Tabla_Por_ICE_IVA WHERE Codigo = 'IESS_FR' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+	SELECT @IESS_ExtC=Porc/100 FROM Tabla_Por_ICE_IVA WHERE Codigo = 'IESS_ExtC' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+	SELECT @Canasta_Ba=Porc FROM Tabla_Por_ICE_IVA WHERE Codigo = 'Canasta_Ba' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+	SELECT @Sueldo_Basico=Porc FROM Tabla_Por_ICE_IVA WHERE Codigo = 'Sueldo_Bas' AND @FechaIniRol BETWEEN Fecha_Inicio AND Fecha_Final
+	SELECT @FraccionBasica=ROUND(Hasta*2.13,2,0) FROM Tabla_Renta WHERE Año=@Anio AND Excede=0;
+	SELECT @PorcCF=Rebaja/100 FROM Tabla_Canasta_Familiar WHERE Anio=@Anio AND Cargas=0;
+
+	IF @IESS_FR IS NULL SET @IESS_FR=0;
+	IF @IESS_Per IS NULL SET @IESS_Per=0;
+	IF @IESS_Pat IS NULL SET @IESS_Pat=0;
+	IF @IESS_ExtC IS NULL SET @IESS_ExtC=0;
+	IF @Canasta_Ba IS NULL SET @Canasta_Ba=0;
+	IF @Sueldo_Basico IS NULL SET @Sueldo_Basico=0;
+	IF @FraccionBasica IS NULL SET @FraccionBasica=0;
+	IF @PorcCF IS NULL SET @PorcCF=0;
+
+	SET @IESS_Total = @IESS_Per + @IESS_Pat
+
+	SET @TextLinea=REPLICATE('-',100)
+
+ -- Borramos la basura si existiera
+	DELETE FROM Tabla_Temporal 
+	WHERE Item = @Item
+	AND Modulo = @NumModulo
+	AND CodigoU = @CodigoUsuario;
+
+	DELETE FROM Asiento_SC 
+	WHERE Item = @Item
+	AND CodigoU = @CodigoUsuario
+	AND T_No IN (100,101,102)
+	AND NOT Detalle_SubCta IN ('CxC Empleado','CxP Empleado');
+
+	UPDATE Catalogo_Cuentas 
+	SET Cod_Rol_Pago=CR.Cod_Rol_Pago, I_E_Emp=CR.I_E 
+	FROM Catalogo_Cuentas AS CC, Catalogo_Rol_Rubros As CR 
+	WHERE CC.Item = @Item
+	AND CC.Periodo = @Periodo
+	AND CC.DG = 'D'
+	AND CC.Item = CR.Item 
+	AND CC.Periodo = CR.Periodo 
+	AND CC.Codigo = CR.Cta;
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Total_Gastos_P=ROUND((Vivienda+Salud+Educacion+Alimentacion+Vestimenta+Discapacidad+Tercera_Edad+Turismo)*@PorcCF,2,0), 
+	    Total_Aporte_IESS=0, Total_Ingresos_P=0, Descuento_Carga_Familiar=0, Total_Ingresos_IR=0, Meses_Trabajados=0, Meses_IR=1
+	WHERE Item = @Item
+	AND Periodo = @Periodo;
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Descuento_Carga_Familiar = ROUND((TCF.Canastas*@Canasta_Ba)*@PorcCF,2,0)
+	FROM Catalogo_Rol_Pagos As CRP, Tabla_Canasta_Familiar TCF
+	WHERE CRP.Item = @Item
+	AND CRP.Periodo = @Periodo
+	AND TCF.Anio = @Anio
+	AND TCF.Cargas = CRP.Carga_Familiar;
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Descuento_Carga_Familiar = ROUND((TCF.Canastas*@Canasta_Ba)*@PorcCF,2,0)
+	FROM Catalogo_Rol_Pagos As CRP, Tabla_Canasta_Familiar TCF
+	WHERE CRP.Item = @Item
+	AND CRP.Periodo = @Periodo
+	AND TCF.Anio = @Anio
+	AND CRP.Carga_Familiar>5
+	AND TCF.Cargas = 5;
+
+	UPDATE Catalogo_Rol_Pagos
+	SET Total_Gastos_P = Descuento_Carga_Familiar
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Total_Gastos_P > Descuento_Carga_Familiar;
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Porc_IESS_Pat = ROUND(@IESS_Pat,4,0), Porc_IESS_Per = ROUND(@IESS_Per,4,0)
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND SN = '1'
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Porc_IESS_Pat = ROUND(@IESS_Pat+@IESS_Per,4,0), Porc_IESS_Per = 0
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND SN = '2'
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Porc_IESS_ExtC = ROUND(@IESS_ExtC,4,0) 
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND ExtC <> 0
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Descuento_Carga_Familiar = 0
+	WHERE Descuento_Carga_Familiar IS NULL;
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Total_Dias = CASE Reingreso_FR 
+						  WHEN 0 THEN DATEDIFF(DAY,Fecha,@FechaFinRol)+1
+						  ELSE 366
+					 END
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND T = 'N'
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Dias_Mes = CASE MONTH(@FechaFinRol) 
+						WHEN 2 THEN DAY(@FechaFinRol) 
+						ELSE 30 
+				   END
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND T = 'N';
+
+	UPDATE Catalogo_Rol_Pagos 
+	SET Total_Dias = DATEDIFF(DAY,Fecha,FechaC)+1
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND T = 'R'
+
+ -- GENERAMOS ROL DE PAGOS PERSONAL SI NO ESTA PROCESADO, CASO CONTRARIO SOLO GENERAMOS LOS ASIENTOS CONTABLES
+ -- ==========================================================================================================
+    SELECT @Cont = COUNT(Periodo)
+    FROM Trans_Rol_de_Pagos
+ 	WHERE Item = @Item 
+   	AND Periodo = @Periodo  
+	AND Fecha_D >= @FechaIniRol
+	AND Fecha_H <= @FechaFinRol
+	AND TP <> '.'
+	AND Numero <> 0 
+	GROUP BY TP;
+	IF @Cont = 0 
+	BEGIN
+	 -- Procesamos los Ingresos/Egresos de Rol de Pagos. Borramos el rol mal procesado si este fue escrito mal la fecha
+		SET @sSQL = 'DELETE FROM Trans_Rol_de_Pagos 
+	  				 WHERE Fecha_D >= ''' + @FechaIniRol + ''' 
+					 AND Fecha_H <= ''' + @FechaFinRol + ''' 
+					 AND Item = ''' + @Item + ''' 
+					 AND Periodo = ''' + @Periodo + ''' 
+					 AND TP = ''.'' 
+					 AND Numero = 0 '
+		IF @GrupoRol <> 'TODOS' SET @sSQL = @sSQL + 'AND Grupo_Rol = ''' + @GrupoRol + ''' '
+		EXECUTE(@sSQL)
+
+	 -- Ingresos: Insertamos el Sueldo segun las horas trabajas
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Dias,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,TRH.Codigo,'PER',CRC.Cta_Sueldo,ROUND(SUM(TRH.Ing_Liquido),2,0),SUM(TRH.Dias),SUM(TRH.Horas),@FechaIniRol,
+			   @FechaFinRol,CRP.SubModulo,'Salario',1
+		FROM Trans_Rol_Horas As TRH, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE TRH.Item = @Item
+		AND TRH.Periodo = @Periodo
+		AND TRH.Fecha BETWEEN @FechaIniRol and @FechaFinRol
+		AND CRP.T = 'N'
+		AND TRH.Item = CRP.Item
+		AND TRH.Item = CRC.Item
+		AND TRH.Periodo = CRP.Periodo
+		AND TRH.Periodo = CRC.Periodo
+		AND TRH.Codigo = CRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		GROUP BY CRP.Grupo_Rol, CRP.SubModulo, TRH.Codigo, CRC.Cta_Sueldo
+		HAVING SUM(TRH.Ing_Liquido) > 0;
+
+	 -- Ingresos: Insertamos el Sueldo de los que se fueron en el mes
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Dias,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,TRH.Codigo,'PER',CRC.Cta_Sueldo,ROUND(SUM(TRH.Ing_Liquido),2,0),SUM(TRH.Dias),SUM(TRH.Horas),@FechaIniRol,
+			   @FechaFinRol,CRP.SubModulo,'Salario',1
+		FROM Trans_Rol_Horas As TRH, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE TRH.Item = @Item
+		AND TRH.Periodo = @Periodo
+		AND CRP.FechaC BETWEEN @FechaIniRol and @FechaFinRol
+		AND CRP.T = 'R'
+		AND TRH.Item = CRP.Item
+		AND TRH.Item = CRC.Item
+		AND TRH.Periodo = CRP.Periodo
+		AND TRH.Periodo = CRC.Periodo
+		AND TRH.Codigo = CRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		GROUP BY CRP.Grupo_Rol, CRP.SubModulo, TRH.Codigo, CRC.Cta_Sueldo
+		HAVING SUM(TRH.Ing_Liquido) > 0;
+
+	 -- Ingresos: Insertamos las horas extras
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,TRH.Codigo,'PER',CRC.Cta_Horas_Ext,ROUND(SUM(TRH.Ing_Horas_Ext),2,0),0,@FechaIniRol,
+			   @FechaFinRol,CRP.SubModulo,'Hor_Ext',1
+		FROM Trans_Rol_Horas As TRH, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE TRH.Item = @Item
+		AND TRH.Periodo = @Periodo
+		AND TRH.Fecha BETWEEN @FechaIniRol and @FechaFinRol
+		AND CRP.T = 'N'
+		AND TRH.Item = CRP.Item
+		AND TRH.Item = CRC.Item
+		AND TRH.Periodo = CRP.Periodo
+		AND TRH.Periodo = CRC.Periodo
+		AND TRH.Codigo = CRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		GROUP BY CRP.Grupo_Rol, CRP.SubModulo, TRH.Codigo, CRC.Cta_Horas_Ext
+		HAVING SUM(TRH.Ing_Horas_Ext) > 0;
+
+	 -- Ingresos: Insertamos las horas extras de los que salieron en el mes
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,TRH.Codigo,'PER',CRC.Cta_Horas_Ext,ROUND(SUM(TRH.Ing_Horas_Ext),2,0),0,@FechaIniRol,
+			   @FechaFinRol,CRP.SubModulo,'Hor_Ext',1
+		FROM Trans_Rol_Horas As TRH, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE TRH.Item = @Item
+		AND TRH.Periodo = @Periodo
+		AND CRP.Fecha BETWEEN @FechaIniRol and @FechaFinRol
+		AND CRP.T = 'R'
+		AND TRH.Item = CRP.Item
+		AND TRH.Item = CRC.Item
+		AND TRH.Periodo = CRP.Periodo
+		AND TRH.Periodo = CRC.Periodo
+		AND TRH.Codigo = CRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		GROUP BY CRP.Grupo_Rol, CRP.SubModulo, TRH.Codigo, CRC.Cta_Horas_Ext
+		HAVING SUM(TRH.Ing_Horas_Ext) > 0;
+
+	 -- Ingresos: Insertamos Ingresos Adicionales que se subieron por excel
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,CRR.Codigo,'PER',CRR.Cta,CRR.Valor,0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,CRR.Cod_Rol_Pago,CRR.Calc_IESS
+		FROM Catalogo_Rol_Rubros As CRR, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND CRR.Mes = MONTH(@FechaIniRol)
+		AND CRR.I_E = 'I'
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = CRR.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = CRR.Periodo
+		AND CRP.Codigo = CRR.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		ORDER BY CRR.Cta, CRR.Codigo;
+
+	 -- Ingresos: Insertamos las CxP que tenga en el mes el empleado
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,SC.Codigo,'PER',SC.Cta,SC.Valor,0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'C'+SC.TC+'_'+REPLACE(SC.Cta,'.','_'),0
+		FROM Asiento_SC As SC, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND SC.T_No = 100
+		AND SC.CodigoU = @CodigoUsuario
+		AND SC.DH = '1'
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = SC.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRP.Codigo = SC.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		ORDER BY SC.SC_No;
+
+	 -- Ingresos: Insertamos Fondos de Reserva si supera los 365 dias o reingresa (8.33%)
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PER',CRC.Cta_Fondo_Reserva_G,ROUND(SUM(TRP.Ingresos)*@IESS_FR,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Fon_Res_G',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.Pagar_Fondo_Reserva <> 0
+		AND CRP.Total_Dias > 365
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Fondo_Reserva_G,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Ingresos: Insertamos Decimos Tercer Sueldo
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PER',CRC.Cta_Decimo_Tercer_G,ROUND(SUM(TRP.Ingresos)/12,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Decimo_III_G',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.Pagar_Decimos <> 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Decimo_Tercer_G,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Ingresos: Insertamos Decimos Cuarto Sueldo
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,CRP.Codigo,'PER',CRC.Cta_Decimo_Cuarto_G,ROUND(@Sueldo_Basico/12,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Decimo_IV_G',0
+		FROM Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND CRP.Pagar_Decimos <> 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		GROUP BY CRP.Grupo_Rol,CRP.Codigo,CRC.Cta_Decimo_Cuarto_G,CRP.SubModulo
+		ORDER BY CRP.Codigo;
+
+	 -- Egresos: Insertamos las CxC que tenga en el mes el empleado
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,SC.Codigo,'PER',SC.Cta,SC.Valor,0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'C'+SC.TC+'_'+REPLACE(SC.Cta,'.','_'),0
+		FROM Asiento_SC As SC, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND SC.T_No = 100
+		AND SC.CodigoU = @CodigoUsuario
+		AND SC.DH = '2'
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = SC.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRP.Codigo = SC.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		ORDER BY SC.SC_No;
+
+	 -- Egresos: Insertamos Egresos Adicionales que se subieron por excel
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,CRR.Codigo,'PER',CRR.Cta,CRR.Valor,0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,CRR.Cod_Rol_Pago,CRR.Calc_IESS
+		FROM Catalogo_Rol_Rubros As CRR, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND CRR.Mes = MONTH(@FechaIniRol)
+		AND CRR.I_E = 'E'
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = CRR.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = CRR.Periodo
+		AND CRP.Codigo = CRR.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		ORDER BY CRR.Cta, CRR.Codigo;
+
+	 -- Egresos: Insertamos Egresos del IESS Personal del 9.45%
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PER',CRC.Cta_IESS_Personal,ROUND(SUM(TRP.Ingresos*CRP.Porc_IESS_Per),2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Aporte_Per',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.Porc_IESS_Per <> 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_IESS_Personal,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+		UPDATE Catalogo_Rol_Pagos
+		SET Total_Aporte_IESS = TRP.Egresos
+		FROM Catalogo_Rol_Pagos As CRP, Trans_Rol_De_Pagos As TRP
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.Cod_Rol_Pago = 'Aporte_Per'
+		AND CRP.Item = TRP.Item
+		AND CRP.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo;
+
+	 -- Egresos: Insertamos Egresos del IESS Extension del Conyugue del 3.41%
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PER',CRC.Cta_Ext_Conyugue_P,ROUND(SUM(TRP.Ingresos*CRP.Porc_IESS_ExtC),2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Aporte_Ext_C',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.Porc_IESS_ExtC <> 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Ext_Conyugue_P,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Egresos: Insertamos El Impuesto a la Renta Empleados a los que les toca descontar
+		SET @Cta_Impuesto_Renta_Empleado = dbo.fn_Leer_Seteos_Ctas(@Item, @Periodo, 'Cta_Impuesto_Renta_Empleado');
+
+		IF @Cta_Impuesto_Renta_Empleado <> '0'
+		   BEGIN
+			 UPDATE Catalogo_Rol_Pagos
+			 SET Meses_Trabajados = (SELECT COUNT(TRP.Codigo) 
+									 FROM Trans_Rol_De_Pagos As TRP 
+									 WHERE TRP.Item = @Item
+									 AND TRP.Periodo = @Periodo
+									 AND TRP.Fecha_D BETWEEN @Primer_Dia_Anio AND @FechaIniRol
+									 AND TRP.Cod_Rol_Pago = 'Neto_Recibir'
+									 AND TRP.TP <> '.'
+									 AND TRP.Egresos > 0
+									 AND TRP.Item = Catalogo_Rol_Pagos.Item
+									 AND TRP.Periodo = Catalogo_Rol_Pagos.Periodo
+									 AND TRP.Codigo = Catalogo_Rol_Pagos.Codigo)
+			 WHERE Item = @Item
+			 AND Periodo = @Periodo;
+
+			 UPDATE Catalogo_Rol_Pagos
+			 SET Meses_Trabajados=0
+			 WHERE Meses_Trabajados IS NULL;
+
+			 UPDATE Catalogo_Rol_Pagos
+			 SET Meses_IR = 12 - Meses_Trabajados 
+			 WHERE Item = @Item
+			 AND Periodo = @Periodo;
+
+			 UPDATE Catalogo_Rol_Pagos
+			 SET Total_Ingresos_P = (SELECT ROUND(SUM(TRP.Egresos),2,0)
+									 FROM Trans_Rol_De_Pagos As TRP 
+									 WHERE TRP.Item = @Item
+									 AND TRP.Periodo = @Periodo
+									 AND TRP.Fecha_D BETWEEN @Primer_Dia_Anio AND @FechaIniRol
+									 AND TRP.Cod_Rol_Pago = 'Neto_Recibir'
+									 AND TRP.TP <> '.'
+									 AND TRP.Egresos > 0
+									 AND TRP.Item = Catalogo_Rol_Pagos.Item
+									 AND TRP.Periodo = Catalogo_Rol_Pagos.Periodo
+									 AND TRP.Codigo = Catalogo_Rol_Pagos.Codigo)
+			 WHERE Item = @Item
+			 AND Periodo = @Periodo;
+
+			 UPDATE Catalogo_Rol_Pagos
+			 SET Total_Ingresos_P = 0
+			 WHERE Total_Ingresos_P IS NULL;
+
+			 INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+			 SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PER',@Cta_Impuesto_Renta_Empleado,ROUND(SUM(TRP.Ingresos),2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Imp_Renta',0
+			 FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP
+			 WHERE CRP.Item = @Item
+			 AND CRP.Periodo = @Periodo
+			 AND TRP.Fecha_D = @FechaIniRol
+			 AND TRP.IESS <> 0
+			 AND TRP.Item = CRP.Item
+			 AND TRP.Periodo = CRP.Periodo
+			 AND TRP.Grupo_Rol = CRP.Grupo_Rol
+			 AND TRP.Codigo = CRP.Codigo
+			 GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRP.SubModulo
+			 ORDER BY TRP.Codigo;
+			 
+			 UPDATE Trans_Rol_de_Pagos 
+			 SET Egresos = Egresos - Total_Aporte_IESS
+			 FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP
+			 WHERE TRP.Item = @Item
+			 AND TRP.Periodo = @Periodo
+			 AND TRP.Fecha_D = @FechaIniRol
+			 AND TRP.Cod_Rol_Pago = 'Imp_Renta'
+			 AND TRP.Item = CRP.Item
+			 AND TRP.Periodo = CRP.Periodo
+			 AND TRP.Codigo = CRP.Codigo;
+
+			 UPDATE Catalogo_Rol_Pagos
+			 SET Total_Ingresos_IR = ROUND(((TRP.Egresos*CRP.Meses_IR)+CRP.Total_Ingresos_P)-CRP.Total_Gastos_P,2,0)
+			 FROM Catalogo_Rol_Pagos As CRP, Trans_Rol_De_Pagos As TRP 
+			 WHERE CRP.Item = @Item
+			 AND CRP.Periodo = @Periodo
+			 AND TRP.Fecha_D = @FechaIniRol
+			 AND TRP.Cod_Rol_Pago = 'Imp_Renta'
+			 AND TRP.Egresos > 0
+			 AND CRP.Item = TRP.Item
+			 AND CRP.Periodo = TRP.Periodo
+			 AND CRP.Codigo = TRP.Codigo;
+
+			 -- CRP.Meses_IR
+			 UPDATE Trans_Rol_De_Pagos
+			 SET Egresos = ROUND((((CRP.Total_Ingresos_IR-TR.Desde)*(TR.Excede/100))+TR.Basico)/12,2,0)
+			 FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Tabla_Renta As TR
+			 WHERE TRP.Item = @Item
+			 AND TRP.Periodo = @Periodo
+			 AND TRP.Fecha_D = @FechaIniRol
+			 AND TRP.Cod_Rol_Pago = 'Imp_Renta'
+			 AND TR.Año = @Anio
+			 AND TR.Desde < CRP.Total_Ingresos_IR
+			 AND TR.Hasta >= CRP.Total_Ingresos_IR
+			 AND TRP.Item = CRP.Item
+			 AND TRP.Periodo = CRP.Periodo
+			 AND TRP.Codigo = CRP.Codigo;
+		 
+			 DELETE FROM Trans_Rol_De_Pagos
+			 WHERE Item = @Item
+			 AND Periodo = @Periodo
+			 AND Fecha_D = @FechaIniRol
+			 AND Cod_Rol_Pago = 'Imp_Renta'
+			 AND Egresos <= 0;
+		   END
+		ELSE
+		   BEGIN
+			 SET @Texto = 'CUENTA DEL IMPUESTO A LA RENTA EMPLEADO, NO ESTA SETEADA CORRECTAMENTE.'
+			 EXEC dbo.sp_Insertar_Texto_Temporal @Item, @CodigoUsuario, @NumModulo, @Texto
+		   END
+
+		EXEC sp_Eliminar_Nulos 'Trans_Rol_de_Pagos';
+
+	 -- ================================================================================================================ --
+	 -- Insertamos el Total a recibir de cada Emplado, segun sus Ingresos y Egresos y el tipo de acreditacion del Sueldo --
+	 -- ================================================================================================================ --
+		SET @Cta_Aux='.';
+
+		SELECT @Cta_Aux=Codigo, @TipoCta=TC
+		FROM Catalogo_Cuentas
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND Codigo = @DCCxP
+		AND DG = 'D';
+
+		IF @Cta_Aux <> @DCCxP 
+		   BEGIN
+			 IF @DCCxP <> '0'
+				BEGIN
+ 				  SET @Texto = 'CUENTA DE SUELDOS POR PAGAR: ''' + @DCCxP + ''', NO ESTA SETEADA CORRECTAMENTE.'
+				  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @CodigoUsuario, @NumModulo, @Texto
+				END
+			 SET @DCCxP = '0'
+		   END
+
+		IF @DCCxP <> '0'
+		   BEGIN
+		     IF @TipoCta = 'P' 
+			    BEGIN
+				  INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS,Cheq_Dep_Transf,Detalle)
+				  SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PER',@DCCxP,ROUND(SUM(TRP.Ingresos)-SUM(TRP.Egresos),2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Neto_Recibir',0,
+						 CRP.Cta_Transferencia,'TOTAL A RECIBIR'
+				  FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+				  WHERE CRP.Item = @Item
+				  AND CRP.Periodo = @Periodo
+				  AND TRP.Fecha_D = @FechaIniRol
+				  AND TRP.Tipo_Rubro = 'PER'
+				  AND CRC.Item = CRP.Item
+				  AND CRC.Item = TRP.Item
+				  AND CRC.Periodo = CRP.Periodo
+				  AND CRC.Periodo = TRP.Periodo
+				  AND CRP.Codigo = TRP.Codigo 
+				  AND CRP.Grupo_Rol = CRC.Grupo_Rol
+				  AND CRP.Grupo_Rol = TRP.Grupo_Rol
+				  GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRP.SubModulo,CRP.Cta_Transferencia
+				  ORDER BY TRP.Codigo;
+				END
+			 ELSE
+			    BEGIN
+				  INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS,Cheq_Dep_Transf,Detalle)
+				  SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PER',@DCCxP,ROUND(SUM(TRP.Ingresos)-SUM(TRP.Egresos),2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Neto_Recibir',0,
+						 CRP.Cta_Transferencia,'TOTAL A RECIBIR'
+				  FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+				  WHERE CRP.Item = @Item
+				  AND CRP.Periodo = @Periodo
+				  AND TRP.Fecha_D = @FechaIniRol
+				  AND TRP.Tipo_Rubro = 'PER'
+				  AND CRC.Item = CRP.Item
+				  AND CRC.Item = TRP.Item
+				  AND CRC.Periodo = CRP.Periodo
+				  AND CRC.Periodo = TRP.Periodo
+				  AND CRP.Codigo = TRP.Codigo 
+				  AND CRP.Grupo_Rol = CRC.Grupo_Rol
+				  AND CRP.Grupo_Rol = TRP.Grupo_Rol
+				  GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRP.Cta_Forma_Pago,CRP.SubModulo,CRP.Cta_Transferencia
+				  ORDER BY TRP.Codigo;
+				END
+		   END
+		ELSE
+		   BEGIN
+			  INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS,Cheq_Dep_Transf,Detalle)
+			  SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PER',CRP.Cta_Forma_Pago,ROUND(SUM(TRP.Ingresos)-SUM(TRP.Egresos),2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Neto_Recibir',0,
+					 CRP.Cta_Transferencia,'TOTAL A RECIBIR'
+			  FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+			  WHERE CRP.Item = @Item
+			  AND CRP.Periodo = @Periodo
+			  AND TRP.Fecha_D = @FechaIniRol
+			  AND TRP.Tipo_Rubro = 'PER'
+			  AND CRC.Item = CRP.Item
+			  AND CRC.Item = TRP.Item
+			  AND CRC.Periodo = CRP.Periodo
+			  AND CRC.Periodo = TRP.Periodo
+			  AND CRP.Codigo = TRP.Codigo 
+			  AND CRP.Grupo_Rol = CRC.Grupo_Rol
+			  AND CRP.Grupo_Rol = TRP.Grupo_Rol
+			  GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRP.Cta_Forma_Pago,CRP.SubModulo,CRP.Cta_Transferencia
+			  ORDER BY TRP.Codigo;
+		   END   
+
+	 -- +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ --
+	 -- Empezamos a insertar el Aporte Personal y Patronal al IESS  --
+	 -- +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ --
+
+	 -- Ingresos: Insertamos Aporte Patronal 21.60%
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PAT',CRC.Cta_Aporte_Patronal_G,ROUND(SUM(TRP.Ingresos)*@IESS_Total,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Aporte_Pat',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.SN = '2'
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Aporte_Patronal_G,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Egresos: Insertamos Aporte Patronal 21.60%
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PAT',CRC.Cta_IESS_Patronal,ROUND(SUM(TRP.Ingresos)*@IESS_Total,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Aporte_Pat',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.SN = '2'
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_IESS_Patronal,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Ingresos: Insertamos Aporte Patronal 12.15%
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PAT',CRC.Cta_Aporte_Patronal_G,ROUND(SUM(TRP.Ingresos)*@IESS_Pat,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Aporte_Pat',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.SN = '1'
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Aporte_Patronal_G,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Egresos: Insertamos Aporte Patronal 12.15%
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PAT',CRC.Cta_IESS_Patronal,ROUND(SUM(TRP.Ingresos)*@IESS_Pat,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Aporte_Pat',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.SN = '1'
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_IESS_Patronal,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- ######################################################################################################## --
+	 -- Empezamos a insertar las provisiones de: Fondos de Reserva y Decimos a los que se envie acumular al IESS --
+	 -- ######################################################################################################## --
+
+	 -- Ingresos: Insertamos Fondos de Reserva si supera los 365 dias (8.33%)
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PRO',CRC.Cta_Fondo_Reserva_G,ROUND(SUM(TRP.Ingresos)*@IESS_FR,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Fon_Res_P',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.Pagar_Fondo_Reserva = 0
+		AND CRP.Total_Dias > 365
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Fondo_Reserva_G,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Egresos: Insertamos Fondos de Reserva si supera los 365 dias (8.33%)
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PRO',CRC.Cta_Fondo_Reserva_P,ROUND(SUM(TRP.Ingresos)*@IESS_FR,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Fon_Res_P',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.Pagar_Fondo_Reserva = 0
+		AND CRP.Total_Dias > 365
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Fondo_Reserva_P,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Ingresos: Insertamos Decimos Tercer Sueldo
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PRO',CRC.Cta_Decimo_Tercer_G,ROUND(SUM(TRP.Ingresos)/12,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Decimo_III',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.Pagar_Decimos = 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Decimo_Tercer_G,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Egresos: Insertamos Decimos Tercer Sueldo
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PRO',CRC.Cta_Decimo_Tercer_P,ROUND(SUM(TRP.Ingresos)/12,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Decimo_III',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRP.Pagar_Decimos = 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Decimo_Tercer_P,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Ingresos: Insertamos Decimos Cuarto Sueldo
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,CRP.Codigo,'PRO',CRC.Cta_Decimo_Cuarto_G,ROUND(@Sueldo_Basico/12,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Decimo_IV',0
+		FROM Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND CRP.Pagar_Decimos = 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		GROUP BY CRP.Grupo_Rol,CRP.Codigo,CRC.Cta_Decimo_Cuarto_G,CRP.SubModulo
+		ORDER BY CRP.Codigo;
+
+	 -- Egresos: Insertamos Decimos Cuarto Sueldo
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,CRP.Grupo_Rol,CRP.Codigo,'PRO',CRC.Cta_Decimo_Cuarto_P,ROUND(@Sueldo_Basico/12,2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Decimo_IV',0
+		FROM Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND CRP.Pagar_Decimos = 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		GROUP BY CRP.Grupo_Rol,CRP.Codigo,CRC.Cta_Decimo_Cuarto_P,CRP.SubModulo
+		ORDER BY CRP.Codigo;
+
+	 -- Ingresos: Insertamos Provision de Vacaciones
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Ingresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PRO',CRC.Cta_Vacaciones_G,ROUND(((SUM(TRP.Ingresos)/24)/DAY(@FechaFinRol))*MAX(Dias),2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Vacaciones',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Vacaciones_G,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- Egresos: Insertamos Provision de Vacaciones
+		INSERT INTO Trans_Rol_de_Pagos (Item,Periodo,CodigoU,Grupo_Rol,Codigo,Tipo_Rubro,Cta,Egresos,Horas,Fecha_D,Fecha_H,SubModulo,Cod_Rol_Pago,IESS)
+		SELECT @Item,@Periodo,@CodigoUsuario,TRP.Grupo_Rol,TRP.Codigo,'PRO',CRC.Cta_Vacaciones_P,ROUND(((SUM(TRP.Ingresos)/24)/DAY(@FechaFinRol))*MAX(Dias),2,0),0,@FechaIniRol,@FechaFinRol,CRP.SubModulo,'Vacaciones',0
+		FROM Trans_Rol_De_Pagos As TRP, Catalogo_Rol_Pagos As CRP, Catalogo_Rol_Cuentas As CRC
+		WHERE CRP.Item = @Item
+		AND CRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.IESS <> 0
+		AND CRC.Item = CRP.Item
+		AND CRC.Item = TRP.Item
+		AND CRC.Periodo = CRP.Periodo
+		AND CRC.Periodo = TRP.Periodo
+		AND CRP.Codigo = TRP.Codigo 
+		AND CRP.Grupo_Rol = CRC.Grupo_Rol
+		AND CRP.Grupo_Rol = TRP.Grupo_Rol
+		GROUP BY TRP.Grupo_Rol,TRP.Codigo,CRC.Cta_Vacaciones_P,CRP.SubModulo
+		ORDER BY TRP.Codigo;
+
+	 -- _____________________________________________________________________________________________________ --
+
+	 --	Fin de Generacion del Rol De Pagos Mensual, Actualizamos el nombre de la cuenta contable involucradas --
+	 -- _____________________________________________________________________________________________________ --
+
+		UPDATE Trans_Rol_de_Pagos
+		SET Detalle = TRIM(SUBSTRING(CC.Cuenta,1,50)), TC = CC.TC, T = 'N'
+		FROM Trans_Rol_de_Pagos As TRP, Catalogo_Cuentas As CC
+		WHERE TRP.Item = @Item
+		AND TRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND TRP.Item = CC.Item 
+		AND TRP.Periodo = CC.Periodo 
+		AND TRP.Cta = CC.Codigo;
+
+		UPDATE Trans_Rol_de_Pagos
+		SET Cheq_Dep_Transf = 'EFECTIVO'
+		FROM Trans_Rol_de_Pagos As TRP, Catalogo_Rol_Pagos As CRP
+		WHERE TRP.Item = @Item
+		AND TRP.Periodo = @Periodo
+		AND TRP.Fecha_D = @FechaIniRol
+		AND CRP.FP = 'E'
+		AND TRP.Cod_Rol_Pago = 'Neto_Recibir'
+		AND TRP.Item = CRP.Item 
+		AND TRP.Periodo = CRP.Periodo 
+		AND TRP.Codigo = CRP.Codigo;
+    
+		UPDATE Trans_Rol_de_Pagos
+		SET Detalle = 'TOTAL A RECIBIR'
+		WHERE Item = @Item
+		AND Periodo = @Periodo
+		AND Fecha_D = @FechaIniRol
+		AND Cod_Rol_Pago = 'Neto_Recibir'
+
+		IF @No_Cheque > 0
+		 BEGIN
+		 -- Declaración del cursor para Actualizar Numero de Cheques a quienes se paga con Cheques
+			DECLARE cCheques CURSOR GLOBAL FOR
+				SELECT Cta, Codigo, Cheq_Dep_Transf, Item, ID
+				FROM Trans_Rol_de_Pagos
+				WHERE Item = @Item
+				AND Periodo = @Periodo
+				AND LEN(Cheq_Dep_Transf) = 1
+				AND Cod_Rol_Pago = 'Neto_Recibir'
+	  		    AND Fecha_D = @FechaIniRol
+				AND Tipo_Rubro = 'PER'
+				ORDER BY ID
+			FOR UPDATE 
+		 -- Apertura del cursor
+			OPEN cCheques
+			FETCH NEXT FROM cCheques INTO @Cta_Aux, @Codigo, @Campo, @Item, @ID
+			WHILE (@@FETCH_STATUS = 0)
+			BEGIN
+			 -- Actualizamos el numero de Cheque
+				UPDATE Trans_Rol_de_Pagos
+ 				SET Cheq_Dep_Transf = dbo.fn_CNumero_Str_Ent(@No_Cheque, 9, '0')
+				WHERE CURRENT OF cCheques
+				SET @No_Cheque = @No_Cheque + 1
+			 -- Siguien Registro 
+				FETCH NEXT FROM cCheques INTO @Cta_Aux, @Codigo, @Campo, @Item, @ID
+			END
+		 -- Cierre del cursor
+			CLOSE cCheques
+		 -- Liberar los recursos
+			DEALLOCATE cCheques
+		 END
+		EXEC sp_Eliminar_Nulos 'Trans_Rol_de_Pagos';
+	END
+END

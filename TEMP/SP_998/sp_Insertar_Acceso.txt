@@ -1,0 +1,19 @@
+CREATE PROCEDURE [dbo].[sp_Insertar_Acceso] 
+@Codigo VARCHAR(10), @Usuario VARCHAR(15), @Clave VARCHAR(10), @NombreUsuario VARCHAR(60), @EmailUsuario VARCHAR(60) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 17/02/2023
+  DESCIPCION		: Creacion de Usuarios Genericos
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Si no existe el usuario creamos por el parametro @Codigo
+	INSERT INTO Accesos (Codigo,Usuario,Clave,Nombre_Completo,EmailUsuario,TODOS,Supervisor,P_Com,Ok,X,Primaria,Secundaria,Bachillerato,
+						 Impresora_Defecto,Papel_Impresora,Impresora_Defecto_2,Papel_Impresora_2,CodBod,Nivel_1,Nivel_2,Nivel_3,Nivel_4,
+						 Nivel_5,Nivel_6,Nivel_7,Cod_Ejec,Cuota_Venta,Serie_FA)
+	SELECT @Codigo,@Usuario,@Clave,@NombreUsuario,@EmailUsuario,1,1,0,1,'.',0,0,0,'.','.','.','.','.',0,0,0,0,0,0,0,'.',0,'.' 
+	WHERE NOT EXISTS(SELECT 1 FROM Accesos WHERE Codigo = @Codigo)
+END

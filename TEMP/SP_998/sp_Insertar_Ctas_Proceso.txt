@@ -1,0 +1,18 @@
+CREATE PROCEDURE [dbo].[sp_Insertar_Ctas_Proceso] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @T_No TINYINT, @DC VARCHAR(1), @Detalle VARCHAR(45), @Codigo VARCHAR(18), 
+@Campo VARCHAR(15), @Lst BIT AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 17/02/2023
+  DESCIPCION		: Creamos cuentas de Procesos si no existen
+*/
+BEGIN
+-- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+   SET NOCOUNT ON
+
+-- Averiguamos y creamos si no existe el @Concepto
+   INSERT INTO Ctas_Proceso (Periodo, Item, T_No, DC, Detalle, Codigo, Campo, Lst, X) 
+   SELECT @Periodo, @Item, @T_No, @DC, @Detalle, @Codigo, @Campo, @Lst, '.'
+   WHERE NOT EXISTS(SELECT 1 FROM Ctas_Proceso WHERE Detalle = @Detalle AND Item = @Item AND Periodo = @Periodo)
+END

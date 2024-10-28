@@ -1,0 +1,161 @@
+CREATE PROCEDURE [dbo].[sp_A_Ejemplo] 
+@Item VARCHAR(3), @Periodo VARCHAR(10), @Usuario VARCHAR(10), @NumModulo VARCHAR(2), @ExisteErrores BIT OUTPUT,
+@Parametro VARCHAR(MAX) = 'Ninguno' AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 30/04/2019
+  DESCIPCION		:
+					  'ID INT PRIMARY KEY IDENTITY (1,1) NOT NULL);'
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+    DECLARE @ID INT, @Numero INT, @Cont INT, @Longitud INT;
+	DECLARE @Fecha VARCHAR(10), @Texto VARCHAR(MAX), @TextLinea VARCHAR(100), @sSQL VARCHAR(MAX),@Campo VARCHAR(50);
+	DECLARE @TipoCampo VARCHAR(50), @cTAB VARCHAR(1);
+
+    SET @TextLinea = REPLICATE('-',100);
+	SET @cTAB=CHAR(9);
+
+ -- Formato de Fecha AAAAMMDD
+    SET @Fecha = CONVERT(VARCHAR(8), @Fecha, 112)
+    SET @Fecha = CAST(@Fecha As varchar)
+	SET @Fecha = CONVERT(VARCHAR(8), GETDATE(), 112)
+    SET @Fecha = CONVERT(VARCHAR(8),Dateadd(yy,-1,@Fecha),112)
+
+ -- Borramos la basura si la tuviera
+	DELETE 
+    FROM Tabla_Temporal
+    WHERE Item = @Item
+	AND Modulo = @NumModulo
+	AND CodigoU = @Usuario;
+
+ -- Prueba de aumento de una instruccion
+    SELECT Codigo, Nombre_Completo
+	FROM Accesos
+	WHERE Codigo = '123';
+
+ -- Declaracion de Cursor 
+	DECLARE cCursor CURSOR FOR
+    SELECT Item, Periodo
+    FROM Transacciones
+    WHERE T <> 'A'
+    AND Periodo = @Periodo 
+    AND Item = @Item
+ -- Apertura del cursor
+	OPEN cCursor
+	FETCH NEXT FROM cCursor INTO @Item, @Periodo
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	 -- Ingresamos texto del titulo de error
+	    IF @Cont=0
+		   BEGIN
+		 	  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+ 		 	  SET @Texto = 'DESCUADRE DE COMPROBANTES. VERIFIQUE LOS SIGUIENTES COMPROBANTES:'
+			  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 			  SET @Texto = 'Fecha      TP Numero        TOTAL DEBE    TOTAL HABER'
+			  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto                         
+ 			  EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+			  SET @Cont=@Cont+1;
+		   END
+	 -- Ingresamos los calculos
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @TextLinea
+ 		SET @Texto = 'DESCUADRE DE COMPROBANTES. VERIFIQUE LOS SIGUIENTES COMPROBANTES:'
+		EXEC dbo.sp_Insertar_Texto_Temporal @Item, @Usuario, @NumModulo, @Texto
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cCursor INTO @Item, @Periodo
+	END
+ -- Cierre del cursor
+	CLOSE cCursor
+ -- Liberar los recursos
+	DEALLOCATE cCursor
+
+ -- Declaracion de Cursor 
+	DECLARE cTabla CURSOR FOR
+		SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH
+		FROM Information_Schema.Columns
+		WHERE TABLE_NAME = '@NombreTabla'
+--		ORDER BY COLUMN_NAME
+ -- Apertura del cursor
+	OPEN cTabla
+	FETCH NEXT FROM cTabla INTO @Campo, @TipoCampo, @Longitud
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+ 	-- Siguiente registro  
+	   FETCH NEXT FROM cTabla INTO @Campo, @TipoCampo, @Longitud
+	END
+ -- Cierre del cursor
+	CLOSE cTabla
+ -- Liberar los recursos
+	DEALLOCATE cTabla
+
+ -- Consultamos y averiguamos si hay registro afectados
+	SET @sSQL = 'SELECT Texto ' 
+ 	          + 'FROM Tabla_Temporal ' 
+              + 'WHERE Item = ''' + @Item + ''' '
+	EXECUTE(@sSQL);
+	IF @@ROWCOUNT > 0 SET @ExisteErrores = 1
+
+    PRINT @Parametro
+
+ -- recorrer tabla
+ DECLARE @tabla TABLE (Item varchar(3), Sucursal varchar(3), No_ATS bit, ID int)
+
+insert into @tabla (Item, Sucursal, No_ATS, ID) select Item, Sucursal, No_ATS, ID from Acceso_Sucursales
+ 
+declare @count int = (select count(*) from @tabla)
+ 
+while @count > 0
+begin
+ 
+    declare @Sucursal varchar(max) = (select top(1) Sucursal from @tabla order by ID)
+    SET @Item = (select top(1) Item from @tabla order by ID)
+	SET @ID = (select top(1) ID from @tabla order by ID)
+ 
+    print @Item + ' - ' + @Sucursal 
+ 
+    delete @tabla where ID=@ID
+ 
+    set @count = (select count(*) from @tabla)
+ 
+end
+SELECT *
+FROM Information_Schema.Columns
+WHERE TABLE_NAME = 'Facturas'
+ORDER BY COLUMN_NAME
+
+-----------------------------------------------------------------------
+SELECT Razon_Social, Category = 
+      CASE T
+	     WHEN 'P' THEN 'Pendiente'  
+		 WHEN 'C' THEN 'Cancelada'  
+		 WHEN 'A' THEN 'Anulada'  
+         WHEN 'R' THEN 'Road'  
+         WHEN 'M' THEN 'Mountain'  
+         WHEN 'T' THEN 'Touring'  
+         WHEN 'S' THEN 'Other sale items'  
+         ELSE 'Not for sale'  
+      END,  
+   RUC_CI
+FROM Facturas 
+ORDER BY TC;  
+-------------------------------------------
+CREATE TABLE #Temp (ID INT NULL) 
+
+WHILE EXISTS(SELECT * FROM #Temp)
+BEGIN
+	SELECT TOP 1 @ID = ID FROM #Temp
+	PRINT @ID
+	DELETE FROM #Temp
+	WHERE ID = @ID
+END
+
+
+INSERT INTO Clientes (T, FA, Codigo, Cliente, TD, CI_RUC, CodigoU) 
+SELECT 'N', 0, 'NINGUNO', 'Beneficiario', '.', 'RUC_CII', 'CodigoUsuario' 
+WHERE NOT EXISTS(SELECT 1 FROM Clientes WHERE Cliente = 'Beneficiario')
+--SACA LA EDAD: DATEDIFF(YEAR,FechaNac,GETDATE())
+END

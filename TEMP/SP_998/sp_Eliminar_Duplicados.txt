@@ -1,0 +1,189 @@
+CREATE PROCEDURE [dbo].[sp_Eliminar_Duplicados]
+@NombreTabla VARCHAR(60), @CamposDuplicados VARCHAR(MAX), @CampoPivote1 VARCHAR(60), @CampoPivote2 VARCHAR(60), @Item AS VARCHAR(3), @Periodo AS VARCHAR(10) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 07/09/2020
+  FECHA MODIFICACION: 10/09/2021
+  DESCIPCION		: Elimina duplicados de la tabla como parametro
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+    DECLARE @Campo VARCHAR(60), @Tipo VARCHAR(60), @Coleccion VARCHAR(MAX), @sSQL VARCHAR(MAX);
+	DECLARE @BuscarCamposDuplicados VARCHAR(MAX) = @CamposDuplicados;
+	DECLARE @Pivote1 VARCHAR(25), @Pivote2 VARCHAR(25), @PivoteT1 VARCHAR(25), @PivoteT2 VARCHAR(25);
+    DECLARE @HayID BIT=0, @HayItem BIT=0, @HayPeriodo BIT=0, @EsStrgP1 BIT=0, @EsStrgP2 BIT=0;
+	DECLARE @Longitud INT, @LongitudP1 INT, @LongitudP2 INT, @ID INT;
+	
+	IF dbo.fn_Existe_Tabla(@NombreTabla) <> 0 
+	   BEGIN
+	   -- Creamos Tabla temporal de la consulta
+	      IF (OBJECT_ID('tempdb..#Temp') Is Not Null) DROP TABLE #Temp
+		  IF (OBJECT_ID('tempdb..#TempPivote') Is Not Null) DROP TABLE #TempPivote
+
+	      CREATE TABLE #Temp (ID INT NULL)
+
+	      CREATE TABLE #TempPivote (
+			 		   Item VARCHAR(3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+					   Periodo VARCHAR(10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+					   Pivote1 VARCHAR(25) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+					   Pivote2 VARCHAR(25) COLLATE SQL_Latin1_General_CP1_CI_AS NULL, 
+					   IDTabla INT NULL)
+
+		  IF (CHARINDEX(@CampoPivote1, @BuscarCamposDuplicados) = 0) SET @BuscarCamposDuplicados = @BuscarCamposDuplicados + ', ' + @CampoPivote1 
+		  IF (CHARINDEX(@CampoPivote2, @BuscarCamposDuplicados) = 0) SET @BuscarCamposDuplicados = @BuscarCamposDuplicados + ', ' + @CampoPivote2
+
+	   -- Declaracion de Cursor para determinar los campos del group by
+		  DECLARE cTabla CURSOR FOR
+			 SELECT COLUMN_NAME,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,COLLATION_NAME
+			 FROM Information_Schema.Columns
+			 WHERE TABLE_NAME = @NombreTabla
+	   -- Apertura del cursor
+		  OPEN cTabla
+		  FETCH NEXT FROM cTabla INTO @Campo, @Tipo, @Longitud, @Coleccion
+		  WHILE (@@FETCH_STATUS = 0)
+			BEGIN
+			   IF @Campo = @CampoPivote1 
+			      BEGIN
+			         SET @LongitudP1 = @Longitud
+					 IF @Tipo = 'nvarchar' SET @EsStrgP1 = 1
+				  END
+			   IF @Campo = @CampoPivote2 
+			      BEGIN
+			         SET @LongitudP2 = @Longitud
+					 IF @Tipo = 'nvarchar' SET @EsStrgP2 = 1
+				  END
+
+			   IF @Campo = 'ID' SET @HayID = 1
+			   IF @Campo = 'Item' SET @HayItem = 1
+			   IF @Campo = 'Periodo' SET @HayPeriodo = 1
+			   IF (CHARINDEX(@Campo+',', @CamposDuplicados+',') <> 0)
+			      BEGIN 
+				     SET @sSQL = 'ALTER TABLE #Temp ADD ' + @Campo + ' ' + @Tipo
+					 IF NOT @Longitud IS NULL SET @sSQL = @sSQL + '(' + CAST(@Longitud As VARCHAR) + ') COLLATE ' + @Coleccion + ' NULL '
+					 EXECUTE(@sSQL)
+				  END
+ 			-- Siguiente registro  
+			   FETCH NEXT FROM cTabla INTO @Campo, @Tipo, @Longitud, @Coleccion
+			END
+  	   -- Cierre del cursor
+		  CLOSE cTabla
+	   -- Liberar los recursos
+		  DEALLOCATE cTabla
+		  ALTER TABLE #Temp ADD IDDuplicado INT NULL
+
+		  SET @sSQL = 'ALTER TABLE #TempPivote ALTER COLUMN Pivote1 VARCHAR(' + CAST(@LongitudP1 As VARCHAR) + ') COLLATE SQL_Latin1_General_CP1_CI_AS NULL'
+		  EXECUTE(@sSQL)
+
+		  SET @sSQL = 'ALTER TABLE #TempPivote ALTER COLUMN Pivote2 VARCHAR(' + CAST(@LongitudP2 As VARCHAR) + ') COLLATE SQL_Latin1_General_CP1_CI_AS NULL'
+		  EXECUTE(@sSQL)
+		  
+	   -- Si la tabla tiene Clave primaria procedemos caso contrario no hace nada
+		  IF @HayID = 1
+			 BEGIN
+			   IF @CampoPivote1 <> '' AND @CampoPivote2 <> ''
+			      BEGIN
+					SET @sSQL = 'WITH C AS (SELECT ID, ' + @CamposDuplicados + ', ROW_NUMBER() OVER (PARTITION BY ' + @CamposDuplicados + ' '
+							  + 'ORDER BY ID) AS IDDuplicado '
+							  + 'FROM ' + @NombreTabla + ' '
+							  + 'WHERE ID > 0 '
+					IF @HayItem = 1 SET @sSQL = @sSQL + 'AND Item = ''' + @Item + ''' '
+					IF @HayPeriodo = 1 SET @sSQL = @sSQL + 'AND Periodo = ''' + @Periodo + ''' '
+					SET @sSQL = @sSQL + ') '
+					SET @sSQL = @sSQL + 'INSERT INTO #Temp SELECT * FROM C WHERE IDDuplicado > 1 '
+					EXECUTE(@sSQL)
+					
+					SET @sSQL = 'UPDATE ' + @NombreTabla + ' '
+							  + 'SET X = ''.'' '
+							  + 'WHERE ' + @CampoPivote1 + ' <> ''.'' ' 
+					EXECUTE(@sSQL)
+					
+				 -- Procedemos a actualizar cuales registros estan duplicados
+					SET @sSQL = 'UPDATE ' + @NombreTabla + ' '
+							  + 'SET X = ''U'' '
+							  + 'FROM ' + @NombreTabla + ' As T, #Temp '
+							  + 'WHERE T.' + @CampoPivote1 + ' <> '''' ' 
+					IF @HayItem = 1 SET @sSQL = @sSQL + 'AND T.Item = ''' + @Item + ''' '
+					IF @HayPeriodo = 1 SET @sSQL = @sSQL + 'AND T.Periodo = ''' + @Periodo + ''' '
+					SET @sSQL = @sSQL + 'AND T.' + @CampoPivote1 + ' = #Temp.' + @CampoPivote1 + ' '
+					EXECUTE(@sSQL)
+
+					SET @sSQL = 'INSERT INTO #TempPivote (Item, Periodo, Pivote1, Pivote2, IDTabla) '
+							  + 'SELECT  ''' + @Item + ''', ''' + @Periodo + ''', ' + @CampoPivote1 + ', ' + @CampoPivote2 + ', ID ' 
+							  + 'FROM ' + @NombreTabla + ' '
+							  + 'WHERE X = ''U'' '
+					IF @HayItem = 1 SET @sSQL = @sSQL + 'AND Item = ''' + @Item + ''' '
+					IF @HayPeriodo = 1 SET @sSQL = @sSQL + 'AND Periodo = ''' + @Periodo + ''' '
+					SET @sSQL = @sSQL + 'ORDER BY ' + @CampoPivote1 + ', ' + @CampoPivote2 + ', ID '
+					EXECUTE(@sSQL)
+/*
+	SELECT *
+	FROM #TempPivote
+	WHERE Item = @Item
+	AND Periodo = @Periodo 
+	ORDER BY Pivote1, IDTabla, Pivote2
+*/
+				 -- Declaracion de Cursor para determinar los campos del group by
+					DECLARE cTabla CURSOR FOR
+						SELECT Pivote1, Pivote2
+						FROM #TempPivote
+						WHERE Item = @Item
+						AND Periodo = @Periodo 
+						ORDER BY Pivote1, IDTabla, Pivote2
+				 -- Apertura del cursor
+					OPEN cTabla
+					FETCH NEXT FROM cTabla INTO @Pivote1, @Pivote2
+					SET @PivoteT1=@Pivote1
+					SET @PivoteT2=@Pivote2
+					WHILE (@@FETCH_STATUS = 0)
+					BEGIN
+						IF (@PivoteT2 <> @Pivote2)
+						   BEGIN 
+								SET @sSQL = 'UPDATE ' + @NombreTabla + ' '
+								IF @EsStrgP2 = 1
+								   SET @sSQL = @sSQL 
+								             + 'SET ' + @CampoPivote2 + ' = ''' + @PivoteT2 + ''' '
+										     + 'WHERE ' + @CampoPivote2 + ' = ''' + @Pivote2 + ''' '
+								ELSE
+								   SET @sSQL = @sSQL
+									 	     + 'SET ' + @CampoPivote2 + ' = ' + @PivoteT2 + ' '
+										     + 'WHERE ' + @CampoPivote2 + ' = ' + @Pivote2 + ' '
+								IF @HayItem = 1 SET @sSQL = @sSQL + 'AND Item = ''' + @Item + ''' '
+								IF @HayPeriodo = 1 SET @sSQL = @sSQL + 'AND Periodo = ''' + @Periodo + ''' '
+								EXECUTE(@sSQL)
+								IF @NombreTabla = 'Clientes' EXEC sp_Actualizar_Codigo_Cliente @PivoteT2, @Pivote2
+						   END
+ 					 -- Siguiente registro  
+						FETCH NEXT FROM cTabla INTO @Pivote1, @Pivote2
+						IF (@PivoteT1 <> @Pivote1) 
+						   BEGIN
+						       SET @PivoteT1=@Pivote1
+							   SET @PivoteT2=@Pivote2
+						   END
+					END
+  				 -- Cierre del cursor
+					CLOSE cTabla
+				 -- Liberar los recursos
+					DEALLOCATE cTabla
+				  END
+		    -- Procedemos a eliminar los duplicados
+			   SET @sSQL = 'WITH C AS (SELECT ID, ' + @CamposDuplicados + ', ROW_NUMBER() OVER (PARTITION BY ' + @CamposDuplicados + ' '
+			   IF @CamposDuplicados = 'Cliente' 
+				  BEGIN
+			        SET @sSQL = @sSQL + 'ORDER BY TD, ID) AS IDDuplicado ' 
+				  END
+			   ELSE
+				  BEGIN
+				    SET @sSQL = @sSQL + 'ORDER BY ID) AS IDDuplicado '
+				  END
+			   SET @sSQL = @sSQL + 'FROM ' + @NombreTabla + ' WHERE ID > 0 '
+			   IF @HayItem = 1 SET @sSQL = @sSQL + 'AND Item = ''' + @Item + ''' '
+			   IF @HayPeriodo = 1 SET @sSQL = @sSQL + 'AND Periodo = ''' + @Periodo + ''' '
+			   SET @sSQL = @sSQL + ') '
+			   SET @sSQL = @sSQL + 'DELETE FROM C WHERE IDDuplicado > 1 '
+			   EXECUTE(@sSQL)
+			END
+	   END
+END

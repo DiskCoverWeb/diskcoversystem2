@@ -1,0 +1,189 @@
+CREATE PROCEDURE [dbo].[sp_Procesar_Rol_Pagos_Asientos]
+@Item VARCHAR(3), @Periodo VARCHAR(10), @NumModulo VARCHAR(2), @CodigoUsuario VARCHAR(10), @FechaIniRol VARCHAR(10), @FechaFinRol VARCHAR(10)
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 17/05/2024
+  FECHA MODIFICACION: 20/06/2024
+  DESCIPCION		: Genera los asientos contable del Rol de Pagos del mes con submodulos
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+	SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @TransNo INT=100, @Cont INT=0;
+	DECLARE @Cta_Aux VARCHAR(18)='0', @TipoCta VARCHAR(2)='N';
+	DECLARE @Texto VARCHAR(MAX), @TextLinea VARCHAR(100);
+
+ -- Programacion de procesos	
+	DELETE FROM Asiento
+	WHERE Item = @Item
+	AND CodigoU = @CodigoUsuario
+	AND T_No IN (100,101,102);
+
+	DELETE FROM Asiento_SC 
+	WHERE Item = @Item
+	AND CodigoU = @CodigoUsuario
+	AND T_No IN (100,101,102)
+	AND NOT Detalle_SubCta IN ('CxC Empleado','CxP Empleado');
+
+ -- Determinamos si se envio a cuentas por pagar el sueldo
+ 	SELECT @TipoCta=TC, @Cta_Aux=Cta
+	FROM Trans_Rol_De_Pagos
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha_D = @FechaIniRol
+	AND TC = 'P'
+	AND Tipo_Rubro = 'PER'
+	AND Cod_Rol_Pago = 'Neto_Recibir'
+	GROUP BY TC, Cta
+	ORDER BY TC, Cta;
+
+ -- Insertamos los asientos contables del Rol de Pagos Personal
+  	INSERT INTO Asiento (Item, CodigoU, T_No, TC, CODIGO, DEBE, HABER, A_No) 
+    SELECT @Item, @CodigoUsuario, 100, TC, Cta, ROUND(SUM(Ingresos),2,0),ROUND(SUM(Egresos),2,0), ROW_NUMBER() OVER(ORDER BY TC, Cta ASC)
+	FROM Trans_Rol_De_Pagos
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha_D = @FechaIniRol
+	AND Tipo_Rubro = 'PER'
+	AND Cod_Rol_Pago = 'Salario'
+	GROUP BY TC, Cta
+	ORDER BY TC, Cta;
+
+ 	INSERT INTO Asiento (Item, CodigoU, T_No, TC, CODIGO, DEBE, HABER, A_No) 
+    SELECT @Item, @CodigoUsuario, 100, TC, Cta, ROUND(SUM(Ingresos),2,0),ROUND(SUM(Egresos),2,0), 49+ROW_NUMBER() OVER(ORDER BY TC, Cta ASC)
+	FROM Trans_Rol_De_Pagos
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha_D = @FechaIniRol
+	AND Tipo_Rubro = 'PER'
+	AND NOT Cod_Rol_Pago IN ('Neto_Recibir','Salario')
+	GROUP BY TC, Cta
+	ORDER BY TC, Cta;
+
+ -- Insertamos el valor a pagar por empleado del sueldos por papgar si utilizamos una cuenta de Pasivo unica
+ 	INSERT INTO Asiento (Item, CodigoU, T_No, TC, CODIGO, DEBE, HABER, A_No, DETALLE) 
+	SELECT @Item, @CodigoUsuario, 100, TC, Cta, ROUND(SUM(Ingresos),2,0),ROUND(SUM(Egresos),2,0), 99, 'Sueldos por Pagar'
+	FROM Trans_Rol_De_Pagos
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha_D = @FechaIniRol
+	AND TC = 'P'
+	AND Tipo_Rubro = 'PER'
+	AND Cod_Rol_Pago = 'Neto_Recibir'
+	GROUP BY TC, Cta
+	ORDER BY TC, Cta;
+
+ -- Insertamos el valor a pagar por empleado del sueldos por papgar si utilizamos varias cuentas
+ 	INSERT INTO Asiento (Item, CodigoU, T_No, TC, CODIGO, DEBE, HABER, A_No, DETALLE, CODIGO_C, CHEQ_DEP)
+	SELECT @Item, @CodigoUsuario, 100, TC, Cta, ROUND(Ingresos,2,0),ROUND(Egresos,2,0), 99+ROW_NUMBER() OVER(ORDER BY TC, Cta ASC), 'Neto_Recibir', Codigo, Cheq_Dep_Transf
+	FROM Trans_Rol_De_Pagos
+	WHERE Item = @Item
+	AND Fecha_D = @FechaIniRol
+	AND Periodo = @Periodo
+	AND TC <> 'P'
+	AND Tipo_Rubro = 'PER'
+	AND Cod_Rol_Pago = 'Neto_Recibir'
+	ORDER BY TC, Cta;
+
+ -- Insertamos los aportes patronales de los empleados
+	INSERT INTO Asiento (Item, CodigoU, T_No, TC, CODIGO, DEBE, HABER, A_No) 
+    SELECT @Item, @CodigoUsuario, 101, TC, Cta, ROUND(SUM(Ingresos),2,0),ROUND(SUM(Egresos),2,0), ROW_NUMBER() OVER(ORDER BY TC, Cta ASC)
+	FROM Trans_Rol_De_Pagos
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha_D = @FechaIniRol
+	AND Tipo_Rubro = 'PAT'
+	GROUP BY TC, Cta
+	ORDER BY TC, Cta;
+
+ -- Insertamos las provisiones de los Decimos III, IV y Fondos de Reserva
+	INSERT INTO Asiento (Item, CodigoU, T_No, TC, CODIGO, DEBE, HABER, A_No) 
+    SELECT @Item, @CodigoUsuario, 102, TC, Cta, ROUND(SUM(Ingresos),2,0),ROUND(SUM(Egresos),2,0), ROW_NUMBER() OVER(ORDER BY TC, Cta ASC)
+	FROM Trans_Rol_De_Pagos
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha_D = @FechaIniRol
+	AND Tipo_Rubro = 'PRO'
+	GROUP BY TC, Cta
+	ORDER BY TC, Cta;
+
+ -- Actualizamos el nombre de la Cuenta Contable segun cada Cuenta procesada
+    UPDATE Asiento
+	SET CUENTA = TRIM(SUBSTRING(CC.Cuenta,1,90))
+	FROM Asiento As A, Catalogo_Cuentas As CC
+	WHERE CC.Item = @Item
+	AND CC.Periodo = @Periodo
+	AND A.CodigoU = @CodigoUsuario
+	AND A.T_No IN (100,101,102)
+	AND A.Item = CC.Item 
+	AND A.CODIGO = CC.Codigo;
+
+ -- Actualizamos el nombre de los Empleado en los SubModulos
+    UPDATE Asiento
+	SET DETALLE = TRIM(SUBSTRING(C.Cliente,1,90))
+	FROM Asiento As A, Clientes As C
+	WHERE A.Item = @Item
+	AND A.CodigoU = @CodigoUsuario
+	AND A.T_No IN (100,101,102)
+	AND A.CODIGO_C = C.Codigo;
+
+ -- Insertamos los SubModulos en cuentas de Gastos, Ingresos o Centro de Costo
+	INSERT INTO Asiento_SC (Serie, Valor, TC, Cta, SC_No, Item, CodigoU, DH, T_No, Codigo)
+	SELECT '001001', Ingresos + Egresos, TC, Cta, ROW_NUMBER() OVER(ORDER BY Tipo_Rubro, Cta), @Item, @CodigoUsuario, 
+			CASE WHEN Ingresos > 0 THEN '1' ELSE '2' END, CASE Tipo_Rubro WHEN 'PAT' THEN 101 WHEN 'PRO' THEN 102 ELSE 100 END,
+			CASE WHEN TC = 'C' OR TC = 'P' THEN Codigo ELSE SubModulo END
+	FROM  Trans_Rol_de_Pagos
+	WHERE Item = @Item
+	AND Periodo = @Periodo
+	AND Fecha_D = @FechaIniRol
+	AND TC IN ('C','P','CC','I','G')
+	AND NOT Cta IN (SELECT Cta FROM Asiento_SC WHERE Item = @Item AND CodigoU = @CodigoUsuario AND T_No = 100 AND Detalle_SubCta IN ('CxC Empleado','CxP Empleado'))
+	ORDER BY Tipo_Rubro, Cta;
+
+    UPDATE Asiento_SC
+	SET Beneficiario = TRIM(SUBSTRING(B.Detalle,1,60))
+	FROM Asiento_SC As A, Catalogo_SubCtas As B
+	WHERE B.Item = @Item
+	AND B.Periodo = @Periodo
+	AND A.Item = B.Item 
+	AND A.Codigo = B.Codigo;
+
+    UPDATE Asiento_SC
+	SET Beneficiario = TRIM(SUBSTRING(B.Cliente,1,60))
+	FROM Asiento_SC As A, Clientes As B
+	WHERE A.Item = @Item
+	AND A.Codigo = B.Codigo;
+
+ -- Generar Nomina Sin alcance de efectivo
+    IF @Cta_Aux <> '0' AND @TipoCta ='P'
+	   UPDATE Asiento_SC
+	   SET Beneficiario = TRIM(SUBSTRING(B.Cliente,1,60)), Detalle_SubCta = 'Sueldo por Pagar'
+   	   FROM Asiento_SC As A, Clientes As B
+	   WHERE A.Item = @Item
+	   AND A.Cta = @Cta_Aux
+	   AND A.Codigo = B.Codigo;
+
+	DELETE FROM Asiento
+	WHERE Item = @Item
+	AND CodigoU = @CodigoUsuario
+	AND T_No IN (100,101,102)
+	AND (DEBE+HABER) = 0;
+
+    EXEC sp_Eliminar_Nulos 'Asiento';
+	EXEC sp_Eliminar_Nulos 'Asiento_SC';
+
+	DELETE FROM Asiento
+	WHERE Item = @Item
+	AND CodigoU = @CodigoUsuario
+	AND T_No IN (100,101,102)
+	AND LEN(CODIGO) = 1;
+
+	DELETE FROM Asiento_SC 
+	WHERE Item = @Item
+	AND CodigoU = @CodigoUsuario
+	AND T_No IN (100,101,102)
+	AND LEN(Cta) = 1;
+END

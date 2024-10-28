@@ -1,0 +1,52 @@
+CREATE PROCEDURE [dbo].[sp_Eliminar_Items_Empresa] 
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 26/03/2024
+  FECHA MODIFICACION: 26/03/2024
+  DESCIPCION		: Elimina Item de datos de no se encuentran en la tabla empresas
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @Tabla VARCHAR(MAX), @Columna VARCHAR(MAX), @sSQL NVARCHAR(MAX), @Item VARCHAR(3);
+	DECLARE @EliminaTabla BIT;
+
+ -- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT name, COLUMN_NAME
+		FROM sysobjects As T, Information_Schema.Columns As I
+		WHERE T.type='U'
+		AND I.COLUMN_NAME = 'Item'
+		AND T.name = I.TABLE_NAME
+		ORDER BY name, COLUMN_NAME
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Tabla, @Columna 
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	    SET @EliminaTabla = 1
+	    IF @Tabla = 'Empresas' SET @EliminaTabla = 0
+		IF @Tabla = 'Clientes' SET @EliminaTabla = 0
+		IF @EliminaTabla <> 0
+		BEGIN
+  		   SET @sSQL = 'DELETE FROM ' + @Tabla + ' WHERE NOT Item IN (SELECT Item FROM Empresas WHERE Item <> ''000'')'
+		   EXECUTE(@sSQL);
+		END
+
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @Tabla, @Columna 
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+
+	SELECT TOP 1 @Item = Item FROM Empresas ORDER BY Item;
+
+	UPDATE Clientes
+	SET DirNumero = @Item
+	WHERE NOT TD IN ('C', 'R');
+END

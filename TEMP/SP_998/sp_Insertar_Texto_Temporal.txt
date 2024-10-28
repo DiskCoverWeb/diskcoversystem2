@@ -1,0 +1,22 @@
+CREATE PROCEDURE [dbo].[sp_Insertar_Texto_Temporal] 
+@Item VARCHAR(3), @Usuario VARCHAR(10), @NumModulo VARCHAR(2), @Texto VARCHAR(MAX) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 30/04/2019
+  DESCIPCION		:
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+	DECLARE @InsTexto VARCHAR(MAX);
+
+    IF LEN(@Texto)>1 AND LEN(@NumModulo)=2
+       BEGIN
+	      SET @InsTexto = @Texto
+		  IF LEN(@InsTexto) > 100 SET @InsTexto = SUBSTRING(@InsTexto,1,97) + '...'
+  		  INSERT INTO Tabla_Temporal (Item, Modulo, CodigoU, Texto)
+		  VALUES (@Item, @NumModulo, @Usuario, @InsTexto);
+	   END
+END

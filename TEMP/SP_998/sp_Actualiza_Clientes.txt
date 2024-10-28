@@ -1,0 +1,62 @@
+CREATE PROCEDURE [dbo].[sp_Actualiza_Clientes]
+@Item VARCHAR(3), @TD VARCHAR(2) AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 30/04/2019
+  FECHA MODIFICACION: 30/04/2019
+  DESCIPCION		:
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declaracion de variables para el cursor
+	DECLARE @ID int, @Numero int, @Cont int;
+	DECLARE @Periodo VARCHAR(10), @Concepto VARCHAR(50), @Direccion VARCHAR(60), @CI_RUC VARCHAR(15);
+	DECLARE @Cadena VARCHAR(255), @Codigo VARCHAR(10), @Cliente VARCHAR(180);
+ 
+ -- Declaración del cursor
+	DECLARE cClientes CURSOR FOR
+		SELECT  ID, Cliente, Direccion,	CI_RUC
+		FROM Clientes
+		WHERE TD=@TD
+ -- Apertura del cursor
+	OPEN cClientes
+	SET @Cont=0;
+ -- Lectura de la primera fila del cursor
+	FETCH NEXT FROM cClientes INTO @ID, @Cliente, @Direccion, @CI_RUC
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+--	   PRINT CAST(@ID AS VARCHAR) + CHAR(9) + @CI_RUC + CHAR(9) + CHAR(9) + @Cliente + CHAR(9) + CHAR(9) + @Direccion 
+	   UPDATE Clientes
+	   SET Sexo ='S',TelefonoT=CAST(9000000+@Cont AS VARCHAR(10))
+	   WHERE ID = @ID
+	   -- Lectura de la siguiente fila del cursor
+	   FETCH NEXT FROM cClientes INTO @ID, @Cliente, @Direccion,@CI_RUC
+	   SET @Cont=@Cont+1
+	   SET @Cadena=''
+	   DECLARE cCodigos CURSOR FOR
+		   SELECT Periodo, Concepto, Numero, ID 
+		   FROM Codigos 
+		   WHERE Item=@Item
+	   OPEN cCodigos
+	   FETCH NEXT FROM cCodigos INTO  @Periodo, @Concepto, @Numero, @ID
+	   WHILE (@@FETCH_STATUS = 0)
+	   BEGIN
+		  SET @Cadena = @Cadena + dbo.fn_Presenta(@Periodo, @Concepto , @Numero, @ID) + CHAR (10)+ CHAR (13)
+		  UPDATE Codigos
+		  SET Numero=Numero+1
+		  WHERE Periodo='.'
+		  AND Item = @Item
+		  AND Numero<1000
+		  FETCH NEXT FROM cCodigos INTO  @Periodo, @Concepto, @Numero, @ID
+	   END
+--	   PRINT @Cadena
+	   CLOSE cCodigos
+	   DEALLOCATE cCodigos
+	END
+ -- Cierre del cursor
+	CLOSE cClientes
+ -- Liberar los recursos
+	DEALLOCATE cClientes
+END

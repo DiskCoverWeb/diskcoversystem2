@@ -1,0 +1,4 @@
+permiso 1
+https://myaccount.google.com/lesssecureapps?pli=1&rapt=AEjHL4Ng3cWazhha-50TqDnlkhvZqhlsLSXAQwrW9E6SF5P93HBAhD2T-otYCD_0OX5NNiuxJqaKlIgiZuB75xvdU0yiJmWCyw
+permiso 2
+https://accounts.google.com/b/0/DisplayUnlockCaptcha

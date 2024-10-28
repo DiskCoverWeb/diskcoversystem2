@@ -1,0 +1,45 @@
+solicitud
+	//agregar familias de producto
+	//fecha estimada de entrega por material en solicitud
+	//agregar una observacion por material
+	//traer marcas de la tabla catalogo marcas y agregar al producto
+
+nombre del reporte: solicitud de materiales / lista de todos los materiales 
+		    que el contratista pide
+
+
+aprobacion 
+	//generar un listado de todos los contratistas con monto fecha 
+		y nombre del contratista
+	//al dar click que se despligue lo que solicitaron y aprobar.
+
+	//en pedio colocar el valor total del contrato
+	//que aparezca el numero de orden que se genera
+	//en aprobacion ver el costo de la ultima compra del material
+	//cambiado de cantidad
+	//suma total en la parte superior
+    --ver marca y 
+	//ver observacion
+
+nombre del reporte: lista de materiales aprobados
+
+envio de solicitud 
+	//generar un listado de todos los contratistas con monto fecha y nombre del contratista
+	//al dar click que se despligue lo que solicitaron y aprobar.
+
+	//tabla agregar la cabecera de proveedor
+	reporte por proveedo y contratista
+
+aprobacion 
+	si ningun proveedor seleccionado no tiene el producto 
+	//colocar la opcion de agregar nuevo provceedor y seleccionar el nuevo 
+
+-------------------------------------------revision 2 --------------------------
+
+solicitud 
+	-- costo 2 decimales
+	-- agregar un boton para agregar marcas.
+Aprobacion
+	boton de agregar nuevo proveedor de color verde.
+
+	 

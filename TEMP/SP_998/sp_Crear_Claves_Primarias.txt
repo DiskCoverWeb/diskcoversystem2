@@ -1,0 +1,70 @@
+CREATE PROCEDURE [dbo].[sp_Crear_Claves_Primarias] 
+AS
+/*
+  AUTOR DE RUTINA	: Walter Vaca Prieto
+  FECHA CREACION	: 31/05/2023
+  FECHA MODIFICACION: 31/05/2023
+  DESCIPCION		: Creacion de claves primarias de todas las tablas
+*/
+BEGIN
+ -- Mejora el rendimiento del SP o FN puesto que no envia notificacion de resultados del proceso
+    SET NOCOUNT ON
+
+ -- Declacion de Variales
+	DECLARE @Tabla VARCHAR(MAX), @Campo VARCHAR(MAX), @PK_Primaria VARCHAR(MAX);
+
+ -- Declaracion de Cursor 
+	DECLARE cTablas CURSOR FOR
+		SELECT name 
+		FROM sysobjects 
+		WHERE type='U'
+		AND name NOT LIKE 'Z%'
+		ORDER BY name
+ -- Apertura del cursor
+	OPEN cTablas
+	FETCH NEXT FROM cTablas INTO @Tabla
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+	 -- Declaracion de Cursor 
+		DECLARE cCampoX CURSOR FOR
+			SELECT C.COLUMN_NAME, PK.CONSTRAINT_NAME
+			FROM Information_Schema.TABLE_CONSTRAINTS PK, Information_Schema.KEY_COLUMN_USAGE C
+			WHERE PK.TABLE_NAME = @Tabla
+			AND CONSTRAINT_TYPE = 'PRIMARY KEY'
+			AND C.TABLE_NAME = PK.TABLE_NAME
+			AND C.CONSTRAINT_NAME = PK.CONSTRAINT_NAME;
+	 -- Apertura del cursor
+		OPEN cCampoX
+		FETCH NEXT FROM cCampoX INTO @Campo, @PK_Primaria
+		IF (@@FETCH_STATUS = 0) AND (@Campo = 'ID')
+  		  BEGIN
+ 			EXECUTE('ALTER TABLE ' + @Tabla + ' DROP CONSTRAINT ' + @PK_Primaria + ';');
+			EXECUTE('ALTER TABLE ' + @Tabla + ' DROP COLUMN ID;');
+			EXECUTE('ALTER TABLE ' + @Tabla + ' ADD ID INT IDENTITY NOT NULL PRIMARY KEY;'); 
+			--print 'Clave Primaria de: ' + @Tabla
+		  END
+		ELSE
+		  BEGIN
+		    SELECT COLUMN_NAME
+		    FROM Information_Schema.Columns
+			WHERE TABLE_NAME = @Tabla
+			AND COLUMN_NAME ='ID'
+			IF (@@ROWCOUNT > 0)
+			   BEGIN
+			     EXECUTE('ALTER TABLE ' + @Tabla + ' DROP COLUMN ID;');
+			     EXECUTE('ALTER TABLE ' + @Tabla + ' ADD ID INT IDENTITY NOT NULL PRIMARY KEY;'); 
+			     --print '*Clave Primaria de: ' + @Tabla
+			   END
+		  END
+	 -- Cierre del cursor
+		CLOSE cCampoX
+	 -- Liberar los recursos
+		DEALLOCATE cCampoX
+ 	 -- Siguiente registro  
+		FETCH NEXT FROM cTablas INTO @Tabla
+	END
+ -- Cierre del cursor
+	CLOSE cTablas
+ -- Liberar los recursos
+	DEALLOCATE cTablas
+END
