@@ -1883,96 +1883,96 @@ function select_option_mysql($tabla,$value,$mostrar,$filtro=null)
 }
 
 //consulta menus del sistema
-function select_menu_mysql()
-{
-  $cid = new db();
-  // $sql = "SELECT * FROM menu_modulos";
-  // $datos = $cid->datos($sql,'MYSQL');
+// function select_menu_mysql()
+// {
+//   $cid = new db();
+//   // $sql = "SELECT * FROM menu_modulos";
+//   // $datos = $cid->datos($sql,'MYSQL');
   
-  //verificar codigo del menu que se necesita
-  // while ($menu_item = $consulta->fetch_assoc()) {
-  //   if (strtolower($_GET['mod']) == strtolower($menu_item['descripcionMenu'])) {
-  //     $codMenu = $menu_item['codMenu'];
-  //   }
-  // }
+//   //verificar codigo del menu que se necesita
+//   // while ($menu_item = $consulta->fetch_assoc()) {
+//   //   if (strtolower($_GET['mod']) == strtolower($menu_item['descripcionMenu'])) {
+//   //     $codMenu = $menu_item['codMenu'];
+//   //   }
+//   // }
 
-  // foreach ($datos as $key => $value) {
-     // if (strtolower($_GET['mod']) == strtolower($value['descripcionMenu'])) {
-       $codMenu = $_GET['mod'];
-    // }
-  // }
+//   // foreach ($datos as $key => $value) {
+//      // if (strtolower($_GET['mod']) == strtolower($value['descripcionMenu'])) {
+//        $codMenu = $_GET['mod'];
+//     // }
+//   // }
 
-  //seleccionar todos los items del menu
-  $sql = "SELECT * FROM menu_modulos WHERE codMenu LIKE '".$codMenu."%' ORDER BY codMenu ASC";
-  $submenu = $cid->datos($sql,'MYSQL');
+//   //seleccionar todos los items del menu
+//   $sql = "SELECT * FROM menu_modulos WHERE codMenu LIKE '".$codMenu."%' ORDER BY codMenu ASC";
+//   $submenu = $cid->datos($sql,'MYSQL');
 
-  // $submenu=$cid->query($sql) or die($cid->error);
-  $array_menu = array();
-  $i = 0;
+//   // $submenu=$cid->query($sql) or die($cid->error);
+//   $array_menu = array();
+//   $i = 0;
 
-  foreach ($submenu as $key => $value) {
-    $array_menu[$key]['codMenu'] = $value['codMenu'];
-    $array_menu[$key]['descripcionMenu'] = $value['descripcionMenu'];
-    $array_menu[$key]['accesoRapido'] = $value['accesoRapido'];
-    $array_menu[$key]['rutaProceso'] = $value['rutaProceso'];
+//   foreach ($submenu as $key => $value) {
+//     $array_menu[$key]['codMenu'] = $value['codMenu'];
+//     $array_menu[$key]['descripcionMenu'] = $value['descripcionMenu'];
+//     $array_menu[$key]['accesoRapido'] = $value['accesoRapido'];
+//     $array_menu[$key]['rutaProceso'] = $value['rutaProceso'];
     
-  }
-  // while ($menu_item = $submenu->fetch_assoc()) {
-  //   //echo $menu_item['codMenu']." ".$menu_item['descripcionMenu']."<br>";
-  //   $array_menu[$i]['codMenu'] = $menu_item['codMenu'];
-  //   $array_menu[$i]['descripcionMenu'] = $menu_item['descripcionMenu'];
-  //   $array_menu[$i]['accesoRapido'] = $menu_item['accesoRapido'];
-  //   $array_menu[$i]['rutaProceso'] = $menu_item['rutaProceso'];
-  //   $i++;
-  // }
-  return $array_menu;
-  // $cid->close();
-  // exit();
-}
+//   }
+//   // while ($menu_item = $submenu->fetch_assoc()) {
+//   //   //echo $menu_item['codMenu']." ".$menu_item['descripcionMenu']."<br>";
+//   //   $array_menu[$i]['codMenu'] = $menu_item['codMenu'];
+//   //   $array_menu[$i]['descripcionMenu'] = $menu_item['descripcionMenu'];
+//   //   $array_menu[$i]['accesoRapido'] = $menu_item['accesoRapido'];
+//   //   $array_menu[$i]['rutaProceso'] = $menu_item['rutaProceso'];
+//   //   $i++;
+//   // }
+//   return $array_menu;
+//   // $cid->close();
+//   // exit();
+// }
 
 
 //consulta menus del sistema
-function pagina_acceso_hijos($usuario,$entidad,$item,$codMenu=false)
-{
-  // print_r($_SESSION['INGRESO']);die();
-  if(!$codMenu)
-  {
-    $codMenu = $_GET['mod'];
-  }
-  $cid = new db();
-  // $usuario = $_SESSION['INGRESO']['CodigoU'];
-  // $id_entidad = $_SESSION['INGRESO']['IDEntidad'];
-  // $item = $_SESSION['INGRESO']['item'];
-  //seleccionar todos los items del menu
-  $sql  = "SELECT * 
-           FROM acceso_empresas AE
-           INNER JOIN menu_modulos MM ON AE.Pagina = MM.ID 
-           WHERE ID_Empresa = '".$entidad."' 
-           AND CI_NIC = '".$usuario."' 
-           AND codMenu LIKE '".$codMenu."%' 
-           AND Item = '".$item."' 
-           AND Pagina != '.' 
-           AND Pagina != ''
-           ORDER BY CodMenu ASC";
+// function pagina_acceso_hijos($usuario,$entidad,$item,$codMenu=false)
+// {
+//   // print_r($_SESSION['INGRESO']);die();
+//   if(!$codMenu)
+//   {
+//     $codMenu = $_GET['mod'];
+//   }
+//   $cid = new db();
+//   // $usuario = $_SESSION['INGRESO']['CodigoU'];
+//   // $id_entidad = $_SESSION['INGRESO']['IDEntidad'];
+//   // $item = $_SESSION['INGRESO']['item'];
+//   //seleccionar todos los items del menu
+//   $sql  = "SELECT * 
+//            FROM acceso_empresas AE
+//            INNER JOIN menu_modulos MM ON AE.Pagina = MM.ID 
+//            WHERE ID_Empresa = '".$entidad."' 
+//            AND CI_NIC = '".$usuario."' 
+//            AND codMenu LIKE '".$codMenu."%' 
+//            AND Item = '".$item."' 
+//            AND Pagina != '.' 
+//            AND Pagina != ''
+//            ORDER BY CodMenu ASC";
 
- // print_r($sql);
-  $submenu = $cid->datos($sql,'MYSQL');
-  // $submenu=$cid->query($sql) or die($cid->error);
-  $array_menu = array();
-  $i = 0;
+//  // print_r($sql);
+//   $submenu = $cid->datos($sql,'MYSQL');
+//   // $submenu=$cid->query($sql) or die($cid->error);
+//   $array_menu = array();
+//   $i = 0;
 
-  foreach ($submenu as $key => $value) {
-    $array_menu[$key]['codMenu'] = $value['codMenu'];
-    $array_menu[$key]['descripcionMenu'] = $value['descripcionMenu'];
-    $array_menu[$key]['accesoRapido'] = $value['accesoRapido'];
-    $array_menu[$key]['rutaProceso'] = $value['rutaProceso'];
-    $array_menu[$key]['Pagina'] = $value['Pagina'];
+//   foreach ($submenu as $key => $value) {
+//     $array_menu[$key]['codMenu'] = $value['codMenu'];
+//     $array_menu[$key]['descripcionMenu'] = $value['descripcionMenu'];
+//     $array_menu[$key]['accesoRapido'] = $value['accesoRapido'];
+//     $array_menu[$key]['rutaProceso'] = $value['rutaProceso'];
+//     $array_menu[$key]['Pagina'] = $value['Pagina'];
     
-  }
+//   }
  
-  return $array_menu;
+//   return $array_menu;
   
-}
+// }
 
 function pagina_acceso($codMenu,$usuario,$entidad,$item)
 {
