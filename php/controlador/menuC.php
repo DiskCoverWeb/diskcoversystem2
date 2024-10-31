@@ -81,8 +81,17 @@ class menuC
 	            $descripcion = $nodo['info']['descripcionMenu'];
 	            $ruta = $nodo['info']['rutaProceso'] !== '.' ? $nodo['info']['rutaProceso'] : '#';
 	            $padre = $nodo['info']['rutaProceso'] !== '.' ? $nodo['info']['rutaProceso'] : 'class="has-arrow"';
+	            $padreBool = $nodo['info']['rutaProceso'] !== '.' ? 0 : 1;
 
-	            $html .= "<li><a href='{$ruta}' {$padre}>{$descripcion}</a>";
+	            $html .= "<li><a href='{$ruta}' {$padre}>";
+	            			if($padreBool)
+	            			{
+	            				$html.="<div class='menu-title'>{$descripcion}</div>";
+	            			}else
+	            			{
+	            				$html.="<i class='bx bx-right-arrow-alt'></i> {$descripcion}";
+	            			}
+	            	$html.="</a>";
 
 	            // Llamada recursiva solo si hay nodos hijos
 	            if (count($nodo) > 1) { // Esto verifica que haya otros elementos en el nodo
