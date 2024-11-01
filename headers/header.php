@@ -130,9 +130,16 @@ function estado_licencia($f3)
 			<ul class="metismenu" id="menu">				
 				<li class="menu-label">MENU <?php echo $NombreModulo; ?></li>
 				<?php echo $listaMenu; ?>
-				<li><a href="../vista/modulos.php" class="active treeview">
-                 <i class="fa fa-th"></i> <span>Salir a modulos</span>
-               </a></li>
+				<li>
+					<a href="../vista/modulos.php">
+						<div class="parent-icon">
+							<i class="bx bx-log-out"></i> 					
+						</div>
+						<div class="menu-title">
+							Salir a modulos
+						</div>
+	               </a>
+           		</li>
 			</ul>
 			<!--end navigation-->
 		</div>
