@@ -15,59 +15,59 @@
 ?>
 <!-- <meta charset="ISO-8859-1"> -->
 <div class="row">
-	<div class="col-sm-5">
-	   <div class="col-xs-2 col-md-1 col-sm-1 col-lg-1" style=" width: fit-content;padding: 0px;">
+	<div class="col-sm-5 row">
+	   <div class="border border-1 rounded col-md-1 col-sm-1 col-lg-1" style=" width: fit-content;height: fit-content;padding: 0px;">
 	     <a class="btn btn-default" title="Salir del modulo" href="./contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>">
 	         <img src="../../img/png/salire.png">
 	     </a>
 	   </div>    
-	   <div class="col-xs-2 col-md-1 col-sm-1 col-lg-1" style="width: fit-content;padding: 0px;">
+	   <div class="border border-1 rounded col-md-1 col-sm-1 col-lg-1" style="width: fit-content;height: fit-content;padding: 0px;">
 	       <a class="btn btn-default" title="Exportar Excel"	href="javascript:void(0)" onclick="GenerarExcelResultadoComprobante()" ><img src="../../img/png/table_excel.png"></a>	      
 	   </div>
-	   <div class="col-xs-2 col-md-1 col-sm-1 col-lg-1" style="width: fit-content;padding: 0px;">                 
+	   <div class="border border-1 rounded col-md-1 col-sm-1 col-lg-1" style="width: fit-content;height: fit-content;padding: 0px;">                 
 	    <button class="btn btn-default" title="Modificar el comprobante" onclick="IngClave('Contador')">
 					 <img src="../../img/png/modificar.png" >
 	     </button>		   
 	  </div>
-	  <div class="col-xs-2 col-md-1 col-sm-1 col-lg-1" style="width: fit-content;padding: 0px;">
+	  <div class="border border-1 rounded col-md-1 col-sm-1 col-lg-1" style="width: fit-content;height: fit-content;padding: 0px;">
 	      <button type="button" id='l2' class="btn btn-default" title="Anular comprobante" onclick="anular_comprobante()"><img src="../../img/png/anular.png" >
 				</button>
 	  </div>
-	  <div class="col-xs-2 col-md-1 col-sm-1 col-lg-1" style="width: fit-content;padding: 0px;">
+	  <div class="border border-1 rounded col-md-1 col-sm-1 col-lg-1" style="width: fit-content;height: fit-content;padding: 0px;">
 	    <a id='l3' class="btn btn-default" title="Autorizar comprobante autorizado">
 					<img src="../../img/png/autorizar.png" > 
 				</a>
 	  </div>
-	  <div class="col-xs-2 col-md-1 col-sm-1 col-lg-1" style="width: fit-content;padding: 0px;">
+	  <div class="border border-1 rounded col-md-1 col-sm-1 col-lg-1" style="width: fit-content;height: fit-content;padding: 0px;">
 	      <a id='l4' class="btn btn-default" title="Realizar una copia al comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta balance de Comprobación&ti=BALANCE DE COMPROBACIÓN&Opcb=1&Opcen=0&b=1">
 					<img src="../../img/png/copiar.png" > 
 				             </a>
 	  </div>
-	  <div class="col-xs-2 col-md-1 col-sm-1 col-lg-1" style="width: fit-content;padding: 0px;">
+	  <div class="border border-1 rounded col-md-1 col-sm-1 col-lg-1" style="width: fit-content;height: fit-content;padding: 0px;">
 	     <a id='l5' class="btn btn-default" title="Copiar a otra empresa el comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta estado de situación (general)&ti=ESTADO SITUACIÓN&Opcb=5&Opcen=1&b=0">
 					<img src="../../img/png/copiare.png" > 
 				</a>		
 	  </div>   	
 	</div>
 	
-	<div class="col-sm-4">
+	<div class="col-sm-4 ps-4">
 		<br>
 		<?php echo $_SESSION['INGRESO']['item']; ?> 
-		<div class="btn-group btn-group-toggle" data-toggle="buttons">
-		  <label class="btn btn-primary btn-sm active">
-		    <input type="radio" name="options" id="CD" value="CD" autocomplete="off" checked onchange="comprobante();"> Diario
+		<div class="btn-group btn-group-toggle" data-bs-toggle="buttons">
+		  <label style="font-size: 0.8rem" class="btn btn-primary active btn-sm">
+		    <input type="radio" name="options" id="CD" value="CD" autocomplete="off"class="d-none" checked onchange="comprobante();"> Diario
 		  </label>
-		  <label class="btn btn-primary btn-sm">
-		    <input type="radio" name="options" id="CI" value="CI" autocomplete="off" onchange="comprobante();"> Ingresos
+		  <label style="font-size: 0.8rem" class="btn btn-primary btn-sm">
+		    <input type="radio" name="options" id="CI" value="CI" autocomplete="off"class="d-none" onchange="comprobante();"> Ingresos
 		  </label>
-		  <label class="btn btn-primary btn-sm">
-		    <input type="radio" name="options" id="CE" value="CE" autocomplete="off" onchange="comprobante();"> Egresos
+		  <label style="font-size: 0.8rem" class="btn btn-primary btn-sm">
+		    <input type="radio" name="options" id="CE" value="CE" autocomplete="off"class="d-none" onchange="comprobante();"> Egresos
 		  </label>
-		   <label class="btn btn-primary btn-sm">
-		    <input type="radio" name="options" id="ND" value="ND" autocomplete="off" onchange="comprobante();"> N/D
+		   <label style="font-size: 0.8rem" class="btn btn-primary btn-sm">
+		    <input type="radio" name="options" id="ND" value="ND" autocomplete="off"class="d-none" onchange="comprobante();"> N/D
 		  </label>
-		   <label class="btn btn-primary btn-sm">
-		    <input type="radio" name="options" id="NC" value="NC" autocomplete="off" onchange="comprobante();"> N/C
+		   <label style="font-size: 0.8rem" class="btn btn-primary btn-sm">
+		    <input type="radio" name="options" id="NC" value="NC" autocomplete="off"class="d-none" onchange="comprobante();"> N/C
 		  </label>
 	 		<input id="tipoc" name="tipoc" type="hidden" value="CD">					
 		<input type="hidden" name="TipoProcesoLlamadoClave" id="TipoProcesoLlamadoClave">
@@ -76,13 +76,13 @@
 	<div class="col-sm-3">
 		<br>
 		<div class="row">
-  		<div class="col-sm-5" style="padding:0px">
-  			<select class="form-control input-xs" name="tipo" id='mes' onchange="comprobante()">
+  		<div class="col-5">
+  			<select class="form-control form-control-sm" style="font-size:0.7rem" name="tipo" id='mes' onchange="comprobante()">
 				   <option value='0'>Todos</option><?php echo  Tabla_Dias_Meses();?>
 			  </select>			      			
   		</div>
-  		<div class="col-sm-7">
-  			 <select class="form-control input-xs" name="ddl_comprobantes" id="ddl_comprobantes" onchange="listar_comprobante()">
+  		<div class="col-7">
+  			 <select class="form-control form-control-sm" style="font-size:0.7rem" name="ddl_comprobantes" id="ddl_comprobantes" onchange="listar_comprobante()">
 		    	<option value="">Seleccione</option>
 		    </select>			      			
   		</div>			      		
