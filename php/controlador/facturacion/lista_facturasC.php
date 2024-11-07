@@ -166,6 +166,7 @@ class lista_facturasC
 
 	function tabla_facturas($parametros)
 	{
+		// print_r($parametros);die();
 		$autorizados = false;
 		if (isset($parametros['auto'])) {
 			$autorizados = $parametros['auto'];
@@ -175,6 +176,9 @@ class lista_facturasC
 
 		$tbl = $this->modelo->facturas_emitidas_tabla($codigo, $parametros['per'], $parametros['desde'], $parametros['hasta'], $parametros['serie'], $autorizados);
 		$tr = '';
+
+		return $tbl;
+
 		foreach ($tbl as $key => $value) {
 			$exis = $this->modelo->catalogo_lineas($value['TC'], $value['Serie']);
 			$autorizar = '';

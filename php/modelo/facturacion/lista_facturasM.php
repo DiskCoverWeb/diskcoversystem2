@@ -121,7 +121,7 @@ class lista_facturasM
        }
 
        $sql.=" ORDER BY Serie,Factura DESC "; 
-	$sql.=" OFFSET ".$_SESSION['INGRESO']['paginacionIni']." ROWS FETCH NEXT ".$_SESSION['INGRESO']['numreg']." ROWS ONLY;";   
+	$sql.=" OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;";   
     // print_r($_SESSION['INGRESO']);
 	// print_r($sql);die();    
 	return $this->db->datos($sql);

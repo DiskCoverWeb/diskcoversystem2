@@ -1,12 +1,7 @@
-
-
-  $(document).ready(function()
+$(document).ready(function()
   {
     catalogoLineas();
     // fin paginacion
-
-    var cartera_usu = '<?php echo $cartera_usu; ?>';
-    var cartera_pas = '<?php echo $cartera_pass;?>';
     if(cartera_usu!='')
     {
       buscar_cliente(cartera_usu);
@@ -17,7 +12,7 @@
       $('#ddl_grupo').attr('disabled',true);
       $('#txt_clave').attr('readonly',true);
     }
-    var tipo = '<?php echo $tipo; ?>';
+    var tipo =   TipoGlobal;
     autocmpletar_cliente();
     if(tipo==2)
     {
@@ -41,6 +36,85 @@
   	
   });
 
+	function validar()
+	{
+		var cli = $('#ddl_cliente').val();
+		var cla = $('#txt_clave').val();
+	    var tip = TipoGlobal
+	    var ini = $('#txt_desde').val();
+	    var fin = $('#txt_hasta').val();
+	    var periodo = $('#ddl_periodo').val();
+	    //si existe periodo valida si esta en el rango
+    if(periodo!='.')
+    {
+      const fechaInicio=new Date(periodo+'-01-01');
+      const fechaFin=new Date(periodo+'-01-30');
+      var ini = new Date(ini);
+      var fin = new Date(fin);
+
+      // console.log(fechaInicio)
+      // console.log(fechaFin)
+      // console.log(ini)
+      // console.log(fin)
+
+      if(ini>fechaFin || ini<fechaInicio)
+      {
+        Swal.fire('la fecha desde:'+ini,'No esta en el rango','info').then(function(){
+           $('#txt_desde').val(periodo+'-01-01');
+           return false;
+        })
+      }
+      if(fin>fechaFin || fin<fechaInicio)
+      {
+        Swal.fire('la fecha hasta:'+fin,'No esta en el rango','info').then(function(){
+           $('#txt_hasta').val(periodo+'-01-30');
+           return false;
+        })
+      }
+
+    }
+
+    
+      if(cli=='')
+      {
+        Swal.fire('Seleccione un cliente','','error');
+        return false;
+      }
+    if(tip=='')
+    {
+  		if(cla=='')
+  		{
+  			Swal.fire('Clave no ingresados','','error');
+  			return false;
+  		}
+    }
+		var parametros = 
+		{
+			'cli':cli,
+			'cla':cla,
+      'tip':tip,
+		}
+		 $.ajax({
+             data:  {parametros:parametros},
+             url:   '../controlador/facturacion/lista_facturasC.php?validar=true',
+             type:  'post',
+             dataType: 'json',
+             success:  function (response) {
+             if(response == 1)
+             {
+             	$('#myModal_espera').modal('show');
+             	tbl_facturas_all.ajax.reload(null, false);
+             	tbl_facturas_autorizadas.ajax.reload(null, false);
+             	tbl_facturas_Noautorizadas.ajax.reload(null, false);
+              // cargar_registrosAu(1);
+              // cargar_registrosAu(2);
+             }else
+             {
+             	Swal.fire('Clave incorrecta.','Asegurese de que su clave sea correcta','error');
+             }
+          } 
+        });
+	}
 
   function periodos(codigo){
     var parametros = 
@@ -464,7 +538,7 @@ function enviar_email_comprobantes(nombre_pdf,clave_Acceso,email)
 
  function rangos()
  {
-    periodo  = '<?php echo $_SESSION['INGRESO']['periodo'];?>';
+    periodo  = '.';
     if(periodo!='.')
     {
       year = periodo.split('/');
@@ -520,7 +594,7 @@ function enviar_email_comprobantes(nombre_pdf,clave_Acceso,email)
         {
           Swal.fire('Factura Anulada','','success').then(function()
           {
-            cargar_registros();
+          	tbl_facturas_all.ajax.reload(null, false);
           })
         }
        }

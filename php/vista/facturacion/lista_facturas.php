@@ -14,49 +14,191 @@
     }
 
 ?>
-<script src="../../dist/js/lista_facturas.js"></script>
 <script type="text/javascript">
+  TipoGlobal = '<?php echo $tipo; ?>';
+  cartera_usu = '<?php echo $cartera_usu; ?>';
+  cartera_pas = '<?php echo $cartera_pass;?>';
+</script>
+<script src="../../dist/js/lista_facturas.js"></script>
 
-   function cargar_registros()
-   {
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+          tbl_facturas_all = $('#tbl_facturas').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url: '../controlador/facturacion/lista_facturasC.php?tabla=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {
+                      ci: $('#ddl_cliente').val(),
+                      per: $('#ddl_periodo').val(),
+                      desde: $('#txt_desde').val(),
+                      hasta: $('#txt_hasta').val(),
+                      tipo: TipoGlobal,
+                      serie: $('#DCLinea').val()
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',             
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
    
-    var per = $('#ddl_periodo').val();
-    var serie = $('#DCLinea').val();
-    if(serie!='' && serie!='.')
-    {
-     var serie = serie.split(' ');
-     var serie = serie[1];
-    }else
-    {
-      serie = '';
-    }
-    var tipo = '<?php echo $tipo; ?>'
-    var parametros = 
-    {
-      'ci':$('#ddl_cliente').val(),
-      'per':per,      
-      'desde':$('#txt_desde').val(),
-      'hasta':$('#txt_hasta').val(),
-      'tipo':tipo,
-      'serie':serie,
-    }
-     $.ajax({
-       data:  {parametros:parametros},
-      url:   '../controlador/facturacion/lista_facturasC.php?tabla=true',
-      type:  'post',
-      dataType: 'json',
-      beforeSend: function () {
-        $("#tbl_tabla").html('<tr class="text-center"><td colspan="16"><img src="../../img/gif/loader4.1.gif" width="20%">');
-      },
-       success:  function (response) { 
-        // console.log(response);
-       $('#tbl_tabla').html(response);
-       $('#myModal_espera').modal('hide');
-      }
+          columns: [
+              {
+                  data: null,
+                  render: function(data, type, item) {
+                      return `<button type="button" class="btn btn-primary btn-sm" onclick=""><i class="lni lni-spinner-arrow fs-7 me-0 fw-bold"></i></button>`;
+                  }
+              },
+              { data: 'T' },
+              { data: 'Razon_Social' },
+              { data: 'TC' },
+              { data: 'Serie' },
+              { data: 'Autorizacion' },
+              { data: 'Factura' },
+              { data: 'Fecha.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'SubTotal' },
+              { data: 'Con_IVA' },
+              { data: 'IVA' },
+              { data: 'Descuentos' },
+              { data: 'Total' },
+              { data: 'Saldo' },
+              { data: 'RUC_CI' },
+              { data: 'TB' }
+          ],
+          order: [
+              [1, 'asc']
+          ]
+      });
+
+      tbl_facturas_autorizadas = $('#tbl_tablaAu').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url: '../controlador/facturacion/lista_facturasC.php?tablaAu=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {
+                      ci: $('#ddl_cliente').val(),
+                      per: $('#ddl_periodo').val(),
+                      desde: $('#txt_desde').val(),
+                      hasta: $('#txt_hasta').val(),
+                      tipo: TipoGlobal,
+                      serie: $('#DCLinea').val(),
+                      auto:1
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',             
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+              {
+                  data: null,
+                  render: function(data, type, item) {
+                      return `<button type="button" class="btn btn-primary btn-sm" onclick=""><i class="lni lni-spinner-arrow fs-7 me-0 fw-bold"></i></button>`;
+                  }
+              },
+              { data: 'T' },
+              { data: 'Razon_Social' },
+              { data: 'TC' },
+              { data: 'Serie' },
+              { data: 'Autorizacion' },
+              { data: 'Factura' },
+              { data: 'Fecha.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'SubTotal' },
+              { data: 'Con_IVA' },
+              { data: 'IVA' },
+              { data: 'Descuentos' },
+              { data: 'Total' },
+              { data: 'Saldo' },
+              { data: 'RUC_CI' },
+              { data: 'TB' }
+          ],
+          order: [
+              [1, 'asc']
+          ]
+      });
+
+      tbl_facturas_Noautorizadas = $('#tbl_tablaNoAu').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url: '../controlador/facturacion/lista_facturasC.php?tablaAu=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {
+                      ci: $('#ddl_cliente').val(),
+                      per: $('#ddl_periodo').val(),
+                      desde: $('#txt_desde').val(),
+                      hasta: $('#txt_hasta').val(),
+                      tipo: TipoGlobal,
+                      serie: $('#DCLinea').val(),
+                      auto:2
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',             
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+              {
+                  data: null,
+                  render: function(data, type, item) {
+                      return `<button type="button" class="btn btn-primary btn-sm" onclick=""><i class="lni lni-spinner-arrow fs-7 me-0 fw-bold"></i></button>`;
+                  }
+              },
+              { data: 'T' },
+              { data: 'Razon_Social' },
+              { data: 'TC' },
+              { data: 'Serie' },
+              { data: 'Autorizacion' },
+              { data: 'Factura' },
+              { data: 'Fecha.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'SubTotal' },
+              { data: 'Con_IVA' },
+              { data: 'IVA' },
+              { data: 'Descuentos' },
+              { data: 'Total' },
+              { data: 'Saldo' },
+              { data: 'RUC_CI' },
+              { data: 'TB' }
+          ],
+          order: [
+              [1, 'asc']
+          ],
+          dom:'t'
+      });
+
     });
 
-   }
+</script>
 
+<script type="text/javascript">
+
+  
    function cargar_lineas()
    {   
     var per = $('#ddl_periodo').val();
@@ -98,211 +240,64 @@
 
 
 
-   function cargar_registrosAu(AU)
-   {
-   
-    var per = $('#ddl_periodo').val();
-    var serie = $('#DCLinea').val();
-    if(serie!='' && serie!='.')
-    {
-     var serie = serie.split(' ');
-     var serie = serie[1];
-    }else
-    {
-      serie = '';
-    }
-    var tipo = '<?php echo $tipo; ?>'
-    var parametros = 
-    {
-      'ci':$('#ddl_cliente').val(),
-      'per':per,      
-      'desde':$('#txt_desde').val(),
-      'hasta':$('#txt_hasta').val(),
-      'tipo':tipo,
-      'serie':serie,
-      'auto':AU,
-    }
-     $.ajax({
-       data:  {parametros:parametros},
-      url:   '../controlador/facturacion/lista_facturasC.php?tablaAu=true',
-      type:  'post',
-      dataType: 'json',
-      beforeSend: function () {
-         if(AU==1)
-        {         
-          $("#tbl_tablaAu").html('<tr class="text-center"><td colspan="16"><img src="../../img/gif/loader4.1.gif" width="20%">');
-        }else
-        {
-           $("#tbl_tablaNoAu").html('<tr class="text-center"><td colspan="16"><img src="../../img/gif/loader4.1.gif" width="20%">');
-        }
-       
-      },
-       success:  function (response) { 
-        // console.log(response);
-        if(AU==1)
-        {
-          $('#tbl_tablaAu').html(response);
-        }else
-        {
-          $('#tbl_tablaNoAu').html(response);
-        }
-       $('#myModal_espera').modal('hide');
-      }
-    });
 
-   }
-
- 
-	function validar()
-	{
-		var cli = $('#ddl_cliente').val();
-		var cla = $('#txt_clave').val();
-    var tip = '<?php echo $tipo; ?>';
-    var ini = $('#txt_desde').val();
-    var fin = $('#txt_hasta').val();
-    var periodo = $('#ddl_periodo').val();
-    //si existe periodo valida si esta en el rango
-    if(periodo!='.')
-    {
-      const fechaInicio=new Date(periodo+'-01-01');
-      const fechaFin=new Date(periodo+'-01-30');
-      var ini = new Date(ini);
-      var fin = new Date(fin);
-
-      // console.log(fechaInicio)
-      // console.log(fechaFin)
-      // console.log(ini)
-      // console.log(fin)
-
-      if(ini>fechaFin || ini<fechaInicio)
-      {
-        Swal.fire('la fecha desde:'+ini,'No esta en el rango','info').then(function(){
-           $('#txt_desde').val(periodo+'-01-01');
-           return false;
-        })
-      }
-      if(fin>fechaFin || fin<fechaInicio)
-      {
-        Swal.fire('la fecha hasta:'+fin,'No esta en el rango','info').then(function(){
-           $('#txt_hasta').val(periodo+'-01-30');
-           return false;
-        })
-      }
-
-    }
-
-    
-      if(cli=='')
-      {
-        Swal.fire('Seleccione un cliente','','error');
-        return false;
-      }
-    if(tip=='')
-    {
-  		if(cla=='')
-  		{
-  			Swal.fire('Clave no ingresados','','error');
-  			return false;
-  		}
-    }
-		var parametros = 
-		{
-			'cli':cli,
-			'cla':cla,
-      'tip':tip,
-		}
-		 $.ajax({
-             data:  {parametros:parametros},
-             url:   '../controlador/facturacion/lista_facturasC.php?validar=true',
-             type:  'post',
-             dataType: 'json',
-             success:  function (response) {
-             if(response == 1)
-             {
-             	$('#myModal_espera').modal('show');
-             	cargar_registros();
-              cargar_registrosAu(1);
-              cargar_registrosAu(2);
-             }else
-             {
-             	Swal.fire('Clave incorrecta.','Asegurese de que su clave sea correcta','error');
-             }
-          } 
-        });
-	}
 
   </script>
-  <div class="row">
-    <div class="col-lg-4 col-sm-10 col-md-6 col-xs-12">
-       <div class="col-xs-2 col-md-2 col-sm-2 col-lg-2">
-            <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-default">
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="btn-group" role="group" aria-label="Basic example">
+        <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-outline-secondary">
               <img src="../../img/png/salire.png">
             </a>
-        </div>
-        <div class="col-xs-2 col-md-2 col-sm-2 col-lg-2">
-            <button type="button" class="btn btn-default" title="Generar pdf" onclick="reporte_pdf()"><img src="../../img/png/pdf.png"></button>
-        </div>
-        <div class="col-xs-2 col-md-2 col-sm-2 col-lg-2">
-            <button type="button" class="btn btn-default" title="Generar pdf" onclick="generar_excel()"><img src="../../img/png/table_excel.png"></button>
-        </div>
- </div>
+         <button type="button" class="btn btn-outline-secondary" title="Generar pdf" onclick="reporte_pdf()"><img src="../../img/png/pdf.png"></button>
+         <button type="button" class="btn btn-outline-secondary" title="Generar pdf" onclick="generar_excel()"><img src="../../img/png/table_excel.png"></button>
+      </div>
+    </div>
 </div>
-		<div class="row">
-      <form id="filtros">
-        <div class="col-sm-12">
-          <div class="row">
-            <div class="col-sm-2">
-              <b>GRUPO</b>
-              <select class="form-control input-xs" id="ddl_grupo" name="ddl_grupo" onchange="autocmpletar_cliente()">
-                <option value=".">TODOS</option>
-              </select>
-              <!-- <input type="text" name="txt_grupo" id="txt_grupo" class="form-control input-sm"> -->
-            </div>
-            <div class="col-sm-5">
-              <b>CI / RUC</b>
-              <select class="form-control input-xs" id="ddl_cliente" name="ddl_cliente" onchange="periodos(this.value);rangos();">
-                <option value="">Seleccione Cliente</option>
-              </select>
-            </div>
-            <div class="col-sm-1" style="padding: 0px;">
-              <b>Serie</b>
-                <select class="form-control input-xs" name="DCLinea" id="DCLinea" tabindex="1" style="padding-left:8px">
-                  <option value=""></option>
-                </select>
-            </div>
-            <div class="col-sm-2" id="campo_clave">
-              <b>CLAVE</b>
-              <input type="password" name="txt_clave" id="txt_clave" class="form-control input-xs">
-              <a href="#" onclick="recuperar_clave()"><i class="fa fa-key"></i> Recupera clave</a>
-            </div>
-            <div class="col-sm-2" style="display:none;" >
-              <b>Periodo</b>
-              <select class="form-control input-xs" id="ddl_periodo" name="ddl_periodo" onchange="rangos()">
-                <option value=".">Seleccione perido</option>
-              </select>
-            </div>
-            <div class="col-sm-2">
-              <b>Desde</b>
-                <input type="date" name="txt_desde" id="txt_desde" class="form-control input-xs" value="<?php echo date('Y-m-d')?>">
-            </div>  
-            <div class="col-sm-2">
-              <b>Hasta</b>
-                <input type="date" name="txt_hasta" id="txt_hasta" class="form-control input-xs" value="<?php echo date('Y-m-d')?>">
-            </div>                         
-          </div>
-          <div class="row">            
-          <div class="col-sm-6 text-right">
-            </div>       
-            <div class="col-sm-6 text-right">
-              <button class="btn btn-primary btn-xs" type="button" onclick="validar()"><i class="fa fa-search"></i> Buscar</button>
-            </div>
-            
-          </div>
-          <div></div>
-        </div>
-      </form>
-
-		</div>
+<div>
+  <form id="filtros" class="row">
+    <div class="col-lg-2 col-md-2 col-sm-12">
+       <b>GRUPO</b>
+        <select class="form-select form-select-sm" id="ddl_grupo" name="ddl_grupo" onchange="autocmpletar_cliente()">
+          <option value=".">TODOS</option>
+        </select>      
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <b>CI / RUC</b>
+        <select class="form-select form-select-sm" id="ddl_cliente" name="ddl_cliente" onchange="periodos(this.value);rangos();">
+          <option value="">Seleccione Cliente</option>
+        </select>     
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-12">
+        <b>Serie</b>
+        <select class="form-select form-select-sm" name="DCLinea" id="DCLinea" tabindex="1" style="padding-left:8px">
+          <option value=""></option>
+        </select>     
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-12" id="campo_clave">
+      <b>CLAVE</b>
+      <input type="password" name="txt_clave" id="txt_clave" class="form-control form-control-sm">
+      <a href="#" onclick="recuperar_clave()"><i class="fa fa-key"></i> Recupera clave</a>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-12" style="display:none;" >
+      <b>Periodo</b>
+      <select class="form-select form-select-sm" id="ddl_periodo" name="ddl_periodo" onchange="rangos()">
+        <option value=".">Seleccione perido</option>
+      </select>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-12">
+      <b>Desde</b>
+      <input type="date" name="txt_desde" id="txt_desde" class="form-control form-control-sm" value="<?php echo date('Y-m-d')?>">
+    </div>  
+    <div class="col-lg-2 col-md-2 col-sm-12">
+      <b>Hasta</b>
+        <input type="date" name="txt_hasta" id="txt_hasta" class="form-control form-control-sm" value="<?php echo date('Y-m-d')?>">
+    </div> 
+    <div class="col-lg-12 col-md-2 col-sm-6 text-end mt-1">
+      <button class="btn btn-primary btn-sm" type="button" onclick="validar()"><i class="bx bx-search"></i> Buscar</button>
+    </div>    
+  </form>
+</div>
     <div class="panel" id="panel_datos" style="display:none;margin-bottom: 1px;">
       <div class="row">
         <div class="col-sm-4">
@@ -324,148 +319,149 @@
     </div>
     <br>
   <div class="row">
-    <div class="col-sm-12">
-      <div class="nav-tabs-custom">
-        <ul class="nav nav-tabs">
-          <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Todos</a></li>
-          <li class="" id="tab_2_"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Autorizados</a></li>
-          <li class="" id="tab_3_"><a href="#tab_3" data-toggle="tab" aria-expanded="false">No Autorizados</a></li>
-          <li class="" id="tab_4_" onclick="cargar_lineas()"><a href="#tab_4" data-toggle="tab" aria-expanded="false">Detalle Factura</a></li>
+    <div class="card">
+      <div class="card-body">
+        <ul class="nav nav-pills mb-3" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active" data-bs-toggle="pill" href="#primary-pills-home" role="tab" aria-selected="true">
+              <div class="d-flex align-items-center">
+                <div class="tab-icon"><i class="bx bx-list-ul font-18 me-1"></i>
+                </div>
+                <div class="tab-title">Todos</div>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="pill" href="#primary-pills-profile" role="tab" aria-selected="false" tabindex="-1">
+              <div class="d-flex align-items-center">
+                <div class="tab-icon"><i class="bx bx-check font-18 me-1"></i>
+                </div>
+                <div class="tab-title">Autorizados</div>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="pill" href="#primary-pills-contact" role="tab" aria-selected="false" tabindex="-1">
+              <div class="d-flex align-items-center">
+                <div class="tab-icon"><i class="bx bx-x font-18 me-1"></i>
+                </div>
+                <div class="tab-title">No autorizados</div>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" role="presentation" id="tab_4_">
+            <a class="nav-link" data-bs-toggle="pill" onclick="cargar_lineas()" href="#primary-pills-detalle" role="tab" aria-selected="false" tabindex="-1">
+              <div class="d-flex align-items-center">
+                <div class="tab-icon"><i class="bx bx-close font-18 me-1"></i>
+                </div>
+                <div class="tab-title">Detalle Factura</div>
+              </div>
+            </a>
+          </li>
         </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="tab_1">
-              <div class="row">
-                <div class="col-sm-6">
-                  <h2 style="margin-top: 0px;">Listado de facturas</h2>
-                </div>
-                <div class="col-sm-6 text-right" id="panel_pag">
-                  
-                </div>
-                <div  class="col-sm-12" style="overflow-x: scroll;height: 500px;">    
-                  <table class="table text-sm" style=" white-space: nowrap;">
-                    <thead>
-                      <th></th>
-                      <th>T</th>          
-                      <th>Razon_Social</th>
-                      <th>TC</th>
-                      <th>Serie</th>
-                      <th>Autorizacion</th>
-                      <th>Factura</th>
-                      <th>Fecha</th>
-                      <th>SubTotal</th>
-                      <th>Con_IVA</th>
-                      <th>IVA</th>
-                      <th>Descuento</th>
-                      <th>Total</th>
-                      <th>Saldo</th>
-                      <th>RUC_CI</th>
-                      <th>TB</th>
-                    </thead>
-                    <tbody  id="tbl_tabla">
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </table>
-              
-                </div>    
-              </div>
-            </div>
-
-            <div class="tab-pane" id="tab_2">
-              <div class="row">
-                <div class="col-sm-6">
-                  <h2 style="margin-top: 0px;">Listado de facturas</h2>
-                </div>
-                <div class="col-sm-6 text-right" id="panel_pagAu">
-                  
-                </div>
-                <div  class="col-sm-12" style="overflow-x: scroll;height: 500px;">    
-                  <table class="table text-sm" style=" white-space: nowrap;">
-                    <thead>
-                      <th></th>
-                      <th>T</th>          
-                      <th>Razon_Social</th>
-                      <th>TC</th>
-                      <th>Serie</th>
-                      <th>Autorizacion</th>
-                      <th>Factura</th>
-                      <th>Fecha</th>
-                      <th>SubTotal</th>
-                      <th>Con_IVA</th>
-                      <th>IVA</th>
-                      <th>Descuento</th>
-                      <th>Total</th>
-                      <th>Saldo</th>
-                      <th>RUC_CI</th>
-                      <th>TB</th>
-                    </thead>
-                    <tbody  id="tbl_tablaAu">
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </table>
-              
-                </div>    
-              </div>
-
-
-            </div>
-
-            <div class="tab-pane" id="tab_3">
-              <div class="row">
-                <div class="col-sm-6">
-
-                  <div class="input-group margin">
-                      <div class="input-group-btn open">
-                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Acciones
+        <div class="tab-content" id="pills-tabContent">
+          <div class="tab-pane fade active show" id="primary-pills-home" role="tabpanel">
+             <table class="table text-sm" id="tbl_facturas" style="width:100%">
+                <thead>
+                  <th></th>
+                  <th>T</th>          
+                  <th>Razon_Social</th>
+                  <th>TC</th>
+                  <th>Serie</th>
+                  <th>Autorizacion</th>
+                  <th>Factura</th>
+                  <th>Fecha</th>
+                  <th>SubTotal</th>
+                  <th>Con_IVA</th>
+                  <th>IVA</th>
+                  <th>Descuento</th>
+                  <th>Total</th>
+                  <th>Saldo</th>
+                  <th>RUC_CI</th>
+                  <th>TB</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+          <div class="tab-pane fade" id="primary-pills-profile" role="tabpanel">
+            <table class="table text-sm" style="width: 100%;" id="tbl_tablaAu">
+                <thead>
+                  <th></th>
+                  <th>T</th>          
+                  <th>Razon_Social</th>
+                  <th>TC</th>
+                  <th>Serie</th>
+                  <th>Autorizacion</th>
+                  <th>Factura</th>
+                  <th>Fecha</th>
+                  <th>SubTotal</th>
+                  <th>Con_IVA</th>
+                  <th>IVA</th>
+                  <th>Descuento</th>
+                  <th>Total</th>
+                  <th>Saldo</th>
+                  <th>RUC_CI</th>
+                  <th>TB</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+          <div class="tab-pane fade" id="primary-pills-contact" role="tabpanel">
+            
+            <div class="row">
+                <div class="col-sm-12 text-end">
+                      <div class="input-group-btn">
+                          <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">Acciones
                               <span class="fa fa-caret-down"></span>
                           </button>
                           <ul class="dropdown-menu">
-                            <li onclick="autorizar_blo()"><a href="#">Autorizar en bloque</a></li>
-                            <li onclick=""><a href="#">Anular en bloque</a></li>
+                            <li onclick="autorizar_blo()"><a href="#" class="dropdown-item">Autorizar en bloque</a></li>
+                            <li onclick=""><a href="#" class="dropdown-item">Anular en bloque</a></li>
                             <!-- <li><a href="#">Something else here</a></li> -->
                           </ul>
                       </div>
-                  </div>
-                  <h2 style="margin-top: 0px;">Listado de facturas</h2>
                 </div>
-                <div class="col-sm-6 text-right" id="panel_pagNoAu">
-                  
-                </div>
-                <div  class="col-sm-12" style="overflow-x: scroll;height: 500px;">    
-                  <table class="table text-sm" style=" white-space: nowrap;">
+              </div>
+                <div class="row">    
+                  <table class="table text-sm" style="width: 100%;"  id="tbl_tablaNoAu">
                     <thead>
                       <th></th>
                       <th>T</th>          
@@ -484,7 +480,7 @@
                       <th>RUC_CI</th>
                       <th>TB</th>
                     </thead>
-                    <tbody  id="tbl_tablaNoAu">
+                    <tbody>
                       <tr>
                         <td></td>
                         <td></td>
@@ -508,15 +504,10 @@
               
                 </div>    
               </div>
-            </div>
-            <div class="tab-pane" id="tab_4">
-              <div class="row">
-                <div class="col-sm-6">
-                  <h2 style="margin-top: 0px;">Listado de facturas</h2>
-                </div>
-                <div class="col-sm-6 text-right" id="panel_pag">
-                  
-                </div>
+          </div>          
+          <div class="tab-pane fade" id="primary-pills-detalle" role="tabpanel">
+            <div class="row">
+               
                 <div  class="col-sm-12" style="overflow-x: scroll;height: 500px;">    
                   <table class="table text-sm" style=" white-space: nowrap;">
                     <thead>
@@ -558,11 +549,11 @@
               
                 </div>    
               </div>
-            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div> 
+  </div>
 </div>
 
 <div id="modal_email" class="modal fade" role="dialog">
@@ -654,6 +645,6 @@
 
 
 
-  <script src="../../dist/js/utils.js"></script>
-  <script src="../../dist/js/emails-input.js"></script>
-  <script src="../../dist/js/multiple_email.js"></script>
+  <script src="../../dist/js/multipleEmail/utils.js"></script>
+  <script src="../../dist/js/multipleEmail/emails-input.js"></script>
+  <script src="../../dist/js/multipleEmail/multiple_email.js"></script>
