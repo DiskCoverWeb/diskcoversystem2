@@ -631,3 +631,20 @@ function solo_3_numeros(id)
     $('#'+id).val(v);
   }
 }
+
+    function formatoDate(date) {
+      var formattedDate = new Date(date);
+      var d = formattedDate.getDate();
+      var m = formattedDate.getMonth();
+      m += 1; // javascript months are 0-11
+      if (m < 10) {
+        m = '0' + m;
+      }
+      if (d < 10) {
+        d = '0' + d;
+      }
+      var y = formattedDate.getFullYear();
+      var Fecha = y + "-" + m + "-" + d;
+      // console.log(Fecha);
+      return Fecha;
+    }
