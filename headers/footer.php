@@ -165,6 +165,7 @@
 	<script src="../../assets/plugins/select2/js/select2-custom.js"></script>
 	<script src="../../assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
 	<script src="../../assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
+	<script src="../../dist/js/login.js"></script>
 	<!--app JS-->
 	<script src="../../assets/js/app.js"></script>
 </body>
