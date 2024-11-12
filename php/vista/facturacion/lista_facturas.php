@@ -390,7 +390,7 @@
               <img src="../../img/png/salire.png">
             </a>
          <button type="button" class="btn btn-outline-secondary" title="Generar pdf" onclick="reporte_pdf()"><img src="../../img/png/pdf.png"></button>
-         <button type="button" class="btn btn-outline-secondary" title="Generar pdf" onclick="generar_excel()"><img src="../../img/png/table_excel.png"></button>
+         <button type="button" class="btn btn-outline-secondary" title="Generar excel" onclick="generar_excel()"><img src="../../img/png/table_excel.png"></button>
       </div>
     </div>
 </div>

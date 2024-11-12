@@ -18,7 +18,7 @@ class lista_notas_creditoM
 
 	function notas_credito_emitidas_tabla($codigo=false,$desde=false,$hasta=false,$serie=false,$secuencia_NC=false)
 	{
-		$sql ="SELECT TA.T,TC,Cliente,C.Codigo,C.CI_RUC,TA.Fecha,F.Fecha as 'FechaF',Serie_NC,TA.Clave_Acceso_NC,TA.Autorizacion_NC,Secuencial_NC,F.Factura,F.Serie,F.Autorizacion,F.Total_MN,F.Descuento,F.Descuento2,Nota,IVA,F.Porc_IVA,TA.Autorizacion_NC,TA.Clave_Acceso_NC,TA.Cod_Ejec,Tipo_Pago,Cod_CxC,TA.CodigoU,TB
+		$sql ="SELECT TA.T,TC,Cliente,C.Codigo,C.CI_RUC,TA.Fecha,F.Fecha as 'FechaF',Serie_NC,TA.Clave_Acceso_NC,TA.Autorizacion_NC,Secuencial_NC,F.Factura,F.Serie,F.Autorizacion,F.Total_MN,F.Descuento,F.Descuento2,Nota,IVA,F.Porc_IVA,TA.Autorizacion_NC,TA.Clave_Acceso_NC,TA.Cod_Ejec,Tipo_Pago,Cod_CxC,TA.CodigoU,F.TB,Email,EmailR,Email2
 			FROM Trans_Abonos TA 
 			INNER JOIN Facturas F ON TA.Factura = F.Factura
 			INNER JOIN Clientes C ON F.CodigoC = C.Codigo
@@ -46,9 +46,9 @@ class lista_notas_creditoM
 	    {
 	    	$sql.=" AND Secuencial_NC = '".$secuencia_NC."'";
 	    }
-	    $sql.=" GROUP BY TA.T,TC,Cliente,C.Codigo,C.CI_RUC,TA.Fecha,F.Fecha,Serie_NC,TA.Clave_Acceso_NC,TA.Autorizacion_NC,Secuencial_NC,F.Factura,F.Serie,F.Autorizacion,F.Total_MN,F.Descuento,F.Descuento2,Nota,IVA,F.Porc_IVA,TA.Autorizacion_NC,TA.Clave_Acceso_NC,TA.Cod_Ejec,Tipo_Pago,Cod_CxC,TA.CodigoU,TB";
+	    $sql.=" GROUP BY TA.T,TC,Cliente,C.Codigo,C.CI_RUC,TA.Fecha,F.Fecha,Serie_NC,TA.Clave_Acceso_NC,TA.Autorizacion_NC,Secuencial_NC,F.Factura,F.Serie,F.Autorizacion,F.Total_MN,F.Descuento,F.Descuento2,Nota,IVA,F.Porc_IVA,TA.Autorizacion_NC,TA.Clave_Acceso_NC,TA.Cod_Ejec,Tipo_Pago,Cod_CxC,TA.CodigoU,F.TB,Email,EmailR,Email2";
        $sql.=" ORDER BY Serie_NC,Secuencial_NC DESC "; 
-		$sql.=" OFFSET ".$_SESSION['INGRESO']['paginacionIni']." ROWS FETCH NEXT ".$_SESSION['INGRESO']['numreg']." ROWS ONLY;";   
+		$sql.=" OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;";   
 	    // // print_r($_SESSION['INGRESO']);
 		// print_r($sql);die();    
 		return $this->db->datos($sql);
