@@ -26,7 +26,7 @@ require_once("../../headers/header.php");
 				require_once("contabilidad/ctaOperaciones.php");
 				break;
 
-			//Contabilidad -> Archivo -> Ingresar comprobantes (Ctrl+f5)
+			//Contabilidad -> Archivo -> Ingresar comprobantes (Ctrl+f5) 
 			case 'incom':
 				require_once("contabilidad/incom.php");
 				break;

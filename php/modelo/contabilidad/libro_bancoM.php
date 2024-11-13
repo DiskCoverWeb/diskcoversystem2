@@ -79,7 +79,7 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
       AND C.Periodo = T.Periodo 
       ORDER BY Cta,T.Fecha,T.TP,T.Numero,Debe DESC,Haber,T.ID ";
 // echo "<pre>";print_r($sSQL);echo "</pre>";die();
-    $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-170;  //el numero es el alto de los demas conponenetes sumados
+    $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla']??0)-170;  //el numero es el alto de los demas conponenetes sumados
     $DGBanco = grilla_generica_new($sSQL,'Transacciones As T,Comprobantes As C,Clientes As Cl','tbl_lib',false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
     $AdoBanco = $this->conn->datos($sSQL);
     if($soloReturnDatos){

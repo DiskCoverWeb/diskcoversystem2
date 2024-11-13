@@ -5,11 +5,11 @@ function validar_cuenta(campo)
 	let cap = $('#'+id).val();
 	let cuentaini = cap.replace(/[.]/gi,'');
 	var cuentafin = $('#txt_CtaF').val();
-	// var formato = "<?php if(isset($_SESSION['INGRESO']['Formato_Cuentas'])){echo $_SESSION['INGRESO']['Formato_Cuentas'];}?>";
-	// console.log(formato);
+	//var formato = "<?php if(isset($_SESSION['INGRESO']['Formato_Cuentas'])){echo $_SESSION['INGRESO']['Formato_Cuentas'];}?>";
+	//console.log(formato);
 	// ---formato se se encuenta en header
 
-	let parte =formato.split('.');
+	let parte = formato.split('.');
 	var nuevo =  new Array(); 
 	let cadnew ='';
 	console.log(parte)
@@ -18,6 +18,7 @@ function validar_cuenta(campo)
 		if(cuentaini.length != '')
 		{
 			var b = parte[i].length;
+			console.log("Parte: ", parte[i], "Parte.lenght: ", parte[i].length)
 			var c = cuentaini.substr(0,b);
 			if(c.length==b)
 			{

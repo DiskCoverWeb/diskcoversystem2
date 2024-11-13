@@ -9,8 +9,8 @@ if(isset($_GET['consultar']))
 {
 	$controlador = new catalogoCtaC();
 	$parametros = $_POST['parametros'];
+	$result = $controlador->cargar_datos($parametros);
 	//print_r( $parametros);
-	echo json_encode($controlador->cargar_datos($parametros));
 }
 if(isset($_GET['imprimir_pdf']))
 {
@@ -44,7 +44,6 @@ class catalogoCtaC
       $datos = $this->modelo->cargar_datos_cuenta_tabla($parametros['OpcT'],$parametros['OpcG'],$parametros['OpcD'],$parametros['txt_CtaI'],$parametros['txt_CtaF']);
       // print_r($datos);die();
       return $datos;
-		
 	}
 
 	function imprimir_excel($parametros)

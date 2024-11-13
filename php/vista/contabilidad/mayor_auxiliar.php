@@ -1,73 +1,69 @@
 <script src="../../dist/js.mayor_auxiliar.js"></script>
 
    	<div class="row">
-   		<div class="row col-5">
-   			<div class="col-2 m-0 pe-0 d-flex">
+   		<div class="row row-cols-auto">
+			<div>
    				<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-default border border-3 rounded-2">
             		<img src="../../img/png/salire.png">
             	</a>
-            </div>   
-             <div class="col-2 m-0 pe-0 d-flex">
             	<button title="Consultar un Mayor Auxiliar"  data-toggle="tooltip" class="btn btn-default border border-3 rounded-2" onclick="consultar_datos(true,Individual);">
             		<img src="../../img/png/consultar.png" >
             	</button>
-             </div>		        
-        	<div class="col-2 m-0 pe-0 d-flex">
-        	   <button type="button" class="btn btn-default border border-3 rounded-2" data-toggle="dropdown" title="Descargar PDF">
+        	   <button type="button" class="btn btn-default border border-3 rounded-2" data-bs-toggle="dropdown" title="Descargar PDF">
         	      <img src="../../img/png/pdf.png">
                </button>
   		       	<ul class="dropdown-menu">
-  		       	 <li><a href="#" id="imprimir_pdf">Impresion normal</a></li>
-  		       	  <li><a href="#" id="imprimir_pdf_2">Por Sub Modulo / Centro de costos</a></li>
+  		       	 	<li><a href="#" id="imprimir_pdf">Impresion normal</a></li>
+  		       	  	<li><a href="#" id="imprimir_pdf_2">Por Sub Modulo / Centro de costos</a></li>
   		       	</ul>
-  		    </div>            	
-        	<div class="col-2 m-0 pe-0 d-flex">
-        		<button type="button" class="btn btn-default border border-3 rounded-2" data-toggle="dropdown"  title="Descargar Excel">
+        		<button type="button" class="btn btn-default border border-3 rounded-2" data-bs-toggle="dropdown"  title="Descargar Excel">
         	      <img src="../../img/png/table_excel.png">
                </button>
   		       	<ul class="dropdown-menu">
   		       	 <li><a href="#" id="imprimir_excel">Impresion normal</a></li>
   		       	  <li><a href="#" id="imprimir_excel_2">Por Sub Modulo / Centro de costos</a></li>
   		       	</ul>            	
-            </div>
-             <div class="col-2 m-0 pe-0 d-flex">
             	<button title="Consultar Varios Mayor Auxiliar"  class="btn btn-default border border-3 rounded-2" data-toggle="tooltip" onclick="consultar_datos(false,Individual);">
             		<img src="../../img/png/es.png" >
             	</button>
-            </div>           
+			</div>
    		</div>
    		
    	</div>
-	<div class="row">          
+	<div class="row row-cols-auto">          
               
 	  	<div class="col-3 p-0 m-0 ps-3"><br>
 	  	   	<div>	
 				<b class="">Cuenta inicial:</b>
             	<br>
-				<input type="text" name="txt_CtaI" id="txt_CtaI" class="col-7 border border-2" placeholder="<?php echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>">
+				<input type="text" name="txt_CtaI" id="txt_CtaI" class="form-control form-control-sm h-50 col-7 border border-2" placeholder="<?php echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>">
 			</div>
 			<div> 
 				<b>Cuenta final:</b>
 				<br>
-				<input type="text" name="txt_CtaF" id="txt_CtaF" onblur="llenar_combobox_cuentas()" class="col-7 border border-2" placeholder="<?php echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>" > 
+				<input type="text" name="txt_CtaF" id="txt_CtaF" onblur="llenar_combobox_cuentas()" class="form-control form-control-sm h-50 col-7 border border-2" placeholder="<?php echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>" > 
 			</div>
 		</div>
-	  	<div class="col-3 mt-2"><br>
-	  		<div class="row p-0 m-0">
-				<b class="col-2">Desde:</b>
-				<input type="date" name="desde" id="desde" class="col-6 ms-4 border border-2 border-dark"  value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">
+	  	<div class="col-4"><br>
+	  		<div class="row row-cols-auto p-0 m-0">
+				<b class="">Desde:</b>
+				<input type="date" name="desde" id="desde" class="form-control form-control-sm border rounded ms-2 w-50" style="font-size: 0.8rem"  value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">
 			</div>
-            <div class="row p-0 m-0">
-				<b class="col-2">Hasta:&nbsp</b>
-            	<input type="date" name="hasta" id="hasta"  class="col-6 ms-4 border border-2 border-dark" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">  	              	
+            <div class="row row-cols-auto p-0 m-0">
+				<label class="fw-bold" style="margin-left: 2px">Hasta:</label>
+            	<input type="date" name="hasta" id="hasta"  class="form-control form-control-sm border rounded ms-2 w-50" style="font-size: 0.8rem" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">  	              	
 			</div>
-			</div>
+		</div>
 
-	  	<div class="col-3 row pt-4">
-				<div class="">
+	  	<div class="col-5 pt-4">
+				<div class="row row-cols-auto">
 					<label style="margin:0px"><input type="checkbox" name="CheckUsu" id="CheckUsu"><b class=""> Por usuario</b></label>
 					<select class="form-control form-control-sm h-25" style="font-size: 0.83rem;" id="DCUsuario"  onchange="consultar_datos(true,Individual);">
 						<option value="" style="">Seleccione usuario</option>
+					</select>
+					<b>Por cuenta</b>
+					<select class="form-control form-control-sm h-25" style="font-size: 0.83rem" id="DCCtas" onchange="consultar_datos(true,Individual);">
+						<option value="">Seleccione cuenta</option>
 					</select>
 				</div>
 				<!--No aparece aparentemente en la vieja plantilla
@@ -80,10 +76,7 @@
 				-->
 		</div>
         <div class="col-3 pt-4">
-        	<b>Por cuenta</b>
-                <select class="form-control form-control-sm h-25" style="font-size: 0.83rem" id="DCCtas" onchange="consultar_datos(true,Individual);">
-                	<option value="">Seleccione cuenta</option>
-                </select>
+        	
           	    <b>Saldo anterior MN:</b> 
           	    <input type="text" name="OpcP" id="LabelTotSaldoAnt" class="border border-1">          
         </div>		

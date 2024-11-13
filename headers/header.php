@@ -64,6 +64,7 @@ function estado_licencia($f3)
 	return array('estado'=>$estado,'color'=>$color,'dias'=>$diffdias3,'noty'=>$noty_lic);
 }
 
+
 ?>
 
 <!doctype html>
@@ -100,7 +101,11 @@ function estado_licencia($f3)
 	<link rel="stylesheet" href="../../dist/css/sweetalert2.min.css" />
 	<script src="../../assets/js/jquery.min.js"></script>
 	<script src="../../dist/js/js_globales.js"></script>
-
+	<script type="text/javascript">
+		var formato = "<?php if (isset($_SESSION['INGRESO']['Formato_Cuentas'])) {
+      	echo $_SESSION['INGRESO']['Formato_Cuentas'];
+    	} ?>";
+	</script>
 	<title>Diskcover system - <?php echo $NombreModulo; ?></title>
 </head>
 

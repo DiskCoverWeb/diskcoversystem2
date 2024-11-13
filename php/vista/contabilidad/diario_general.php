@@ -46,57 +46,45 @@
 </script>
 
    <div>
-    <div class="p-2 row col-12">
-      <div class="row col-5 pt-2">
-        <div class="col-2">
-            <a  href="./contabilidad.php?mod=contabilidad#"   data-toggle="tooltip" title="Salir de modulo" class="btn btn-default border border-3 rounded-2">
-              <img src="../../img/png/salire.png">
-            </a>
-        </div>
-        <div class="col-2">
-          <button title="Consultar Catalogo de cuentas"  class="btn btn-default border border-3 rounded-2" data-toggle="tooltip" onclick="cargar_libro_general();">
-            <img src="../../img/png/consultar.png" >
-          </button>
-        </div>
-        <div class="col-2">
-          <button type="button" class="btn btn-default border border-3 rounded-2"  data-toggle="dropdown" title="Descargar PDF">
-            <img src="../../img/png/pdf.png">
-          </button>
-            <ul class="dropdown-menu">
-              <li><a href="#" id="imprimir_pdf">Diario General</a></li>
-              <li><a href="#" id="imprimir_pdf_2">Libro Diario</a></li>
-            </ul>
-        </div>
-        <div class="col-2">
-          <button type="button" class="btn btn-default border border-3 rounded-2"   data-toggle="dropdown" title="Descargar Excel">
-            <img src="../../img/png/table_excel.png">
-          </button>
-          <ul class="dropdown-menu">
-            <li><a href="#" id="imprimir_excel">Diario General</a></li>
-            <li><a href="#" id="imprimir_excel_2">Libro Diario</a></li>
-          </ul>
-        </div>
-        <div class="col-2">
-          <button data-toggle="tooltip"class="btn btn-default border border-3 rounded-2" title="Autorizar" onclick="Swal.fire('No tiene accesos a esta opcion','','info')">
-            <img src="../../img/png/autorizar1.png">
-          </button>
-        </div>
-        <?php if ($_SESSION['INGRESO']['Nombre_Completo']=="Administrador de Red"): ?>
-          <div class="border col-2">
-            <button data-toggle="tooltip"class="btn btn-default border border-3 rounded-2" title="Eliminar Comprobantes Incompletos" onclick="Eliminar_ComprobantesIncompletos()">
-              <img src="../../img/png/borrar_archivo.png" style="max-width: 32px;">
+    <div class="row row-cols-auto gx-3 pb-2">
+      <div class="row row-cols-auto">
+              <a  href="./contabilidad.php?mod=contabilidad#"   data-toggle="tooltip" title="Salir de modulo" class="btn btn-default p-1 border border-3 ps-2 pe-2">
+                <img src="../../img/png/salire.png">
+              </a>
+            <button title="Consultar Catalogo de cuentas"  class="btn btn-default p-1 border border-3 ps-2 pe-2" data-toggle="tooltip" onclick="cargar_libro_general();">
+              <img src="../../img/png/consultar.png" >
             </button>
+            <button type="button" class="btn btn-default p-1 border border-3 ps-2 pe-2"  data-toggle="dropdown" title="Descargar PDF">
+              <img src="../../img/png/pdf.png">
+            </button>
+              <ul class="dropdown-menu">
+                <li><a href="#" id="imprimir_pdf">Diario General</a></li>
+                <li><a href="#" id="imprimir_pdf_2">Libro Diario</a></li>
+              </ul>
+            <button type="button" class="btn btn-default p-1 border border-3 ps-2 pe-2"   data-toggle="dropdown" title="Descargar Excel">
+              <img src="../../img/png/table_excel.png">
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#" id="imprimir_excel">Diario General</a></li>
+              <li><a href="#" id="imprimir_excel_2">Libro Diario</a></li>
+            </ul>
+            <button data-toggle="tooltip"class="btn btn-default p-1 border border-3 ps-2 pe-2" title="Autorizar" onclick="Swal.fire('No tiene accesos a esta opcion','','info')">
+              <img src="../../img/png/autorizar1.png">
+            </button>
+          <?php if ($_SESSION['INGRESO']['Nombre_Completo']=="Administrador de Red"): ?>
+              <button data-toggle="tooltip"class="btn btn-default p-1 border border-3 ps-2 pe-2" title="Eliminar Comprobantes Incompletos" onclick="Eliminar_ComprobantesIncompletos()">
+                <img src="../../img/png/borrar_archivo.png" style="max-width: 32px;">
+              </button>
+          <?php endif ?>
           </div>
-        <?php endif ?>
-      </div>
-      <div class="row col-7">
+      <div class="row row-cols-auto col-7">
         <div class="col-6">
           <b>Desde:</b><br>
-            <input class="form-control input-sm h-50" type="date" min="01-01-2000" max="31-12-2050"  name="txt_desde" id="txt_desde" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);cargar_libro_general();">  
+            <input class="form-control form-control-sm h-25" type="date" min="01-01-2000" max="31-12-2050"  name="txt_desde" id="txt_desde" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);cargar_libro_general();">  
         </div>  
         <div class="col-6">
           <b>Hasta:</b><br>
-            <input class="form-control input-sm h-50" type="date"  min="01-01-2000" max="31-12-2050" name="txt_hasta" id="txt_hasta" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);cargar_libro_general();"> 
+            <input class="form-control form-control-sm h-25" type="date"  min="01-01-2000" max="31-12-2050" name="txt_hasta" id="txt_hasta" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);cargar_libro_general();"> 
         </div>   
       </div>
     </div>
@@ -138,13 +126,13 @@
       </div>
     </div>
     <div class="row p-2">
-      <div class="row col-7 m-0">
+      <div class="row row-cols-auto m-0">
         <div class="col-4 p-2">
           <label class="radio-inline input-sm"><input type="checkbox" name="CheckUsuario" id="CheckUsuario" onchange="cargar_libro_general();"> <b class="h-75">Por Usuario</b></label>          
         </div>
-        <div class="col-8">
-            <select class="form-control form-control-sm h-50 w-75 font-box pb-1" id="DCUsuario" >
-              <option value="" class="">Seleccione usuario</option>
+        <div class="col-5">
+            <select class="form-select form-select-sm  h-75 w-75 font-box pb-1" id="DCUsuario" >
+              <option value="" class="align-items-center">Seleccione usuario</option>
             </select>           
         </div>  
 <!-- No esta en el Diskcoversystem1
@@ -183,23 +171,23 @@
           </div>
       </div>
     </div>
-    <div class="row p-0 m-0">
+    <div class="row row-cols-auto p-0 m-0">
       <div class="col-2">
         <b class="h-75 ">Total Debe</b>
       </div>
       <div class="col-2">
-        <input type="text" id="debe" class="text-right rounded border border-primary form-control h-75" size="8" readonly/>
+        <input type="text" id="debe" class="text-right rounded border form-control h-75" size="8" readonly/>
       </div>
       <div class="col-2">
         <b class="h-75 ">Total Haber</b>
       </div>
       <div class="col-2">
-        <input type="text" id="haber" class="text-right rounded border border-primary form-control h-75" size="8" readonly/>
+        <input type="text" id="haber" class="text-right rounded border form-control h-75" size="8" readonly/>
       </div>
       <div class="col-2">
         <b class="h-75">Debe - Haber</b>
       </div>
-      <div class="col-2 text-right rounded border bg-light h-75">  
+      <div class="col-2 text-right rounded border border-3 h-75">  
         <label id="Saldo"></label>       
       </div>
     </div>
@@ -208,18 +196,18 @@
         <b class="h-75">Total Debe ME</b>
       </div>
       <div class="col-2">
-        <input type="text" id="debe_me" class="text-right rounded border border-primary form-control h-75" size="8" readonly/>
+        <input type="text" id="debe_me" class="text-right rounded border form-control h-75" size="8" readonly/>
       </div>
       <div class="col-2">
         <b class="h-75">Total Haber ME</b>
       </div>
       <div class="col-2">
-        <input type="text" id="haber_me" class="text-right rounded border border-primary form-control h-75" size="8" readonly/>
+        <input type="text" id="haber_me" class="text-right rounded border form-control h-75" size="8" readonly/>
       </div>
       <div class="col-2">
         <b class="h-75">Debe - Haber ME</b>
       </div>
-      <div class="col-2 text-right rounded border bg-light h-75">
+      <div class="col-2 text-right rounded border border-3 bg-light h-75">
         <label id="SaldoME"></label>       
       </div>
     </div>

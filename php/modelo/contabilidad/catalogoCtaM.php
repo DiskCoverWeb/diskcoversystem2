@@ -46,6 +46,7 @@ class catalogoCtaM
 	   if($reporte_Excel==false)
 	   {
 	   	  return $result;
+		  
 	   }else
 	   {
 	   	$tablaHTML =array();
@@ -95,12 +96,8 @@ class catalogoCtaM
        	 $sql.=" AND DG='D'";
        }
        $sql.='ORDER BY Codigo';
-      
-       $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-80;
-	   $tbl = grilla_generica_new($sql,'Catalogo_Cuentas','tbl_medi',false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
-
+	   $tbl = grilla_generica_new($sql, false);
        return $tbl;
-
 	}
 
 	function buscar_cuenta($cuenta,$item=false)
