@@ -79,6 +79,8 @@ class lista_notas_creditoC
     	$codigo = $parametros['ci'];
     	$tbl = $this->modelo->notas_credito_emitidas_tabla($codigo,$parametros['desde'],$parametros['hasta'],$parametros['serie']);
     	$tr='';
+
+    	return $tbl;
     	foreach ($tbl as $key => $value) {
     		 $exis = $this->sri->catalogo_lineas('NC',$value['Serie_NC']);
     		 $autorizar = '';$anular = '';

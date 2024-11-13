@@ -177,74 +177,17 @@ class lista_facturasC
 		$tbl = $this->modelo->facturas_emitidas_tabla($codigo, $parametros['per'], $parametros['desde'], $parametros['hasta'], $parametros['serie'], $autorizados);
 		$tr = '';
 
-		return $tbl;
 
 		foreach ($tbl as $key => $value) {
 			$exis = $this->modelo->catalogo_lineas($value['TC'], $value['Serie']);
-			$autorizar = '';
-			$anular = '';
-			$cli_data = $this->modelo->Cliente($value['CodigoC']);
-			$email = '';
-			if (count($cli_data) > 0) {
-				if ($cli_data[0]['Email'] != '.' && $cli_data[0]['Email'] != '') {
-					$email .= $cli_data[0]['Email'] . ',';
-				}
-				if ($cli_data[0]['EmailR'] != '.' && $cli_data[0]['EmailR'] != '') {
-					$email .= $cli_data[0]['EmailR'] . ',';
-				}
-				if ($cli_data[0]['Email2'] != '.' && $cli_data[0]['Email2'] != '') {
-					$email .= $cli_data[0]['Email2'] . ',';
-				}
-			}
-
-			$tr .= '<tr>
-            <td>
-            <div class="input-group-btn">
-								<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones
-								<span class="fa fa-caret-down"></span></button>
-								<ul class="dropdown-menu">
-								<li><a href="#" onclick="Ver_factura(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\',\'' . $value['Autorizacion'] . '\')"><i class="fa fa-eye"></i> Ver factura</a></li>';
-			if (count($exis) > 0 && strlen($value['Autorizacion']) == 13 && $parametros['tipo'] != '') {
-				$tr .= '<li><a href="#" onclick="autorizar(\'' . $value['TC'] . '\',\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['Fecha']->format('Y-m-d') . '\',\'' . $email. '\')" ><i class="fa fa-paper-plane"></i>Autorizar</a></li>';
-			}
-			if ($value['T'] != 'A' && $parametros['tipo'] != '') {
-				$tr .= '<li><a href="#" onclick="anular_factura(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\')"><i class="fa fa-times-circle"></i>Anular factura</a></li>';
-			}
-			$tr .= '<li><a href="#" onclick=" modal_email_fac(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\',\'' . $email . '\')"><i class="fa fa-envelope"></i> Enviar Factura por email</a></li>
-								<li><a href="#" onclick="descargar_fac(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\')"><i class="fa fa-download"></i> Descargar Factura</a></li>';
-			if (strlen($value['Autorizacion']) > 13) {
-				$tr .= '<li><a href="#" onclick="descargar_xml(\'' . $value['Autorizacion'] . '\')"><i class="fa fa-download"></i> Descargar XML</a></li>';
-			}else if(strlen($value['Autorizacion']) <= 13 && $value['T'] != 'A')
+			$tbl[$key]['ExisteSerie'] = 'No';
+			if(count($exis)>0)
 			{
-				$tr .= '<li><a href="#" onclick="generar_xml(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['TC'] . '\')"><i class="fa fa-download"></i> Generar XML</a></li>';
+				$tbl[$key]['ExisteSerie'] = 'Si';
 			}
-			$tr .= '
-								</ul>
-						</div>
-
-
-            </td>
-            <td>' . $value['T'] . '</td>
-            <td>' . $value['Razon_Social'] . '</td>
-            <td>' . $value['TC'] . '</td>
-            <td>' . $value['Serie'] . '</td>
-            <td>' . $value['Autorizacion'] . '</td>
-            <td>' . $value['Factura'] . '</td>
-            <td>' . $value['Fecha']->format('Y-m-d') . '</td>           
-            <td class="text-right">' . $value['SubTotal'] . '</td>
-            <td class="text-right">' . $value['Con_IVA'] . '</td>
-            <td class="text-right">' . $value['IVA'] . '</td>
-            <td class="text-right">' . $value['Descuentos'] . '</td>
-            <td class="text-right">' . $value['Total'] . '</td>
-            <td class="text-right">' . $value['Saldo'] . '</td>
-            <td>' . $value['RUC_CI'] . '</td>
-            <td>' . $value['TB'] . '</td>
-          </tr>';
 		}
 
-		// print_r($tr);die();
-
-		return $tr;
+		return $tbl;
 	}
 
 	function tabla_factura_electronica($parametros)
