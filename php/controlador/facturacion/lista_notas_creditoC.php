@@ -80,6 +80,14 @@ class lista_notas_creditoC
     	$tbl = $this->modelo->notas_credito_emitidas_tabla($codigo,$parametros['desde'],$parametros['hasta'],$parametros['serie']);
     	$tr='';
 
+    	foreach ($tbl as $key => $value) {
+    		$exis = $this->sri->catalogo_lineas($value['TC'], $value['Serie']);
+			$tbl[$key]['ExisteSerie'] = 'No';
+			if(count($exis)>0)
+			{
+				$tbl[$key]['ExisteSerie'] = 'Si';
+			}
+    	}
     	return $tbl;
     	foreach ($tbl as $key => $value) {
     		 $exis = $this->sri->catalogo_lineas('NC',$value['Serie_NC']);

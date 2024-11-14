@@ -31,7 +31,7 @@
           columns: [
               { data: null,
                   render: function(data, type, item) {
-                    /*
+                    
                        email = '';
                        if (item.Email != '.' && item.Email != '') {
                           email+= item.Email+',';
@@ -43,42 +43,44 @@
                           email+= item.Email2+ ',';
                         }
                     options=`<li>
-                                <a href="#" class="dropdown-item" onclick="Ver_factura('${item.Factura}','${item.Serie}','${item.CodigoC}','${item.Autorizacion}')"><i class="bx bx-show-alt"></i> Ver factura</a>
+                                <a href="#" class="dropdown-item" onclick="Ver_Nota_credito('${item.Secuencial_NC}','${item.Serie_NC}')"><i class="bx bx-show-alt"></i> Ver Nota de credito</a>
                             </li>
                             <li>
-                              <a href="#" class="dropdown-item" onclick=" modal_email_fac('${item.Factura}','${item.Serie}','${item.CodigoC}','${email}')"><i class="bx bx-envelope"></i> Enviar Factura por email</a>
+
+                              <a href="#" class="dropdown-item" onclick=" modal_email_nota('${item.Secuencial_NC}','${item.Serie_NC}','.${item.Factura}','${item.Autorizacion_NC}','${email}')"><i class="bx bx-envelope"></i> Enviar Nota de credito por email</a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item" onclick="descargar_fac('${item.Factura}','${item.Serie}','${item.CodigoC}')"><i class="bx bx-download"></i> Descargar Factura</a>
+                                <a href="#" class="dropdown-item" onclick="descargar_nota('${item.Secuencial_NC}','${item.Serie_NC}','${item.Factura}','${item.Serie}')"><i class="bx bx-download"></i> Descargar Nota de credito</a>
                             </li>`;
-                    if (item.ExisteSerie =='Si'  && item.Autorizacion.length == 13 && TipoGlobal != '') 
+                  
+                    if (item.ExisteSerie =='Si'  && item.Autorizacion_NC.length == 13) 
                     {
                         options+=`<li>
-                          <a href="#" class="dropdown-item" onclick="autorizar('${item.TC}','${item.Factura}','${item.Serie}','${formatoDate(item.Fecha.date)}','${email}')" ><i class="bx bx-paper-plane"></i>Autorizar</a>
+                          <a href="#" class="dropdown-item" onclick="autorizar('${item.Secuencial_NC}','${item.Serie_NC}','${formatoDate(item.Fecha.date)}')" ><i class="bx bx-paper-plane"></i>Autorizar</a>
                           </li>`;
-                    }
-                    if (item.T != 'A' && TipoGlobal != '') 
+                    }else
                     {
-                          options+=`<li><a href="#" class="dropdown-item" onclick="anular_factura('${item.Factura}','${item.Serie}','${item.CodigoC}')"><i class="bx bx-x"></i>Anular factura</a></li>`;
+                       options+=`<li><a href="#"  class="dropdown-item btn-danger"><i class="fa fa-info"></i>Para autorizar Asigne en catalo de lineas la serie: ${item.Serie_NC}</a></li>`;
+
                     }
-                    if (item.Autorizacion.length > 13) 
+                    
+                    if (item.T != 'A') 
                     {
-                        options+=`<li><a href="#" class="dropdown-item" onclick="descargar_xml('${item.Autorizacion}')">
+                          options+=`<li><a href="#" class="dropdown-item" onclick="anular_factura('${item.Secuencial_NC}','${item.Serie_NC}','${item.Codigo}')"><i class="bx bx-x"></i>Anular Nota de credito</a></li>`;
+                    }
+                    if (item.Autorizacion_NC.length > 13) 
+                    {
+                        options+=`<li><a href="#" class="dropdown-item" onclick="descargar_xml('${item.Autorizacion_NC}')">
                         <i class="bx bx-download"></i> Descargar XML</a></li>`;
-                    }else if(item.Autorizacion_NC.length <= 13 && item.T != 'A')
-                    {
-                        options+=`<li><a href="#" class="dropdown-item" onclick="generar_xml('${item.Factura}','${item.Serie}','${item.TC}')"><i class="bx bx-download"></i> Generar XML</a></li>`;
                     }
 
-                  */
 
+                  
                     return `<div class="input-group-btn">
                                 <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">Acciones
                                     <span class="fa fa-caret-down"></span>
                                 </button>
-                                <ul class="dropdown-menu">
-                                  
-                                </ul>
+                                <ul class="dropdown-menu">`+options+`</ul>
                             </div>`;                    
                   } 
               },
