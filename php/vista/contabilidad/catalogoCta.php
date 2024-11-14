@@ -60,20 +60,22 @@
 					</li>
 				</ul>
 				<h6>PLAN DE CUENTAS</h6>
-				<div class="tab-content" style="background-color:#E7F5FF">
+				<div class="tab-content border rounded" style="background-color:#E7F5FF">
 					<div id="home" class="border">
 						<div class="tab-content" id="cta-tabContent">
 							<div class="tab-pane fade active show" id="primary-pills-all" role="tabpanel" >
 								<table class="table text-sm w-100" id="tbl_tablaCta">
 									<thead>
-										<th>Clave</th>
-										<th>TC</th>
-										<th>ME</th>
-										<th>DG</th>
-										<th>Codigo</th>
-										<th>Cuenta</th>
-										<th>Presupuesto</th>
-										<th>Codigo_Ext</th>
+										<tr>
+											<th class="text-center">Clave</th>
+											<th class="text-center">TC</th>
+											<th class="text-center">ME</th>
+											<th class="text-center">DG</th>
+											<th class="text-center">Codigo</th>
+											<th class="text-center">Cuenta</th>
+											<th class="text-center">Presupuesto</th>
+											<th class="text-center">Codigo_Ext</th>
+										</tr>
 									</thead>
 									<tbody>
 										<tr>
@@ -92,14 +94,14 @@
 							<div class="tab-pane fade" id="primary-pills-grupo" role="tabpanel">
 								<table class="table text-sm w-100" id="tbl_tablaCtaGrupos">
 									<thead>
-										<th>Clave</th>
-										<th>TC</th>
-										<th>ME</th>
-										<th>DG</th>
-										<th>Codigo</th>
-										<th>Cuenta</th>
-										<th>Presupuesto</th>
-										<th>Codigo_Ext</th>
+										<th class="text-center">Clave</th>
+										<th class="text-center">TC</th>
+										<th class="text-center">ME</th>
+										<th class="text-center">DG</th>
+										<th class="text-center">Codigo</th>
+										<th class="text-center">Cuenta</th>
+										<th class="text-center">Presupuesto</th>
+										<th class="text-center">Codigo_Ext</th>
 									</thead>
 									<tbody>
 										<tr>
@@ -118,14 +120,14 @@
 							<div class="tab-pane fade" id="primary-pills-detalle">
 								<table class="table text-sm w-100" id="tbl_tablaCtaDetalles">
 									<thead>
-										<th>Clave</th>
-										<th>TC</th>
-										<th>ME</th>
-										<th>DG</th>
-										<th>Codigo</th>
-										<th>Cuenta</th>
-										<th>Presupuesto</th>
-										<th>Codigo_Ext</th>
+										<th class="text-center">Clave</th>
+										<th class="text-center">TC</th>
+										<th class="text-center">ME</th>
+										<th class="text-center">DG</th>
+										<th class="text-center">Codigo</th>
+										<th class="text-center">Cuenta</th>
+										<th class="text-center">Presupuesto</th>
+										<th class="text-center">Codigo_Ext</th>
 									</thead>
 									<tbody>
 										<tr>

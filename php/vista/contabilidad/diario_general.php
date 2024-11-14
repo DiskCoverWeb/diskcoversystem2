@@ -1,5 +1,6 @@
 <?php  
 //require_once("panel.php");
+
 ?>
 <script src="../../dist/js/diario_general.js"></script>
 <style>
@@ -46,33 +47,33 @@
 </script>
 
    <div>
-    <div class="row row-cols-auto gx-3 pb-2">
-      <div class="row row-cols-auto">
-              <a  href="./contabilidad.php?mod=contabilidad#"   data-toggle="tooltip" title="Salir de modulo" class="btn btn-default p-1 border border-3 ps-2 pe-2">
+    <div class="row row-cols-auto gx-3 pb-2 d-flex align-items-center ps-2">
+      <div class="row row-cols-auto btn-group">
+              <a  href="./contabilidad.php?mod=contabilidad#"   data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
                 <img src="../../img/png/salire.png">
               </a>
-            <button title="Consultar Catalogo de cuentas"  class="btn btn-default p-1 border border-3 ps-2 pe-2" data-toggle="tooltip" onclick="cargar_libro_general();">
+            <button title="Consultar Catalogo de cuentas"  class="btn btn-outline-secondary" data-bs-toggle="tooltip" onclick="cargar_libro_general();">
               <img src="../../img/png/consultar.png" >
             </button>
-            <button type="button" class="btn btn-default p-1 border border-3 ps-2 pe-2"  data-toggle="dropdown" title="Descargar PDF">
+            <button type="button" class="btn btn-outline-secondary"  data-bs-toggle="dropdown" title="Descargar PDF">
               <img src="../../img/png/pdf.png">
             </button>
               <ul class="dropdown-menu">
-                <li><a href="#" id="imprimir_pdf">Diario General</a></li>
-                <li><a href="#" id="imprimir_pdf_2">Libro Diario</a></li>
+                <li><a href="#" class="dropdown-item" id="imprimir_pdf">Diario General</a></li>
+                <li><a href="#" class="dropdown-item" id="imprimir_pdf_2">Libro Diario</a></li>
               </ul>
-            <button type="button" class="btn btn-default p-1 border border-3 ps-2 pe-2"   data-toggle="dropdown" title="Descargar Excel">
+            <button type="button" class="btn btn-outline-secondary"   data-bs-toggle="dropdown" title="Descargar Excel">
               <img src="../../img/png/table_excel.png">
             </button>
             <ul class="dropdown-menu">
-              <li><a href="#" id="imprimir_excel">Diario General</a></li>
-              <li><a href="#" id="imprimir_excel_2">Libro Diario</a></li>
+              <li><a href="#" class="dropdown-item" id="imprimir_excel">Diario General</a></li>
+              <li><a href="#" class="dropdown-item" id="imprimir_excel_2">Libro Diario</a></li>
             </ul>
-            <button data-toggle="tooltip"class="btn btn-default p-1 border border-3 ps-2 pe-2" title="Autorizar" onclick="Swal.fire('No tiene accesos a esta opcion','','info')">
+            <button data-bs-toggle="tooltip"class="btn btn-outline-secondary" title="Autorizar" onclick="Swal.fire('No tiene accesos a esta opcion','','info')">
               <img src="../../img/png/autorizar1.png">
             </button>
           <?php if ($_SESSION['INGRESO']['Nombre_Completo']=="Administrador de Red"): ?>
-              <button data-toggle="tooltip"class="btn btn-default p-1 border border-3 ps-2 pe-2" title="Eliminar Comprobantes Incompletos" onclick="Eliminar_ComprobantesIncompletos()">
+              <button data-bs-toggle="tooltip"class="btn btn-outline-secondary" title="Eliminar Comprobantes Incompletos" onclick="Eliminar_ComprobantesIncompletos()">
                 <img src="../../img/png/borrar_archivo.png" style="max-width: 32px;">
               </button>
           <?php endif ?>
@@ -127,48 +128,123 @@
     </div>
     <div class="row p-2">
       <div class="row row-cols-auto m-0">
-        <div class="col-4 p-2">
-          <label class="radio-inline input-sm"><input type="checkbox" name="CheckUsuario" id="CheckUsuario" onchange="cargar_libro_general();"> <b class="h-75">Por Usuario</b></label>          
+        <div class="row row-cols-auto w-50">
+          <div class="col-4 p-2">
+            <label class="radio-inline"><input type="checkbox" name="CheckUsuario" id="CheckUsuario" onchange="cargar_libro_general();"> <b class="h-75">Por Usuario</b></label>          
+          </div>
+          <div class="col-8 d-flex align-items-center">
+              <select class="form-select form-select-sm  h-75 w-75 pb-1" id="DCUsuario" >
+                <option value="" class="align-items-center">Seleccione usuario</option>
+              </select>           
+          </div> 
         </div>
-        <div class="col-5">
-            <select class="form-select form-select-sm  h-75 w-75 font-box pb-1" id="DCUsuario" >
-              <option value="" class="align-items-center">Seleccione usuario</option>
-            </select>           
-        </div>  
-<!-- No esta en el Diskcoversystem1
-      <div class="col-sm-2">        
-        <label class="radio-inline input-sm" id='lblAgencia'><input type="checkbox" name="CheckAgencia" id="CheckAgencia" onchange="cargar_libro_general();"> <b>Por Agencia</b></label>
-      </div>
-      <div class="col-sm-4">
-        <select class="form-control input-sm" id="DCAgencia">
-          <option value="">Seleccione Agencia</option>
-        </select>
+        <div class="row row-cols-auto w-50">
+          <div class="col-4 p-2">        
+            <label class="radio-inline" id='lblAgencia'><input type="checkbox" name="CheckAgencia" id="CheckAgencia" onchange="cargar_libro_general();"> <b class="h-75">Por Agencia</b></label>
+          </div>
+          <div class="col-8 d-flex align-items-center">
+            <select class="form-select form-select-sm h-75 w-75 pb-1" id="DCAgencia">
+              <option value="" class="align-items-center">Seleccione Agencia</option>
+            </select>
+        </div>
      </div> 
--->
      </div>             
     </div>       
     <!--seccion de panel-->
     <div class="row">
       <input type="input" name="activo" id="activo" value="1" hidden="">
       <div class="col-12">
-        <ul class="nav nav-tabs pt-1">
-           <li class="active">
-            <a data-toggle="tab" href="#home" id="titulo_tab" class="" onclick="activar(this)"><h6 class="">DIARIO GENERAL</h6></a></li>
-           <li class="">
-            <a data-toggle="tab" href="#menu1" id="titulo2_tab" class="" onclick="activar(this)"><h6 class="ps-3">SUB MODULOS</h6></a></li>
+        <ul class="nav nav-pills pt-1" role="tablist">
+           <li class="nav-item" role="presentation">
+            <a data-bs-toggle="pill" href="#Primary-DG" id="titulo_tab" class="nav-link active">
+              <div class="tab-title">DIARIO GENERAL</div>
+            </a>
+          </li>
+           <li class="nav-item">
+            <a data-bs-toggle="pill" href="#Primary-SM" id="titulo2_tab" class="nav-link">
+              <div class="tab-title">SUB MODULOS</div>
+            </a>
+          </li>
         </ul>       
-          <div class="tab-content" >
-            <div id="home" class="tab-pane fade in active">
-               <div class="table-responsive" id="tabla_">
-                                
-               </div>
+        <div class="tab-content pt-2" ">
+                <div class="tab-pane fade active show p-1" id="Primary-DG" style="background-color:#E7F5FF">
+                  <table class="table text-sm w-100" id="tbl_DiarioGeneral">
+                    <thead>
+                      <tr>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">TP</th>
+                        <th class="text-center">Número</th>
+                        <th class="text-center">Beneficiario</th>
+                        <th class="text-center">Concepto</th>
+                        <th class="text-center">Cta</th>
+                        <th class="text-center">Cuenta</th>
+                        <th class="text-center">Parcial_ME</th>
+                        <th class="text-center">Debe</th>
+                        <th class="text-center">Haber</th>
+                        <th class="text-center">Detalle</th>
+                        <th class="text-center">Nombre_Completo</th>
+                        <th class="text-center">CodigoU</th>
+                        <th class="text-center">Autorizado</th>
+                        <th class="text-center">Item</th>
+                        <th class="text-center">ID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
              </div>
-             <div id="menu1" class="tab-pane fade">
-               <div class="table-responsive" id="tabla_submodulo">
-                              
-               </div>
-             </div>           
-          </div>
+               <div class="tab-pane fade border rounded p-1" id="Primary-SM" style="background-color:#E7F5FF">
+                  <table class="table text-sm w-100" id="tbl_Submodulos">
+                  <thead>
+                    <tr>
+                      <th class="text-center">Fecha</th>
+                      <th class="text-center">TP</th>
+                      <th class="text-center">Número</th>
+                      <th class="text-center">Cliente</th>
+                      <th class="text-center">Cta</th>
+                      <th class="text-center">TC</th>
+                      <th class="text-center">Factura</th>
+                      <th class="text-center">Debitos</th>
+                      <th class="text-center">Creditos</th>
+                      <th class="text-center">Prima</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                  </table>      
+                </div>
+        </div>
       </div>
     </div>
     <div class="row row-cols-auto p-0 m-0">

@@ -67,85 +67,158 @@ function sucursal_exis()
 
 function cargar_libro_general()
 { 
-        var parametros= {
-          'OpcT':$("#OpcT").is(':checked'),
-          'OpcCI':$("#OpcCI").is(':checked'),
-          'OpcCE':$("#OpcCE").is(':checked'),
-          'OpcCD':$("#OpcCD").is(':checked'),
-          'OpcA':$("#OpcA").is(':checked'),
-          'OpcND':$("#OpcND").is(':checked'),
-          'OpcNC':$("#OpcNC").is(':checked'),
-          'CheckNum':$("#CheckNum").is(':checked'),
-          'TextNumNo':$('#TextNumNo').val(),
-          'TextNumNo1':$('#TextNumNo1').val(),
-          'CheckUsuario':$("#CheckUsuario").is(':checked'),
-          'DCUsuario':$('#DCUsuario').val(),
-          'CheckAgencia':$("#CheckAgencia").is(':checked'),
-          'DCAgencia':$('#DCAgencia').val(),
-          'DCAgencia':$('#DCAgencia').val(),
-          'Fechaini':$('#txt_desde').val(),
-          'Fechafin':$('#txt_hasta').val(),
-        }
-
-          $.ajax({
-    data:  {parametros:parametros},
-    url:   '../controlador/contabilidad/diario_generalC.php?consultar_libro=true',
-    type:  'post',
-    dataType: 'json',
-    beforeSend: function () {   
-         var spiner = '<div class="text-center"><img src="../../img/gif/loader4.1.gif" width="200" height="100"></div>'  
-      $('#tabla_').html(spiner);
-    },
-      success:  function (response) { 
-      libro_general_saldos(); 
-      libro_submodulo();  
-      $('#tabla_').html(response);
+  var parametros= {
+    'OpcT':$("#OpcT").is(':checked'),
+    'OpcCI':$("#OpcCI").is(':checked'),
+    'OpcCE':$("#OpcCE").is(':checked'),
+    'OpcCD':$("#OpcCD").is(':checked'),
+    'OpcA':$("#OpcA").is(':checked'),
+    'OpcND':$("#OpcND").is(':checked'),
+    'OpcNC':$("#OpcNC").is(':checked'),
+    'CheckNum':$("#CheckNum").is(':checked'),
+    'TextNumNo':$('#TextNumNo').val(),
+    'TextNumNo1':$('#TextNumNo1').val(),
+    'CheckUsuario':$("#CheckUsuario").is(':checked'),
+    'DCUsuario':$('#DCUsuario').val(),
+    'CheckAgencia':$("#CheckAgencia").is(':checked'),
+    'DCAgencia':$('#DCAgencia').val(),
+    'DCAgencia':$('#DCAgencia').val(),
+    'Fechaini':$('#txt_desde').val(),
+    'Fechafin':$('#txt_hasta').val(),
     }
-  });
+  
+  if ($.fn.dataTable.isDataTable('#tbl_DiarioGeneral')){
+    $('#tbl_DiarioGeneral').DataTable().destroy();
+    }
 
+  tbl_diarioGeneral = $('#tbl_DiarioGeneral').DataTable({
+    autoWidth: true, 
+
+    languaje:{
+      url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
+    },
+    ajax: {
+      url: '../controlador/contabilidad/diario_generalC.php?consultar_libro=true',
+      type: 'post',
+      data: function(d){
+        console.log("Parametros: ", parametros)
+        return { parametros:parametros }
+      },
+      dataSrc: function(response){
+        return response.data
+      },
+      beforeSend: function(){
+        var spiner = '<div class="text-center"><img src="../../img/gif/loader4.1.gif" width="200" height="100"></div>'  
+        $('#tbl_DiarioGeneral').html(spiner);
+      },
+      complete: function(){ 
+        $('#tbl_DiarioGeneral').html('');
+    
+      },
+      error: function(xhr, status, error){
+        console.log("Error en la solicutud: ", status, error);
+      }
+    },
+    scrollY: '300px',
+    scrollCollapse: true,
+    scrollX: true, 
+    columns: [
+      { data: 'Fecha'}, 
+      { data: 'TP'},
+      { data: 'Numero'},
+      { data: 'Beneficiario'},
+      { data: 'Concepto'},
+      { data: 'Cta'}, 
+      { data: 'Cuenta'},
+      { data: 'Parcial_ME'},
+      { data: 'Debe'},
+      { data: 'Haber'},
+      { data: 'Detalle'}, 
+      { data: 'Nombre_Completo'},
+      { data: 'CodigoU'},
+      { data: 'Autorizado'},
+      { data: 'Item'},
+      { data: 'ID'}
+    ],
+    order: [
+      [0, 'asc']
+    ]
+  }); 
+  
 }
 
 function libro_submodulo()
 { 
-  $('#myModal_espera').modal('show');
-        var parametros= {
-          'OpcT':$("#OpcT").is(':checked'),
-          'OpcCI':$("#OpcCI").is(':checked'),
-          'OpcCE':$("#OpcCE").is(':checked'),
-          'OpcCD':$("#OpcCD").is(':checked'),
-          'OpcA':$("#OpcA").is(':checked'),
-          'OpcND':$("#OpcND").is(':checked'),
-          'OpcNC':$("#OpcNC").is(':checked'),
-          'CheckNum':$("#CheckNum").is(':checked'),
-          'TextNumNo':$('#TextNumNo').val(),
-          'TextNumNo1':$('#TextNumNo1').val(),
-          'CheckUsuario':$("#CheckUsuario").is(':checked'),
-          'DCUsuario':$('#DCUsuario').val(),
-          'CheckAgencia':$("#CheckAgencia").is(':checked'),
-          'DCAgencia':$('#DCAgencia').val(),
-          'DCAgencia':$('#DCAgencia').val(),
-          'Fechaini':$('#txt_desde').val(),
-          'Fechafin':$('#txt_hasta').val(),
+  var parametros= {
+    'OpcT':$("#OpcT").is(':checked'),
+    'OpcCI':$("#OpcCI").is(':checked'),
+    'OpcCE':$("#OpcCE").is(':checked'),
+    'OpcCD':$("#OpcCD").is(':checked'),
+    'OpcA':$("#OpcA").is(':checked'),
+    'OpcND':$("#OpcND").is(':checked'),
+    'OpcNC':$("#OpcNC").is(':checked'),
+    'CheckNum':$("#CheckNum").is(':checked'),
+    'TextNumNo':$('#TextNumNo').val(),
+    'TextNumNo1':$('#TextNumNo1').val(),
+    'CheckUsuario':$("#CheckUsuario").is(':checked'),
+    'DCUsuario':$('#DCUsuario').val(),
+    'CheckAgencia':$("#CheckAgencia").is(':checked'),
+    'DCAgencia':$('#DCAgencia').val(),
+    'DCAgencia':$('#DCAgencia').val(),
+    'Fechaini':$('#txt_desde').val(),
+    'Fechafin':$('#txt_hasta').val(),
+  }
+  
+    if ($.fn.dataTable.isDataTable('#tbl_Submodulos')){
+      $('#tbl_Submodulos').DataTable().destroy();
+      }
+
+      tbl_submodulos = $('#tbl_Submodulos').DataTable({
+      autoWidth: true, 
+      languaje:{
+        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
+      },
+      ajax: {
+        url: '../controlador/contabilidad/diario_generalC.php?consultar_submodulo=true',
+        type: 'post',
+        data: function(d){
+          console.log("Parametros: ", parametros)
+          return { parametros:parametros }
+        },
+        dataSrc: function(response){
+          return response.data
+        },
+        beforeSend: function(){
+          var spiner = '<div class="text-center"><img src="../../img/gif/loader4.1.gif" width="200" height="100"></div>'  
+          $('#tbl_Submodulos').html(spiner);
+        },
+        complete: function(){ 
+          $('#tbl_Submodulos').html('');
+      
+        },
+        error: function(xhr, status, error){
+          console.log("Error en la solicutud: ", status, error);
         }
-
-          $.ajax({
-    data:  {parametros:parametros},
-    url:   '../controlador/contabilidad/diario_generalC.php?consultar_submodulo=true',
-    type:  'post',
-    dataType: 'json',
-    beforeSend: function () {   
-         var spiner = '<div class="text-center"><img src="../../img/gif/loader4.1.gif" width="100" height="100"></div>';     
-         $('#tabla_submodulo').html(spiner);
-    },
-      success:  function (response) { 
-        // if(response)
-        // {
-          $('#tabla_submodulo').html(response);
-        // }
-           $('#myModal_espera').modal('hide');   
-    }
-  });
-
+      },
+      scrollY: '300px',
+      scrollCollapse: true,
+      scrollX: true,
+      columns: [
+        { data: 'Fecha'}, 
+        { data: 'TP'},
+        { data: 'Numero'},
+        { data: 'Cliente'},
+        { data: 'Cta'},
+        { data: 'TC'}, 
+        { data: 'Factura'},
+        { data: 'Debitos'},
+        { data: 'Creditos'},
+        { data: 'Prima'}
+      ],
+      order: [
+        [0, 'asc']
+      ]
+    });
 }
 
 function libro_general_saldos()
@@ -269,6 +342,8 @@ $(document).ready(function()
   consultarDatosAgenciaUsuario();
   cargar_libro_general();
   sucursal_exis();
+  libro_submodulo();
+  libro_general_saldos();
 
   $('#txt_CtaI').keyup(function(e){ 
     if(e.keyCode != 46 && e.keyCode !=8)

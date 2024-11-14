@@ -112,8 +112,7 @@ ORDER BY Acceso_Sucursales.Item,Empresa";
          AND Co.CodigoU = Ac.Codigo 
          ORDER BY T.Fecha,T.TP,T.Numero,T.ID ";
 
-    $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla']??0)-203;
-   return grilla_generica_new($sql,' Transacciones As T,Catalogo_Cuentas As C,Comprobantes As Co,Clientes As CL,Accesos As Ac ','tbl_di',false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
+   return grilla_generica_new($sql,false);
 	}
 
 
@@ -333,9 +332,9 @@ ORDER BY Acceso_Sucursales.Item,Empresa";
        AND T.Codigo = C.Codigo 
        ORDER BY T.Fecha,T.TP,T.Numero,T.Cta,T.Factura ";
 
-  $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla']??0);
-  $tbl = grilla_generica_new($sql,' Trans_SubCtas As T,Clientes As C ','tbl_mo',false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
-return $tbl;
+  
+  $tbl = grilla_generica_new($sql,false);
+  return $tbl;
   }
 
   function cargar_consulta_submodulo_datos($FechaIni,$FechaFin,$DCAgencia,$DCUsuario,$TextNumNo,$TextNumNo1,$OpcCI,$OpcCE,$OpcCD,$OpcND,$OpcNC,$OpcA,$CheckAgencia,$CheckUsuario,$CheckNum)

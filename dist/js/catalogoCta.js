@@ -34,7 +34,8 @@ function consultar_datos()
             }
         },
         scrollX: true,
-        scrollY: true,
+        scrollY: '300px', 
+        scrollCollapse: true,
         columns: [
             { data: 'Clave' },
             { data: 'TC' },
@@ -83,7 +84,8 @@ function consultar_datos()
             }
         },
         scrollX: true,
-        scrollY: true,
+        scrollY: '300px', 
+        scrollCollapse: true,
         columns: [
             { data: 'Clave' },
             { data: 'TC' },
@@ -132,7 +134,8 @@ function consultar_datos()
             }
         },
         scrollX: true,
-        scrollY: true,
+        scrollY: '300px', 
+        scrollCollapse: true,
         columns: [
             { data: 'Clave' },
             { data: 'TC' },
