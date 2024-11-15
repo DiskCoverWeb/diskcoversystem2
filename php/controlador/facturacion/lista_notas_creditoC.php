@@ -270,38 +270,43 @@ class lista_notas_creditoC
     	$datos = $this->modelo->notas_credito_emitidas_tabla($codigo=false,$desde=false,$hasta=false,$parametros['serie_nc'],$parametros['nota']);
 
     	// print_r($datos);die();
+    	if(count($datos)>0)
+    	{
+	    	$TFA['TC'] = $datos[0]['TC'];    	
+	    	$TFA['imprimir'] = 1;
+			$TFA['Serie'] = $datos[0]['Serie'];
+			$TFA['Autorizacion'] = $datos[0]['Autorizacion'];
+			$TFA['Factura'] = $datos[0]['Factura'];
+			$TFA['Serie_NC'] = $datos[0]['Serie_NC'];
+			$TFA['Nota_Credito'] = $datos[0]['Secuencial_NC'];
+			$TFA['CodigoC'] = $datos[0]['Codigo'];		
+			$TFA['Fecha'] = $datos[0]['FechaF'];	
+			$TFA['IVA'] = $datos[0]['IVA'];
+			$TFA['Porc_IVA'] = $datos[0]['Porc_IVA'];
+			$TFA['Nota'] = $datos[0]['Nota'];
+			$TFA['Total_MN'] = $datos[0]['Total_MN'];		
+			$TFA['Fecha_NC'] = $datos[0]['Fecha'];
+			$TFA['Autorizacion_NC'] = $datos[0]['Autorizacion_NC']; 
+			$TFA['ClaveAcceso_NC'] = $datos[0]['Autorizacion_NC'];
 
-    	$TFA['TC'] = $datos[0]['TC'];    	
-    	$TFA['imprimir'] = 1;
-		$TFA['Serie'] = $datos[0]['Serie'];
-		$TFA['Autorizacion'] = $datos[0]['Autorizacion'];
-		$TFA['Factura'] = $datos[0]['Factura'];
-		$TFA['Serie_NC'] = $datos[0]['Serie_NC'];
-		$TFA['Nota_Credito'] = $datos[0]['Secuencial_NC'];
-		$TFA['CodigoC'] = $datos[0]['Codigo'];		
-		$TFA['Fecha'] = $datos[0]['FechaF'];	
-		$TFA['IVA'] = $datos[0]['IVA'];
-		$TFA['Porc_IVA'] = $datos[0]['Porc_IVA'];
-		$TFA['Nota'] = $datos[0]['Nota'];
-		$TFA['Total_MN'] = $datos[0]['Total_MN'];		
-		$TFA['Fecha_NC'] = $datos[0]['Fecha'];
-		$TFA['Autorizacion_NC'] = $datos[0]['Autorizacion_NC']; 
-		$TFA['ClaveAcceso_NC'] = $datos[0]['Autorizacion_NC'];
+			$TFA['SubTotal_NC'] = 0;
+			$TFA['Descuento'] = 0;
+			$lineas = $this->modelo->lineas_nota_credito($TFA['Serie'],$TFA['Factura']);
+			$SubTotal_NC = 0;
+			$descuento = 0;
+			foreach ($lineas as $key => $value) {
+				$SubTotal_NC = $SubTotal_NC + $value["SUBTOTAL"];			
+			    $descuento = $value['Total_Desc']+$value['Total_Desc2'];
+			}
+			$TFA['Descuento'] =  $descuento;
+			$TFA['SubTotal_NC'] = $SubTotal_NC;
 
-		$TFA['SubTotal_NC'] = 0;
-		$TFA['Descuento'] = 0;
-		$lineas = $this->modelo->lineas_nota_credito($TFA['Serie'],$TFA['Factura']);
-		$SubTotal_NC = 0;
-		$descuento = 0;
-		foreach ($lineas as $key => $value) {
-			$SubTotal_NC = $SubTotal_NC + $value["SUBTOTAL"];			
-		    $descuento = $value['Total_Desc']+$value['Total_Desc2'];
-		}
-		$TFA['Descuento'] =  $descuento;
-		$TFA['SubTotal_NC'] = $SubTotal_NC;
-
-      	$this->notas_credito->pdf_nota_credito($TFA);    	
-       return $parametros['serie_nc'].'-'.generaCeros($parametros['nota'],7).'.pdf';
+	      	$this->notas_credito->pdf_nota_credito($TFA);    	
+	       return $parametros['serie_nc'].'-'.generaCeros($parametros['nota'],7).'.pdf';
+   		}else
+   		{
+   			return -1;
+   		}
     }
 
      function descargar_xml($parametros)

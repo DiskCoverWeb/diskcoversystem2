@@ -100,7 +100,8 @@ function estado_licencia($f3)
 	<link rel="stylesheet" href="../../assets/css/header-colors.css" />
 	<link rel="stylesheet" href="../../dist/css/sweetalert2.min.css" />
 	<script src="../../assets/js/jquery.min.js"></script>
-	<script src="../../dist/js/js_globales.js"></script>
+	<script src="../../dist/js/js_globales.js"></script>	
+	<script src="../../dist/js/sweetalert2@11.js"></script>
 	<script type="text/javascript">
 		var formato = "<?php if (isset($_SESSION['INGRESO']['Formato_Cuentas'])) {
       	echo $_SESSION['INGRESO']['Formato_Cuentas'];

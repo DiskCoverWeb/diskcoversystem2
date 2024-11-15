@@ -1,13 +1,12 @@
 <?php  @session_start();  date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION['INGRESO']);die(); ?>
 <script type="text/javascript">
-  
 </script>
 <script src="../../dist/js/lista_notas_credito.js"></script>
 <script type="text/javascript">
 
   $(document).ready(function(){
 
-        tbl_nota_credito_all = $('#tbl_nota_credito').DataTable({
+      tbl_nota_credito_all = $('#tbl_nota_credito').DataTable({
           // responsive: true,
           language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
@@ -107,8 +106,8 @@
               [1, 'asc']
           ]
       });
-  })
-
+       
+   })
 
 
   </script>

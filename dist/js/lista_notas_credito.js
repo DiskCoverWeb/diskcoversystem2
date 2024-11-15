@@ -8,41 +8,13 @@ $(document).ready(function()
 
    function cargar_registros()
    {   
-   	
-             	tbl_nota_credito_all.ajax.reload(null, false);
-   //  var serie = $('#DCLinea').val();
-   //  if(serie!='' && serie!='.')
-   //  {
-   //   var serie = serie.split(' ');
-   //   var serie = serie[1];
-   //  }else
-   //  {
-   //    serie = '';
-   //  }
-   //  var tipo = '<?php echo $tipo; ?>'
-   //  var parametros = 
-   //  {
-   //    'ci':$('#ddl_cliente').val(),
-   //    'desde':$('#txt_desde').val(),
-   //    'hasta':$('#txt_hasta').val(),
-   //    'tipo':tipo,
-   //    'serie':serie,
-   //  }
-   //   $.ajax({
-   //     data:  {parametros:parametros},
-   //    url:   '../controlador/facturacion/lista_notas_creditoC.php?tabla=true',
-   //    type:  'post',
-   //    dataType: 'json',
-   //    beforeSend: function () {
-   //      $("#tbl_tabla").html('<tr class="text-center"><td colspan="16"><img src="../../img/gif/loader4.1.gif" width="20%">');
-   //    },
-   //     success:  function (response) { 
-   //      // console.log(response);
-   //     $('#tbl_tabla').html(response);
-   //     $('#myModal_espera').modal('hide');
-   //    }
-   //  });
+      $('#myModal_espera').modal('show');
 
+      // Recargar los datos de la tabla
+      tbl_nota_credito_all.ajax.reload(function() {
+          // Cerrar el modal después de que se hayan recargado los datos
+          $('#myModal_espera').modal('hide');
+      }, false);
    }
 
   function Ver_Nota_credito(nota,serie)
@@ -50,9 +22,6 @@ $(document).ready(function()
     var url = '../controlador/facturacion/lista_notas_creditoC.php?Ver_nota_credito=true&nota='+nota+'&serie='+serie;   
     window.open(url,'_blank');
   }
-
-
-
 
   function autocmpletar_cliente(){
   	   var g = '.';
@@ -114,14 +83,18 @@ function catalogoLineas(){
               });
 
         }         
-      }
+      },
+    error: function (error) {
+      console.error('Error en numero_comprobante:', error);
+      // Puedes manejar el error aquí si es necesario
+    },
     });
   }
 
 
   function autorizar(factura,serie,fecha)
   { 
-    // $('#myModal_espera').modal('show');
+    $('#myModal_espera').modal('show');
     var parametros = 
     {
       'nota':factura,
@@ -181,17 +154,21 @@ function catalogoLineas(){
         {
            Swal.fire('Revise CI_RUC de factura en base','Cliente no encontrado','info');
          }else{
-          Swal.fire('XML devuelto por:'+data.text,'','error');  
+          Swal.fire('XML devuelto por:'+data.respuesta,'','error');  
         }
       }
 
 
-      }
+      },
+        error: function (error) {
+          $('#myModal_espera').modal('hide');
+        },
     });
   }
 
   function descargar_xml(xml)
   {
+    $('#myModal_espera').modal('show');
     var parametros = 
     {
         'xml':xml,
@@ -203,6 +180,7 @@ function catalogoLineas(){
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
+          $('#myModal_espera').modal('hide');
           if(response!='-1')
           {
             console.log(response);
@@ -215,17 +193,22 @@ function catalogoLineas(){
           {
             Swal.fire('No se encontro el xml','','info');
           }
-        }
+        },
+          error: function (error) {
+            $('#myModal_espera').modal('hide');
+            // Puedes manejar el error aquí si es necesario
+          },
       });
 
   }
 
-   function descargar_nota(nota,serie_nc,factura,seriefa)
+  function descargar_nota(nota,serie_nc,factura,seriefa)
   {
+    $('#myModal_espera').modal('show');
     var parametros = 
     {
         'nota':nota,
-        'serie_nc':serie,
+        'serie_nc':serie_nc,
         'factura':factura,
         'serie':seriefa,
     }
@@ -236,14 +219,22 @@ function catalogoLineas(){
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
+          $('#myModal_espera').modal('hide');
+          if(response!=-1)
+          {
             console.log(response);
               var link = document.createElement("a");
               link.download = response;
               link.href = '../../TEMP/'+response;
               link.click();
-        
-         
-        }
+          }else
+          {
+            Swal.fire("","No se pudo encontrar la nota de credito","info")
+          }
+        },
+        error: function (error) {
+          $('#myModal_espera').modal('hide');
+        },
       });
 
   }

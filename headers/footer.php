@@ -171,3 +171,55 @@
 </body>
 
 </html>
+
+
+<div class="modal fade" id="myModal_espera" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="../../img/gif/loader4.1.gif" width="80%">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal_sri_error" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+              <div class="modal-body">
+                  <div class="row">
+                      <div class="col-xs-2"><b>RUC Empresa</b> </div>
+                      <div class="col-xs-10"><?php echo $_SESSION['INGRESO']['RUC']; ?></div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xs-2"><b>Estado</b> </div>
+                      <div class="col-xs-10" id="sri_estado"></div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xs-6"><b>Codigo de error</b> </div>
+                      <div class="col-xs-6" id="sri_codigo"></div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xs-2"><b>Fecha</b></div>
+                      <div class="col-xs-10" id="sri_fecha"></div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xs-12"><b>Mensaje</b></div>
+                      <div class="col-xs-12" id="sri_mensaje"></div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xs-12"><b>Info Adicional</b></div>
+                      <div class="col-xs-12" id="sri_adicional"></div>
+                  </div>
+              </div>
+              <input type="hidden" id="txtclave" name="">
+
+              <div class="modal-footer">
+                  <!-- <a type="button" class="btn btn-primary" href="#" id="doc_xml">Descargar xml</button>         -->
+                  <!-- <button type="button" class="btn btn-default" onclick="location.reload();">Cerrar</button> -->
+                   <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+              </div>
+          </div>
+      </div>
+  </div>
+

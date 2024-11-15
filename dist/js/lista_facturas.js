@@ -103,7 +103,10 @@ $(document).ready(function()
              if(response == 1)
              {
              	$('#myModal_espera').modal('show');
-             	tbl_facturas_all.ajax.reload(null, false);
+             	tbl_facturas_all.ajax.reload(function() {
+                  // Cerrar el modal después de que se hayan recargado los datos
+                  $('#myModal_espera').modal('hide');
+              }, false);
              	tbl_facturas_autorizadas.ajax.reload(null, false);
              	tbl_facturas_Noautorizadas.ajax.reload(null, false);
               // cargar_registrosAu(1);
@@ -681,6 +684,7 @@ function modal_email_fac(factura,serie,codigoc,emails)
 
   function descargar_fac(factura,serie,codigoc)
   {
+    $('#myModal_espera').modal('show');
     var parametros = 
     {
         'fac':factura,
@@ -694,6 +698,7 @@ function modal_email_fac(factura,serie,codigoc,emails)
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
+            $('#myModal_espera').modal('hide');
             console.log(response);
               var link = document.createElement("a");
               link.download = response;
@@ -701,13 +706,17 @@ function modal_email_fac(factura,serie,codigoc,emails)
               link.click();
         
          
-        }
+        },
+        error: function (error) {
+          $('#myModal_espera').modal('hide');
+        },
       });
 
   }
 
   function descargar_xml(xml)
   {
+    $('#myModal_espera').modal('show');
     var parametros = 
     {
         'xml':xml,
@@ -719,6 +728,7 @@ function modal_email_fac(factura,serie,codigoc,emails)
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
+          $('#myModal_espera').modal('hide');
           if(response!='-1')
           {
             console.log(response);
@@ -731,7 +741,10 @@ function modal_email_fac(factura,serie,codigoc,emails)
           {
             Swal.fire('No se encontro el xml','','info');
           }
-        }
+        },
+        error: function (error) {
+          $('#myModal_espera').modal('hide');
+        },
       });
   }
 
@@ -766,7 +779,10 @@ function modal_email_fac(factura,serie,codigoc,emails)
           {
             Swal.fire('No se pude generar el xml','','info');
           }
-        }
+        },
+        error: function (error) {
+          $('#myModal_espera').modal('hide');
+        },
       });
   }
 
