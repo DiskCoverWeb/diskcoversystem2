@@ -38,7 +38,7 @@ function beneficiario()
 function cargar_cbx()
 {
 
- $('#myModal_espera').modal('show');  
+$('#myModal_espera').modal('show');  
 var select = $('#tipo_cuenta').val();
 if(select =='G' || select =='I'|| select == 'CC')
 {
@@ -62,6 +62,14 @@ $.ajax({
     },
     success:  function (response) {
         // consultar_datos();
+        //aseguramos que el 1er nav sea seleccionado
+        $('#titulo_tab').removeClass('active');
+        $('#titulo2_tab').removeClass('active');
+        $('#home').removeClass('active');
+        $('#menu1').removeClass('active');
+
+        $('#titulo_tab').addClass('active');
+        $('#home').addClass('active');
 
         $('#titulo_tab').text(response.titulo);
         $('#titulo2_tab').text(response.titulo+' TEMPORIZADO');
@@ -84,10 +92,8 @@ $.ajax({
             bene+='<option value="'+response.beneficiario[i].Codigo+'">'+response.beneficiario[i].Cliente+'</option>';
         });
         $('#select_beneficiario').html(bene);
-        console.log(response);
-        //console.log(response.titulo);
         
- $('#myModal_espera').modal('hide');  
+$('#myModal_espera').modal('hide');  
     }
 
 });
@@ -124,13 +130,10 @@ $.ajax({
         success:  function (response) {
         totales();
          $('#tabla_').html(response);				 	
-        // consultar_datos_tempo();
         
  $('#myModal_espera').modal('hide');  
         
         
-    console.log(response);
-        //console.log(response.titulo);
     }
 });
 
@@ -138,6 +141,9 @@ $.ajax({
 
 function consultar_datos_x_meses()
 {
+if($.fn.dataTable.isDataTable('#tbl_saldo_meses')){
+    $('#tbl_saldo_meses').DataTable().clear().destroy();
+}
 $('#reporte_tipo').val(1);
 if($('#tipo_cuenta').val()=='')
 {
@@ -168,7 +174,7 @@ var parametros =
     'fechaini':$('#txt_desde').val(),
     'fechafin':$('#txt_hasta').val(),
     'Cta':$('#select_cuenta').val(),
-}
+}/*
 $.ajax({
     data:  {parametros:parametros},
     url:   '../controlador/contabilidad/saldo_fac_submoduloC.php?consultar_x_meses=true',
@@ -178,19 +184,48 @@ $.ajax({
       //    var spiner = '<div class="text-center"><img src="../../img/gif/proce.gif" width="100" height="100"></div>'			
          // $('#tabla_').html(spiner);
 
- $('#myModal_espera').modal('show');  
     },
         success:  function (response) {
          $('#tabla_').html(response);				 	
         // consultar_datos_tempo();
         
- $('#myModal_espera').modal('hide');  
         
-        
-    console.log(response);
-        //console.log(response.titulo);
+
     }
-});
+});*/
+tbl_saldo_meses = $('#tbl_saldo_meses').DataTable({
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+    },
+    "ajax": {
+        'url':   '../controlador/contabilidad/saldo_fac_submoduloC.php?consultar_x_meses=true',
+        'type': 'post',
+        'data': function(d){
+            return { parametros:parametros }
+        },
+        'beforeSend': function(){
+            $('#myModal_espera').modal('show');  
+        },
+        'dataSrc': function(response){
+            $('#myModal_espera').modal('hide');  
+            return response.data || [];
+        },
+        'error': function(xhr, status, error){
+            console.error("Error: ", xhr, status, error);
+        }
+    },
+    scrollX: true, 
+    scrollY: '300px',
+    scrollColapse: true, 
+    'columns': [
+        { "data":"Cta" },
+        { "data":"Beneficiario" },
+        { "data":"Anio" },
+        { "data":"Mes" },
+        { "data":"Valor_x_Mes" },
+        { "data":"Categoria" }
+    ]
+})
 
 }
 
@@ -219,7 +254,7 @@ $.ajax({
       //    var spiner = '<div class="text-center"><img src="../../img/gif/proce.gif" width="100" height="100"></div>'			
          // $('#tabla_').html(spiner);
 
- // $('#myModal_espera').modal('show');  
+ $('#myModal_espera').modal('show');  
     },
         success:  function (response) {
             // num.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0];
@@ -227,13 +262,8 @@ $.ajax({
             $('#total_mn').text(addCommas(Number(response.Total.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0])));
             $('#saldo_mn').text(addCommas(Number(response.Saldo.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0])));
 
-        console.log(response);
-        console.log(addCommas(response.Total));
         
- // $('#myModal_espera').modal('hide');  
-        
-        
-        //console.log(response.titulo);
+$('#myModal_espera').modal('hide');          
     }
 });
 
@@ -253,6 +283,9 @@ return x1 + x2;
 
 function consultar_datos_tempo()
 {
+if($.fn.dataTable.isDataTable('#tbl_saldo_temporal')){
+    $('#tbl_saldo_temporal').DataTable().clear().destroy();
+}
 var parametros =
 {
     'tipocuenta':$('#tipo_cuenta').val(),
@@ -267,26 +300,41 @@ var parametros =
     'CodigoCli':$('#select_beneficiario').val(),
     'DCDet':$('#select_detalle').val(),
 }
-$.ajax({
-    data:  {parametros:parametros},
-    url:   '../controlador/contabilidad/saldo_fac_submoduloC.php?consultar_tempo=true',
-    type:  'post',
-    dataType: 'json',
-    beforeSend: function () {		
-         var spiner = '<div class="text-center"><img src="../../img/gif/loader4.1.gif" width="30%"></div>'			
-         $('#tabla_temp').html(spiner);
-    },			
-    success:  function (response) {
-        
-         $('#tabla_temp').html(response);
-        
-        //$('#tabla_temp').html(response.tabla_2);
-        
-    //console.log(response);
-        //console.log(response.titulo);
-    }
-});
 
+tbl_saldo_temp = $('#tbl_saldo_temporal').DataTable({
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+    },
+    "ajax": {
+        'url': '../controlador/contabilidad/saldo_fac_submoduloC.php?consultar_tempo=true',
+        'type': 'post', 
+        'data': function(d){
+            return { parametros:parametros }
+        },
+        'dataSrc': function(response){
+            return response.data || [];
+        },
+        'error': function(xhr, status, error){
+            console.error("Error: ", xhr, status, error);
+        }
+    },
+    scrollX: true,
+    scrollY: '300px',
+    scrollColapse: true, 
+    'colums': [
+        {"data": "Cuenta"},
+        {"data": "Cliente"},
+        {"data": "Fecha_Venc"},
+        {"data": "Factura"},
+        {"data": "Ven 1 a 7"},
+        {"data": "Ven 8 a 30"},
+        {"data": "Ven 31 a 60"},
+        {"data": "Ven 61 a 90"},
+        {"data": "Ven 91 a 180"},
+        {"data": "Ven 181 a 360"},
+        {"data": "Ven mas de 360"}
+    ]
+})
 }
 
 function activar($this)

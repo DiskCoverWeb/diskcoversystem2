@@ -16,7 +16,7 @@ if(isset($_GET['consultar']))
 	$parametros = $_POST['parametros'];
 	$parametros['tabla'] = '1';
 	$tabla = $controlador->cargar_consulta($parametros);
-	echo json_encode($tabla['tabla']);
+	json_encode($tabla['tabla']);
 }
 
 if(isset($_GET['consultar_x_meses']))
@@ -24,7 +24,7 @@ if(isset($_GET['consultar_x_meses']))
 	$parametros = $_POST['parametros'];
 	$parametros['tabla'] = '1';
 	$tabla = $controlador->cargar_consulta_x_meses($parametros);
-	echo json_encode($tabla);
+	json_encode($tabla);
 }
 
 if(isset($_GET['consultar_totales']))
@@ -40,7 +40,7 @@ if(isset($_GET['consultar_tempo']))
 	$tabla = $controlador->cargar_consulta($parametros);
 	$res = $controlador->tabla_temporizado($tabla['datos'],$parametros);
 	// print_r($res);die();
-  echo json_encode($controlador->consultar_tabla_temp($parametros['fechafin']));
+    json_encode($controlador->consultar_tabla_temp($parametros['fechafin']));
 }
 
 class Saldo_fac_sub_M 

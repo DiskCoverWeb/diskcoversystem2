@@ -92,9 +92,7 @@ function cargar_libro_general()
     }
 
   tbl_diarioGeneral = $('#tbl_DiarioGeneral').DataTable({
-    autoWidth: true, 
-
-    languaje:{
+    language:{
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
     },
     ajax: {
@@ -174,8 +172,7 @@ function libro_submodulo()
       }
 
       tbl_submodulos = $('#tbl_Submodulos').DataTable({
-      autoWidth: true, 
-      languaje:{
+      language:{
         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
       },
       ajax: {

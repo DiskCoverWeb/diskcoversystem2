@@ -45,8 +45,19 @@
     }
     <?php endif ?>
 </script>
-
-   <div>
+  <div>
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+          <div class="ps-3">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-0 p-0">
+                <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+                <li class="breadcrumb-item active" aria-current="page">Diario General</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
     <div class="row row-cols-auto gx-3 pb-2 d-flex align-items-center ps-2">
       <div class="row row-cols-auto btn-group">
               <a  href="./contabilidad.php?mod=contabilidad#"   data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
@@ -166,8 +177,8 @@
             </a>
           </li>
         </ul>       
-        <div class="tab-content pt-2" ">
-                <div class="tab-pane fade active show p-1" id="Primary-DG" style="background-color:#E7F5FF">
+        <div class="tab-content pt-2">
+                <div class="tab-pane fade active show p-1" id="Primary-DG">
                   <table class="table text-sm w-100" id="tbl_DiarioGeneral">
                     <thead>
                       <tr>
@@ -211,8 +222,7 @@
                     </tbody>
                   </table>
                 </div>
-             </div>
-               <div class="tab-pane fade border rounded p-1" id="Primary-SM" style="background-color:#E7F5FF">
+               <div class="tab-pane fade" id="Primary-SM">
                   <table class="table text-sm w-100" id="tbl_Submodulos">
                   <thead>
                     <tr>
@@ -244,6 +254,7 @@
                   </tbody>
                   </table>      
                 </div>
+              </div>
         </div>
       </div>
     </div>
@@ -287,3 +298,5 @@
         <label id="SaldoME"></label>       
       </div>
     </div>
+  </div>
+

@@ -13,6 +13,7 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
  	}
   function cuentas_()
   {
+    /*
  	$sql= "SELECT Codigo, Codigo+'    '+Cuenta As Nombre_Cta 
           FROM Catalogo_Cuentas 
           WHERE TC = '".G_CTABANCOS."'
@@ -20,9 +21,21 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
           AND Item = '".$_SESSION['INGRESO']['item']."' 
           AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
           ORDER BY Codigo ";    
-	    $result = $this->conn->datos($sql);
-	   return $result;
-
+    
+    $result = $this->conn->datos($sql);
+	  return json_encode($result);
+*/
+  $sql= "SELECT Codigo, Codigo+'    '+Cuenta As Nombre_Cta 
+  FROM Catalogo_Cuentas 
+  WHERE TC = '".G_CTABANCOS."'
+  AND DG = 'D'
+  AND Item = '".$_SESSION['INGRESO']['item']."' 
+  AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+  ORDER BY Codigo ";
+  
+  $result = $this ->conn -> datos($sql);  
+  return json_encode($result);
+  
   }
 
    function cuentas_filtrado($ini,$fin)
@@ -78,10 +91,10 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
       AND C.Codigo_B = Cl.Codigo 
       AND C.Periodo = T.Periodo 
       ORDER BY Cta,T.Fecha,T.TP,T.Numero,Debe DESC,Haber,T.ID ";
-// echo "<pre>";print_r($sSQL);echo "</pre>";die();
-    $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla']??0)-170;  //el numero es el alto de los demas conponenetes sumados
-    $DGBanco = grilla_generica_new($sSQL,'Transacciones As T,Comprobantes As C,Clientes As Cl','tbl_lib',false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
-    $AdoBanco = $this->conn->datos($sSQL);
+    ob_start();
+    $DGBanco = grilla_generica_new($sSQL);
+    $DGBanco = json_decode(ob_get_clean(), true);
+    $AdoBanco = $this -> conn -> datos($sSQL);
     if($soloReturnDatos){
       return $AdoBanco;
     }
@@ -114,7 +127,7 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
     $LabelTotHaberME = number_format($Haber_ME,2,'.','');
     $TotalRegistros = count($AdoBanco);
 
-    return compact(
+    $result = compact(
         'SaldoAnterior',
         'LabelSaldoAntMN',
         'LabelSaldoAntME',
@@ -128,6 +141,7 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
         'AdoBanco',
         'TotalRegistros'
     );
+    return json_encode($result);
  }
 
  function consultar_banco_datos($desde,$hasta,$CheckAgencia,$DCAgencia,$Checkusu,$DCUsuario,$DCCta)

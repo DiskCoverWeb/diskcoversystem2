@@ -1,45 +1,58 @@
 <script src="../../dist/js/saldo_fac_submodulo.js"></script>
 
-<div class="row">
-   <div class="col-sm-12">
-	  <div class="row">          
-  	    <div class="col-5">
-        	<a  href="./contabilidad.php?mod=contabilidad#" data-toggle="tooltip"  title="Salir de modulo" class="btn btn-default w-auto h-auto border border-2">
+<div>
+	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+		<div class="ps-3">
+			<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0">
+				<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+				<li class="breadcrumb-item active" aria-current="page">Saldo de facturas en submodulos</li>
+			</ol>
+			</nav>
+		</div>
+		</div>
+	</div>
+<div class="">
+   <div class="row row-cols-auto">
+	   <div class="col-12 d-flex align-items-center">
+	    <div class="row row-cols-auto btn-group col-4">          
+        	<a  href="./contabilidad.php?mod=contabilidad#" data-bs-toggle="tooltip"  title="Salir de modulo" class="btn btn-outline-secondary">
         		<img src="../../img/png/salire.png">
         	</a>
-        	<button title="Consultar SubModulo" data-toggle="tooltip"   class="btn btn-default w-auto h-auto border border-2" onclick="consultar_datos();">
+        	<button title="Consultar SubModulo" data-bs-toggle="tooltip"   class="btn btn-outline-secondary" onclick="consultar_datos();">
         		<img src="../../img/png/archivero1.png" >
         	</button>
-        	<button title="Consultar SubModulo por Meses" data-toggle="tooltip"   class="btn btn-default w-auto h-auto border border-2" onclick="consultar_datos_x_meses();">
+        	<button title="Consultar SubModulo por Meses" data-bs-toggle="tooltip"   class="btn btn-outline-secondary" onclick="consultar_datos_x_meses();">
         		<img src="../../img/png/sub_mod_mes.png" >
         	</button>
-        	<a href="" title="Presenta Resumen de costos"  data-toggle="tooltip"  class="btn btn-default w-auto h-auto border border-2">
+        	<a href="" title="Presenta Resumen de costos"  data-bs-toggle="tooltip"  class="btn btn-outline-secondary">
         		<img src="../../img/png/resumen.png">
         	</a>   
-        	 <a href="#" class="btn btn-default w-auto h-auto border border-2" id='descargar_pdf' data-toggle="tooltip"  title="Descargar PDF">
+        	 <a href="#" class="btn btn-outline-secondary" id='descargar_pdf' data-bs-toggle="tooltip"  title="Descargar PDF">
         		<img src="../../img/png/pdf.png">
         	</a>
-        	<a href="#"  class="btn btn-default w-auto h-auto border border-2"  data-toggle="tooltip" title="Descargar excel" id='descargar_excel'>
+        	<a href="#"  class="btn btn-outline-secondary"  data-bs-toggle="tooltip" title="Descargar excel" id='descargar_excel'>
         		<img src="../../img/png/table_excel.png">
         	</a> 
         	<input type="hidden" name="reporte_tipo" id="reporte_tipo" value="0">        	
-  	    </div>
-	  	<div class="col-sm-4 m-0 p-0">
-	  		<div class="row">
+	    </div>
+	  	<div class="ps-5">
+	  		<div class="row row-cols-auto">
 	  			<div class="col-4">
 	         		<b>Desde:</b>
 	         		<br>
-	         	   <input type="date" class="border border-1" style="width:125px; height: 48%" name="txt_desde" id="txt_desde" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">
+	         	   <input type="date" class="form-control form-control-sm" style="width:125px; height: 48%" name="txt_desde" id="txt_desde" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">
 	         	</div>
 	            <div class="col-4">
 	         	   <b>Hasta:</b>
 	         	<br>
-	         	   <input type="date" class="border border-1" style="width:125px; height: 48%" name="txt_hasta" id="txt_hasta" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);"> 
+	         	   <input type="date" class="form-control form-control-sm" style="width:125px; height: 48%" name="txt_hasta" id="txt_hasta" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);"> 
 	         	</div>             	
-	         	<div class="col-3">
+	         	<div class="col-4">
 	         	<br>
-	         		<select id="tipo_cuenta" name="tipo_cuenta" class="border border-1" onchange="cargar_cbx()">
-	         			<option value="">Seleccione</option>
+	         		<select id="tipo_cuenta" name="tipo_cuenta" class="form-select form-select-sm" onchange="cargar_cbx()">
+	         		<option value="">Seleccione</option>
 	         	   	<option value="C">CxC</option>
 	         	   	<option value="P">CxP</option>
 	         	   	<option value="I">Ingresos</option>
@@ -62,57 +75,116 @@
 	        </div>
 	     </div>	
 	  </div>
-	  <div class="row pb-2 pt-2 fw-bold">	  		
-	  	<div class="col-sm-4">
-	  	   <label class="form-check-label"><input type="checkbox" name="CheqCta" id="CheqCta" onchange="cuenta()" value="true"> Por Cta.</label>
-	  		<select class="form-control input-xs" id="select_cuenta" style="display: none;">
+	  <div class="col-12 row fw-bold pt-2">
+			  		
+	  	<div class="col-4">
+		  	<label class="form-check-label"><input type="checkbox" name="CheqCta" id="CheqCta" onchange="cuenta()" value="true"> Por Cta.</label>
+	  		<select class="form-select form-select-sm" id="select_cuenta" style="display: none;">
 	  			<option value="">Seleccione cuenta</option>
 	  		</select>
 	 	</div>
-		  <div class="col-sm-4">
-		  	<label class="form-check-label"><input type="checkbox" name="CheqDet" id="CheqDet" onchange="detalle()"> Por det</label>	  	 
-	  		  <select class="form-control input-xs"   id="select_detalle" style="display: none;">
+		<div class="col-4">
+		      <label class="form-check-label"><input type="checkbox" name="CheqDet" id="CheqDet" onchange="detalle()"> Por det</label>	  	 
+	  		  <select class="form-select form-select-sm"  id="select_detalle" style="display: none;">
 	  			 <option value="">Seleccione detalle</option>
 	  		  </select>
-		  </div>
-		  <div class="col-sm-4">
-		  	<label class="form-check-label"><input type="checkbox" name="CheqIndiv" id="CheqIndiv" onchange="beneficiario()"><span id="lbl_bene"> Beneficiario</span></label> 
-			   <select  class="form-control input-xs" id="select_beneficiario" style="display: none;">
+		</div>
+		<div class="col-4">
+		       <label class="form-check-label"><input type="checkbox" name="CheqIndiv" id="CheqIndiv" onchange="beneficiario()"><span id="lbl_bene"> Beneficiario</span></label> 
+			   <select  class="form-select form-select-sm" id="select_beneficiario" style="display: none;">
 		     	<option value="">Seleccione Beneficiario</option>
 		       </select> 
-		  </div>
+		</div>
+		<div>
+		</div>
 	  </div>	
 	</div>
 </div>
 	 
 	  <!--seccion de panel-->
-	  <div class="row">
+	<div class="row pt-3">
 	  <br>
 	  	<input type="input" name="activo" id="activo" value="1" hidden="">
 	  	<div class="col-sm-12">
-	  		<ul class="nav nav-tabs pb-2">
-	  		   <li class="active">
-	  		   	<a data-toggle="tab" href="#home" class="h6 fw-normal p-2 pb-1" onclick="activar(this)" id="titulo_tab">SALDO DE CUENTAS POR COBRAR</a></li>
-	  		   <li>
-	  		   	<a data-toggle="tab" href="#menu1" class="h6 fw-normal p-2 pb-1" onclick="activar(this);consultar_datos_tempo()" id="titulo2_tab">SALDO DE CUENTAS POR COBRAR TEMPORIZADO</a></li>
+	  		<ul class="nav nav-pills pb-2">
+	  		    <li class="nav-item" role="presentation">
+					<a data-bs-toggle="tab" href="#home" class="nav-link active" onclick="activar(this)" id="titulo_tab">
+						<div class="d-flex align-items-center">
+							<div class="tab-title">SALDO DE CUENTAS POR COBRAR</div>
+						</div>
+					</a>
+				</li>
+	  		    <li class="nav-item" role="presentation">
+					<a data-bs-toggle="tab" href="#menu1" class="nav-link" onclick="activar(this);consultar_datos_tempo()" id="titulo2_tab">
+						<div class="d-flex align-items-center">
+							<div class="tab-title">SALDO DE CUENTAS POR COBRAR TEMPORIZADO</div>
+						</div> 
+					</a>
+				</li>
 	  		</ul>
-	  	    <div class="tab-content" style="background-color:#E7F5FF">
-	  	    	<div id="home" class="tab-pane fade in active">
-	  	    	   <div class="row" >
-	  	    	   	<div class="col-sm-12" id="tabla_">
-	  	    	   		
-	  	    	   	</div>
-	  	    	   		  	    	   	
-	  	    	   </div>
-	  	    	 </div>
-	  	    	 <div id="menu1" class="tab-pane fade">
-	  	    	   <div class="row" >
-	  	    	   	<div class="col-sm-12" id="tabla_temp">
-	  	    	   		
-	  	    	   	</div>
-	  	    	   	  	    	   	
-	  	    	   </div>
-	  	    	 </div>
+	  	    <div class="tab-content">
+	  	    	<div id="home" class="tab-pane fade active show">
+						<div class="table-responsive">
+							<table class="table text-sm w-100" id="tbl_saldo_meses">
+								<thead>
+									<tr>
+										<th class="text-center">Cta</th>
+										<th class="text-center">Beneficiario</th>
+										<th class="text-center">Anio</th>
+										<th class="text-center">Mes</th>
+										<th class="text-center">Valor_x_Mes</th>
+										<th class="text-center">Categoria</th>	
+									</tr>
+								</thead> 
+								<tbody>
+									<tr>
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+									</tr>
+								</tbody> 
+							</table>
+						</div>    	   	
+	  	    	</div>
+	  	    	<div id="menu1" class="tab-pane fade">
+						<div class="table-responsive">
+							<table class="table text-sm w-100" id="tbl_saldo_temporal">
+								<thead>
+									<tr>
+										<th class="text-center">Cuenta</th> 
+										<th class="text-center">Cliente</th> 
+										<th class="text-center">Fecha_Venc</th>
+										<th class="text-center">Factura</th>  
+										<th class="text-center">Ven 1 a 7</th> 
+										<th class="text-center">Ven 8 a 30</th> 
+										<th class="text-center">Ven 31 a 60</th> 
+										<th class="text-center">Ven 61 a 90</th> 
+										<th class="text-center">Ven 91 a 180</th> 
+										<th class="text-center">Ven 181 a 360</th> 
+										<th class="text-center">Ven mas de 360</th> 
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+										<td></td> 
+									</tr>
+								</tbody> 
+							</table>
+						</div>	   	
+	  	    	</div>
 	  	    </div>
 	  	</div>
 	  </div>
@@ -131,4 +203,5 @@
 	  	<div class="col-sm-5">
 	  		<b>Saldo MN: </b><i id="saldo_mn"></i>	  		
 	  	</div>
-	  </div>
+	</div>
+</div>

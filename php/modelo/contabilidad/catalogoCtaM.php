@@ -96,7 +96,7 @@ class catalogoCtaM
        	 $sql.=" AND DG='D'";
        }
        $sql.='ORDER BY Codigo';
-	   $tbl = grilla_generica_new($sql, false);
+	   $tbl = grilla_generica_new($sql);
        return $tbl;
 	}
 

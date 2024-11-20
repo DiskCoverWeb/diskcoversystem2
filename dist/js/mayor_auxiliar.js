@@ -46,6 +46,10 @@ $(document).ready(function()
     
 function consultar_datos(OpcUno,PorConceptos)
 {
+    if($.fn.dataTable.isDataTable('#tbl_Mayor_Auxiliar')){
+        $('#tbl_Mayor_Auxiliar').DataTable().clear().destroy();
+    }
+    
     $('#OpcU').val(OpcUno);
     var parametros =
     {
@@ -61,17 +65,17 @@ function consultar_datos(OpcUno,PorConceptos)
         'OpcUno':OpcUno,
         'PorConceptos':PorConceptos				
     }
+    
     $titulo = 'Mayor de '+$('#DCCtas option:selected').html(),
     $.ajax({
         data:  {parametros:parametros},
         url:   '../controlador/contabilidad/mayor_auxiliarC.php?consultar=true',
         type:  'post',
         dataType: 'json',
-        beforeSend: function () {		
-                $('#myModal_espera').modal('show');
+        beforeSend: function () {	
+            $('#myModal_espera').modal('show');
         },
             success:  function (response) {
-            
                 $('#debe').val(addCommas(formatearNumero(response.SumaDebe)));				 
                 $('#haber').val(addCommas(formatearNumero(response.SumaHaber)));							 
                 $('#saldo').val(addCommas(formatearNumero(response.SaldoTotal)));
@@ -80,9 +84,56 @@ function consultar_datos(OpcUno,PorConceptos)
                 $('#DGMayor').html(response.DGMayor);
                 var nFilas = $("#DGMayor tr").length;
                 // $('#num_r').html(nFilas-1);	
-                $('#myModal_espera').modal('hide');	
-                $('#tit').text($titulo+" (Registros: "+response.TotalRegistros+")");			    
+                $('#tit').text($titulo+" (Registros: "+response.TotalRegistros+")");
+                setTimeout(function(){
+                    $('#myModal_espera').modal('hide'); 			    
+                }, 100)
+                tbl_Mayor_Auxiliar = $('#tbl_Mayor_Auxiliar').DataTable({
+                    responsive: true,
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+                    },
+                    "ajax": {
+                        "url": "../controlador/contabilidad/mayor_auxiliarC.php?consultar=true",
+                        "type": "post",
+                        "data": function(d){ 
+                            return { parametros:parametros }
+                        },
+                        "dataSrc": function (response) {
+                            return response.DGMayor.data || [];
+                        },
+                        "error": function(xhr, status, error){
+                            console.log("Error al generar la tabla: ", xhr, status, error); 
+                        }
+                    }, 
+                    scrollX: true, 
+                    scrollY: '300px',
+                    scrollColapse: true,
+                    "columns": [
+                        {"data": "Cta"},
+                        {"data": "Fecha"},
+                        {"data": "TP"},
+                        {"data": "Numero"},
+                        {"data": "Cheq_Dep"},
+                        {"data": "Cliente"},
+                        {"data": "Concepto"},
+                        {"data": "Debe"},
+                        {"data": "Haber"},
+                        {"data": "Saldo"},
+                        {"data": "Parcial_ME"},
+                        {"data": "Saldo_ME"},
+                        {"data": "T"},
+                        {"data": "Item"}
+                    ], 
+                    order: [
+                        [0, 'asc']
+                    ]
+                })
             
+        }, 
+        error: function(xhr, status, error){
+            $('#myModal_espera').modal('hide');
+            console.error(xhr, status, error);
         }
     });
 
@@ -156,7 +207,7 @@ function llenar_combobox_cuentas()
             });				
 
             $('#DCCtas').html(agencia);					    
-        consultar_datos(true,Individual);				
+            consultar_datos(true,Individual);				
         }
     });
 

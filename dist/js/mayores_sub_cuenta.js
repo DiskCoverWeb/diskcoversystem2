@@ -84,7 +84,7 @@ function consultar_datos()
             FDLCtas(response[0]['Codigo']);
         }else
         {
-            ddl='<option value="">No exsite</option>';
+            ddl='<option value="">No existe</option>';
             FDLCtas('');	        	
         }
 
@@ -114,7 +114,7 @@ function consultar_datos()
             lis+='<option value="'+item.Codigo+'">'+item.Nombre_Cta+'</option>';
         });
 
-        if(lis==''){ lis='<option value="">No exsite</option>';}         
+        if(lis==''){ lis='<option value="">No existe</option>';}         
         $('#DLCtas').html(lis);          
         
         }
@@ -124,7 +124,9 @@ function consultar_datos()
 
 function Consultar_Un_Submodulo()
 {
-    $('#myModal_espera').modal('show');
+    if($.fn.dataTable.isDataTable('#tbl_body')){
+        $('#tbl_body').DataTable().clear().destroy();
+    }
     var parametros =
     {
         'tipoM':$('input[name="rbl_subcta"]:checked').val(),
@@ -144,16 +146,52 @@ function Consultar_Un_Submodulo()
         url:   '../controlador/contabilidad/mayores_sub_cuentaC.php?Consultar_Un_Submodulo=true',
         type:  'post',
         dataType: 'json',			
+            beforeSend: function(){
+                $('#myModal_espera').modal('show');
+            },
             success:  function (response) {				
-            
-        console.log(response);
-            $('#tbl_body').html(response.tbl);
-            $('#txt_debito').val(response.Debe);
-            $('#txt_credito').val(response.Haber);
-            $('#txt_saldo_actual').val(response.Saldo);
-            $('#txt_saldo_ant').val(response.SaldoAnt);
-            $('#myModal_espera').modal('hide');
-            //console.log(response.titulo);
+                console.log(response);
+                $('#txt_debito').val(response.Debe);
+                $('#txt_credito').val(response.Haber);
+                $('#txt_saldo_actual').val(response.Saldo);
+                $('#txt_saldo_ant').val(response.SaldoAnt);
+                setTimeout(function(){
+                    $('#myModal_espera').modal('hide');
+                }, 1000); 
+                tbl_body = $('#tbl_body').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+                    },
+                    "ajax": {
+                        'dataSrc': function (response){
+                            return response.tbl.data || [];
+                        },
+                        'error': function(xhr, status, error){
+                            console.error("Error: ", xhr, status, error);
+                        }
+                    },
+                    scrollX: true, 
+                    scrollY: '300px',
+                    scrollColapse: true,
+                    'columns': [
+                        {"data":"Cta"},
+                        {"data":"Fecha"},
+                        {"data":"TP"},
+                        {"data":"Numero"},
+                        {"data":"Cliente"},
+                        {"data":"Concepto"},
+                        {"data":"Debitos"},
+                        {"data":"Creditos"},
+                        {"data":"Saldo_MN"},
+                        {"data":"Factura"},
+                        {"data":"Parcial_ME"},
+                        {"data":"Detalles_SubCta"},
+                        {"data":"Fecha_V"},
+                        {"data":"Codigo"},
+                        {"data":"Item"}
+                    ]
+                })
+                //console.log(response.titulo);
         }
     });
 

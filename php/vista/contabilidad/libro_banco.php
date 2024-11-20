@@ -1,5 +1,6 @@
 
 
+<script src="../../dist/js/libro_banco.js"></script>
 <?php
 	Ejecutar_SQL_SP("UPDATE Comprobantes " .
         "SET Cotizacion = 0.004 " .
@@ -13,27 +14,37 @@
     margin-bottom: 10px; 
   }
 </style>
-<script src="../../dist/js/libro_banco.js"></script>
+<div>
+	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+			<div class="ps-3">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb mb-0 p-0">
+						<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+						<li class="breadcrumb-item active" aria-current="page">Libro Banco</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
 
    	<div class="row row-cols-auto pb-2">
-   		<div class="row row-cols-auto">
-   			<div class="">
-					<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-default border border-3 rounded-2">
-						<img src="../../img/png/salire.png">
-					</a>
+   		<div class="row row-cols-auto btn-group">
+				<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
+					<img src="../../img/png/salire.png">
+				</a>
 
-					<button title="Consultar"  data-toggle="tooltip" class="btn btn-default border border-3 rounded-2" onclick="ConsultarDatosLibroBanco();">
-						<img src="../../img/png/consultar.png" >
-					</button>
+				<button title="Consultar"  data-toggle="tooltip" class="btn btn-outline-secondary" onclick="ConsultarDatosLibroBanco();">
+					<img src="../../img/png/consultar.png" >
+				</button>
 			
-				<a href="#" id="imprimir_pdf" class="btn btn-default border border-3 rounded-2" data-bs-toggle="tooltip" title="Descargar PDF">
+				<a href="#" id="imprimir_pdf" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Descargar PDF">
 					<img src="../../img/png/pdf.png">
 				</a>                          	
 					
-						<a href="#" id="imprimir_excel"  class="btn btn-default border border-3 rounded-2" data-toggle="tooltip" title="Descargar excel">
-						<img src="../../img/png/table_excel.png">
-						</a>                          	
-            </div>
+				<a href="#" id="imprimir_excel"  class="btn btn-outline-secondary" data-toggle="tooltip" title="Descargar excel">
+				<img src="../../img/png/table_excel.png">
+				</a>                          	
    		</div>
    		
    	</div>
@@ -74,12 +85,49 @@
 	  	<div class="col-sm-12">
 	  		<ul class="nav nav-tabs p-2">
 	  		   <li class="active">
-	  		   	<a data-toggle="tab" href="#home" id="titulo_tab" class="h6" onclick="activar(this)">Mayores auxiliares</a></li>
+	  		   	<h6 id="tit">Mayores auxiliares</h6></li>
 	  		</ul>
-	  	    <div class="tab-content" style="background-color:#E7F5FF">
-	  	    	<div id="home" class="tab-pane fade in active">	  	    			
-	  	    	   <div id="tabla_">
-	  	    	   		  	    	   	
+	  	    <div class="tab-content">
+	  	    	<div id="home" class="">	  	    			
+	  	    	   <div class="table-responsive">
+	  	    	   		<table class="table text-sm w-100" id="tbl_libro_banco">
+  							<thead>
+								<tr>
+									<th class="text-center">Cta</th> 
+									<th class="text-center">Fecha</th> 
+									<th class="text-center">TP</th> 
+									<th class="text-center">Numero</th> 
+									<th class="text-center">Cheq_Dep</th> 
+									<th class="text-center">Cliente</th> 
+									<th class="text-center">Concepto</th> 
+									<th class="text-center">Debe</th> 
+									<th class="text-center">Haber</th> 
+									<th class="text-center">Saldo</th> 
+									<th class="text-center">Parcial_ME</th> 
+									<th class="text-center">Saldo_ME</th> 
+									<th class="text-center">T</th> 
+									<th class="text-center">Item</th> 
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
 	  	    	   </div>
 	  	    	 </div>		  	    	  	    	
 	  	    </div>	  	  
@@ -139,3 +187,4 @@
 			</div>
 		</div>
 	</div>
+</div>

@@ -6025,7 +6025,7 @@ function costo_venta($codigo_inv)  // optimizado
     return $resultado[0];
   }
 
-  function grilla_generica_new($sql, $num_red=false) {
+  function grilla_generica_new($sql) {
     // Crear la conexión
     $conn = new db();
     $cid = $conn->conexion();

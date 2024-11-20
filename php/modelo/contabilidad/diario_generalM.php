@@ -112,7 +112,7 @@ ORDER BY Acceso_Sucursales.Item,Empresa";
          AND Co.CodigoU = Ac.Codigo 
          ORDER BY T.Fecha,T.TP,T.Numero,T.ID ";
 
-   return grilla_generica_new($sql,false);
+   return grilla_generica_new($sql);
 	}
 
 

@@ -103,8 +103,7 @@ class Saldo_fac_sub_C
             ORDER BY Beneficiario, Anio, Mes_No";
             if($tabla)
             {
-                $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-115;
-                $datos = grilla_generica_new($sql,' Reporte_CxCxP_x_Meses','',$titulo=false,$botones=false,$check=false,$imagen=false,1,1,1,$medida);
+                $datos = grilla_generica_new($sql);
             }else
             {
                 $datos = $this->conn->datos($sql);
@@ -286,8 +285,7 @@ class Saldo_fac_sub_C
 
         // $botones[0] = array('boton'=>'Eliminar linea', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'A_No,CODIGO' );
 
-        $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-115;
-        $datos = grilla_generica_new($sql,' Clientes As C, Catalogo_Cuentas As CC, Trans_SubCtas As TS','',$titulo=false,$botones=false,$check=false,$imagen=false,1,1,1,$medida);
+        $datos = grilla_generica_new($sql);
 
         // print_r($datos);die();
 
@@ -457,8 +455,7 @@ class Saldo_fac_sub_C
 
          // print_r($sql);die();
 
-        $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-115;
-        $datos = grilla_generica_new($sql,'Catalogo_SubCtas As C, Catalogo_Cuentas As CC, Trans_SubCtas As TS','',$titulo=false,$botones=false,$check=false,$imagen=false,1,1,1,$medida);
+        $datos = grilla_generica_new($sql);
         return $datos;
 
    }
@@ -492,8 +489,7 @@ class Saldo_fac_sub_C
        //echo $sql;
 
 
-        $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-115;
-        $datos = grilla_generica_new($sql,'Saldo_Diarios','',$titulo=false,$botones=false,$check=false,$imagen=false,1,1,1,$medida);
+        $datos = grilla_generica_new($sql);
         return $datos;
    }
 

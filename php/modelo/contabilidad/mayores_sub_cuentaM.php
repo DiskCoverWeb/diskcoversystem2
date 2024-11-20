@@ -172,8 +172,7 @@ class mayores_sub_cuentaM
      $sql.=" AND TSC.Codigo = C.Codigo 
           ORDER BY TSC.Codigo,TSC.Cta,TSC.Fecha,TSC.TP,TSC.Numero,Factura,Debitos DESC,Creditos,TSC.ID ";
 
-     $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-245;
-     $tbl = grilla_generica_new($sql,$from,'tbl_lib',false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
+     $tbl = grilla_generica_new($sql);
 
           // print_r($parametro);
           // print_r($sql);die();

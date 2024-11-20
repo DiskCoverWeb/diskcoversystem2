@@ -64,6 +64,7 @@ function sucursal_exis()
         $('#tabla_').html(spiner);
     },*/
     success:  function (response) { 
+    $('#myModal_espera').modal('hide');	
     if(response == 1)
     {
         $("#CheckAgencia").show();
@@ -92,33 +93,77 @@ function ConsultarDatosLibroBanco()
         'DCAgencia':$('#DCAgencia').val(),
         'DCUsuario':$('#DCUsuario').val(),	
         'DCCtas':$('#DCCtas').val(),
-        'height':screen.height,			
+
     }
     $titulo = 'Mayor de '+$('#DCCtas option:selected').html();
-    $('#myModal_espera').modal('show');
+    if($.fn.dataTable.isDataTable('#tbl_libro_banco')){
+        $('#tbl_libro_banco').DataTable().clear().destroy();
+    }
     $.ajax({
-        data:  {parametros:parametros},
-        url:   '../controlador/contabilidad/libro_bancoC.php?consultar=true',
-        type:  'post',
+        data: { parametros:parametros },
+        url: '../controlador/contabilidad/libro_bancoC.php?consultar=true',
+        type: 'post', 
         dataType: 'json',
-        success:  function (response) {
+        beforeSend: function(){
+            console.log("...");
+        }, 
+        success: function(response){
             $('#debe').val(addCommas(response.LabelTotDebe));
-            $('#haber').val(addCommas(response.LabelTotHaber));					
-            $('#saldo_ant').val(addCommas(response.LabelSaldoAntMN));
-            $('#saldo').val(addCommas(response.LabelTotSaldo));
-
-            $('#debe_').val(addCommas(response.LabelTotDebeME));
-            $('#haber_').val(addCommas(response.LabelTotHaberME));
-            $('#saldo_ant_').val(addCommas(response.LabelSaldoAntME));
-            $('#saldo_').val(addCommas(response.LabelTotSaldoME));
-            
-                $('#tabla_').html(response.DGBanco);
-                var nFilas = $("#tabla_ tr").length;
-                $('#myModal_espera').modal('hide');	
-                $('#tit').text($titulo+" (Registros: "+response.TotalRegistros+")");			    
+                $('#haber').val(addCommas(response.LabelTotHaber));					
+                $('#saldo_ant').val(addCommas(response.LabelSaldoAntMN));
+                $('#saldo').val(addCommas(response.LabelTotSaldo));
+    
+                $('#debe_').val(addCommas(response.LabelTotDebeME));
+                $('#haber_').val(addCommas(response.LabelTotHaberME));
+                $('#saldo_ant_').val(addCommas(response.LabelSaldoAntME));
+                $('#saldo_').val(addCommas(response.LabelTotSaldoME));
+                $('#tit').text($titulo+" (Registros: "+response.TotalRegistros+")");
+                console.log("ok")
+                tbl_libro_banco = $('#tbl_libro_banco').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+                    },
+                    "ajax": {
+                        'url': '../controlador/contabilidad/libro_bancoC.php?consultar=true', 
+                        'type': 'post',
+                        'data': function(d){
+                            return { parametros:parametros }
+                        },
+                        'dataSrc': function (response){
+                            return response.DGBanco.data || [];
+                        },
+                        'error': function(xhr, status, error){
+                            console.error("Error: ", xhr, status, error);
+                        }
+                    },
+                    scrollX: true,
+                    scrollY: '300px', 
+                    scrollColapse: true,
+                    'colums': [
+                        {"data": "Cta"},
+                        {"data": "Fecha"},
+                        {"data": "TP"},
+                        {"data": "Numero"},
+                        {"data": "Cheq_Dep"},
+                        {"data": "Cliente"},
+                        {"data": "Concepto"},
+                        {"data": "Debe"},
+                        {"data": "Haber"},
+                        {"data": "Saldo"},
+                        {"data": "Parcial_ME"},
+                        {"data": "Saldo_ME"},
+                        {"data": "T"},
+                        {"data": "Item"},                        
+                    ],
+                    order: [
+                        [0, 'asc']
+                    ]
+                })
+        }, 
+        error: function(xhr, status, error){ 
+            console.error(xhr, status, error); 
         }
-    });
-
+    })
 }
     
 function llenar_combobox()
@@ -135,7 +180,8 @@ function llenar_combobox()
                 var spiner = '<div class="text-center"><img src="../../img/gif/proce.gif" width="100" height="100"></div>'			
                 $('#tabla_').html(spiner);
         },*/
-            success:  function (response) {				
+            success:  function (response) {		
+            $('#myModal_espera').modal('hide');			
             $.each(response.agencia, function(i, item){
                 agencia+='<option value="'+response.agencia[i].Item+'">'+response.agencia[i].NomEmpresa+'</option>';
             });				
@@ -145,6 +191,10 @@ function llenar_combobox()
             });					
             $('#DCUsuario').html(usu);			    
             
+        },
+        error: function(xhr, status, error){
+            $('#myModal_espera').modal('hide');
+            console.error("Error en la solicitud: ", status, error);
         }
     });
 
@@ -157,7 +207,8 @@ function llenar_combobox_cuentas()
         url:   '../controlador/contabilidad/libro_bancoC.php?cuentas=true',
         type:  'post',
         dataType: 'json',
-            success:  function (response) {	
+            success:  function (response) {
+            $('#myModal_espera').modal('hide');	
             $.each(response, function(i, item){
                 cuentas+='<option value="'+response[i].Codigo+'" '+((i==0)?'selected':'')+'>'+response[i].Nombre_Cta+'</option>';
             });				
@@ -166,6 +217,10 @@ function llenar_combobox_cuentas()
             }
             $('#DCCtas').html(cuentas);					    
             ConsultarDatosLibroBanco();				
+        },
+        error: function(xhr, status, error){
+            $('#myModal_espera').modal('hide');
+            console.error("Error en la solicitud: ", status, error);
         }
     });
 
