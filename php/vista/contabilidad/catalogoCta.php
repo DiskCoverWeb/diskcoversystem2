@@ -51,7 +51,6 @@
 					<li class="nav-item" role="presentation">
 						<a class="nav-link active" id="OpcT" data-bs-toggle="pill" href="#primary-pills-all" role="tab" aria-selected="true">
 							<div class="d-flex align-items-center">
-								<div class="tab-icon"><i class="bx bx-list-ul font-18 me-1"></i></div>
 								<div class="tab-title">TODOS</div>
 							</div>
 						</a>
@@ -59,7 +58,6 @@
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="OpcG" data-bs-toggle="pill" href="#primary-pills-grupo" role="tab" aria-selected="false" tabindex="-1">
 							<div class="d-flex align-items-center">
-								<div class="tab-icon"><i class="bx bx-group font-18 me-1"></i></div>
 								<div class="tab-title">DE GRUPO</div>
 							</div>
 						</a>
@@ -67,7 +65,6 @@
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="OpcD" data-bs-toggle="pill" href="#primary-pills-detalle" role="tab" aria-selected="false" tabindex="-1">
 							<div class="d-flex align-items-center">
-								<div class="tab-icon"><i class="bx bx-detail font-18 me-1"></i></div>
 								<div class="tab-title">DE DETALLES</div>
 							</div>
 						</a>

@@ -52,7 +52,7 @@
 				<div class="input-group-addon col-3 d-flex align-items-center">
 				<label style=""><input type="checkbox" name="check_usu" id="check_usu"> Por Usuario</label>
 				</div>
-				<select class="form-control form-control-sm col-6 border" style="height: 24%" id="DCUsuario" name="DCUsuario">
+				<select class="form-select form-select-sm col-6 border" style="height: 24%" id="DCUsuario" name="DCUsuario">
 					<option value="">Seleccione </option>
 				</select>
 			</div>
@@ -97,10 +97,10 @@
 			</div>		
 		</div>
 		<div class="col-sm-5">
-			<select class="form-control form-control-sm" style="height: 20%;" id="DCCtas" name="DCCtas" onchange="FDLCtas(this.value)">
+			<select class="form-select form-select-sm" id="DCCtas" name="DCCtas" onchange="FDLCtas(this.value)">
 			<option value="">Seleccione</option>
 		</select>      
-		<select class="form-control form-control-sm" style="height: 20%" id="DLCtas" name="DLCtas">
+		<select class="form-select form-select-sm" id="DLCtas" name="DLCtas">
 			<option value="">Seleccione</option>
 		</select>        	 
 		</div>
@@ -127,7 +127,7 @@
 				<div class="panel-heading text-center border border-primary bg-primary text-white rounded-top"  style="padding: 0px 0px 0px 6px;">
 					SUB MAYOR
 				</div>
-				<div class="panel-body border border-primary rounded-bottom">
+				<div class="panel-body border border-primary rounded-bottom p-2">
 					<table class="text text-sm w-100" id="tbl_body">
 						<thead>
 							<tr>
