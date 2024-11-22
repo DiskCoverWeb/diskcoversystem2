@@ -62,17 +62,17 @@
 
 	  	<div class="col-4">
                 <label style="margin:0px"><input type="checkbox" name="CheckUsu" id="CheckUsu">  <b>Por usuario</b></label>
-                <select class="form-select form-select-sm h-50 w-75 font-box" id="DCUsuario"  onchange="ConsultarDatosLibroBanco();">
+                <select class="form-select form-select-sm w-75 font-box" id="DCUsuario"  onchange="ConsultarDatosLibroBanco();">
                 	<option value="" class="">Seleccione usuario</option>
                 </select>
           	    <label id="lblAgencia" style="margin:0px"><input type="checkbox" name="CheckAgencia" id="CheckAgencia">  <b>Agencia</b></label>
-          	     <select class="form-select form-select-sm h-50 w-75 font-box" id="DCAgencia" onchange="ConsultarDatosLibroBanco();">
+          	     <select class="form-select form-select-sm w-75 font-box" id="DCAgencia" onchange="ConsultarDatosLibroBanco();">
                 	<option value="" class="">Seleccione agencia</option>
                 </select>             
         </div>
         <div class="col-4">
         	<b>Por cuenta</b>
-                <select class="form-select form-select-sm h-50 w-75 font-box" id="DCCtas" onchange="ConsultarDatosLibroBanco();">
+                <select class="form-select form-control-sm w-75 font-box" id="DCCtas" onchange="ConsultarDatosLibroBanco();">
                 	<option value="">Seleccione cuenta</option>
                 </select>
           	   

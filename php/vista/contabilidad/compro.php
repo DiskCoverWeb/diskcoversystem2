@@ -81,25 +81,24 @@
         </div>
         <div class="d-flex justify-content-center">
             <?php echo $_SESSION['INGRESO']['item']; ?>
-            <div class="btn-group" role="group">
-                <label type="button" class="btn btn-primary btn-sm active">
-                    <input type="radio" name="options" id="CD" value="CD" autocomplete="off" class="d-none" checked onchange="comprobante();"> Diario
-                </label>
-                <label type="button" class="btn btn-primary btn-sm">
-                    <input type="radio" name="options" id="CI" value="CI" autocomplete="off" class="d-none" onchange="comprobante();"> Ingresos
-                </label>
-                <label type="button" class="btn btn-primary btn-sm">
-                    <input type="radio" name="options" id="CE" value="CE" autocomplete="off" class="d-none" onchange="comprobante();"> Egresos
-                </label>
-                <label type="button" class="btn btn-primary btn-sm">
-                    <input type="radio" name="options" id="ND" value="ND" autocomplete="off" class="d-none" onchange="comprobante();"> N/D
-                </label>
-                <label type="button" class="btn btn-primary btn-sm">
-                    <input type="radio" name="options" id="NC" value="NC" autocomplete="off" class="d-none" onchange="comprobante();"> N/C
-                </label>
-                <input id="tipoc" name="tipoc" type="hidden" value="CD">
+			<div class="btn-group" role="group" aria-label="Tipo de comprobante">
+				<input type="radio" class="btn-check" name="options" id="CD" value="CD" autocomplete="off" onchange="comprobante();" checked>
+				<label class="btn btn-primary btn-sm" for="CD">Diario</label>
+
+				<input type="radio" class="btn-check" name="options" id="CI" value="CI" autocomplete="off" onchange="comprobante();">
+				<label class="btn btn-primary btn-sm" for="CI">Ingresos</label>
+
+				<input type="radio" class="btn-check" name="options" id="CE" value="CE" autocomplete="off" onchange="comprobante();">
+				<label class="btn btn-primary btn-sm" for="CE">Egresos</label>
+
+				<input type="radio" class="btn-check" name="options" id="ND" value="ND" autocomplete="off" onchange="comprobante();">
+				<label class="btn btn-primary btn-sm" for="ND">N/D</label>
+
+				<input type="radio" class="btn-check" name="options" id="NC" value="NC" autocomplete="off" onchange="comprobante();">
+				<label class="btn btn-primary btn-sm" for="NC">N/C</label>
+				<input id="tipoc" name="tipoc" type="hidden" value="CD">
                 <input type="hidden" name="TipoProcesoLlamadoClave" id="TipoProcesoLlamadoClave">
-            </div>
+			</div>
         </div>
         <div class="d-flex justify-content-end">
             <div class="w-75">
@@ -114,7 +113,7 @@
             </div>
         </div>
     </div>
-</div>
+	</div>
 	<br>
 	<div class="row">	
 		<div class="col-3">    
@@ -141,7 +140,6 @@
 			</div>
 		</div>
 	</div>
-	<br>
 	<div class="row">
 		<div class="col-sm-9">    
 		<div class="input-group input-group-sm">
@@ -160,7 +158,6 @@
 		</div>
 		</div>	
 	</div>
-	<br>
 	<div class="row">
 		<div class="col-sm-12">    
 		<div class="input-group input-group-sm">
@@ -172,7 +169,6 @@
 		</div>
 		</div>		
 	</div>
-	<br> 
 	<div class="row">
 			<input type="hidden" name="" id="txt_empresa" value="<?php echo $_SESSION['INGRESO']['item'];?>">
 			<input type="hidden" name="" id="TP" value="CD">
@@ -209,26 +205,26 @@
 					</ul>
 					<div class="tab-content" id="myTabContent">
 					<div class="tab-pane fade show active" id="contabilizacion" role="tabpanel" aria-labelledby="home-tab">
-						<div class="row" ><br>
+						<div class="row" >
 							<div class="col-sm-12">
 								<table class="table text-sm w-100" id="tbl_contabilidad">
 									<thead>
 										<tr>
-											<th class="text-center"><th>
-											<th class="text-center">Cta<th>
-											<th class="text-center">Cuenta<th>
-											<th class="text-center">Parcial_ME<th>
-											<th class="text-center">Debe<th>
-											<th class="text-center">Haber<th>
-											<th class="text-center">Detalle<th>
-											<th class="text-center">Cheq_Dep<th>
-											<th class="text-center">Fecha_Efec<th>
-											<th class="text-center">Codigo_C<th>
-											<th class="text-center">Item<th>
-											<th class="text-center">TC<th>
-											<th class="text-center">Numero<th>
-											<th class="text-center">Fecha<th>
-											<th class="text-center">ID<th>
+											<th class="text-center"></th>
+											<th class="text-center">Cta</th>
+											<th class="text-center">Cuenta</th>
+											<th class="text-center">Parcial_ME</th>
+											<th class="text-center">Debe</th>
+											<th class="text-center">Haber</th>
+											<th class="text-center">Detalle</th>
+											<th class="text-center">Cheq_Dep</th>
+											<th class="text-center">Fecha_Efec</th>
+											<th class="text-center">Codigo_C</th>
+											<th class="text-center">Item</th>
+											<th class="text-center">TC</th>
+											<th class="text-center">Numero</th>
+											<th class="text-center">Fecha</th>
+											<th class="text-center">ID</th>
 										</tr> 
 									</thead>
 									<tbody>
@@ -354,13 +350,13 @@
 	 										<th class="text-center">NumeroComprobantes</th>
 	 										<th class="text-center">Secuencial</th>
 	 										<th class="text-center">FechaEmision</th>
-	 										<th class="text-center">FechaEmision</th>
 	 										<th class="text-center">FechaRegistro</th>
 	 										<th class="text-center">BaseImponible</th>
 	 										<th class="text-center">BaseImpGrav</th>
 	 										<th class="text-center">PorcentajeIva</th>
 	 										<th class="text-center">MontoIva</th>
 	 										<th class="text-center">BaseImpIce</th>
+											<th class="text-center">PorcentajeIce</th>
 	 										<th class="text-center">MontoIce</th>
 	 										<th class="text-center">MontoIvaBienes</th>
 	 										<th class="text-center">PorRetBienes</th>
@@ -574,7 +570,6 @@
 								</table>
 							</div>                   	 	
 						</div>
-						<br>
 						<div class="row d-flex align-items-center">
 							<div class="col-sm-6"></div>
 								<div class="col-sm-1 p-0">
@@ -601,7 +596,6 @@
 					</div>
 				</div>			
 	</div>
-	<br>
 	<div class="row d-flex align-items-center">
 		<div class="col-sm-2">
 		<b>Elaborador por</b>				

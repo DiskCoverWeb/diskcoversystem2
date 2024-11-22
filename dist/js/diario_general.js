@@ -179,7 +179,6 @@ function libro_submodulo()
         url: '../controlador/contabilidad/diario_generalC.php?consultar_submodulo=true',
         type: 'post',
         data: function(d){
-          console.log("Parametros: ", parametros)
           return { parametros:parametros }
         },
         dataSrc: function(response){
@@ -188,10 +187,6 @@ function libro_submodulo()
         beforeSend: function(){
           var spiner = '<div class="text-center"><img src="../../img/gif/loader4.1.gif" width="200" height="100"></div>'  
           $('#tbl_Submodulos').html(spiner);
-        },
-        complete: function(){ 
-          $('#tbl_Submodulos').html('');
-      
         },
         error: function(xhr, status, error){
           console.log("Error en la solicutud: ", status, error);

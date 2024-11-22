@@ -80,7 +80,6 @@ function comprobante()
 {
     var tp = $('input[name="options"]:checked').val();
     $('#tipoc').val(tp);
-    console.log(tp);
     var parametros = 
     {
         'MesNo':$('#mes').val(),
@@ -100,6 +99,16 @@ function comprobante()
 
 function listar_comprobante()
 {
+  if($.fn.dataTable.isDataTable('#tbl_contabilidad') && $.fn.dataTable.isDataTable('#tbl_retenciones')
+    && $.fn.dataTable.isDataTable('#tbl_retenciones_co') && $.fn.dataTable.isDataTable('#tbl_retenciones_co')
+    && $.fn.dataTable.isDataTable('#tbl_subcuentas') && $.fn.dataTable.isDataTable('#tbl_kardex')){
+      $('#tbl_contabilidad').DataTable().clear().destroy();
+      $('#tbl_retenciones').DataTable().clear().destroy();
+      $('#tbl_retenciones_co').DataTable().clear().destroy();
+      $('#tbl_retenciones_ve').DataTable().clear().destroy();
+      $('#tbl_subcuentas').DataTable().clear().destroy();
+      $('#tbl_kardex').DataTable().clear().destroy(); 
+  }
   $('#myModal_espera').modal('show');
     reporte_comprobante();
     var parametros = 
@@ -119,12 +128,283 @@ function listar_comprobante()
             Swal.fire('El Comprobante no exite.','','info');
         }else
         {
-            $('#tbl_contabilidad').html(response.tbl1);      		
-            $('#tbl_retenciones').html(response.tbl2);       		
-            $('#tbl_retenciones_co').html(response.tbl2_1);  		
-            $('#tbl_retenciones_ve').html(response.tbl2_2);       		
-            $('#tbl_subcuentas').html(response.tbl3);        		
-            $('#tbl_kardex').html(response.tbl4);
+              tbl_contabilidad = $('#tbl_contabilidad').DataTable({
+              language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+              },
+              data: response.tbl1.data,
+              scrollY: '400px',
+              scrollCollapse: true, 
+              scrollX: true,
+              columns: [
+                { 
+                  data : "",
+                  orderable: false,
+                  render: function(data, type, row){
+                    options = `
+                        <li><a href="#" class="dropdown-item" onclick="Cambiar_Cuenta('${row.Cta}', '${row.Cuenta}', '${row.ID}')">Cambiar Cuenta</a></li> 
+                        <li><a href="#" class="dropdown-item" onclick="Cambiar_Valores('${row.Cta}', '${row.Cuenta}', '${row.Debe}', 
+                            '${row.Haber}', '${row.Detalle}', '${row.Cheq_Dep}', '${row.ID}')">Cambiar Valores</a></li> 
+                        <li><a href="#" class="dropdown-item" onclick="Eliminar_Cuenta('${row.Cta}', '${row.Cuenta}', '${row.ID}')">Eliminar Cuenta</a></li>
+                    `;
+
+                    return `
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Acciones
+                                <span class="bx bx-chevron-down"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                ${options}
+                            </ul>
+                        </div>`;
+                  }
+                },
+                { data : "Cta" },
+                { data : "Cuenta" },
+                { data : "Parcial_ME" },
+                { data : "Debe" },
+                { data : "Haber" },
+                { data : "Detalle" },
+                { data : "Cheq_Dep" },
+                { data : "Fecha_Efec.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                 },
+                { data : "Codigo_C" },
+                { data : "Item" },
+                { data : "TP" },
+                { data : "Numero" },
+                { data : "Fecha.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                 },
+                { data : "ID" },
+
+              ]
+            });		
+            tbl_retenciones = $('#tbl_retenciones').DataTable({
+              language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+              },
+              data: response.tbl2.data,
+              scrollY: '150px',
+              scrollCollapse: true, 
+              scrollX: true,
+              columns: [
+                { data : "T" },
+                { data : "CodRet" },
+                { data : "BaseImp" },
+                { data : "Porcentaje" },
+                { data : "ValRet" },
+                { data : "EstabRetencion" },
+                { data : "PtoEmiRetencion" },
+                { data : "SecRetencion" },
+                { data : "AutRetencion" },
+                { data : "EstabFactura" },
+                { data : "PuntoEmiFactura" },
+                { data : "Factura_No" },
+                { data : "Item" },
+                { data : "CodigoU" },
+                { data : "Periodo" },
+                { data : "Cta_Retencion" },
+                { data : "IdProv" },
+                { data : "TP" },
+                { data : "Fecha.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                 },
+                { data : "Numero" },
+                { data : "Linea_SRI" },
+                { data : "Tipo_Trans" },
+                { data : "X" },
+                { data : "IDT" },
+                { data : "RUC_CI" },
+                { data : "TB" },
+                { data : "Razon_Social" },
+                { data : "ID" }
+              ]
+            });
+            tbl_retenciones_co = $('#tbl_retenciones_co').DataTable({
+              language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+              },
+              data: response.tbl2_1.data,
+              scrollY: '150px', 
+              scrollCollapse: true, 
+              scrollX: true,
+              columns: [
+                { data: "Linea_SRI" },
+                { data: "Cliente" },
+                { data: "TD" },
+                { data: "CI_RUC" },
+                { data: "TipoComprobante" },
+                { data: "CodSustento" },
+                { data: "TP" },
+                { data: "Numero" },
+                { data: "Establecimiento" },
+                { data: "PuntoEmision" },
+                { data: "Secuencial" },
+                { data: "Autorizacion" },
+                { data: "FechaEmision.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                 },
+                { data: "FechaRegistro.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                 },
+                { data: "FechaCaducidad.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                 },
+                { data: "BaseImponible" },
+                { data: "BaseImpGrav" },
+                { data: "PorcentajeIva" },
+                { data: "MontoIva" },
+                { data: "BaseImpIce" },
+                { data: "PorcetajeIce" },
+                { data: "MontoIce" },
+                { data: "MontoIvaBienes" },
+                { data: "PorRetBienes" },
+                { data: "ValorRetBienes" },
+                { data: "MontoIvaServicios" },
+                { data: "PorRetServicios" },
+                { data: "ValorRetServicios" },
+                { data: "ContratoPartidoPolitico" },
+                { data: "MontoTituloOneroso" },
+                { data: "MontoTituloGratuito" },
+                { data: "DevIva" },
+                { data: "Clave_Acceso" },
+                { data: "Estado_SRI" },
+                { data: "AutRetencion" }
+              ]
+            });
+            tbl_retenciones_ve = $('#tbl_retenciones_ve').DataTable({
+              language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+              },
+              data: response.tbl2_2.data,
+              scrollY: '150px',
+              scrollCollapse: true, 
+              scrollX: true,
+              columns: [
+                { data: "Linea_SRI" }, 
+                { data: "Cliente" }, 
+                { data: "TipoComprobante" }, 
+                { data: "CI_RUC" }, 
+                { data: "TD" }, 
+                { data: "TP" }, 
+                { data: "Numero" }, 
+                { data: "Establecimiento" }, 
+                { data: "PuntoEmision" }, 
+                { data: "NumeroComprobantes" }, 
+                { data: "Secuencial" }, 
+                { data: "FechaEmision.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                 }, 
+                { data: "FechaRegistro.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                 }, 
+                { data: "BaseImponible" }, 
+                { data: "BaseImpGrav" }, 
+                { data: "PorcentajeIva" }, 
+                { data: "MontoIva" }, 
+                { data: "BaseImpIce" }, 
+                { data: "PorcentajeIce" }, 
+                { data: "MontoIce" }, 
+                { data: "MontoIvaBienes" }, 
+                { data: "PorRetBienes" }, 
+                { data: "ValorRetBienes" }, 
+                { data: "MontoIvaServicios" }, 
+                { data: "PorRetServicios" }, 
+                { data: "ValorRetServicios" }, 
+                { data: "RetPresuntiva" }
+              ]
+            });
+            tbl_subcuentas = $('#tbl_subcuentas').DataTable({
+              language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+              },
+              data: response.tbl3.data,
+              scrollY: '150px',
+              scrollCollapse: true, 
+              scrollX: true,
+              columns: [
+                { data: "TC" },
+                { data: "Detalles" },
+                { data: "Factura" },
+                { data: "Fecha_V.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                },
+                { data: "Parcial_ME" },
+                { data: "Debitos" },
+                { data: "Creditos" },
+                { data: "Prima" },
+                { data: "Detalle_SubCta" },
+                { data: "Cta" },
+                { data: "Codigo" }
+              ]
+            });
+            tbl_kardex = $('#tbl_kardex').DataTable({
+              language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+              },
+              data: response.tbl4.data,
+              scrollY: '300px',
+              scrollCollapse: true,
+              scrollX: true,
+              columns: [
+                { data: "Codigo_Inv" },
+                { data: "Producto" },
+                { data: "CodBodega" },
+                { data: "Entrada" },
+                { data: "Salida" },
+                { data: "Valor_Unitario" },
+                { data: "Valor_Total" },
+                { data: "Costo" },
+                { data: "Total" },
+                { data: "Fecha.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                },
+                { data: "TC" },
+                { data: "Serie" },
+                { data: "Factura" },
+                { data: "Orden_No" },
+                { data: "Lote_No" },
+                { data: "Fecha_Fab.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                },
+                { data: "Fecha_Exp.date",
+                  render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                  }
+                },
+                { data: "Reg_Sanitario" },
+                { data: "Modelo" },
+                { data: "Procedencia" },
+                { data: "Serie_No" },
+                { data: "Codigo_Barra" },
+                { data: "Cta_Inv" },
+                { data: "Contra_Cta" }
+              ]
+            });
             $('#txt_debe').val(response.Debe);
             $('#txt_haber').val(response.haber);        		
             $('#txt_total').val(response.total);
@@ -146,7 +426,10 @@ function listar_comprobante()
             console.log(response);
 
         }
+        setTimeout(function(){
         $('#myModal_espera').modal('hide');
+        }, 1000);
+        
 
   }
 }); 
