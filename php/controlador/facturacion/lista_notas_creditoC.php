@@ -82,84 +82,14 @@ class lista_notas_creditoC
 
     	foreach ($tbl as $key => $value) {
     		$exis = $this->sri->catalogo_lineas($value['TC'], $value['Serie']);
-			$tbl[$key]['ExisteSerie'] = 'No';
-			if(count($exis)>0)
-			{
-				$tbl[$key]['ExisteSerie'] = 'Si';
-			}
+				$tbl[$key]['ExisteSerie'] = 'No';
+				if(count($exis)>0)
+				{
+					$tbl[$key]['ExisteSerie'] = 'Si';
+				}
     	}
     	return $tbl;
-    	foreach ($tbl as $key => $value) {
-    		 $exis = $this->sri->catalogo_lineas('NC',$value['Serie_NC']);
-    		 $autorizar = '';$anular = '';
-    		 $cli_data = Cliente($value['Codigo']);
-    		 $email = '';
-    		 if(count($cli_data)>0)
-    		 {
-    		 	 if($cli_data[0]['Email']!='.' && $cli_data[0]['Email']!='')
-    		 	 {
-    		 	 	 $email.=$cli_data[0]['Email'].',';
-    		 	 }
-    		 	 if($cli_data[0]['EmailR']!='.' && $cli_data[0]['EmailR']!='')
-    		 	 {
-    		 	 	 $email.=$cli_data[0]['EmailR'].',';
-    		 	 }
-    		 	 if($cli_data[0]['Email2']!='.' && $cli_data[0]['Email2']!='')
-    		 	 {
-    		 	 	 $email.=$cli_data[0]['Email2'].',';
-    		 	 }
-    		 }
-    		 // print_r($exis);die();$retencion,$numero,$serie_r
-    		$tr.='<tr>
-            <td>
-            <div class="input-group-btn">
-					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones
-					<span class="fa fa-caret-down"></span></button>
-					<ul class="dropdown-menu">
-					<li><a href="#" onclick="Ver_Nota_credito(\''.$value['Secuencial_NC'].'\',\''.$value['Serie_NC'].'\')"><i class="fa fa-eye"></i> Ver Nota de credito</a></li>';
-					if(count($exis)>0 && strlen($value['Autorizacion_NC'])==13)
-					{
-						$tr.='<li><a href="#" onclick="autorizar(\''.$value['Secuencial_NC'].'\',\''.$value['Serie_NC'].'\',\''.$value['Fecha']->format('Y-m-d').'\')" ><i class="fa fa-paper-plane"></i>Autorizar</a></li>';
-					}else if(count($exis)==0 && strlen($value['Autorizacion_NC'])==13)
-					{
-						$tr.='<li><a class="btn-danger"><i class="fa fa-info"></i>Para autorizar Asigne en catalo de lineas la serie:'.$value['Serie_NC'].'</a></li>';
-					}
-					if($value['T']!='A')
-					{
-						$tr.='<li><a href="#" onclick="anular_factura(\''.$value['Secuencial_NC'].'\',\''.$value['Serie_NC'].'\',\''.$value['Codigo'].'\')"><i class="fa fa-times-circle"></i>Anular Nota de credito</a></li>';
-					}
-					$tr.='<li><a href="#" onclick=" modal_email_nota(\''.$value['Secuencial_NC'].'\',\''.$value['Serie_NC'].'\',\''.$value['Factura'].'\',\''.$value['Autorizacion_NC'].'\',\''.$email.'\')"><i class="fa fa-envelope"></i> Enviar Nota de credito por email</a></li>
-					<li><a href="#" onclick="descargar_nota(\''.$value['Secuencial_NC'].'\',\''.$value['Serie_NC'].'\',\''.$value['Factura'].'\',\''.$value['Serie'].'\')"><i class="fa fa-download"></i> Descargar Nota de credito</a></li>';
-					if(strlen($value['Autorizacion_NC'])>13)
-					{
-					 $tr.='<li><a href="#" onclick="descargar_xml(\''.$value['Autorizacion_NC'].'\')"><i class="fa fa-download"></i> Descargar XML</a></li>';
-					}
-					 $tr.='
-					</ul>
-			</div>
-
-
-            </td>
-            <td>'.$value['T'].'</td>
-            <td>'.$value['Cliente'].'</td>
-            <td>'.$value['TC'].'</td>
-            <td>'.$value['Serie_NC'].'</td>
-            <td>'.$value['Autorizacion_NC'].'</td>
-            <td>'.$value['Secuencial_NC'].'</td>
-            <td>'.$value['Fecha']->format('Y-m-d').'</td>
-            <td class="text-right">'.$value['Factura'].'</td>
-            <td class="text-right">'.$value['Serie'].'</td>
-            <td class="text-right">'.$value['Autorizacion'].'</td>
-            <td class="text-right">'.$value['Total_MN'].'</td>
-            <td class="text-right">'.$value['Descuento'].'</td>
-            <td class="text-right">'.$value['Descuento2'].'</td>
-            <td>'.$value['CI_RUC'].'</td>
-          </tr>';
-    	}
-
-    	// print_r($tr);die();
-
-    	return $tr;
+    	
     }
 
 
