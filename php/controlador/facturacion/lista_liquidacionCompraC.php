@@ -140,7 +140,15 @@ class lista_liquidacionCompraC
     	// print_r($parametros);die();
     	$codigo = $parametros['ci'];
     	$tbl = $this->modelo->facturas_emitidas_tabla($codigo,$parametros['per'],$parametros['desde'],$parametros['hasta'],false,$autorizados);
-    	$tr='';
+    	foreach ($tbl as $key => $value) {
+				$exis = $this->modelo->catalogo_lineas($value['TC'], $value['Serie']);
+				$tbl[$key]['ExisteSerie'] = 'No';
+				if(count($exis)>0)
+				{
+					$tbl[$key]['ExisteSerie'] = 'Si';
+				}
+			}
+    	return $tbl;
     	foreach ($tbl as $key => $value) {
     		 $exis = $this->modelo->catalogo_lineas($value['TC'],$value['Serie']);
     		 $autorizar = '';$anular = '';

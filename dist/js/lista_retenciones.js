@@ -1,27 +1,31 @@
-$(document).ready(function()
-{
+$(document).ready(function(){
+
   	catalogoLineas();
   	autocmpletar_cliente()
 })
 
-
-
-   function cargar_registros()
-   {   
-      $('#myModal_espera').modal('show');
+function cargar_registros()
+{   
+   	 $('#myModal_espera').modal('show');
 
       // Recargar los datos de la tabla
-      tbl_nota_credito_all.ajax.reload(function() {
+      tbl_retenciones_all.ajax.reload(function() {
           // Cerrar el modal después de que se hayan recargado los datos
-          $('#myModal_espera').modal('hide');
+      	setTimeout(function() {
+		$('#myModal_espera').modal('hide');
+		}, 500); 
       }, false);
-   }
 
-  function Ver_Nota_credito(nota,serie)
+}
+
+  function Ver_retencion(retencion,serie,numero,tp)
   {    
-    var url = '../controlador/facturacion/lista_notas_creditoC.php?Ver_nota_credito=true&nota='+nota+'&serie='+serie;   
+    var url = '../controlador/facturacion/lista_retencionesC.php?Ver_retencion=true&retencion='+retencion+'&serie='+serie+'&numero='+numero+'&tp='+tp;   
     window.open(url,'_blank');
   }
+
+
+
 
   function autocmpletar_cliente(){
   	   var g = '.';
@@ -59,7 +63,7 @@ function catalogoLineas(){
           // Limpiamos el select
           console.log(datos);
           $("#DCLinea").find('option').remove();
-          if(data.length>1)
+          if(data.length>0)
           {
             $("#DCLinea").append('<option value="">Todos</option>');
           }
@@ -83,27 +87,23 @@ function catalogoLineas(){
               });
 
         }         
-      },
-    error: function (error) {
-      console.error('Error en numero_comprobante:', error);
-      // Puedes manejar el error aquí si es necesario
-    },
+      }
     });
   }
 
 
   function autorizar(factura,serie,fecha)
   { 
-    $('#myModal_espera').modal('show');
+    // $('#myModal_espera').modal('show');
     var parametros = 
     {
-      'nota':factura,
+      'Retencion':factura,
       'serie':serie,
       'Fecha':fecha,
     }
      $.ajax({
       data:  {parametros:parametros},
-      url:   '../controlador/facturacion/lista_notas_creditoC.php?autorizar_nota=true',
+      url:   '../controlador/facturacion/lista_retencionesC.php?autorizar_retencion=true',
       type:  'post',
       dataType: 'json',
        success:  function (data) {
@@ -113,7 +113,7 @@ function catalogoLineas(){
       if(data.respuesta==1)
       { 
         Swal.fire({
-          icon:'success',
+          type:'success',
           title: 'Retencion Procesada y Autorizada',
           confirmButtonText: 'Ok!',
           allowOutsideClick: false,
@@ -154,33 +154,28 @@ function catalogoLineas(){
         {
            Swal.fire('Revise CI_RUC de factura en base','Cliente no encontrado','info');
          }else{
-          Swal.fire('XML devuelto por:'+data.respuesta,'','error');  
+          Swal.fire('XML devuelto por:'+data.text,'','error');  
         }
       }
 
 
-      },
-        error: function (error) {
-          $('#myModal_espera').modal('hide');
-        },
+      }
     });
   }
 
   function descargar_xml(xml)
   {
-    $('#myModal_espera').modal('show');
     var parametros = 
     {
         'xml':xml,
     }
      $.ajax({
         data: {parametros:parametros},
-        url:   '../controlador/facturacion/lista_notas_creditoC.php?descargar_xml=true',
+        url:   '../controlador/facturacion/lista_retencionesC.php?descargar_xml=true',
         dataType:'json',      
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
-          $('#myModal_espera').modal('hide');
           if(response!='-1')
           {
             console.log(response);
@@ -193,60 +188,46 @@ function catalogoLineas(){
           {
             Swal.fire('No se encontro el xml','','info');
           }
-        },
-          error: function (error) {
-            $('#myModal_espera').modal('hide');
-            // Puedes manejar el error aquí si es necesario
-          },
+        }
       });
 
   }
 
-  function descargar_nota(nota,serie_nc,factura,seriefa)
+   function descargar_ret(retencion,serie,numero)
   {
-    $('#myModal_espera').modal('show');
     var parametros = 
     {
-        'nota':nota,
-        'serie_nc':serie_nc,
-        'factura':factura,
-        'serie':seriefa,
+        'retencion':retencion,
+        'serie':serie,
+        'numero':numero,
     }
      $.ajax({
         data: {parametros:parametros},
-        url:   '../controlador/facturacion/lista_notas_creditoC.php?descargar_notacredito=true',
+        url:   '../controlador/facturacion/lista_retencionesC.php?descargar_retencion=true',
         dataType:'json',      
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
-          $('#myModal_espera').modal('hide');
-          if(response!=-1)
-          {
             console.log(response);
               var link = document.createElement("a");
               link.download = response;
               link.href = '../../TEMP/'+response;
               link.click();
-          }else
-          {
-            Swal.fire("","No se pudo encontrar la nota de credito","info")
-          }
-        },
-        error: function (error) {
-          $('#myModal_espera').modal('hide');
-        },
+        
+         
+        }
       });
 
   }
 
 
-function modal_email_nota(nota,serie_nc,factura,autorizacion_nc,emails)
+function modal_email_ret(retencion,serie,numero,autorizacion,emails)
   {
     $('#myModal_email').modal('show'); 
-    $('#txt_fac').val(nota);
-    $('#txt_serie').val(serie_nc);
-    $('#txt_codigoc').val(factura);
-    $('#txt_autorizacion').val(autorizacion_nc);
+    $('#txt_fac').val(retencion);
+    $('#txt_serie').val(serie);
+    $('#txt_codigoc').val(numero);
+    $('#txt_autorizacion').val(autorizacion);
 
     var to = emails.substring(0,emails.length-1);
     var ema = to.split(',');
@@ -268,10 +249,10 @@ function modal_email_nota(nota,serie_nc,factura,autorizacion_nc,emails)
     var cuerpo = $('#txt_texto').val();
     var pdf_fac = $('#cbx_factura').prop('checked');
     var titulo = $('#txt_titulo').val();
-    var nota = $('#txt_fac').val();
+    var retencion = $('#txt_fac').val();
     var serie = $('#txt_serie').val();
     var numero = $('#txt_codigoc').val();
-    var autoriza = $('#txt_autorizacion').val();
+    var autoriza = $('#txt_codigoc').val();
 
     // var adjunto =  new FormData(document.getElementById("form_img"));
 
@@ -284,14 +265,14 @@ function modal_email_nota(nota,serie_nc,factura,autorizacion_nc,emails)
         'cuerpo':cuerpo,
         'pdf_fac':pdf_fac,
         'titulo':titulo,
-        'nota':nota,
-        'serie_nc':serie,
+        'retencion':retencion,
+        'serie':serie,
         'numero':numero,
         'autoriza':autoriza,
     }
      $.ajax({
         data: {parametros:parametros},
-        url:   '../controlador/facturacion/lista_notas_creditoC.php?enviar_email_detalle=true',
+        url:   '../controlador/facturacion/lista_retencionesC.php?enviar_email_detalle=true',
         dataType:'json',      
         type:  'post',
         // dataType: 'json',

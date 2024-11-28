@@ -19,7 +19,9 @@ class lista_guia_remisionM
 	function guia_remision_emitidas_tabla($codigo=false,$desde=false,$hasta=false,$serie=false,$factura=false,$Autorizacion=false,
 $Autorizacion_GR=false,$remision=false,$serie_gr=false)
 	{
-		$sql ="SELECT * FROM Facturas_Auxiliares
+		$sql ="SELECT * 
+				FROM Facturas_Auxiliares F
+				inner join Clientes C on F.CodigoC = C.Codigo
 				WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'
 				AND Item = '".$_SESSION['INGRESO']['item']."'";    
 			if($codigo!='T' && $codigo!='')
@@ -60,7 +62,7 @@ $Autorizacion_GR=false,$remision=false,$serie_gr=false)
 	    	$sql.=" AND Remision = '".$remision."'";
 	    }
 	   $sql.=" ORDER BY Remision DESC"; 
-		$sql.=" OFFSET ".$_SESSION['INGRESO']['paginacionIni']." ROWS FETCH NEXT ".$_SESSION['INGRESO']['numreg']." ROWS ONLY;";   
+		$sql.=" OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;";   
 	    // // print_r($_SESSION['INGRESO']);
 		// print_r($sql);die();    
 		return $this->db->datos($sql);

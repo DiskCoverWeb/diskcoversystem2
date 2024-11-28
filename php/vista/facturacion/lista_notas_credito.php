@@ -12,14 +12,14 @@
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
           },
           ajax: {
-               url:   '../controlador/facturacion/lista_notas_creditoC.php?tabla=true',
+              url:   '../controlador/facturacion/lista_notas_creditoC.php?tabla=true',
               type: 'POST',  // Cambia el método a POST    
               data: function(d) {
                   var parametros = {
                       ci: $('#ddl_cliente').val(),
                       desde: $('#txt_desde').val(),
                       hasta: $('#txt_hasta').val(),
-                      serie: $('#DCLinea').val()
+                      serie: $('#DCLinea').val()                      
                   };
                   return { parametros: parametros };
               },

@@ -321,7 +321,7 @@ $(document).ready(function()
       if(data.respuesta==1)
       { 
         Swal.fire({
-          type:'success',
+          icon:'success',
           title: 'Factura Procesada y Autorizada',
           confirmButtonText: 'Ok!',
           allowOutsideClick: false,
@@ -344,7 +344,7 @@ $(document).ready(function()
           }else
           {
             Swal.fire({
-             type: 'error',
+             icon: 'error',
              title: 'XML DEVUELTO',
              html: `<div style="width: 100%; color:black;font-weight: 400;font-size: 1.525em;">${data.text}</div>`
            });
@@ -566,7 +566,7 @@ function enviar_email_comprobantes(nombre_pdf,clave_Acceso,email)
     Swal.fire({
        title: 'Esta seguro? \n Esta usted seguro de Anular la factura:'+Factura,
        text:'' ,
-       type: 'warning',
+       icon: 'warning',
        showCancelButton: true,
        confirmButtonColor: '#3085d6',
        cancelButtonColor: '#d33',
@@ -792,7 +792,7 @@ function modal_email_fac(factura,serie,codigoc,emails)
         Swal.fire({
          title: 'Esta seguro de realizar esta accion?',
          text: " Esto podria tomar varios munutos!",
-         type: 'warning',
+         icon: 'warning',
          showCancelButton: true,
          confirmButtonColor: '#3085d6',
          cancelButtonColor: '#d33',

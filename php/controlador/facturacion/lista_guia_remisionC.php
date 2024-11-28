@@ -132,7 +132,17 @@ class lista_guia_remisionC
     	// print_r($parametros);die();
     	$codigo = $parametros['ci'];
     	$tbl = $this->modelo->guia_remision_emitidas_tabla($codigo,$parametros['desde'],$parametros['hasta'],$serie=false,$factura=false,$Autorizacion=false,$Autorizacion_GR=false,$remision=false,$parametros['serie']);
-    	$tr='';
+    	
+    	foreach ($tbl as $key => $value) {
+			$exis = $this->sri->catalogo_lineas('GR', $value['Serie_GR']);
+			$tbl[$key]['ExisteSerie'] = 'No';
+			if(count($exis)>0)
+			{
+				$tbl[$key]['ExisteSerie'] = 'Si';
+			}
+		}
+
+    	return $tbl;
     	foreach ($tbl as $key => $value) {
     		 $exis = $this->sri->catalogo_lineas('GR',$value['Serie_GR']);
     		 $autorizar = '';$anular = '';
@@ -390,18 +400,21 @@ class lista_guia_remisionC
 
      function descargar_guia($parametros)
     {
+    	// print_r($parametros);die();
 
     	$FA = $this->modelo->factura($parametros['factura'],$parametros['serie'],$parametros['autorizacion']);
-    	$TFA['TC'] = $FA[0]['TC'];
-		$TFA['Serie'] = $FA[0]['Serie'];
-		$TFA['Autorizacion'] = $FA[0]['Autorizacion'];
-		$TFA['Factura'] = $parametros['factura'];
-		$TFA['Autorizacion_GR'] = $parametros['autorizacion_gr'];
-		$TFA['CodigoC'] = $FA[0]['CodigoC']; 
-      	$this->punto_venta->pdf_guia_remision_elec($TFA,$TFA['Autorizacion_GR'],$periodo=false,0,1);
-	 	
-     	
-       return $parametros['serie_gr'].'-'.generaCeros($parametros['guia'],7).'.pdf';
+    	if(count($FA)>0)
+    	{
+	    	$TFA['TC'] = $FA[0]['TC'];
+			$TFA['Serie'] = $FA[0]['Serie'];
+			$TFA['Autorizacion'] = $FA[0]['Autorizacion'];
+			$TFA['Factura'] = $parametros['factura'];
+			$TFA['Autorizacion_GR'] = $parametros['autorizacion_gr'];
+			$TFA['CodigoC'] = $FA[0]['CodigoC']; 
+	      	$this->punto_venta->pdf_guia_remision_elec($TFA,$TFA['Autorizacion_GR'],$periodo=false,0,1);	 	
+	     	
+	       return $parametros['serie_gr'].'-'.generaCeros($parametros['guia'],7).'.pdf';
+	   }else{ return -1;}
     }
 
      function descargar_xml($parametros)

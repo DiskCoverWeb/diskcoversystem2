@@ -1,27 +1,34 @@
-$(document).ready(function()
-{
-  	catalogoLineas();
+ 
+  $(document).ready(function()
+  {
   	autocmpletar_cliente()
-})
+  })
 
 
-
-   function cargar_registros()
-   {   
-      $('#myModal_espera').modal('show');
+ function cargar_registros()
+ {
+ 	 $('#myModal_espera').modal('show');
 
       // Recargar los datos de la tabla
-      tbl_nota_credito_all.ajax.reload(function() {
+      tbl_guias_all.ajax.reload(function() {
           // Cerrar el modal después de que se hayan recargado los datos
-          $('#myModal_espera').modal('hide');
+      	setTimeout(function() {
+		$('#myModal_espera').modal('hide');
+		}, 500); 
       }, false);
-   }
+  
+  
 
-  function Ver_Nota_credito(nota,serie)
+ }
+
+  function Ver_guia_remision(TC,Serie,Factura,Autorizacion,Autorizacion_GR)
   {    
-    var url = '../controlador/facturacion/lista_notas_creditoC.php?Ver_nota_credito=true&nota='+nota+'&serie='+serie;   
+    var url = '../controlador/facturacion/lista_guia_remisionC.php?Ver_guia_remision=true&tc='+TC+'&factura='+Factura+'&serie='+Serie+'&Auto='+Autorizacion+'&AutoGR='+Autorizacion_GR;   
     window.open(url,'_blank');
   }
+
+
+
 
   function autocmpletar_cliente(){
   	   var g = '.';
@@ -50,7 +57,7 @@ function catalogoLineas(){
     $.ajax({
       type: "POST",                 
       url: '../controlador/facturacion/facturar_pensionC.php?catalogo=true',
-      data: {'fechaVencimiento' : fechaVencimiento , 'fechaEmision' : fechaEmision},      
+      data: {'fechaVencimiento' : fechaVencimiento , 'fechaEmision' : fechaEmision,'tipo':'GR'},      
       dataType:'json', 
       success: function(data)             
       {
@@ -82,19 +89,15 @@ function catalogoLineas(){
                 location.href = '../vista/modulos.php';
               });
 
-        }         
-      },
-    error: function (error) {
-      console.error('Error en numero_comprobante:', error);
-      // Puedes manejar el error aquí si es necesario
-    },
+        }       
+      }
     });
   }
 
 
   function autorizar(factura,serie,fecha)
   { 
-    $('#myModal_espera').modal('show');
+    // $('#myModal_espera').modal('show');
     var parametros = 
     {
       'nota':factura,
@@ -103,84 +106,93 @@ function catalogoLineas(){
     }
      $.ajax({
       data:  {parametros:parametros},
-      url:   '../controlador/facturacion/lista_notas_creditoC.php?autorizar_nota=true',
+      url:   '../controlador/facturacion/lista_guia_remisionC.php?autorizar_nota=true',
       type:  'post',
       dataType: 'json',
-       success:  function (data) {
+       success:  function (response) {
+        $('#myModal_espera').modal('hide');
+        // console.log(data);
 
-    $('#myModal_espera').modal('hide');
-      // console.log(data);
-      if(data.respuesta==1)
-      { 
-        Swal.fire({
-          icon:'success',
-          title: 'Retencion Procesada y Autorizada',
-          confirmButtonText: 'Ok!',
-          allowOutsideClick: false,
-        }).then(function(){
-          // var url=  '../../TEMP/'+data.pdf+'.pdf';
-          // window.open(url, '_blank'); 
-          // location.reload();    
+         if(response.resp == 1)
+              {
+                 Swal.fire({
+                  type: 'success',
+                  title: 'Documento electronico autorizado',
+                  allowOutsideClick: false,
+                }).then(function(){
 
-        })
-      }else if(data.respuesta==-1)
-      {
-        if(data.text==2 || data.text==null)
-          {
+                  var url = '../../TEMP/' + response.pdf + '.pdf'; 
+                 window.open(url,'_blank');                      
+                  location.reload();
+                  // imprimir_ticket_fac(0,TextCI,TextFacturaNo,serie[1]);
+                });
+              }else if(response.resp==2)
+              {
+                tipo_error_sri(response.clave);
+                Swal.fire('XML devuelto','','error').then(() => {
+                  
+                });
+                //descargar_archivos(response.url,response.ar);
 
-          Swal.fire('XML devuleto','XML DEVUELTO','error').then(function(){ 
-            // var url=  '../../TEMP/'+data.pdf+'.pdf';    window.open(url, '_blank');             
-          }); 
-            tipo_error_sri(data.clave);
-          }else
-          {
+              }else if(response.resp == 4)
+              {
+                 Swal.fire({
+                  type: 'success',
+                  title: 'Factura guardada',
+                  allowOutsideClick: false,
+                }).then(() => {
+                  serie = DCLinea.split(" ");
+                  cambio = $("#cambio").val();
+                  efectivo = $("#efectivo").val();
+                  var url = '../controlador/facturacion/divisasC.php?ticketPDF=true&fac='+TextFacturaNo+'&serie='+serie[1]+'&CI='+TextCI+'&TC='+serie[0]+'&efectivo='+efectivo+'&saldo='+cambio;
+                  window.open(url,'_blank');
+                  location.reload();
+                  //imprimir_ticket_fac(0,TextCI,TextFacturaNo,serie[1]);
+                });
+              }else if(response.resp==5)
+              {
+                Swal.fire({
+                  type: 'error',
+                  title: 'Numero de documento repetido se recargara la pagina para colocar el numero correcto',
+                  // text:''
+                  allowOutsideClick: false,
+                }).then(function(){
+                  location.reload();
+                })
+              }else if(response.resp == -1)
+              {
+                tipo_error_sri(response.clave);
+              }
+              else
+              {
+                if(response.clave!='')
+                {
+                    tipo_error_sri(response.clave);
+                }
+                Swal.fire({
+                  type: 'error',
+                  title: 'XML NO AUTORIZADO',
+                  allowOutsideClick: false,
+                })
+              }              
 
-            Swal.fire(data.text,'XML DEVUELTO','error').then(function(){ 
-              // var url=  '../../TEMP/'+data.pdf+'.pdf';    window.open(url, '_blank');             
-            }); 
-          }
-      }else if(data.respuesta==2)
-      {
-        // tipo_error_comprobante(clave)
-        Swal.fire('XML devuelto','','error'); 
-        tipo_error_sri(data.clave);
-      }
-      else if(data.respuesta==4)
-      {
-        Swal.fire('SRI intermitente intente mas tarde','','info');  
-      }else
-      {
-        if(data==-1)
-        {
-           Swal.fire('Revise CI_RUC de factura en base','Cliente no encontrado','info');
-         }else{
-          Swal.fire('XML devuelto por:'+data.respuesta,'','error');  
-        }
-      }
-
-
-      },
-        error: function (error) {
-          $('#myModal_espera').modal('hide');
-        },
+       }
     });
   }
 
   function descargar_xml(xml)
   {
-    $('#myModal_espera').modal('show');
     var parametros = 
     {
         'xml':xml,
     }
      $.ajax({
         data: {parametros:parametros},
-        url:   '../controlador/facturacion/lista_notas_creditoC.php?descargar_xml=true',
+        url:   '../controlador/facturacion/lista_guia_remisionC.php?descargar_xml=true',
         dataType:'json',      
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
-          $('#myModal_espera').modal('hide');
           if(response!='-1')
           {
             console.log(response);
@@ -193,60 +205,57 @@ function catalogoLineas(){
           {
             Swal.fire('No se encontro el xml','','info');
           }
-        },
-          error: function (error) {
-            $('#myModal_espera').modal('hide');
-            // Puedes manejar el error aquí si es necesario
-          },
+        }
       });
 
   }
 
-  function descargar_nota(nota,serie_nc,factura,seriefa)
+   function descargar_guia(factura,serie,auto,auto_gr,guia,serie_gr)
   {
-    $('#myModal_espera').modal('show');
     var parametros = 
     {
-        'nota':nota,
-        'serie_nc':serie_nc,
         'factura':factura,
-        'serie':seriefa,
+        'serie':serie,
+        'autorizacion':auto,
+        'autorizacion_gr':auto_gr,
+        'guia':guia,
+        'serie_gr':serie_gr,
     }
      $.ajax({
         data: {parametros:parametros},
-        url:   '../controlador/facturacion/lista_notas_creditoC.php?descargar_notacredito=true',
+        url:   '../controlador/facturacion/lista_guia_remisionC.php?descargar_guia=true',
         dataType:'json',      
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
-          $('#myModal_espera').modal('hide');
-          if(response!=-1)
-          {
+        	if(response!='-1')
+        	{
             console.log(response);
               var link = document.createElement("a");
               link.download = response;
               link.href = '../../TEMP/'+response;
               link.click();
-          }else
-          {
-            Swal.fire("","No se pudo encontrar la nota de credito","info")
-          }
-        },
-        error: function (error) {
-          $('#myModal_espera').modal('hide');
-        },
+            }else
+            {
+            	Swal.fire("","Factura de guia de remision no encontrada","info")
+            }
+        
+         
+        }
       });
 
   }
 
+function modal_email_guia(Remision,Serie_GR,Factura,Serie,Autorizacion_GR,Autorizacion,emails)
+{
 
-function modal_email_nota(nota,serie_nc,factura,autorizacion_nc,emails)
-  {
     $('#myModal_email').modal('show'); 
-    $('#txt_fac').val(nota);
-    $('#txt_serie').val(serie_nc);
-    $('#txt_codigoc').val(factura);
-    $('#txt_autorizacion').val(autorizacion_nc);
+    $('#txt_fac').val(Remision);
+    $('#txt_serie').val(Serie);
+    $('#txt_seriegr').val(Serie_GR);
+    $('#txt_numero').val(Factura);
+    $('#txt_autorizacion').val(Autorizacion);
+    $('#txt_autorizaciongr').val(Autorizacion_GR);
 
     var to = emails.substring(0,emails.length-1);
     var ema = to.split(',');
@@ -268,10 +277,12 @@ function modal_email_nota(nota,serie_nc,factura,autorizacion_nc,emails)
     var cuerpo = $('#txt_texto').val();
     var pdf_fac = $('#cbx_factura').prop('checked');
     var titulo = $('#txt_titulo').val();
-    var nota = $('#txt_fac').val();
+    var factura = $('#txt_numero').val();
     var serie = $('#txt_serie').val();
-    var numero = $('#txt_codigoc').val();
+    var seriegr = $('#txt_seriegr').val();
+    var remision = $('#txt_fac').val();
     var autoriza = $('#txt_autorizacion').val();
+    var autorizagr = $('#txt_autorizaciongr').val();
 
     // var adjunto =  new FormData(document.getElementById("form_img"));
 
@@ -284,14 +295,16 @@ function modal_email_nota(nota,serie_nc,factura,autorizacion_nc,emails)
         'cuerpo':cuerpo,
         'pdf_fac':pdf_fac,
         'titulo':titulo,
-        'nota':nota,
-        'serie_nc':serie,
-        'numero':numero,
+        'factura':factura,
+        'serie':serie,
+        'seriegr':seriegr,
+        'remision':remision,
         'autoriza':autoriza,
+        'autorizagr':autorizagr,
     }
      $.ajax({
         data: {parametros:parametros},
-        url:   '../controlador/facturacion/lista_notas_creditoC.php?enviar_email_detalle=true',
+        url:   '../controlador/facturacion/lista_guia_remisionC.php?enviar_email_detalle=true',
         dataType:'json',      
         type:  'post',
         // dataType: 'json',
@@ -318,4 +331,5 @@ function modal_email_nota(nota,serie_nc,factura,autorizacion_nc,emails)
       });
 
   }
+
 
