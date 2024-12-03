@@ -80,14 +80,12 @@ function consultar_datos(OpcUno,PorConceptos)
                 $('#haber').val(addCommas(formatearNumero(response.SumaHaber)));							 
                 $('#saldo').val(addCommas(formatearNumero(response.SaldoTotal)));
                 $('#LabelTotSaldoAnt').val(addCommas(formatearNumero(response.SaldoAnterior)));
-            
-                $('#DGMayor').html(response.DGMayor);
-                var nFilas = $("#DGMayor tr").length;
+
                 // $('#num_r').html(nFilas-1);	
                 $('#tit').text($titulo+" (Registros: "+response.TotalRegistros+")");
                 setTimeout(function(){
                     $('#myModal_espera').modal('hide'); 			    
-                }, 100)
+                }, 500)
                 tbl_Mayor_Auxiliar = $('#tbl_Mayor_Auxiliar').DataTable({
                     responsive: true,
                     language: {

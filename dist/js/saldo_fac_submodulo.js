@@ -93,7 +93,9 @@ $.ajax({
         });
         $('#select_beneficiario').html(bene);
         
-$('#myModal_espera').modal('hide');  
+setTimeout(function(){
+    $('#myModal_espera').modal('hide');
+    }, 500);   
     }
 
 });
@@ -122,16 +124,13 @@ $.ajax({
     type:  'post',
     dataType: 'json',
     beforeSend: function () {		
-      //    var spiner = '<div class="text-center"><img src="../../img/gif/proce.gif" width="100" height="100"></div>'			
-         // $('#tabla_').html(spiner);
-
- $('#myModal_espera').modal('show');  
+         $('#myModal_espera').modal('show');  
     },
         success:  function (response) {
         totales();
-         $('#tabla_').html(response);				 	
-        
- $('#myModal_espera').modal('hide');  
+        setTimeout(function(){
+            $('#myModal_espera').modal('hide');          
+        }, 500);  
         
         
     }
@@ -207,7 +206,9 @@ tbl_saldo_meses = $('#tbl_saldo_meses').DataTable({
             $('#myModal_espera').modal('show');  
         },
         'dataSrc': function(response){
-            $('#myModal_espera').modal('hide');  
+            setTimeout(function(){
+                $('#myModal_espera').modal('hide');          
+            }, 500); 
             return response.data || [];
         },
         'error': function(xhr, status, error){
@@ -251,19 +252,14 @@ $.ajax({
     type:  'post',
     dataType: 'json',
     beforeSend: function () {		
-      //    var spiner = '<div class="text-center"><img src="../../img/gif/proce.gif" width="100" height="100"></div>'			
-         // $('#tabla_').html(spiner);
-
- $('#myModal_espera').modal('show');  
+        $('#myModal_espera').modal('show');  
     },
         success:  function (response) {
-            // num.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0];
-
             $('#total_mn').text(addCommas(Number(response.Total.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0])));
-            $('#saldo_mn').text(addCommas(Number(response.Saldo.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0])));
-
-        
-$('#myModal_espera').modal('hide');          
+            $('#saldo_mn').text(addCommas(Number(response.Saldo.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0])));  
+            setTimeout(function(){
+                $('#myModal_espera').modal('hide');          
+            }, 500)
     }
 });
 

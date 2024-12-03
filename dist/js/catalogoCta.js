@@ -25,7 +25,6 @@ function consultar_datos()
                 return { parametros:parametros }
             },
             dataSrc: function(response){
-                console.log(response);
                 return response.data;
             },
             beforeSend: function(){

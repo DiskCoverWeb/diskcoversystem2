@@ -34,7 +34,7 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
   ORDER BY Codigo ";
   
   $result = $this ->conn -> datos($sql);  
-  return json_encode($result);
+  return ($result);
   
   }
 
@@ -93,7 +93,6 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
       ORDER BY Cta,T.Fecha,T.TP,T.Numero,Debe DESC,Haber,T.ID ";
     ob_start();
     $DGBanco = grilla_generica_new($sSQL);
-    $DGBanco = json_decode(ob_get_clean(), true);
     $AdoBanco = $this -> conn -> datos($sSQL);
     if($soloReturnDatos){
       return $AdoBanco;
@@ -141,7 +140,7 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
         'AdoBanco',
         'TotalRegistros'
     );
-    return json_encode($result);
+    return $result;
  }
 
  function consultar_banco_datos($desde,$hasta,$CheckAgencia,$DCAgencia,$Checkusu,$DCUsuario,$DCCta)

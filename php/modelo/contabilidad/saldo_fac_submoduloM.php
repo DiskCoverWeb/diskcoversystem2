@@ -94,20 +94,14 @@ class Saldo_fac_sub_C
 
 	}
 
-    function cargar_consulta_x_meses($tabla=false)
+    function cargar_consulta_x_meses()
     {
         $sql = "SELECT Cta, Beneficiario, Anio, Mes, Valor_x_Mes, Categoria
             FROM Reporte_CxCxP_x_Meses
             WHERE Item ='".$_SESSION['INGRESO']['item']."'
             AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
             ORDER BY Beneficiario, Anio, Mes_No";
-            if($tabla)
-            {
-                $datos = grilla_generica_new($sql);
-            }else
-            {
-                $datos = $this->conn->datos($sql);
-            }
+            $datos = grilla_generica_new($sql);
         return $datos;
     }
 

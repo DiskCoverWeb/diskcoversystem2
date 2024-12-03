@@ -162,14 +162,7 @@ function Consultar_Un_Submodulo()
                     language: {
                         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
                     },
-                    "ajax": {
-                        'dataSrc': function (response){
-                            return response.tbl.data || [];
-                        },
-                        'error': function(xhr, status, error){
-                            console.error("Error: ", xhr, status, error);
-                        }
-                    },
+                    data: response.tbl.data,
                     scrollX: true, 
                     scrollY: '300px',
                     scrollColapse: true,

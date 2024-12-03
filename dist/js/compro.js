@@ -152,7 +152,6 @@ function listar_comprobante()
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 Acciones
-                                <span class="bx bx-chevron-down"></span>
                             </button>
                             <ul class="dropdown-menu">
                                 ${options}

@@ -92,6 +92,8 @@ function estado_licencia($f3)
 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 	<link href="../../assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
 	
 	<link href="../../assets/css/app.css" rel="stylesheet">
@@ -101,6 +103,7 @@ function estado_licencia($f3)
 	<!-- <link rel="stylesheet" href="../../assets/css/semi-dark.css" /> -->
 	<link rel="stylesheet" href="../../assets/css/header-colors.css" />
 	<link rel="stylesheet" href="../../dist/css/sweetalert2.min.css" />
+	<link rel="stylesheet" href="../../dist/css/style_acordeon.css">
 	<script src="../../assets/js/jquery.min.js"></script>
 	<script src="../../dist/js/js_globales.js"></script>	
 	<script src="../../dist/js/sweetalert2@11.js"></script>

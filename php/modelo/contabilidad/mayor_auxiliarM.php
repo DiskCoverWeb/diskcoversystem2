@@ -125,7 +125,6 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
   }
   ob_start(); 
   $DGMayor = grilla_generica_new($sSQL);
-  $DGMayor = json_decode(ob_get_clean(), true);
   //Consulta de Totales
   $sSQL = "SELECT T.Cta, SUM(T.Debe) AS TDebe, SUM(T.Haber) AS THaber, SUM(T.Parcial_ME) AS TParcial_ME ";
   if ($PorConceptos=='true') {

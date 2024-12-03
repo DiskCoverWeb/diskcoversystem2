@@ -3260,7 +3260,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
 
      function transacciones_comprobante($tp,$numero,$item)
      {
-		ob_start();
      	 $sql = "SELECT T.Cta,Ca.Cuenta,T.Parcial_ME,T.Debe,T.Haber,T.Detalle,T.Cheq_Dep,T.Fecha_Efec,T.Codigo_C,Ca.Item,T.TP,T.Numero,T.Fecha,T.ID 
              FROM Transacciones As T, Catalogo_Cuentas As Ca 
              WHERE T.TP = '".$tp."' 
@@ -3282,8 +3281,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
 
              $_SESSION['FListComprobante']['Contabilizacion'] = $sql;
              $tbl = grilla_generica_new($sql);
-			 $tbl = ob_get_clean();
-			 $tbl = json_decode($tbl, true);
              return array('tbl'=>$tbl,'datos'=>$result);
 
 
@@ -3291,7 +3288,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
 
      function inventario_comprobante($tp,$numero,$item)
      {
-		 ob_start();
      	 $sql = "SELECT TK.Codigo_Inv,CC.Producto,TK.CodBodega,TK.Entrada,TK.Salida,TK.Valor_Unitario,TK.Valor_Total,TK.Costo,TK.Total,
                TK.Fecha,TK.TC,TK.Serie,TK.Factura,TK.Orden_No,TK.Lote_No,TK.Fecha_Fab,TK.Fecha_Exp,CC.Reg_Sanitario,TK.Modelo,
                TK.Procedencia,TK.Serie_No,TK.Codigo_Barra,TK.Cta_Inv,TK.Contra_Cta 
@@ -3306,8 +3302,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
                ORDER BY TK.Codigo_Inv, TK.CodBodega, TK.Fecha ";
               $result = $this->db_->datos($sql);             
              $tbl = grilla_generica_new($sql);
-			 $tbl = ob_get_clean();
-			 $tbl = json_decode($tbl, true);
 
 
              return array('tbl'=>$tbl,'datos'=>$result);
@@ -3317,7 +3311,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
 
      function subcuentas_comprobante($tp,$numero,$item)
      {
-		  ob_start();
      	  $sql1 = "SELECT TSC.TC,Be.Cliente As Detalles,Factura,Fecha_V,Parcial_ME,Debitos,Creditos,Prima,
           TSC.Detalle_SubCta,TSC.Cta,Be.Codigo 
           FROM Trans_SubCtas As TSC, Clientes As Be 
@@ -3344,15 +3337,12 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
 
          // print_r($sql);die();
           $tbl = grilla_generica_new($sql);
-		  $tbl = ob_get_clean();
-		  $tbl = json_decode($tbl, true);
           return $tbl;
 
 
      }
      function retenciones_comprobantes($tp,$numero,$item)
      {
-		ob_start(); 
      	 // 'Listar las Retenciones
         $sql = "SELECT * 
          FROM Trans_Air 
@@ -3363,8 +3353,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
 
           //el numero es el tamaño ocupado en la pantalla de comprobantes
           $tbl = grilla_generica_new($sql);
-		  $tbl = ob_get_clean();
-		  $tbl = json_decode($tbl, true);
           return $tbl;
 
      }
@@ -3372,7 +3360,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
      function compras_comprobantes($tp,$numero,$item,$Fecha)
      {
        // 'Compras
-	  ob_start();
       $FechaIni = $Fecha;
       $FechaFin = $Fecha;
       $sql = "SELECT TC.Linea_SRI,C.Cliente,C.TD,C.CI_RUC,TC.TipoComprobante,TC.CodSustento,TC.TP,TC.Numero,
@@ -3392,8 +3379,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
             ORDER BY TC.Linea_SRI,C.Cliente,C.CI_RUC,C.TD ";
               $result = $this->db_->datos($sql);
              $tbl = grilla_generica_new($sql);
-			 $tbl = ob_get_clean();
-			 $tbl = json_decode($tbl, true);
              return array('tbl'=>$tbl,'datos'=>$result);
     }
 
@@ -3418,8 +3403,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
             ORDER BY TV.Linea_SRI,C.Cliente,C.CI_RUC,C.TD ";
             $result = $this->db_->datos($sql);
              $tbl = grilla_generica_new($sql);
-			 $tbl = ob_get_clean();
-			 $tbl = json_decode($tbl, true);
              return $tbl;
      }
 

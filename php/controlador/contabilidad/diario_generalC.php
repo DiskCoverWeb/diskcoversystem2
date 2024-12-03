@@ -20,13 +20,13 @@ if(isset($_GET['consultar_libro']))
 {
 	$parametros = $_POST['parametros'];
 	$controlador = new diario_generalC();
-	json_encode($controlador->cargar_consulta_libroD($parametros));
+	echo json_encode($controlador->cargar_consulta_libroD($parametros));
 }
 if(isset($_GET['consultar_submodulo']))
 {
 	$parametros = $_POST['parametros'];
 	$controlador = new diario_generalC();
-	json_encode($controlador->cargar_submodulo($parametros));
+	echo json_encode($controlador->cargar_submodulo($parametros));
 }
 if(isset($_GET['consultar_libro_1']))
 {

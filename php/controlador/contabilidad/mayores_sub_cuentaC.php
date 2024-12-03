@@ -57,7 +57,7 @@ if(isset($_GET['DCCtas']))
 if(isset($_GET['Consultar_Un_Submodulo']))
 {	
 	$parametros = $_POST['parametros'];
-    json_encode($controlador->Consultar_Un_Submodulo($parametros));
+  echo json_encode($controlador->Consultar_Un_Submodulo($parametros));
 }
 
 class mayores_sub_cuentaC

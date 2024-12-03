@@ -195,10 +195,6 @@ class mayores_sub_cuentaM
      $SaldoAnt = CalculosSaldoAnt($Cta,$Debe,$Haber,$Saldo);
 
      return array('tbl'=>$tbl,'SaldoAnt'=>$SaldoAnt,'Debe'=>number_format($Debe,2,'.',''),'Haber'=>number_format($Haber,2,'.',''),'Saldo'=>number_format($Saldo,2,'.',''));
-
-     // print_r($datos);
-     // print_r($SaldoAnt);die();
-
    }
 
 
@@ -309,10 +305,6 @@ class mayores_sub_cuentaM
      $SaldoAnt = CalculosSaldoAnt($Cta,$Debe,$Haber,$Saldo);
 
      return array('datos'=>$datos,'SaldoAnt'=>$SaldoAnt,'Debe'=>number_format($Debe,2,'.',''),'Haber'=>number_format($Haber,2,'.',''),'Saldo'=>number_format($Saldo,2,'.',''));
-
-     // print_r($datos);
-     // print_r($SaldoAnt);die();
-
    }
 
 }

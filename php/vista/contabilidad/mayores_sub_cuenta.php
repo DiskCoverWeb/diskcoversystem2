@@ -1,7 +1,9 @@
 <script src="../../dist/js/mayores_sub_cuenta.js"></script>
-<div>
+<div class="overflow-auto">
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-			<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+			<div class="breadcrumb-title pe-3">
+				<?php echo $NombreModulo; ?>
+			</div>
 				<div class="ps-3">
 					<nav aria-label="breadcrumb">
 						<ol class="breadcrumb mb-0 p-0">
@@ -10,8 +12,7 @@
 						</ol>
 					</nav>
 				</div>
-			</div>
-		</div>
+	</div>
 	<div class="row">
 		<div class="col-sm-4 btn-group">
 			<a  href="./contabilidad.php?mod=contabilidad#" data-toggle="tooltip"  title="Salir de modulo" class="btn btn-outline-secondary">
@@ -152,30 +153,30 @@
 				</div>			
 			</div>		
 		</div>
-		<div class="col-sm-12 pt-3">
-					<div class="row">
-						<div class="col-sm-3">
+		<div class="col-sm-12 p-3">
+					<div class="row row-cols-auto">
+						<div class="">
 							<div class="input-group">
-						<div class="input-group-addon input-sm col-3 d-flex align-items-center">
+						<div class="input-group-addon form-control form-control-sm d-flex align-items-center">
 						<b style="font-size: 0.75rem">Debito:</b>
 						</div>
-						<input type="" name="txt_debito" id="txt_debito" value="0">
+						<input type="" class="form-control form-control-sm" name="txt_debito" id="txt_debito" value="0">
 					</div>						
 						</div>
-						<div class="col-sm-3">
+						<div class="">
 							<div class="input-group">
-						<div class="input-group-addon input- col-3 d-flex align-items-center">
+						<div class="input-group-addon form-control form-control-sm d-flex align-items-center">
 						<b style="font-size: 0.75rem">Credito:</b>
 						</div>
-						<input type="" name="txt_credito" id="txt_credito" value="0">
+						<input type="" class="form-control form-control-sm" name="txt_credito" id="txt_credito" value="0">
 					</div>						
 						</div>
-						<div class="col-sm-4">
+						<div class="">
 							<div class="input-group">
-						<div class="input-group-addon input-sm col-3 d-flex align-items-center">
+						<div class="input-group-addon form-control form-control-sm d-flex align-items-center">
 						<b style="font-size: 0.75rem">Saldo Actual:</b>
 						</div>
-						<input class="me-2"type="" name="txt_saldo_actual" id="txt_saldo_actual" value="0">
+						<input class="me-2 form-control form-control-sm"type="" name="txt_saldo_actual" id="txt_saldo_actual" value="0">
 					</div>						
 						</div>
 					</div>

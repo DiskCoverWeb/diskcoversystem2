@@ -1,8 +1,10 @@
 <script src="../../dist/js/saldo_fac_submodulo.js"></script>
 
-<div>
+<div class="overflow-auto p-1">
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+		<div class="breadcrumb-title pe-3">
+			<?php echo $NombreModulo; ?>
+		</div>
 		<div class="ps-3">
 			<nav aria-label="breadcrumb">
 			<ol class="breadcrumb mb-0 p-0">
@@ -11,9 +13,9 @@
 			</ol>
 			</nav>
 		</div>
-		</div>
 	</div>
-<div class="">
+
+
    <div class="row row-cols-auto">
 	   <div class="col-12 d-flex align-items-center">
 	    <div class="row row-cols-auto btn-group col-4">          
@@ -73,8 +75,8 @@
 	     		<label class="form-check-label fw-bold" style="font-size: 12px;margin: 0px;"><input type="checkbox" name="chekSubCta" id="chekSubCta"> Procesar con Detalle de SubModulo</label>
 	     		</div>             		
 	        </div>
-	     </div>	
-	  </div>
+	    </div>	
+	 </div>
 	  <div class="col-12 row fw-bold pt-2">
 			  		
 	  	<div class="col-4">
@@ -99,7 +101,6 @@
 		</div>
 	  </div>	
 	</div>
-</div>
 	 
 	  <!--seccion de panel-->
 	<div class="row pt-3">
@@ -204,4 +205,5 @@
 	  		<b>Saldo MN: </b><i id="saldo_mn"></i>	  		
 	  	</div>
 	</div>
+</div>
 </div>

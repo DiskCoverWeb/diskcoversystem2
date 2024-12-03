@@ -6,18 +6,18 @@ require(dirname(__DIR__,2).'/modelo/contabilidad/catalogoCtaM.php');
 if(isset($_GET['cuentas']))
 {
     $controlador = new libro_bancoC();
-    echo $result = $controlador->cuentas();
+    echo json_encode($controlador->cuentas());
      
 }
 if(isset($_GET['consultar']))
 {	
    $controlador = new libro_bancoC();
-   echo $result = $controlador->ConsultarBanco($_POST['parametros']);
+   echo json_encode($controlador->ConsultarBanco($_POST['parametros']));
 }
 if(isset($_GET['consultar_tot']))
 {	
   $controlador = new libro_bancoC();
-  json_encode($controlador->Totales_banco($_POST['parametros']));
+  echo json_encode($controlador->Totales_banco($_POST['parametros']));
 }
 if(isset($_GET['imprimir_pdf']))
 {
