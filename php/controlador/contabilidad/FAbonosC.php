@@ -179,7 +179,7 @@ class FAbonosC
 		$datos = $this->modelo->DCCodRet($query, $fecha);
 		$list = array();
 		foreach ($datos as $key => $value) {
-			$list[] = array('id' => $value['Codigo'], 'text' => $value['Codigo']);
+			$list[] = array('id' => $value['Codigo'], 'text' => $value['Codigo'], 'datos' => $value);
 		}
 		return $list;
 
@@ -197,7 +197,11 @@ class FAbonosC
 	function DCSerie($parametro)
 	{
 		$TC = $parametro['tipo'];
-		$datos = $this->modelo->DCSerie($TC);
+		$Serie = '';
+		if(isset($parametro['serie']) && $parametro['serie'] != ''){
+			$Serie = $parametro['serie'];
+		}
+		$datos = $this->modelo->DCSerie($TC, $Serie);
 		// print_r($datos);die();
 		$list = array();
 		foreach ($datos as $key => $value) {
@@ -210,7 +214,11 @@ class FAbonosC
 	{
 		$TC = $parametro['tipo'];
 		$Serie = $parametro['serie'];
-		$datos = $this->modelo->DCFactura($TC, $Serie);
+		$Factura = "";
+		if(isset($parametro['factura']) && $parametro['factura'] != ''){
+			$Factura = $parametro['factura'];
+		}
+		$datos = $this->modelo->DCFactura($TC, $Serie, $Factura);
 		// print_r($datos);die();
 		$list = array();
 		if (count($datos) > 0) {
@@ -271,7 +279,10 @@ class FAbonosC
 		$TA['Serie'] = $parametro['DCSerie'];
 		$TA['Codigo_Inv'] = '.';
 		$TA['Comprobante'] = '';
-		$TA['Vendedor'] = $parametro['DCVendedor'];
+		$TA['Vendedor'] = ".";
+		if(isset($parametro['DCVendedor']) && $parametro['DCVendedor'] != ''){
+			$TA['Vendedor'] = $parametro['DCVendedor'];
+		}
 		$TA['CI_RUC_Cli'] = '';
 
 		$TA['Recibi_de'] = $parametro['LblCliente'];
@@ -309,7 +320,7 @@ class FAbonosC
 		$TA['T'] = G_NORMAL;
 		$TA['TP'] = $parametro['DCTipo'];
 		$TA['Fecha'] = $parametro['MBFecha'];
-		$TA['Cta'] = 1; // revisar de donde sale estas variables Cta_CajaG;
+		$TA['Cta'] = $_SESSION['SETEOS']['Cta_CajaG']; // revisar de donde sale estas variables Cta_CajaG;
 		$TA['Cta_CxP'] = $parametro['Cta_Cobrar']; //Cta_Cobrar
 		$TA['Banco'] = "EFECTIVO MN";
 		$TA['Cheque'] = $parametro['LblGrupo']; //Grupo_No
@@ -320,7 +331,7 @@ class FAbonosC
 		$TA['T'] = G_NORMAL;
 		$TA['TP'] = $parametro['DCTipo']; //TipoFactura
 		$TA['Fecha'] = $parametro['MBFecha']; //MBFecha
-		$TA['Cta'] = 1; // revisar de donde sale estas variables Cta_CajaGE
+		$TA['Cta'] = $_SESSION['SETEOS']['Cta_CajaG']; // revisar de donde sale estas variables Cta_CajaGE
 		$TA['Cta_CxP'] = $parametro['Cta_Cobrar']; //Cta_Cobrar
 		$TA['Banco'] = "EFECTIVO MN";
 		$TA['Cheque'] = $parametro['LblGrupo']; //Grupo_No
@@ -367,7 +378,7 @@ class FAbonosC
 		$TA['Factura'] = $parametro['DCFactura'];
 		$TA['Abono'] = $parametro['TextInteres'];
 		// print_r($TA);die();
-		Grabar_Abonos($TA);
+		$TJ = Grabar_Abonos($TA);
 
 
 		// 'Abono de Factura Rete. IVA Bienes
@@ -428,9 +439,14 @@ class FAbonosC
 			$T = "C";
 			$SaldoDisp = 0;
 		}
+		//print_r(array('TA' => $TA, 'T' => $T, 'SaldoDisp' => $SaldoDisp));die();
 		$this->modelo->Actualizar_factura($SaldoDisp, $T, $TA);
 		// print_r($parametro);die();
-		return Imprimir_Comprobante_Caja($TA);
+		$pdf_compro = '';
+		if($TJ == 1){
+			$pdf_compro = 'COMP_TRANS_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item']."_".$TA['Serie'].$TA['Factura'];
+		}
+		return array('res'=>Imprimir_Comprobante_Caja($TA), 'TJ' => $pdf_compro);
 	}
 
 

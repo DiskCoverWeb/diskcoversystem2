@@ -10115,5 +10115,44 @@ function ImprimirAdodc($datos, $sizeLetra = 10, $cabecerasEspecificadas = []): s
 	return $ruta;
 }
 
+function Imprimir_FA_NV_TJ($FTA){
+	$archivo = 'COMP_TRANS_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item']."_".$FTA['Serie'].$FTA['Factura'];
+	$ruta = dirname(__DIR__, 2).'/TEMP/'.$archivo.'.pdf';
+	
+	$pdf = new PDF();
+	$pdf->AddPage();
+	$pdf->SetXY(10, 10);
+	$pdf->SetFont('Arial', '', 10);
+	$pdf->Cell(0, 5, "COMPROBANTE DE TRANSACCION POR PAGO",0,0);
+	$pdf->Ln(5);
+	$pdf->Cell(0, 5, "DE COMISION TARJETA DE CREDITO",0,0);
+	$pdf->Ln(10);
+	$pdf->Cell(0, 5, "CLIENTE: ".$FTA['Recibi_de'],0,0);
+	$pdf->Ln(5);
+	$pdf->Cell(0, 5, "POR USD  ". number_format($FTA['Abono'], 2, '.', ','),0,0);
+	$pdf->Ln(15);
+	$pdf->Cell(0, 5, "___________________",0,0);
+	$pdf->Ln(5);
+	$pdf->Cell(0, 5, "ENTREGUE CONFORME",0,0);
+	
+	$pdf->AddPage();
+	$pdf->SetXY(10, 10);
+	$pdf->SetFont('Arial', '', 10);
+	$pdf->Cell(0, 5, "COMPROBANTE DE TRANSACCION POR PAGO",0,0);
+	$pdf->Ln(5);
+	$pdf->Cell(0, 5, "DE COMISION TARJETA DE CREDITO",0,0);
+	$pdf->Ln(10);
+	$pdf->Cell(0, 5, "CLIENTE: ".$FTA['Recibi_de'],0,0);
+	$pdf->Ln(5);
+	$pdf->Cell(0, 5, "POR USD  ". number_format($FTA['Abono'], 2, '.', ','),0,0);
+	$pdf->Ln(15);
+	$pdf->Cell(0, 5, "___________________",0,0);
+	$pdf->Ln(5);
+	$pdf->Cell(0, 5, "RECIBI CONFORME",0,0);
+	$pdf->Output('F',$ruta);
+
+	//return array('pdf' => $archivo);
+
+}
 
 ?>

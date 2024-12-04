@@ -31,7 +31,7 @@ class FAbonosM
 
 	function DCBanco($query=false)
 	{
-	   $sql = "SELECT Codigo,Codigo+'  '+Cuenta As NomCuenta 
+	   $sql = "SELECT Codigo,(Codigo+'  '+Cuenta) As NomCuenta 
        FROM Catalogo_Cuentas 
        WHERE TC IN ('BA','CJ','CP','C','P') 
        AND DG = 'D' 
@@ -47,7 +47,7 @@ class FAbonosM
 	}
 	function DCTarjeta($query=false)
 	{
-	   $sql = "SELECT Codigo,Codigo +'  '+ Cuenta As NomCuenta 
+	   $sql = "SELECT Codigo,(Codigo +'  '+ Cuenta) As NomCuenta 
        FROM Catalogo_Cuentas 
        WHERE TC = 'TJ' 
        AND DG = 'D' 
@@ -63,7 +63,7 @@ class FAbonosM
 	}
 	function DCRetFuente($query=false)
 	{
-	   $sql= "SELECT (Codigo+'  '+Cuenta) As Cuentas  
+	   $sql= "SELECT (Codigo+'  '+Cuenta) As Cuentas, Codigo
        FROM Catalogo_Cuentas 
        WHERE Item = '".$_SESSION['INGRESO']['item']."' 
        AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
@@ -139,16 +139,21 @@ class FAbonosM
 		
 	}
 
-    function DCSerie($TC)
+    function DCSerie($TC, $serie='')
     {
        $sql= "SELECT Serie 
         FROM Facturas
         WHERE Item = '".$_SESSION['INGRESO']['item']."' 
         AND Periodo ='".$_SESSION['INGRESO']['periodo']."'
         AND T = '".G_PENDIENTE."' 
-        AND TC = '".$TC."' 
-        GROUP BY Serie 
-        ORDER BY Serie ";
+        AND TC = '".$TC."' ";
+
+        if($serie){
+         $sql .= "AND Serie = '".$serie."' ";
+        }
+
+        $sql .= "GROUP BY Serie 
+         ORDER BY Serie ";
         return $this->db->datos($sql);
 /*
         $sql = "SELECT Serie 
