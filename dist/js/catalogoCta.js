@@ -1,7 +1,13 @@
 function consultar_datos()
 {
+    if($.fn.dataTable.isDataTable('#tbl_tablaCta') && $.fn.dataTable.isDataTable('#tbl_tablaCtaGrupos') && $.fn.dataTable.isDataTable('#tbl_tablaCtaDetalles')){
+        $('#tbl_tablaCta').DataTable().clear().destroy();
+        $('#tbl_tablaCtaGrupos').DataTable().clear().destroy();
+        $('#tbl_tablaCtaDetalles').DataTable().clear().destroy(); 
+    }
+    
     tbl_catalogoCta = $('#tbl_tablaCta').DataTable({
-        autoWidth: true, 
+        responsive: true, 
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },
@@ -13,14 +19,12 @@ function consultar_datos()
                     'OpcT': true,
                     'OpcG': false,
                     'OpcD': false,
-                    'txt_CtaI': $('#txt_CtaI').val(),
-                    'txt_CtaF': $('#txt_CtaF').val()
+                    'txt_CtaI': $('#txt_CtaI').val() || "",
+                    'txt_CtaF': $('#txt_CtaF').val() || ""
                 };
-                console.log("Parametros: ",parametros)
                 return { parametros:parametros }
             },
             dataSrc: function(response){
-                console.log(response);
                 return response.data;
             },
             beforeSend: function(){
@@ -28,6 +32,7 @@ function consultar_datos()
             },
             complete: function(){
                 $('#myModal_espera').modal('hide');
+                tbl_catalogoCta.columns.adjust().draw();
             },
             error: function(xhr, status, error){
                 console.log("Error en la solicitud: ", status, error);
@@ -51,8 +56,8 @@ function consultar_datos()
         ]
     });
 
-    tbl_catalogoCta = $('#tbl_tablaCtaGrupos').DataTable({
-        autoWidth: true, 
+    tbl_catalogoCtaGrupos = $('#tbl_tablaCtaGrupos').DataTable({
+        responsive: true, 
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },
@@ -67,7 +72,6 @@ function consultar_datos()
                     'txt_CtaI': $('#txt_CtaI').val(),
                     'txt_CtaF': $('#txt_CtaF').val()
                 };
-                console.log("Parametros: ",parametros)
                 return { parametros:parametros }
             },
             dataSrc: function(response){
@@ -78,6 +82,7 @@ function consultar_datos()
             },
             complete: function(){
                 $('#myModal_espera').modal('hide');
+                tbl_catalogoCtaGrupos.columns.adjust().draw();
             },
             error: function(xhr, status, error){
                 console.log("Error en la solicitud: ", status, error);
@@ -101,8 +106,8 @@ function consultar_datos()
         ]
     });
 
-    tbl_catalogoCta = $('#tbl_tablaCtaDetalles').DataTable({
-        autoWidth: true, 
+    tbl_catalogoCtaDetalles = $('#tbl_tablaCtaDetalles').DataTable({
+        responsive: true, 
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },
@@ -117,7 +122,6 @@ function consultar_datos()
                     'txt_CtaI': $('#txt_CtaI').val(),
                     'txt_CtaF': $('#txt_CtaF').val()
                 };
-                console.log("Parametros: ",parametros)
                 return { parametros:parametros }
             },
             dataSrc: function(response){
@@ -128,6 +132,7 @@ function consultar_datos()
             },
             complete: function(){
                 $('#myModal_espera').modal('hide');
+                tbl_catalogoCtaDetalles.columns.adjust().draw();
             },
             error: function(xhr, status, error){
                 console.log("Error en la solicitud: ", status, error);
@@ -153,20 +158,24 @@ function consultar_datos()
 }
 $(document).ready(function()
 {
+    var timeout; 
     consultar_datos();
 
     $('#txt_CtaI').keyup(function(e){ 
-        if(e.keyCode != 46 && e.keyCode !=8)
-        {
+            clearTimeout(timeout)
             validar_cuenta(this);
-        }
+            timeout = setTimeout(function(){
+                consultar_datos(); 
+            }, 500);
+            
         })
 
     $('#txt_CtaF').keyup(function(e){ 
-        if(e.keyCode != 46 && e.keyCode !=8)
-        {
+            clearTimeout(timeout)
             validar_cuenta(this);
-        }
+            timeout = setTimeout(function(){
+                consultar_datos(); 
+            }, 500);
         })
 
 

@@ -5,15 +5,14 @@ require(dirname(__DIR__,2).'/modelo/contabilidad/catalogoCtaM.php');
 
 if(isset($_GET['cuentas']))
 {
-     $controlador = new libro_bancoC();
-   
-     	echo json_encode($controlador->cuentas());
+    $controlador = new libro_bancoC();
+    echo json_encode($controlador->cuentas());
      
 }
 if(isset($_GET['consultar']))
 {	
    $controlador = new libro_bancoC();
-  echo json_encode($controlador->ConsultarBanco($_POST['parametros']));
+   echo json_encode($controlador->ConsultarBanco($_POST['parametros']));
 }
 if(isset($_GET['consultar_tot']))
 {	

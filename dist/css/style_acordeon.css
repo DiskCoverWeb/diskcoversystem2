@@ -1,0 +1,125 @@
+.menujq ul {
+  list-style: none;
+  width: 95%;
+  margin: 0 auto;
+  padding: 0;
+}
+.menujq a {
+  display: block;
+  padding: 10px;
+  border-bottom: 1px solid #fff;
+  background:  #3c8dbc;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+.menujq ul li a:before {
+content: "\25CF\00A0 ";
+width: 10%;
+display: inline-block;
+vertical-align: top;
+}
+.menujq li 
+{
+  width: 100%;
+}
+.menujq ul li.desplegable > a:before,
+.menujq ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li ul li ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li.desplegable > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li.desplegable > a:before {
+  content: "\f055\00A0\f02d\00A0";
+}
+.menujq ul li.desplegable.active > a:before,
+.menujq ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li ul li ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li.desplegable.active > a:before,
+.menujq ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li.desplegable.active > a:before{
+  content: "\f056\00A0\f02d\00A0";
+}
+.menujq ul ul, 
+.menujq ul ul ul, 
+.menujq ul ul ul ul,
+.menujq ul ul ul ul ul,
+.menujq ul ul ul ul ul ul,
+.menujq ul ul ul ul ul ul ul,
+.menujq ul ul ul ul ul ul ul ul,
+.menujq ul ul ul ul ul ul ul ul ul,
+.menujq ul ul ul ul ul ul ul ul ul ul,
+.menujq ul ul ul ul ul ul ul ul ul ul ul,
+.menujq ul ul ul ul ul ul ul ul ul ul ul ul
+{
+  display: none;
+  width: 100%;
+}
+.menujq ul ul a {
+  padding-left: 20px;
+  background: #68acd1;
+  text-transform: capitalize;
+}
+.menujq ul ul ul a {
+  padding-left: 40px;
+  background: #96c6e0;
+  text-transform: capitalize;
+}
+.menujq ul ul ul ul a {
+  padding-left: 40px;
+  background: #bbdaea;
+  text-transform: capitalize;
+}
+.menujq ul ul ul ul ul a {
+  padding-left: 40px;
+  background: rgb(236, 167, 107);
+  text-transform: capitalize;
+}
+.menujq ul ul ul ul ul ul a {
+  padding-left: 40px;
+  background: rgb(240, 176, 120);
+  text-transform: capitalize;
+}
+.menujq ul ul ul ul ul ul ul a {
+  padding-left: 40px;
+  background: rgb(245, 187, 136);
+  text-transform: capitalize;
+}
+.menujq ul ul ul ul ul ul ul ul a {
+  padding-left: 40px;
+  background: rgb(243, 193, 149);
+  text-transform: capitalize;
+}
+.menujq ul ul ul ul ul ul ul ul ul a {
+  padding-left: 40px;
+  background: rgb(247, 205, 168);
+  text-transform: capitalize;
+}
+.menujq ul ul ul ul ul ul ul ul ul ul a {
+  padding-left: 40px;
+  background: rgb(241, 206, 176);
+  text-transform: capitalize;
+}
+.menujq ul ul ul ul ul ul ul ul ul ul ul a {
+  padding-left: 40px;
+  background: rgb(245, 222, 202);
+  text-transform: capitalize;
+}
+.menujq ul ul ul ul ul ul ul ul ul ul ul ul a {
+  padding-left: 40px;
+  background: rgb(247, 238, 231);
+  text-transform: capitalize;
+}

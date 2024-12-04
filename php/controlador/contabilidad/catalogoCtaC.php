@@ -9,7 +9,7 @@ if(isset($_GET['consultar']))
 {
 	$controlador = new catalogoCtaC();
 	$parametros = $_POST['parametros'];
-	$result = $controlador->cargar_datos($parametros);
+	echo json_encode($controlador->cargar_datos($parametros));
 	//print_r( $parametros);
 }
 if(isset($_GET['imprimir_pdf']))

@@ -172,8 +172,7 @@ class mayores_sub_cuentaM
      $sql.=" AND TSC.Codigo = C.Codigo 
           ORDER BY TSC.Codigo,TSC.Cta,TSC.Fecha,TSC.TP,TSC.Numero,Factura,Debitos DESC,Creditos,TSC.ID ";
 
-     $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-245;
-     $tbl = grilla_generica_new($sql,$from,'tbl_lib',false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
+     $tbl = grilla_generica_new($sql);
 
           // print_r($parametro);
           // print_r($sql);die();
@@ -196,10 +195,6 @@ class mayores_sub_cuentaM
      $SaldoAnt = CalculosSaldoAnt($Cta,$Debe,$Haber,$Saldo);
 
      return array('tbl'=>$tbl,'SaldoAnt'=>$SaldoAnt,'Debe'=>number_format($Debe,2,'.',''),'Haber'=>number_format($Haber,2,'.',''),'Saldo'=>number_format($Saldo,2,'.',''));
-
-     // print_r($datos);
-     // print_r($SaldoAnt);die();
-
    }
 
 
@@ -310,10 +305,6 @@ class mayores_sub_cuentaM
      $SaldoAnt = CalculosSaldoAnt($Cta,$Debe,$Haber,$Saldo);
 
      return array('datos'=>$datos,'SaldoAnt'=>$SaldoAnt,'Debe'=>number_format($Debe,2,'.',''),'Haber'=>number_format($Haber,2,'.',''),'Saldo'=>number_format($Saldo,2,'.',''));
-
-     // print_r($datos);
-     // print_r($SaldoAnt);die();
-
    }
 
 }

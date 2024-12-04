@@ -1,25 +1,24 @@
-<?php  @session_start();  date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION['INGRESO']);die(); ?>
+<?php  @session_start();  date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION['INGRESO']);die();
+$tipo='';
+?>
+<script src="../../dist/js/lista_retenciones.js"></script>
 <script type="text/javascript">
-</script>
-<script src="../../dist/js/lista_notas_credito.js"></script>
-<script type="text/javascript">
+$(document).ready(function(){
 
-  $(document).ready(function(){
-
-      tbl_nota_credito_all = $('#tbl_nota_credito').DataTable({
+      tbl_retenciones_all = $('#tbl_retenciones').DataTable({
           // responsive: true,
           language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
           },
           ajax: {
-              url:   '../controlador/facturacion/lista_notas_creditoC.php?tabla=true',
+              url:   '../controlador/facturacion/lista_retencionesC.php?tabla=true',
               type: 'POST',  // Cambia el método a POST    
               data: function(d) {
                   var parametros = {
                       ci: $('#ddl_cliente').val(),
                       desde: $('#txt_desde').val(),
                       hasta: $('#txt_hasta').val(),
-                      serie: $('#DCLinea').val()                      
+                      serie: $('#DCLinea').val()
                   };
                   return { parametros: parametros };
               },
@@ -42,34 +41,34 @@
                           email+= item.Email2+ ',';
                         }
                     options=`<li>
-                                <a href="#" class="dropdown-item" onclick="Ver_Nota_credito('${item.Secuencial_NC}','${item.Serie_NC}')"><i class="bx bx-show-alt"></i> Ver Nota de credito</a>
+                                <a href="#" class="dropdown-item" onclick="Ver_retencion('${item.SecRetencion}','${item.Serie_Retencion}','${item.Numero}','${item.TP}')"><i class="bx bx-show-alt"></i> Ver Retencion</a>
                             </li>
                             <li>
 
-                              <a href="#" class="dropdown-item" onclick=" modal_email_nota('${item.Secuencial_NC}','${item.Serie_NC}','.${item.Factura}','${item.Autorizacion_NC}','${email}')"><i class="bx bx-envelope"></i> Enviar Nota de credito por email</a>
+                              <a href="#" class="dropdown-item" onclick=" modal_email_ret('${item.SecRetencion}','${item.Serie_Retencion}','.${item.Numero}','${item.AutRetencion}','${email}')"><i class="bx bx-envelope"></i> Enviar Retencion por email</a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item" onclick="descargar_nota('${item.Secuencial_NC}','${item.Serie_NC}','${item.Factura}','${item.Serie}')"><i class="bx bx-download"></i> Descargar Nota de credito</a>
+                                <a href="#" class="dropdown-item" onclick="descargar_ret('${item.SecRetencion}','${item.Serie_Retencion}','${item.Numero}')"><i class="bx bx-download"></i> Descargar Retencion</a>
                             </li>`;
                   
                     if (item.ExisteSerie =='Si'  && item.Autorizacion_NC.length == 13) 
                     {
                         options+=`<li>
-                          <a href="#" class="dropdown-item" onclick="autorizar('${item.Secuencial_NC}','${item.Serie_NC}','${formatoDate(item.Fecha.date)}')" ><i class="bx bx-paper-plane"></i>Autorizar</a>
+                          <a href="#" class="dropdown-item" onclick="autorizar('${item.SecRetencion}','${item.Serie_Retencion}','${formatoDate(item.Fecha.date)}')" ><i class="bx bx-paper-plane"></i>Autorizar</a>
                           </li>`;
                     }else
                     {
-                       options+=`<li><a href="#"  class="dropdown-item btn-danger"><i class="fa fa-info"></i>Para autorizar Asigne en catalo de lineas la serie: ${item.Serie_NC}</a></li>`;
+                       options+=`<li><a href="#"  class="dropdown-item btn-danger"><i class="fa fa-info"></i>Para autorizar Asigne en catalo de lineas la serie: ${item.Serie_Retencion}</a></li>`;
 
                     }
                     
                     if (item.T != 'A') 
                     {
-                          options+=`<li><a href="#" class="dropdown-item" onclick="anular_factura('${item.Secuencial_NC}','${item.Serie_NC}','${item.Codigo}')"><i class="bx bx-x"></i>Anular Nota de credito</a></li>`;
+                          options+=`<li><a href="#" class="dropdown-item" onclick="anular_factura('${item.SecRetencion}','${item.Serie_Retencion}','${item.IdProv}')"><i class="bx bx-x"></i>Anular Retencion</a></li>`;
                     }
-                    if (item.Autorizacion_NC.length > 13) 
+                    if (item.AutRetencion.length > 13) 
                     {
-                        options+=`<li><a href="#" class="dropdown-item" onclick="descargar_xml('${item.Autorizacion_NC}')">
+                        options+=`<li><a href="#" class="dropdown-item" onclick="descargar_xml('${item.AutRetencion}')">
                         <i class="bx bx-download"></i> Descargar XML</a></li>`;
                     }
 
@@ -85,22 +84,22 @@
               },
               { data: 'T' },
               { data: 'Cliente' },
-              { data: 'TC' },
-              { data: 'Serie_NC' },
-              { data: 'Autorizacion_NC' },
-              { data: 'Secuencial_NC' },
+              { data: 'TD' },
+              { data: 'Serie_Retencion' },
+              { data: 'AutRetencion' },
+              { data: 'SecRetencion' },
               { data: 'Fecha.date',  
                   render: function(data, type, item) {
                       return data ? new Date(data).toLocaleDateString() : '';
                   }
               },              
-              { data: 'Factura' },
-              { data: 'Serie' },
-              { data: 'Autorizacion' },
-              { data: 'Total_MN' },
-              { data: 'Descuento' },
-              { data: 'Descuento2' },
-              { data: 'CI_RUC' },
+              { data: 'BaseImponible' },
+              { data: 'IdProv' },
+              { data : null,
+                     render: function(data, type, item) {return 'RE'; }
+              },
+              { data: 'Numero' },
+              { data: 'TP' }
           ],
           order: [
               [1, 'asc']
@@ -109,35 +108,32 @@
        
    })
 
-
-  </script>
-  <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-    <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
-      <div class="ps-3">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb mb-0 p-0">
-            <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">Lista de notas de credito</li>
-          </ol>
-        </nav>
-      </div>          
-    </div>
-
-  <div class="row">
-    <div class="col-lg-6 col-md-6 col-sm-12">
-      <div class="btn-group" role="group" aria-label="Basic example">
-        <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-outline-secondary">
-              <img src="../../img/png/salire.png">
-            </a>
-         <button type="button" class="btn btn-outline-secondary" title="Generar pdf" onclick="reporte_pdf()"><img src="../../img/png/pdf.png"></button>
-         <button type="button" class="btn btn-outline-secondary" title="Generar excel" onclick="generar_excel()"><img src="../../img/png/table_excel.png"></button>
-      </div>
-    </div>
+</script>
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+  <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+    <div class="ps-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0 p-0">
+          <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Lista de retenciones</li>
+        </ol>
+      </nav>
+    </div>          
 </div>
-
+<div class="row">
+  <div class="col-lg-6 col-md-6 col-sm-12">
+    <div class="btn-group" role="group" aria-label="Basic example">
+       <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-outline-secondary">
+            <img src="../../img/png/salire.png">
+          </a>
+           <button type="button" class="btn btn-outline-secondary" title="Generar pdf" onclick="reporte_pdf()"><img src="../../img/png/pdf.png"></button>
+            <button type="button" class="btn btn-outline-secondary" title="Generar pdf" onclick="generar_excel()"><img src="../../img/png/table_excel.png"></button>
+    </div>
+  </div>
+</div>
 <form id="filtros">  
-  <div class="row">  			
+  <div class="row">       
       <div class="col-sm-5">
         <b>Nombre</b>
         <select class="form-select form-select-sm" id="ddl_cliente" name="ddl_cliente">
@@ -157,11 +153,11 @@
       <div class="col-sm-2">
         <b>Hasta</b>
           <input type="date" name="txt_hasta" id="txt_hasta" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>">            
-      </div>    			
-			<div class="col-sm-2"><br>
-				<button class="btn btn-primary btn-sm" type="button" onclick="cargar_registros();"><i class="bx bx-search"></i> Buscar</button>
-			</div>
-	</div>
+      </div>          
+      <div class="col-sm-2"><br>
+        <button class="btn btn-primary btn-sm" type="button" onclick="cargar_registros();"><i class="bx bx-search"></i> Buscar</button>
+      </div>
+  </div>
 </form>
 <div class="panel" id="panel_datos" style="display:none;margin-bottom: 1px;">
   <div class="row">
@@ -185,47 +181,43 @@
 <div class="row mt-2">
     <div class="card">
       <div class="card-body">
-            <table class="table text-sm" style="width: 100%;" id="tbl_nota_credito">
-              <thead>
-                <th></th>
-                <th>T</th>          
-                <th>Razon_Social</th>
-                <th>TC</th>
-                <th>Serie</th>
-                <th>Autorizacion</th>
-                <th>Nota credito</th>
-                <th>Fecha</th>
-                <th>Factura</th>
-                <th>Serie FA</th>
-                <th>Autorizacion FA</th>          
-                <th>Total</th>
-                <th>Descuento</th>
-                <th>Descuento2</th>
-                <th>RUC_CI</th>
-              </thead>
-              <tbody>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-      </div>
-    </div>
-  </div>
+        <table class="table text-sm" style="width: 100%;" id="tbl_retenciones">
+          <thead>
+            <th></th>
+            <th>T</th>          
+            <th>Razon_Social</th>
+            <th>TC</th>
+            <th>Serie</th>
+            <th>Autorizacion</th>
+            <th>Retencion</th>
+            <th>Fecha</th>
+            <th>SubTotal</th>
+            <th>RUC_CI</th>
+            <th>TB</th>
+            <th>Numero</th>
+            <th>TP</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+		</div>		
+	</div>
+</div>
 
 <div id="modal_email" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -284,7 +276,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" onclick="enviar_email()" >Enviar</button>
             </div>
         </div>
@@ -292,6 +284,9 @@
 </div>
 
 
-  <script src="../../dist/js/multipleEmail/utils.js"></script>
-  <script src="../../dist/js/multipleEmail/emails-input.js"></script>
-  <script src="../../dist/js/multipleEmail/multiple_email.js"></script>
+
+
+
+  <script src="../../dist/js/utils.js"></script>
+  <script src="../../dist/js/emails-input.js"></script>
+  <script src="../../dist/js/multiple_email.js"></script>

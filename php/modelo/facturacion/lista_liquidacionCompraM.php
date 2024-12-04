@@ -75,18 +75,19 @@ class lista_liquidacionCompraM
    {
    	$cid = $this->conn;
 		
-		$sql ="SELECT T,TC,Serie,Autorizacion,Factura,Fecha,SubTotal,Con_IVA,IVA,Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,TB,Razon_Social,CodigoC,ID 
-		FROM Facturas 
+		$sql ="SELECT F.T,TC,Serie,Autorizacion,Factura,F.Fecha,SubTotal,Con_IVA,IVA,F.Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,F.TB,Razon_Social,CodigoC,F.ID,C.Email,C.Email2,C.EmailR 
+		FROM Facturas F
+		Left join Clientes C on F.CodigoC = C.Codigo
 		WHERE TC='LC' 
 		AND Item = '".$_SESSION['INGRESO']['item']."' ";
 		if($codigo!='T')
 		{
 			// si el codigo es T se refiere a todos
-		   $sql.=" AND CodigoC ='".$codigo."'";
+		   $sql.=" AND F.CodigoC ='".$codigo."'";
 		} 
         if($desde!='' && $hasta!='')
         {
-       		 $sql.= " AND Fecha BETWEEN '".$desde."' AND '".$hasta."'";
+       		 $sql.= " AND F.Fecha BETWEEN '".$desde."' AND '".$hasta."'";
         }
         if($serie)
 		{
@@ -106,7 +107,7 @@ class lista_liquidacionCompraM
 		} 
 
        $sql.="ORDER BY ID DESC "; 
-	$sql.=" OFFSET ".$_SESSION['INGRESO']['paginacionIni']." ROWS FETCH NEXT ".$_SESSION['INGRESO']['numreg']." ROWS ONLY;";   
+	$sql.=" OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;";   
 
 	// print_r($sql);die();    
 	return $this->db->datos($sql);

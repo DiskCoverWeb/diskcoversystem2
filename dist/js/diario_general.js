@@ -92,28 +92,19 @@ function cargar_libro_general()
     }
 
   tbl_diarioGeneral = $('#tbl_DiarioGeneral').DataTable({
-    autoWidth: true, 
-
-    languaje:{
+    language:{
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
     },
     ajax: {
       url: '../controlador/contabilidad/diario_generalC.php?consultar_libro=true',
       type: 'post',
       data: function(d){
-        console.log("Parametros: ", parametros)
         return { parametros:parametros }
       },
       dataSrc: function(response){
-        return response.data
-      },
-      beforeSend: function(){
-        var spiner = '<div class="text-center"><img src="../../img/gif/loader4.1.gif" width="200" height="100"></div>'  
-        $('#tbl_DiarioGeneral').html(spiner);
-      },
-      complete: function(){ 
-        $('#tbl_DiarioGeneral').html('');
-    
+        libro_general_saldos(); 
+        libro_submodulo();
+        return response.data;             
       },
       error: function(xhr, status, error){
         console.log("Error en la solicutud: ", status, error);
@@ -169,56 +160,46 @@ function libro_submodulo()
     'Fechafin':$('#txt_hasta').val(),
   }
   
-    if ($.fn.dataTable.isDataTable('#tbl_Submodulos')){
-      $('#tbl_Submodulos').DataTable().destroy();
-      }
+  if ($.fn.dataTable.isDataTable('#tbl_Submodulos')){
+    $('#tbl_Submodulos').DataTable().destroy();
+  }
 
-      tbl_submodulos = $('#tbl_Submodulos').DataTable({
-      autoWidth: true, 
-      languaje:{
-        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
+  tbl_submodulos = $('#tbl_Submodulos').DataTable({
+    language:{
+      url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
+    },
+    ajax: {
+      url: '../controlador/contabilidad/diario_generalC.php?consultar_submodulo=true',
+      type: 'post',
+      data: function(d){
+        return { parametros:parametros }
       },
-      ajax: {
-        url: '../controlador/contabilidad/diario_generalC.php?consultar_submodulo=true',
-        type: 'post',
-        data: function(d){
-          console.log("Parametros: ", parametros)
-          return { parametros:parametros }
-        },
-        dataSrc: function(response){
-          return response.data
-        },
-        beforeSend: function(){
-          var spiner = '<div class="text-center"><img src="../../img/gif/loader4.1.gif" width="200" height="100"></div>'  
-          $('#tbl_Submodulos').html(spiner);
-        },
-        complete: function(){ 
-          $('#tbl_Submodulos').html('');
-      
-        },
-        error: function(xhr, status, error){
-          console.log("Error en la solicutud: ", status, error);
-        }
+      dataSrc: function(response){
+        return response.data;
       },
-      scrollY: '300px',
-      scrollCollapse: true,
-      scrollX: true,
-      columns: [
-        { data: 'Fecha'}, 
-        { data: 'TP'},
-        { data: 'Numero'},
-        { data: 'Cliente'},
-        { data: 'Cta'},
-        { data: 'TC'}, 
-        { data: 'Factura'},
-        { data: 'Debitos'},
-        { data: 'Creditos'},
-        { data: 'Prima'}
-      ],
-      order: [
-        [0, 'asc']
-      ]
-    });
+      error: function(xhr, status, error){
+        console.log("Error en la solicutud: ", status, error);
+      }
+    },
+    scrollY: '300px',
+    scrollCollapse: true,
+    scrollX: true,
+    columns: [
+      { data: 'Fecha'}, 
+      { data: 'TP'},
+      { data: 'Numero'},
+      { data: 'Cliente'},
+      { data: 'Cta'},
+      { data: 'TC'}, 
+      { data: 'Factura'},
+      { data: 'Debitos'},
+      { data: 'Creditos'},
+      { data: 'Prima'}
+    ],
+    order: [
+      [0, 'asc']
+    ]
+  });
 }
 
 function libro_general_saldos()

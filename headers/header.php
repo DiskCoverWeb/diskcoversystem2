@@ -1,6 +1,8 @@
 <?php  
 include_once("../db/chequear_seguridad.php"); 
 include_once(dirname(__DIR__,1)."/php/controlador/menuC.php"); 
+include_once(dirname(__DIR__,1)."\php\controlador\contabilidad\contabilidad_controller.php");
+include_once(dirname(__DIR__,1)."\php\modelo\contabilidad\contabilidad_model.php");
 $menuC = new menuC();
 
 $pagina =  isset($_GET['acc']) ? $_GET['acc'] : "";
@@ -90,6 +92,8 @@ function estado_licencia($f3)
 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 	<link href="../../assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
 	
 	<link href="../../assets/css/app.css" rel="stylesheet">
@@ -99,6 +103,7 @@ function estado_licencia($f3)
 	<!-- <link rel="stylesheet" href="../../assets/css/semi-dark.css" /> -->
 	<link rel="stylesheet" href="../../assets/css/header-colors.css" />
 	<link rel="stylesheet" href="../../dist/css/sweetalert2.min.css" />
+	<link rel="stylesheet" href="../../dist/css/style_acordeon.css">
 	<script src="../../assets/js/jquery.min.js"></script>
 	<script src="../../dist/js/js_globales.js"></script>	
 	<script src="../../dist/js/sweetalert2@11.js"></script>

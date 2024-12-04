@@ -6025,7 +6025,7 @@ function costo_venta($codigo_inv)  // optimizado
     return $resultado[0];
   }
 
-  function grilla_generica_new($sql, $num_red=false) {
+  function grilla_generica_new($sql) {
     // Crear la conexión
     $conn = new db();
     $cid = $conn->conexion();
@@ -6036,7 +6036,7 @@ function costo_venta($codigo_inv)  // optimizado
     // Verificar si la consulta fue exitosa
     if ($stmt === false) {
         // Mostrar el error de la consulta y finalizar la ejecución
-        echo json_encode(['error' => 'Error en la consulta: ' . implode(", ", sqlsrv_errors())]);
+        echo json_encode(['error' => 'Error en la consulta: ' . json_encode(sqlsrv_errors())]);
         sqlsrv_close($cid);
         exit;
     }
@@ -6054,8 +6054,9 @@ function costo_venta($codigo_inv)  // optimizado
         $data = [];
     }
 
-    echo json_encode(['data' => $data]);
+    $result = ['data' => $data];
     sqlsrv_close($cid);
+    return ($result);
 }
 
 

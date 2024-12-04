@@ -119,13 +119,12 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
   }
 
   $sSQL .= " ORDER BY T.Cta, T.Fecha, T.TP, T.Numero, Debe DESC, Haber, T.ID ";
-  $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-144;
   $AdoMayor = $this->conn->datos($sSQL);
   if($soloMayorDatos){
     return $AdoMayor;
   }
-  $DGMayor = grilla_generica_new($sSQL,$from_tables,'DGMayor',"Mayores multiples",$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
-
+  ob_start(); 
+  $DGMayor = grilla_generica_new($sSQL);
   //Consulta de Totales
   $sSQL = "SELECT T.Cta, SUM(T.Debe) AS TDebe, SUM(T.Haber) AS THaber, SUM(T.Parcial_ME) AS TParcial_ME ";
   if ($PorConceptos=='true') {

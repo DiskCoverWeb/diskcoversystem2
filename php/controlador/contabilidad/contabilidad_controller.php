@@ -1,7 +1,7 @@
 <?php
 //Llamada al modelo
 require_once(dirname(__DIR__,2)."/modelo/contabilidad/contabilidad_model.php");
-require_once(dirname(__DIR__,2)."/modelo/usuario_model.php");
+require_once(dirname(__DIR__,2)."/modelo/loginM.php");
 require(dirname(__DIR__,3).'/lib/fpdf/cabecera_pdf.php');
 
 if(isset($_POST['submitlog'])) 

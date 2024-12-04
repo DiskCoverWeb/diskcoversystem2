@@ -1,6 +1,20 @@
 <script src="../../dist/js/catalogoCta.js"></script>
+<div>
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+		<div class="ps-3">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb mb-0 p-0">
+					<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+					<li class="breadcrumb-item active" aria-current="page">Catalogo de cuentas</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+</div>
+
 <div class="row row-cols-auto d-flex align-items-center w-auto pb-2">          
-	<div class="row row-cols-auto btn-group" role="group" aria-label="Basic example">
+	<div class="row row-cols-auto btn-group" role="group" aria-label="Basic example"> 
 			<a href="inicio.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
 				<img src="../../img/png/salire.png">
 			</a>
@@ -37,7 +51,6 @@
 					<li class="nav-item" role="presentation">
 						<a class="nav-link active" id="OpcT" data-bs-toggle="pill" href="#primary-pills-all" role="tab" aria-selected="true">
 							<div class="d-flex align-items-center">
-								<div class="tab-icon"><i class="bx bx-list-ul font-18 me-1"></i></div>
 								<div class="tab-title">TODOS</div>
 							</div>
 						</a>
@@ -45,7 +58,6 @@
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="OpcG" data-bs-toggle="pill" href="#primary-pills-grupo" role="tab" aria-selected="false" tabindex="-1">
 							<div class="d-flex align-items-center">
-								<div class="tab-icon"><i class="bx bx-group font-18 me-1"></i></div>
 								<div class="tab-title">DE GRUPO</div>
 							</div>
 						</a>
@@ -53,15 +65,14 @@
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="OpcD" data-bs-toggle="pill" href="#primary-pills-detalle" role="tab" aria-selected="false" tabindex="-1">
 							<div class="d-flex align-items-center">
-								<div class="tab-icon"><i class="bx bx-detail font-18 me-1"></i></div>
 								<div class="tab-title">DE DETALLES</div>
 							</div>
 						</a>
 					</li>
 				</ul>
 				<h6>PLAN DE CUENTAS</h6>
-				<div class="tab-content border rounded" style="background-color:#E7F5FF">
-					<div id="home" class="border">
+				<div class="tab-content">
+					<div id="home" class="">
 						<div class="tab-content" id="cta-tabContent">
 							<div class="tab-pane fade active show" id="primary-pills-all" role="tabpanel" >
 								<table class="table text-sm w-100" id="tbl_tablaCta">
@@ -150,3 +161,4 @@
 	  	</div>
 	  </div>
    <br><br>
+</div>

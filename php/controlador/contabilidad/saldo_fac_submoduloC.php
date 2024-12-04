@@ -40,7 +40,7 @@ if(isset($_GET['consultar_tempo']))
 	$tabla = $controlador->cargar_consulta($parametros);
 	$res = $controlador->tabla_temporizado($tabla['datos'],$parametros);
 	// print_r($res);die();
-  echo json_encode($controlador->consultar_tabla_temp($parametros['fechafin']));
+    echo json_encode($controlador->consultar_tabla_temp($parametros['fechafin']));
 }
 
 class Saldo_fac_sub_M 
@@ -213,7 +213,7 @@ class Saldo_fac_sub_M
 		$fechafin = str_replace("-","",$parametros['fechafin']);
 		sp_Reporte_CxCxP_x_Meses($cta,$fechafin);
 
-		$tabla = $this->modelo->cargar_consulta_x_meses('tabla');
+		$tabla = $this->modelo->cargar_consulta_x_meses();
 
 		// print_r($tabla);die();
 		$Total = 0;$Saldo = 0;

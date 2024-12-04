@@ -38,7 +38,7 @@ function cargar_cuentas()
    // $('#myModal_espera').modal('show');   
   $.ajax({
  // data:  {parametros:parametros},
- url:   '../php/controlador/contabilidad/ctaOperacionesC.php?cuentas=true',
+ url:   '../controlador/contabilidad/ctaOperacionesC.php?cuentas=true',
  type:  'post',
  dataType: 'json',
  // beforeSend: function () {   
@@ -97,7 +97,7 @@ function copiar_op($op)
   }
   $.ajax({
    data:  {parametros:parametros},
-   url:   '../php/controlador/contabilidad/ctaOperacionesC.php?cambiar_op=true',
+   url:   '../controlador/contabilidad/ctaOperacionesC.php?cambiar_op=true',
    type:  'post',
    dataType: 'json',
    beforeSend: function () {
@@ -139,7 +139,7 @@ function copiar()
   }
    $.ajax({
             data:  {parametros:parametros},
-            url:   '../php/controlador/contabilidad/ctaOperacionesC.php?copiar=true',
+            url:   '../controlador/contabilidad/ctaOperacionesC.php?copiar=true',
             type:  'post',
             dataType: 'json',
             beforeSend: function () {   
@@ -172,7 +172,7 @@ function copiar()
   var empresas = '<option value="">Elija empresa a copiar el catalogo</option>';
   $.ajax({
  // data:  {parametros:parametros},
- url:   '../php/controlador/contabilidad/ctaOperacionesC.php?copy_empresa=true',
+ url:   '../controlador/contabilidad/ctaOperacionesC.php?copy_empresa=true',
  type:  'post',
  dataType: 'json',
  // beforeSend: function () {   

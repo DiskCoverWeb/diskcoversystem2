@@ -838,8 +838,7 @@ public $Mensaje        ="";
 		
 		if($imprimir==false)
 		{
-			$medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-144;
-			$tabla = grilla_generica_new($sql,'Catalogo_Cuentas',$id_tabla=false,$SQLMsg1,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida,$num_decimales=2);
+			$tabla = grilla_generica_new($sql);
 			// print_r($tabla);die();
 
 			// $tabla= grilla_generica($stmt,$SQLMsg1,null,'1',null,null,null,true);
@@ -1066,8 +1065,7 @@ function listar_tipo_balanceSQl_pdf($mes,$tipo_ba,$tipo_p,$imprimir=False)
 	    {
 	    	// print_r($sql1);die();
 
-			$medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-144;
-	    	return grilla_generica_new($sql1,'Catalogo_Cuentas_Exterior',$id_tabla=false,$titulo=$MensajeEncabData,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida,$num_decimales=2); 
+	    	return grilla_generica_new($sql1); 
 	    }else
 	    {
 
@@ -3185,8 +3183,7 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
 
 	   if($excel==false)
 	   {
-	   	 $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-117; 
-	   	 $tbl = grilla_generica_new($sql,'Reporte_Analitico_Mensual',$id_tabla='cont_tbl',$titulo=false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
+	   	 $tbl = grilla_generica_new($sql);
         
         return $tbl;
        }else
@@ -3275,7 +3272,6 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
              ORDER BY T.ID,Debe DESC,T.Cta ";
              // print_r($sql);die();
              $result = $this->db_->datos($sql);
-             $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-94;
 
              $botones[0] = array('boton'=>'Cambiar Cuenta','icono'=>'<i class="fa fa-edit"></i>', 'tipo'=>'warning', 'id'=>'Cta,Cuenta,ID');
              $botones[1] = array('boton'=>'Cambiar Valores','icono'=>'<i class="fa fa-pencil"></i>', 'tipo'=>'info', 'id'=>'Cta,Cuenta,Debe,Haber,Detalle,Cheq_Dep,ID');
@@ -3284,8 +3280,7 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
             );
 
              $_SESSION['FListComprobante']['Contabilizacion'] = $sql;
-             $tbl = grilla_generica_new($sql,'Transacciones As T, Catalogo_Cuentas As Ca ',$id_tabla='cont_tbl',$titulo=false,$botones,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
-
+             $tbl = grilla_generica_new($sql);
              return array('tbl'=>$tbl,'datos'=>$result);
 
 
@@ -3306,8 +3301,8 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
                AND TK.Item = CC.Item
                ORDER BY TK.Codigo_Inv, TK.CodBodega, TK.Fecha ";
               $result = $this->db_->datos($sql);             
-             $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-94;
-             $tbl = grilla_generica_new($sql,'Trans_Kardex As TK,Catalogo_Productos As CC',$id_tabla='inv_tbl',$titulo=false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
+             $tbl = grilla_generica_new($sql);
+
 
              return array('tbl'=>$tbl,'datos'=>$result);
 
@@ -3341,9 +3336,7 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
          $sql = $sql1." UNION ".$sql2."ORDER BY Cta, TC ";
 
          // print_r($sql);die();
-		  $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-92-30;
-          $tbl = grilla_generica_new($sql,'Trans_SubCtas As TSC, Clientes As Be',$id_tabla='sub_tbl',$titulo=false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida);
-
+          $tbl = grilla_generica_new($sql);
           return $tbl;
 
 
@@ -3359,8 +3352,7 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
          AND TP = '".$tp."' ";
 
           //el numero es el tamaño ocupado en la pantalla de comprobantes
-          $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-165;
-          $tbl = grilla_generica_new($sql,'Trans_Air',$id_tabla='ret_tbl',$titulo=false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida/3);
+          $tbl = grilla_generica_new($sql);
           return $tbl;
 
      }
@@ -3386,9 +3378,7 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
             AND TC.IdProv = C.Codigo
             ORDER BY TC.Linea_SRI,C.Cliente,C.CI_RUC,C.TD ";
               $result = $this->db_->datos($sql);
-              $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-165;
-             $tbl = grilla_generica_new($sql,'Trans_Compras As TC, Clientes As C ',$id_tabla='com_tbl',$titulo=false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida/3);
-
+             $tbl = grilla_generica_new($sql);
              return array('tbl'=>$tbl,'datos'=>$result);
     }
 
@@ -3412,8 +3402,7 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
             AND TV.IdProv = C.Codigo 
             ORDER BY TV.Linea_SRI,C.Cliente,C.CI_RUC,C.TD ";
             $result = $this->db_->datos($sql);
-             $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-165;
-             $tbl = grilla_generica_new($sql,'Trans_Ventas As TV, Clientes As C ',$id_tabla='vnt_tbl',$titulo=false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida/3);
+             $tbl = grilla_generica_new($sql);
              return $tbl;
      }
 
