@@ -34,10 +34,22 @@ class Subcta_proyectosM
 	       // print_r($sql);die();
 	    $datos = $this->conn->datos($sql);
 
-        $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-46;  //el numero es el alto de los demas conponenetes sumados
-		$button[0] = array('boton'=>'eliminar', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'ID' );
-	    $tabla = grilla_generica_new($sql,'Catalogo_Cuentas As CC, Catalogo_SubCtas As CS, Trans_Presupuestos As TP ',$id_tabla=false,$titulo='',$button,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida,$num_decimales=2);
-
+		$button[0] = array('boton'=>'eliminar', 'icono'=>'<i class="bx bx-trash bs-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'ID' );
+	    $tabla = grilla_generica_new($sql);
+        if(!empty($tabla['data'])){
+            foreach ($tabla['data'] as &$fila){
+                $ids = $button[0]['id'];
+                if(!is_array($ids)){
+                    $ids = [$ids];
+                }
+                $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
+                $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$button[0]['tipo'].'"
+                            onclick="'.$button[0]['boton'].'(\''.implode("','",$parametros).'\')"
+                            title="'.$button[0]['boton'].'">'.
+                            $button[0]['icono'].
+                            '</button>';
+            }
+        }
 	      return array('tbl'=>$tabla,'datos'=>$datos);
 
 	}

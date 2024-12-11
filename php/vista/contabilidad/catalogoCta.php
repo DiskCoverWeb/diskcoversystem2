@@ -1,7 +1,9 @@
 <script src="../../dist/js/catalogoCta.js"></script>
 <div>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-	<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+	<div class="breadcrumb-title pe-3">
+		<?php echo $NombreModulo; ?>
+	</div>
 		<div class="ps-3">
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb mb-0 p-0">
@@ -10,7 +12,6 @@
 				</ol>
 			</nav>
 		</div>
-	</div>
 </div>
 
 <div class="row row-cols-auto d-flex align-items-center w-auto pb-2">          

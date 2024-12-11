@@ -69,91 +69,65 @@
 		}
 
 ?>
-
-<script src="/../../dist/js/macom.js"></script>
 <div class="container-lg">
-	<div class="row">
-    <div class="col-lg-7 col-sm-10 col-md-6 col-xs-12">
-       <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-            <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-default">
+	<div class="row row-cols-auto">
+		<div class="btn-group">
+            <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
               <img src="../../img/png/salire.png">
             </a>
-        </div>
-        <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-            <a id='l1' class="btn btn-default"  data-toggle="tooltip" title="Procesar balance de Comprobación"
+            <a id='l1' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Procesar balance de Comprobación"
 						href="contabilidad.php?mod=contabilidad&acc=bacsg&acc1=Balance de Comprobacion/Situación/General&ti=BALANCE DE COMPROBACIÓN&Opcb=1&Opcen=0&b=1">
 							<img src="../../img/png/pbc.png"> 
 						</a>
-        </div>
-        <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-           	<a id='l2' class="btn btn-default"  data-toggle="tooltip" title="Procesar balance mensual"
+           	<a id='l2' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Procesar balance mensual"
 						href="contabilidad.php?mod=contabilidad&acc=bacsg&acc1=Procesar balance mensual&ti=BALANCE MENSUAL&Opcb=2&Opcen=1&b=1">
 							<img src="../../img/png/pbm.png"> 
 						</a>
-        </div>
-        <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-            <a id='l3' class="btn btn-default"  data-toggle="tooltip" title="Procesar balance consolidado de varias sucursales">
+            <a id='l3' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Procesar balance consolidado de varias sucursales">
 							<img src="../../img/png/pbcs.png" >
 						</a>
-        </div>
-        <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-            <a id='l4' class="btn btn-default"  data-toggle="tooltip" title="Presenta balance de Comprobación"
+            <a id='l4' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Presenta balance de Comprobación"
 						href="contabilidad.php?mod=contabilidad&acc=bacsg&acc1=Presenta balance de Comprobación&ti=BALANCE DE COMPROBACIÓN&Opcb=1&Opcen=0&b=1">
 							<img src="../../img/png/vbc.png" >
 						</a>
-        </div>
-        <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-           	<a id='l5' class="btn btn-default"  data-toggle="tooltip" title="Presenta estado de situación (general: activo, pasivo y patrimonio)"
+           	<a id='l5' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Presenta estado de situación (general: activo, pasivo y patrimonio)"
 						href="contabilidad.php?mod=contabilidad&acc=bacsg&acc1=Presenta estado de situación (general)&ti=ESTADO SITUACIÓN&Opcb=5&Opcen=1&b=0"
 						>
 							<img src="../../img/png/bc.png" >
 						</a>
-        </div>
-        <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-            <a id='l6' class="btn btn-default"  data-toggle="tooltip" title="Presenta estado de resultado (ingreso y egresos)"
+            <a id='l6' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Presenta estado de resultado (ingreso y egresos)"
 						href="contabilidad.php?mod=contabilidad&acc=bacsg&acc1=Presenta estado de resultado&ti=ESTADO RESULTADO&Opcb=6&Opcen=0&b=0">
 							<img src="../../img/png/up.png" > 
 						</a>
-        </div>
-         <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-           <a class="btn btn-default"  data-toggle="tooltip" title="Presenta balance mensual por semana">
+           <a class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Presenta balance mensual por semana">
 							<img src="../../img/png/pbms.png"> 
-						</a>
-						
-						
-        </div>
-         <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-           <a class="btn btn-default"  data-toggle="tooltip" title="SBS B11">
+						</a>						
+           <a class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="SBS B11">
 							<img src="../../img/png/books.png"> 
 						</a>
-        </div>
-         <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-           <a class="btn btn-default"  data-toggle="tooltip" title="Imprimir resultados">
+           <a class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Imprimir resultados">
 							<img src="../../img/png/impresora.png"> 
 						</a>
-        </div>
-         <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-            	<a id='l7' class="btn btn-default"  data-toggle="tooltip" title="Exportar Excel"
+            	<a id='l7' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Exportar Excel"
 						href="descarga.php?mod=contabilidad&acc=bacsg&acc1=Balance de Comprobacion/Situación/General&ti=<?php echo $_SESSION['INGRESO']['ti']; ?>
 						&Opcb=6&Opcen=0&b=0&ex=1" onclick='modificar1();' target="_blank">
 							<img src="../../img/png/table_excel.png"> 
 						</a>
-        </div>
-    </div>
+		</div>
  	</div>
  	<div class="row">
  		
  	</div>
 </div>
 
-<div class="modal fade" id="myModal" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog" >
-    		<div class="modal-content">
+<div class="modal fade" id="myModal" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog">
+    	    <div class="modal-content">
     				<div class="modal-header">
-				  		<button type="button" class="close" data-dismiss="modal">&times;</button>
+				  		<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 				  		<h4 class="modal-title"><img  width='5%'  height='5%' src="../../img/jpg/logo.jpg"> Listado de errores</h4>
-						</div>
-						<div class="modal-body" style="height:<?php echo $ove; ?>px;overflow-y: scroll;">
+					</div>
+						    <div class="modal-body" style="height:<?php echo $ove; ?>px;overflow-y: scroll;">
 								<div class="form-group">
 									<p align='left' id='texto'>
 										<?php
@@ -164,7 +138,7 @@
 										?>	
 									</p>
 								</div>
-						</div>
+						    </div>
 						<div class="modal-footer">
 							<div id="alerta" class="alert invisible"></div>
 							<p  align='left'><img  width='5%'  height='5%' src="../../img/jpg/logo.jpg">
@@ -175,12 +149,12 @@
 								style='font-size:20px; display:block; height:100%; width:100%;'></i> 
 							</a>
 							<button id="btnCopiar" class="btn btn-primary" onclick='copiar();'>Copiar</button>
-						  <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+						  <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
 						</div>
-			  </div>			  
-			</div>
-		</div>
-			
+		</div>			  
+	</div>
+</div>
+	
 
 <!--  <div class="row">
 		 <div class="col-xs-12">
@@ -248,3 +222,4 @@
 		 </div>
 	  </div> -->
 
+<script src="../../dist/js/macom.js"></script>

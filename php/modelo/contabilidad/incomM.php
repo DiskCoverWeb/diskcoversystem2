@@ -211,21 +211,23 @@ class incomM
 			$sql=$sql." ORDER BY A_No ";
 			$ta='Asiento';
 		}
-		// echo $sql;
-		// $stmt = sqlsrv_query( $cid, $sql);
-		// if( $stmt === false)  
-		// {  
-		// 	 echo "Error en consulta PA.\n";  
-		// 	 die( print_r( sqlsrv_errors(), true));  
-		// }
-
-		// print_r($sql);die();
 		$camne=array();
-		$botones[0] = array('boton'=>'validarc', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'CTA_BANCO,CHEQ_DEP' );
+		$botones[0] = array('boton'=>'validarc', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'CTA_BANCO,CHEQ_DEP' );
 
-       $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-307; //el numero es el espacio ya ocupado por los otros 
-	    $tbl = grilla_generica_new($sql,$ta,$ta,$titulo=false,$botones,$check=false,$imagen=false,1,1,1,$medida/3);
-			 // print_r($tbl);die();
+	    $tbl = grilla_generica_new($sql);
+			if(!empty($tbl['data'])){ 
+        foreach ($tbl['data'] as &$fila){ 
+          $ids = explode(',', $botones[0]['id']);
+          $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
+
+
+          $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+                      onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+                      title="'.$botones[0]['boton'].'">'.
+                      $botones[0]['icono'].
+                      '</button>';
+        }
+      }
 		return $tbl;
 
 
@@ -265,13 +267,24 @@ class incomM
        WHERE Item = '".$_SESSION['INGRESO']['item']. "'
        AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
        AND T_No = ".$_SESSION['INGRESO']['modulo_']." ";
-       $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'CODIGO,asiento,ID' );
+       $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'CODIGO,asiento,ID' );
+       $tbl = grilla_generica_new($sql);
+       if(!empty($tbl['data'])){ 
+        foreach ($tbl['data'] as &$fila){ 
+          $ids = explode(',', $botones[0]['id']);
+          $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
 
-        $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-307; //el numero es el espacio ya ocupado por los otros componenetes
-	   $tbl = grilla_generica_new($sql,'Asiento','',$titulo=false,$botones,$check=false,$imagen=false,1,1,1,$medida);
+
+          $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+                      onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+                      title="'.$botones[0]['boton'].'">'.
+                      $botones[0]['icono'].
+                      '</button>';
+        }
+      }
 			 // print_r($tbl);die();
 		return $tbl;
-    }
+  }
 
     function DG_asientos_SC()
     {
@@ -282,10 +295,22 @@ class incomM
        AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
        AND T_No = ".$_SESSION['INGRESO']['modulo_']." ";
 
-        $botones[0] = array('boton'=>'eliminar','icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'Codigo,asientoSC' );
+        $botones[0] = array('boton'=>'eliminar','icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'Codigo,asientoSC' );
 
-        $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-307;
-        $tbl = grilla_generica_new($sql,'Asiento_SC',false,$titulo=false,$botones,$check=false,$imagen=false,1,1,1,$medida);
+        $tbl = grilla_generica_new($sql);
+        if(!empty($tbl['data'])){ 
+          foreach ($tbl['data'] as &$fila){ 
+            $ids = explode(',', $botones[0]['id']);
+            $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
+  
+  
+            $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+                        onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+                        title="'.$botones[0]['boton'].'">'.
+                        $botones[0]['icono'].
+                        '</button>';
+          }
+        }
 			 // print_r($tbl);die();
 		return $tbl;
     }
@@ -322,9 +347,21 @@ class incomM
        AND T_No = ".$_SESSION['INGRESO']['modulo_']." ";
        $datos = $this->conn->datos($sql);
 
-       $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-320;
-       $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'CodRet,air');
-	   $tbl = grilla_generica_new($sql,'Asiento_Air','tbl_asientoR',$titulo=false,$botones,$check=false,$imagen=false,1,1,1,$medida/2);
+       $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'CodRet,air');
+	   $tbl = grilla_generica_new($sql);
+     if(!empty($tbl['data'])){ 
+      foreach ($tbl['data'] as &$fila){ 
+        $ids = explode(',', $botones[0]['id']);
+        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
+
+
+        $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+                    onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+                    title="'.$botones[0]['boton'].'">'.
+                    $botones[0]['icono'].
+                    '</button>';
+      }
+    }
 			 // print_r($tbl);die();
 		return array('tbl'=>$tbl,'datos'=>$datos);
     }
@@ -350,9 +387,21 @@ class incomM
        AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
        AND T_No = ".$_SESSION['INGRESO']['modulo_']." ";
   
-       $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-320;
-	   $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'IdProv,compras' );
-	   $tbl = grilla_generica_new($sql,'Asiento_Compras',$id_tabla = 'tbl_ac',$titulo=false,$botones,$check=false,$imagen=false,1,1,1,$medida/2);
+	   $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'IdProv,compras' );
+	   $tbl = grilla_generica_new($sql);
+     if(!empty($tbl['data'])){ 
+      foreach ($tbl['data'] as &$fila){ 
+        $ids = explode(',', $botones[0]['id']);
+        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
+
+
+        $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+                    onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+                    title="'.$botones[0]['boton'].'">'.
+                    $botones[0]['icono'].
+                    '</button>';
+      }
+    }
 	   return $tbl;
 	
     }
@@ -366,9 +415,21 @@ class incomM
        AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
        AND T_No = ".$_SESSION['INGRESO']['modulo_']." ";
    
-       $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-350;
-	   $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'IdProv,ventas' );
-	   $tbl = grilla_generica_new($sql,'Asiento_Ventas','tbl_av',$titulo=false,$botones,$check=false,$imagen=false,1,1,1,$medida/3);
+	   $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'IdProv,ventas' );
+	   $tbl = grilla_generica_new($sql);
+     if(!empty($tbl['data'])){ 
+      foreach ($tbl['data'] as &$fila){ 
+        $ids = explode(',', $botones[0]['id']);
+        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
+
+
+        $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+                    onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+                    title="'.$botones[0]['boton'].'">'.
+                    $botones[0]['icono'].
+                    '</button>';
+      }
+    }
 	   return $tbl;
     }
 
@@ -394,9 +455,21 @@ class incomM
 			// 	 grilla_generica($stmt,null,null,1,null,null,null,false,$button);
 			// }
 
-       $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-350;
-        $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'Codigo,expo' );
-	   $tbl = grilla_generica_new($sql,'Asiento_Exportaciones',$id_tabla ='tbl_ae',$titulo=false,$botones,$check=false,$imagen=false,1,1,1,$medida/3);
+     $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'Codigo,expo' );
+	   $tbl = grilla_generica_new($sql);
+     if(!empty($tbl['data'])){ 
+      foreach ($tbl['data'] as &$fila){ 
+        $ids = explode(',', $botones[0]['id']);
+        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
+
+
+        $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+                    onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+                    title="'.$botones[0]['boton'].'">'.
+                    $botones[0]['icono'].
+                    '</button>';
+      }
+    }
 	   return $tbl;
     }
 
@@ -423,9 +496,21 @@ class incomM
 			// 	 grilla_generica($stmt,null,null,1,null,null,null,false,$button);
 			// }
 
-       $medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-350;
-         $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'CodSustento,inpor' );
-	   $tbl = grilla_generica_new($sql,'Asiento_Importaciones',$id_tabla ='tbl_ai',$titulo=false,$botones,$check=false,$imagen=false,1,1,1,$medida/3);
+     $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'CodSustento,inpor' );
+	   $tbl = grilla_generica_new($sql);
+     if(!empty($tbl['data'])){ 
+      foreach ($tbl['data'] as &$fila){ 
+        $ids = explode(',', $botones[0]['id']);
+        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
+
+
+        $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+                    onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+                    title="'.$botones[0]['boton'].'">'.
+                    $botones[0]['icono'].
+                    '</button>';
+      }
+    }
 	   return $tbl;
 
     }
@@ -470,16 +555,23 @@ class incomM
 			// else
 			// {
 
-       		$medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-307;
-       		$botones[0] = array('boton'=>'Eliminar Gasto', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'ID,Codigo' );
-		      $tbl = grilla_generica_new($sql,'Asiento_SC','tbl_subcta',$titulo=false,$botones,$check=false,$imagen=false,1,1,1,$medida);
+       		$botones[0] = array('boton'=>'Eliminar Gasto', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'ID,Codigo' );
+		      $tbl = grilla_generica_new($sql);
+          if(!empty($tbl['data'])){ 
+            foreach ($tbl['data'] as &$fila){ 
+              $ids = explode(',', $botones[0]['id']);
+              $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
+    
+    
+              $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+                          onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+                          title="'.$botones[0]['boton'].'">'.
+                          $botones[0]['icono'].
+                          '</button>';
+            }
+          }
 			 // print_r($tbl);die();
 		     return $tbl;
-
-
-				// $camne=array();
-				// return grilla_generica($stmt,null,null,1);
-			// }
     }
 
     function catalogo_subcta($SubCta,$agrupado=false,$nivel=false)
@@ -1285,8 +1377,7 @@ class incomM
 		if($tabla)
 		{
 
-       		$medida = medida_pantalla($_SESSION['INGRESO']['Height_pantalla'])-307;
-			$tbl = grilla_generica_new($sql,'Asiento','tbl_asiento',$titulo=false,$botones=false,$check=false,$imagen=false,1,1,1,$medida);
+			$tbl = grilla_generica_new($sql);
 			return $tbl;
 		}else{
 			$result = $this->conn->datos($sql);
