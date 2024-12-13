@@ -7,9 +7,9 @@ function FormActivate() {
   cargar_cuenta_banco();
   cargar_cuenta();
   cargar_tablas_contabilidad();
-  // cargar_tablas_tab4();
+  cargar_tablas_tab4();
   cargar_tablas_retenciones();
-  // cargar_tablas_sc();
+  cargar_tablas_sc();
   ListarAsientoB();
 
   $('#codigo').val('');
@@ -18,7 +18,9 @@ function FormActivate() {
 function autocoplet_bene(){
   $('#beneficiario1').select2({
     placeholder: 'Seleccione una beneficiario',
-    width:'90%',
+    width:'75%',
+    dropdownAutoWidth: true,
+    selectionCssClass: 'form-control form-control-sm h-100',  // Para el contenedor de Select2
     ajax: {
       url:   '../controlador/contabilidad/incomC.php?beneficiario=true&q=.',
       dataType: 'json',
@@ -100,14 +102,14 @@ function mostrar_efectivo()
         $('#rbl_efec').css("color",'#FFFFFF');
         $('#rbl_efec').css("border-radius",'5px');
         $('#rbl_efec').css("padding",'3px');
-        $('#ineg1').css('display','block');
+        $('#ineg1').addClass('d-block').removeClass('d-none');
       }else
       {
         $('#rbl_efec').css("background-color",'');
         $('#rbl_efec').css("color",'black');
         $('#rbl_efec').css("border-radius",'');
         $('#rbl_efec').css("padding",'');
-        $('#ineg1').css('display','none');
+        $('#ineg1').addClass('d-none').removeClass('d-block');
       }
     }
 
@@ -119,16 +121,16 @@ function mostrar_banco()
     $('#rbl_banco').css("color",'#FFFFFF');
     $('#rbl_banco').css("border-radius",'5px');
     $('#rbl_banco').css("padding",'3px');
-    $('#ineg2').css('display','block');
-    $('#ineg3').css('display','block');
+    $('#ineg2').addClass('d-block').removeClass('d-none');
+    $('#ineg3').addClass('d-block').removeClass('d-none');
   }else
   {
     $('#rbl_banco').css("background-color",'');
     $('#rbl_banco').css("color",'black');
     $('#rbl_banco').css("border-radius",'');
     $('#rbl_banco').css("padding",'');
-    $('#ineg2').css('display','none');
-    $('#ineg3').css('display','none');
+    $('#ineg2').removeClass('d-block').addClass('d-none');
+    $('#ineg3').removeClass('d-block').addClass('d-none');
   }
 }
 
@@ -301,7 +303,9 @@ function eliminar_todo_asisntoB()
         {
         
           ListarAsientoB();
-        $('#myModal_espera').modal('hide');
+        setTimeout(function(){
+          $('#myModal_espera').modal('hide');
+        }, 500)
         } 
       }
     });
@@ -535,49 +539,289 @@ function cambia_foco()
 
 function cargar_tablas_contabilidad()
 {
-  
-  $.ajax({
-      // data:  {parametros:parametros},
+  if($.fn.DataTable.isDataTable('#tbl_contabilidad')){
+    $('#tbl_contabilidad').DataTable().clear().destroy();
+  }
+  tbl_contabilidad = $('#tbl_contabilidad').DataTable({
+    language: {
+      url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+    },
+    ajax: {
       url:   '../controlador/contabilidad/incomC.php?tabs_contabilidad=true',
-      type:  'post',
-      dataType: 'json',
-        success:  function (response) {    
-        $('#contabilidad').html(response);      
+      type: 'get',
+      cache: true, 
+      dataSrc: function(response){
+        return response.data;
+      },
+      error: function(xhr, status, error){
+        console.error("Error en la solicitud: ", xhr, status, error);
       }
-    });
+    }, 
+    scrollX: true, 
+    scrollY: '300px',
+    scrollCollapse: true,
+    columns: [
+      { data: null,
+        render: function(data, type, row){
+          return data[0] || '';
+        },
+        orderable: false,
+        className: 'text-center' },
+      { data: 'CODIGO' },
+      { data: 'CUENTA' },
+      { data: 'PARCIAL_ME' },
+      { data: 'DEBE' },
+      { data: 'HABER' },
+      { data: 'CHEQ_DEP' },
+      { data: 'DETALLE' },
+      { data: 'EFECTIVIZAR',
+        render: function(data, type, item) {
+          const fecha = data?.date;
+          return fecha ? new Date(fecha).toLocaleDateString() : '';
+        }
+       },
+      { data: 'CODIGO_C' },
+      { data: 'CODIGO_CC' },
+      { data: 'BENEFICIARIO' },
+      { data: 'ME' },
+      { data: 'T_No' },
+      { data: 'Item' },
+      { data: 'CodigoU' },
+      { data: 'A_No' },
+      { data: 'TC' },
+      { data: 'X' },
+      { data: 'ID' }
+    ], 
+    order: [
+      [0, 'asc']
+    ]
+  });
+  
 
 }
 function cargar_tablas_sc()
 {
-  
-  $.ajax({
-      // data:  {parametros:parametros},
-      url:   '../controlador/contabilidad/incomC.php?tabs_sc=true',
-      type:  'post',
-      dataType: 'json',
-        success:  function (response) {    
-        $('#subcuentas').html(response);      
-      }
-    });
-
+  if($.fn.DataTable.isDataTable('#tbl_subcuentas')){
+    $('#tbl_subcuentas').DataTable().clear().destroy();
+  }
+  tbl_subcuentas = $('#tbl_subcuentas').DataTable({
+    language: {
+      url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+    },
+    ajax: {
+      url: '../controlador/contabilidad/incomC.php?tabs_sc=true',
+      dataSrc: function(response){
+        return response.data;
+      },
+      error: function(xhr, status, error){ 
+        console.error("Error en la consulta: ", xhr, status, error);      }
+    }, 
+    scrollX: true, 
+    scrollCollapse: true, 
+    scrollY: '300px',
+    columns: [
+      { data: null,
+        render: function(data, type, row){
+          return data[0] || '';
+        },
+        orderable: false,
+        className: 'text-center' }, 
+      { data: 'Codigo' }, 
+      { data: 'Beneficiario' }, 
+      { data: 'Serie' }, 
+      { data: 'Factura' }, 
+      { data: 'Prima' }, 
+      { data: 'DH' }, 
+      { data: 'Valor' }, 
+      { data: 'Valor_ME' }, 
+      { data: 'Detalle_SubCta' }, 
+      { data: 'FECHA_V',
+        render: function(data, type, item) {
+          const fecha = data?.date;
+          return fecha ? new Date(fecha).toLocaleDateString() : '';
+        }
+       }, 
+      { data: 'FECHA_E',
+        render: function(data, type, item) {
+          const fecha = data?.date;
+          return fecha ? new Date(fecha).toLocaleDateString() : '';
+        }
+       }, 
+      { data: 'TC' }, 
+      { data: 'Cta' }, 
+      { data: 'TM' }, 
+      { data: 'T_No' }, 
+      { data: 'SC_No' }, 
+      { data: 'Fecha_D',
+        render: function(data, type, item) {
+          const fecha = data?.date;
+          return fecha ? new Date(fecha).toLocaleDateString() : '';
+        }
+       }, 
+      { data: 'Fecha_H',
+        render: function(data, type, item) {
+          const fecha = data?.date;
+          return fecha ? new Date(fecha).toLocaleDateString() : '';
+        }
+       }, 
+      { data: 'Bloquear' }, 
+      { data: 'Item' }, 
+      { data: 'CodigoU' }, 
+      { data: 'ID' }
+    ],
+    order: [
+      [0, 'asc']
+    ]
+  });
 }
 
 function cargar_tablas_retenciones()
 {
+  if($.fn.dataTable.isDataTable('#tbl_ac') && $.fn.dataTable.isDataTable('#tbl_asientoR')){
+    $('#tbl_ac').DataTable().clear().destroy();
+    $('#tbl_asientoR').DataTable().clear().destroy();    
+  }
   
   $.ajax({
       // data:  {parametros:parametros},
       url:   '../controlador/contabilidad/incomC.php?tabs_retencion=true',
       type:  'post',
       dataType: 'json',
-        success:  function (response) {    
-        $('#retenciones').html(response.b+response.r);
-        // console.log(response.datos[0]);
-        if (response.datos[0]) {
-          $('#Autorizacion_R').val(response.datos[0].AutRetencion); 
-          $('#Serie_R').val(response.datos[0].EstabRetencion+''+response.datos[0].PtoEmiRetencion); 
-          $('#Retencion').val(response.datos[0].SecRetencion);      
-        }
+        success:  function (response) {
+        
+          tbl_ac = $('#tbl_ac').DataTable({ 
+            language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            },
+            data: response.b.data,
+            scrollX: true,
+            scrollY: '150px',
+            scrollCollapse: true,
+            columns: [
+              { data: null,
+                render: function(data, type, row){
+                  return data[0] || '';
+                },
+                orderable: false,
+                className: 'text-center' },
+              { data: 'IdProv' },
+              { data: 'DevIva' },
+              { data: 'CodSustento' },
+              { data: 'TipoComprobante' },
+              { data: 'Establecimiento' },
+              { data: 'PuntoEmision' },
+              { data: 'Secuencial' },
+              { data: 'Autorizacion' },
+              { data: 'FechaEmision',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'FechaRegistro',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'FechaCaducidad',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'BaseNoObjIVA' },       
+              { data: 'BaseImponible' },
+              { data: 'BaseImpGrav' },
+              { data: 'PorcentajeIva' },
+              { data: 'MontoIva' },
+              { data: 'BaseImpIce' },
+              { data: 'PorcentajeIce' },
+              { data: 'MontoIce' },
+              { data: 'MontoIvaBienes' },
+              { data: 'PorRetBienes' },
+              { data: 'ValorRetBienes' },
+              { data: 'MontoIvaServicios' },
+              { data: 'PorRetServicios' },
+              { data: 'ValorRetServicios' },
+              { data: 'Cta_Servicio' },
+              { data: 'Cta_Bienes' },
+              { data: 'Porc_Bienes' },
+              { data: 'Porc_Servicios' },
+              { data: 'DocModificado' },
+              { data: 'FechaEmiModificado',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'EstabvModificado' },
+              { data: 'PtoEmiModificado' },
+              { data: 'SecModificado =' },
+              { data: 'AutModificado' },
+              { data: 'ContratoPartidoPolitico' },
+              { data: 'MontoTituloOneroso' },
+              { data: 'MontoTitutloGratuito' },
+              { data: 'Item' },
+              { data: 'CodigoU' },
+              { data: 'A_No' },
+              { data: 'T_No' },
+              { data: 'PagoLocExt' },
+              { data: 'PaisEfecPago' },
+              { data: 'AplicConvDobTrib' },
+              { data: 'PagExtSujRetNorLeg' },
+              { data: 'FormaPago' },
+              { data: 'Clave_Acceso_NCD' },
+              { data: 'Devolucion' }            
+            ] 
+          });
+          tbl_asientosR = $('#tbl_asientoR').DataTable({
+            language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            }, 
+            data: response.r.data, 
+            scrollX: true, 
+            scrollY: '150px', 
+            scrollCollapse: true, 
+            columns: [
+              { data: null,
+                render: function(data, type, row){
+                  return data[0] || '';
+                },
+                orderable: false,
+                className: 'text-center' },
+              { data: 'CodRet' },
+              { data: 'Detalle' },
+              { data: 'BaseImp' },
+              { data: 'Porcentaje' },
+              { data: 'ValRet' },
+              { data: 'EstabRetencion' },
+              { data: 'PtoEmiRetencion' },
+              { data: 'SecRetencion' },
+              { data: 'AutRetencion' },
+              { data: 'FechaEmiRet',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'Cta_Retencion' },
+              { data: 'EstabFactura' },
+              { data: 'PuntoEmiFactura' },
+              { data: 'Factura_No' },
+              { data: 'IdProv' },
+              { data: 'Item' },
+              { data: 'CodigoU' },
+              { data: 'A_No' },
+              { data: 'T_No' },
+              { data: 'Tipo_Trans' },
+            ]
+          });
+          if (response.datos[0]) {
+            $('#Autorizacion_R').val(response.datos[0].AutRetencion); 
+            $('#Serie_R').val(response.datos[0].EstabRetencion+''+response.datos[0].PtoEmiRetencion); 
+            $('#Retencion').val(response.datos[0].SecRetencion);      
+          }
       }
     });
 
@@ -585,14 +829,177 @@ function cargar_tablas_retenciones()
 
 function cargar_tablas_tab4()
 {
-  
+  if ($.fn.dataTable.isDataTable('#tbl_av')) {
+      $('#tbl_av').DataTable().clear().destroy();
+  }
+  if ($.fn.dataTable.isDataTable('#tbl_ae')) {
+      $('#tbl_ae').DataTable().clear().destroy();
+  }
+  if ($.fn.dataTable.isDataTable('#tbl_ai')) {
+      $('#tbl_ai').DataTable().clear().destroy();
+  }
   $.ajax({
       // data:  {parametros:parametros},
       url:   '../controlador/contabilidad/incomC.php?tabs_tab4=true',
       type:  'post',
       dataType: 'json',
-        success:  function (response) {    
-        $('#ac_av_ai_ae').html(response);      
+        success:  function (response) { 
+          const commonConfig = {
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            },
+            scrollX: true,
+            scrollY: '150px',
+            scrollCollapse: true
+          };   
+          let tbl_av = $('#tbl_av').DataTable({
+            ...commonConfig, 
+            data: response.AV.data, 
+            columns: [
+              { data: null,
+                render: function(data, type, row){
+                  return data[0] || '';
+                },
+                orderable: false,
+                className: 'text-center' },
+              { data: 'IdProv' },
+              { data: 'TipoComprobante' },
+              { data: 'FechaRegistro',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'Establecimiento' },
+              { data: 'PuntoEmision' },
+              { data: 'Secuencial' },
+              { data: 'NumeroComprobantes' },
+              { data: 'FechaEmision',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'BeseImponible' },
+              { data: 'IvaPresuntivo' },
+              { data: 'BaseImpGrav' },
+              { data: 'PorcentajeIva' },
+              { data: 'MontoIva' },
+              { data: 'BaseImpIce' },
+              { data: 'PorcentajeIce' },
+              { data: 'MontoIce' },
+              { data: 'MontoIvaBienes' },
+              { data: 'PorRetBienes' },
+              { data: 'ValorRetBienes' },
+              { data: 'MontoIvaServicios' },
+              { data: 'PorRetServicios' },
+              { data: 'ValorRetServicios' },
+              { data: 'RetPresuntiva' },
+              { data: 'TP' },
+              { data: 'Cta_Servicio' },
+              { data: 'Cta_Bienes' },
+              { data: 'Numero' },
+              { data: 'Item' },
+              { data: 'CodigoU' },
+              { data: 'A_No' },
+              { data: 'T_No' },
+              { data: 'Porc_Bienes' },
+              { data: 'Porc_Servicios' },
+              { data: 'TipoPago' }
+            ]
+          });
+          let tbl_ae = $('#tbl_ae').DataTable({
+            ...commonConfig, 
+            data: response.AE.data,
+            columns: [
+              { data: null,
+                render: function(data, type, row){
+                  return data[0] || '';
+                },
+                orderable: false,
+                className: 'text-center' },
+              { data: 'Codigo' },
+              { data: 'CtasxCobrar' },
+              { data: 'ExportacionDe' },
+              { data: 'TipoComprobante' },
+              { data: 'FechaEmbarque',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'NumeroDctoTransporte' },
+              { data: 'IdFiscalProv' },
+              { data: 'ValorFOB' },
+              { data: 'DevIva' },
+              { data: 'FacturaExportacion' },
+              { data: 'ValorFOBComprobante' },
+              { data: 'DistAduanero' },
+              { data: 'Anio' },
+              { data: 'Regimen' },
+              { data: 'Correlativo' },
+              { data: 'Verificador' },
+              { data: 'Establecimiento' },
+              { data: 'PuntoEmision' },
+              { data: 'Secuencial' },
+              { data: 'Autorizacion' },
+              { data: 'FechaEmision',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'FechaRegistro',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(fecha).toLocaleDateString() : '';
+                }
+               },
+              { data: 'Item' },
+              { data: 'CodigoU' },
+              { data: 'A_No' },
+              { data: 'T_No' }
+            ]
+          });
+          let tbl_ai = $('#tbl_ai').DataTable({
+            ...commonConfig,
+            data: response.AI.data,
+            columns: [ 
+              { data: null,
+                render: function(data, type, row){
+                  return data[0] || '';
+                },
+                orderable: false,
+                className: 'text-center' },
+              { data:'CodSustento' },
+              { data:'ImportacionDe' },
+              { data:'FechaLiquidacion',
+                render: function(data, type, item) {
+                  const fecha = data?.date;
+                  return fecha ? new Date(data).toLocaleDateString() : '';
+                }
+               },
+              { data:'TipoComprobante' },
+              { data:'DistAduanero' },
+              { data:'Anio' },
+              { data:'Regimen' },
+              { data:'Correlativo' },
+              { data:'Verificador' },
+              { data:'IdFiscalProv' },
+              { data:'ValorCIF' },
+              { data:'BaseImponible' },
+              { data:'BaseImpGrav' },
+              { data:'PorcentajeIva' },
+              { data:'MontoIva' },
+              { data:'BaseImpIce' },
+              { data:'PorcentajeIce' },
+              { data:'MontoIce' },
+              { data:'Item' },
+              { data:'CodigoU' },
+              { data:'A_No' },
+              { data:'T_No' },
+            ]
+          });
       }
     });
 
@@ -1198,18 +1605,49 @@ function eliminar(codigo,tabla,ID)
 
 function ListarAsientoB()
 {
-  $('#div_tabla').empty();
-    $.ajax({
-        // data:  {parametros:parametros},
-        url:   '../controlador/contabilidad/incomC.php?ListarAsientoB=true',
-        type:  'post',
-        dataType: 'json',
-          success:  function (response) { 
-
-            // console.log(response);     
-          $('#div_tabla').html(response);  
+  if($.fn.dataTable.isDataTable('#div_tabla')){
+    $('#div_tabla').DataTable().destroy(); 
+  }
+  tbl_div_table = $('#div_tabla').DataTable({
+    language:{
+      url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
+    },
+    ajax: {
+      url: '../controlador/contabilidad/incomC.php?ListarAsientoB=true',
+      type: 'get',
+      dataSrc: function(response){
+        return response.data;
+      }
+    }, 
+    scrollY: '300px',
+    scrollCollapse: true,
+    scrollX: true,
+    autowidth: true,
+    columns: [
+      { data: null,
+        render: function(data, type, row){
+          return data[0] || '';
+        },
+        orderable: false,
+        className: 'text-center'
+       },
+      { data: 'CTA_BANCO' },
+      { data: 'BANCO' },
+      { data: 'CHEQ_DEP' },
+      { data: 'EFECTIVIZAR',
+        render: function(data, type, item) {
+          const fecha = data?.date;
+          return fecha ? new Date(fecha).toLocaleDateString() : '';
         }
-      });
+       },
+      { data: 'VALOR' },
+      { data: 'ME' },
+      { data: 'T_No' },
+      { data: 'Item' },
+      { data: 'CodigoU' }
+    ]
+  })
+
 }
 
 function Llenar_Encabezado_Comprobante()

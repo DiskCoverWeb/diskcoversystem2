@@ -14,15 +14,39 @@ function DGCostos(todas=false)
     'CodSubCta': $('#ddl_proyecto').val(),
     'SubCta':$('#ddl_cuenta_pro').val(),
   }
+  if($.fn.dataTable.isDataTable('#tbl_tabla')){ 
+    $('#tbl_tabla').DataTable().clear().destroy();
+  }
     $.ajax({
       type: "POST",
       url: '../controlador/contabilidad/Subcta_proyectosC.php?DGCostos=true',
       data: {parametros: parametros},
       dataType:'json',
-      success: function(data)
+      success: function(response)
       {			
-          console.log(data);
-          $('#tbl_tabla').html(data);
+          tbl_table = $('#tbl_tabla').DataTable({
+            language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            }, 
+            data: response.data,
+            scrollX: true, 
+            scrollY: '300px',
+            scrollCollapse: true, 
+            columns: [
+              { data: null, 
+                render: function(data, type, row){
+                  return data[0] || '';
+                }, 
+                orderable: false,
+                className: 'text-center'
+               }, 
+              { data: 'Cta', className: "text-center" }, 
+              { data: 'Cuenta', className: "text-center" }, 
+              { data: 'Detalle', className: "text-center" }, 
+              { data: 'Codigo', className: "text-center" }, 
+              { data: 'ID', className: "text-center" }
+            ]
+          });
       }
   });
 }
@@ -57,7 +81,6 @@ function DCCtasProyecto()
   dataType:'json',
   success: function(data)
   {     
-    console.log(data);
     llenarComboList(data,'ddl_cuenta_pro');
     // console.log(data);
     // $('#tbl_tabla').html(data);
@@ -131,4 +154,90 @@ function imprimir_excel()
   var url = '../controlador/contabilidad/Subcta_proyectosC.php?imprimir_excel=true&'+para;
     window.open(url, '_blank');
   }
+}
+function insertar()
+{
+  var pro = $('#ddl_proyecto').val();
+  var cta = $('#ddl_cuenta_pro').val();
+  var sub = $('#ddl_sub_pro').val();
+
+
+  var cta_n = $('#ddl_cuenta_pro option:selected').text();
+  var sub_n = $('#ddl_sub_pro option:selected').text();
+
+  if(pro!='' && cta!='' && sub!='')
+  {
+      Swal.fire({
+        title: 'Esta seguro de Inserta en la cuenta! '+cta_n+" El centro de costo: "+sub_n,
+        text: '',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si!'
+        }).then((result) => {
+          if (result.value==true) {
+          agregar();
+
+          }else
+          {
+          DGCostos();
+          }
+        })
+  }
+
+}
+
+function eliminar(id)
+{
+  
+      Swal.fire({
+        title: 'Esta seguro de eliminar!',
+        text: 'Este registro sera eliminado',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si!'
+        }).then((result) => {
+          if (result.value==true) {
+          eliminar_item(id);
+
+          }
+        })
+}
+
+
+function agregar()
+{
+    var pro = $('#ddl_proyecto').val();
+    var cta = $('#ddl_cuenta_pro').val();
+    var sub = $('#ddl_sub_pro').val();
+    var cta_n = $('#ddl_cuenta_pro option:selected').text();
+    var sub_n = $('#ddl_sub_pro option:selected').text();
+    var parametros = 
+    {
+    'cta':cta,
+    'codigo':sub,
+    }
+  $.ajax({
+    type: "POST",
+    url: '../controlador/contabilidad/Subcta_proyectosC.php?agregar=true',
+    data: {parametros: parametros},
+    dataType:'json',
+    success: function(data)
+    {
+      if(data==null)
+      {
+        Swal.fire('Item agregado','','success');
+        DGCostos();
+      }else if(data==2)
+      {
+          DGCostos();
+        Swal.fire('Item existente','','info');
+      }
+      
+    }
+  });
+
 }

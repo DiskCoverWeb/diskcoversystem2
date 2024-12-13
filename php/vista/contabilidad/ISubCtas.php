@@ -67,7 +67,7 @@ date_default_timezone_set('America/Guayaquil');
     }
 </style>
 
-<script src="../../dist/js/ISubCta.js"></script>
+<script src="../../dist/js/ISubCtas.js"></script>
 
 <script>
     //btnNuevo
@@ -100,29 +100,41 @@ date_default_timezone_set('America/Guayaquil');
 
 </script>
 
-<div id="generalContainer">
-    <div class="row">
-        <div class="col-sm-12">
+<div id="generalContainer" class="overflow-auto pt-1 pb-3">
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+      <div class="breadcrumb-title pe-3">
+        <?php echo $NombreModulo; ?>
+      </div>
+        <div class="ps-3">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0">
+              <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+              <li class="breadcrumb-item active" aria-current="page">Ctas. Ingreso / Egresos / Primas / Centro de Costos</li>
+            </ol>
+          </nav>
+        </div>
+    </div>
+    <div class="row row-cols-auto">
+        <div class="btn-group">
             <a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
-            print_r($ruta[0] . '#'); ?>" title="Salir" class="btn btn-default" style="border: solid 1px">
+            print_r($ruta[0] . '#'); ?>" data-bs-toggle="tooltip" title="Salir" class="btn btn-outline-secondary btn-small">
                 <img src="../../img/png/salire.png">
             </a>
-            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Grabar" id="btnGrabar"
-                onclick="GrabarCta();" style="border: solid 1px">
+            <button class="btn btn-outline-secondary btn-small" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Grabar" id="btnGrabar"
+                onclick="GrabarCta();">
                 <img src="../../img/png/grabar.png">
             </button>
-            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Nuevo" id="btnNuevo"
-                onclick="" style="border: solid 1px">
+            <button class="btn btn-outline-secondary btn-small" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Nuevo" id="btnNuevo"
+                onclick="">
                 <img src="../../img/png/nuevo.png">
             </button>
-            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom"
-                title="Seleccione una SubCuenta" id="btnEliminar" onclick="Eliminar();" disabled
-                style="border: solid 1px">
+            <button class="btn btn-outline-secondary btn-small" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                title="Seleccione una SubCuenta" id="btnEliminar" onclick="Eliminar();">
                 <img src="../../img/png/eliminar.png">
             </button>
         </div>
     </div>
-    <div class="row border mt-1" style="padding: 10px 0px 0px 15px">
+    <div class="row mt-1 pt-2 ps-3 pb-0 pe-0" >
         <div class="col-sm-12 panel panel-info">
             <div class="row ">
                 <div class="col-sm-12 ">
@@ -161,34 +173,34 @@ date_default_timezone_set('America/Guayaquil');
                     </label>
                 </div>
             </div>
-            <div class="row border border-3 p-2 me-2">
-                <div class="col-12">
-                    <div class="panel panel-default border col-12">
+            <div class="row">
+                <div class="col-12 ps-0">
+                    <div class="panel border panel-default col-12">
                         <div class="panel-heading bg-gray-custom" style="text-align:center;">
                             SUBCUENTA DE BLOQUE
                         </div>
                         <div class="panel-body" id="btnContainer">
-                            <div class="row" style="text-align: right;">
+                            <div class="row row-cols-auto pt-3" style="text-align: right;">
                                 <div>
                                     <div id="encabezadosSubCtas">
                                     </div>
                                 </div>
                                 <div>
-                                    <div class = "pt-4">
-                                        <button class="btn btn-default btn-small" data-toggle="tooltip" title="Primero"
-                                            id="btnPrimero" style="border: solid 1px">
+                                    <div class = "">
+                                        <button class="btn btn-outline-secondary btn-small" data-toggle="tooltip" title="Primero"
+                                            id="btnPrimero">
                                             <img src="../../img/png/primero.png" style="width: 20px; height: 20px;">
                                         </button>
-                                        <button class="btn btn-default rotar-180 btn-small" data-toggle="tooltip"
-                                            title="Anterior" id="btnAnterior" style="border: solid 1px">
+                                        <button class="btn btn-outline-secondary rotar-180 btn-small" data-toggle="tooltip"
+                                            title="Anterior" id="btnAnterior">
                                             <img src="../../img/png/siguiente.png" style="width: 20px; height: 20px;">
                                         </button>
-                                        <button class="btn btn-default btn-small" data-toggle="tooltip"
-                                            title="Siguiente" id="btnSiguiente" style="border: solid 1px">
+                                        <button class="btn btn-outline-secondary btn-small" data-toggle="tooltip"
+                                            title="Siguiente" id="btnSiguiente">
                                             <img src="../../img/png/siguiente.png" style="width: 20px; height: 20px;">
                                         </button>
-                                        <button class="btn btn-default rotar-180 btn-small" data-toggle="tooltip"
-                                            title="Ultimo" id="btnUltimo" style="border: solid 1px">
+                                        <button class="btn btn-outline-secondary rotar-180 btn-small" data-toggle="tooltip"
+                                            title="Ultimo" id="btnUltimo">
                                             <img src="../../img/png/primero.png" style="width: 20px; height: 20px;">
                                         </button>
                                     </div>
@@ -201,7 +213,7 @@ date_default_timezone_set('America/Guayaquil');
                     </div>
                 </div>
             </div>
-            <div class="row p-1 border border-3 mt-2 me-2">
+            <div class="row p-1 border mt-2 me-2">
                 <div class="panel panel-default">
                     <div class="panel-body p-3">
 
@@ -209,13 +221,13 @@ date_default_timezone_set('America/Guayaquil');
                             <!-- Código -->
                             <div class="col-2 text-box fw-bold">
                                 <label for="TxtCodigo" class="ms-2 col-2">CÓDIGO</label>
-                                <input type="text" class="form-control col-2" id="TxtCodigo" placeholder="000"
+                                <input type="text" class="form-control form-control-sm col-2" id="TxtCodigo" placeholder="000"
                                     onclick="MarcarTexto(this);">
                             </div>
                             <!-- Nivel -->
                             <div class="col-2 text-box fw-bold text-box fw-bold">
                                 <label for="TxtNivel" class="ms-2">NIVEL No.</label>
-                                <input type="text" class="form-control" id="TxtNivel" placeholder="00"
+                                <input type="text" class="form-control form-control-sm" id="TxtNivel" placeholder="00"
                                     onclick="MarcarTexto(this);">
                             </div>
                             <!-- Agrupación Nivel -->
@@ -227,7 +239,7 @@ date_default_timezone_set('America/Guayaquil');
                             <!-- SUBCUENTA -->
                             <div class="col-4 text-box fw-bold">
                                 <label for="TextSubCta">SUBCUENTA</label>
-                                <input type="text" class="form-control" id="TextSubCta" placeholder="" value=""
+                                <input type="text" class="form-control form-control-sm" id="TextSubCta" placeholder="" value=""
                                     onclick="MarcarTexto(this);">
                             </div>
                         </div>
@@ -236,19 +248,19 @@ date_default_timezone_set('America/Guayaquil');
                             <!-- REEMBOLSO -->
                             <div class="col-2 text-box fw-bold">
                                 <label for="TxtReembolso">REEMBOLSO</label>
-                                <input type="text" class="form-control" id="TxtReembolso" placeholder="0" value="0"
+                                <input type="text" class="form-control form-control-sm" id="TxtReembolso" placeholder="0" value="0"
                                     onclick="MarcarTexto(this);">
                             </div>
                             <!-- VALOR -->
                             <div class="col-2 text-box fw-bold">
                                 <label for="TextPresupuesto" id="Label1">VALOR</label>
-                                <input type="text" class="form-control" id="TextPresupuesto" placeholder="0.00"
+                                <input type="text" class="form-control form-control-sm" id="TextPresupuesto" placeholder="0.00"
                                     value="0" style="text-align:right;" onclick="MarcarTexto(this);">
                             </div>
                             <!-- CUENTA RELACIONADA -->
                             <div class="text-box fw-bold col-3">
                                 <label for="MBoxCta" style="font-size:0.7rem">CUENTA RELACIONADA</label>
-                                <input type="text" class="form-control" id="MBoxCta" placeholder="0" value="0"
+                                <input type="text" class="form-control form-control-sm" id="MBoxCta" placeholder="0" value="0"
                                     style="text-align:right;" onclick="MarcarTexto(this);">
                             </div>
                             <!-- BLOQUEAR CODIGO -->
@@ -276,8 +288,8 @@ date_default_timezone_set('America/Guayaquil');
                         <div class="row" style="padding: 10px 0">
                             <!-- NOMBRE DE LA CUENTA -->
                             <div class="col-md-6 d-flex align-items-center">
-                                <input type="text" class="form-control" id="Label5" placeholder="" value="" readonly
-                                    style="color:blue;">
+                                <input type="text" class="form-control form-control-sm bg-light" id="Label5" placeholder="" value="" readonly
+                                    style="color:blue;" disabled>
                             </div>
                             <!-- GASTO DE CAJA -->
                             <div class="col-md-2 d-flex align-items-center" style="padding-top:5px">

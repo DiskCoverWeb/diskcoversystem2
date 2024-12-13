@@ -467,7 +467,12 @@ class incomC
 		$AV= $this->modelo->DG_AV();
 		$AE= $this->modelo->DG_AE();
 		$AI= $this->modelo->DG_AI();
-		return $AV.$AE.$AI;   
+		// return $AV.$AE.$AI;
+        return [
+            'AV' => $AV, 
+            'AE' => $AE,
+            'AI' => $AI
+        ];   
 	}
 
 	function LeerCta($CodigoCta)
