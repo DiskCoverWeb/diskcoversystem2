@@ -327,3 +327,79 @@ function validar_entidad()
       });
     }
   
+
+  function Recuperar()
+  { 
+
+		 var usuario = $("#txt_usuario").val();
+		 var entidad = $("#txt_entidad_id").val();
+		 var cartera = $("#txt_cartera").val();
+		 var ci_empresa = $("#txt_entidad").val();
+		 if(entidad =='')
+		 {
+		 		Swal.fire('No se a verificado la entidad Asegurese de colocar una entidad valida','Se volvera a verificar la empresa','info').then(function(){ $('#entidad').focus()});
+		 	return false;
+		 }
+		 if(entidad=='')
+		 {
+		 	Swal.fire('Llene todo los campos','Asegurese de colocar una entidad, usuario y password validos','info')
+		 	return false;
+		 }
+		 
+		 var parametros = 
+		 {
+		 	 'usuario':usuario,
+		 	 'entidad':entidad,
+		 	 'empresa':ci_empresa,		 	
+		 }
+     $.ajax({
+      data:  {parametros:parametros},
+      url:   '../controlador/loginC.php?recuperar=true',
+      type:  'post',
+      dataType: 'json',
+      /*beforeSend: function () {   
+           var spiner = '<div class="text-center"><img src="../../img/gif/proce.gif" width="100" height="100"></div>'     
+         $('#tabla_').html(spiner);
+      },*/
+        success:  function (response) { 
+        	console.log(response);
+        if(response==-1 || response.respuesta==-1)
+        {
+        	Swal.fire('Usuario invalidos!','No se pudo recuperar.','error');
+        }else if(response.respuesta==-2)
+        {        	
+        	Swal.fire('Clave o usuario de cartera invalidos!','No se pudo acceder.','error');
+        }else if(response.respuesta==2)
+        {        	
+        	Swal.fire('¡Disculpe!','No fue posible enviar el correo. No se pudo obtener la información de las empresas','error');
+        }
+        else
+        {      	
+        	var ema = response.email;
+       		if(ema!='' && ema !='.')
+       		{
+       			"intimundosa@hotmail.com"
+       			var ini = ema.substring(0,4);
+       			var divi = ema.split('@');
+       			var num_car =  divi[0].substring(4).length;
+       			// num_car = num_car
+       			var medio = '';
+       			for (var i = 0; i < num_car; i++) {
+       				medio+='*';       				
+       			}
+       			var fin = divi[1];
+       		}
+       			// console.log(ini+medio+fin);
+
+       		 // $('#lbl_email').text(ini+medio+'@'+fin);
+
+
+        	// console.log(response); return false;
+        	Swal.fire('Sus credenciales han sido enviadas al email <br>'+ini+medio+'@'+fin,'','success').then(function(){
+        		location.href = 'login.php';
+        	});
+        }     
+      }
+    });
+
+  }	

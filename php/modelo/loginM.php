@@ -218,6 +218,61 @@ class loginM
 		$datos = $this->db->datos($sql,$tipo='MY SQL');
 		return $datos;
 	}
+
+	function datos_usuario_mysql($usuario=false,$entidad=false,$email=false){
+
+			$sql = "SELECT * 
+		          FROM acceso_usuarios AU
+		          INNER JOIN acceso_empresas AE ON AU.CI_NIC = AE.CI_NIC 
+		          WHERE 1=1 ";
+		          if($usuario)
+		          {
+		          	$sql.=" AND AU.Usuario = '".$usuario."' ";
+		          }
+		          if($entidad)
+		          {
+		          	$sql.=" AND AE.ID_Empresa = '".$entidad."' ";
+		          }
+		          if($email)
+		          {
+		          	$sql.=" AND AU.Email = '".$email."'";
+		          }
+		          $sql.=" GROUP BY Item";
+		 // print_r($sql);die();
+	    $datos = $this->db->datos($sql,$tipo='MY SQL');
+	    return $datos;
+	    // print_r($datos);die();
+	}
+
+	function Empresa_data($ci_ruc)
+   {  
+   	 //datos de empresa en mysql
+      $dataEmp = $this->empresa_cartera($ci_ruc,$ID_Entidad=false); 
+      //busca las credenciales SMTP de la empresa 
+      $sql = "SELECT * FROM Empresas where Item='".$dataEmp[0]['Item']."'";
+      $datos = $this->db->consulta_datos_db_sql_terceros($sql,$dataEmp[0]['IP_VPN_RUTA'],$dataEmp[0]['Usuario_DB'],$dataEmp[0]['Contrasena_DB'],$dataEmp[0]['Base_Datos'],$dataEmp[0]['Puerto']);
+	   return $datos;
+   }
+
+
+  function entidades_usuario($ci_nic)
+	{
+		$sql ="SELECT AU.Nombre_Usuario,AU.Usuario,AU.Clave, AU.Email, E.Nombre_Entidad, E.RUC_CI_NIC As Codigo_Entidad
+				FROM acceso_empresas AS AE,acceso_usuarios AS AU, entidad AS E
+				WHERE AU.CI_NIC ='".$ci_nic."'
+				AND AE.ID_Empresa = E.ID_Empresa 
+				AND AE.CI_NIC = AU.CI_NIC
+				GROUP BY AU.Nombre_Usuario,AU.Email, E.Nombre_Entidad, E.RUC_CI_NIC,AU.Usuario,AU.Clave
+				ORDER BY E.Nombre_Entidad ";
+		$resp=$this->db->datos($sql,'MY SQL');
+		$datos=array();
+		foreach ($resp as $key => $value) {
+		
+				$datos[]=array('id'=>$value['Codigo_Entidad'],'text'=>$value['Nombre_Entidad'],'RUC'=>$value['Codigo_Entidad'],'Usuario'=>$value['Usuario'],'Clave'=>$value['Clave'],'Email'=>$value['Email'],'Nombre_Usuario'=>$value['Nombre_Usuario']);				
+		}		
+	    return $datos;
+	}
+
 }
 
 ?>

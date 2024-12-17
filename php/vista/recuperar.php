@@ -45,54 +45,29 @@
 										<p class="mb-0">Por favor, inicie sesión en su cuenta</p>
 									</div>
 									<div class="form-body">
-										<form class="row g-3">
-											<input type="hidden" name="txt_cartera" id="txt_cartera" value="0">
-											<input type="hidden" name="txt_entidad_id" id="txt_entidad_id">
-		   								<input type="hidden" name="txt_item" id="txt_item">
-											<div class="col-12">
-												<label for="inputEntidad" class="form-label">Entidad</label>
-												<input type="text" class="form-control" placeholder="Entidad a la que pertenece" onblur="validar_entidad()" name="txt_entidad" id="txt_entidad">
+										 <form action="../controlador/login_controller.php" method="post" name="FormEntrar">
+										   	<div id="alerta" class="alert alert-success visible" align="center" style="display:none;"></div>										   
+										   	<div class="col-12">
+												<label class="form-label">Entidad</label>
+												<input type="text" class="form-control" name="txt_entidad" placeholder="Entidad a la que perteneces" id="txt_entidad" onblur="validar_entidad()">
+										   		<input type="hidden" name="txt_entidad_id" id="txt_entidad_id">
+		   										<input type="hidden" name="txt_item" id="txt_item">
 											</div>
-											<div class="col-12">
-												<label for="inputEmailAddress" class="form-label">Email</label>
-												<input type="email" class="form-control"  name="txt_correo" id="txt_correo" placeholder="Correo / Usuario" onblur="validar_usuario()">
-											</div>
-											<div class="col-12 mb-0">
-												<label for="inputChoosePassword" class="form-label">Contraseña</label>
-												<div class="input-group" id="show_hide_password">
-													<input type="password" class="form-control border-end-0" name="txt_contra" id="txt_contra"  value="12345678" placeholder="Enter Password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
-												</div>
-											</div>
-												<div id="form_cartera" style="display:none">
-													<div class="input-group input-group-lg" >
-									        	<span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-envelope"></i></span>
-									          <input type="text" class="form-control" name="correo_cartera" placeholder="Correo Electrónico/Usuario" id="correo_cartera" onblur="validar_usuario()">                 
-									        </div>  <br>        
-									         <div class="input-group input-group-lg" >
-									            <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-lock"></i></span>
-									              <input type="password" name="contra_cartera" id="contra_cartera" class="form-control" placeholder="******" aria-describedby="sizing-addon1" required autocomplete="new-password">
-									         </div>							
-												</div>
 
-											
-											<div class="col-md-12 text-end"><a href="recuperar.php">olvido su contraseña ?</a>
-											</div>
-											<div class="col-12">
+												
+											<div class="col-12 mb-3">
+												<div id="form_cartera">
+													<label for="inputEmailAddress" class="form-label">Email / Usuario</label>
+										          	<input type="text" class="form-control" name="txt_usuario" placeholder="Email / Usuario" id="txt_usuario">
+										        </div>
+										    </div>
+								        <div class="col-12">
 												<div class="d-grid">
-													<button type="button" class="btn btn-primary" id="btn_ingreso" onclick="/*Ingresar();*/Ingresar_vali()">Ingresar
-														<div class="spinner-border text-light spinner-border-sm" style="display:none;" role="status" id="loader_ingreso"> 
-															<span class="visually-hidden">Loading...</span>
-														</div>
-													</button>
+													<button type="button" id="IngresoLog" name="submitlog"  class="btn btn-primary" onclick="Recuperar();">Recuperar contraseña</button>
 												</div>
 											</div>
-										<!-- 	<div class="col-12">
-												<div class="text-center ">
-													<p class="mb-0">Don't have an account yet? <a href="auth-basic-signup.html">Sign up here</a>
-													</p>
-												</div>
-											</div> -->
-										</form>
+								         <br>
+								       </form>										
 									</div>
 									<div class="login-separater text-center mb-2"> <span>OR SIGN IN WITH</span>
 										<hr/>
