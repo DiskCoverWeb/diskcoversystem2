@@ -633,16 +633,19 @@ require_once("../../headers/header.php");
 				break;
 
 			default:
-				$titulo = "<div class='box-body' style='position:absolute'>
-					<img src='../../img/fondo.png' width='100%;' style='min-height: 400px;'>
-					<div class='div_img_modulo'>
-						<img src='" . $modulo_logo . "' width='100%;'>
-					</div>
-					<div class='div_titulo_modulo'>
-					<b>MÓDULO " . ((isset($_GET['mod'])) ? $NombreModulo : '') . "</b>
-					</div>";
+				$titulo = "
+						<div class='card'>
+						<div class='card-body' style='height: 50vh; height: calc(400px + 10vh);'>
+							<div class='row h-100'>
+						        <div class='col-sm-6  d-flex justify-content-center align-items-center'>
+						            <h1>MÓDULO " . ((isset($_GET['mod'])) ? $NombreModulo : '') . "</h1>
+						        </div>
+						        <div class='col-sm-6 d-flex justify-content-center align-items-center'>
+						          <img src='" . $modulo_logo . "' width='50%;'>
+						        </div>
+						    </div>";
 
-				$titulo .= '</div>';
+			$titulo .= '</div></div>';
 				echo $titulo;
 				break;
 		}
