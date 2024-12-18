@@ -10,6 +10,7 @@
     {
       background-color: #CFE9EF;  color: #444;  border-color: #ddd;  border-bottom-left-radius: 5px;  border-top-left-radius:  5px;}
     #select2-cuentar-results .select2-results__option {   white-space: pre;  }
+
 </style>
   <!-- =========================================INICIO DE PROGRAMACION =================================== -->
 <?php
@@ -34,6 +35,9 @@ if (isset($_GET["copiar"])) {
 if (isset($_GET["num_load"])) {
   $load = 1;
 }
+
+//Valor esencial para las consultas.
+$_SESSION['INGRESO']['modulo_'] = $_GET['mod'];
 ?>
 
 <script src="../../dist/js/incom.js"></script>
@@ -98,8 +102,6 @@ function Form_Activate()
  //  MBoxFecha.SetFocus
 }
 
-</script>
-<script type="text/javascript">
     var cli = '<?php if (isset($_GET["cliente"])) {
       echo $_GET["cliente"];
     } ?>';    
@@ -422,23 +424,39 @@ function Form_Activate()
     }
   }
 </script>
-  <div class="box-body">
+  <div class="box-body overflow auto">
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+      <div class="breadcrumb-title pe-3">
+        <?php echo $NombreModulo; ?>
+      </div>
+        <div class="ps-3">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0">
+              <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+              <li class="breadcrumb-item active" aria-current="page">Ingresar Comprobantes</li>
+            </ol>
+          </nav>
+        </div>
+    </div>
+
     <div>
       <div class="row p-1">
-        <div class="mb-1 col-sm-4 col-md-4 col-lg-4 text-start container">
-            <button type="button" class="btn btn-default btn-sm border border-2 small-text" onclick="reset_1('comproba','CD');" 
+        <div class="mb-1 col-sm-4 col-md-4 col-lg-4 btn-group">
+          <div class="">
+            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CD');" 
             id='CD' title='Comprobante diario'>Diario</button>
-            <button type="button" class="btn btn-default btn-sm border border-2 small-text" onclick="reset_1('comproba','CI');" 
+            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CI');" 
             id='CI' title='Comprobante de ingreso'>Ingreso</button>
-            <button type="button" class="btn btn-default btn-sm border border-2 small-text" onclick="reset_1('comproba','CE');" 
+            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CE');" 
             id='CE' title='Comprobante de egreso'>Egreso</button>
-            <button type="button" class="btn btn-default btn-sm border border-2 small-text" onclick="reset_1('comproba','ND');" 
+            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','ND');" 
             id='ND' title='Comprobante nota de debito'>N/D</button>
-            <button type="button" class="btn btn-default btn-sm border border-2 small-text" onclick="reset_1('comproba','NC');" 
+            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','NC');" 
             id='NC' title='Comprobante nota de credito'>N/C</button>
             <input id="tipoc" name="tipoc" type="hidden" value="CD">
             <input type="hidden" name="NuevoComp" id="NuevoComp">
             <input type="hidden" name="num_load" id="num_load" value="0">
+          </div>
         </div>                      
         <div class="mt-1 col col-sm-4 col-md-4 col-lg-4">
           <div align='top' style="float: top;">
@@ -449,13 +467,13 @@ function Form_Activate()
         </div>
       
         <div class="mt-1 col col-sm-4 col-md-4 col-lg-4 text-end">
-          <label>
-            <input type="checkbox"> Imprimir copia
+          <label class="">
+            <input class="form-check-input" type="checkbox"> Imprimir copia
           </label>
         </div>
       </div>
     </div>
-    <div class="box table-responsive border p-2">
+    <div class="box table-responsive p-2">
     
             <div class="box-header">      
         
@@ -468,23 +486,23 @@ function Form_Activate()
                         <div class="col col-sm-3 col-md-3 col-lg-3">                          
                           <!-- <div class="form-group"> -->
                                <div class="input-group">
-                                 <div class="input-group-addon p-2 text-box">
+                                 <div class="input-group-addon form-control-sm p-2 text-box">
                                    <b>FECHA:</b>
                                  </div>
-                                 <input type="date" class="form-control input-xs" name="fecha1" id="fecha1" placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' maxlength='10' size='15' onblur="validar_fecha();fecha_valida(this)">
+                                 <input type="date" class="form-control form-control-sm" name="fecha1" id="fecha1" placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' maxlength='10' size='15' onblur="validar_fecha();fecha_valida(this)">
                                </div>
                           <!-- </div> -->
                         </div>
-                        <div class="col col-sm-6 col-md-6 col-lg-6">
+                        <div class="col-sm-6 col-md-6 col-lg-6 d-flex flex-nowrap">
                           <!-- <div class="form-group"> -->
                                <div class="input-group">
-                                 <div class="input-group-addon p-2 text-box">
+                                 <div class="input-group-addon d-flex align-items-center p-2 text-box">
                                    <b>BENEFICIARIO:</b>
                                  </div>                        
-                              <select id="beneficiario1" name='beneficiario1' class='form-control' onchange="benefeciario_edit()">
-                                <option value="">Seleccione beneficiario</option>                                
-                              </select>
-                              <input type="hidden" name="beneficiario2" id="beneficiario2" value='' />
+                                  <select id="beneficiario1" name='beneficiario1' class='form-control form-control-sm' onchange="benefeciario_edit()">
+                                    <option value="">Seleccione beneficiario</option>                                
+                                  </select>
+                                  <input type="hidden" name="beneficiario2" id="beneficiario2" value='' />
                                </div>
                           <!-- </div> -->
                         </div>
@@ -495,7 +513,7 @@ function Form_Activate()
                                  <div class="input-group-addon p-2 text-box">
                                    <b>R.U.C / C.I:</b>
                                  </div>
-                                 <input type="text" class=" form-control input-xs" id="ruc" name='ruc' placeholder="R.U.C / C.I" value='000000000' maxlength='30' size='25' onblur="" onkeyup="solo_numeros(this)">
+                                 <input type="text" class=" form-control form-control-sm" id="ruc" name='ruc' placeholder="R.U.C / C.I" value='000000000' maxlength='30' size='25' onblur="" onkeyup="solo_numeros(this)">
                                </div>
                           <!-- </div> -->
                         </div>
@@ -507,7 +525,7 @@ function Form_Activate()
                                  <div class="input-group-addon p-2 text-box">
                                    <b>Email:</b>
                                  </div>
-                                 <input type="email" class="form-control input-xs" id="email" name="email" placeholder="prueba@prueba.com" 
+                                 <input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="prueba@prueba.com" 
                             maxlength='255' size='100'/>
                                </div>
                         </div>        
@@ -527,7 +545,7 @@ function Form_Activate()
                                  <div class="input-group-addon p-2 text-box">
                                    <b>COTIZACION:</b>
                                  </div>
-                                 <input type="text" class="form-control input-xs" id="cotizacion" name='cotizacion' placeholder="0.00" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" style="text-align:right; width: 70px;" maxlength='20' />
+                                 <input type="text" class="form-control form-control-sm" id="cotizacion" name='cotizacion' placeholder="0.00" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" style="text-align:right; width: 70px;" maxlength='20' />
                                </div>
                         </div>     
 
@@ -540,18 +558,18 @@ function Form_Activate()
                           </div>
                         </div> -->
 
-                        <div class="col-md-3 col-sm-3 col-xs-3">
+                        <div class="col-md-3 col-sm-3 row row-cols-auto p-0 m-0 ">
                                 <div class="input-group">
-                                  <div class="input-group-addon p-2 text-box">
+                                  <div class="input-group-addon text-box d-flex align-items-center ps-2 pe-2">
                                     <b>Tipo de conversión  :</b>
                                   </div>
-                                  <div class="pt-2 ps-2">
-                                    <label class="customradio" style="margin-bottom: 1px;"><span class="radiotextsty">(/)</span>
-                                    <input type="radio" checked="checked" name="con" id='con' value='/'>
+                                  <div class="small-text d-flex align-items-center ps-1">
+                                    <label class="customradio form-check-label"><span class="radiotextsty">(/)</span>
+                                    <input class="form-check-input" type="radio" checked="checked" name="con" id='con' value='/'>
                                     <span class="checkmark"></span>
                                     </label>        
-                                    <label class="customradio" style="margin-bottom: 1px;"><span class="radiotextsty">(X)</span>
-                                      <input type="radio" name="con" id='con' value='X'>
+                                    <label class="customradio form-check-label"><span class="radiotextsty">(X)</span>
+                                      <input class="form-check-input" type="radio" name="con" id='con' value='X'>
                                       <span class="checkmark"></span>
                                     </label>
                                   </div> 
@@ -577,7 +595,7 @@ function Form_Activate()
                                  <div class="input-group-addon p-2 text-box">
                                    <b>VALOR TOTAL:</b>
                                  </div>
-                                <input type="text" class="form-control input-xs" id="VT" name='VT' placeholder="0.00" style="text-align:right;" onKeyPress='return soloNumerosDecimales(event)' maxlength='20' size='33' readonly="">
+                                <input type="text" class="form-control form-control-sm" id="VT" name='VT' placeholder="0.00" style="text-align:right;" onKeyPress='return soloNumerosDecimales(event)' maxlength='20' size='33' readonly="">
                                </div>
                          </div>     
 
@@ -593,54 +611,54 @@ function Form_Activate()
                       </div>
                       <div id='ineg' class="row" style="display: none;"> <br>
                         <div class="row">
-                          <div class="col-sm-1" style="padding-right: 0px;">
+                          <div class="col-2" style="padding-right: 0px;">
                             <label class="label-inline" id="rbl_efec"><input type="checkbox" id='efec' name='efec'onclick="mostrar_efectivo()" /> Efectivo</label>
                           </div>
-                          <div class="col-sm-10" id="ineg1" style="display: none;">
+                          <div class="col-9 d-none" id="ineg1">
                             <div class="row">
                               <div class="col-sm-9">
                                 <div class="input-group">
-                                  <div class="input-group-addon input-xs">
+                                  <div class="input-group-addon d-flex align-items-center form-control-sm">
                                     <b>CUENTA:</b>
                                   </div>
-                                  <select class="form-control input-xs" name="conceptoe" id='conceptoe'>
+                                  <select class="form-select form-select-sm" name="conceptoe" id='conceptoe'>
                                    <option value="">Seleccione cuenta de efectivo</option>
                                   </select>
                                 </div>                            
                               </div>
                               <div class="col-sm-3">
                                 <div class="input-group">
-                                     <div class="input-group-addon input-xs">
+                                     <div class="input-group-addon d-flex align-items-center form-control-sm">
                                        <b><?php echo $_SESSION['INGRESO']['S_M']; ?>:</b>
                                      </div>
-                                     <input type="text" class="form-control input-xs" id="vae" name='vae' placeholder="0.00" style="text-align:right;" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" maxlength='20' size='13'>
+                                     <input type="text" class="form-control form-control-sm d-flex align-items-center" id="vae" name='vae' placeholder="0.00" style="text-align:right;" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" maxlength='20' size='13'>
                                    </div>                           
                               </div>                               
                             </div>                                                  
                           </div>                        
                         </div>
-                        <div class="row">
-                          <div class="col-sm-1" style="padding-right: 0px;">
-                            <label class="label-inline" id="rbl_banco" style="background:rgb(40, 96, 144) ;color: #FFFFFF;padding:5px;border-radius: 5px;"><input type="checkbox" id='ban' name='ban'onclick="mostrar_banco()" checked="" /> Banco</label>
+                        <div class="row pt-2 pb-2">
+                          <div class="col-2" style="padding-right: 0px;">
+                          <label class="label-inline" id="rbl_banco"><input type="checkbox" id='ban' name='ban'onclick="mostrar_banco()"/> Banco</label>
                           </div>
-                          <div class="col-sm-10" id='ineg2'>
+                          <div class="col-9 d-none" id='ineg2'>
                             <div class="row">
-                              <div class="col-md-9">
+                              <div class="col-9">
                               <div class="input-group">
-                                     <div class="input-group-addon input-xs">
+                                     <div class="input-group-addon form-control-sm">
                                          <b>CUENTA:</b>
                                      </div>
-                                     <select class="form-control input-xs" name="conceptob" id='conceptob'onchange="DCBanco_LostFocus()">
+                                     <select class="form-select form-select-sm" name="conceptob" id='conceptob'onchange="DCBanco_LostFocus()">
                                          <option value="">Seleccione cuenta de banco</option>
                                     </select>
                                   </div>                            
                             </div>
                             <div class="col-md-3"  id="ingreso_val_banco">
                               <div class="input-group">
-                                     <div class="input-group-addon input-xs">
+                                     <div class="input-group-addon d-flex align-items-center form-control-sm">
                                          <b><?php echo $_SESSION['INGRESO']['S_M']; ?>:</b>
                                      </div>
-                                     <input type="text" class="form-control input-xs" id="vab" name='vab' placeholder="0.00" 
+                                     <input type="text" class="form-control form-control-sm d-flex align-items-center" id="vab" name='vab' placeholder="0.00" 
                                 style="text-align:right;"  onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)"
                                 maxlength='20' size='13' value='0.00'>
                                   </div>  
@@ -656,45 +674,70 @@ function Form_Activate()
                                   </div>  
                             </div>
                             </div>
-                            
-
-
-                            
                           </div>                          
                         </div>
-                        <div class="row" id='ineg3' >
-                          <div class="col-md-8">
-                            <div id="div_tabla">
-                             
+                        <div class="col-12 flex-nowrap d-none text-sm" id='ineg3' >
+                          <div class="row d-flex align-items-center">
+                            <div class="col-8">
+                              <table class="table text-sm w-100" id="div_tabla">
+                                  <thead>
+                                    <tr>
+                                      <th class ="text-center"></th>
+                                      <th class ="text-center">CTA_BANCO</th>
+                                      <th class ="text-center">BANCO</th>
+                                      <th class ="text-center">CHEQ_DEP</th>
+                                      <th class ="text-center">EFECTIVIZAR</th>
+                                      <th class ="text-center">VALOR</th>
+                                      <th class ="text-center">ME</th>
+                                      <th class ="text-center">T_No</th>
+                                      <th class ="text-center">Item</th>
+                                      <th class ="text-center">CodigoU</th>
+                                    </tr> 
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td></td> 
+                                      <td></td> 
+                                      <td></td> 
+                                      <td></td> 
+                                      <td></td> 
+                                      <td></td> 
+                                      <td></td> 
+                                      <td></td> 
+                                      <td></td> 
+                                      <td></td> 
+                                    </tr> 
+                                  </tbody>  
+                                </table> 
+                              <input type="hidden" id='reg1' name='reg1'  value='' />
                             </div>
-                            <input type="hidden" id='reg1' name='reg1'  value='' />
-                          </div>
-                          <div class="col-md-2">
-                            <div class="input-group">
-                                <div class="btn_f input-xs col-sm-12 text-center">
-                                  <b>Efectivizar:</b>
+                            <div class="col-2">
+                              <div class="input-group">
+                                  <div class="btn_f form-control-sm col-sm-12 text-center">
+                                    <b>Efectivizar:</b>
+                                  </div>
+                                  <input type="date" class="form-control form-control-sm" id="efecti" name='efecti' placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' onblur="fecha_valida(this)">
+                                </div>                            
+                            </div>
+                            <div class="col-2">
+                              <div class="input-group" id="deposito_no">
+                                  <div class="btn_f form-control-sm col-sm-12 text-center">
+                                    <b>Deposito No:</b>
+                                  </div>
+                                  <input type="text" class="form-control form-control-sm w-100" id="depos" onkeyup="solo_numeros(this)" name='depos' placeholder="12345" onblur="agregar_depo()">
                                 </div>
-                                <input type="date" class="form-control input-xs" id="efecti" name='efecti' placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' onblur="fecha_valida(this)">
-                              </div>                            
-                          </div>
-                          <div class="col-md-2">
-                            <div class="input-group" id="deposito_no">
-                                <div class="btn_f input-xs col-sm-12 text-center">
-                                  <b>Deposito No:</b>
-                                </div>
-                                <input type="text" class="form-control input-xs" id="depos" onkeyup="solo_numeros(this)" name='depos' placeholder="12345" onblur="agregar_depo()">
-                              </div>
-                          </div>                          
+                            </div>
+                          </div>                        
                         </div>                      
                       </div>
 
                       <div class="row " style="padding-bottom: 5px;"><br> 
                         <div class="col-md-12 col-sm-12 col-lg-12 pt-2 pb-2 ps-3 pe-3">
                                <div class="input-group">
-                                 <div class="input-group-addon p-2 text-box">
+                                 <div class="input-group-addon form-control-sm p-2 text-box">
                                    <b>CONCEPTO:</b>
                                  </div>
-                                <input type="text" class="form-control input-xs" id="concepto" name="concepto" placeholder="concepto" maxlength='150'/>
+                                <input type="text" class="form-control form-control-sm" id="concepto" name="concepto" placeholder="concepto" maxlength='150'/>
                                </div>
                         </div>                        
                       </div>
@@ -705,7 +748,7 @@ function Form_Activate()
                             <div class="text-box col-md-12 btn_f text-center">
                               <b>CODIGO:</b>
                             </div>
-                             <input type="text" class="form-control input-xs" title="Teclas especiales
+                             <input type="text" class="form-control form-control-sm" title="Teclas especiales
 CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12' onblur="cargar_modal();" onkeyup="mayusculas('codigo',this.value)" />
                           </div>
                         </div>
@@ -714,7 +757,7 @@ CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12'
                                  <div class="btn_f text-box col-md-12 text-center">
                                   <b>DIGITE LA CLAVE O SELECCIONE LA CUENTA:</b>
                                  </div>
-                                 <select id="cuentar" class=" form-control" style="width:100%" onchange="abrir_modal_cuenta()">
+                                 <select id="cuentar" class=" form-select form-select-sm" style="width:100%" onchange="abrir_modal_cuenta()">
                                   <option value="">Seleccione una cuenta</option>   
                                  </select>
                                    <!--  <input type="text" class="xs" id="cuenta" name='cuenta' placeholder="cuenta" maxlength='70' size='153'/>
@@ -727,7 +770,7 @@ CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12'
                                  <div class="btn_f text-box col-md-12 text-center">
                                   <b>VALOR:</b>
                                  </div>
-                                   <input type="text" class="form-control input-xs" id="va" name='va' 
+                                   <input type="text" class="form-control form-control-sm" id="va" name='va' 
                               placeholder="0.00" style="text-align:right;"  onkeyup="validar_numeros_decimal(this)" onblur="ingresar_asiento();validar_float(this,2)" value="0.00">
                                </div>
                         </div>
@@ -748,59 +791,519 @@ CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12'
                       <div class="row">
                           <div class="col-12 p-3">
                             <div class="panel-heading">
-                              <ul class="nav nav-tabs">
-                                <li class="active p-2 border "><a href="#contabilidad" data-toggle="tab">4. Contabilización</a></li>
-                                <li class="p-2 border "><a href="#subcuentas" data-toggle="tab" onclick="cargar_tablas_sc();">5. Subcuentas</a></li>
-                                <li class="p-2 border "><a href="#retenciones" data-toggle="tab" onclick="cargar_tablas_retenciones();">6. Retenciones</a></li>
-                                <li class="p-2 border "><a href="#ac_av_ai_ae" data-toggle="tab" onclick="cargar_tablas_tab4();">7. AC-AV-AI-AE</a></li>
+                              <ul class="nav nav-pills">
+                                <li class="p-2 nav-item"><a class="nav-link active" href="#contabilidad" data-bs-toggle="tab" aria-selected="true">4. Contabilización</a></li>
+                                <li class="p-2 nav-item"><a class="nav-link" href="#subcuentas" data-bs-toggle="tab" onclick="cargar_tablas_sc();">5. Subcuentas</a></li>
+                                <li class="p-2 nav-item"><a class="nav-link" href="#retenciones" data-bs-toggle="tab" onclick="cargar_tablas_retenciones();">6. Retenciones</a></li>
+                                <li class="p-2 nav-item"><a class="nav-link" href="#ac_av_ai_ae" data-bs-toggle="tab" onclick="cargar_tablas_tab4();">7. AC-AV-AI-AE</a></li>
                               </ul>
                             </div>
                             <div class="panel-body" style="padding-top: 2px;">
                               <div class="tab-content">
-                                <div class="tab-pane fade in active" id="contabilidad">
-                                  <div class="text-center">
+                                <div class="tab-pane fade show active" id="contabilidad">
+                                  <!--<div class="text-center">
                                     <img src="../../img/gif/loader4.1.gif" width="10%">                                        
-                                  </div>                          
+                                  </div>-->
+                                  <table class="table text-sm w-100" id="tbl_contabilidad">
+                                    <thead>
+                                      <tr>
+                                        <th class="text-center"></th> 
+                                        <th class="text-center">CODIGO</th> 
+                                        <th class="text-center">CUENTA</th> 
+                                        <th class="text-center">PARCIAL_ME</th> 
+                                        <th class="text-center">DEBE</th> 
+                                        <th class="text-center">HABER</th> 
+                                        <th class="text-center">CHEQ_DEP</th> 
+                                        <th class="text-center">DETALLE</th> 
+                                        <th class="text-center">EFECTIVIZAR</th> 
+                                        <th class="text-center">CODIGO_C</th> 
+                                        <th class="text-center">CODIGO_CC</th> 
+                                        <th class="text-center">BENEFICIARIO</th> 
+                                        <th class="text-center">ME</th> 
+                                        <th class="text-center">T_No</th> 
+                                        <th class="text-center">Item</th> 
+                                        <th class="text-center">CodigoU</th> 
+                                        <th class="text-center">A_No</th> 
+                                        <th class="text-center">TC</th> 
+                                        <th class="text-center">X</th> 
+                                        <th class="text-center">ID</th> 
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                      </tr>
+                                    </tbody>  
+                                  </table>                          
                                 </div>
                                 <div class="tab-pane fade" id="subcuentas">
-                                  <div class="text-center">
+                                  <!--<div class="text-center">
                                     <img src="../../img/gif/loader4.1.gif" width="10%">                                        
-                                  </div>  
+                                  </div>-->
+                                  <table class="table text-sm w-100" id="tbl_subcuentas">
+                                    <thead>
+                                      <tr>
+                                        <th class="text-center"></th>
+                                        <th class="text-center">Codigo</th>
+                                        <th class="text-center">Beneficiario</th>
+                                        <th class="text-center">Serie</th>
+                                        <th class="text-center">Factura</th>
+                                        <th class="text-center">Prima</th>
+                                        <th class="text-center">DH</th>
+                                        <th class="text-center">Valor</th>
+                                        <th class="text-center">Valor_ME</th>
+                                        <th class="text-center">Detalle_SubCta</th>
+                                        <th class="text-center">FECHA_V</th>
+                                        <th class="text-center">FECHA_E</th>
+                                        <th class="text-center">TC</th>
+                                        <th class="text-center">Cta</th>
+                                        <th class="text-center">TM</th>
+                                        <th class="text-center">T_No</th>
+                                        <th class="text-center">SC_No</th>
+                                        <th class="text-center">Fecha_D</th>
+                                        <th class="text-center">Fecha_H</th>
+                                        <th class="text-center">Bloquear</th>
+                                        <th class="text-center">Item</th>
+                                        <th class="text-center">CodigoU</th>
+                                        <th class="text-center">ID</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                      </tr> 
+                                    </tbody>  
+                                  </table> 
                                 </div>
                                 <div class="tab-pane fade" id="retenciones">
-                                  <div class="text-center">
+                                  <!--<div class="text-center">
                                     <img src="../../img/gif/loader4.1.gif" width="10%">                                        
-                                  </div>  
+                                  </div>-->
+                                  <table class="table text-sm w-100" id="tbl_ac">
+                                    <thead>
+                                      <tr>
+                                        <th class="text-center"></th>
+                                        <th class="text-center">IdProv</th>
+                                        <th class="text-center">DevIva</th>
+                                        <th class="text-center">CodSustento</th>
+                                        <th class="text-center">TipoComprobante</th>
+                                        <th class="text-center">Establecimiento</th>
+                                        <th class="text-center">PuntoEmision</th>
+                                        <th class="text-center">Secuencial</th>
+                                        <th class="text-center">Autorizacion</th>
+                                        <th class="text-center">FechaEmision</th>
+                                        <th class="text-center">FechaRegistro</th>
+                                        <th class="text-center">FechaCaducidad</th>
+                                        <th class="text-center">BaseNoObjIVA</th>
+                                        <th class="text-center">BaseImponible</th>
+                                        <th class="text-center">BaseImpGrav</th>
+                                        <th class="text-center">PorcentajeIva</th>
+                                        <th class="text-center">MontoIva</th>
+                                        <th class="text-center">BaseImpIce</th>
+                                        <th class="text-center">PorcentajeIce</th>
+                                        <th class="text-center">MontoIce</th>
+                                        <th class="text-center">MontoIvaBienes	</th>
+                                        <th class="text-center">PorRetBienes</th>
+                                        <th class="text-center">ValorRetBienes</th>
+                                        <th class="text-center">MontoIvaServicios</th>
+                                        <th class="text-center">PorRetServicios</th>
+                                        <th class="text-center">ValorRetServicios</th>
+                                        <th class="text-center">Cta_Servicio</th>
+                                        <th class="text-center">Cta_Bienes</th>
+                                        <th class="text-center">Porc_Bienes	</th>
+                                        <th class="text-center">Porc_Servicios</th>
+                                        <th class="text-center">DocModificado</th>
+                                        <th class="text-center">FechaEmiModificado</th>
+                                        <th class="text-center">EstabModificado</th>
+                                        <th class="text-center">PtoEmiModificado</th>
+                                        <th class="text-center">SecModificado</th>
+                                        <th class="text-center">AutModificado</th>
+                                        <th class="text-center">ContratoPartidoPolitico</th>
+                                        <th class="text-center">MontoTituloOneroso</th>
+                                        <th class="text-center">MontoTituloGratuito</th>
+                                        <th class="text-center">Item</th>
+                                        <th class="text-center">CodigoU</th>
+                                        <th class="text-center">A_No</th>
+                                        <th class="text-center">T_No</th>
+                                        <th class="text-center">PagoLocExt</th>
+                                        <th class="text-center">PaisEfecPago</th>
+                                        <th class="text-center">AplicConvDobTrib</th>
+                                        <th class="text-center">PagExtSujRetNorLeg</th>
+                                        <th class="text-center">FormaPago</th>
+                                        <th class="text-center">Clave_Acceso_NCD</th>
+                                        <th class="text-center">Devolucion</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                  <br>
+                                  <table class="table text-sm w-100" id="tbl_asientoR">
+                                    <thead>
+                                      <tr>
+                                        <th class="text-center"></th>
+                                        <th class="text-center">CodRet</th>
+                                        <th class="text-center">Detalle</th>
+                                        <th class="text-center">BaseImp</th>
+                                        <th class="text-center">Porcentaje</th>
+                                        <th class="text-center">ValRet</th>
+                                        <th class="text-center">EstabRetencion</th>
+                                        <th class="text-center">PtoEmiRetencion</th>
+                                        <th class="text-center">SecRetencion</th>
+                                        <th class="text-center">AutRetencion</th>
+                                        <th class="text-center">FechaEmiRet</th>
+                                        <th class="text-center">Cta_Retencion</th>
+                                        <th class="text-center">EstabFactura</th>
+                                        <th class="text-center">PuntoEmiFactura</th>
+                                        <th class="text-center">Factura_No</th>
+                                        <th class="text-center">IdProv</th>
+                                        <th class="text-center">Item</th>
+                                        <th class="text-center">CodigoU</th>
+                                        <th class="text-center">A_No</th>
+                                        <th class="text-center">T_No</th>
+                                        <th class="text-center">Tipo_Trans</th>
+                                      </tr> 
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                      </tr>
+                                    </tbody> 
+                                  </table>  
                                 </div>
                                 <div class="tab-pane fade" id="ac_av_ai_ae">
-                                  <div class="text-center">
+                                  <!--<div class="text-center">
                                     <img src="../../img/gif/loader4.1.gif" width="10%">                                        
-                                  </div>  </div>
+                                  </div>-->
+                                  <table class="table text-sm w-100" id="tbl_av">
+                                    <thead>
+                                      <tr>
+                                        <th class="text-center"></th>
+                                        <th class="text-center">IdProv</th>
+                                        <th class="text-center">TipoComprobante</th>
+                                        <th class="text-center">FechaRegistro</th>
+                                        <th class="text-center">Establecimiento</th>
+                                        <th class="text-center">PuntoEmision</th>
+                                        <th class="text-center">Secuencial</th>
+                                        <th class="text-center">NumeroComprobantes</th>
+                                        <th class="text-center">FechaEmision</th>
+                                        <th class="text-center">BaseImponible</th>
+                                        <th class="text-center">IvaPresuntivo</th>
+                                        <th class="text-center">BaseImpGrav</th>
+                                        <th class="text-center">PorcentajeIva</th>
+                                        <th class="text-center">MontoIva</th>
+                                        <th class="text-center">BaseImpIce</th>
+                                        <th class="text-center">PorcentajeIce</th>
+                                        <th class="text-center">MontoIce</th>
+                                        <th class="text-center">MontoIvaBienes</th>
+                                        <th class="text-center">PorRetBienes</th>
+                                        <th class="text-center">ValorRetBienes</th>
+                                        <th class="text-center">MontoIvaServicios</th>
+                                        <th class="text-center">PorRetServicios</th>
+                                        <th class="text-center">ValorRetServicios</th>
+                                        <th class="text-center">RetPresuntiva</th>
+                                        <th class="text-center">TP</th>
+                                        <th class="text-center">Cta_Servicio</th>
+                                        <th class="text-center">Cta_Bienes</th>
+                                        <th class="text-center">Numero</th>
+                                        <th class="text-center">Item</th>
+                                        <th class="text-center">CodigoU</th>
+                                        <th class="text-center">A_No</th>
+                                        <th class="text-center">T_No</th>
+                                        <th class="text-center">Porc_Bienes</th>
+                                        <th class="text-center">Porc_Servicios</th>
+                                        <th class="text-center">Tipo_Pago</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                  <table class="table text-sm w-100" id="tbl_ae">
+                                    <thead>
+                                      <tr>
+                                        <th class="text-center"></th>
+                                        <th class="text-center">Codigo</th>
+                                        <th class="text-center">CtasxCobrar</th>
+                                        <th class="text-center">ExportacionDe</th>
+                                        <th class="text-center">TipoComprobante</th>
+                                        <th class="text-center">FechaEmbarque</th>
+                                        <th class="text-center">NumeroDctoTransporte</th>
+                                        <th class="text-center">IdFiscalProv</th>
+                                        <th class="text-center">ValorFOB</th>
+                                        <th class="text-center">DevIva</th>
+                                        <th class="text-center">FacturaExportacion</th>
+                                        <th class="text-center">ValorFOBComprobante</th>
+                                        <th class="text-center">DistAduanero</th>
+                                        <th class="text-center">Anio</th>
+                                        <th class="text-center">Regimen</th>
+                                        <th class="text-center">Correlativo</th>
+                                        <th class="text-center">Verificador</th>
+                                        <th class="text-center">Establecimiento</th>
+                                        <th class="text-center">PuntoEmision</th>
+                                        <th class="text-center">Secuencial</th>
+                                        <th class="text-center">Autorizacion</th>
+                                        <th class="text-center">FechaEmision</th>
+                                        <th class="text-center">FechaRegistro</th>
+                                        <th class="text-center">Item</th>
+                                        <th class="text-center">CodigoU</th>
+                                        <th class="text-center">A_No</th>
+                                        <th class="text-center">T_No</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                  <table class="table text-sm w-100" id="tbl_ai">
+                                    <thead>
+                                      <tr>
+                                        <th class="text-center"></th>
+                                        <th class="text-center">CodSustento</th>
+                                        <th class="text-center">ImportacionDe</th>
+                                        <th class="text-center">FechaLiquidacion</th>
+                                        <th class="text-center">TipoComprobante</th>
+                                        <th class="text-center">DistAduanero</th>
+                                        <th class="text-center">Anio</th>
+                                        <th class="text-center">Regimen</th>
+                                        <th class="text-center">Correlativo</th>
+                                        <th class="text-center">Verificador</th>
+                                        <th class="text-center">IdFiscalProv</th>
+                                        <th class="text-center">ValorCIF</th>
+                                        <th class="text-center">BaseImponible</th>
+                                        <th class="text-center">BaseImpGrav</th>
+                                        <th class="text-center">PorcentajeIva</th>
+                                        <th class="text-center">MontoIva</th>
+                                        <th class="text-center">BaseImpIce</th>
+                                        <th class="text-center">PorcentajeIce</th>
+                                        <th class="text-center">MontoIce</th>
+                                        <th class="text-center">Item</th>
+                                        <th class="text-center">CodigoU</th>
+                                        <th class="text-center">A_No</th>
+                                        <th class="text-center">T_No</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                        <td></td> 
+                                      </tr>
+                                    </tbody> 
+                                  </table>  
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div class="row">
+                        <div class="row d-flex align-items-center">
                           <div class="col-6 pt-4">
-                             <button type="button"  class="btn btn-primary" id='grabar1' onclick="validar_comprobante()">Guardar</button>
-                             <a  href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" title="Salir de modulo" class="btn btn-danger">
+                             <button type="button"  class="btn btn-primary btn-sm" id='grabar1' onclick="validar_comprobante()">Guardar</button>
+                             <a  href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" title="Salir de modulo" class="btn btn-danger btn-sm">
                                 Cancelar
                               </a>
                              <!-- 
                               <button type="button"  class="btn btn-danger" id='' onclick="xml()">xml</button>
                              -->                            
                           </div>
-                          <div class="row col-sm-6">
-                            <div class="col-2">
+                          <div class="row col-6">
+                            <div class="col-4">
                               <b>Diferencia</b>
-                                <input type="text" name="txt_diferencia" id="txt_diferencia" class="form-control input-xs text-right" readonly="" value="0">
+                                <input type="text" name="txt_diferencia" id="txt_diferencia" class="form-control form-control-sm text-right" readonly="" value="0">
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                               <b>Totales</b>
-                               <input type="text" name="txt_debe" id="txt_debe" class="form-control input-xs text-right" readonly="" value="0">
+                               <input type="text" name="txt_debe" id="txt_debe" class="form-control form-control-sm text-right" readonly="" value="0">
                             </div>
-                            <div class="col-2"><br>
-                                <input type="text" name="txt_haber" id="txt_haber" class="form-control input-xs text-right" readonly="" value="0">
+                            <div class="col-4"><br>
+                                <input type="text" name="txt_haber" id="txt_haber" class="form-control form-control-sm text-right" readonly="" value="0">
                             </div>
                           </div>
                         </div>                        

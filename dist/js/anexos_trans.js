@@ -21,7 +21,7 @@ $(document).ready(function()
     {
         $.each(response, function(i, item){
             // console.log(item);
-            meses+='<li><a href="#"  onclick="$(\'#txt_mes\').val(\''+item.mes+'\');titulo();">'+item.mes+'</a></li>';
+            meses+='<li><a class="dropdown-item" href="#"  onclick="$(\'#txt_mes\').val(\''+item.mes+'\');titulo();">'+item.mes+'</a></li>';
         }); 
         $('#meses').html(meses);
         // $('#myModal_espera').modal('hide');   
@@ -46,7 +46,7 @@ $(document).ready(function()
     {
         $.each(response, function(i, item){
             // console.log(item);
-            year+='<li><a href="#" onclick="$(\'#txt_year\').val(\''+item.year+'\');titulo();">'+item.year+'</a></li>';
+            year+='<li><a class="dropdown-item" href="#" onclick="$(\'#txt_year\').val(\''+item.year+'\');titulo();">'+item.year+'</a></li>';
         }); 
         $('#year').html(year);
         // $('#myModal_espera').modal('hide');   

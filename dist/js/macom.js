@@ -1,4 +1,4 @@
-// $('#myModal_espera').modal('show');
+$('#myModal_espera').modal('show');
 $(function() { 
     $("#myModal").modal();
 });
