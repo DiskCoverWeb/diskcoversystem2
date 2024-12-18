@@ -295,7 +295,7 @@ class punto_ventaC
 	{
 		$datos = $this->modelo->DGAsientoF($grilla = 1);
 		// print_r($datos);die();
-		return $datos['tbl'];
+		return $datos['datos'];
 	}
 
 	function IngresarAsientoF($parametros)
