@@ -120,18 +120,17 @@ $(document).ready(function(){
 </script>
 <script src="../../dist/js/facturacion_elec.js"></script>
 
-<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-  <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
-    <div class="ps-3">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0 p-0">
-          <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-          </li>
-          <li class="breadcrumb-item active" aria-current="page">Generacion de facturas</li>
-        </ol>
-      </nav>
-    </div>          
-</div>
+ <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+      <div class="ps-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+            <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+            </li>
+          </ol>
+        </nav>
+      </div>          
+    </div>
 <div class="row">
   <div class="col-lg-6 col-md-6 col-sm-12">
     <div class="btn-group" role="group" aria-label="Basic example">

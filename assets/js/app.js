@@ -50,12 +50,51 @@ $(function() {
 			})
 		}),
 		
-		$(function() {
-			for (var e = window.location, o = $(".metismenu li a").filter(function() {
-					return this.href == e
-				}).addClass("").parent().addClass("mm-active"); o.is("li");) o = o.parent("").addClass("mm-show").parent("").addClass("mm-active")
-		}),
+		// $(function() {
+		// 	for (var e = window.location, o = $(".metismenu li a").filter(function() {
+		// 			return this.href == e
+		// 		}).addClass("").parent().addClass("mm-active"); o.is("li");) o = o.parent("").addClass("mm-show").parent("").addClass("mm-active");
+		// }),
 		
+
+		$(function () {
+		    // Obtener la URL actual de la página
+		    var e = window.location;
+
+		    // Filtrar los enlaces <a> cuya href coincide con la URL actual
+		    var o = $(".metismenu li a")
+		        .filter(function () {
+		            return this.href == e;
+		        })
+		        .addClass("")
+		        .parent()
+		        .addClass("mm-active");
+
+		    // Crear un array para almacenar los textos
+		    const menuTexts = [];
+
+		    // Recorrer los ancestros del <li> activo
+		    for (; o.is("li");) {
+		        // Obtener el texto del enlace y agregarlo al array
+		        const menuText = o.find("> a").text().trim();
+		        if (menuText) {
+		            menuTexts.push(menuText);
+		        }
+
+		        // Subir al nivel padre y asignar las clases
+		        o = o.parent("").addClass("mm-show").parent("").addClass("mm-active");
+		    }
+
+		    var ruta = '';
+		    menuTexts.reverse().forEach(function(item){
+		    	ruta+= '<li class="breadcrumb-item active" aria-current="page">'+item+'</li>';
+		    })
+
+		    // Mostrar los textos obtenidos en la consola
+		    $('#ruta_menu').append(ruta);
+		    console.log(ruta);
+		});		
+
 		
 		$(function() {
 			$("#menu").metisMenu()
