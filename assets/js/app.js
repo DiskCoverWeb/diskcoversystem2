@@ -1,8 +1,20 @@
 $(function() {
 	"use strict";
-	new PerfectScrollbar(".app-container"),
-	new PerfectScrollbar(".header-message-list"),
-	new PerfectScrollbar(".header-notifications-list"),
+	const appContainer = document.querySelector(".app-container");
+    const headerMessageList = document.querySelector(".header-message-list");
+    const headerNotificationsList = document.querySelector(".header-notifications-list");
+
+    if (appContainer) {
+        new PerfectScrollbar(appContainer);
+    }
+    
+    if (headerMessageList) {
+        new PerfectScrollbar(headerMessageList);
+    }
+    
+    if (headerNotificationsList) {
+        new PerfectScrollbar(headerNotificationsList);
+    }
 
 
 	    $(".mobile-search-icon").on("click", function() {

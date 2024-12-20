@@ -1,39 +1,4 @@
-function Form_Activate_ModalChangeCa(Codigo1, Asiento, Producto, Codigo3, TP, Numero) {
-    if(Codigo1 != '<?php echo G_NINGUNO ?>'){
-        $("#Codigo1ChangeCta").val(Codigo1)
-        $("#AsientoChangeCta").val(Asiento)
-        $("#ProductoChangeCta").val(Producto)
-        $("#TPChangeCta").val(TP)
-        $("#NumeroChangeCta").val(Numero)
-        $("#Label6ModalChangeCa").html("<b>"+Codigo3+"<br>SELECCIONE LA CUENTA A CAMBIAR</b>")
-        $('#DCCuentaChangeCa').select2({
-            placeholder: 'Seleccionar Cuenta',
-            width:'90%',
-            ajax: {
-              url:   '../controlador/contabilidad/FChangeCtaC.php?CargarDCCuenta=true&Codigo1='+Codigo1,
-              dataType: 'json',
-              delay: 250,
-              processResults: function (data) {
-                return {
-                  results: data
-                };
-              },
-              cache: true
-            }
-          });
-    }else{
-        Swal.fire({
-             title: 'No existe Cuenta para cambiar',
-             type: 'warning',
-             showCancelButton: false,
-             confirmButtonColor: '#3085d6',
-             cancelButtonColor: '#d33',
-             confirmButtonText: 'Ok'
-           }).then((result) => {
-                 $('#ModalChangeCa').modal('hide');
-           })
-    }
-}
+
 
 function CambiarCta() {
     let Codigo1 = $("#Codigo1ChangeCta").val()

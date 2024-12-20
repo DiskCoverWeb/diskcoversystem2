@@ -426,17 +426,16 @@ function Form_Activate()
 </script>
   <div class="box-body overflow auto">
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-      <div class="breadcrumb-title pe-3">
-        <?php echo $NombreModulo; ?>
+      <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
       </div>
-        <div class="ps-3">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0 p-0">
-              <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
-              <li class="breadcrumb-item active" aria-current="page">Ingresar Comprobantes</li>
-            </ol>
-          </nav>
-        </div>
+      <div class="ps-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+            <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+            </li>
+          </ol>
+        </nav>
+      </div>          
     </div>
 
     <div>
@@ -1225,36 +1224,36 @@ CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12'
                                   <table class="table text-sm w-100" id="tbl_ai">
                                     <thead>
                                       <tr>
-                                        <th class="text-center"></th>
-                                        <th class="text-center">CodSustento</th>
-                                        <th class="text-center">ImportacionDe</th>
-                                        <th class="text-center">FechaLiquidacion</th>
-                                        <th class="text-center">TipoComprobante</th>
-                                        <th class="text-center">DistAduanero</th>
-                                        <th class="text-center">Anio</th>
-                                        <th class="text-center">Regimen</th>
-                                        <th class="text-center">Correlativo</th>
-                                        <th class="text-center">Verificador</th>
-                                        <th class="text-center">IdFiscalProv</th>
-                                        <th class="text-center">ValorCIF</th>
-                                        <th class="text-center">BaseImponible</th>
-                                        <th class="text-center">BaseImpGrav</th>
-                                        <th class="text-center">PorcentajeIva</th>
-                                        <th class="text-center">MontoIva</th>
-                                        <th class="text-center">BaseImpIce</th>
-                                        <th class="text-center">PorcentajeIce</th>
-                                        <th class="text-center">MontoIce</th>
-                                        <th class="text-center">Item</th>
-                                        <th class="text-center">CodigoU</th>
-                                        <th class="text-center">A_No</th>
-                                        <th class="text-center">T_No</th>
+                                        <th class="text-center">  </th>
+                                        <th class="text-center">  CodSustento  </th>
+                                        <th class="text-center">  ImportacionDe  </th>
+                                        <th class="text-center">  FechaLiquidacion  </th>
+                                        <th class="text-center">  TipoComprobante  </th>
+                                        <th class="text-center">  DistAduanero  </th>
+                                        <th class="text-center">  Anio  </th>
+                                        <th class="text-center">  Regimen  </th>
+                                        <th class="text-center">  Correlativo  </th>
+                                        <th class="text-center">  Verificador  </th>
+                                        <th class="text-center">  IdFiscalProv  </th>
+                                        <th class="text-center">  ValorCIF  </th>
+                                        <th class="text-center">  BaseImponible  </th>
+                                        <th class="text-center">  BaseImpGrav  </th>
+                                        <th class="text-center">  PorcentajeIva  </th>
+                                        <th class="text-center">  MontoIva  </th>
+                                        <th class="text-center">  BaseImpIce  </th>
+                                        <th class="text-center">  PorcentajeIce  </th>
+                                        <th class="text-center">  MontoIce  </th>
+                                        <th class="text-center">  Item  </th>
+                                        <th class="text-center">  CodigoU  </th>
+                                        <th class="text-center">  A_No  </th>
+                                        <th class="text-center">  T_No  </th>
                                       </tr>
                                     </thead>
                                     <tbody>
                                       <tr>
                                         <td></td> 
                                         <td></td> 
-                                        <td></td> 
+                                        <td></td>  
                                         <td></td> 
                                         <td></td> 
                                         <td></td> 
@@ -1374,8 +1373,8 @@ CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12'
   </div>
 </div>
 
-<div class="modal fade" id="modal_subcuentas" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="modal_subcuentas" tabindex="-1" role="dialog" data-keyboard="false" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="titulo_frame">SUB CUENTAS</h5>

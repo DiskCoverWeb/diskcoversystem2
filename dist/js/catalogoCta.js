@@ -24,7 +24,7 @@ function consultar_datos()
                 return { parametros:parametros }
             },
             dataSrc: function(response){
-                return response.data;
+                return response;
             },
             beforeSend: function(){
                 $('#myModal_espera').modal('show');
@@ -38,8 +38,9 @@ function consultar_datos()
             }
         },
         scrollX: true,
-        scrollY: '300px', 
+        scrollY: '400px', 
         scrollCollapse: true,
+        searching: false,
         columns: [
             { data: 'Clave' },
             { data: 'TC' },
@@ -74,7 +75,7 @@ function consultar_datos()
                 return { parametros:parametros }
             },
             dataSrc: function(response){
-                return response.data;
+                return response;
             },
             beforeSend: function(){
                 $('#myModal_espera').modal('show');
@@ -87,8 +88,9 @@ function consultar_datos()
                 console.log("Error en la solicitud: ", status, error);
             }
         },
+        searching: false,
         scrollX: true,
-        scrollY: '300px', 
+        scrollY: '400px', 
         scrollCollapse: true,
         columns: [
             { data: 'Clave' },
@@ -124,7 +126,7 @@ function consultar_datos()
                 return { parametros:parametros }
             },
             dataSrc: function(response){
-                return response.data;
+                return response;
             },
             beforeSend: function(){
                 $('#myModal_espera').modal('show');
@@ -138,8 +140,9 @@ function consultar_datos()
             }
         },
         scrollX: true,
-        scrollY: '300px', 
+        scrollY: '400px', 
         scrollCollapse: true,
+        searching: false,
         columns: [
             { data: 'Clave' },
             { data: 'TC' },

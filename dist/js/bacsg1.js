@@ -23,7 +23,6 @@ $(document).ready(function()
 
     });
 
-
     $('#imprimir_pdf').click(function(){
         var bal_ext = '00';
         var mes = 0;
@@ -77,10 +76,24 @@ function tipo_balance()
         }
     });
 }
+
+function DataTableColums(firstRow){
+    if(!firstRow) return [];
+
+    return Object.keys(firstRow).map(function(key){
+        return {
+            data: key, 
+            title: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, '')
+        };
+    });
+}
+
 function cargar_datos(item,nombre,imprimir=false)
 {
-    if ($.fn.dataTable.isDataTable('#tbl_datos')){ 
-        $('#tbl_datos').DataTable().clear().destroy();
+    if($.fn.dataTable.isDataTable('#tbl_datos')){
+        console.log("Destruyendo la tabla...")
+        $('#tbl_datos').DataTable().clear().destroy(); 
+        $('#tbl_datos').empty();
     }
     $('#txt_item').val(item);
     var bal_ext = '00';
@@ -116,52 +129,49 @@ function cargar_datos(item,nombre,imprimir=false)
                 $('#myModal_espera').modal('show');
             },		
             success:  function (response) {
-
-                console.log(response);
-                // $.each(response,function(i,item){
-                // 	option+='<option value="'+item.Codigo+'">'+item.Detalle+'</option>';
-                // })
-
-                //$('#tabla').html(response);
-                var table = $('#tbl_datos').DataTable({
-                    language: { 
+                $('#tbl_datos').DataTable({
+                    paging: false,     // Desactiva la paginación
+                    info: false,       // Opcional: Desactiva la información (ej. "Mostrando 1 a 10 de 100 registros")        
+                    language:{
                         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
                     },
                     data: response.data, 
+                    columns: Object.keys(response.data[0]).map(key => ({
+                        data: key,
+                        title: key
+                    })), 
                     scrollX: true, 
                     scrollY: '300px',
-                    scrollCollapse: true,
-                    columns: Object.keys(response.data[0]).map(key => ({ data: key, title: key })),
+                    destroy: true
                 });
-                $('#myModal_espera').modal('hide');
-                var columnasNumber = ['Saldo_Anterior', 'Debitos', 'Creditos', 'Saldo_Total'];
-                //Modificamos los datos de Datatable, en este caso los valores de saldos. 
                 $('#tbl_datos').on('init.dt', function() {
                     $('#tbl_datos th').each(function(index) {
                         var columnName = $(this).attr('aria-label')?.split(':')[0] || $(this).text().trim();
-                        $('#tbl_datos tbody tr').each(function(){
-                            var cell = $(this).find('td').eq(index);
-                            var numericValue = parseFloat($(cell).text());
-                            if (isFinite(numericValue)){
-                                var formattedValue = '$' + numericValue.toFixed(2);
-                                $(cell).text(numericValue);
-                                if(numericValue < 0 ){ 
-                                    $(cell).css('color', 'red');
+                        if(columnasNumber.includes(columnName)){
+                            $('#tbl_datos tbody tr').each(function(){
+                                var cell = $(this).find('td').eq(index);
+                                var numericValue = parseFloat($(cell).text());
+                                if (isFinite(numericValue)){
+                                    var formattedValue = numericValue.toFixed(2);
+                                    $(cell).text(formattedValue);
+                                    if(numericValue < 0 ){ 
+                                        $(cell).css('color', 'red');
+                                    }
                                 }
-                            }
-                        })
+                            })
+                        }
                     });
                 });
+                $('#myModal_espera').modal('hide');
         }
     });
 }
 
 
+
 function cargar_tabla()
 {
-    if ($.fn.dataTable.isDataTable('#tbl_datos')){ 
-        $('#tbl_datos').DataTable().clear().destroy();
-    }
+    console.log("cargar tabla")
     $.ajax({
         // data:  {parametros:parametros},
         url:   '../controlador/contabilidad/contabilidad_controller.php?datos_tabla=true',
@@ -171,8 +181,17 @@ function cargar_tabla()
                 $('#myModal_espera').modal('show');
             },		
             success:  function (response) {
+                if ($.fn.dataTable.isDataTable('#tbl_datos')){ 
+                    $('#tbl_datos').DataTable().clear().destroy(true);
+                    $('$tbl_datos').html('');
+                }
+                var columnas = Object.keys(response.data[0]).map(function(key){
+                    return { data: key, title: key };
+                });
 
-                console.log(response);
+
+                console.log("Columnas: ", columnas);
+                console.log("Datos muestra: ", response.data[0]);
                 var table = $('#tbl_datos').DataTable({
                     language: { 
                         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
@@ -181,25 +200,9 @@ function cargar_tabla()
                     scrollX: true, 
                     scrollY: '300px',
                     scrollCollapse: true,
-                    columns: Object.keys(response.data[0]).map(key => ({ data: key, title: key }))
+                    columns: columnas
                 });
-                var columnasNumber = ['Saldo_Anterior', 'Debitos', 'Creditos', 'Saldo_Total']
-                $('#tbl_datos').on('init.dt', function() {
-                    $('#tbl_datos th').each(function(index) {
-                        var columnName = $(this).attr('aria-label')?.split(':')[0] || $(this).text().trim();
-                        $('#tbl_datos tbody tr').each(function(){
-                            var cell = $(this).find('td').eq(index);
-                            var numericValue = parseFloat($(cell).text());
-                            if (isFinite(numericValue)){
-                                var formattedValue = '$' + numericValue.toFixed(2);
-                                $(cell).text(numericValue);
-                                if(numericValue < 0 ){ 
-                                    $(cell).css('color', 'red');
-                                }
-                            }
-                        })
-                    });
-                });
+                /**/
                 $('#myModal_espera').modal('hide');
             
         }

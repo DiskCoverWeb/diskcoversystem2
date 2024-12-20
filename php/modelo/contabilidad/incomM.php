@@ -218,9 +218,9 @@ class incomM
 			if(!empty($tbl['data'])){ 
         foreach ($tbl['data'] as &$fila){ 
           $ids = explode(',', $botones[0]['id']);
-          $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
-
-
+          $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+          $ids, 
+          array_keys($ids));
           $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                       onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                       title="'.$botones[0]['boton'].'">'.
@@ -272,9 +272,9 @@ class incomM
        if(!empty($tbl['data'])){ 
         foreach ($tbl['data'] as &$fila){ 
           $ids = explode(',', $botones[0]['id']);
-          $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
-
-
+          $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+          $ids, 
+          array_keys($ids));
           $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                       onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                       title="'.$botones[0]['boton'].'">'.
@@ -301,9 +301,9 @@ class incomM
         if(!empty($tbl['data'])){ 
           foreach ($tbl['data'] as &$fila){ 
             $ids = explode(',', $botones[0]['id']);
-            $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
-  
-  
+            $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+            $ids, 
+            array_keys($ids));
             $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                         onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                         title="'.$botones[0]['boton'].'">'.
@@ -352,9 +352,9 @@ class incomM
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
-
-
+        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $ids, 
+        array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                     onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                     title="'.$botones[0]['boton'].'">'.
@@ -386,15 +386,15 @@ class incomM
        WHERE Item = '".$_SESSION['INGRESO']['item']. "'
        AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
        AND T_No = ".$_SESSION['INGRESO']['modulo_']." ";
-  
+
 	   $botones[0] = array('boton'=>'eliminar', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'IdProv,compras' );
 	   $tbl = grilla_generica_new($sql);
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
-
-
+        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $ids, 
+        array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                     onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                     title="'.$botones[0]['boton'].'">'.
@@ -420,9 +420,9 @@ class incomM
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
-
-
+        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $ids, 
+        array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                     onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                     title="'.$botones[0]['boton'].'">'.
@@ -460,9 +460,9 @@ class incomM
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
-
-
+        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $ids, 
+        array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                     onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                     title="'.$botones[0]['boton'].'">'.
@@ -501,9 +501,9 @@ class incomM
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
-
-
+        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $ids, 
+        array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                     onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                     title="'.$botones[0]['boton'].'">'.
@@ -560,9 +560,9 @@ class incomM
           if(!empty($tbl['data'])){ 
             foreach ($tbl['data'] as &$fila){ 
               $ids = explode(',', $botones[0]['id']);
-              $parametros = array_map(fn($id) => $fila[$id] ?? '', $ids);
-    
-    
+              $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+              $ids, 
+              array_keys($ids));
               $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                           onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                           title="'.$botones[0]['boton'].'">'.
@@ -764,7 +764,7 @@ class incomM
          AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
          AND T_No = ".intval($_SESSION['INGRESO']['modulo_']).";";
 
-         // print_r($sql);die();
+         //print_r($sql);die();
           $result = $this->conn->String_Sql($sql);
 	     return $result;
 

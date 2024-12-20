@@ -134,7 +134,6 @@ function listar_comprobante()
               },
               data: response.tbl1.data,
               scrollY: '400px',
-              scrollCollapse: true, 
               scrollX: true,
               columns: [
                 { 

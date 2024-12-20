@@ -1,7 +1,7 @@
 <?php
 @session_start();
 //Llamada al modelo
-require_once("../modelo/usuario_model.php");
+require_once("../modelo/loginM.php");
 include_once("../funciones/funciones.php");
 require_once(dirname(__DIR__, 2) . '/lib/phpmailer/enviar_emails.php');
 /**
@@ -172,13 +172,13 @@ function IngClaves($parametros)
 
 function datos_modulo($cod)
 {
-    $per = new usuario_model();
+    $per = new loginM();
     $datos = $per->detalle_modulos($cod);
     return $datos;
 }
 
 function IngClaveCredenciales($usuario){
-    $per = new usuario_model();
+    $per = new loginM();
     $datos = $per->IngClaveCredenciales($usuario);
     if(count($datos) > 0){
         return array("res" => 1, "nombre" => $datos[0]['Nombre_Completo']);
@@ -186,6 +186,61 @@ function IngClaveCredenciales($usuario){
         return array("res" => 0);
     }
 }
+
+function IngClave($parametros)
+{
+$ClaveGeneral = '';
+    $IngClaves_Caption  = '';
+    $sql = "SELECT * 
+    FROM Accesos
+    WHERE Usuario = '".$parametros['tipo']."' ";
+    
+    $datos = $this->db1->datos($sql);
+    if(count($datos)>0)
+    {
+            $ClaveGeneral = $datos[0]["Clave"];
+        $IngClaves_Caption = $datos[0]["Nombre_Completo"];
+    }
+    return array('clave'=>$ClaveGeneral,'nombre'=>$IngClaves_Caption);
+}
+
+function IngClave_MYSQL($parametros)
+{
+
+$ClaveGeneral = '';
+    $IngClaves_Caption  = '';		
+    // print_r($parametros);die();
+    if($parametros['buscaren']=='MYSQL'){
+            $sql = "SELECT * 
+            FROM acceso_usuarios
+            WHERE Usuario = '".$parametros['tipo']."' ";
+            // print_r($sql);die();
+            $datos = $this->db1->datos($sql,'MY SQL');
+    }else
+    {
+            $sql = "SELECT * 
+            FROM Accesos
+            WHERE Usuario = '".$parametros['tipo']."' ";
+            // print_r($sql);die();
+            $datos = $this->db1->datos($sql);
+    }
+    if(count($datos)>0)
+    {
+        if($parametros['buscaren']=='MYSQL')
+        {
+            $ClaveGeneral = $datos[0]["Clave"];
+            $IngClaves_Caption = $datos[0]["Nombre_Usuario"];
+        }else
+        {
+            $ClaveGeneral = $datos[0]["Clave"];
+            $IngClaves_Caption = $datos[0]["Usuario"];
+        }
+    }
+
+    // print_r($datos);die();
+    return array('clave'=>$ClaveGeneral,'nombre'=>$IngClaves_Caption);
+}
+
 
 function IngClaves_MYSQL($parametros)
 {

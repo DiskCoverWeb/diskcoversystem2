@@ -1,20 +1,18 @@
 <script src="../../dist/js/mayor_auxiliar.js"></script>
 <div class="overflow-auto p-2 ">
 	<div class="">
-		<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-			<div class="breadcrumb-title pe-3">
-				<?php echo $NombreModulo; ?>
-			</div>
-			<div class="ps-3">
-				<nav aria-label="breadcrumb">
-					<ol class="breadcrumb mb-0 p-0">
-						<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
-						<li class="breadcrumb-item active" aria-current="page">Mayores Auxiliares</li>
-					</ol>
-				</nav>
-			</div>
+	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
 		</div>
-	</div>
+		<div class="ps-3">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+			<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+			</li>
+			</ol>
+		</nav>
+    </div>          
+  </div>
 	<div class="row row-cols-auto d-flex align-items-center w-auto ps-2 pb-2">
 		<div class="row row-cols-auto btn-group" role="group">
 			<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">

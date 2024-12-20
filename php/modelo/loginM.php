@@ -70,6 +70,32 @@ class loginM
 		return $datos;	
 	}
 
+	function IngClaveCredenciales($usuario){
+		$sql = "SELECT Nombre_Completo
+		FROM Accesos
+		WHERE Usuario = '".$usuario."';";
+		$datos = $this->db->datos($sql);
+		return $datos;
+	}
+
+
+	function IngClave($parametros)
+	{
+    $ClaveGeneral = '';
+	  $IngClaves_Caption  = '';
+		$sql = "SELECT * 
+		FROM Accesos
+		WHERE Usuario = '".$parametros['tipo']."' ";
+		
+		$datos = $this->db->datos($sql);
+		if(count($datos)>0)
+		{
+			 $ClaveGeneral = $datos[0]["Clave"];
+	   	 $IngClaves_Caption = $datos[0]["Nombre_Completo"];
+		}
+	   return array('clave'=>$ClaveGeneral,'nombre'=>$IngClaves_Caption);
+	}
+
 	function getEmpresas($entidad,$item){
 
 		    $sql = "SELECT * ,L.ID as 'IDEm'

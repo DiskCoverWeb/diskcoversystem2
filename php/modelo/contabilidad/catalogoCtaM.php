@@ -1,4 +1,5 @@
 <?php
+include(dirname(__DIR__,2)."/db/db1.php");
 include(dirname(__DIR__,2).'/funciones/funciones.php');
 @session_start(); 
 /**
@@ -96,8 +97,7 @@ class catalogoCtaM
        	 $sql.=" AND DG='D'";
        }
        $sql.='ORDER BY Codigo';
-	   $tbl = grilla_generica_new($sql);
-       return $tbl;
+       return $this->conn->datos($sql);
 	}
 
 	function buscar_cuenta($cuenta,$item=false)

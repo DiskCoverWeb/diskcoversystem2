@@ -1,11 +1,5 @@
 var chekTrue = [];
 var chekFalse = [];
-$(document).ready(function()
-{
-//$('#TipoSuper_MYSQL').val('Supervisor');
-//$('#clave_supervisor').modal('show');
-IngClave('Gerente');
-})
 
 function resp_clave_ingreso(response)
 {

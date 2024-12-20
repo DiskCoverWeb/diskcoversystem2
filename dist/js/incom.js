@@ -755,13 +755,13 @@ function cargar_tablas_retenciones()
                   return fecha ? new Date(fecha).toLocaleDateString() : '';
                 }
                },
-              { data: 'EstabvModificado' },
+              { data: 'EstabModificado' },
               { data: 'PtoEmiModificado' },
-              { data: 'SecModificado =' },
+              { data: 'SecModificado' },
               { data: 'AutModificado' },
               { data: 'ContratoPartidoPolitico' },
               { data: 'MontoTituloOneroso' },
-              { data: 'MontoTitutloGratuito' },
+              { data: 'MontoTituloGratuito' },
               { data: 'Item' },
               { data: 'CodigoU' },
               { data: 'A_No' },
@@ -880,7 +880,7 @@ function cargar_tablas_tab4()
                   return fecha ? new Date(fecha).toLocaleDateString() : '';
                 }
                },
-              { data: 'BeseImponible' },
+              { data: 'BaseImponible' },
               { data: 'IvaPresuntivo' },
               { data: 'BaseImpGrav' },
               { data: 'PorcentajeIva' },
@@ -905,7 +905,7 @@ function cargar_tablas_tab4()
               { data: 'T_No' },
               { data: 'Porc_Bienes' },
               { data: 'Porc_Servicios' },
-              { data: 'TipoPago' }
+              { data: 'Tipo_Pago' }
             ]
           });
           let tbl_ae = $('#tbl_ae').DataTable({
@@ -1571,6 +1571,7 @@ function eliminar(codigo,tabla,ID)
     'Codigo':codigo,
     'ID':ID,
   }
+  console.log(parametros);
 
   Swal.fire({
     title: 'Esta seguro de eliminar este registro',
@@ -1622,7 +1623,9 @@ function ListarAsientoB()
     scrollY: '300px',
     scrollCollapse: true,
     scrollX: true,
-    autowidth: true,
+    searching: false,
+    info: false,
+    paging: false,
     columns: [
       { data: null,
         render: function(data, type, row){

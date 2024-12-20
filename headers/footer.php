@@ -8,59 +8,59 @@
 		<!--end overlay-->
 		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
 		<!--End Back To Top Button-->
-		<footer class="page-footer" style="font-size: x-small;">
+		<footer class="page-footer" id="footerInfo" style="font-size: x-small;">
 			<p class="mb-0"><img src="../../img/logotipos/diskcover_web.gif" class="m-1" style="width:60px"><b class="breadcrumb-title pe-1" style="font-size: 12px;">Diskcover Systema </b> <b class="m-1">DIRECCION:</b> Atacames N23-226 y Av. La Gasca - <b>EMAIL:</b> prisma_net@hotmail.com / diskcove@msn.com / info@diskcoversystem.com - <b>TELEFONO:</b> (+593)989105300 - 999654196 - 986524396</p>
 		</footer>
 	</div>
 	
 
 	<!-- search modal -->
-  <div class="modal" id="SearchModal" tabindex="-1">
-	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-md-down">
-	  <div class="modal-content">
-		<div class="modal-header gap-2">
-		  <div class="position-relative popup-search w-100">
-			<h3>Informacion de empresa</h3>
-		  </div>
-		  <button type="button" class="btn-close d-md-none" data-bs-dismiss="modal" aria-label="Close"></button>
-		</div>
-		<div class="modal-body">
-			<div class="search-list">
-			   <div class="list-group">
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				  		<i class='bx bx-building fs-4'></i>Razon Social:<br><?php echo $_SESSION['INGRESO']['Razon_Social']; ?>
-				  </a>
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				  		<i class='bx bx-buildings fs-4'></i>Nombre Comercial: <br><?php echo $_SESSION['INGRESO']['Nombre_Comercial']; ?>
-				  </a>
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				  		<i class='bx bx-caret-right fs-4'></i><b>RUC:</b> <?php echo $_SESSION['INGRESO']['RUC']; ?>
-				  </a>
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				  		<i class='bx bx-caret-right fs-4'></i><b>Item:</b> <?php echo $_SESSION['INGRESO']['item']; ?>
-				  </a>
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				   		<i class='bx bx-caret-right fs-4'></i><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "AMBIENTE DE PRUEBA" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "AMBIENTE EN PRODUCCION" : ""); ?>
-				  </a>
-				   
- 
-  
+	<div class="modal" id="SearchModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-md-down">
+		<div class="modal-content">
+			<div class="modal-header gap-2">
+			<div class="position-relative popup-search w-100">
+				<h3>Informacion de empresa</h3>
+			</div>
+			<button type="button" class="btn-close d-md-none" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="search-list">
+				<div class="list-group">
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-building fs-4'></i>Razon Social:<br><?php echo $_SESSION['INGRESO']['Razon_Social']; ?>
+					</a>
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-buildings fs-4'></i>Nombre Comercial: <br><?php echo $_SESSION['INGRESO']['Nombre_Comercial']; ?>
+					</a>
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-caret-right fs-4'></i><b>RUC:</b> <?php echo $_SESSION['INGRESO']['RUC']; ?>
+					</a>
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-caret-right fs-4'></i><b>Item:</b> <?php echo $_SESSION['INGRESO']['item']; ?>
+					</a>
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-caret-right fs-4'></i><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "AMBIENTE DE PRUEBA" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "AMBIENTE EN PRODUCCION" : ""); ?>
+					</a>
+					
+	
+	
 
- 
+	
 
-			   </div>
-			  
+				</div>
+				
+				</div>
 			</div>
 		</div>
-	  </div>
+		</div>
 	</div>
-  </div>
     <!-- end search modal -->
 
 
 
 	<!--start switcher-->
-	<div class="switcher-wrapper">
+	<div class="switcher-wrapper" id="switcher">
 		<div class="switcher-btn"> <i class='bx bx-cog bx-spin'></i>
 		</div>
 		<div class="switcher-body">
@@ -222,4 +222,31 @@
           </div>
       </div>
   </div>
+  <script>
+	function IngClave(tipo,base=false)
+    {
+        $.ajax({
+            data: {
+                usuario: tipo
+            },
+            url: '../controlador/panel.php?IngClaveCredenciales=true',
+            type: 'post',
+            dataType: 'json',
+            success: function(response) {
+                if(response['res'] == 1){
+                    $('#titulo_clave').text(response['nombre']);
+
+                    if(base)
+                    {
+                        $('#BuscarEn').val(base);
+                    }
+                    $('#TipoSuper_MYSQL').val(tipo);
+                    $("#clave_supervisor").modal('show');
+                }else{
+                    Swal.fire("Error", "Hubo un problema al obtener datos del supervisor.", "error");
+                }
+            }
+        });
+    }
+  </script>
 
