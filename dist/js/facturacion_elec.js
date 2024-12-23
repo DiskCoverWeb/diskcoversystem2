@@ -582,7 +582,7 @@ function generar() {
         allowOutsideClick: false,
         title: 'Esta Seguro que desea grabar: \n Factura  No. ' + $('#TextFacturaNo').val(),
         text: '',
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -666,88 +666,34 @@ function generar_factura() {
         success: function(data) {
             $('#myModal_espera').modal('hide');
             console.log(data);
-            if(data.respuesta == 1 && data.respuesta_guia==0)
-            {                
+            if(data[0] == 1 && data['respuesta_guia']==0)
+            {               
+                //factura si gia de remision 
                 Swal.fire({
-                    type: 'success',
+                    icon: 'success',
                     title: 'Factura Procesada y Autorizada',
                     confirmButtonText: 'Ok!',
                     allowOutsideClick: false,
                 }).then(function() {
 
-                    nombre_pdf = [data.pdf+'.pdf'];
-                    clave_Acceso = [data.clave+'.xml'];
+                    nombre_pdf = [data['pdf']+'.pdf'];
+                    clave_Acceso = [data[1]+'.xml'];
                     enviar_email_comprobantes(nombre_pdf,clave_Acceso);
 
                     if (data.rodillo == '0') 
                     {
-                        var url = '../../TEMP/' + data.pdf + '.pdf';
+                        var url = '../../TEMP/' + data['pdf'] + '.pdf';
                         window.open(url, '_blank'); 
+                        window.reload();
                     }else
                     {                       
                         Re_imprimir($('#TextFacturaNo').val(),$('#LblSerie').text(),$('#LblRUC').val(),tc[0])
                     }
                 })
                 
-            }else if(data.respuesta == -1 || data.respuesta == 2 && data.respuesta_guia==0)
+            }else if(data[0]==1 && data['respuesta_guia'][0]==0)
             {
-                if(data.text=='' || data.text == null || data.text == 2)
-                 {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'XML devuelto',
-                        text:'Error al generar XML o al firmar',
-                        confirmButtonText: 'Ok!',
-                        allowOutsideClick: false,
-                    }).then(function () {
-                        location.reload();
-                    })
-                   
-                    tipo_error_sri(data.clave);
-                 }else{
-                Swal.fire({
-                        type: 'error',
-                        title: data.text,
-                        confirmButtonText: 'Ok!',
-                        allowOutsideClick: false,
-                    }).then(function () {
-                        location.reload();
-                    })
-                }
-            }else if (data.respuesta == 1 && data.respuesta_guia==1) {
-                Swal.fire({
-                    // type: 'success',
-                    // title: 'Factura Procesada y Autorizada',
-                    confirmButtonText: 'Cerrar',
-                    allowOutsideClick: false,
-                    html:'<div class="row">'+
-                            '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-check-circle-o text-success"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
-                            '</div>'+    
-                            '<div class="col-sm-4">'+                     
-                                '<br>'+                 
-                                '<a href="../../TEMP/' + data.pdf + '.pdf" target="_blank" class="btn btn-sm btn-primary">Ver pdf</a> '+   
-                            '</div>'+
-                        '</div>'+
-                        '<hr>'+ 
-                        '<div class="row">'+
-                            '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-check-circle-o text-success"  style="font-size: xx-large;"></i> Guia de remision autorizada</h4>'+
-                            '</div>'+    
-                            '<div class="col-sm-4">'+                       
-                                '<br>'+
-                                '<a href="../../TEMP/' + data.pdf_guia + '.pdf" target="_blank" class="btn btn-sm btn-primary">Ver pdf</a> '+   
-                            '</div>'+
-                        '</div>'+
-                        '<hr>',
-                }).then(function() {
-                    nombre_pdf = [data.pdf+'.pdf',data.pdf_guia+'.pdf'];
-                    clave_Acceso = [data.clave+'.xml',data.clave_guia+'.xml'];
-                    enviar_email_comprobantes(nombre_pdf,clave_Acceso);
-       
-                })
-             }else if(data.respuesta == 1 && data.respuesta_guia==2)
-             {                 
+                //factura con guia remision devuelta
                  Swal.fire({
                     // type: 'success',
                     // title: 'Factura Procesada y Autorizada',
@@ -755,130 +701,215 @@ function generar_factura() {
                     allowOutsideClick: false,
                     html:'<div class="row">'+
                             '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-check-circle-o text-success"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
+                                '<h4><i class="fa fa-check-circle text-success"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
                             '</div>'+    
                             '<div class="col-sm-4">'+                     
                                 '<br>'+                 
-                                '<a href="../../TEMP/' + data.pdf + '.pdf" target="_blank" class="btn btn-sm btn-primary">Ver pdf</a> '+   
+                                '<a href="../../TEMP/' + data['pdf'] + '.pdf" target="_blank" class="btn btn-sm btn-primary">Ver pdf</a> '+   
                             '</div>'+
                         '</div>'+
                         '<hr>'+ 
                         '<div class="row">'+
                             '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Guia de remision No Autorizada</h4>'+
+                                '<h4><i class="fa fa-times text-danger"  style="font-size: xx-large;"></i> Guia de remision No Autorizada</h4>'+
                             '</div>'+    
                             '<div class="col-sm-4">'+                       
                             '<br>'+
-                            '<a href="#" type="button" class="btn btn-sm btn-danger" onclick="tipo_error_sri(\''+data.clave_guia+'\')"> Ver Error</a> '+   
+                            '<a href="#" type="button" class="btn btn-sm btn-danger" onclick="tipo_error_sri(\''+data['clave_guia']+'\')"> Ver Error</a> '+   
                             '</div>'+
                         '</div>'+
                         '<hr>',
                 }).then(function() {
-                    nombre_pdf = [data.pdf+'.pdf'];
-                    clave_Acceso = [data.clave+'.xml'];
+                    nombre_pdf = [data['pdf']+'.pdf'];
+                    clave_Acceso = [data[1]+'.xml'];
                     enviar_email_comprobantes(nombre_pdf,clave_Acceso);         
                 })
-            }else if (data.respuesta ==-1 && data.respuesta_guia==2)
-             {
-                Swal.fire({
+
+            }else if(data[0]==1 && data['respuesta_guia'][0]==1)
+            {
+                 Swal.fire({
                     // type: 'success',
                     // title: 'Factura Procesada y Autorizada',
                     confirmButtonText: 'Cerrar',
                     allowOutsideClick: false,
                     html:'<div class="row">'+
                             '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
+                                '<h4><i class="fa fa-check-circle text-success"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
                             '</div>'+    
                             '<div class="col-sm-4">'+                     
                                 '<br>'+                 
-                                '<a href="#" type="button" onclick="tipo_error_sri('+data.clave+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
+                                '<a href="../../TEMP/' + data['pdf'] + '.pdf" target="_blank" class="btn btn-sm btn-primary">Ver pdf</a> '+   
                             '</div>'+
                         '</div>'+
                         '<hr>'+ 
                         '<div class="row">'+
                             '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Guia de remision autorizada</h4>'+
+                                '<h4><i class="fa fa-check-circle text-success"  style="font-size: xx-large;"></i> Guia de remision autorizada</h4>'+
                             '</div>'+    
                             '<div class="col-sm-4">'+                       
                                 '<br>'+
-                                '<a href="#" type="button" onclick="tipo_error_sri('+data.clave_guia+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
+                                '<a href="../../TEMP/' + data['pdf_guia'] + '.pdf" target="_blank" class="btn btn-sm btn-primary">Ver pdf</a> '+   
                             '</div>'+
                         '</div>'+
                         '<hr>',
                 }).then(function() {
-                    location.reload();            
+                    nombre_pdf = [data['pdf']+'.pdf',data['pdf_guia']+'.pdf'];
+                    clave_Acceso = [data[1]+'.xml',data['respuesta_guia'][1]+'.xml'];
+                    enviar_email_comprobantes(nombre_pdf,clave_Acceso);
+       
                 })
+            }else if(data[0] == -1)
+            {
 
-             }else if (data.respuesta ==2 && data.respuesta_guia==2)
-             {
+                //factura si gia de remision 
                 Swal.fire({
-                    // type: 'success',
-                    // title: 'Factura Procesada y Autorizada',
-                    confirmButtonText: 'Cerrar',
+                    icon: 'error',
+                    title: 'Factura no autorizada',
+                    confirmButtonText: 'Ok!',
                     allowOutsideClick: false,
-                    html:'<div class="row">'+
-                            '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
-                            '</div>'+    
-                            '<div class="col-sm-4">'+                     
-                                '<br>'+                 
-                                '<a href="#" type="button" onclick="tipo_error_sri('+data.clave+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
-                            '</div>'+
-                        '</div>'+
-                        '<hr>'+ 
-                        '<div class="row">'+
-                            '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Guia de remision autorizada</h4>'+
-                            '</div>'+    
-                            '<div class="col-sm-4">'+                       
-                                '<br>'+
-                                '<a href="#" type="button" onclick="tipo_error_sri('+data.clave_guia+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
-                            '</div>'+
-                        '</div>'+
-                        '<hr>',
                 }).then(function() {
-                    location.reload();            
+                    tipo_error_sri(data[1])
                 })
-
-             }else if (data.respuesta ==2 && data.respuesta_guia==1)
-             {
-                Swal.fire({
-                    // type: 'success',
-                    // title: 'Factura Procesada y Autorizada',
-                    confirmButtonText: 'Cerrar',
-                    allowOutsideClick: false,
-                    html:'<div class="row">'+
-                            '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
-                            '</div>'+    
-                            '<div class="col-sm-4">'+                     
-                                '<br>'+                 
-                                '<a href="#" type="button" onclick="tipo_error_sri('+data.clave+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
-                            '</div>'+
-                        '</div>'+
-                        '<div class="row">'+
-                            '<div class="col-sm-8">'+
-                                '<h4><i class="fa fa-fw fa-check-circle-o text-success"  style="font-size: xx-large;"></i> Guia de remision autorizada</h4>'+
-                            '</div>'+    
-                            '<div class="col-sm-4">'+                       
-                                '<br>'+
-                                '<a href="../../TEMP/' + data.pdf_guia + '.pdf" target="_blank" class="btn btn-sm btn-primary">Ver pdf</a> '+   
-                            '</div>'+
-                        '</div>'+
-                        '<hr>',
-                }).then(function() {
-
-                    nombre_pdf = [data.pdf_guia+'.pdf'];
-                    clave_Acceso = [data.clave_guia+'.xml'];
-                    enviar_email_comprobantes(nombre_pdf,clave_Acceso);            
-                })
-
-             }else
+            }else
              {
                 Swal.fire('Error inesperado consulte con su proveedor','','error').then(function() {
                     location.reload();            
                 })
              }
+
+
+
+            // else if(data[0] == -1 || data.respuesta == 2 && data.respuesta_guia==0)
+            // {
+            //     if(data.text=='' || data.text == null || data.text == 2)
+            //      {
+            //         Swal.fire({
+            //             type: 'error',
+            //             title: 'XML devuelto',
+            //             text:'Error al generar XML o al firmar',
+            //             confirmButtonText: 'Ok!',
+            //             allowOutsideClick: false,
+            //         }).then(function () {
+            //             location.reload();
+            //         })
+                   
+            //         tipo_error_sri(data.clave);
+            //      }else{
+            //     Swal.fire({
+            //             type: 'error',
+            //             title: data.text,
+            //             confirmButtonText: 'Ok!',
+            //             allowOutsideClick: false,
+            //         }).then(function () {
+            //             location.reload();
+            //         })
+            //     }
+            // }else if (data.respuesta == 1 && data.respuesta_guia==1) {
+            //    
+            //  }else if(data.respuesta == 1 && data.respuesta_guia==2)
+            //  {                 
+                
+            // }else if (data.respuesta ==-1 && data.respuesta_guia==2)
+            //  {
+            //     Swal.fire({
+            //         // type: 'success',
+            //         // title: 'Factura Procesada y Autorizada',
+            //         confirmButtonText: 'Cerrar',
+            //         allowOutsideClick: false,
+            //         html:'<div class="row">'+
+            //                 '<div class="col-sm-8">'+
+            //                     '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
+            //                 '</div>'+    
+            //                 '<div class="col-sm-4">'+                     
+            //                     '<br>'+                 
+            //                     '<a href="#" type="button" onclick="tipo_error_sri('+data.clave+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
+            //                 '</div>'+
+            //             '</div>'+
+            //             '<hr>'+ 
+            //             '<div class="row">'+
+            //                 '<div class="col-sm-8">'+
+            //                     '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Guia de remision autorizada</h4>'+
+            //                 '</div>'+    
+            //                 '<div class="col-sm-4">'+                       
+            //                     '<br>'+
+            //                     '<a href="#" type="button" onclick="tipo_error_sri('+data.clave_guia+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
+            //                 '</div>'+
+            //             '</div>'+
+            //             '<hr>',
+            //     }).then(function() {
+            //         location.reload();            
+            //     })
+
+            //  }else if (data.respuesta ==2 && data.respuesta_guia==2)
+            //  {
+            //     Swal.fire({
+            //         // type: 'success',
+            //         // title: 'Factura Procesada y Autorizada',
+            //         confirmButtonText: 'Cerrar',
+            //         allowOutsideClick: false,
+            //         html:'<div class="row">'+
+            //                 '<div class="col-sm-8">'+
+            //                     '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
+            //                 '</div>'+    
+            //                 '<div class="col-sm-4">'+                     
+            //                     '<br>'+                 
+            //                     '<a href="#" type="button" onclick="tipo_error_sri('+data.clave+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
+            //                 '</div>'+
+            //             '</div>'+
+            //             '<hr>'+ 
+            //             '<div class="row">'+
+            //                 '<div class="col-sm-8">'+
+            //                     '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Guia de remision autorizada</h4>'+
+            //                 '</div>'+    
+            //                 '<div class="col-sm-4">'+                       
+            //                     '<br>'+
+            //                     '<a href="#" type="button" onclick="tipo_error_sri('+data.clave_guia+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
+            //                 '</div>'+
+            //             '</div>'+
+            //             '<hr>',
+            //     }).then(function() {
+            //         location.reload();            
+            //     })
+
+            //  }else if (data.respuesta ==2 && data.respuesta_guia==1)
+            //  {
+            //     Swal.fire({
+            //         // type: 'success',
+            //         // title: 'Factura Procesada y Autorizada',
+            //         confirmButtonText: 'Cerrar',
+            //         allowOutsideClick: false,
+            //         html:'<div class="row">'+
+            //                 '<div class="col-sm-8">'+
+            //                     '<h4><i class="fa fa-fw fa-times-circle-o text-danger"  style="font-size: xx-large;"></i> Factura autorizada</h4>'+
+            //                 '</div>'+    
+            //                 '<div class="col-sm-4">'+                     
+            //                     '<br>'+                 
+            //                     '<a href="#" type="button" onclick="tipo_error_sri('+data.clave+');" class="btn btn-sm btn-primary">Ver pdf</a> '+   
+            //                 '</div>'+
+            //             '</div>'+
+            //             '<div class="row">'+
+            //                 '<div class="col-sm-8">'+
+            //                     '<h4><i class="fa fa-fw fa-check-circle-o text-success"  style="font-size: xx-large;"></i> Guia de remision autorizada</h4>'+
+            //                 '</div>'+    
+            //                 '<div class="col-sm-4">'+                       
+            //                     '<br>'+
+            //                     '<a href="../../TEMP/' + data.pdf_guia + '.pdf" target="_blank" class="btn btn-sm btn-primary">Ver pdf</a> '+   
+            //                 '</div>'+
+            //             '</div>'+
+            //             '<hr>',
+            //     }).then(function() {
+
+            //         nombre_pdf = [data.pdf_guia+'.pdf'];
+            //         clave_Acceso = [data.clave_guia+'.xml'];
+            //         enviar_email_comprobantes(nombre_pdf,clave_Acceso);            
+            //     })
+
+            //  }else
+            //  {
+            //     Swal.fire('Error inesperado consulte con su proveedor','','error').then(function() {
+            //         location.reload();            
+            //     })
+            //  }
 
         },
         error: function (request, status, error) {   
@@ -1104,6 +1135,7 @@ function btn_guiaRemision() {
 
 function DCCiudadI() {
     $('#DCCiudadI').select2({
+        dropdownParent:$('#myModal_guia'),
         placeholder: 'Seleccione la ciudad',
         ajax: {
             url: '../controlador/facturacion/facturarC.php?DCCiudadI=true',
@@ -1121,6 +1153,7 @@ function DCCiudadI() {
 
 function DCCiudadF() {
     $('#DCCiudadF').select2({
+        dropdownParent:$('#myModal_guia'),
         placeholder: 'Seleccione la ciudad',
         ajax: {
             url: '../controlador/facturacion/facturarC.php?DCCiudadF=true',
@@ -1138,6 +1171,7 @@ function DCCiudadF() {
 
 function AdoPersonas() {
     $('#DCRazonSocial').select2({
+        dropdownParent:$('#myModal_guia'),
         placeholder: 'Seleccione un Grupo',
         ajax: {
             url: '../controlador/facturacion/facturarC.php?AdoPersonas=true',
@@ -1155,6 +1189,7 @@ function AdoPersonas() {
 
 function DCEmpresaEntrega() {
     $('#DCEmpresaEntrega').select2({
+        dropdownParent:$('#myModal_guia'),
         placeholder: 'Seleccione la Empresa',
         ajax: {
             url: '../controlador/facturacion/facturarC.php?DCEmpresaEntrega=true',

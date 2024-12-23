@@ -4901,7 +4901,7 @@ function ingresar_asientos_SC($parametros)  //revision parece repetida
            ,'".$_SESSION['INGRESO']['CodigoU']."'
            ,'".$parametros['serie']."')";
        $stmt = sqlsrv_query( $cid, $sql);
-       //echo $sql;
+       // echo $sql;
       if( $stmt === false)  
       {  
          echo "Error en consulta PA.\n";  
@@ -9800,6 +9800,7 @@ function CompilarSQL($CadSQL) {
 
 function Ejecutar_SQL_SP($SQL, $NoCompilar = false, $NombreFile ="")
 {
+  // print_r($SQL);die();
   $conn = new db();
   if (!$NoCompilar) {  $SQL = CompilarSQL($SQL);}
   Generar_File_SQL($NombreFile, $SQL);

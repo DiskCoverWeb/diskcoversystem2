@@ -577,6 +577,7 @@ function grabacion()
      "PtoEmiRetencion": $('#TxtNumDosComRet').val(),
      "SecRetencion": $('#TxtNumTresComRet').val(),
      "AutRetencion": $('#TxtNumUnoAutComRet').val(),
+     "moduloActual": moduloActual,
 
   }
 
@@ -600,7 +601,11 @@ function grabacion()
               }
                
             }
-      }
+      },
+        error: function (error) {
+          console.error('Error en numero_comprobante:', error);
+          // Puedes manejar el error aquí si es necesario
+        },
     });  
 }
 
@@ -645,44 +650,72 @@ function grabar_comprobante()
             success:  function (data) {
                // $('#myModal_espera').modal('hide');
                console.log(data);
-        if(data.respuesta==1)
-      { 
-        Swal.fire({
-          type:'success',
-          title: 'Retencion Procesada y Autorizada',
-          confirmButtonText: 'Ok!',
-          allowOutsideClick: false,
-        }).then(function(){
-          var url=  '../../TEMP/'+data.pdf+'.pdf';
-          window.open(url, '_blank'); 
-          location.reload();    
+               if(data[0]==1)
+               {
+                 Swal.fire({
+                      icon:'success',
+                      title: 'Retencion Procesada y Autorizada',
+                      confirmButtonText: 'Ok!',
+                      allowOutsideClick: false,
+                    }).then(function(){
+                      var url=  '../../TEMP/'+data['pdf']+'.pdf';
+                      window.open(url, '_blank'); 
+                      location.reload();    
 
-        })
-      }else if(data.respuesta==-1)
-      {
+                    })
 
-        Swal.fire('XML DEVUELTO:'+data.text,'XML DEVUELTO','error').then(function(){ 
-          var url=  '../../TEMP/'+data.pdf+'.pdf';    window.open(url, '_blank');   
-          tipo_error_sri(data.clave);
-        }); 
-      }else if(data.respuesta==2)
-      {
-        // tipo_error_comprobante(clave)
-        Swal.fire('XML devuelto','','error'); 
-        tipo_error_sri(data.clave);
-      }
-      else if(data.respuesta==4)
-      {
-        Swal.fire('SRI intermitente intente mas tarde','','info');  
-      }else
-      {
-        Swal.fire('XML devuelto por:'+data.text,'','error');  
-      }        
+               }else if(data[0]==0)
+               {
+                  Swal.fire('XML DEVUELTO',data[3],'error').then(function(){ 
+                      var url=  '../../TEMP/'+data.pdf+'.pdf';    window.open(url, '_blank');   
+                      tipo_error_sri(data[1]);
+                    }); 
+
+               }
+                  // if(data.respuesta==1)
+                  // { 
+                  //   Swal.fire({
+                  //     type:'success',
+                  //     title: 'Retencion Procesada y Autorizada',
+                  //     confirmButtonText: 'Ok!',
+                  //     allowOutsideClick: false,
+                  //   }).then(function(){
+                  //     var url=  '../../TEMP/'+data.pdf+'.pdf';
+                  //     window.open(url, '_blank'); 
+                  //     location.reload();    
+
+                  //   })
+                  // }else if(data.respuesta==-1)
+                  // {
+
+                  //   Swal.fire('XML DEVUELTO:'+data.text,'XML DEVUELTO','error').then(function(){ 
+                  //     var url=  '../../TEMP/'+data.pdf+'.pdf';    window.open(url, '_blank');   
+                  //     tipo_error_sri(data.clave);
+                  //   }); 
+                  // }else if(data.respuesta==2)
+                  // {
+                  //   // tipo_error_comprobante(clave)
+                  //   Swal.fire('XML devuelto','','error'); 
+                  //   tipo_error_sri(data.clave);
+                  // }
+                  // else if(data.respuesta==4)
+                  // {
+                  //   Swal.fire('SRI intermitente intente mas tarde','','info');  
+                  // }else
+                  // {
+                  //   Swal.fire('XML devuelto por:'+data.text,'','error');  
+                  // }        
 
 
         $('#myModal_espera').modal('hide');
 
-          }
+          },
+            error: function (error) {
+              console.error('Error en numero_comprobante:', error);
+
+        $('#myModal_espera').modal('hide');
+              // Puedes manejar el error aquí si es necesario
+            },
         });
   }
 
@@ -765,30 +798,55 @@ function cargar_grilla()
             if (response!='') 
             {
               $('#tbl_retencion').DataTable({
+                searching: false,
+                paging: false,   
+                info: false,     
                 language: {
-                  url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+                    url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
                 },
-                data: response.tbl.data,
+                columnDefs: [
+                    { targets: 2, width: "300px" }, // Ajusta el ancho de la columna "Detalle"
+                    {
+                      targets: [3,5],
+                      render: function(data, type, row) {
+                          return parseFloat(data).toFixed(2)
+                      }
+                   },
+                   {
+                      targets: 4,
+                      render: function(data, type, row) {
+                          return parseFloat(data).toFixed(2)
+                      }
+                  }
+                ],
+                data: response.tbl,
                 scrollY: '250px',
                 scrollX: true, 
                 scrollCollapse: true,
                 columns: [
                   {data:null, 
                     render: function(data, type, row){
-                      return data[0] || '';
+                      return `<button type="button" class="btn btn-sm btn-danger" onclick="eliminar_linea_Retencion('${row.A_No}','${row.CodRet}')" title="Eliminar linea retencion">
+                      <i class="fa fa-trash me-0"></i>
+                      </button>`;
                     },
                     orderable: false,
-                    className: 'text-center'},
+                    className: 'text-center'
+                  },
                   {data: 'CodRet'},
                   {data: 'Detalle'},
-                  {data: 'BaseImp'},
+                  {data: 'BaseImp',className: 'text-end'},
                   {data: 'Porcentaje'}, 
-                  {data: 'ValRet'},
+                  {data: 'ValRet',className: 'text-end'},
                   {data: 'EstabRetencion'}, 
                   {data: 'PtoEmiRetencion'},
-                  {data: 'SecRetencio'},
+                  {data: 'SecRetencion'},
                   {data: 'AutRetencion'}, 
-                  {data: 'FechaEmiRet'},
+                  {data:  null,
+                    render: function(data, type, row){
+                      return formatoDate(row.FechaEmiRet.date);
+                    }
+                  },
                   {data: 'Cta_Retencion'},
                   {data: 'EstabFactura'}, 
                   {data: 'PuntoEmiFactura'},

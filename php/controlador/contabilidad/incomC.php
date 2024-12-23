@@ -1379,23 +1379,21 @@ class incomC
             // exit();
             // print_r($parametros);die();
             if(strlen($Autorizacion_R) >= 13){
-            	$res = '0';
+            	// $res = '0';
             	$res = $this->sri->Autorizar_retencion($parametros_xml);
+            	$res = json_decode($res,true); 
 
             	// $res = $this->SRI_Crear_Clave_Acceso_Retencines($parametros_xml); //function xml
             	// print_r($res);die();
 				$aut = $this->sri->Clave_acceso($parametros['fecha'],'07',$Serie_R,generaCeros($parametros['Retencion'],9));
 				$pdf = 'RE_'.$Serie_R.'-'.generaCeros($parametros['Retencion'],7); 
 				$this->modelo->reporte_retencion($Numero,$TP,$Retencion,$Serie_R,$imp=1);
-
-            // print_r($parametros);die();
-				// if($res==1)
-				// {
-					 $Trans_No = $T_No;
-           			 $this->modelo->BorrarAsientos($Trans_No,true);
-				// }
-           			 // print_r(array('respuesta'=>$res,'pdf'=>$pdf,'text'=>$res,'clave'=>$aut));die();
-				return array('respuesta'=>$res,'pdf'=>$pdf,'text'=>$res,'clave'=>$aut);
+				$Trans_No = $T_No;
+           		$this->modelo->BorrarAsientos($Trans_No,true);
+				$res['pdf'] = $pdf;
+				$res['clave'] = $aut;
+				return $res;
+				// array('respuesta'=>$res,'pdf'=>$pdf,'text'=>$res,'clave'=>$aut);
             	  
 				
             	// if(!is_null($res))

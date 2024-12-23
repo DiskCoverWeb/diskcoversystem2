@@ -39,6 +39,9 @@ if(isset($_GET['fec']))
     box-shadow: 0 0 0 0px white, 0 0 0 2px black;
 }
 </style>
+<script type="text/javascript">
+  var moduloActual = <?= $modulo; ?>
+</script>
 <script src="../../dist/js/kardex_ing.js"></script>
 <script type="text/javascript">
     var tipo2 = '<?php echo $tipo2; ?>'
@@ -80,68 +83,75 @@ if(isset($_GET['fec']))
   });
 </script>
 
-<div class="overflow-auto p-2">
-  <div class="row">
-      <?php if($tipo2!=''){?>
-          <div class="col-sm-12 text-center">
-            <h4  style="float: top;padding: 5px 10px 5px 10px;vertical-align:top; margin-top: 1px; margin-bottom: 1px;" id='num_com'>
-              Comprobante de Diario No. 0000-00000000
-            </h4>
-          </div>
-      <?php }?>
-            <div class="col-sm-12">
-                <div class="row">
-                  <div class="col-sm-8" style="margin-bottom: auto;">
-                      <div class="box box-info" style="margin-bottom: auto;">
-                          <div class="box-header" style="padding:0px">
-                              <h3 class="box-title">Retencion de IVA por</h3>
-                          </div>
-                          <div class="box-body" style="padding-top: 0px;">
-                              <div class="row">
-                                  <div class="col-sm-3">
-                                    <input type="hidden" name="txt_opc_mult" id="txt_opc_mult" value="<?php if(isset($_GET['opc_mult'])){ echo $_GET['opc_mult']; }?>">
-                                      <label class="form-check-label" onclick="habilitar_bienes()"><input class="form-check-input" type="checkbox" name="ChRetB" id="ChRetB"> Bienes</label>
-                                  </div>
-                                  <div class="col-sm-9">
-                                      <select class="form-select form-select-sm" id="DCRetIBienes" style="display:none; width: 100%;">
-                                          <option>Seleccione Tipo Retencion</option>
-                                      </select>
-                                  </div>
-                              </div>
-                              <div class="row">
-                                  <div class="col-sm-3">
-                                      <label class="form-check-label" onclick="habilitar_servicios()"><input class="form-check-input" type="checkbox" name="ChRetS" id="ChRetS"> Servicios</label>
-                                  </div>
-                                  <div class="col-sm-9">
-                                      <select class="form-select form-select-sm" id="DCRetISer" style="display: none; width: 100%;">
-                                          <option>Seleccione Tipo Retencion</option>
-                                      </select>
-                                  </div>
-                              </div>
-                          </div>
+<?php if($tipo2!=''){?>
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+      <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+        <div class="ps-3">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+              <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+              </li>
+            </ol>
+          </nav>
+        </div>          
+      </div>
+<div class="row">
+    <div class="col-sm-12 text-center">
+      <h4  style="float: top;padding: 5px 10px 5px 10px;vertical-align:top; margin-top: 1px; margin-bottom: 1px;" id='num_com'>
+        Comprobante de Diario No. 0000-00000000
+      </h4>
+    </div>
+</div>
+<?php }?>
+<div class="card shadow">
+  <div class="card-body">
+      <div class="row">
+        <div class="col-sm-12">
+           <h5 class="card-title text-primary">Retencion de IVA por</h5>
+        </div>
+        <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-8" style="margin-bottom: auto;">                     
+                  <div class="row">
+                      <div class="col-sm-3">
+                        <input type="hidden" name="txt_opc_mult" id="txt_opc_mult" value="<?php if(isset($_GET['opc_mult'])){ echo $_GET['opc_mult']; }?>">
+                          <label class="form-check-label" onclick="habilitar_bienes()"><input class="form-check-input" type="checkbox" name="ChRetB" id="ChRetB"> Bienes</label>
+                      </div>
+                      <div class="col-sm-9">
+                          <select class="form-select form-select-sm" id="DCRetIBienes" style="display:none; width: 100%;">
+                              <option>Seleccione Tipo Retencion</option>
+                          </select>
                       </div>
                   </div>
-                  <div class="col-sm-4 text-center">
-                    <button class="btn btn-outline-secondary btn-sm" id="btn_g" tabindex="15"> <img src="../../img/png/grabar.png"  onclick="validar_formulario();"><br> Guardar</button>
-                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button> -->
-                    <button class="btn btn-outline-secondary btn-sm" data-dismiss="modal" onclick="limpiar_retencion();"> <img src="../../img/png/bloqueo.png" ><br> Cancelar</button>
-
-                    <!-- <button class="btn btn-default" onclick="pdf_retencion();"> <img src="../../img/png/bloqueo.png" ><br> pdf</button> -->
-
-                  </div>            
+                  <div class="row">
+                      <div class="col-sm-3">
+                          <label class="form-check-label" onclick="habilitar_servicios()"><input class="form-check-input" type="checkbox" name="ChRetS" id="ChRetS"> Servicios</label>
+                      </div>
+                      <div class="col-sm-9">
+                          <select class="form-select form-select-sm" id="DCRetISer" style="display: none; width: 100%;">
+                              <option>Seleccione Tipo Retencion</option>
+                          </select>
+                      </div>
+                  </div>
               </div>
+              <div class="col-sm-4 text-center">
+                <button class="btn btn-outline-secondary btn-sm" id="btn_g" tabindex="15"> <img src="../../img/png/grabar.png"  onclick="validar_formulario();"><br> Guardar</button>
+                <button class="btn btn-outline-secondary btn-sm" data-dismiss="modal" onclick="limpiar_retencion();"> <img src="../../img/png/bloqueo.png" ><br> Cancelar</button>
+
+              </div>            
+            </div>
               <div class="row">
                 <div class="col-12 col-sm-8">
                   <b>TIPO DE PROVEEDOR: </b><span id="agente"></span>
                   <?php if($tipo2!=''){ ?>
-                      <!-- <div class="input-group"> -->
+                      <div class="input-group">
                         <select class="form-select form-select-sm" id="DCProveedor" onchange="datos_pro()">
                           <option value="">No seleccionado</option>
                         </select>
                       <button type="button" class="btn btn-success btn-sm" onclick="addCliente()" title="Nuevo cliente">
                         <span class="fa fa-user-plus"></span>
                       </button>   
-                      <!-- </div> -->
+                      </div>
                   <?php }else{ ?>
                       <select class="form-select form-select-sm" id="DCProveedor">
                             <option value="">No seleccionado</option>
@@ -157,8 +167,15 @@ if(isset($_GET['fec']))
                   <input type="hidden" class="form-control form-control-sm" name="" id="txtemail" readonly="">
                 </div>
               </div>
-            </div><br>
-            <div class="col-sm-12">
+          
+        </div>      
+      </div>    
+  </div>  
+</div>
+<div class="card shadow">
+  <div class="card-body">
+      <div class="row">
+          <div class="col-sm-12">
               <ul class="nav nav-pills">
                 <li class="nav-item">
                   <a class="nav-link active" data-bs-toggle="tab" href="#home">Comprobante de compra: FORMULARIO 104</a>
@@ -172,7 +189,7 @@ if(isset($_GET['fec']))
               </ul>
                 <!-- Tab panes -->
               <div class="tab-content p-1">
-                <div class="tab-pane modal-body active border-5" id="home" role="tabpanel">
+                <div class="tab-pane modal-body active p-1 " id="home" role="tabpanel">
                   <div class="row">
                     <div class="col-sm-10">
                       <div class="row">
@@ -271,18 +288,18 @@ if(isset($_GET['fec']))
                     </div>            
                   </div> 
                   <div class="row p-2">
-                    <div class="col-sm-6 p-1 border-top border-primary border-3">
+                    <div class="col-sm-6 p-1 border-primary" style="border-top: 3px solid;">
                       <div class="box box-info">
                         <div class="box-header" style="padding:0px">
                           <h5 class="box-title">Porcentajes de las bases Imponibles</h5>
                         </div>
                         <div class="box-body">
                           <div class="row">
-                            <div class="col-sm-1">
+                            <div class="col-sm-2">
                               IVA
                             </div>
-                            <div class="col-sm-4">
-                              <select class="form-control form-control-sm" id="DCPorcenIva" onchange="calcular_iva()" onblur="calcular_iva();calcular_ice();">
+                            <div class="col-sm-3">
+                              <select class="form-select" id="DCPorcenIva" onchange="calcular_iva()" onblur="calcular_iva();calcular_ice();">
                                   <option value="I">Iva</option>
                               </select>
                             </div>
@@ -294,11 +311,11 @@ if(isset($_GET['fec']))
                             </div>                            
                           </div>
                           <div class="row">
-                            <div class="col-sm-1">
+                            <div class="col-sm-2">
                               ICE
                             </div>
-                            <div class="col-sm-4">
-                              <select class="form-control input-xs" id="DCPorcenIce" onchange="calcular_ice()" onblur="calcular_iva();calcular_ice();">
+                            <div class="col-sm-3">
+                              <select class="form-select" id="DCPorcenIce" onchange="calcular_ice()" onblur="calcular_iva();calcular_ice();">
                                   <option value="0">ICE</option>
                               </select>
                             </div>
@@ -405,7 +422,7 @@ if(isset($_GET['fec']))
                   </div> 
                 </div>
                 <div class="tab-pane modal-body fade" id="menu1" style="padding-top:0px" >
-                    <div class="row">
+                    <div class="row mb-2">
                       <div class="col-sm-4">
                         <b>Forma de pago</b>
                         <select class="form-select form-select-sm" style="width: 100%;" onchange="mostrar_panel_ext()" id="CFormaPago" tabindex="1">
@@ -442,7 +459,7 @@ if(isset($_GET['fec']))
                         <label class="form-check-label"><input class="form-check-input" type="radio" name="rbl_pago_retencion" value="NO">NO</label>
                       </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                           <div class="col-sm-12">
                               <div class="box box-info" style="margin-bottom: 0px;" >
                                   <div class="box-header" style="padding:0px">
@@ -579,12 +596,12 @@ if(isset($_GET['fec']))
                     </div>
                     <div class="row">
                       <div class="" >
-                      <table class="Table text-center w-100" id="tbl_retencion">
+                      <table class="table table-sm" id="tbl_retencion">
                         <thead>
                           <tr>
                             <th class="text-center"></th>
                             <th class="text-center">CodRet</th>
-                            <th class="text-center">Detalle</th>
+                            <th class="text-center" width="100px">Detalle</th>
                             <th class="text-center">BaseImp</th>
                             <th class="text-center">Porcentaje</th>
                             <th class="text-center">ValRet</th>
@@ -654,6 +671,8 @@ if(isset($_GET['fec']))
               </div>
               
             </div>
-  </div>
+        
+      </div>
+  </div>  
 </div>
-     
+            

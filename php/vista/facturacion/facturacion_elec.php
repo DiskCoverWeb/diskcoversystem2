@@ -21,11 +21,14 @@ $(document).ready(function(){
 
       tbl_lineas_all = $('#tbl_DGAsientoF').DataTable({
           // responsive: true,
-        searching: false, // Deshabilita el buscador
-        paging: false,    // Deshabilita la paginación
-        info: false,      // Oculta la información del total de filas
+            searching: false, // Deshabilita el buscador
+            paging: false,    // Deshabilita la paginación
+            info: false,      // Oculta la información del total de filas
+            processing: true,
           language: {
-              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json',    
+              loadingRecords: "Cargando datos, por favor espera..." // Mensaje personalizado
+       
           },
           ajax: {
               url:  '../controlador/facturacion/punto_ventaC.php?DGAsientoF=true',
@@ -131,7 +134,7 @@ $(document).ready(function(){
         </nav>
       </div>          
     </div>
-<div class="row">
+<div class="row mb-2">
   <div class="col-lg-6 col-md-6 col-sm-12">
     <div class="btn-group" role="group" aria-label="Basic example">
         <a href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-outline-secondary">
@@ -147,79 +150,90 @@ $(document).ready(function(){
 </div>
 
 <input type="hidden" name="CodDoc" id="CodDoc" class="form-control form-control-sm" value="00">
-<div class="row">
-    <div class="col-lg-2 col-md-2 col-sm-3 ">
-        <input type="hidden" id="Autorizacion">
-        <input type="hidden" id="Cta_CxP">
-        <b>Punto de emision</b>
-        <select class="form-select form-select-sm" name="DCLinea" id="DCLinea" tabindex="1"
-            onchange="numeroFactura(); tipo_documento();">
-            <option value=""></option>
-        </select>       
-    </div>
-    <div class="col-lg-5 col-md-5 col-sm-9">
-        <b>Nombre del cliente</b>
-        <div class="input-group" id="ddl">
-            <select class="form-select form-select-sm" id="DCCliente" name="DCCliente" onchange="select()">
-                <option value="">Seleccione Bodega</option>
-            </select>
-                <button type="button" class="btn btn-success btn-sm btn-flat" id="btn_nuevo_cli" onclick="addCliente()"
-                    title="Nuevo cliente"><span class="bx bx-user-plus"></span></button>
-        
+    <div class="card mb-2">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-3 ">
+                    <input type="hidden" id="Autorizacion">
+                    <input type="hidden" id="Cta_CxP">
+                    <b>Punto de emision</b>
+                    <select class="form-select form-select-sm" name="DCLinea" id="DCLinea" tabindex="1"
+                        onchange="numeroFactura(); tipo_documento();">
+                        <option value=""></option>
+                    </select>       
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-9">
+                    <b>Nombre del cliente</b>
+                    <div class="input-group" id="ddl">
+                        <select class="form-select form-select-sm" id="DCCliente" name="DCCliente" onchange="select()">
+                            <option value="">Seleccione Bodega</option>
+                        </select>
+                            <button type="button" class="btn btn-success btn-sm btn-flat" id="btn_nuevo_cli" onclick="addCliente()"
+                                title="Nuevo cliente"><span class="bx bx-user-plus"></span></button>
+                    
 
-            <!-- <button onclick="tipo_error_sri('0308202203179238540700120010020000006811234567815')" class="btn">error</button>  -->
+                        <!-- <button onclick="tipo_error_sri('0308202203179238540700120010020000006811234567815')" class="btn">error</button>  -->
+                    </div>
+                    <input type="hidden" name="codigoCliente" id="codigoCliente" class="form-control input-xs">
+                    <input type="hidden" name="LblT" id="LblT" class="form-control input-xs">       
+                </div>    
+                <div class="col-lg-2 col-sm-5">
+                    <b>CI/RUC/PAS</b>
+                    <div class="input-group">
+                        <input type="" name="LblRUC" id="LblRUC" class="form-control form-control-sm" readonly>
+                        <input type="hidden" name="Lblemail" id="Lblemail" class="form-control input-xs">
+                        <span class="input-group-btn">
+                           <label id="LblTD" name="LblTD" class="form-control form-control-sm" style="color :coral;"></label>
+                        </span>
+                    </div>       
+                </div>
+                <div class="col-lg-3 col-sm-5">
+                    <b id="Label1">FACTURA No.</b>
+                    <div class="row">
+                        <div class="col-sm-3" id="LblSerie">
+                            999999
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="" class="form-control  form-control-sm" id="TextFacturaNo" name="TextFacturaNo" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2" style="display:none">
+                    <b>BODEGAS</b>
+                    <select class="form-control input-xs" id="DCBodega" name="DCBodega" onblur="validar_bodega()">
+                        <option value="01">Seleccione Bodega</option>
+                    </select>
+                </div>
+
+      
         </div>
-        <input type="hidden" name="codigoCliente" id="codigoCliente" class="form-control input-xs">
-        <input type="hidden" name="LblT" id="LblT" class="form-control input-xs">       
-    </div>    
-    <div class="col-lg-2 col-sm-5">
-        <b>CI/RUC/PAS</b>
-        <div class="input-group">
-            <input type="" name="LblRUC" id="LblRUC" class="form-control form-control-sm" readonly>
-            <input type="hidden" name="Lblemail" id="Lblemail" class="form-control input-xs">
-            <span class="input-group-btn">
-               <label id="LblTD" name="LblTD" class="form-control form-control-sm" style="color :coral;"></label>
-            </span>
-        </div>       
-    </div>
-    <div class="col-lg-3 col-sm-5">
-        <b id="Label1">FACTURA No.</b>
+    
         <div class="row">
-            <div class="col-sm-3" id="LblSerie">
-                999999
+            <div class="col-lg-2 col-sm-3">
+                 <b>Fecha</b>
+                <input type="date" name="MBFecha" id="MBFecha" class="form-control  form-control-sm" value="<?php echo date('Y-m-d'); ?>" onblur="DCPorcenIva('MBFecha', 'DCPorcenIVA'); validar_cta();">        
             </div>
-            <div class="col-sm-9">
-                <input type="" class="form-control  form-control-sm" id="TextFacturaNo" name="TextFacturaNo" readonly>
+            <div class="col-lg-1 col-sm-2">
+                 <b>I.V.A</b>
+                <select class="form-select form-select-sm" name="DCPorcenIVA" id="DCPorcenIVA" onblur="cambiar_iva(this.value)"> 
+                </select>
+            </div>
+            <div class="col-lg-7 col-sm-7">
+                 <b>Tipo de pago</b>
+                <select class="form-select form-select-sm" style="width: 100%;" id="DCTipoPago" onchange="$('#DCTipoPago').css('border','1px solid #d2d6de');">
+                    <option value="">Seleccione tipo de pago</option>
+                </select>        
             </div>
         </div>
     </div>
-    <div class="col-sm-2" style="display:none">
-        <b>BODEGAS</b>
-        <select class="form-control input-xs" id="DCBodega" name="DCBodega" onblur="validar_bodega()">
-            <option value="01">Seleccione Bodega</option>
-        </select>
-    </div>
 </div>
-<div class="row">
-    <div class="col-lg-2 col-sm-3">
-         <b>Fecha</b>
-        <input type="date" name="MBFecha" id="MBFecha" class="form-control  form-control-sm" value="<?php echo date('Y-m-d'); ?>" onblur="DCPorcenIva('MBFecha', 'DCPorcenIVA'); validar_cta();">        
-    </div>
-    <div class="col-lg-1 col-sm-2">
-         <b>I.V.A</b>
-        <select class="form-select form-select-sm" name="DCPorcenIVA" id="DCPorcenIVA" onblur="cambiar_iva(this.value)"> 
-        </select>
-    </div>
-    <div class="col-lg-7 col-sm-7">
-         <b>Tipo de pago</b>
-        <select class="form-select form-select-sm" style="width: 100%;" id="DCTipoPago" onchange="$('#DCTipoPago').css('border','1px solid #d2d6de');">
-            <option value="">Seleccione tipo de pago</option>
-        </select>        
-    </div>
-</div>
+        
 <div class="row">
     <div class="col-lg-9 col-sm-12">
-        <div class="row box box-success">
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
             <div class="col-lg-6 col-sm-8">
                 <b>Producto</b>
                 <select class="form-select form-select-sm" id="DCArticulo" name="DCArticulo"
@@ -227,13 +241,13 @@ $(document).ready(function(){
                     <option value="">Seleccione Producto</option>
                 </select>
             </div>
-            <div class="col-lg-1 col-sm-2" style="padding-right:0px">
+            <div class="col-lg-1 col-sm-2" style="padding-left:0px">
                 <b>Stock</b>
                 <input type="text" name="LabelStock" id="LabelStock" class="form-control form-control-sm" readonly
                     style="color: red;" value="999999999">
             </div>
-            <div class="col-lg-1 col-sm-2" style="padding-right:0px">
-                <b>Cantidad</b>
+            <div class="col-lg-1 col-sm-2" style="padding:0px">
+                <b class="small">Cantidad</b>
                 <input type="text" name="TextCant" id="TextCant" class="form-control form-control-sm" value="1"
                     onblur="valida_Stock()">
             </div>
@@ -243,18 +257,18 @@ $(document).ready(function(){
                     onblur="calcular()">
             </div>           
             <div class="col-lg-1 col-sm-2" style="padding-right:0px">
-                <b>Dcto_Val</b>
+                <b class="small">Dcto_Val</b>
                 <input type="text" name="TextVDescto" id="TextVDescto" class="form-control form-control-sm" value="0">
             </div>  
             <div class="col-lg-1 col-sm-2" style="padding-right:0px;display:none;" id="campo_servicio">
-                <b>Servicio</b>
+                <b class="small">Servicio</b>
                 <input type="text" name="TextServicios" id="TextServicios" class="form-control form-control-sm" value="0">
             </div>            
-            <div class="col-lg-1 col-sm-2" style="padding-right:0px">
-                <b>TOTAL</b>
+            <div class="col-lg-1 col-sm-2">
+                <b class="small">TOTAL</b>
                 <input type="text" name="LabelVTotal" id="LabelVTotal" class="form-control form-control-sm" value="0">
             </div>
-            <div class="col-lg-4 col-sm-4">
+            <div class="col-lg-6 col-sm-4">
                 <b>Detalle</b>
                 <input type="text" name="TxtDocumentos" id="TxtDocumentos" class="form-control form-control-sm" value="."
                     onblur="ingresar()">
@@ -262,138 +276,132 @@ $(document).ready(function(){
 
         </div>
         <div class="row mt-2">
-    <div class="card">
-      <div class="card-body">
-        <table class="table text-sm h-100" id="tbl_DGAsientoF">
-          <thead>
-            <th></th>
-            <th>CODIGO</th>
-            <th>CANT</th>
-            <th>CANT_BONIF</th>
-            <th>PRODUCTO</th>
-            <th>PRECIO</th>
-            <th>Total_Desc</th>
-            <th>Total_Desc2</th>
-            <th>Total_IVA</th>
-            <th>SERVICIO</th>
-            <th>TOTAL</th>
-            <th>VALOR_TOTAL</th>
-            <th>COSTO</th>
-            <th>Fecha_IN</th>
-            <th>Fecha_OUT</th>
-            <th>Cant_Hab</th>
-            <th>Tipo_Hab</th>
-            <th>Orden_No</th>
-            <th>Mes</th>
-            <th>Cod_Ejec</th>
-            <th>Porc_C</th>
-            <th>REP</th>
-            <th>FECHA</th>
-            <th>CODIGO_L</th>
-            <th>HABIT</th>
-            <th>RUTA</th>
-            <th>TICKET</th>
-            <th>Cta</th>
-            <th>Cta_SubMod</th>
-            <th>Item</th>
-            <th>CodigoU</th>
-            <th>CodBod</th>
-            <th>CodMar</th>
-            <th>TONELAJE</th>
-            <th>CORTE</th>
-            <th>A_No</th>
-            <th>Codigo_Cliente</th>
-            <th>Numero</th>
-            <th>Serie</th>
-            <th>Autorizacion</th>
-            <th>Codigo_B</th>
-            <th>PRECIO2</th>
-            <th>COD_BAR</th>
-            <th>Fecha_V</th>
-            <th>Lote_No</th>
-            <th>Fecha_Fab</th>
-            <th>Fecha_Exp</th>
-            <th>Reg_Sanitario</th>
-            <th>Modelo</th>
-            <th>Procedencia</th>
-            <th>Serie_No</th>
-            <th>Cta_Inv</th>
-            <th>Cta_Costo</th>
-            <th>Estado</th>
-            <th>NoMes</th>
-            <th>Cheking</th>
-            <th>ID</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-        </div>      
-    </div>
-</div>
-<!-- 
-        <div class="row text-center">
-            <div class="col-sm-12" id="tbl_DGAsientoF">
+            <div class="col-sm-12" style="height: 300px">
+                
+                <table class="table text-sm" id="tbl_DGAsientoF">
+                  <thead>
+                    <th></th>
+                    <th>CODIGO</th>
+                    <th>CANT</th>
+                    <th>CANT_BONIF</th>
+                    <th>PRODUCTO</th>
+                    <th>PRECIO</th>
+                    <th>Total_Desc</th>
+                    <th>Total_Desc2</th>
+                    <th>Total_IVA</th>
+                    <th>SERVICIO</th>
+                    <th>TOTAL</th>
+                    <th>VALOR_TOTAL</th>
+                    <th>COSTO</th>
+                    <th>Fecha_IN</th>
+                    <th>Fecha_OUT</th>
+                    <th>Cant_Hab</th>
+                    <th>Tipo_Hab</th>
+                    <th>Orden_No</th>
+                    <th>Mes</th>
+                    <th>Cod_Ejec</th>
+                    <th>Porc_C</th>
+                    <th>REP</th>
+                    <th>FECHA</th>
+                    <th>CODIGO_L</th>
+                    <th>HABIT</th>
+                    <th>RUTA</th>
+                    <th>TICKET</th>
+                    <th>Cta</th>
+                    <th>Cta_SubMod</th>
+                    <th>Item</th>
+                    <th>CodigoU</th>
+                    <th>CodBod</th>
+                    <th>CodMar</th>
+                    <th>TONELAJE</th>
+                    <th>CORTE</th>
+                    <th>A_No</th>
+                    <th>Codigo_Cliente</th>
+                    <th>Numero</th>
+                    <th>Serie</th>
+                    <th>Autorizacion</th>
+                    <th>Codigo_B</th>
+                    <th>PRECIO2</th>
+                    <th>COD_BAR</th>
+                    <th>Fecha_V</th>
+                    <th>Lote_No</th>
+                    <th>Fecha_Fab</th>
+                    <th>Fecha_Exp</th>
+                    <th>Reg_Sanitario</th>
+                    <th>Modelo</th>
+                    <th>Procedencia</th>
+                    <th>Serie_No</th>
+                    <th>Cta_Inv</th>
+                    <th>Cta_Costo</th>
+                    <th>Estado</th>
+                    <th>NoMes</th>
+                    <th>Cheking</th>
+                    <th>ID</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
 
             </div>
+        </div>
 
-        </div> -->
         <div class="row">
             <div class="col-sm-6">
                 <b>NOTA</b>
@@ -425,127 +433,139 @@ $(document).ready(function(){
             </div>
         </div>
 
-    </div>
-    <div class="col-lg-3 col-sm-12">
-        <div class="row">
-            <div class="col-sm-6">
-                <b>Total Tarifa 0%</b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="LabelSubTotal" id="LabelSubTotal" class="form-control form-control-sm text-right"
-                    value="0.00" style="color:red" readonly>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <b id="LabelTotTarifa">Total Tarifa</b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="LabelConIVA" id="LabelConIVA" class="form-control form-control-sm text-right"
-                    value="0.00" style="color:red" readonly>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <b>Total Descuento</b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="LabelDescto" id="LabelDescto" class="form-control form-control-sm text-right"
-                    value="0.00" style="color:red" readonly>
-            </div>
-        </div>
-        <div class="row" id="campo_totalServicio" style="display:none;">
-            <div class="col-sm-6">
-                <b id="textoServicio" style="letter-spacing: -0.5px;"></b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="LabelServicio" id="LabelServicio" class="form-control form-control-sm text-right"
-                    value="0.00" style="color:red" readonly>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <b id="Label3">I.V.A. </b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="LabelIVA" id="LabelIVA" class="form-control form-control-sm text-right" value="0.00"
-                    style="color:red" readonly>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <b>Total Factura</b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="LabelTotal" id="LabelTotal" class="form-control form-control-sm text-right"
-                    value="0.00" style="color:red" readonly>
-            </div>
-        </div>
-        <div class="row" style="display:none;">
-            <div class="col-sm-6">
-                <b>Total Fact (ME)</b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="LabelTotalME" id="LabelTotalME" class="form-control form-control-sm text-right"
-                    value="0.00" style="color:red" readonly>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <b>EFECTIVO</b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="TxtEfectivo" id="TxtEfectivo" class="form-control form-control-sm text-right"
-                    value="0.00" onblur="calcular_pago()" onkeyup="calcular_pago()">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <b>CUENTA DEL BANCO</b>
-                <select class="form-control input-xs select2" id="DCBanco" name="DCBanco">
-                    <option value="">Seleccione Banco</option>
-                </select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-3">
-                <b>Documento</b>
-            </div>
-            <div class="col-sm-9">
-                <input type="text" name="TextCheqNo" id="TextCheqNo" class="form-control form-control-sm">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <b>NOMBRE DEL BANCO</b>
-                <input type="text" name="TextBanco" id="TextBanco" class="form-control form-control-sm">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <b>VALOR BANCO</b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="TextCheque" id="TextCheque" class="form-control form-control-sm text-right"
-                    value="0.00" onblur="calcular_pago()">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <b>CAMBIO</b>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="LblCambio" id="LblCambio" class="form-control form-control-sm text-right"
-                    style="color: red;" value="0.00">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12"><br>
-                <button class="btn btn-default btn-block" id="btn_g"> <img src="../../img/png/grabar.png"
-                        onclick="generar()"><br> Guardar</button>
-            </div>
-        </div>
 
+    </div>
+</div>
+
+    </div>
+    <div class="col-lg-3 col-sm-12 mb-2">
+        <div class="card">
+            <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <b>Total Tarifa 0%</b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="LabelSubTotal" id="LabelSubTotal" class="form-control form-control-sm text-right"
+                                value="0.00" style="color:red" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <b id="LabelTotTarifa">Total Tarifa</b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="LabelConIVA" id="LabelConIVA" class="form-control form-control-sm text-right"
+                                value="0.00" style="color:red" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <b>Total Descuento</b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="LabelDescto" id="LabelDescto" class="form-control form-control-sm text-right"
+                                value="0.00" style="color:red" readonly>
+                        </div>
+                    </div>
+                    <div class="row" id="campo_totalServicio" style="display:none;">
+                        <div class="col-sm-6">
+                            <b id="textoServicio" style="letter-spacing: -0.5px;"></b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="LabelServicio" id="LabelServicio" class="form-control form-control-sm text-right"
+                                value="0.00" style="color:red" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <b id="Label3">I.V.A. </b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="LabelIVA" id="LabelIVA" class="form-control form-control-sm text-right" value="0.00"
+                                style="color:red" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <b>Total Factura</b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="LabelTotal" id="LabelTotal" class="form-control form-control-sm text-right"
+                                value="0.00" style="color:red" readonly>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none;">
+                        <div class="col-sm-6">
+                            <b>Total Fact (ME)</b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="LabelTotalME" id="LabelTotalME" class="form-control form-control-sm text-right"
+                                value="0.00" style="color:red" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <b>EFECTIVO</b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="TxtEfectivo" id="TxtEfectivo" class="form-control form-control-sm text-right"
+                                value="0.00" onblur="calcular_pago()" onkeyup="calcular_pago()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <b>CUENTA DEL BANCO</b>
+                            <select class="form-control input-xs select2" id="DCBanco" name="DCBanco">
+                                <option value="">Seleccione Banco</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <b>Documento</b>
+                        </div>
+                        <div class="col-sm-12">
+                            <input type="text" name="TextCheqNo" id="TextCheqNo" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <b>NOMBRE DEL BANCO</b>
+                            <input type="text" name="TextBanco" id="TextBanco" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <b>VALOR BANCO</b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="TextCheque" id="TextCheque" class="form-control form-control-sm text-right"
+                                value="0.00" onblur="calcular_pago()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <b>CAMBIO</b>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="LblCambio" id="LblCambio" class="form-control form-control-sm text-right"
+                                style="color: red;" value="0.00">
+                        </div>
+                    </div>
+                   
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                 <div class="row text-center">
+                        <div class="col-sm-12"><br>
+                            <button class="btn btn-outline-primary px-5 radius-10 btn-block" id="btn_g"> <img src="../../img/png/grabar.png"
+                                    onclick="generar()"><br> Guardar</button>
+                        </div>
+                    </div>                
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">

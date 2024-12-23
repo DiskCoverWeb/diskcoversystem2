@@ -1183,36 +1183,8 @@ function dtaAsiento_sc($Trans_No){
             AND T_No = ".$Trans_No."
             AND Tipo_Trans = 'C'
             ORDER BY CodRet ";
-            // print_r($sql);die();
-              $stmt = sqlsrv_query($cid, $sql);
-        $datos =  array();
-	   if( $stmt === false)  
-	   {  
-		 echo "Error en consulta PA.\n";  
-		 return '';
-		 die( print_r( sqlsrv_errors(), true));  
-	   }
-	    while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) 
-	   {
-		//$datos[]=['Codigo'=>$row['Codigo'],'Detalle_Conceptos'=>mb_convert_encoding($row['Detalle_Conceptos'], 'UTF-8')];	
-		  $datos[] = $row;
-	   }
-	   $botones[0] = array('boton'=>'eliminar linea Retencion', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'A_No,CodRet' );
-       $tbl = grilla_generica_new($sql);
-	   if(!empty($tbl['data'])){ 
-        foreach ($tbl['data'] as &$fila){ 
-          $ids = explode(',', $botones[0]['id']);
-          $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
-          $ids, 
-          array_keys($ids));
-          $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
-                      onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
-                      title="'.$botones[0]['boton'].'">'.
-                      $botones[0]['icono'].
-                      '</button>';
-        }
-      }
-	   return array('datos'=>$datos,'tbl'=>$tbl);
+            $tbl = $this->db->datos($sql);
+	   return $tbl;
    }
 
 
@@ -1521,8 +1493,13 @@ function cuentas_todos($query)
      function eliminar_air($a_no,$cod)
      {
 
-     	$sql = "DELETE From Asiento_Air WHERE CodigoU = '".$_SESSION['INGRESO']['CodigoU']."' AND A_No = '".$a_no."' AND CodRet = '".$cod."'";
-     	return $this->db->String_Sql($sql);
+	     	$sql = "DELETE From Asiento_Air 
+	     			WHERE CodigoU = '".$_SESSION['INGRESO']['CodigoU']."' 
+	     			AND A_No = '".$a_no."' 
+	     			AND CodRet = '".$cod."'";
+
+	     			// print_r($sql);die();
+     		return $this->db->String_Sql($sql);
      }
 
      function cambiar_codigo_sec($num,$SQLs)

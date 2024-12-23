@@ -217,11 +217,109 @@
               <div class="modal-footer">
                   <!-- <a type="button" class="btn btn-primary" href="#" id="doc_xml">Descargar xml</button>         -->
                   <!-- <button type="button" class="btn btn-default" onclick="location.reload();">Cerrar</button> -->
-                   <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                   <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
               </div>
           </div>
       </div>
   </div>
+ <div id="myModal_guia" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Datos de guia de remision</h4>
+              </div>
+              <div class="modal-body">
+                  <div class="row">
+                      <div class="col-sm-4">
+                          <b>Fecha guia remision</b>
+                          <input type="date" name="MBoxFechaGRE" id="MBoxFechaGRE" class="form-control input-xs"
+                                  value="<?php echo date('Y-m-d'); ?>" onblur="MBoxFechaGRE_LostFocus()">
+                      </div>
+                      <div class="col-sm-8">
+                      		<div class="row">
+                      			<div class="col-sm-9">
+                      			 <b>Guia de remision</b><br>
+                            	  <select class="form-select" id="DCSerieGR" name="DCSerieGR"
+                                  onblur="DCSerieGR_LostFocus()">
+                                	  <option value="">No Existe</option>
+                              	  </select>
+                              	</div>
+                          <div class="col-sm-3" style="padding: 0px">
+                          	<b> No.</b>
+                             	 <input type="text" name="LblGuiaR" id="LblGuiaR" class="form-control input-xs"
+                                  value="000000">
+                          </div>
+                      		
+                      	</div>
+                         
+                      </div>
+                      <div class="col-sm-12">
+                          <b>AUTORIZACION GUIA DE REMISION</b>
+                          <input type="text" name="LblAutGuiaRem" id="LblAutGuiaRem" class="form-control input-xs"
+                              value="0">
+                      </div>
+                      <div class="col-sm-5">
+                          <b>Iniciacion  traslados</b>
+                          <input type="date" name="MBoxFechaGRI" id="MBoxFechaGRI" class="form-control input-xs"
+                                  value="<?php echo date('Y-m-d'); ?>">
+                      </div>
+                      <div class="col-sm-7">
+                          <b>Ciudad</b>
+                          <select class="form-control input-xs" id="DCCiudadI" name="DCCiudadI" style="width:100%">
+                              <option value=""></option>
+                          </select>
+                      </div>
+                      <div class="col-sm-5">
+                          <b>Finalizacion del traslados</b>
+                          <input type="date" name="MBoxFechaGRF" id="MBoxFechaGRF" class="form-control input-xs"
+                                  value="<?php echo date('Y-m-d'); ?>">
+                      </div>
+                      <div class="col-sm-7">
+                          <b>ciudad</b>
+                              <select class="form-control input-xs" id="DCCiudadF" name="DCCiudadF" style="width:100%">
+                                  <option value=""></option>
+                              </select>
+                      </div>
+                      <div class="col-sm-12">
+                          <b>Nombre o razon socila (Transportista)</b>
+                          <select class="form-control input-xs" id="DCRazonSocial" name="DCRazonSocial" style="width:100%">
+                              <option value=""></option>
+                          </select>
+                      </div>
+                      <div class="col-sm-12">
+                          <b>Empresa de Transporte</b>
+                          <select class="form-control input-xs" id="DCEmpresaEntrega" name="DCEmpresaEntrega" style="width:100%">
+                              <option value=""></option>
+                          </select>
+                      </div>
+                      <div class="col-sm-4">
+                          <b>Placa</b>
+                          <input type="text" name="TxtPlaca" id="TxtPlaca" class="form-control input-xs"
+                              value="XXX-999">
+                      </div>
+                      <div class="col-sm-4">
+                          <b>Pedido</b>
+                          <input type="text" name="TxtPedido" id="TxtPedido" class="form-control input-xs">
+                      </div>
+                      <div class="col-sm-4">
+                          <b>Zona</b>
+                          <input type="text" name="TxtZona" id="TxtZona" class="form-control input-xs">
+                      </div>
+                      <div class="col-sm-12">
+                          <b>Lugar entrega</b>
+                          <input type="text" name="TxtLugarEntrega" id="TxtLugarEntrega" class="form-control input-xs">
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-primary" onclick="Command8_Click();">Aceptar</button>
+                  <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+          </div>
+
+      </div>
+  </div>
+  
   <script>
 	function IngClave(tipo,base=false)
     {

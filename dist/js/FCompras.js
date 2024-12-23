@@ -2,7 +2,7 @@ function autocoplet_bene()
 {
     $('#DCProveedor').select2({
       placeholder: 'Seleccione una beneficiario',
-      width:'90%',
+      width:'resolve',
       ajax: {
         url:   '../controlador/contabilidad/incomC.php?beneficiario_p=true',
         dataType: 'json',
