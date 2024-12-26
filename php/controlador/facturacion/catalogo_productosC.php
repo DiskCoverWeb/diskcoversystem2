@@ -4,6 +4,10 @@ require_once(dirname(__DIR__,3)."/lib/fpdf/generar_codigo_barras.php");
 
 
 $controlador = new catalogo_productosC();
+if(isset($_GET['CatalogoProductos']))
+{
+  echo json_encode($controlador->CatalogoProductos());
+}
 if(isset($_GET['TVcatalogo']))
 {
   $nivel = $_POST['nivel'];
@@ -71,6 +75,50 @@ class catalogo_productosC
 	{
 		$this->modelo = new catalogo_productosM();
 		$this->barras = new generar_codigo_barras();
+	}
+
+	function CatalogoProductos(){
+		$datos = $this->modelo->TVCatalogo();
+		$arbol = $this->construirArbol($datos);
+		/*$niveles = ["Autorizacion", "Serie", "Fact"];
+		$arbol = [];
+
+		foreach ($datos as $registro) {
+			$nodo = &$arbol;
+
+			foreach ($niveles as $nivel) {
+				$valorNivel = $registro[$nivel];
+
+				if (!isset($nodo[$valorNivel])) {
+					$nodo[$valorNivel] = [];
+				}
+
+				$nodo = &$nodo[$valorNivel];
+			}
+
+			$nodo[] = $registro;
+		}*/
+		return $arbol;
+	}
+
+	function construirArbol($registros) {
+		$arbol = [];
+	
+		foreach ($registros as $registro) {
+			$partes = explode('.', $registro['Codigo_Inv']);
+			$nodoActual = &$arbol;
+	
+			foreach ($partes as $parte) {
+				if (!isset($nodoActual[$parte])) {
+					$nodoActual[$parte] = ['_children' => []];
+				}
+				$nodoActual = &$nodoActual[$parte]['_children'];
+			}
+	
+			$nodoActual['_data'] = $registro['Producto'];
+		}
+	
+		return $arbol;
 	}
 
 	function TVcatalogo($nl='',$codigo=false)
