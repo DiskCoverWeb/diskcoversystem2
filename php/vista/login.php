@@ -35,7 +35,7 @@
 					<div class="col mx-auto">
 						<div class="card mb-0">
 							<div class="card-body">
-								<div class="p-4">
+								<div class="p-2">
 									<div class="mb-3 text-center">
 										<img src="../../img/jpg/logo.jpg" id="img_logo" width="60" alt="" />
 									</div>
@@ -57,7 +57,7 @@
 												<label for="inputEmailAddress" class="form-label">Email</label>
 												<input type="email" class="form-control"  name="txt_correo" id="txt_correo" placeholder="Correo / Usuario" onblur="validar_usuario()">
 											</div>
-											<div class="col-12">
+											<div class="col-12 mb-0">
 												<label for="inputChoosePassword" class="form-label">Contraseña</label>
 												<div class="input-group" id="show_hide_password">
 													<input type="password" class="form-control border-end-0" name="txt_contra" id="txt_contra"  value="12345678" placeholder="Enter Password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
@@ -74,13 +74,8 @@
 									         </div>							
 												</div>
 
-											<div class="col-md-6">
-												<!-- <div class="form-check form-switch">
-													<input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
-													<label class="form-check-label" for="flexSwitchCheckChecked">Remember Me</label>
-												</div> -->
-											</div>
-											<div class="col-md-6 text-end"><a href="auth-basic-forgot-password.html">olvido su contraseña ?</a>
+											
+											<div class="col-md-12 text-end"><a href="recuperar.php">olvido su contraseña ?</a>
 											</div>
 											<div class="col-12">
 												<div class="d-grid">

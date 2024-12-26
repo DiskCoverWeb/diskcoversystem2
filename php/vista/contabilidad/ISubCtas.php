@@ -102,17 +102,16 @@ date_default_timezone_set('America/Guayaquil');
 
 <div id="generalContainer" class="overflow-auto pt-1 pb-3">
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-      <div class="breadcrumb-title pe-3">
-        <?php echo $NombreModulo; ?>
-      </div>
-        <div class="ps-3">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0 p-0">
-              <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
-              <li class="breadcrumb-item active" aria-current="page">Ctas. Ingreso / Egresos / Primas / Centro de Costos</li>
-            </ol>
-          </nav>
+        <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
         </div>
+        <div class="ps-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+            <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+            </li>
+            </ol>
+        </nav>
+        </div>          
     </div>
     <div class="row row-cols-auto">
         <div class="btn-group">

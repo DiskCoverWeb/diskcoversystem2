@@ -296,28 +296,10 @@ $(document).ready(function()
       url:   '../controlador/facturacion/lista_facturasC.php?re_autorizar=true',
       type:  'post',
       dataType: 'json',
-       success:  function (data) {
-       
-
-    // $('#myModal_espera').modal('hide');
-    //    if(response==1)
-    //    {
-    //      Swal.fire('Factura autoizada','','success').then(function()
-    //      {
-    //        cargar_registros();
-    //      })
-    //    }else if(response == 2)
-    //    {
-    //     Swal.fire('Error al enviar el comprobante estado : Revisar la carpeta de rechazados','','error')
-    //    }else if(response==-1)
-    //    {
-    //     Swal.fire('Comprobante devuelto : Revisar la carpeta de rechazados','','error')
-    //    }else{        
-    //     Swal.fire(response,'','error')
-    //    }
+       success:  function (data) {       
 
     $('#myModal_espera').modal('hide');
-      // console.log(data);
+      console.log(data);
       if(data.respuesta==1)
       { 
         Swal.fire({

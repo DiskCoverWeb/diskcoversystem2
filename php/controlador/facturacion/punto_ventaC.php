@@ -295,7 +295,7 @@ class punto_ventaC
 	{
 		$datos = $this->modelo->DGAsientoF($grilla = 1);
 		// print_r($datos);die();
-		return $datos['tbl'];
+		return $datos['datos'];
 	}
 
 	function IngresarAsientoF($parametros)
@@ -842,6 +842,10 @@ class punto_ventaC
 				if ($FA['TC'] <> "DO") {
 					//la respuesta puede se texto si envia numero significa que todo saliobien
 					$rep = $this->sri->Autorizar_factura_o_liquidacion($FA);
+					if($rep[0]=='-1')
+					{
+						return $rep;
+					}
 					$clave = $this->sri->Clave_acceso($TA['Fecha'], '01', $TA['Serie'], $Factura_No);
 					$rep1 = 0;
 					$imp_guia = '';
@@ -868,10 +872,15 @@ class punto_ventaC
 
 					$this->modelo->pdf_factura_elec($FA['Factura'], $FA['Serie'], $FA['codigoCliente'], $imp, $clave, $periodo = false, 0, 1);
 					// print_r('ex');die();
-					if ($rep == 1) {
+					if ($rep[0] == 1) {
 						if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 0 && $_SESSION['INGRESO']['Grafico_PV'] == 0) {
+							$rep['rodillo'] = $_SESSION['INGRESO']['Impresora_Rodillo'];
+							$rep['pdf'] = $imp; 
+							$rep['respuesta_guia'] = $rep1;
+							$rep['pdf_guia'] = $imp_guia;
+							$rep['clave_guia'] = $clave_guia;
 
-							return array('respuesta' => $rep, 'pdf' => $imp, 'clave' => $clave, 'respuesta_guia' => $rep1, 'pdf_guia' => $imp_guia, 'clave_guia' => $clave_guia, 'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
+							return $rep; 
 
 						} else if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 1 && $_SESSION['INGRESO']['Grafico_PV'] == 0) {
 							// impresion matricial
@@ -887,7 +896,16 @@ class punto_ventaC
 						}
 
 					} else {
-						return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep, 'clave' => $clave, 'respuesta_guia' => $rep1, 'pdf_guia' => $imp_guia, 'clave_guia' => $clave_guia, 'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
+
+						$rep['rodillo'] = $_SESSION['INGRESO']['Impresora_Rodillo'];
+							$rep['pdf'] = $imp; 
+							$rep['respuesta_guia'] = $rep1;
+							$rep['pdf_guia'] = $imp_guia;
+							$rep['clave_guia'] = $clave_guia;
+
+							return $rep; 
+
+						// array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep, 'clave' => $clave, 'respuesta_guia' => $rep1, 'pdf_guia' => $imp_guia, 'clave_guia' => $clave_guia, 'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
 					}
 				}
 			} else {

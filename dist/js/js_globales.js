@@ -634,6 +634,7 @@ function solo_3_numeros(id)
 }
 
     function formatoDate(date) {
+    	// console.log(date);
       var formattedDate = new Date(date);
       var d = formattedDate.getDate();
       var m = formattedDate.getMonth();

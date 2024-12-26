@@ -799,14 +799,16 @@ class lista_facturasC
 			$TC = '03';
 		}
 		// print_r('ss');die();
-		$rep = $this->sri->Autorizar_factura_o_liquidacion($parametros);
+		$resp = $this->sri->Autorizar_factura_o_liquidacion($parametros);
+		// print_r($resp);die();
 		$clave = $this->sri->Clave_acceso($parametros['Fecha'], $TC, $parametros['serie'], $parametros['FacturaNo']);
 		$imp = '';
-		if ($rep == 1) {
-			return array('respuesta' => $rep, 'pdf' => $imp, 'clave' => $clave);
+		if ($resp[0] == 1) {
+			$resp = $resp['pdf'] = $imp;
+			return $resp;
 		} else {
 			try {
-				if (json_encode($rep) == false) { //si retorna false puede ser por la codificación debido a caracteres especiales, como tildes.
+				if (json_encode($resp) == false) { //si retorna false puede ser por la codificación debido a caracteres especiales, como tildes.
 					$rep = mb_convert_encoding($rep, 'UTF-8');
 				}
 			} catch (Exception $e) {

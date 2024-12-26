@@ -240,7 +240,7 @@ class FVentasM
    {
 
    	//bora asientos de compra
-		 $cid=$this->conn;
+		$cid=$this->conn;
 		$sql = "DELETE FROM Asiento_Ventas WHERE Item = '".$_SESSION['INGRESO']['item']."' AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."' AND T_No = ".$Trans_No."; ";
 		$sql.= "DELETE FROM Asiento_Air WHERE Item = '".$_SESSION['INGRESO']['item']."' AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
          AND Tipo_Trans = 'V' AND T_No = ".$Trans_No." ";

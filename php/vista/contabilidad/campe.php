@@ -58,7 +58,7 @@ function cambiarPeriodo()
         // console.log(response);
         if(response==1)
         {
-            Swal.fire('Periodo Cambiado','','success').then(function(){ location.href ="inicio.php?mod=10"; })
+            Swal.fire('Periodo Cambiado','','success').then(function(){ location.href ="inicio.php?mod=01"; })
         }
         }
     });
@@ -158,8 +158,8 @@ function cambiarPeriodo()
 								</div>
 						</div>
 						<div class="modal-footer" style="background-color: #fff;">
-							<button id="btnCopiar" class="btn btn-primary" onclick='cambiarPeriodo();'>Cambiar</button>
-						    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+							<button id="btnCopiar" class="btn btn-outline-primary" onclick='cambiarPeriodo();'>Cambiar</button>
+						    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
 						</div>
 			  </div>			  
 			</div>

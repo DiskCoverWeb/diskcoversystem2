@@ -27,6 +27,7 @@ class autorizacion_sri
 	// Puedes generar una diferente usando la funcion $getIV()
 	private $linkSriAutorizacion;
 	private $linkSriRecepcion;
+	private $rutaJava8;  
 	function __construct()
 	{
 		$this->clave = 'Una cadena, muy, muy larga para mejorar la encriptacion';
@@ -37,6 +38,10 @@ class autorizacion_sri
 
        if(isset($_SESSION['INGRESO']['Web_SRI_Autorizado'])){$this->linkSriAutorizacion = $_SESSION['INGRESO']['Web_SRI_Autorizado'];}
  	   if(isset($_SESSION['INGRESO']['Web_SRI_Recepcion'])){$this->linkSriRecepcion = $_SESSION['INGRESO']['Web_SRI_Recepcion'];}
+
+
+		// $this->rutaJava8  = "";
+		$this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
 	}
 	function encriptar($dato)
 	{
@@ -277,7 +282,7 @@ class autorizacion_sri
 				  }
 				   $detalle[$key]['SubTotal'] =  $this->money_formato(($value['Cantidad']*$value['Precio'])-($value['Total_Desc']+$value['Total_Desc2']),2);
 				   $detalle[$key]['Serie_No'] = $value['Serie_No'];
-				   $detalle[$key]['Total_IVA'] = $this->money_formato($value['Total_IVA'],2);
+				   $detalle[$key]['Total_IVA'] = $this->money_formato(($value['Total_IVA']),2);
 				   $detalle[$key]['Porc_IVA']= $this->money_formato($value['Porc_IVA'],2);
 			    }
 			    $cabecera['fechaem']=  date("d/m/Y", strtotime($cabecera['Fecha']));		
@@ -287,10 +292,6 @@ class autorizacion_sri
 			    // print_r($cabecera);print_r($detalle);die();
 			    $cabecera['ClaveAcceso'] =$this->Clave_acceso($parametros['Fecha'],$cabecera['cod_doc'],$parametros['serie'],$parametros['FacturaNo']);
 
-			    // print_r($cabecera);
-// print_r($detalle);die();
-			    // die();
-		
 	            
 	           $xml = $this->generar_xml($cabecera,$detalle);
 	           // print_r('expression');
@@ -307,50 +308,39 @@ class autorizacion_sri
 	           	 // print($firma);die();
 
 	           	 if($firma==1)
-	           	 {
-	           	 	clearstatcache();
-	           	 
-	           	 	$validar_autorizado = $this->comprobar_xml_sri(
-	           	 		$cabecera['ClaveAcceso'],
-	           	 		$this->linkSriAutorizacion);
-	           	 	if($validar_autorizado == -1)
-			   		 {
+	           	 {	           	 
+	           	 	
 			   		 	$enviar_sri = $this->enviar_xml_sri(
 			   		 		$cabecera['ClaveAcceso'],
 			   		 		$this->linkSriRecepcion);
-			   		 	if($enviar_sri==1)
+			   		 	// die();
+			   		 	if($enviar_sri[0]==1)
 			   		 	{
 			   		 		//una vez enviado comprobamos el estado de la factura
 			   		 		$resp =  $this->comprobar_xml_sri($cabecera['ClaveAcceso'],$this->linkSriAutorizacion);
-			   		 		if($resp==1)
+			   		 		if($resp[0]==1)
 			   		 		{
 			   		 			// print('dd');
-			   		 			$resp = $this->actualizar_datos_CE($cabecera['ClaveAcceso'],$cabecera['tc'],$cabecera['serie'],$cabecera['factura'],$cabecera['Entidad'],$cabecera['Autorizacion'],$cabecera['Fecha'],$datos_fac[0]['CodigoC']);
+			   		 			$resp_act = $this->actualizar_datos_CE($cabecera['ClaveAcceso'],$cabecera['tc'],$cabecera['serie'],$cabecera['factura'],$cabecera['Entidad'],$cabecera['Autorizacion'],$cabecera['Fecha'],$datos_fac[0]['CodigoC']);
 			   		 			return  $resp;
 			   		 		}
+			   		 		return $resp;
 			   		 		// print_r($resp);die();
 			   		 	}else
 			   		 	{
-			   		 		return $enviar_sri;
+			   		 		if($enviar_sri[0]==0)
+			   		 		{
+			   		 			$resp =  $this->comprobar_xml_sri($cabecera['ClaveAcceso'],$this->linkSriAutorizacion);
+			   		 			if($resp[0]==1)
+			   		 			{
+			   		 				$resp_actu = $this->actualizar_datos_CE($cabecera['ClaveAcceso'],$cabecera['tc'],$cabecera['serie'],$cabecera['factura'],$cabecera['Entidad'],$cabecera['Autorizacion'],$cabecera['Fecha'],$datos_fac[0]['CodigoC']);
+			   		 			}
+			   		 			return $resp;
+			   		 		}else{
+			   		 			return $enviar_sri;
+			   		 		}
 			   		 	}
 
-			   		 }else 
-			   		 {
-			   		 	// if($validar_autorizado==2)
-			   		 	// {
-			   		 	// 	$ruta_enviados=dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/Enviados/'.$cabecera['ClaveAcceso'].'.xml';
-			   		 	// 	if(!file_exists($ruta_enviados))
-			   		 	// 	{
-			   		 	// 		return -3;
-			   		 	// 	}
-			   		 	// }
-			   		 	if($validar_autorizado==1)
-			   		 	{
-			   		 		 $this->actualizar_datos_CE($cabecera['ClaveAcceso'],$cabecera['tc'],$cabecera['serie'],$cabecera['factura'],$cabecera['Entidad'],$cabecera['Autorizacion'],$cabecera['Fecha'],$datos_fac[0]['CodigoC']);
-			   		 	}
-			   		 	// RETORNA SI YA ESTA AUTORIZADO O SI FALL LA REVISIO EN EL SRI
-			   			return $validar_autorizado;
-			   		 }
 	           	 }else
 	           	 {
 	           	 	//RETORNA SI FALLA AL FIRMAR EL XML
@@ -612,13 +602,13 @@ class autorizacion_sri
 	       	 // print($firma);die();
 	       	 if($firma==1)
 	       	 {
-	       	 	$validar_autorizado = $this->comprobar_xml_sri(
-	       	 		$aut,
-	       	 		$this->linkSriAutorizacion);
+	       	 	// $validar_autorizado = $this->comprobar_xml_sri(
+	       	 	// 	$aut,
+	       	 	// 	$this->linkSriAutorizacion);
 
-	       	 	// print_r($validar_autorizado);die();
-	       	 	if($validar_autorizado == -1)
-		   		 {
+	       	 	// // print_r($validar_autorizado);die();
+	       	 	// if($validar_autorizado == -1)
+		   		//  {
 		   		 	$enviar_sri = $this->enviar_xml_sri(
 		   		 		$aut,
 		   		 		$this->linkSriRecepcion);
@@ -642,12 +632,12 @@ class autorizacion_sri
 		   		 		return $enviar_sri;
 		   		 	}
 
-		   		 }else 
-		   		 {
-		   		 	// $resp = $this->actualizar_datos_CE($cabecera['ClaveAcceso'],$cabecera['tc'],$cabecera['serie'],$cabecera['factura'],$cabecera['Entidad'],$cabecera['Autorizacion']);
-		   		 	// RETORNA SI YA ESTA AUTORIZADO O SI FALL LA REVISIO EN EL SRI
-		   			return $validar_autorizado;
-		   		 }
+		   		 // }else 
+		   		 // {
+		   		 // 	// $resp = $this->actualizar_datos_CE($cabecera['ClaveAcceso'],$cabecera['tc'],$cabecera['serie'],$cabecera['factura'],$cabecera['Entidad'],$cabecera['Autorizacion']);
+		   		 // 	// RETORNA SI YA ESTA AUTORIZADO O SI FALL LA REVISIO EN EL SRI
+		   		// 	return $validar_autorizado;
+		   		 // }
 	       	 }else
 	       	 {
 	       	 	//RETORNA SI FALLA AL FIRMAR EL XML
@@ -788,41 +778,31 @@ class autorizacion_sri
 	           	 // print($firma);die();
 	           	 if($firma==1)
 	           	 {
-	           	 	$validar_autorizado = $this->comprobar_xml_sri(
-	           	 		$TFA['ClaveAcceso_GR'],
-	           	 		$this->linkSriAutorizacion);
-	           	 	// print_r($validar_autorizado);die();
-	           	 	if($validar_autorizado == -1)
-			   		 {
+	           	 	
 			   		 	$enviar_sri = $this->enviar_xml_sri(
 			   		 		$TFA['ClaveAcceso_GR'],
 			   		 		$this->linkSriRecepcion);
-			   		 	if($enviar_sri==1)
+			   		 	if($enviar_sri[0]==1)
 			   		 	{
 			   		 		//una vez enviado comprobamos el estado de la factura
 			   		 		$resp =  $this->comprobar_xml_sri($TFA['ClaveAcceso_GR'],$this->linkSriAutorizacion);
-			   		 		if($resp==1)
+			   		 		if($resp[0]==1)
 			   		 		{
 			   		 			// print('dd');
-			   		 			$resp = $this->actualizar_datos_GR($TFA);
+			   		 			$resp_act = $this->actualizar_datos_GR($TFA);
 			   		 			return  $resp;
 			   		 		}
 			   		 		// print_r($resp);die();
 			   		 	}else
 			   		 	{
+			   		 		if($enviar_sri[0]==0)
+			   		 		{
+			   		 			$resp = $this->actualizar_datos_GR($TFA);
+			   		 		}
 			   		 		return $enviar_sri;
 			   		 	}
 
-			   		 }else 
-			   		 {
-			   		 	// print_r('expressiondd');die();
-			   		 	if($validar_autorizado==1)
-			   		 	{
-			   		 		return $this->actualizar_datos_GR($TFA);
-			   		 	}
-			   		 	// RETORNA SI YA ESTA AUTORIZADO O SI FALL LA REVISIO EN EL SRI
-			   			return $validar_autorizado;
-			   		 }
+			   		
 	           	 }else
 	           	 {
 	           	 	//RETORNA SI FALLA AL FIRMAR EL XML
@@ -2606,21 +2586,17 @@ function Autorizar_retencion($parametros)
 	           	 // print($firma);die();
 	           	 if($firma==1)
 	           	 {
-	           	 	$validar_autorizado = $this->comprobar_xml_sri(
-	           	 		$aut,
-	           	 		$this->linkSriAutorizacion);
-	           	 	if($validar_autorizado == -1)
-			   		 {
+	           	 	
 			   		 	$enviar_sri = $this->enviar_xml_sri(
 			   		 		$aut,
 			   		 		$this->linkSriRecepcion);
-			   		 	if($enviar_sri==1)
+			   		 	if($enviar_sri[0]==1)
 			   		 	{
 			   		 		//una vez enviado comprobamos el estado de la factura
 			   		 		$resp =  $this->comprobar_xml_sri($aut,$this->linkSriAutorizacion);
-			   		 		if($resp==1)
+			   		 		if($resp[0]==1)
 			   		 		{
-			   		 			$resp = $this->actualizar_datos_CER($aut,$parametros['TP'],$TFA[0]["Serie_R"],$TFA[0]["Retencion"],generaCeros($_SESSION['INGRESO']['IDEntidad'],3),$TFA[0]["Autorizacion_R"],$TFA[0]['Fecha']->format('Y-m-d'));
+			   		 			$resp_auto = $this->actualizar_datos_CER($aut,$parametros['TP'],$TFA[0]["Serie_R"],$TFA[0]["Retencion"],generaCeros($_SESSION['INGRESO']['IDEntidad'],3),$TFA[0]["Autorizacion_R"],$TFA[0]['Fecha']->format('Y-m-d'));
 			   		 			return  $resp;
 			   		 		}else
 			   		 		{
@@ -2629,19 +2605,18 @@ function Autorizar_retencion($parametros)
 			   		 		// print_r($resp);die();
 			   		 	}else
 			   		 	{
-			   		 		return $enviar_sri;
+			   		 		if($enviar_sri[0]==0)
+			   		 		{
+			   		 			$resp =  $this->comprobar_xml_sri($aut,$this->linkSriAutorizacion);
+			   		 			if($resp[0]==1)
+			   		 			{   		 				
+			   		 				$resp_auto = $this->actualizar_datos_CER($aut,$parametros['TP'],$TFA[0]["Serie_R"],$TFA[0]["Retencion"],generaCeros($_SESSION['INGRESO']['IDEntidad'],3),$TFA[0]["Autorizacion_R"],$TFA[0]['Fecha']->format('Y-m-d'));
+			   		 			}
+			   		 			return $resp;
+			   		 		}else{
+			   		 			return $enviar_sri;
+			   		 		}
 			   		 	}
-
-			   		 }else 
-			   		 {
-			   		 	if($validar_autorizado==1)
-			   		 	{
-			   		 		$resp = $this->actualizar_datos_CER($aut,$parametros['TP'],$TFA[0]["Serie_R"],$TFA[0]["Retencion"],generaCeros($_SESSION['INGRESO']['IDEntidad'],3),$TFA[0]["Autorizacion_R"],$TFA[0]['Fecha']->format('Y-m-d'));
-			   		 	}
-			   		 	// $resp = $this->actualizar_datos_CE($cabecera['ClaveAcceso'],$cabecera['tc'],$cabecera['serie'],$cabecera['factura'],$cabecera['Entidad'],$cabecera['Autorizacion']);
-			   		 	// RETORNA SI YA ESTA AUTORIZADO O SI FALL LA REVISIO EN EL SRI
-			   			return $validar_autorizado;
-			   		 }
 	           	 }else
 	           	 {
 	           	 	//RETORNA SI FALLA AL FIRMAR EL XML
@@ -3137,49 +3112,20 @@ function generar_xml_retencion($cabecera,$detalle)
     {
     	$entidad =  generaCeros($_SESSION['INGRESO']['IDEntidad'],3);
     	$empresa = $_SESSION['INGRESO']['item'];
-    	$comprobar_sri = dirname(__DIR__).'/SRI/firmar/sri_comprobar.jar';
+    	$comprobar_sri = dirname(__DIR__).'/SRI/firmar/JavClientSri.jar';
     	$url_autorizado=dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/Autorizados/';
  	    $url_No_autorizados =dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/No_autorizados/';
  	   
-    	// print_r("java -jar ".$comprobar_sri." ".$clave_acceso." ".$url_autorizado." ".$url_No_autorizados." ".$link_autorizacion);die();
-   		 exec("java -jar ".$comprobar_sri." ".$clave_acceso." ".$url_autorizado." ".$url_No_autorizados." ".$link_autorizacion,$f);   	
-   		 // print_r($f);
-   		 // die();
-   		 if(empty($f))
-   		 {
-   		 	return;
-   		 }
 
+   		 $command = $this->rutaJava8."java -jar ".$comprobar_sri." 2 ".$clave_acceso." ".$url_autorizado." ".$url_No_autorizados." ".$link_autorizacion; 
+   		 // print_r($command);die();
 
-   		 $resp = explode('-',$f[0]);
-
-   		 // print_r($resp);
-   		 if(count($resp)>1)
-   		 {
-   		 	$resp[1] = trim($resp[1]);
-   		 	if(!isset($resp[1]) && $resp[0]=='Error al validar el comprobante estado NO AUTORIZADO')
-	   		{
-	   			return -1;
-	   		}
-   		 	// print_r($resp[1]);
-   		 	//cuando null NO PROCESADO es liquidacion de compras
-	   		 if(isset($resp[1]) && $resp[1]=='FACTURA NO PROCESADO' || isset($resp[1]) && $resp[1]=='LIQUIDACION DE COMPRAS NO PROCESADO' || $resp[1] == 'COMPROBANTE DE RETENCION NO PROCESADO' || $resp[1]=='GUIA DE REMISION NO PROCESADO' || isset($resp[1]) && $resp[1]=='NOTA DE CREDITO NO PROCESADO')
-	   		 {
-	   		 	// print_r($resp[1].'<br>');
-
-	   		 	return -1;
-	   		 }else if(isset($resp[1]) && $resp[1]=='FACTURA AUTORIZADO' || isset($resp[1]) && $resp[1]=='LIQUIDACION DE COMPRAS AUTORIZADO' || $resp[1] == 'COMPROBANTE DE RETENCION AUTORIZADO' || isset($resp[1]) && $resp[1]=='GUIA DE REMISION AUTORIZADO' || isset($resp[1]) && $resp[1]=='NOTA DE CREDITO AUTORIZADO')
-	   		 {
-	   		 	// print_r('as');
-	   		 	return 1;
-	   		 }else
-	   		 {
-	   			return 'ERROR COMPROBACION -'.$f[0];
-	   		 }
-	   	}else
-	   	{
-	   		return 2;
-	   	}
+   		$output = shell_exec($command);   		
+   		$output = mb_convert_encoding($output, 'UTF-8', 'ISO-8859-1');
+   		// print_r($output);die();
+		// $output = json_decode($output,true); 	
+   		
+   		return $output;
     }
 
     //envia el xml asia el sri
@@ -3191,38 +3137,28 @@ function generar_xml_retencion($cabecera,$detalle)
     	$ruta_firmados=dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/Firmados/';
     	$ruta_enviados=dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/Enviados/';
  	    $ruta_rechazados =dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/Rechazados/';
-    	$enviar_sri = dirname(__DIR__).'/SRI/firmar/sri_enviar.jar';
+    	$enviar_sri = dirname(__DIR__).'/SRI/firmar/JavClientSri.jar';
 
     	if(!file_exists($ruta_firmados.$clave_acceso.'.xml'))
     	{
     		$respuesta = ' XML firmado no encontrado';
 	 		return $respuesta;
     	}
-    	 // print_r("java -jar ".$enviar_sri." ".$clave_acceso." ".$ruta_firmados." ".$ruta_enviados." ".$ruta_rechazados." ".$url_recepcion);die();
-   		 exec("java -jar ".$enviar_sri." ".$clave_acceso." ".$ruta_firmados." ".$ruta_enviados." ".$ruta_rechazados." ".$url_recepcion,$f);
-   		 // print_r($f);die();
-   		 if(count($f)>0)
-   		 {
-	   		 $resp = explode('-',$f[0]);
-	   		 if($resp[1]=='RECIBIDA')
-	   		 {
-	   		 	return 1;
-	   		 }else if($resp[1]=='DEVUELTA')
-	   		 {
-	   		 	return 2;
-	   		 }else if($resp[1]==null || $resp[1]=='' )
-	   		 {
-	   		 	//es devuelta
-	   		 	return 2;
-	   		 }else
-	   		 {  
-	   		 	return $f;
-	   		 }
-   		}else
-   		{
-   			// algo paso
-   			return 2;
-   		}
+
+    	if(!file_exists($ruta_firmados.$clave_acceso.'.xml'))
+    	{
+    		$respuesta = ' XML firmado no encontrado';
+	 		return $respuesta;
+    	}
+		
+		$command = $this->rutaJava8."java -jar ".$enviar_sri." 1 ".$clave_acceso." ".$ruta_firmados." ".$ruta_enviados." ".$ruta_rechazados." ".$url_recepcion; 
+   		 // print_r($command);die();
+
+   		$output = shell_exec($command);
+   		$output = mb_convert_encoding($output, 'UTF-8', 'ISO-8859-1');
+   		// $output = json_decode($output,true);
+   		// print_r($output);die();
+   		return $output;
     }
 
     function actualizar_datos_GR($TFA)

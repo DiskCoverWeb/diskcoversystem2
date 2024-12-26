@@ -1,5 +1,6 @@
 <?php 
 require_once(dirname(__DIR__,1)."/modelo/loginM.php");
+require_once(dirname(__DIR__, 2) . '/lib/phpmailer/enviar_emails.php');
 $controlador = new loginC();
 
 if (isset($_GET['Cartera_Entidad'])) {
@@ -37,7 +38,10 @@ if (isset($_GET['Ingresar_cartera'])) {
 if (isset($_GET['logout'])) {
 	echo json_encode($controlador->logout());
 }
-
+if (isset($_GET['recuperar'])) {
+	$parametro = $_POST['parametros'];
+	echo json_encode($controlador->recuperar_clave($parametro));
+}
 
 
 
@@ -47,9 +51,11 @@ if (isset($_GET['logout'])) {
 class loginC
 {
 	private $modelo;	
+	private $email;
 	function __construct()
 	{
-		$this->modelo = new loginM();
+		$this->modelo = new loginM();		
+		$this->email = new enviar_emails();
 	}
 
 	function validar_entidad_cartera($entidad)
@@ -637,6 +643,142 @@ class loginC
 		$_SESSION = array();  // Limpia todas las variables de la sesión
 		return 1;
 	}
+
+	function recuperar_clave($parametro)
+	{
+		// print_r($parametro);die();
+		//entra a buscar en cartera
+		if (is_numeric($parametro['usuario'])) {
+			$empresa = $this->modelo->empresa_cartera($parametro['empresa'], $parametro['entidad']);
+			// print_r($empresa);die();
+			$datos = $this->modelo->buscar_cliente_cartera($parametro['usuario'], false, $empresa);
+			// print_r($datos);die();
+			if (count($datos) > 0) {
+				$datos_email = array(
+					'nick' => $datos[0]['CI_RUC'],
+					'clave' => $datos[0]['Clave'],
+					'email' => $datos[0]['Email'],
+					'entidad' => $empresa[0]['Razon_Social'],
+					'ruc' => $parametro['empresa'],
+					'usuario' => $datos[0]['Cliente'],
+					'CI_usuario' => $datos[0]['CI_RUC'],
+					'cartera' => 1,
+				);
+				// print_r($datos_email);die();
+				$rep = $this->enviar_email($datos_email);
+				return array('respuesta' => $rep, 'email' => $datos_email['email']);
+			} else {
+				return -1;
+			}
+		} else {
+			//entra a buscar en usuarios de sistema
+			// print_r($parametro);die();
+			$datos = $this->modelo->datos_usuario_mysql($parametro['usuario'], $entidad = false,false);
+			// print_r($datos);die();
+			if (count($datos) > 0) {
+				$datos_email = array(
+					'nick' => $datos[0]['Usuario'],
+					'clave' => $datos[0]['Clave'],
+					'email' => $datos[0]['Email'],
+					'entidad' => '',
+					'ruc' => $parametro['empresa'],
+					'usuario' => $datos[0]['Nombre_Usuario'],
+					'CI_usuario' => $datos[0]['CI_NIC'],
+					'cartera' => 0,
+				);
+				// print_r($datos_email);die();
+				$rep = $this->enviar_email($datos_email);
+				return array('respuesta' => $rep, 'email' => $datos_email['email']);
+			} else {
+				return -1;
+			}
+
+			// print_r($datos);die();
+		}
+
+	}
+
+	function enviar_email($parametros)
+	{
+		$empresaGeneral = $this->modelo->Empresa_data($parametros['ruc']);
+		if ($empresaGeneral == -1) {
+			return 2;
+		}
+		$datos = $this->modelo->entidades_usuario($parametros['CI_usuario']);
+		if ($parametros['cartera'] == 1) {
+			$datos[0]['Nombre_Usuario'] = $parametros['usuario'];
+			$datos[0]['Usuario'] = $parametros['nick'];
+			$datos[0]['Clave'] = $parametros['clave'];
+			$datos[0]['Email'] = $parametros['email'];
+		}
+
+		$email_conexion = 'info@diskcoversystem.com';
+		$email_pass = 'info2021DiskCover';
+		$correo_apooyo = "credenciales@diskcoversystem.com"; //correo que saldra ala do del emisor
+		$cuerpo_correo = '
+<pre>
+Este correo electronico fue generado automaticamente del Sistema Administrativo Financiero Contable DiskCover System a usted porque figura como correo electronico alternativo en nuestra base de datos.
+
+A solicitud de El(a) Sr(a) ' . $parametros['usuario'] . ' se envian sus credenciales de acceso:
+</pre> 
+<br>
+<table>
+<tr><td><b>Link:</b></td><td>https://erp.diskcoversystem.com</td></tr>';
+		if ($parametros['cartera'] == 1) {
+			$cuerpo_correo .= '<tr><td><b>Entidad:</b></td><td>' . $parametros['entidad'] . '</td></tr>
+	<tr><td><b>Ruc:</b></td><td>' . $parametros['ruc'] . '</td></tr>';
+		}
+		$cuerpo_correo .= '<tr><td><b>Nombre Usuario:</b></td><td>' . $datos[0]['Nombre_Usuario'] . '</td></tr>
+<tr><td><b>Usuario:</b></td><td>' . $datos[0]['Usuario'] . '</td></tr>
+<tr><td><b>Clave:</b></td><td>' . $datos[0]['Clave'] . '</td></tr>
+<tr><td><b>Email:</b></td><td>' . $datos[0]['Email'] . '</td></tr>
+</table>
+A este usuario se asigno las siguientes Entidades: 
+<br>';
+		if ($parametros['cartera'] == 0) {
+			$cuerpo_correo .= '<table> <tr><td width="30%"><b>Codigo</b></td><td width="50%"><b>Entidad</b></td></tr>';
+			foreach ($datos as $value) {
+				$cuerpo_correo .= '<tr><td>' . $value['id'] . '</td><td>' . $value['text'] . '</td></tr>';
+			}
+		}
+		$cuerpo_correo .= '</table><br>';
+		$cuerpo_correo .= ' 
+<pre>
+Nosotros respetamos su privacidad y solamente se utiliza este correo electronico para mantenerlo informado sobre nuestras ofertas, promociones, claves de acceso y comunicados. No compartimos, publicamos o vendemos su informacion personal fuera de nuestra empresa.
+
+Esta direccion de correo electronico no admite respuestas. En caso de requerir atencion personalizada por parte de un asesor de servicio al cliente; Usted podra solicitar ayuda mediante los canales de atencion al cliente oficiales que detallamos a continuacion:
+</pre>
+<table width="100%">
+<tr>
+ <td align="center">
+ <hr>
+    SERVIRLES ES NUESTRO COMPROMISO, DISFRUTARLO ES EL SUYO
+<hr>
+    </td>
+    </tr>
+    <tr>   
+ <td align="center">
+    www.diskcoversystem.com
+    </td>
+    </tr>
+     <tr>   
+ <td align="center">
+        QUITO - ECUADOR
+    </td>
+    </tr>
+  </table>
+';
+
+		$titulo_correo = 'Credenciales de acceso al sistema DiskCover System';
+		$archivos = false;
+		$correo = $parametros['email'];
+		if ($this->email->enviar_credenciales($archivos, $correo, $cuerpo_correo, $titulo_correo, $correo_apooyo, 'Credenciales de acceso al sistema DiskCover System', $email_conexion, $email_pass, $html = 1, $empresaGeneral) == 1) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+
 
 
 }

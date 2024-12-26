@@ -2,39 +2,38 @@
 
 <div class="overflow-auto p-1">
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-		<div class="breadcrumb-title pe-3">
-			<?php echo $NombreModulo; ?>
+		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
 		</div>
 		<div class="ps-3">
-			<nav aria-label="breadcrumb">
-			<ol class="breadcrumb mb-0 p-0">
-				<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
-				<li class="breadcrumb-item active" aria-current="page">Saldo de facturas en submodulos</li>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+			<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+			</li>
 			</ol>
-			</nav>
-		</div>
+		</nav>
+		</div>          
 	</div>
 
 
    <div class="row row-cols-auto">
-	   <div class="col-12 d-flex align-items-center">
+	   <div class="col-12 d-flex align-items-center ps-4">
 	    <div class="row row-cols-auto btn-group col-4">          
-        	<a  href="./contabilidad.php?mod=contabilidad#" data-bs-toggle="tooltip"  title="Salir de modulo" class="btn btn-outline-secondary">
+        	<a  href="./contabilidad.php?mod=contabilidad#" data-bs-toggle="tooltip"  title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
         		<img src="../../img/png/salire.png">
         	</a>
-        	<button title="Consultar SubModulo" data-bs-toggle="tooltip"   class="btn btn-outline-secondary" onclick="consultar_datos();">
+        	<button title="Consultar SubModulo" data-bs-toggle="tooltip"   class="btn btn-outline-secondary btn-sm" onclick="consultar_datos();">
         		<img src="../../img/png/archivero1.png" >
         	</button>
-        	<button title="Consultar SubModulo por Meses" data-bs-toggle="tooltip"   class="btn btn-outline-secondary" onclick="consultar_datos_x_meses();">
+        	<button title="Consultar SubModulo por Meses" data-bs-toggle="tooltip"   class="btn btn-outline-secondary btn-sm" onclick="consultar_datos_x_meses();">
         		<img src="../../img/png/sub_mod_mes.png" >
         	</button>
-        	<a href="" title="Presenta Resumen de costos"  data-bs-toggle="tooltip"  class="btn btn-outline-secondary">
+        	<a href="" title="Presenta Resumen de costos"  data-bs-toggle="tooltip"  class="btn btn-outline-secondary btn-sm">
         		<img src="../../img/png/resumen.png">
         	</a>   
-        	 <a href="#" class="btn btn-outline-secondary" id='descargar_pdf' data-bs-toggle="tooltip"  title="Descargar PDF">
+        	 <a href="#" class="btn btn-outline-secondary btn-sm" id='descargar_pdf' data-bs-toggle="tooltip"  title="Descargar PDF">
         		<img src="../../img/png/pdf.png">
         	</a>
-        	<a href="#"  class="btn btn-outline-secondary"  data-bs-toggle="tooltip" title="Descargar excel" id='descargar_excel'>
+        	<a href="#"  class="btn btn-outline-secondary btn-sm"  data-bs-toggle="tooltip" title="Descargar excel" id='descargar_excel'>
         		<img src="../../img/png/table_excel.png">
         	</a> 
         	<input type="hidden" name="reporte_tipo" id="reporte_tipo" value="0">        	

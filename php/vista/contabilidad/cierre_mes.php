@@ -1,3 +1,12 @@
+<script type="text/javascript">
+  $(document).ready(function()
+  {
+  //$('#TipoSuper_MYSQL').val('Supervisor');
+  //$('#clave_supervisor').modal('show');
+  IngClave('Gerente');
+  })
+
+</script>
 <script src="../../dist/js/cierre_mes.js"></script>
 <div class="container-lg">
   <div class="row">

@@ -3722,12 +3722,14 @@ form select.error:focus {
 
 
 .bg-login {
+/*	background-image: url(../images/login-images/bg-login-img.png);*/
+    background: url(../../img/png/fondo.png) no-repeat top left, 
+    url(../../img/jpg/fondo2.jpg) no-repeat center center;
+/*	background-image: url(../../img/jpg/fondo2.jpg);*/
 
-	background-image: url(../images/login-images/bg-login-img.png);
+	background-size: 100% auto,cover;
 
-	background-size: cover;
-
-	background-position: center;
+/*	background-position: center;*/
 
 	background-repeat: no-repeat;
 

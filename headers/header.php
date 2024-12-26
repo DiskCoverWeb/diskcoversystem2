@@ -8,6 +8,7 @@ $menuC = new menuC();
 $pagina =  isset($_GET['acc']) ? $_GET['acc'] : "";
 $modulo =  isset($_GET['mod']) ? $_GET['mod'] : "";
 $listaMenu = $menuC->generar_menu($modulo);
+$_SESSION['INGRESO']['modulo_'] = $modulo;
 
 // print_r($listaMenu);die();
 
@@ -112,7 +113,7 @@ function estado_licencia($f3)
       	echo $_SESSION['INGRESO']['Formato_Cuentas'];
     	} ?>";
 	</script>
-	<title>Diskcover system - <?php echo $NombreModulo; ?></title>
+	<title>Diskcover system - <?php  $_SESSION['INGRESO']['NombreModulo'] = $NombreModulo; echo $NombreModulo; ?></title>
 </head>
 
 <body>

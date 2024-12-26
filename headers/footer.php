@@ -8,59 +8,59 @@
 		<!--end overlay-->
 		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
 		<!--End Back To Top Button-->
-		<footer class="page-footer" style="font-size: x-small;">
+		<footer class="page-footer" id="footerInfo" style="font-size: x-small;">
 			<p class="mb-0"><img src="../../img/logotipos/diskcover_web.gif" class="m-1" style="width:60px"><b class="breadcrumb-title pe-1" style="font-size: 12px;">Diskcover Systema </b> <b class="m-1">DIRECCION:</b> Atacames N23-226 y Av. La Gasca - <b>EMAIL:</b> prisma_net@hotmail.com / diskcove@msn.com / info@diskcoversystem.com - <b>TELEFONO:</b> (+593)989105300 - 999654196 - 986524396</p>
 		</footer>
 	</div>
 	
 
 	<!-- search modal -->
-  <div class="modal" id="SearchModal" tabindex="-1">
-	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-md-down">
-	  <div class="modal-content">
-		<div class="modal-header gap-2">
-		  <div class="position-relative popup-search w-100">
-			<h3>Informacion de empresa</h3>
-		  </div>
-		  <button type="button" class="btn-close d-md-none" data-bs-dismiss="modal" aria-label="Close"></button>
-		</div>
-		<div class="modal-body">
-			<div class="search-list">
-			   <div class="list-group">
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				  		<i class='bx bx-building fs-4'></i>Razon Social:<br><?php echo $_SESSION['INGRESO']['Razon_Social']; ?>
-				  </a>
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				  		<i class='bx bx-buildings fs-4'></i>Nombre Comercial: <br><?php echo $_SESSION['INGRESO']['Nombre_Comercial']; ?>
-				  </a>
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				  		<i class='bx bx-caret-right fs-4'></i><b>RUC:</b> <?php echo $_SESSION['INGRESO']['RUC']; ?>
-				  </a>
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				  		<i class='bx bx-caret-right fs-4'></i><b>Item:</b> <?php echo $_SESSION['INGRESO']['item']; ?>
-				  </a>
-				  <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-				   		<i class='bx bx-caret-right fs-4'></i><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "AMBIENTE DE PRUEBA" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "AMBIENTE EN PRODUCCION" : ""); ?>
-				  </a>
-				   
- 
-  
+	<div class="modal" id="SearchModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-md-down">
+		<div class="modal-content">
+			<div class="modal-header gap-2">
+			<div class="position-relative popup-search w-100">
+				<h3>Informacion de empresa</h3>
+			</div>
+			<button type="button" class="btn-close d-md-none" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="search-list">
+				<div class="list-group">
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-building fs-4'></i>Razon Social:<br><?php echo $_SESSION['INGRESO']['Razon_Social']; ?>
+					</a>
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-buildings fs-4'></i>Nombre Comercial: <br><?php echo $_SESSION['INGRESO']['Nombre_Comercial']; ?>
+					</a>
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-caret-right fs-4'></i><b>RUC:</b> <?php echo $_SESSION['INGRESO']['RUC']; ?>
+					</a>
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-caret-right fs-4'></i><b>Item:</b> <?php echo $_SESSION['INGRESO']['item']; ?>
+					</a>
+					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+							<i class='bx bx-caret-right fs-4'></i><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "AMBIENTE DE PRUEBA" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "AMBIENTE EN PRODUCCION" : ""); ?>
+					</a>
+					
+	
+	
 
- 
+	
 
-			   </div>
-			  
+				</div>
+				
+				</div>
 			</div>
 		</div>
-	  </div>
+		</div>
 	</div>
-  </div>
     <!-- end search modal -->
 
 
 
 	<!--start switcher-->
-	<div class="switcher-wrapper">
+	<div class="switcher-wrapper" id="switcher">
 		<div class="switcher-btn"> <i class='bx bx-cog bx-spin'></i>
 		</div>
 		<div class="switcher-body">
@@ -217,9 +217,134 @@
               <div class="modal-footer">
                   <!-- <a type="button" class="btn btn-primary" href="#" id="doc_xml">Descargar xml</button>         -->
                   <!-- <button type="button" class="btn btn-default" onclick="location.reload();">Cerrar</button> -->
-                   <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                   <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
               </div>
           </div>
       </div>
   </div>
+ <div id="myModal_guia" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Datos de guia de remision</h4>
+              </div>
+              <div class="modal-body">
+                  <div class="row">
+                      <div class="col-sm-4">
+                          <b>Fecha guia remision</b>
+                          <input type="date" name="MBoxFechaGRE" id="MBoxFechaGRE" class="form-control input-xs"
+                                  value="<?php echo date('Y-m-d'); ?>" onblur="MBoxFechaGRE_LostFocus()">
+                      </div>
+                      <div class="col-sm-8">
+                      		<div class="row">
+                      			<div class="col-sm-9">
+                      			 <b>Guia de remision</b><br>
+                            	  <select class="form-select" id="DCSerieGR" name="DCSerieGR"
+                                  onblur="DCSerieGR_LostFocus()">
+                                	  <option value="">No Existe</option>
+                              	  </select>
+                              	</div>
+                          <div class="col-sm-3" style="padding: 0px">
+                          	<b> No.</b>
+                             	 <input type="text" name="LblGuiaR" id="LblGuiaR" class="form-control input-xs"
+                                  value="000000">
+                          </div>
+                      		
+                      	</div>
+                         
+                      </div>
+                      <div class="col-sm-12">
+                          <b>AUTORIZACION GUIA DE REMISION</b>
+                          <input type="text" name="LblAutGuiaRem" id="LblAutGuiaRem" class="form-control input-xs"
+                              value="0">
+                      </div>
+                      <div class="col-sm-5">
+                          <b>Iniciacion  traslados</b>
+                          <input type="date" name="MBoxFechaGRI" id="MBoxFechaGRI" class="form-control input-xs"
+                                  value="<?php echo date('Y-m-d'); ?>">
+                      </div>
+                      <div class="col-sm-7">
+                          <b>Ciudad</b>
+                          <select class="form-control input-xs" id="DCCiudadI" name="DCCiudadI" style="width:100%">
+                              <option value=""></option>
+                          </select>
+                      </div>
+                      <div class="col-sm-5">
+                          <b>Finalizacion del traslados</b>
+                          <input type="date" name="MBoxFechaGRF" id="MBoxFechaGRF" class="form-control input-xs"
+                                  value="<?php echo date('Y-m-d'); ?>">
+                      </div>
+                      <div class="col-sm-7">
+                          <b>ciudad</b>
+                              <select class="form-control input-xs" id="DCCiudadF" name="DCCiudadF" style="width:100%">
+                                  <option value=""></option>
+                              </select>
+                      </div>
+                      <div class="col-sm-12">
+                          <b>Nombre o razon socila (Transportista)</b>
+                          <select class="form-control input-xs" id="DCRazonSocial" name="DCRazonSocial" style="width:100%">
+                              <option value=""></option>
+                          </select>
+                      </div>
+                      <div class="col-sm-12">
+                          <b>Empresa de Transporte</b>
+                          <select class="form-control input-xs" id="DCEmpresaEntrega" name="DCEmpresaEntrega" style="width:100%">
+                              <option value=""></option>
+                          </select>
+                      </div>
+                      <div class="col-sm-4">
+                          <b>Placa</b>
+                          <input type="text" name="TxtPlaca" id="TxtPlaca" class="form-control input-xs"
+                              value="XXX-999">
+                      </div>
+                      <div class="col-sm-4">
+                          <b>Pedido</b>
+                          <input type="text" name="TxtPedido" id="TxtPedido" class="form-control input-xs">
+                      </div>
+                      <div class="col-sm-4">
+                          <b>Zona</b>
+                          <input type="text" name="TxtZona" id="TxtZona" class="form-control input-xs">
+                      </div>
+                      <div class="col-sm-12">
+                          <b>Lugar entrega</b>
+                          <input type="text" name="TxtLugarEntrega" id="TxtLugarEntrega" class="form-control input-xs">
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-primary" onclick="Command8_Click();">Aceptar</button>
+                  <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+          </div>
+
+      </div>
+  </div>
+  
+  <script>
+	function IngClave(tipo,base=false)
+    {
+        $.ajax({
+            data: {
+                usuario: tipo
+            },
+            url: '../controlador/panel.php?IngClaveCredenciales=true',
+            type: 'post',
+            dataType: 'json',
+            success: function(response) {
+                if(response['res'] == 1){
+                    $('#titulo_clave').text(response['nombre']);
+
+                    if(base)
+                    {
+                        $('#BuscarEn').val(base);
+                    }
+                    $('#TipoSuper_MYSQL').val(tipo);
+                    $("#clave_supervisor").modal('show');
+                }else{
+                    Swal.fire("Error", "Hubo un problema al obtener datos del supervisor.", "error");
+                }
+            }
+        });
+    }
+  </script>
 

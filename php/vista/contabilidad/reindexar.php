@@ -1,17 +1,17 @@
 <?php ?>
 
-<script src="/../../dist/js/reindexar.js"></script>
+<script src="../../dist/js/reindexar.js"></script>
 
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-			<a href="inicio.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-default">
+			<a href="inicio.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-default">
         		<img src="../../img/png/salire.png">
         	</a>
-			<a href="#" class="btn btn-default" id='imprimir_pdf'  data-toggle="tooltip"title="Descargar PDF">
+			<a href="#" class="btn btn-default" id='imprimir_pdf'  data-bs-toggle="tooltip"title="Descargar PDF">
         		<img src="../../img/png/pdf.png">
         	</a>
-        	<a href="#"  class="btn btn-default"  data-toggle="tooltip"title="Descargar excel" id='imprimir_excel'>
+        	<a href="#"  class="btn btn-default"  data-bs-toggle="tooltip"title="Descargar excel" id='imprimir_excel'>
         		<img src="../../img/png/table_excel.png">
         	</a>
 		</div>

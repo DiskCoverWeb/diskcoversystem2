@@ -20,6 +20,19 @@
 <script src="../../dist/js/bacsg1.js"></script>
 
 
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
+	</div>
+	<div class="ps-3">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+		<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+		</li>
+		</ol>
+	</nav>
+	</div>          
+</div>
+
  <div class="row" id='submenu'>
 		 <div class="col-xs-12">
 			 <div class="box mb-1">
@@ -163,6 +176,7 @@
 	  		<div class="col-sm-12">
 			<!--Generamos una tabla dinamicamente sin definir thead predefinidos, para un carga eficiente en estos casos-->
 				<table class="table text-sm w-100" id="tbl_datos">
+					
 				</table>
 	  		</div>
 	  		
