@@ -429,7 +429,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-5 col-xs-6 mt-3 py-2 border border-3 rounded bg-body-secondary">
+				<div class="col-sm-5 col-6 mt-3 py-2 border border-3 rounded bg-body-secondary">
 					<div class="row pb-1 border-1">
 						<label for="TextCajaMN" class="col-6 col-form-label"><b>Caja MN.</b></label>
 						<div class="col-6">
