@@ -275,6 +275,191 @@ class cabecera_pdf
 		
 	}
 
+	function cabecera_reporte_productos($titulo,$tablaHTML,$contenido=false,$image=false,$fechaini="",$fechafin="",$sizetable="",$mostrar=false,$sal_hea_body=15,$orientacion='P',$download = true, $repetirCabecera=null, $mostrar_cero=false,$nuevaPagina=false)
+	{	
+
+	    $this->pdftable->fechaini = $fechaini; 
+	    $this->pdftable->fechafin = $fechafin; 
+	    $this->pdftable->titulo = $titulo;
+	    $this->pdftable->salto_header_cuerpo = $sal_hea_body;
+	    $this->pdftable->orientacion = $orientacion;
+	    $estiloRow='';
+		 $this->pdftable->AddPage($orientacion);
+		
+		 if($image)
+		 {
+		  foreach ($image as $key => $value) {
+		  	//print_r($value);		 	
+		 	 	 $this->pdftable->Image($value['url'], $value['x'],$value['y'],$value['width'],$value['height']);
+		 	 	 $this->pdftable->Ln(5);		 	 
+		 }
+		}
+
+
+
+		if($contenido)
+		{
+		 foreach ($contenido as $key => $value) {
+		 	if(!isset($value['estilo'])){$value['estilo'] = '';}
+		 	 if($value['tipo'] == 'texto' && $value['posicion']=='top-tabla')
+		 	 {
+		 	 	$siz = 11;
+		 	 	$separacion = 4;
+		 	 	if(isset($value['tamaño'])){$siz = $value['tamaño'];}
+		 	 	if(isset($value['separacion'])){$separacion = $value['separacion'];}
+		 	 	//print_r($value);
+		 	 	$this->pdftable->SetFont('Arial',$value['estilo'],$siz);
+		 	 	$this->pdftable->MultiCell(0,3,$value['valor']);
+		 	 	$this->pdftable->Ln($separacion);
+
+		 	 }else if($value['tipo'] == 'titulo' && $value['posicion']=='top-tabla')
+		 	 {
+		 	 	$siz = 18;
+		 	 	$separacion = 4;
+		 	 	if(isset($value['tamaño'])){$siz = $value['tamaño'];}
+		 	 	if(isset($value['separacion'])){$separacion = $value['separacion'];}
+		 	 	$this->pdftable->SetFont('Arial','',$siz);
+		 	 	$this->pdftable->Cell(0,3,$value['valor'],0,0,'C');
+		 	 	$this->pdftable->Ln($separacion);
+
+		 	 }
+		 }
+        }
+            $this->pdftable->SetFont('Arial','',$sizetable);
+			$tablaindice = 0;
+		    foreach ($tablaHTML as $key => $value){
+		    	if (isset($value['newpag']) && $value['newpag']==1 && $key!=0) {			    	
+			    	$this->pdftable->AddPage($orientacion);
+				}
+		    	$tama = 7;
+		    	$esti = '';
+
+		    	// if(isset($value['estilo']) && $value['estilo']!='')
+		    	// {
+		    	// 	$this->pdftable->SetFont('Arial',$value['estilo'],$sizetable);
+		    	// 	$estiloRow = $value['estilo'];
+		    	// }else
+		    	// {
+		    	// 	$this->pdftable->SetFont('Arial','',$sizetable);
+		    	// 	$estiloRow ='';
+		    	// }
+		    	// if(isset($value['borde']) && $value['borde']!='0')
+		    	// {
+		    	// 	$borde=$value['borde'];
+		    	// }else
+		    	// {
+		    	// 	$borde =0;
+		    	// }
+
+		    	if(isset($value['estilo']) && $value['estilo']!='')
+		    	{
+		    		$esti = $value['estilo'];
+		    	}
+		    	if(isset($value['size']) && $value['size']!='')
+		    	{
+		    		$tama = $value['size'];
+		    	}
+
+		    	$this->pdftable->SetFont('Arial',$esti,$tama);
+		    	$estiloRow = $esti;
+
+
+
+		    	if(isset($value['borde']) && $value['borde']!='0')
+		    	{
+		    		$borde=$value['borde'];
+		    	}else
+		    	{
+		    		$borde =0;
+		    	}
+
+
+		    //print_r($value['medida']);
+		       $this->pdftable->SetWidths($value['medidas']);
+			   $this->pdftable->SetAligns($value['alineado']);
+			   //print_r($value['datos']);
+			   //$arr= $value['datos'];
+			   $arr= array();
+			   
+			   /*foreach($value['datos'] as $key2 => $value2){
+				// ? $pdf- : $row[0],)
+				if(is_file($value2)) {
+					$this->pdftable->Cell($value['medidas'][$tamanioae], 20, '', 1);
+					$arr[] = $this->pdftable->Image($value2, $this->pdftable->GetX()+$tamanioae, $this->pdftable->GetY(), 15, 15);
+				}else{
+					$arr[] = $value2;
+				}
+				$tamanioae += 1;
+			   }
+			   if(!is_null($repetirCabecera) && is_array($repetirCabecera)){
+			   	$repetirCabecera['row']['medidas'] = $value['medidas'];
+			   	$repetirCabecera['row']['alineado'] = $value['alineado'];
+			   }
+			   $this->pdftable->Row($arr,20,$borde,$estiloRow,null,$mostrar_cero,$repetirCabecera);		    	*/
+			   
+			   	if($tablaindice == 0){
+					$this->pdftable->Row($value['datos'],4,$borde,$estiloRow,null,$mostrar_cero,$repetirCabecera);
+				}else{
+					$tamanioae = 0;
+			   		foreach($value['datos'] as $key2 => $value2){
+					// ? $pdf- : $row[0],)
+					
+						if(!is_file($value2)) {
+							$this->pdftable->Cell($value['medidas'][$tamanioae], 20, $value2, 1);
+							//$arr[] = $value2;
+						}else{
+							$xae = $this->pdftable->GetX();
+							$yae = $this->pdftable->GetY();
+							$this->pdftable->Cell($value['medidas'][$tamanioae], 20, '', 1);
+							$this->pdftable->Image($value2, $xae+$tamanioae, $yae+2, 15, 15);
+							$this->pdftable->Ln();
+							//$arr[] = $this->pdftable->Image();
+						}
+						$tamanioae += 1;
+					}
+				}
+				$tablaindice += 1;
+		}
+		
+
+		  if($contenido)
+		  {
+		 foreach ($contenido as $key => $value) {
+		 	 if($value['tipo'] == 'texto' && $value['posicion']=='button-tabla')
+		 	 {
+		 	 	$siz = 11;
+		 	 	if(isset($value['tamaño'])){$siz = $value['tamaño'];}
+		 	 	$this->pdftable->SetFont('Arial','',$siz);
+		 	 	$this->pdftable->MultiCell(0,3,$value['valor']);
+		 	 	$this->pdftable->Ln(5);
+		 	 }else if($value['tipo'] == 'titulo' && $value['posicion']=='button-tabla')
+		 	 {
+		 	 	$siz = 18;
+		 	 	if(isset($value['tamaño'])){$siz = $value['tamaño'];}
+		 	 	$this->pdftable->SetFont('Arial','',$siz);
+		 	 	$this->pdftable->Cell(0,3,$value['valor'],0,0,'C');
+		 	 	$this->pdftable->Ln(5);
+		 	 }
+		 }
+		}
+		//echo $titulo;
+		//die();
+		if ($download) {	
+		 if($mostrar==true)
+	       {
+		    $this->pdftable->Output('',$titulo.'.pdf');
+
+	       }else
+	       {
+		     $this->pdftable->Output('D',$titulo.'.pdf',false);
+
+	      }
+		}else{
+			$this->pdftable->Output('F',dirname(__DIR__,2).'/TEMP/'.$titulo.'.pdf');
+		}
+		
+	}
+
 	function formatoPDFMatricial($HTML,$parametros,$datos_pre,$datos_empresa,$descagar=false)
 	{	
 		// $orientation='P',$unit='mm', array(45,350)
@@ -543,17 +728,85 @@ class cabecera_pdf
 		{
      		$pdf->Output();
 		}
-		
-		// $this->FPDF->AddPage('P');
- 	//  	$this->pdftable->SetFont('Arial','',18);
- 	//  	$this->pdftable->Cell(0,3,'Prueba',0,0,'C');
- 	//  	$this->pdftable->Ln(5);
-		// //$this->pdftable->WriteHTML($HTML);
-		// $this->pdftable->Output();
 	}
+
+	function CompilarString($cadSQL, $lString = 0, $quitarPuntos = false)
+    {
+        if ($lString > 0) {
+            $cadSQL = substr($cadSQL, 0, $lString);
+        }
+        // Eliminación de caracteres específicos
+        $caracteresAEliminar = ['|', "\r", "\n", "'", ",", "$", "#", "&", "'"];
+        foreach ($caracteresAEliminar as $char) {
+            $cadSQL = str_replace($char, '', $cadSQL);
+        }
+        // Reducción de espacios múltiples a un solo espacio
+        $cadSQL = preg_replace('/\s+/', ' ', $cadSQL);
+        // Manejo de cadenas nulas o vacías
+        if (is_null($cadSQL) || $cadSQL === '') {
+            $cadSQL = '.';
+        }
+        // Eliminación de puntos al inicio y al final, si es necesario
+        if ($quitarPuntos) {
+            $cadSQL = trim($cadSQL, '.');
+        }
+        // Valor por defecto en caso de cadena vacía
+        if ($cadSQL === '') {
+            $cadSQL = G_NINGUNO; // Asumiendo que Ninguno es un valor por defecto
+        }
+        return $cadSQL;
+    }
+
+	function SetearBlancos($strg, $longStrg, $noBlancos, $esNumero, $conLineas = false, $decimales = false)
+    {
+        if (is_null($strg) || empty($strg)) {
+            $strg = "";
+        }
+        $strg = $this->CompilarString($strg);
+        if ($esNumero) {
+            if ($decimales) {
+                $sinEspacios = number_format(floatval($strg), 2, '.', '');
+            } else {
+                $sinEspacios = strval(intval($strg));
+            }
+            if (strlen($sinEspacios) < $longStrg) {
+                $sinEspacios = str_pad($sinEspacios, $longStrg, ' ', STR_PAD_LEFT);
+            }
+        } else {
+            if ($longStrg > 0) {
+                $sinEspacios = $strg . str_repeat(" ", $longStrg);
+                $sinEspacios = substr($sinEspacios, 0, $longStrg);
+            } else {
+                $sinEspacios = trim($strg);
+            }
+        }
+        if ($noBlancos > 0) {
+            $sinEspacios .= str_repeat(" ", $noBlancos);
+        }
+        if ($conLineas) {
+            $sinEspacios .= "|";
+        }
+        if ($sinEspacios === "") {
+            $sinEspacios = " ";
+        }
+        return $sinEspacios;
+    }
 
 	function Imprimir_Punto_Venta($info,$descagar=true)
 	{	
+		$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
+		$ancho_PV = Leer_Campo_Empresa("Cant_Ancho_PV");
+		$Encabezado_PV = Leer_Campo_Empresa("Encabezado_PV");
+		$CantBlancos = "";
+		$Total = 0;
+		$Total_IVA = 0;
+		$Codigo1 = $info['factura'][0]['CodigoU'];
+		$info['Cliente'] = $info['factura'][0]['Cliente'];
+		$Codigo1 = substr($Codigo1, 0, 4)."X".substr($Codigo1, strlen($Codigo1)-1, 2);
+		$Producto = "";
+		if($ancho_PV < 26){
+			$ancho_PV = 26;
+		}
 		// print_r($info);die();
 		// print_r($_SESSION['INGRESO']);
 		// $orientation='P',$unit='mm', array(45,350)
@@ -580,146 +833,205 @@ class cabecera_pdf
 		   	}
 		  }
 
-
+		$anchoFact = $ancho_PV * 1.75;
+		  
 		$pdf = new FPDF();
-		$pdf->setMargins(2,5);
-		$pdf->SetFont('Arial','B',8);
+		$pdf->setMargins(0,0, array($anchoFact, 297));
+		$pdf->SetFont('Courier','',8);
 		$pdf->AddPage('P');
 		// print_r($info);die();
-		
-        $pdf->Image($src,5,5,25,10); 
-
-		$pdf->SetX(45);
-		$pdf->Cell(25,5,'R.U.C',0,1);
-		$pdf->SetX(40);
-		$pdf->Cell(25,5,$_SESSION['INGRESO']['RUC'],0,1);		
-		$pdf->SetX(40);
-		$pdf->Cell(0,0,'Telefono: '.$_SESSION['INGRESO']['Telefono1'],'',1);
-		$pdf->Ln(5);	
-		if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
-		{
-			$pdf->Cell(70,0,$_SESSION['INGRESO']['Razon_Social'],0,1,'C');
-			$pdf->Ln(5);
-		}else{
-			$pdf->Cell(70,0,$_SESSION['INGRESO']['Razon_Social'],0,1,'C');
-			$pdf->Ln(5);
-			$pdf->Cell(70,0,$_SESSION['INGRESO']['Nombre_Comercial'],0,1,'C');
-			$pdf->Ln(5);
+		if($Grafico_PV){
+			$anchoImg = $ancho_PV * 1.75;
+			$altoImg = $anchoFact * 0.38;
+        	$pdf->Image($src,0,0,$anchoImg,$altoImg);
+			$pdf->SetY($altoImg);
 		}
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Cell(0,0,'Direccion Matriz:');
-		$pdf->Ln(5);		
-		$pdf->SetFont('Arial','',7);
-		$pdf->Cell(0,0,$_SESSION['INGRESO']['Direccion']);
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Ln(5);
-		$pdf->Cell(0,0,'FECHA DE EMISION: '.$info['factura'][0]['Fecha']->format('Y-m-d'),0,1);
-		$pdf->Ln(3);		
-		$pdf->Cell(0,0,'DOCUMENTO DE FA No. '.$info['factura'][0]['Serie'].'-'.generaCeros($info['factura'][0]['Factura'],7),0,1);
-		$pdf->Ln(3);
-		$amb = 'PRUEBA';
-		if($_SESSION['INGRESO']['Ambiente']==2){$amb='PRODUCCION';}
-		$pdf->Cell(0,0,'AMBIENTE:'.$amb,0,1);
-		$pdf->Ln(3);
-		$pdf->Cell(0,0,'CLAVE DE ACCESO:',0,1);
-		$pdf->Ln(3);
-		$pdf->Cell(0,0,$info['CLAVE'],0,1);
-		$pdf->Ln(3);
-		$pdf->SetFont('Arial','',7);
-		$l = $pdf->GetY();
-		$pdf->Line(0,$l,70,$l);
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Ln(5);
-		$pdf->Cell(70,0,'Razon Social/Nombres y Apellidos: ');
-		$pdf->SetFont('Arial','',7);
-		$pdf->Ln(5);
-		$pdf->Cell(70,0,mb_convert_encoding( $info['factura'][0]['Razon_Social'], 'UTF-8'));
-		$pdf->Ln(3);
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Cell(18,0,'Identificacion: ');
-		$pdf->SetFont('Arial','',7);
-		$pdf->Cell(20,0,$info['factura'][0]['RUC_CI']);
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Cell(15,0,'Telef.:');
-		$pdf->SetFont('Arial','',7);
-		$pdf->Cell(17,0,$info['factura'][0]['Telefono']);
-		$pdf->Ln(3);
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Cell(70,0,'Correo Electronico:');
-		$pdf->Ln(3);		
-		$pdf->SetFont('Arial','',7);
-		$pdf->Cell(70,0,$info['factura'][0]['Email']);
-		$pdf->Ln(5);		
-		$l = $pdf->GetY();
-		$pdf->Line(0,$l,70,$l);
-		$pdf->Ln(3);
-		$pdf->SetFont('Arial','B',6);
-		$pdf->Cell(8,0,'Cant.');
-		$pdf->Cell(39,0,'P R O D U C T O');
-		$pdf->Cell(10,0,'P.V.P.',0,0,'R');
-		$pdf->Cell(10,0,'TOTAL',0,1,'R');
-		$pdf->Ln(3);		
-		$pdf->SetFont('Arial','',7);
-		$l = $pdf->GetY();
-		$pdf->Line(0,$l,70,$l);
-		$pdf->Ln(3);
-		$pdf->SetFont('Arial','',6);
+		if($Encabezado_PV){
+			if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
+			{
+				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
+				$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
+				//$pdf->Ln(6);
+			}else if($info['factura'][0]['TC'] == 'DO'){
+				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
+				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
+				$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
+				$pdf->Ln(3);
+				$pdf->MultiCell($anchoFact,3,'DONACION DE ALIMENTOS',0,'L');
+				$pdf->Ln(3);
+			}else{
+				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
+				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
+				$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
+			}
+			$pdf->MultiCell($anchoFact,3,'Direccion: '.$_SESSION['INGRESO']['Direccion'],0, 'L');
+			$pdf->MultiCell($anchoFact,3,'Telefono: '.$_SESSION['INGRESO']['Telefono1'],0, 'L');
+		}
 
-		foreach ($info['lineas'] as $key => $value) {
-			$y = $pdf->GetY();
-			$pdf->Cell(8,2,$value['Cantidad']);
-			$pdf->MultiCell(35,2,mb_convert_encoding($value['Producto'], 'ISO-8859-1','UTF-8'));
-			$pdf->SetXY(48,$y);
-			$pdf->Cell(10,2,number_format($value['Precio'],2,'.',''),0,0,'R');
-			$pdf->Cell(10,2,number_format($value['Total'],2,'.',''),0,1,'R');
+		if($Encabezado_PV){
+			if($info['factura'][0]['TC'] == "PV"){
+				$pdf->MultiCell($anchoFact,3,"T I C K E T   No. 000-000-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
+				$pdf->Ln(3);
+			}else if($info['factura'][0]['TC'] == "NV"){
+				$pdf->MultiCell($anchoFact,3,"Autorizacion del SRI No.",0,'L');
+				$pdf->MultiCell($anchoFact,3,$info['factura'][0]['Autorizacion'],0,'L');
+				$pdf->MultiCell($anchoFact,3,"NOTA DE VENTA No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
+			}else if($info['factura'][0]['TC'] == 'DO'){
+				$pdf->MultiCell($anchoFact,3,"NOTA DE DONACION No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
+			}else{
+				$pdf->MultiCell($anchoFact,3,"Autorizacion del SRI No.",0,'L');
+				$pdf->MultiCell($anchoFact,3,$info['factura'][0]['Autorizacion'],0,'L');
+				$pdf->MultiCell($anchoFact,3,"FACTURA No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
+				if(strlen($info['especial']) > 1){
+					$pdf->MultiCell($anchoFact,3,"Contribuyente Especial No. ".$info['especial'],0,'L');
+				}
+				$pdf->MultiCell($anchoFact,3,"OBLIGADO A LLEVAR CONTABILIDAD: ".$info['conta'],0,'L');
+			}
+		}else{
+			$pdf->MultiCell($anchoFact,3,"Transaccion (".$info['factura'][0]['TC'].") No.".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
 			$pdf->Ln(3);
-			// $pdf->Row($value,null,1);
-    	}
+		}
+		
+		$pdf->MultiCell($anchoFact,3,"Fecha de Emision: ".$info['factura'][0]['Fecha']->format('Y/m/d'),0,'L');
+		$pdf->MultiCell($anchoFact,3,"Hora de Proceso: ".$info['factura'][0]['Hora'],0,'L');
 
-		$l = $pdf->GetY();
-		$pdf->Line(0,$l,70,$l);
+		if(strlen($info['factura'][0]['Autorizacion']) < 13){
+			$pdf->MultiCell($anchoFact,3,"Fecha de caducidad: ".substr(mesesLetras($info['factura'][0]['Vencimiento']->format('m')), 0, 3).'/'.$info['factura'][0]['Vencimiento']->format('Y'),0,'L');
+		}
+		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
+		$pdf->MultiCell($anchoFact,3,"Cliente: ".$info['factura'][0]['Cliente'],0,'L');
+		$pdf->MultiCell($anchoFact,3,"R.U.C/C.I.: ".$info['factura'][0]['RUC_CI'],0,'L');
 
-		$pdf->Ln(5);
-		$pdf->Cell(36,0,'Cajero: 0702X79');
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Cell(20,0,'SUBTOTAL.');		
-		$pdf->SetFont('Arial','',7);
-		$pdf->Cell(10,0,number_format($info['factura'][0]['SubTotal'],2,'.',''),0,0,'R');
-		$pdf->Ln(3);
+		if($info['factura'][0]['Telefono'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Telefono: ".$info['factura'][0]['Telefono'],0,'L');}
+		if($info['factura'][0]['Direccion'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Direccion: ".$info['factura'][0]['Direccion'],0,'L');}
+		if($info['factura'][0]['Email'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Email: ".$info['factura'][0]['Email'],0,'L');}
 
-		$pdf->Cell(36,0,'');
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Cell(20,0,'DESCUENTO');		
-		$pdf->SetFont('Arial','',7);
-		$pdf->Cell(10,0,number_format($info['factura'][0]['Descuento'],2,'.',''),0,0,'R');
-		$pdf->Ln(3);
-
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Cell(36,0,'');
-		$iva = floatval($info['PorcIva']) . "%";
-		$pdf->Cell(20,0,'I.V.A. ' . $iva);
-		$pdf->SetFont('Arial','',7);
-		$pdf->Cell(10,0,number_format($info['factura'][0]['IVA'],2,'.',''),0,0,'R');
-		$pdf->Ln(3);
-
-		$pdf->SetFont('Arial','B',7);
-		$pdf->Cell(36,0,'');
-		$pdf->Cell(20,0,'T O T A L');		
-		$pdf->SetFont('Arial','',7);
-		$pdf->Cell(10,0,number_format($info['factura'][0]['Total_MN'],2,'.',''),0,0,'R');
-		$pdf->Ln(5);
-		$l = $pdf->GetY();
-		$pdf->Line(0,$l,70,$l);
-		$pdf->Ln(5);
-
-		$pdf->SetFont('Arial','',11);
-		$pdf->Cell(70,0,'GRACIAS POR SU COLABORACION',0,1,'C');
-		$pdf->SetFont('Arial','',7);
-		$pdf->Ln(3);
-		$pdf->Cell(70,0,'www.diskcoversystem.com',0,1,'C');
+		if($info['factura'][0]['TC'] == "DO"){
+			$pdf->MultiCell($anchoFact,3,"Codigo: ",0,'L');
+			$pdf->MultiCell($anchoFact,3,"Aporte: ",0,'L');
+			$pdf->MultiCell($anchoFact,3,"Numero de Gavetas: ",0,'L');
+			$pdf->MultiCell($anchoFact,3,"Atencion: ",0,'L');
+			$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0,'L');
+			$pdf->MultiCell($anchoFact,3,"P R O D U C T O/CODIGO CANTIDAD(KG)",0,'L');
+			$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0,'L');
+		}else{
+			$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0,'L');
+			$pdf->MultiCell($anchoFact,3,"PRODUCTO/Cant x PVP/TOTAL",0,'L');
+			$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0,'L');
+		}
+		$Efectivo = $info['factura'][0]['Efectivo'];
 
 
+		$Total = 0;
 
+		if(($ancho_PV - 26) > 0){$CantBlancos = str_repeat(' ', $ancho_PV - 26);}else{$CantBlancos = "";}
+
+		if(count($info['lineas']) > 0){
+			foreach($info['lineas'] as $key => $value){
+				if($info['factura'][0]['TC'] == "DO"){
+					$CodigoC = $value['Codigo'];
+					$CodigoN = number_format($value['Cantidad'], 2, '.', '');
+					$Producto = $value['Producto'];
+
+					if($value['Tipo_Hab'] <> G_NINGUNO){$Producto .= "(".$value['Tipo_Hab'].")";}
+					$pdf->MultiCell($anchoFact,3,$Producto,0,'L');
+					$pdf->MultiCell($anchoFact,3,$CodigoC.str_repeat(' ', 25 - strlen($CodigoC))." ".str_repeat(' ', 10 - strlen($CodigoN)).$CodigoN,0,'L');
+					$Total += $value['Cantidad'];
+				}else{
+					$pdf->MultiCell($anchoFact,3, $value['Producto'],0,'L');
+					$Producto = $this->SetearBlancos(strval($value['Cantidad'])."x".number_format($value['Precio'], 2, '.', ','), 12, 0, false)." "
+								. $this->SetearBlancos(strval($value['Total']), $ancho_PV - 13, 0, true, false, true);
+					$pdf->MultiCell($anchoFact,3, $Producto,0,'L');
+					$Total += $value['Cantidad'];
+				}
+
+				if($info['factura'][0]['TC'] <> "PV"){$Total_IVA += $value['Total_IVA'];}
+			}
+		}
+
+		if($info['factura'][0]['TC'] == "DO"){
+			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,'L');
+			$pdf->MultiCell($anchoFact,3, $CantBlancos."    T O T A L ".$this->SetearBlancos(strval($Total), 12, 0, true, false, true),0,'L');
+			$pdf->Ln(3);
+			$pdf->Ln(3);
+			$pdf->Ln(3);
+			$pdf->MultiCell($anchoFact,3, "_____________      _______________",0,'L');
+			$pdf->MultiCell($anchoFact,3, "Entregado por      Recibi Conforme",0,'L');
+			$pdf->Ln(3);
+			$pdf->MultiCell($anchoFact,3, "IMPORTANTE:",0,'L');
+			$Producto = "Los productos donados, han perdido valor comercial por diferentes motivos, pero mantienen un valor social. " .
+              	"Estos productos han pasado por un proceso de clasificación y se encuentran en buen estado. Se recomienda su " .
+              	"consumo INMEDIATO y se prohíbe su comercialización. " . $_SESSION['INGRESO']['Razon_Social'] . " no se responsabiliza por " .
+              	"cualquier efecto negativo que causare el consumo de alimentos en un tiempo mayor al sugerido.  Con su firma " .
+              	"el beneficiario acepta que ha sido informado sobre el estado de los productos, que los recibe con su consentimiento, " .
+              	"que los usará para fines benéficos y bajo su completa responsabilidad.";
+
+			$pdf->MultiCell($anchoFact,3, $Producto,0,'L');
+			$pdf->Ln(3);
+			$pdf->Ln(3);
+		}else{
+			if(count($info['factura']) > 0){
+				if($info['factura'][0]['TC'] == 'PV'){
+					$SubTotal = $info['factura'][0]['Total'];
+					$Total = $info['factura'][0]['Total'];
+					$Total_IVA = 0;
+					$Total_Servicios = 0;
+					$Total_Desc = 0;
+				}else{
+					$SubTotal = $info['factura'][0]['SubTotal'];
+					$Total = $info['factura'][0]['Total_MN'];
+					$Total_IVA = $info['factura'][0]['IVA'];
+					$Total_Servicios = $info['factura'][0]['Servicio'];
+					$Total_Desc = $info['factura'][0]['Descuento'];
+				}
+			}
+			$pdf->MultiCell($anchoFact,3, str_repeat('-', $ancho_PV),0,'L');
+			
+			if(($ancho_PV - 26) > 0){$CantBlancos = str_repeat(' ', $ancho_PV-26);}else{$CantBlancos = "";}
+			$pdf->MultiCell($anchoFact,3, "Cajero:        SUBTOTAL ".$this->SetearBlancos(strval($SubTotal), 12, 0, true, false, true),0,'L');
+			$pdf->MultiCell($anchoFact,3, $Codigo1."       I.V.A ".strval($info['PorcIva']*100)."% ".$this->SetearBlancos(strval($Total_IVA), 12, 0, true, false, true),0,'L');
+			if($Total_Servicios > 0){
+				$pdf->MultiCell($anchoFact,3, $CantBlancos."     SERVICIO ".$this->SetearBlancos(strval($Total_Servicios), 12, 0, true, false, true),0,'L');
+				
+			}
+			if($Total_Desc > 0){
+				$pdf->MultiCell($anchoFact,3, $CantBlancos."    DESCUENTO ".$this->SetearBlancos(strval($Total_Desc), 12, 0, true, false, true),0,'L');
+			}
+			$pdf->MultiCell($anchoFact,3, str_repeat("=", $ancho_PV),0,'L');
+			
+			$Producto = "";
+			if($info['factura'][0]['TC'] == 'PV'){
+				$Producto = $CantBlancos."TOTAL TICKET  ";
+			}else if($info['factura'][0]['TC'] == 'NV'){
+				$Producto = $CantBlancos."TOTAL NOTA V. ";
+			}else{
+				$Producto = $CantBlancos."TOTAL FACTURA ";
+			}
+			$Producto .= $this->SetearBlancos(strval($Total), 12, 0, true, false, true);
+			$pdf->MultiCell($anchoFact,3, $Producto,0,'L');
+			
+			if($Efectivo > 0){
+				$pdf->MultiCell($anchoFact,3, $CantBlancos . "     EFECTIVO " . $this->SetearBlancos(strval($Efectivo), 12, 0, true, false, true),0,'L');
+				$pdf->MultiCell($anchoFact,3, $CantBlancos . "       CAMBIO " . $this->SetearBlancos(strval($Efectivo - $Total), 12, 0, true, false, true),0,'L');
+			}
+			$pdf->Ln(3);
+			if($info['factura'][0]['TC'] == 'PV'){
+				$pdf->MultiCell($anchoFact,3, "ORIGINAL: CLIENTE",0,'L');
+				$pdf->MultiCell($anchoFact,3, "COPIA   : EMISOR",0,'L');
+				if($info['factura'][0]['Cotizacion'] > 0){
+					$pdf->MultiCell($anchoFact,3, "COTIZACION: ".number_format($info['factura'][0]['Cotizacion'], 2, '.', ','),0,'L');
+				}
+			}
+			$pdf->MultiCell($anchoFact,3, str_repeat("-", $ancho_PV),0,'L');
+			if($info['factura'][0]['TC'] == 'PV'){
+				$pdf->MultiCell($anchoFact,3, "RECLAME SU DICUMENTO EN CAJA",0,'L');
+			}
+			$pdf->MultiCell($anchoFact,3, "Su Documento sera enviado al correo electronico registrado.",0,'L');
+			$pdf->Ln(3);
+			$pdf->MultiCell($anchoFact,3, str_repeat(" ", (int)round(($ancho_PV - 21)/2))."GRACIAS POR SU COMPRA",0,'L');
+			$pdf->Ln(3);
+		}
+		
 		if($descagar)
 		{
 			$pdf->Output('F',dirname(__DIR__,2).'/TEMP/'.$info['factura'][0]['Serie'].'-'.generaCeros($info['factura'][0]['Factura'],7).'.pdf');
@@ -727,13 +1039,6 @@ class cabecera_pdf
 		{
      		$pdf->Output();
 		}
-		
-		// $this->FPDF->AddPage('P');
- 	//  	$this->pdftable->SetFont('Arial','',18);
- 	//  	$this->pdftable->Cell(0,3,'Prueba',0,0,'C');
- 	//  	$this->pdftable->Ln(5);
-		// //$this->pdftable->WriteHTML($HTML);
-		// $this->pdftable->Output();
 	}
 
 

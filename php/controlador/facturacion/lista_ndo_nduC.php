@@ -9,6 +9,10 @@ if (!class_exists('enviar_emails')) {
 }
 
 $controlador = new lista_facturasC();
+if(isset($_GET['sesion']))
+{
+  	echo json_encode($_SESSION);
+}
 if(isset($_GET['catalogo']))
 {
 	$parametros = $_POST['parametros'];
@@ -248,7 +252,7 @@ class lista_facturasC
 		$tr = '';
 		foreach ($tbl as $key => $value) {
 			$exis = $this->modelo->catalogo_lineas($value['TC'], $value['Serie']);
-			$autorizar = '';
+			/*$autorizar = '';
 			$anular = '';
 			$cli_data = $this->modelo->Cliente($value['CodigoC']);
 			$email = '';
@@ -266,25 +270,18 @@ class lista_facturasC
 
 			$tr .= '<tr>
             <td>
-            <div class="input-group-btn">
-								<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Acciones
-								<span class="fa fa-caret-down"></span></button>
+            <div class="input-group">
+								<button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Acciones</button>
 								<ul class="dropdown-menu">
-								<li><a href="#" onclick="Ver_factura(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\',\'' . $value['Autorizacion'] . '\',\'' . $value['TC'] . '\')"><i class="fa fa-eye"></i> Ver nota de donación</a></li>';
+								<li><a href="#" onclick="Ver_factura(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\',\'' . $value['Autorizacion'] . '\',\'' . $value['TC'] . '\')" class="dropdown-item"><i class="fa fa-eye"></i> Ver nota de donación</a></li>';
 			if (count($exis) > 0 && strlen($value['Autorizacion']) == 13 && $parametros['tipo'] != '') {
-				$tr .= '<li><a href="#" onclick="autorizar(\'' . $value['TC'] . '\',\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['Fecha']->format('Y-m-d') . '\',\'' . $email. '\')" ><i class="fa fa-paper-plane"></i>Autorizar</a></li>';
+				$tr .= '<li><a href="#" onclick="autorizar(\'' . $value['TC'] . '\',\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['Fecha']->format('Y-m-d') . '\',\'' . $email. '\')" class="dropdown-item"><i class="fa fa-paper-plane"></i>Autorizar</a></li>';
 			}
 			if ($value['T'] != 'A' && $parametros['tipo'] != '') {
-				$tr .= '<li><a href="#" onclick="anular_factura(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\')"><i class="fa fa-times-circle"></i>Anular nota de donación</a></li>';
+				$tr .= '<li><a href="#" onclick="anular_factura(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\')" class="dropdown-item"><i class="fa fa-times-circle"></i>Anular nota de donación</a></li>';
 			}
-			$tr .= '<li><a href="#" onclick=" modal_email_fac(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\',\'' . $email . '\',\'' . $value['Autorizacion'] . '\',\'' . $value['TC'] . '\')"><i class="fa fa-envelope"></i> Enviar por email</a></li>
-								<li><a href="#" onclick="descargar_fac(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\',\'' . $value['Autorizacion'] . '\',\'' . $value['TC'] . '\')"><i class="fa fa-download"></i> Descargar Nota de Donación</a></li>';
-			/*if (strlen($value['Autorizacion']) > 13) {
-				$tr .= '<li><a href="#" onclick="descargar_xml(\'' . $value['Autorizacion'] . '\')"><i class="fa fa-download"></i> Descargar XML</a></li>';
-			}else if(strlen($value['Autorizacion']) <= 13 && $value['T'] != 'A')
-			{
-				$tr .= '<li><a href="#" onclick="generar_xml(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['TC'] . '\')"><i class="fa fa-download"></i> Generar XML</a></li>';
-			}*/
+			$tr .= '<li><a href="#" onclick=" modal_email_fac(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\',\'' . $email . '\',\'' . $value['Autorizacion'] . '\',\'' . $value['TC'] . '\')" class="dropdown-item"><i class="fa fa-envelope"></i> Enviar por email</a></li>
+								<li><a href="#" onclick="descargar_fac(\'' . $value['Factura'] . '\',\'' . $value['Serie'] . '\',\'' . $value['CodigoC'] . '\',\'' . $value['Autorizacion'] . '\',\'' . $value['TC'] . '\')" class="dropdown-item"><i class="fa fa-download"></i> Descargar Nota de Donación</a></li>';
 			$tr .= '
 								</ul>
 						</div>
@@ -306,12 +303,17 @@ class lista_facturasC
             <td class="text-right">' . $value['Saldo'] . '</td>
             <td>' . $value['RUC_CI'] . '</td>
             <td>' . $value['TB'] . '</td>
-          </tr>';
+          </tr>';*/
+		  	$tbl[$key]['ExisteSerie'] = 'No';
+			if(count($exis)>0)
+			{
+				$tbl[$key]['ExisteSerie'] = 'Si';
+			}
 		}
 
 		// print_r($tr);die();
 
-		return $tr;
+		return $tbl;
 	}
 
 	function tabla_factura_electronica($parametros)
@@ -437,7 +439,7 @@ class lista_facturasC
 			// print_r('expression');die();
 			$this->punto_venta->pdf_factura_elec_rodillo($cod, $ser, $ci, $nombre, $auto, $per, $aprobado = false);
 		}*/
-		$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
+		//$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
 
 		$FA = array(
 			'Factura' => $cod,
@@ -446,12 +448,20 @@ class lista_facturasC
 			'TC' => $tc
 		);
 
-		if ($Grafico_PV) {
-			$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
-			//$TFA['PorcIva'] = $FA['Porc_IVA'];
-			$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
-			$this->pdf->Imprimir_Punto_Venta_Grafico($TFA);
-			//Imprimir_Punto_Venta_Grafico($TFA);
+		$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+		$TFA['CLAVE'] = '.';
+		//$TFA['PorcIva'] = $FA['Porc_IVA'];
+		$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
+		$this->pdf->Imprimir_Punto_Venta($TFA);
+		//Imprimir_Punto_Venta_Grafico($TFA);
+		$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+		$rep = 1;
+		if ($rep == 1) {
+			return array('respuesta' => $rep, 'pdf' => $imp);
+		} else {
+			return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep);
+		}
+		/*if ($Grafico_PV) {
 		} else {
 			$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
 			$TFA['CLAVE'] = '.';
@@ -468,8 +478,8 @@ class lista_facturasC
 
 			// ojo ver cula se piensa imprimir
 			// Imprimir_Punto_Venta($FA);
-		}
-		// $this->modelo->pdf_factura($cod,$ser,$ci,$per);
+		}*/
+		//$this->modelo->pdf_factura($cod,$ser,$ci,$per);
 
 	}
 	function imprimir_pdf($parametros)

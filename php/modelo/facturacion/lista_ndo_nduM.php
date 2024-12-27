@@ -580,7 +580,7 @@ class lista_facturasM
 		$sql = "SELECT * FROM Catalogo_Lineas
 		WHERE Item = '".$_SESSION['INGRESO']['item']."' 
 		AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-		AND Fact IN ('NDO', 'NDU');";
+		AND Fact IN ('NDO', 'NDU', 'DO');";
 	   //"SELECT DISTINCT Grupo FROM Clientes WHERE FA = '1' AND Grupo <>'.' ";
 
 	   /*if($query)
