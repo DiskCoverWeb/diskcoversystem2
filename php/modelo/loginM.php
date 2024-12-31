@@ -96,6 +96,45 @@ class loginM
 	   return array('clave'=>$ClaveGeneral,'nombre'=>$IngClaves_Caption);
 	}
 
+	function IngClave_MYSQL($parametros)
+	{
+
+    $ClaveGeneral = '';
+	  $IngClaves_Caption  = '';		
+		// print_r($parametros);die();
+		if($parametros['buscaren']=='MYSQL'){
+				$sql = "SELECT * 
+				FROM acceso_usuarios
+				WHERE Usuario = '".$parametros['tipo']."' ";
+				// print_r($sql);die();
+				$datos = $this->db->datos($sql,'MY SQL');
+		}else
+		{
+				$sql = "SELECT * 
+				FROM Accesos
+				WHERE Usuario = '".$parametros['tipo']."' ";
+				// print_r($sql);die();
+				$datos = $this->db->datos($sql);
+		}
+		if(count($datos)>0)
+		{
+			if($parametros['buscaren']=='MYSQL')
+			{
+			 	$ClaveGeneral = $datos[0]["Clave"];
+				$IngClaves_Caption = $datos[0]["Nombre_Usuario"];
+			}else
+			{
+				$ClaveGeneral = $datos[0]["Clave"];
+				$IngClaves_Caption = $datos[0]["Usuario"];
+			}
+		}
+
+		// print_r($datos);die();
+	   return array('clave'=>$ClaveGeneral,'nombre'=>$IngClaves_Caption);
+	}
+
+	
+
 	function getEmpresas($entidad,$item){
 
 		    $sql = "SELECT * ,L.ID as 'IDEm'

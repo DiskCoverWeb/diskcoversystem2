@@ -172,7 +172,7 @@
 
 </html>
 
-
+<!--Modal de espera-->
 <div class="modal fade" id="myModal_espera" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -188,28 +188,28 @@
           <div class="modal-content">
               <div class="modal-body">
                   <div class="row">
-                      <div class="col-xs-2"><b>RUC Empresa</b> </div>
-                      <div class="col-xs-10"><?php echo $_SESSION['INGRESO']['RUC']; ?></div>
+                      <div class="col-2"><b>RUC Empresa</b> </div>
+                      <div class="col-10"><?php echo $_SESSION['INGRESO']['RUC']; ?></div>
                   </div>
                   <div class="row">
-                      <div class="col-xs-2"><b>Estado</b> </div>
-                      <div class="col-xs-10" id="sri_estado"></div>
+                      <div class="col-2"><b>Estado</b> </div>
+                      <div class="col-10" id="sri_estado"></div>
                   </div>
                   <div class="row">
-                      <div class="col-xs-6"><b>Codigo de error</b> </div>
-                      <div class="col-xs-6" id="sri_codigo"></div>
+                      <div class="col-6"><b>Codigo de error</b> </div>
+                      <div class="col-6" id="sri_codigo"></div>
                   </div>
                   <div class="row">
-                      <div class="col-xs-2"><b>Fecha</b></div>
-                      <div class="col-xs-10" id="sri_fecha"></div>
+                      <div class="col-2"><b>Fecha</b></div>
+                      <div class="col-10" id="sri_fecha"></div>
                   </div>
                   <div class="row">
-                      <div class="col-xs-12"><b>Mensaje</b></div>
-                      <div class="col-xs-12" id="sri_mensaje"></div>
+                      <div class="col-12"><b>Mensaje</b></div>
+                      <div class="col-12" id="sri_mensaje"></div>
                   </div>
                   <div class="row">
-                      <div class="col-xs-12"><b>Info Adicional</b></div>
-                      <div class="col-xs-12" id="sri_adicional"></div>
+                      <div class="col-12"><b>Info Adicional</b></div>
+                      <div class="col-12" id="sri_adicional"></div>
                   </div>
               </div>
               <input type="hidden" id="txtclave" name="">
@@ -222,6 +222,8 @@
           </div>
       </div>
   </div>
+
+<!-- Modal cliente nuevo -->
  <div id="myModal_guia" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
       <div class="modal-dialog">
           <div class="modal-content">
@@ -316,35 +318,345 @@
                   <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
               </div>
           </div>
+      </div>
+  </div>
+
+  <div id="myModalInfoError" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title d-flex justify-content-start">FORMULARIO DE INFORME DE ERRORES</h5>
+                  <button type="button" class="btn-close justify-content-end" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                  <iframe id="FInfoErrorFrame" width="100%" height="400px" marginheight="0" frameborder="0"></iframe>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+          </div>
 
       </div>
   </div>
-  
-  <script>
-	function IngClave(tipo,base=false)
-    {
-        $.ajax({
-            data: {
-                usuario: tipo
-            },
-            url: '../controlador/panel.php?IngClaveCredenciales=true',
-            type: 'post',
-            dataType: 'json',
-            success: function(response) {
-                if(response['res'] == 1){
-                    $('#titulo_clave').text(response['nombre']);
 
-                    if(base)
-                    {
-                        $('#BuscarEn').val(base);
-                    }
-                    $('#TipoSuper_MYSQL').val(tipo);
-                    $("#clave_supervisor").modal('show');
-                }else{
-                    Swal.fire("Error", "Hubo un problema al obtener datos del supervisor.", "error");
-                }
-            }
-        });
+  <div class="modal fade" id="clave_supervisor" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+          <div class="modal-content bg-white">
+              <!--div class="modal-header">
+                  <h5 class="modal-title" id="titulo_clave">Ingrese clave de supervisor</h5>
+              </div-->
+              <!--<div class="modal-header" style="background-color: blue; color: white;">-->
+              <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white d-flex justify-content-start" id="titulo_clave">Ingrese clave de supervisor</h5>
+                <button type="button" class="btn-close d-flex justify-content-end" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+              <div class="container-fluid">
+                  <div class="row">
+                      <div class="col-sm-12">
+                        <label for="txt_IngClave_MYSQL">Clave de Acceso:</label>
+                          <input type="hidden" name="BuscarEn" id="BuscarEn" value="">
+                          <input type="hidden" name="TipoSuper_MYSQL" id="TipoSuper_MYSQL"><br>
+                          <input type="hidden" name="intentos_MYSQL" id="intentos_MYSQL" value="1">
+                          <input type="password" name="txt_IngClave_MYSQL" id="txt_IngClave_MYSQL"
+                              class="form-control form-control-sm" placeholder="Clave (Enter para validar)"  onfocusout="IngresoClave_MYSQL()"
+                              onkeypress="enter_MYSQL(event)" autocomplete="new-password">
+                      </div>
+                      <!--div class="col-sm-3">
+                          <div class="btn-group" >
+                              <! <button class="btn btn-default btn-sm">Aceptar</button> ->
+                              <button class="btn btn-default" data-dismiss="modal"
+                                  onclick="limpiar_IngresoClave_MYSQL();"> <img src="../../img/png/bloqueo.png"><br>
+                                  Cancelar</button>
+                          </div>
+                      </div-->
+                  </div>
+              </div>
+              </div>
+              <div class="modal-footer bg-white">
+              <button id="btnCancelAuth" class="btn btn-danger btn-sm" data-bs-dismiss="modal"
+                                  onclick="limpiar_IngresoClave_MYSQL();"><i class="fa fa-close"></i>Cancelar</button>
+                </div>
+          </div>
+      </div>
+  </div>
+
+  <div id="myModal" class="modal fade myModalNuevoCliente" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title d-flex justify-content-start">Cliente Nuevo</h4>
+                <button type="button" class="btn-close d-flex justify-content-end" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <iframe id="FCliente" width="100%" height="400px" marginheight="0" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="guardar_cliente_iframe()">Guardar</button>
+                <button type="button" id="btnUsarCli" class="btn btn-primary" onclick="datos_cliente()">Usar Cliente</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div id="myModal_provedor" class="modal fade myModalNuevoCliente" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title d-flex justify-content-start">Proveedor Nuevo</h4>
+                <button type="button" class="btn-close d-flex justify-content-end" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="contenido_prov" style="background: antiquewhite;">
+                <iframe id="FProveedor" width="100%" height="390px" marginheight="0" frameborder="0" src="../vista/modales.php?FProveedores=true"></iframe>
+            </div>
+           <!--  <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="datos_cliente()">Usar Cliente</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div> -->
+        </div>
+    </div>
+  </div>
+
+  <div id="myModal_notificar" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">Notificacion</h4>
+            </div>
+            <div class="modal-body" style="background: antiquewhite;">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="row text-center">
+                    <b>Notificacion <span id="lbl_asunto"></span></b>
+                  </div>
+                    <input type="hidden" name="txt_id_noti" id="txt_id_noti">
+                    <input type="hidden" name="txt_cod_pedido" id="txt_cod_pedido">                    
+                    <b>De: </b><span id="lbl_de"></span> <br>
+                    <b>Para: </b><span id="lbl_para"></span> <br>
+                    <b>Pedido: </b><span id="lbl_pedido"></span> <a href="#" id="lbl_link">Ir a pedido</a><br>
+                    <b>Mensaje: </b><br>
+                    <div id="txt_mensaje"></div>                  
+                </div>
+                <div class="col-sm-6">
+                  <div class="row text-center">
+                    <b>Respuesta</b>
+                  </div>
+                <textarea class="form-control form-control-sm" id="txt_respuesta" name="txt_respuesta" rows="3">.</textarea>
+                <div class="text-right">
+                  <button type="button" class="btn btn-primary" onclick="cambiar_estado()">Responder</button>
+                </div>                  
+                </div>
+              </div>
+              
+            </div>
+             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="solucionado()">Marcar como solucionando</button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+
+<script>
+function IngClave(tipo,base=false)
+{
+	$.ajax({
+		data: {
+			usuario: tipo
+		},
+		url: '../controlador/panel.php?IngClaveCredenciales=true',
+		type: 'post',
+		dataType: 'json',
+		success: function(response) {
+			if(response['res'] == 1){
+				$('#titulo_clave').text(response['nombre']);
+
+				if(base)
+				{
+					$('#BuscarEn').val(base);
+				}
+				$('#TipoSuper_MYSQL').val(tipo);
+				$("#clave_supervisor").modal('show');
+			}else{
+				Swal.fire("Error", "Hubo un problema al obtener datos del supervisor.", "error");
+			}
+		}
+	});
+}
+
+function control_errores(proceso,error)
+{
+	parametros = 
+	{
+	'Tarea':error,
+	'Proceso':proceso
+	}
+	$('#myModal_espera').modal('hide');
+	$.ajax({
+		data: {parametros: parametros},
+		url: '../controlador/panel.php?control_errores=true',
+		type: 'post',
+		dataType: 'json',
+		success: function(response) {
+			
+		}
+	});
+}
+
+function guardar_cliente_iframe()
+{
+	var iframe = document.getElementById('FCliente');
+	if (iframe.contentWindow) {
+	var iframeWindow = iframe.contentWindow;
+	// console.log(iframeWindow);
+	iframeWindow.guardar_cliente();
+	}
+}
+
+function datos_cliente() 
+{
+    var frame = document.getElementById('FCliente');
+    var ruc = frame.contentWindow.document.getElementById('ruc').value;
+    var codigocliente = frame.contentWindow.document.getElementById('codigoc').value;
+    var email = frame.contentWindow.document.getElementById('email').value;
+    var nombre = frame.contentWindow.document.getElementById('nombrec').value;
+    var grupo = frame.contentWindow.document.getElementById('grupo').value;
+    var T = frame.contentWindow.document.getElementById('TD').value;
+    // crear esta funcion donde se desee agregar estos datos de cliente
+    usar_cliente(nombre, ruc, codigocliente, email, T,grupo);
+}
+
+function enter(e) {
+    if (e.which == 13) {
+        IngresoClave()
     }
-  </script>
+}
+
+function IngresoClave() {
+    var p = $('#txt_IngClave').val();
+    if (p == '') {
+        return false;
+    }
+
+    var parametros = {
+        'tipo': $('#TipoSuper').val(),
+        'intentos': $('#intentos').val(),
+        'pass': $('#txt_IngClave').val(),
+    }
+    var opcion = '';
+    $.ajax({
+        data: {
+            parametros: parametros
+        },
+        url: '../controlador/panel.php?IngClaves=true',
+        type: 'post',
+        dataType: 'json',
+        success: function(response) {
+            console.log(response);
+            if (response.respuesta == -1) {
+                $('#intentos').val(response.intentos);
+                Swal.fire(response.msj, '', 'info');
+                resp_clave_ingreso(response);
+            } else {
+                //esta funcion debe estar definida en la paginandonde se este llamando
+                resp_clave_ingreso(response);
+                //$('#clave_contador').modal('hide');
+                $('#clave_supervisor').modal('hide');
+            }
+        }
+    });
+
+}
+
+function limpiar_IngresoClave() {
+    $('#intentos').val('1');
+    $('#txt_IngClave').val('');
+}
+
+function enter_MYSQL(e) {
+    if (e.which == 13) {
+        IngresoClave_MYSQL()
+    }
+}
+
+function IngresoClave_MYSQL() {
+    var p = $('#txt_IngClave_MYSQL').val();
+    if (p == '') {
+        return false;
+    }
+
+    var parametros = {
+        'tipo': $('#TipoSuper_MYSQL').val(),
+        'intentos': $('#intentos_MYSQL').val(),
+        'pass': $('#txt_IngClave_MYSQL').val(),
+        'buscaren': $('#BuscarEn').val(),
+    }
+    var opcion = '';
+    $.ajax({
+        data: {
+            parametros: parametros
+        },
+        url: '../controlador/panel.php?IngClaves_MYSQL=true',
+        type: 'post',
+        dataType: 'json',
+        success: function(response) {
+            // console.log(response);
+            limpiar_IngresoClave_MYSQL();
+            if (response.respuesta == -1) {
+                $('#intentos_MYSQL').val(response.intentos);
+                Swal.fire(response.msj, '', 'info');
+                resp_clave_ingreso(response);
+            } else {
+                //esta funcion debe estar definida en la paginandonde se este llamando
+                resp_clave_ingreso(response);
+                //$('#clave_contador').modal('hide');
+                $('#clave_supervisor').modal('hide');
+            }
+        }
+    });
+
+}
+
+function limpiar_IngresoClave_MYSQL() {
+    $('#intentos_MYSQL').val('1');
+    $('#txt_IngClave_MYSQL').val('');
+}
+
+function cargar_notificacion(id)
+{    
+  ruta = window.location.href;
+  base = ruta.split('&');
+parametros = 
+{
+	'id_noti':id,
+}
+$.ajax({
+	type: "POST",
+		url: '../controlador/login_controller.php?datos_notificacion=true',
+		data:{parametros:parametros},
+		dataType:'json',
+	success: function(data)
+	{       
+
+		$('#lbl_asunto').text(data[0].Asunto);
+		$('#lbl_de').text(data[0].De);
+		$('#lbl_para').text(data[0].Para);
+		$('#lbl_pedido').text(data[0].Atencion);
+		$('#txt_mensaje').text(data[0].Texto_Memo);
+		$('#lbl_link').attr('href',base[0]+'&acc='+data[0].link);
+		console.log(data)
+	}
+});   
+}
+
+$(document).ready(function(){ 
+        window.addEventListener("message", function(event) {
+            if (event.data === "closeModal") {
+                $('#myModal_provedor').modal('hide');
+            }
+        });         
+    })
+</script>
 

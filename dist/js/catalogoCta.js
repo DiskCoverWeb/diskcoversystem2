@@ -5,7 +5,7 @@ function consultar_datos()
         $('#tbl_tablaCtaGrupos').DataTable().clear().destroy();
         $('#tbl_tablaCtaDetalles').DataTable().clear().destroy(); 
     }
-    
+    var columnasIdxNum = [];
     tbl_catalogoCta = $('#tbl_tablaCta').DataTable({
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
@@ -24,6 +24,7 @@ function consultar_datos()
                 return { parametros:parametros }
             },
             dataSrc: function(response){
+                response = ProcesarDatos(response);
                 return response;
             },
             beforeSend: function(){
@@ -32,6 +33,7 @@ function consultar_datos()
             complete: function(){
                 $('#myModal_espera').modal('hide');
                 tbl_catalogoCta.columns.adjust().draw();
+                //consulta ajax dentro del dataTable, hacer esto
             },
             error: function(xhr, status, error){
                 console.log("Error en la solicitud: ", status, error);
@@ -51,6 +53,9 @@ function consultar_datos()
             { data: 'Presupuesto' },
             { data: 'Codigo_Ext' }
         ],
+        createdRow: function(row, data){
+            alignEnd(row, data);
+        },
         order: [
             [0, 'asc']
         ]
@@ -75,6 +80,7 @@ function consultar_datos()
                 return { parametros:parametros }
             },
             dataSrc: function(response){
+                response = ProcesarDatos(response);
                 return response;
             },
             beforeSend: function(){
@@ -102,6 +108,9 @@ function consultar_datos()
             { data: 'Presupuesto' },
             { data: 'Codigo_Ext' }
         ],
+        createdRow: function(row, data){
+            alignEnd(row, data);
+        },
         order: [
             [0, 'asc']
         ]
@@ -126,6 +135,8 @@ function consultar_datos()
                 return { parametros:parametros }
             },
             dataSrc: function(response){
+                //Procesar Datos en Js Globales, para cambiar datos numericos. 
+                response = ProcesarDatos(response);
                 return response;
             },
             beforeSend: function(){
@@ -133,7 +144,6 @@ function consultar_datos()
             },
             complete: function(){
                 $('#myModal_espera').modal('hide');
-                tbl_catalogoCtaDetalles.columns.adjust().draw();
             },
             error: function(xhr, status, error){
                 console.log("Error en la solicitud: ", status, error);
@@ -153,6 +163,9 @@ function consultar_datos()
             { data: 'Presupuesto' },
             { data: 'Codigo_Ext' }
         ],
+        createdRow: function(row, data){
+            alignEnd(row, data);
+        },
         order: [
             [0, 'asc']
         ]

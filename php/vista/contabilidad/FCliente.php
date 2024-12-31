@@ -212,7 +212,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
       <!-- /.box-body -->
       <div class="box-footer p-3">
         <div class="footer-content">
-          <button type="button" id="BtnGuardarClienteFCliente" onclick="guardar_cliente()" class="btn btn-primary ml-2">Guardar
+          <button type="button" id="BtnGuardarClienteFCliente" onclick="guardar_cliente()" class="btn btn-primary ms-2">Guardar
           </button>
           <!--PRODUCTOS RELACIONADOS -->
           <div class="panel panel-default border" id="panel-container">
@@ -309,7 +309,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
               <div class="btn-group">
                 <button class="btn btn-default btn-sm" onclick="guardar_cuentas()"><img
                     src="../../img/png/grabar.png"><br>&nbsp;&nbsp;&nbsp;Aceptar&nbsp;&nbsp;&nbsp;</button>
-                <button class="btn btn-default" data-dismiss="modal" onclick="cancelar()"> <img
+                <button class="btn btn-default" data-bs-dismiss="modal" onclick="cancelar()"> <img
                     src="../../img/png/bloqueo.png"><br> Cancelar</button>
               </div>
             </div>

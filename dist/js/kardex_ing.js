@@ -799,8 +799,10 @@ function cargar_grilla()
             {
               $('#tbl_retencion').DataTable({
                 searching: false,
+                responsive: true,
                 paging: false,   
-                info: false,     
+                info: false,   
+                autoWidth: false,   
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
                 },

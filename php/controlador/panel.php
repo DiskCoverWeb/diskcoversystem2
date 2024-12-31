@@ -251,7 +251,7 @@ function IngClaves_MYSQL($parametros)
     $resultado = -1;
     $intentos = $parametros['intentos'];
 
-    $per = new usuario_model();
+    $per = new loginM();
     if ($parametros['pass'] == '') {
         $mensaje = 'Ingrese una clave valida';
 
@@ -792,7 +792,7 @@ function getEmpresasId($id_empresa)
 function empresa_sin_creenciales_sqlserver($id_empresa)
 {
     //echo ' dd '.$id_empresa;
-    $per = new usuario_model();
+    $per = new loginM();
     $empresa = $per->getEmpresasId_sin_sqlserver($id_empresa);
     // print_r($empresa);die();
     // print_r($_SESSION); die();
@@ -801,7 +801,7 @@ function empresa_sin_creenciales_sqlserver($id_empresa)
 //devuelve inf del detalle de la empresa seleccionada por el usuario -------* modificado: javier fainango.
 function getEmpresasDE($item, $nombre)
 {
-    $modelo = new usuario_model();
+    $modelo = new loginM();
     $datos = $modelo->datos_empresa($item, $nombre);
     // print_r($datos);die();
     return $datos;
@@ -809,7 +809,7 @@ function getEmpresasDE($item, $nombre)
 //perido actual funcion sql server --* modificado: javier fainango.
 function getPeriodoActualSQL()
 {
-    $modulo = new usuario_model();
+    $modulo = new loginM();
     $periodo = $modulo->get_periodo();
     return $periodo;
 }
@@ -819,7 +819,7 @@ function getUsuario()
 {
     //echo ' dd '.$id_empresa;
     if (isset($_SESSION['INGRESO']['Tipo_Base']) and $_SESSION['INGRESO']['Tipo_Base'] == 'SQL SERVER') {
-        $per = new usuario_model();
+        $per = new loginM();
         //hacemos conexion en sql
         $per->conexionSQL();
         $empresa = $per->getUsuarioSQL();
@@ -827,7 +827,7 @@ function getUsuario()
     //mysql
     if (isset($_SESSION['INGRESO']['Tipo_Base']) and $_SESSION['INGRESO']['Tipo_Base'] == 'MySQL') {
         //echo ' sss '.$_SESSION['INGRESO']['Tipo_Base'];
-        $per = new usuario_model();
+        $per = new loginM();
 
         $empresa = $per->getUsuarioMYSQL();
     }
@@ -839,7 +839,7 @@ function getUsuario()
 //verificar acceso usuario ------  * modificado: javier fainango.
 function getAccesoEmpresas()
 {
-    $modelo = new usuario_model();
+    $modelo = new loginM();
     $modelo->getAccesoEmpresasSQL();
 }
 
@@ -849,7 +849,7 @@ function getModulo()
 {
     //echo ' dd '.$id_empresa;
     if (isset($_SESSION['INGRESO']['Tipo_Base']) and $_SESSION['INGRESO']['Tipo_Base'] == 'SQL SERVER') {
-        $per = new usuario_model();
+        $per = new loginM();
         //hacemos conexion en sql
         $per->conexionSQL();
         $empresa = $per->getModuloSQL();
@@ -857,7 +857,7 @@ function getModulo()
     //mysql
     if (isset($_SESSION['INGRESO']['Tipo_Base']) and $_SESSION['INGRESO']['Tipo_Base'] == 'MySQL') {
         //echo ' sss '.$_SESSION['INGRESO']['Tipo_Base'];
-        $per = new usuario_model();
+        $per = new loginM();
 
         $empresa = $per->getModuloMYSQL();
     }
@@ -867,7 +867,7 @@ function getModulo()
 
 function modulos_habiliatados()
 {
-    $per = new usuario_model();
+    $per = new loginM();
     $modulos = $per->modulos_registrados();
     return $modulos;
 
@@ -923,7 +923,7 @@ function contruir_modulos($modulos)
 function contruir_todos_modulos()
 {
 
-    $per = new usuario_model();
+    $per = new loginM();
     $modulos = $per->modulos_todos();
     $mod = "";
     $color = array('1' => 'bg-green', '2' => 'bg-yellow', '3' => 'bg-red', '4' => 'bg-aqua');

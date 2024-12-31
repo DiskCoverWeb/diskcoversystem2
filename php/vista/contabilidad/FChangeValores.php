@@ -18,6 +18,7 @@
       border-top-left-radius:  5px;
     }
 </style>
+<script src="../../dist/js/FChangeValores.js"></script>
 <div class="modal fade bd-example-modal" id="ModalChangeValores" tabindex="-1" role="dialog" aria-labelledby="ModalChangeValores" aria-hidden="true" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
@@ -83,13 +84,13 @@
 					</div>
 					<div class="col-md-2 text-center">
 						<div class="row">
-							<div class="col-md-12 col-sm-6 col-xs-2">                
+							<div class="col-md-12 col-sm-6">                
 								<button type="button" class="btn btn-default" onclick="Cambiar_Valores_Modal()">
 									<img src="../../img/png/agregar.png"><br>
 									Aceptar
 								</button>
 							</div>
-							<div class="col-md-12 col-sm-6 col-xs-2">
+							<div class="col-md-12 col-sm-6">
 								<br>
 								<button type="button" class="btn btn-default" title="Cerrar" data-dismiss="modal">
 									<img src="../../img/png/salire.png"><br>&nbsp; &nbsp;Salir&nbsp;&nbsp;&nbsp;
@@ -103,4 +104,3 @@
   </div>
 </div>
 
-<script src="../../dist/js/FChangeCta.js"></script>

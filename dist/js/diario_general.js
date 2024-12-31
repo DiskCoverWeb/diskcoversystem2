@@ -104,6 +104,7 @@ function cargar_libro_general()
       dataSrc: function(response){
         libro_general_saldos(); 
         libro_submodulo();
+        response.data = ProcesarDatos(response.data);
         return response.data;             
       },
       error: function(xhr, status, error){
@@ -133,7 +134,10 @@ function cargar_libro_general()
     ],
     order: [
       [0, 'asc']
-    ]
+    ], 
+    createdRow: function(row, data){ 
+      alignEnd(row, data);
+    }
   }); 
   
 }
@@ -175,6 +179,7 @@ function libro_submodulo()
         return { parametros:parametros }
       },
       dataSrc: function(response){
+        response.data = ProcesarDatos(response.data);
         return response.data;
       },
       error: function(xhr, status, error){
@@ -198,7 +203,10 @@ function libro_submodulo()
     ],
     order: [
       [0, 'asc']
-    ]
+    ], 
+    createdRow: function(row, data){
+      alignEnd(row, data);
+    }
   });
 }
 

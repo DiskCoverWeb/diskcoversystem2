@@ -98,6 +98,7 @@ function consultar_datos(OpcUno,PorConceptos)
                             return { parametros:parametros }
                         },
                         "dataSrc": function (response) {
+                            response.DGMayor.data = ProcesarDatos(response.DGMayor.data);
                             return response.DGMayor.data || [];
                         },
                         "error": function(xhr, status, error){
@@ -125,7 +126,10 @@ function consultar_datos(OpcUno,PorConceptos)
                     ], 
                     order: [
                         [0, 'asc']
-                    ]
+                    ],
+                    createdRow: function(row, data){
+                        alignEnd(row, data);
+                    }
                 })
             
         }, 
