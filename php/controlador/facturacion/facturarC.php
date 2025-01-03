@@ -4,9 +4,13 @@ require_once(dirname(__DIR__, 2) . "/comprobantes/SRI/autorizar_sri.php");
 require_once(dirname(__DIR__, 3) . "/lib/fpdf/cabecera_pdf.php");
 
 $controlador = new facturarC();
-if (isset($_GET['lineas_factura'])) {
+if (isset($_GET['lineas_factura1'])) {
    $parametros = $_POST['parametros'];
-   echo json_encode($controlador->lineas_facturas($parametros));
+   echo json_encode($controlador->lineas_facturas1($parametros));
+}
+if (isset($_GET['lineas_factura2'])) {
+   $parametros = $_POST['parametros'];
+   echo json_encode($controlador->lineas_facturas2($parametros));
 }
 if (isset($_GET['DCMod'])) {
    //$parametros = $_POST['parametros'];
@@ -325,7 +329,18 @@ class facturarC
       return '0';
 
    }
-   function lineas_facturas($parametros)
+   function lineas_facturas1($parametros)
+   {
+      // $codigoCliente = $parametro['codigoCliente'];
+      //revisar parametros como opcional
+      $datos = $this->modelo->lineas_factura($tabla = 1, $parametros['tamanioTblBody']);
+      $TextFacturaNo = Leer_Campo_Empresa("Mod_Fact");
+      $Mod_PVP = Leer_Campo_Empresa("Mod_PVP");
+      $DCEjecutivo = Leer_Campo_Empresa("Comision_Ejecutivo");
+      $totales = Calculos_Totales_Factura();
+      return $datos;
+   }
+   function lineas_facturas2($parametros)
    {
       // $codigoCliente = $parametro['codigoCliente'];
       //revisar parametros como opcional
