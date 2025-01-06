@@ -15,6 +15,15 @@ const urlParams = new URLSearchParams(queryString);
 var dataInv = [];//datos del SP.
 $(document).ready(function () {
     var tipo = urlParams.get('tipo');
+    tbl_fact = $('#tbl').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        paging:false,
+        searching:false,
+        info:false,
+    });
 
     $.ajax({
         type: "GET",
@@ -388,20 +397,139 @@ function DCEjecutivo() {
 
 
 function lineas_factura() {
+    tbl_fact.destroy();
+
     let altoContTbl = document.getElementById('interfaz_tabla').clientHeight;
+
+    tbl_fact = $('#tbl').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        /*columnDefs: [
+            { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
+        ],*/
+        ajax: {
+            url: '../controlador/facturacion/facturarC.php?lineas_factura1=true',
+            type: 'POST',  // Cambia el método a POST    
+            data: function(d) {
+                var parametros = {
+                  'codigoCliente': '',
+                    'tamanioTblBody': altoContTbl <= 25 ? 0 : altoContTbl - 12,
+                };
+                return { parametros: parametros };
+            },
+            dataSrc: '',             
+        },
+          scrollX: true,  // Habilitar desplazamiento horizontal
+            paging:false,
+            searching:false,
+            info:false,
+            scrollY: 330,
+            scrollCollapse: true,
+        columns: [
+            { data: null,
+                render: function(data, type, item) {
+                    return `<button type="button" class="btn btn-sm btn-danger" onclick="Eliminar_linea('${item.A_No}','${item.CODIGO}')" title="Eliminar linea"><i class="bx bx-trash"></i></button>`;
+                } 
+            },
+            { data: 'CODIGO'},
+            { data: 'CANT' },
+            { data: 'CANT_BONIF' },
+            { data: 'PRODUCTO' },
+            { data: 'PRECIO' },
+            { data: 'Total_Desc' },
+            { data: 'Total_Desc2' },
+            { data: 'Total_IVA' },
+            { data: 'SERVICIO' },
+            { data: 'TOTAL' },
+            { data: 'VALOR_TOTAL' },
+            { data: 'COSTO' },
+            { data: 'Fecha_IN.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Fecha_OUT.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Cant_Hab' },
+            { data: 'Tipo_Hab' },
+            { data: 'Orden_No' },
+            { data: 'Mes' },
+            { data: 'Cod_Ejec' },
+            { data: 'Porc_C' },
+            { data: 'REP' },
+            { data: 'FECHA.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'CODIGO_L' },
+            { data: 'HABIT' },
+            { data: 'RUTA' },
+            { data: 'TICKET' },
+            { data: 'Cta' },
+            { data: 'Cta_SubMod' },
+            { data: 'Item' },
+            { data: 'CodigoU' },
+            { data: 'CodBod' },
+            { data: 'CodMar' },
+            { data: 'TONELAJE' },
+            { data: 'CORTE' },
+            { data: 'A_No' },
+            { data: 'Codigo_Cliente' },
+            { data: 'Numero' },
+            { data: 'Serie' },
+            { data: 'Autorizacion' },
+            { data: 'Codigo_B' },
+            { data: 'PRECIO2' },
+            { data: 'COD_BAR' },
+            { data: 'Fecha_V.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Lote_No' },
+            { data: 'Fecha_Fab.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Fecha_Exp.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Reg_Sanitario' },
+            { data: 'Modelo' },
+            { data: 'Procedencia' },
+            { data: 'Serie_No' },
+            { data: 'Cta_Inv' },
+            { data: 'Cta_Costo' },
+            { data: 'Estado' },
+            { data: 'NoMes' },
+            { data: 'Cheking' },
+            { data: 'ID' }
+        ]
+    });
+
     var parametros =
     {
         'codigoCliente': '',
         'tamanioTblBody': altoContTbl <= 25 ? 0 : altoContTbl - 12,
     }
+
     $.ajax({
         type: "POST",
-        url: '../controlador/facturacion/facturarC.php?lineas_factura=true',
+        url: '../controlador/facturacion/facturarC.php?lineas_factura2=true',
         data: {parametros: parametros},
         dataType: 'json',
-        beforeSend: function () { $('#tbl').html('<div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;"><img src="../../img/gif/loader4.1.gif" width="20%"></div> '); },
+        //beforeSend: function () { $('#tbl').html('<div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;"><img src="../../img/gif/loader4.1.gif" width="20%"></div> '); },
         success: function (data) {
-            $('#tbl').html(data.tbl);
+            //$('#tbl').html(data.tbl);
             //$('#tbl').css('height', '100%');
             //$('#tbl tbody').css('height', '100%');
             $('#Mod_PVP').val(data.Mod_PVP);
@@ -686,7 +814,7 @@ function TextVUnit_LostFocus() {
         url: '../controlador/facturacion/facturarC.php?TextVUnit_LostFocus=true',
         data: { parametros: parametros },
         dataType: 'json',
-        beforeSend: function () { $('#tbl').html('<img src="../../img/gif/loader4.1.gif" width="40%"> '); },
+        //beforeSend: function () { $('#tbl').html('<img src="../../img/gif/loader4.1.gif" width="40%"> '); },
         success: function (data) {
             if (data == 1) {
                 lineas_factura();

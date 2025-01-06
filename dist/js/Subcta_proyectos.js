@@ -28,7 +28,7 @@ function DGCostos(todas=false)
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             }, 
-            data: response.data,
+            data: ProcesarDatos(response.data),
             scrollX: true, 
             scrollY: '300px',
             scrollCollapse: true, 
@@ -45,7 +45,10 @@ function DGCostos(todas=false)
               { data: 'Detalle', className: "text-center" }, 
               { data: 'Codigo', className: "text-center" }, 
               { data: 'ID', className: "text-center" }
-            ]
+            ],
+            createdRow: function(row, data){
+              alignEnd(row, data);
+            }
           });
       }
   });

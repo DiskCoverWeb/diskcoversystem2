@@ -239,7 +239,7 @@ function ListarTipoDeBalanceSQL($ti=null,$Opcb=null,$Opcem=null,$OpcDG=null,$b=n
 		// echo " entrooo 2 ";
 		//echo ' dd '.$OpcDG;
 		$per->conexionSQL();
-		$per1=new usuario_model();
+		$per1=new loginM();
 		$per1->conexionSQL();
 		$empresa=$per1->getPeriodoActualSQL($Opcem);
 		if($empresa)
@@ -364,7 +364,7 @@ function exportarExcel($ti=null,$Opcb=null,$Opcem=null,$OpcDG=null,$b=null,$OpcC
 			//echo " entrooo 2 ";
 			//echo ' dd '.$OpcDG;
 			$per->conexionSQL();
-			$per1=new usuario_model();
+			$per1=new loginM();
 			$per1->conexionSQL();
 			$empresa=$per1->getPeriodoActualSQL($Opcem);
 			if($empresa)

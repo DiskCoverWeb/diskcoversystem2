@@ -150,7 +150,6 @@ function Consultar_Un_Submodulo()
                 $('#myModal_espera').modal('show');
             },
             success:  function (response) {				
-                console.log(response);
                 $('#txt_debito').val(response.Debe);
                 $('#txt_credito').val(response.Haber);
                 $('#txt_saldo_actual').val(response.Saldo);
@@ -162,7 +161,7 @@ function Consultar_Un_Submodulo()
                     language: {
                         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
                     },
-                    data: response.tbl.data,
+                    data: ProcesarDatos(response.tbl.data),
                     scrollX: true, 
                     scrollY: '300px',
                     scrollColapse: true,
@@ -182,7 +181,10 @@ function Consultar_Un_Submodulo()
                         {"data":"Fecha_V"},
                         {"data":"Codigo"},
                         {"data":"Item"}
-                    ]
+                    ], 
+                    createdRow: function(row, data){
+                        alingEnd(row, data)
+                    }
                 })
                 //console.log(response.titulo);
         }

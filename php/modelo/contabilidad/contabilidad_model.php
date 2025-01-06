@@ -3261,27 +3261,44 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
      function transacciones_comprobante($tp,$numero,$item)
      {
      	 $sql = "SELECT T.Cta,Ca.Cuenta,T.Parcial_ME,T.Debe,T.Haber,T.Detalle,T.Cheq_Dep,T.Fecha_Efec,T.Codigo_C,Ca.Item,T.TP,T.Numero,T.Fecha,T.ID 
-             FROM Transacciones As T, Catalogo_Cuentas As Ca 
-             WHERE T.TP = '".$tp."' 
-             AND T.Numero = ".$numero." 
-             AND T.Item = '".$item."' 
-             AND T.Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-             AND T.Item = Ca.Item 
-             AND T.Periodo = Ca.Periodo 
-             AND T.Cta = Ca.Codigo 
-             ORDER BY T.ID,Debe DESC,T.Cta ";
-             // print_r($sql);die();
-             $result = $this->db_->datos($sql);
+			FROM Transacciones As T, Catalogo_Cuentas As Ca 
+			WHERE T.TP = '".$tp."' 
+			AND T.Numero = ".$numero." 
+			AND T.Item = '".$item."' 
+			AND T.Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+			AND T.Item = Ca.Item 
+			AND T.Periodo = Ca.Periodo 
+			AND T.Cta = Ca.Codigo 
+			ORDER BY T.ID,Debe DESC,T.Cta ";
+			// print_r($sql);die();
+			$result = $this->db_->datos($sql);
 
-             $botones[0] = array('boton'=>'Cambiar Cuenta','icono'=>'<i class="fa fa-edit"></i>', 'tipo'=>'warning', 'id'=>'Cta,Cuenta,ID');
-             $botones[1] = array('boton'=>'Cambiar Valores','icono'=>'<i class="fa fa-pencil"></i>', 'tipo'=>'info', 'id'=>'Cta,Cuenta,Debe,Haber,Detalle,Cheq_Dep,ID');
-             $botones[2] = array('boton'=>'Eliminar Cuenta','icono'=>'<i class="fa fa-trash-o"></i>', 'tipo'=>'danger', 
-             	'id' => 'Cta,Cuenta,Debe,Haber,ID'
-            );
+			$botones[0] = array('boton'=>'Cambiar_Cuenta','icono'=>'<i class="bx bx-edit ps-1 bx-xs"></i>', 'tipo'=>'warning', 'id'=>'Cta,Cuenta,ID');
+			$botones[1] = array('boton'=>'Cambiar_Valores','icono'=>'<i class="bx bx-pencil ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=>'Cta,Cuenta,Debe,Haber,Detalle,Cheq_Dep,ID');
+			$botones[2] = array('boton'=>'Eliminar_Cuenta','icono'=>'<i class="bx bx-trash ps-1 bx-xs"></i>', 'tipo'=>'danger', 'id' => 'Cta,Cuenta,Debe,Haber,ID');
 
-             $_SESSION['FListComprobante']['Contabilizacion'] = $sql;
-             $tbl = grilla_generica_new($sql);
-             return array('tbl'=>$tbl,'datos'=>$result);
+
+			$_SESSION['FListComprobante']['Contabilizacion'] = $sql;
+			$tbl = grilla_generica_new($sql);
+			if(!empty($tbl['data'])){
+				foreach($tbl['data'] as &$fila){
+					$botonesHtml = '';
+					foreach($botones as $boton){ 
+						$ids = explode (',', $boton['id']);
+						$parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+						$ids,
+						array_keys($ids)
+						);
+						$botonesHtml .= '<button type="button" class="btn btn-sm py-0 px-0 btn-'.$boton['tipo'].'" '.
+						'onclick="'.$boton['boton'].'(\''.implode("', '", $parametros).'\')" '.
+						'title="'.$boton['boton'].'">'.
+						$boton['icono'].
+						'</button> ';
+					}
+					$fila[] = '<div class="row row-cols-auto ps-1">'.$botonesHtml.'</div>';
+				}
+			}
+			return array('tbl'=>$tbl,'datos'=>$result);
 
 
      } 

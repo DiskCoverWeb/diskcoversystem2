@@ -130,6 +130,7 @@ function ConsultarDatosLibroBanco()
                             return { parametros:parametros }
                         },
                         'dataSrc': function (response){
+                            response.DGBanco.data = ProcesarDatos(response.DGBanco.data);
                             return response.DGBanco.data || [];
                         },
                         'error': function(xhr, status, error){
@@ -157,7 +158,10 @@ function ConsultarDatosLibroBanco()
                     ],
                     order: [
                         [0, 'asc']
-                    ]
+                    ],
+                    createdRow: function(row, data){ 
+                        alingEnd(row, data);
+                    }
                 })
         }, 
         error: function(xhr, status, error){ 

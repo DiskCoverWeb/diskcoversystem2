@@ -208,7 +208,8 @@ tbl_saldo_meses = $('#tbl_saldo_meses').DataTable({
         'dataSrc': function(response){
             setTimeout(function(){
                 $('#myModal_espera').modal('hide');          
-            }, 500); 
+            }, 500);
+            response.data = ProcesarDatos(response.data);
             return response.data || [];
         },
         'error': function(xhr, status, error){
@@ -218,14 +219,17 @@ tbl_saldo_meses = $('#tbl_saldo_meses').DataTable({
     scrollX: true, 
     scrollY: '300px',
     scrollColapse: true, 
-    'columns': [
+    columns: [
         { "data":"Cta" },
         { "data":"Beneficiario" },
         { "data":"Anio" },
         { "data":"Mes" },
         { "data":"Valor_x_Mes" },
         { "data":"Categoria" }
-    ]
+    ],
+    createdRow: function(row, data){
+        alignEnd(row, data);
+    }
 })
 
 }
@@ -308,6 +312,7 @@ tbl_saldo_temp = $('#tbl_saldo_temporal').DataTable({
             return { parametros:parametros }
         },
         'dataSrc': function(response){
+            response.data = ProcesarDatos(response.data);
             return response.data || [];
         },
         'error': function(xhr, status, error){
@@ -329,7 +334,10 @@ tbl_saldo_temp = $('#tbl_saldo_temporal').DataTable({
         {"data": "Ven 91 a 180"},
         {"data": "Ven 181 a 360"},
         {"data": "Ven mas de 360"}
-    ]
+    ],
+    createdRow: function(row, data){ 
+        alignEnd(row, data);
+    }
 })
 }
 

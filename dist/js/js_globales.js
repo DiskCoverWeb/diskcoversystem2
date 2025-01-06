@@ -650,3 +650,51 @@ function solo_3_numeros(id)
       // console.log(Fecha);
       return Fecha;
     }
+
+//FUNCIONES PARA TABLAS.
+//Funcion redondear a 2 decimales.
+//Aplicar esta funcion al momento de usar el response
+//ej: data: ProcesarDatos(response)
+function ProcesarDatos(data){ 
+	//Verificar si el array no es vacio
+	if(!data?.length) return []; 
+	data.forEach(obj =>{
+		for (const [key, value] of Object.entries(obj)){
+			//Para variables monetarias que son strings.
+			if(typeof value === "string"){
+				const keyLower = key.toLowerCase();
+				if(!keyLower.startsWith("Codigo") && keyLower != "cta"){
+					const numeric = Number(value);
+					if(!isNaN(numeric)){
+						if(value.includes(".")){
+							obj[key] = numeric.toFixed(2);
+						}
+					}
+				}
+				
+			}
+			//Para otras variables numericas que tiene decimales
+			//Ej: porcentaje.
+			if(typeof value === "number" && value%1 !== 0){
+				obj[key] = parseFloat(value.toFixed(2));
+			}
+		}
+	});
+	return data;
+}
+
+//Funcion para alinear texto. en cada dataTable agregar createdRow en sus caracteristicas.
+//Ej: createdRow: function(row, data){
+//		alignEnd(row, data);
+//	}
+function alignEnd(row, data){
+	Object.entries(data).forEach(([key, value], colIndex) => {
+		const keylower = key.toLowerCase();
+		if(!keylower.startsWith("codigo") && keylower != "cta"){ 
+			if (typeof value === "string" && /^-?\d+\.\d+$/.test(value)){
+				$('td', row).eq(colIndex).addClass('text-end');
+			}
+		}
+	});
+} 
+

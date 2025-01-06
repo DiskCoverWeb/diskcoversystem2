@@ -81,7 +81,6 @@ $( document ).ready(function() {
               $("#txt_actividad option").filter(function() {
                 return $(this).text() === ui.item.Actividad;
             }).prop('selected', true);
-;
             $('#CParteR').val(ui.item.Parte_Relacionada)
 
              $("#CTipoProv").val(ui.item.Tipo_Pasaporte);

@@ -41,7 +41,7 @@
        })
 	 }
 </script>
-<div class="overflow-auto p-2">
+<div class="overflow-auto">
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
 		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
 		</div>
@@ -55,65 +55,63 @@
 		</div>          
 	</div>
 	<div class="row">
-		<div class="d-flex justify-content-between align-items-center w-100">
-			<div class="d-flex align-items-center btn-group">
-				<a class="btn btn-sm btn-outline-secondary" title="Salir del modulo" href="./contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>">
-					<img src="../../img/png/salire.png">
-				</a>
-				<a class="btn btn-sm btn-outline-secondary" title="Exportar Excel" href="javascript:void(0)" onclick="GenerarExcelResultadoComprobante()">
-					<img src="../../img/png/table_excel.png">
-				</a>   
-				<button class="btn btn-sm btn-outline-secondary" title="Modificar el comprobante" onclick="IngClave('Contador')">
-					<img src="../../img/png/modificar.png">
-				</button>
-				<button type="button" id='l2' class="btn btn-sm btn-outline-secondary" title="Anular comprobante" onclick="anular_comprobante()">
-					<img src="../../img/png/anular.png">
-				</button>
-				<a id='l3' class="btn btn-sm btn-outline-secondary" title="Autorizar comprobante autorizado">
-					<img src="../../img/png/autorizar.png">
-				</a>
-				<a id='l4' class="btn btn-sm btn-outline-secondary" title="Realizar una copia al comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta balance de Comprobación&ti=BALANCE DE COMPROBACIÓN&Opcb=1&Opcen=0&b=1">
-					<img src="../../img/png/copiar.png">
-				</a>
-				<a id='l5' class="btn btn-sm btn-outline-secondary" title="Copiar a otra empresa el comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta estado de situación (general)&ti=ESTADO SITUACIÓN&Opcb=5&Opcen=1&b=0">
-					<img src="../../img/png/copiare.png">
-				</a>
-			</div>
-			<div class="d-flex justify-content-center">
-				<?php echo $_SESSION['INGRESO']['item']; ?>
-				<div class="btn-group" role="group" aria-label="Tipo de comprobante">
-					<input type="radio" class="btn-check" name="options" id="CD" value="CD" autocomplete="off" onchange="comprobante();" checked>
-					<label class="btn btn-primary btn-sm" for="CD">Diario</label>
+		<div class="d-flex align-items-center btn-group col-sm-12 col-md-6 col-lg-5">
+			<a class="btn btn-sm btn-outline-secondary" title="Sa lir del modulo" href="./contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>">
+				<img src="../../img/png/salire.png">
+			</a>
+			<a class="btn btn-sm btn-outline-secondary" title="Exportar Excel" href="javascript:void(0)" onclick="GenerarExcelResultadoComprobante()">
+				<img src="../../img/png/table_excel.png">
+			</a>   
+			<button class="btn btn-sm btn-outline-secondary" title="Modificar el comprobante" onclick="IngClave('Contador')">
+				<img src="../../img/png/modificar.png">
+			</button>
+			<button type="button" id='l2' class="btn btn-sm btn-outline-secondary" title="Anular comprobante" onclick="anular_comprobante()">
+				<img src="../../img/png/anular.png">
+			</button>
+			<a id='l3' class="btn btn-sm btn-outline-secondary" title="Autorizar comprobante autorizado">
+				<img src="../../img/png/autorizar.png">
+			</a>
+			<a id='l4' class="btn btn-sm btn-outline-secondary" title="Realizar una copia al comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta balance de Comprobación&ti=BALANCE DE COMPROBACIÓN&Opcb=1&Opcen=0&b=1">
+				<img src="../../img/png/copiar.png">
+			</a>
+			<a id='l5' class="btn btn-sm btn-outline-secondary" title="Copiar a otra empresa el comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta estado de situación (general)&ti=ESTADO SITUACIÓN&Opcb=5&Opcen=1&b=0">
+				<img src="../../img/png/copiare.png">
+			</a>
+		</div>
+		<div class="d-flex align-items-center col-sm-12 col-md-6 col-lg-4">
+			<?php #echo $_SESSION['INGRESO']['item']; ?>
+			<div class="btn-group" role="group" aria-label="Tipo de comprobante">
+				<input type="radio" class="btn-check" name="options" id="CD" value="CD" autocomplete="off" onchange="comprobante();" checked>
+				<label class="btn btn-primary btn-sm" for="CD">Diario</label>
 
-					<input type="radio" class="btn-check" name="options" id="CI" value="CI" autocomplete="off" onchange="comprobante();">
-					<label class="btn btn-primary btn-sm" for="CI">Ingresos</label>
+				<input type="radio" class="btn-check" name="options" id="CI" value="CI" autocomplete="off" onchange="comprobante();">
+				<label class="btn btn-primary btn-sm" for="CI">Ingresos</label>
 
-					<input type="radio" class="btn-check" name="options" id="CE" value="CE" autocomplete="off" onchange="comprobante();">
-					<label class="btn btn-primary btn-sm" for="CE">Egresos</label>
+				<input type="radio" class="btn-check" name="options" id="CE" value="CE" autocomplete="off" onchange="comprobante();">
+				<label class="btn btn-primary btn-sm" for="CE">Egresos</label>
 
-					<input type="radio" class="btn-check" name="options" id="ND" value="ND" autocomplete="off" onchange="comprobante();">
-					<label class="btn btn-primary btn-sm" for="ND">N/D</label>
+				<input type="radio" class="btn-check" name="options" id="ND" value="ND" autocomplete="off" onchange="comprobante();">
+				<label class="btn btn-primary btn-sm" for="ND">N/D</label>
 
-					<input type="radio" class="btn-check" name="options" id="NC" value="NC" autocomplete="off" onchange="comprobante();">
-					<label class="btn btn-primary btn-sm" for="NC">N/C</label>
-					<input id="tipoc" name="tipoc" type="hidden" value="CD">
-					<input type="hidden" name="TipoProcesoLlamadoClave" id="TipoProcesoLlamadoClave">
-				</div>
-			</div>
-			<div class="d-flex justify-content-end">
-				<div class="w-75">
-					<select class="form-select form-select-sm fs-6" name="tipo" id="mes" onchange="comprobante()">
-						<option value="0">Todos</option><?php echo  Tabla_Dias_Meses();?>
-					</select>   
-				</div>
-				<div class="w-75 ms-2">
-					<select class="form-select form-select-sm fs-6" name="ddl_comprobantes" id="ddl_comprobantes" onchange="listar_comprobante()">
-						<option value="">Seleccione</option>
-					</select> 
-				</div>
+				<input type="radio" class="btn-check" name="options" id="NC" value="NC" autocomplete="off" onchange="comprobante();">
+				<label class="btn btn-primary btn-sm" for="NC">N/C</label>
+				<input id="tipoc" name="tipoc" type="hidden" value="CD">
+				<input type="hidden" name="TipoProcesoLlamadoClave" id="TipoProcesoLlamadoClave">
 			</div>
 		</div>
+		<div class="d-flex col-sm-12 col-md-5 col-lg-3">
+			<div class="w-75">
+				<select class="form-select form-select-sm fs-6" name="tipo" id="mes" onchange="comprobante()">
+					<option value="0">Todos</option><?php echo  Tabla_Dias_Meses();?>
+				</select>
+			</div>
+			<div class="w-75 ms-2">
+				<select class="form-select form-select-sm fs-6" name="ddl_comprobantes" id="ddl_comprobantes" onchange="listar_comprobante()">
+					<option value="">Seleccione</option>
+				</select> 
+			</div>
 		</div>
+	</div>
 		<br> 
 		<div class="row">	
 			<div class="col-3">    
@@ -206,7 +204,7 @@
 						<div class="tab-content" id="myTabContent">
 						<div class="tab-pane fade show active" id="contabilizacion" role="tabpanel" aria-labelledby="home-tab">
 							<div class="row" >
-								<div class="col-sm-12">
+								<div class="">
 									<table class="table text-sm w-100" id="tbl_contabilidad">
 										<thead>
 											<tr>

@@ -100,12 +100,14 @@ function estado_licencia($f3)
 	<link href="../../assets/css/app.css" rel="stylesheet">
 	<link href="../../assets/css/icons.css" rel="stylesheet">
 	<!-- Theme Style CSS -->
-	<link rel="stylesheet" href="../../assets/css/dark-theme.css" />
+	<link rel="stylesheet" href="../../assets/css/dark-theme.css"/>
 	<!-- <link rel="stylesheet" href="../../assets/css/semi-dark.css" /> -->
-	<link rel="stylesheet" href="../../assets/css/header-colors.css" />
-	<link rel="stylesheet" href="../../dist/css/sweetalert2.min.css" />
-	<link rel="stylesheet" href="../../dist/css/style_acordeon.css">
+	<link rel="stylesheet" href="../../assets/css/header-colors.css"/>
+	<link rel="stylesheet" href="../../dist/css/sweetalert2.min.css"/>
+	<link rel="stylesheet" href="../../assets/css/jquery-ui.min.css"/>
+	<link rel="stylesheet" href="../../dist/css/style_acordeon.css"/>
 	<script src="../../assets/js/jquery.min.js"></script>
+	<script src="../../assets/js/jquery-ui.js"></script>
 	<script src="../../dist/js/js_globales.js"></script>	
 	<script src="../../dist/js/sweetalert2@11.js"></script>
 	<script type="text/javascript">

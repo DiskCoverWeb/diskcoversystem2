@@ -1,0 +1,304 @@
+#tablaIntegrantes,
+#tablaFamDisc,
+#tablaSituacion,
+#tablaFamEnfe {
+    /*table-layout: fixed;
+    width: 250px;*/
+    text-align: center;
+    white-space: nowrap;
+}
+
+.campos-d tbody tr td select {
+    width: fit-content;
+}
+
+.campos-d tbody tr td input {
+    width: 150px;
+}
+
+#tablaPoblacion {
+    table-layout: fixed;
+    /*width: 250px;*/
+    word-wrap: break-word;
+}
+
+#tablaPoblacion th,
+#tablaPoblacion td {
+    /*width: 100px;*/
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.card-header {
+    background-color: #f3e5ab;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    background-color: #fffacd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-link {
+    color: black;
+}
+
+#validarSRI {
+    transition: transform 0.3s ease;
+}
+
+#validarSRI:hover {
+    transform: translateY(-10px);
+}
+
+.btnsDD {
+    transition: transform 0.3s ease;
+}
+
+.btnsDD:hover {
+    transform: translateY(-10px);
+}
+
+#btnMostrarModal {
+    transition: transform 0.3s ease;
+}
+
+#btnMostrarModal:hover {
+    transform: translateY(-10px);
+}
+
+#btnMostrarGrupo {
+    transition: transform 0.3s ease;
+}
+
+#btnMostrarGrupo:hover {
+    transform: translateY(-10px);
+}
+
+#btnMostrarDir {
+    transition: transform 0.3s ease;
+}
+
+#btnMostrarDir:hover {
+    transform: translateY(-10px);
+}
+
+.icon {
+    transition: transform 0.3s ease;
+}
+
+.icon:hover {
+    transform: translateY(-5px);
+}
+
+#descargarArchivo img {
+    transition: transform 0.3s ease;
+}
+
+#descargarArchivo img:hover {
+    transform: translateX(10px);
+}
+
+.centered-img {
+    display: block;
+    margin: 0 auto;
+}
+
+.carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: top;
+    color: black;
+}
+
+.modal-body {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.form-group.row {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.text-danger:hover {
+    color: orangered;
+    cursor: pointer;
+}
+
+#calendar {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.contenedor-cf, .mensaje-form-enviado{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    z-index: 50;
+    width: 100%;
+}
+
+.mensaje-form-enviado{
+    position: fixed;
+    top: 8%;
+    left: 8%;
+    background-color: rgba(0, 0, 0, .5);
+    height: 92%;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+}
+
+.res-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    padding: 40px;
+    border-radius: 10px;
+    background-color: white;
+    height: 50%;
+}
+
+.icon-rform{
+    font-size: 50pt;
+}
+
+.msg-rform{
+    font-size: 1.1em;
+    color: #5d5d5d;
+    font-weight: 600;
+}
+
+.rf-icheck{
+    color: #20b564;
+}
+
+.rf-ierr{
+    color: rgb(223 88 88);
+}
+
+.rf-iload{
+    color: #939393;
+}
+
+.cargar-formulario{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    padding: 50px 100px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.icono-cargar, .rf-iload{
+    animation-name: cargar;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+    margin-bottom: 15px;
+}
+
+.icono-cargar i{
+    color: #898989;
+    font-size: 25pt;
+}
+
+.p-cargar{
+    font-weight: 600;
+    color: #616161;
+    font-size: 1.1em;
+}
+
+.form-contenedor{
+    margin: 0 auto;
+    max-width: 90%;
+    font-size: 1.5rem;
+    width: 700px;
+}
+
+.form-contenedor h1{
+    font-weight: 600;
+}
+
+/*.encabezado{
+    background-image: linear-gradient(115deg, rgb(17 69 89 / 85%), rgb(149 148 148 / 73%)), url(../../img/inscripcion/header.png);
+}*/
+
+.encabezado{
+    /*background-image: linear-gradient(115deg, rgb(76 0 255 / 85%), rgb(161 0 0 / 73%)), url(../../img/inscripcion/header.png);*/
+    background-image: linear-gradient(115deg, rgb(68 176 255 / 90%), rgb(7 191 106 / 70%)), url(../../img/inscripcion/header.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #fff;
+}
+
+.f-seccion{
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 1px 2px 5px 0px #0000003a;
+    margin: 0 0 18px 0;
+    background-color: #fff;
+}
+
+.fc-pregunta{
+    color: #000;
+}
+
+.f-sec-label{
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 12pt;
+}
+
+.f-sec-input label{
+    font-weight: 500;
+}
+
+.f-input:disabled{
+    color: light-dark(rgb(84, 84, 84), rgb(170, 170, 170));
+}
+
+.f-error-file, .f-label-obl{
+    color: rgb(217,48,37);
+}
+
+.form-footer{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px 20px 5px;
+}
+
+.env-insc-form{
+    background-color: rgb(191, 98, 0);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+.reset-insc-form{
+    background-color: transparent;
+    border: none;
+    color: rgb(191, 98, 0);
+    font-weight: 600;
+}
+
+@keyframes cargar{
+    from{
+        transform: rotate(0);
+    }
+    to{
+        transform: rotate(360deg);
+    }
+}

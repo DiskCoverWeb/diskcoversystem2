@@ -132,38 +132,25 @@ function listar_comprobante()
               language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
-              data: response.tbl1.data,
+              data: ProcesarDatos(response.tbl1.data),
               scrollY: '400px',
               scrollX: true,
+              scrollCollapse: true,
+              autoWidth: true,
               columns: [
                 { 
-                  data : "",
-                  orderable: false,
+                  data : null,
                   render: function(data, type, row){
-                    options = `
-                        <li><a href="#" class="dropdown-item" onclick="Cambiar_Cuenta('${row.Cta}', '${row.Cuenta}', '${row.ID}')">Cambiar Cuenta</a></li> 
-                        <li><a href="#" class="dropdown-item" onclick="Cambiar_Valores('${row.Cta}', '${row.Cuenta}', '${row.Debe}', 
-                            '${row.Haber}', '${row.Detalle}', '${row.Cheq_Dep}', '${row.ID}')">Cambiar Valores</a></li> 
-                        <li><a href="#" class="dropdown-item" onclick="Eliminar_Cuenta('${row.Cta}', '${row.Cuenta}', '${row.ID}')">Eliminar Cuenta</a></li>
-                    `;
-
-                    return `
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Acciones
-                            </button>
-                            <ul class="dropdown-menu">
-                                ${options}
-                            </ul>
-                        </div>`;
-                  }
+                    return data[0] || '';
+                  }, 
+                  title: "Acciones"
                 },
                 { data : "Cta" },
                 { data : "Cuenta" },
                 { data : "Parcial_ME" },
                 { data : "Debe" },
                 { data : "Haber" },
-                { data : "Detalle" },
+                { data : "Detalle"},
                 { data : "Cheq_Dep" },
                 { data : "Fecha_Efec.date",
                   render: function(data, type, item) {
@@ -180,14 +167,23 @@ function listar_comprobante()
                   }
                  },
                 { data : "ID" },
-
-              ]
-            });		
+              ],
+              createdRow: function(row, data){
+                alignEnd(row, data); 
+              },
+              complete: function(settings, json){ 
+                tbl_contabilidad.columns.adjust().draw();
+              },
+              columnDefs: [
+                {targest: [2, 6]},
+                {width: '400px' }
+              ] 
+            });
             tbl_retenciones = $('#tbl_retenciones').DataTable({
               language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
-              data: response.tbl2.data,
+              data: ProcesarDatos(response.tbl2.data),
               scrollY: '150px',
               scrollCollapse: true, 
               scrollX: true,
@@ -224,13 +220,19 @@ function listar_comprobante()
                 { data : "TB" },
                 { data : "Razon_Social" },
                 { data : "ID" }
-              ]
+              ],
+              createdRow: function(row, data){
+                alignEnd(row, data)
+              },
+              complete: function(settings, json){ 
+                tbl_retenciones.columns.adjust().draw();
+              }
             });
             tbl_retenciones_co = $('#tbl_retenciones_co').DataTable({
               language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
-              data: response.tbl2_1.data,
+              data: ProcesarDatos(response.tbl2_1.data),
               scrollY: '150px', 
               scrollCollapse: true, 
               scrollX: true,
@@ -282,13 +284,19 @@ function listar_comprobante()
                 { data: "Clave_Acceso" },
                 { data: "Estado_SRI" },
                 { data: "AutRetencion" }
-              ]
+              ],
+              createdRow: function(row, data){
+                alignEnd(row, data)
+              },
+              complete: function(settings, json){ 
+                tbl_retenciones_co.columns.adjust().draw();
+              }
             });
             tbl_retenciones_ve = $('#tbl_retenciones_ve').DataTable({
               language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
-              data: response.tbl2_2.data,
+              data: ProcesarDatos(response.tbl2_2.data),
               scrollY: '150px',
               scrollCollapse: true, 
               scrollX: true,
@@ -328,13 +336,19 @@ function listar_comprobante()
                 { data: "PorRetServicios" }, 
                 { data: "ValorRetServicios" }, 
                 { data: "RetPresuntiva" }
-              ]
+              ],
+              createdRow: function(row, data){
+                alignEnd(row, data)
+              },
+              complete: function(settings, json){ 
+                tbl_retenciones_ve.columns.adjust().draw();
+              }
             });
             tbl_subcuentas = $('#tbl_subcuentas').DataTable({
               language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
-              data: response.tbl3.data,
+              data: ProcesarDatos(response.tbl3.data),
               scrollY: '150px',
               scrollCollapse: true, 
               scrollX: true,
@@ -354,13 +368,19 @@ function listar_comprobante()
                 { data: "Detalle_SubCta" },
                 { data: "Cta" },
                 { data: "Codigo" }
-              ]
+              ],
+              createdRow: function(row, data){
+                alignEnd(row, data)
+              },
+              complete: function(settings, json){ 
+                tbl_subcuentas.columns.adjust().draw();
+              }
             });
             tbl_kardex = $('#tbl_kardex').DataTable({
               language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
-              data: response.tbl4.data,
+              data: ProcesarDatos(response.tbl4.data),
               scrollY: '300px',
               scrollCollapse: true,
               scrollX: true,
@@ -401,7 +421,13 @@ function listar_comprobante()
                 { data: "Codigo_Barra" },
                 { data: "Cta_Inv" },
                 { data: "Contra_Cta" }
-              ]
+              ],
+              createdRow: function(row, data){
+                alignEnd(row, data)
+              },
+              complete: function(settings, json){ 
+                tbl_kardex.columns.adjust().draw();
+              }
             });
             $('#txt_debe').val(response.Debe);
             $('#txt_haber').val(response.haber);        		
@@ -421,8 +447,6 @@ function listar_comprobante()
             {
                 $('#LabelEst').text('NORMAL');
             }
-            console.log(response);
-
         }
         setTimeout(function(){
         $('#myModal_espera').modal('hide');

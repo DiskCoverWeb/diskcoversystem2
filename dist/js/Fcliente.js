@@ -169,7 +169,9 @@ function buscar_cliente_nom() {
 function guardar_cliente() {
   $('#myModal_espera').modal('show');
   if (validar() == true) {
-    swal.fire('Llene todos los campos', '', 'info')
+    swal.fire('Llene todos los campos', '', 'info').then(() => { 
+      $('#myModal_espera').modal('hide');
+    });
     return false;
   }
   var rbl = $('#rbl_facturar').prop('checked');
@@ -209,8 +211,10 @@ function guardar_cliente() {
       }
     },
     error:function(err){
-      $('#myModal_espera').modal('hide');
       swal.fire('Ocurrio un error al procesar la solicitud. Error: ' + err, '', 'error');
+      setTimeout(() => {
+        $('#myModal_espera').modal('hide');
+      }, 500)
     }
   });
 }

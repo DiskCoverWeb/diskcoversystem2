@@ -551,6 +551,7 @@ function cargar_tablas_contabilidad()
       type: 'get',
       cache: true, 
       dataSrc: function(response){
+        response.data = ProcesarDatos(response.data);
         return response.data;
       },
       error: function(xhr, status, error){
@@ -594,7 +595,10 @@ function cargar_tablas_contabilidad()
     ], 
     order: [
       [0, 'asc']
-    ]
+    ], 
+    createdRow: function(row, data){
+      alignEnd(row, data);
+    }
   });
   
 
@@ -611,6 +615,7 @@ function cargar_tablas_sc()
     ajax: {
       url: '../controlador/contabilidad/incomC.php?tabs_sc=true',
       dataSrc: function(response){
+        response.data = ProcesarDatos(response.data);
         return response.data;
       },
       error: function(xhr, status, error){ 
@@ -671,7 +676,10 @@ function cargar_tablas_sc()
     ],
     order: [
       [0, 'asc']
-    ]
+    ], 
+    createdRow: function(row, data){
+      alignEnd(row, data);
+    }
   });
 }
 
@@ -693,10 +701,11 @@ function cargar_tablas_retenciones()
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             },
-            data: response.b.data,
+            data: ProcesarDatos(response.b.data),
             scrollX: true,
             scrollY: '150px',
             scrollCollapse: true,
+            destroy: true,
             columns: [
               { data: null,
                 render: function(data, type, row){
@@ -773,13 +782,16 @@ function cargar_tablas_retenciones()
               { data: 'FormaPago' },
               { data: 'Clave_Acceso_NCD' },
               { data: 'Devolucion' }            
-            ] 
+            ],
+            createdRow: function(row, data){
+              alignEnd(row, data);
+            }
           });
           tbl_asientosR = $('#tbl_asientoR').DataTable({
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             }, 
-            data: response.r.data, 
+            data: ProcesarDatos(response.r.data), 
             scrollX: true, 
             scrollY: '150px', 
             scrollCollapse: true, 
@@ -815,7 +827,10 @@ function cargar_tablas_retenciones()
               { data: 'A_No' },
               { data: 'T_No' },
               { data: 'Tipo_Trans' },
-            ]
+            ],
+            createdRow: function(row, data){
+              alignEnd(row, data);
+            }
           });
           if (response.datos[0]) {
             $('#Autorizacion_R').val(response.datos[0].AutRetencion); 
@@ -854,7 +869,7 @@ function cargar_tablas_tab4()
           };   
           let tbl_av = $('#tbl_av').DataTable({
             ...commonConfig, 
-            data: response.AV.data, 
+            data: ProcesarDatos(response.AV.data), 
             columns: [
               { data: null,
                 render: function(data, type, row){
@@ -906,11 +921,14 @@ function cargar_tablas_tab4()
               { data: 'Porc_Bienes' },
               { data: 'Porc_Servicios' },
               { data: 'Tipo_Pago' }
-            ]
+            ], 
+            createdRow: function(row, data){
+              alignEnd(row, data);
+            }
           });
           let tbl_ae = $('#tbl_ae').DataTable({
             ...commonConfig, 
-            data: response.AE.data,
+            data: ProcesarDatos(response.AE.data),
             columns: [
               { data: null,
                 render: function(data, type, row){
@@ -959,11 +977,14 @@ function cargar_tablas_tab4()
               { data: 'CodigoU' },
               { data: 'A_No' },
               { data: 'T_No' }
-            ]
+            ],
+            createdRow: function(row, data){
+              alignEnd(row, data);
+            }
           });
           let tbl_ai = $('#tbl_ai').DataTable({
             ...commonConfig,
-            data: response.AI.data,
+            data: ProcesarDatos(response.AI.data),
             columns: [ 
               { data: null,
                 render: function(data, type, row){
@@ -998,7 +1019,10 @@ function cargar_tablas_tab4()
               { data:'CodigoU' },
               { data:'A_No' },
               { data:'T_No' },
-            ]
+            ],
+            createdRow: function(row, data){
+              alignEnd(row, data);
+            }
           });
       }
     });
@@ -1617,6 +1641,7 @@ function ListarAsientoB()
       url: '../controlador/contabilidad/incomC.php?ListarAsientoB=true',
       type: 'get',
       dataSrc: function(response){
+        response.data = ProcesarDatos(response.data);
         return response.data;
       }
     }, 
@@ -1648,7 +1673,10 @@ function ListarAsientoB()
       { data: 'T_No' },
       { data: 'Item' },
       { data: 'CodigoU' }
-    ]
+    ],
+    createdRow: function(row, data){
+      alignEnd(row, data);
+    }
   })
 
 }
