@@ -120,7 +120,7 @@ $(document).ready(function () {
 
 
 
-	function cargar_tablas_sc()
+	function cargar_tablas_sc2()
     {
        var tc = '<?php echo $tc; ?>';
       var OpcDH = '<?php echo $OpcDH; ?>';
@@ -148,6 +148,134 @@ $(document).ready(function () {
         });
 
     }
+
+  function cargar_tablas_sc()
+  {
+    if($.fn.dataTable.isDataTable('#subcuentas')){
+      $('#subcuentas').DataTable().clear().destroy();
+    }
+      var tc = '<?php echo $tc; ?>';
+      var OpcDH = '<?php echo $OpcDH; ?>';
+      var OpcTM = '<?php echo $OpcTM; ?>';
+      var cta = '<?php echo $cta; ?>';
+      var val = $('#txt_total').val();
+      var fec = $('#txt_fecha_ven').val();
+       var parametros = 
+      {
+        'cta':cta,
+        'tc':tc,
+        'tm':OpcTM,
+        'dh':OpcDH,
+        'fec':fec,
+        'val':val,
+      }           
+
+   $.ajax({
+      data:  {parametros:parametros},
+      url:   '../controlador/contabilidad/incomC.php?tabs_sc_modal=true',
+      type:  'post',
+      dataType: 'json',
+        success:  function (response) {
+            if (response!='') 
+            {
+              $('#subcuentas').DataTable({
+                searching: false,
+                paging: false,   
+                info: false,     
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+                },
+                columnDefs: [
+                    { targets: 2, width: "300px" }, // Ajusta el ancho de la columna "Detalle"
+                    {
+                      targets: [7,8],
+                      render: function(data, type, row) {
+                          return parseFloat(data).toFixed(2)
+                      }
+                   },
+                  //  {
+                  //     targets: 4,
+                  //     render: function(data, type, row) {
+                  //         return parseFloat(data).toFixed(2)
+                  //     }
+                  // }
+                ],
+                data: response,
+                scrollY: '250px',
+                scrollX: true, 
+                scrollCollapse: true,
+                columns: [
+                  {data:null, 
+                    render: function(data, type, row){
+                      return `<button type="button" class="btn btn-sm btn-danger" onclick="Eliminar_Gasto('${row.ID}','${row.Codigo}')" title="Eliminar linea retencion">
+                      <i class="fa fa-trash me-0"></i>
+                      </button>`;
+                    },
+                    orderable: false,
+                    className: 'text-center'
+                  },
+                  {data: 'Codigo'},
+                  {data: 'Beneficiario'},
+                  {data: 'Serie',className: 'text-end'},
+                  {data: 'Factura'}, 
+                  {data: 'Prima',className: 'text-end'},
+                  {data: 'DH'}, 
+                  {data: 'Valor'},
+                  {data: 'Valor_ME'},
+                  {data: 'Detalle_SubCta'}, 
+                  {data:  null,
+                    render: function(data, type, row){
+                      if(row.FECHA_V!=null)
+                      {
+                        return formatoDate(row.FECHA_V.date);
+                      }
+                      return '';
+                    }
+                  },
+                  {data:  null,
+                    render: function(data, type, row){
+                      if(row.FECHA_E!=null)
+                      {
+                        return formatoDate(row.FECHA_E.date);
+                      }
+                      return '';
+                    }
+                  },
+                  {data: 'TC'}, 
+                  {data: 'Cta'},
+                  {data: 'TM'},
+                  {data: 'T_No'},
+                  {data: 'SC_No'}, 
+                  {data:  null,
+                    render: function(data, type, row){
+                      if(row.Fecha_D!=null)
+                      {
+                        return formatoDate(row.Fecha_D.date);  
+                      }                   
+                      return ''; 
+                    }
+                  },
+                  {data:  null,
+                    render: function(data, type, row){
+                      if(row.Fecha_H!=null)
+                      {
+                        return formatoDate(row.Fecha_H.date);
+                      }
+                      return '';
+                    }
+                  },
+                  {data: 'Bloquear'},
+                  {data: 'Item'}, 
+                  {data: 'CodigoU'},
+                  {data: 'ID'},
+                  ]
+              });
+              // $('#txt_total_retencion').val(response.total);          
+            }
+         
+      }
+    });
+  }
 
   function carga_ddl()
   {
@@ -417,6 +545,9 @@ $(document).ready(function () {
 
   }
 </script>
+<div class="card m-3">
+    <div class="card-body">
+      
 <div class="row">
 	<div class="col-sm-4">
 		<b id="titulo">Sub cuenta por cobrar</b>
@@ -461,14 +592,57 @@ $(document).ready(function () {
 	</div>
 </div>
 <div class="row" style="overflow-x: scroll;">
-  <div class="col-sm-12" id="subcuentas">
+  <div class="col-sm-12" id="subcuentass">
+
     
   </div>
+  <div class="" >
+                      <table class="table table-sm" id="subcuentas">
+                        <thead>
+                          <tr>
+                            <th class="text-center"></th>
+                            <th class="text-center">Codigo</th>  
+                            <th class="text-center">Beneficiario</th>
+                            <th class="text-center">Serie</th>
+                            <th class="text-center">Factura</th>
+                            <th class="text-center">Prima</th>
+                            <th class="text-center">DH</th>
+                            <th class="text-center">Valor</th>
+                            <th class="text-center">Valor_ME</th>
+                            <th class="text-center">Detalle_SubCta</th>
+                            <th class="text-center">FECHA_V</th>
+                            <th class="text-center">FECHA_E</th>
+                            <th class="text-center">TC</th>
+                            <th class="text-center">Cta</th>
+                            <th class="text-center">TM</th>
+                            <th class="text-center">T_No</th>
+                            <th class="text-center">SC_No</th>
+                            <th class="text-center">Fecha_D</th>
+                            <th class="text-center">Fecha_H</th>
+                            <th class="text-center">Bloquear</th>
+                            <th class="text-center">Item</th>
+                            <th class="text-center">CodigoU</th>
+                            <th class="text-center">ID</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                      </div>
 </div>
 
-<div class="modal-footer">
-  <button type="button" class="btn btn-primary" onclick="generar_asiento();">Continuar</button>
-  <button type="button" class="btn btn-default" onclick="cerrarModal();">Salir</button>
+ </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-body">
+      <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="generar_asiento();">Continuar</button>
+          <button type="button" class="btn btn-outline-secondary px-5" onclick="cerrarModal();">Salir</button>           
+      </div>
+     </div>
 </div>
 
 <script type="text/javascript">

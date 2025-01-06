@@ -555,23 +555,24 @@ class incomM
 			// else
 			// {
 
-       		$botones[0] = array('boton'=>'Eliminar Gasto', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'ID,Codigo' );
-		      $tbl = grilla_generica_new($sql);
-          if(!empty($tbl['data'])){ 
-            foreach ($tbl['data'] as &$fila){ 
-              $ids = explode(',', $botones[0]['id']);
-              $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
-              $ids, 
-              array_keys($ids));
-              $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
-                          onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
-                          title="'.$botones[0]['boton'].'">'.
-                          $botones[0]['icono'].
-                          '</button>';
-            }
-          }
+       		// $botones[0] = array('boton'=>'Eliminar Gasto', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'ID,Codigo' );
+		      // $tbl = grilla_generica_new($sql);
+          // if(!empty($tbl['data'])){ 
+          //   foreach ($tbl['data'] as &$fila){ 
+          //     $ids = explode(',', $botones[0]['id']);
+          //     $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+          //     $ids, 
+          //     array_keys($ids));
+          //     $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
+          //                 onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
+          //                 title="'.$botones[0]['boton'].'">'.
+          //                 $botones[0]['icono'].
+          //                 '</button>';
+          //   }
+          // }
+          $result = $this->conn->datos($sql);
 			 // print_r($tbl);die();
-		     return $tbl;
+		     return $result;
     }
 
     function catalogo_subcta($SubCta,$agrupado=false,$nivel=false)
@@ -623,7 +624,7 @@ class incomM
      {
 
     	$cid = $this->conn;
-     	 $sql = "SELECT Detalle_SubCta
+     	 $sql = "SELECT TOP 20 Detalle_SubCta
          FROM Trans_SubCtas
          WHERE Item = '".$_SESSION['INGRESO']['item']."'
          AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";

@@ -672,8 +672,13 @@ class loginC
 			}
 		} else {
 			//entra a buscar en usuarios de sistema
+
 			// print_r($parametro);die();
-			$datos = $this->modelo->datos_usuario_mysql($parametro['usuario'], $entidad = false,false);
+			if (filter_var($parametro['usuario'], FILTER_VALIDATE_EMAIL)) {				
+				$datos = $this->modelo->datos_usuario_mysql(false, $entidad = false,$parametro['usuario']);
+			}else{
+				$datos = $this->modelo->datos_usuario_mysql($parametro['usuario'], $entidad = false,false);
+			}
 			// print_r($datos);die();
 			if (count($datos) > 0) {
 				$datos_email = array(

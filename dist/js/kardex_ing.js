@@ -577,8 +577,6 @@ function grabacion()
      "PtoEmiRetencion": $('#TxtNumDosComRet').val(),
      "SecRetencion": $('#TxtNumTresComRet').val(),
      "AutRetencion": $('#TxtNumUnoAutComRet').val(),
-     "moduloActual": moduloActual,
-
   }
 
   // console.log(parametros);

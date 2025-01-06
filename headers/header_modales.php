@@ -98,12 +98,14 @@ include_once("../funciones/funciones.php");
   <link href="../../assets/css/app.css" rel="stylesheet">
   <link href="../../assets/css/icons.css" rel="stylesheet">
 
+  <link rel="stylesheet" href="../../dist/css/jquery-ui.css">
   <link href="../../assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
 
   <!--JS's-->
   <script src="../../assets/js/jquery.min.js"></script>
 	<script src="../../dist/js/js_globales.js"></script>	
 	<script src="../../dist/js/sweetalert2@11.js"></script>
+  <script src="../../dist/js/jquery-ui.js"></script>
 
   <script type="text/javascript">
   var formato = "<?php if(isset($_SESSION['INGRESO']['Formato_Cuentas'])){echo $_SESSION['INGRESO']['Formato_Cuentas'];}?>";

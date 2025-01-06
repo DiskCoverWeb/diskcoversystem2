@@ -1057,7 +1057,7 @@ class registro_esC
   function generar_comprobante_tipo2($parametros)
   {
     // print_r($parametros);die();
-    $modulo = generaCeros($parametros['moduloActual'],2);
+    $modulo = $_SESSION['INGRESO']['modulo_'];
     $cta = 'Cta_Proveedores';
     $datos1 = $this->modelo->buscar_cta($cta);
     $datos2 = $this->modelo->LeerCta($datos1[0]['Codigo']);

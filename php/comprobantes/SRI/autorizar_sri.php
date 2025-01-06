@@ -2594,6 +2594,7 @@ function Autorizar_retencion($parametros)
 			   		 	{
 			   		 		//una vez enviado comprobamos el estado de la factura
 			   		 		$resp =  $this->comprobar_xml_sri($aut,$this->linkSriAutorizacion);
+			   		 		// print_r($resp);die()
 			   		 		if($resp[0]==1)
 			   		 		{
 			   		 			$resp_auto = $this->actualizar_datos_CER($aut,$parametros['TP'],$TFA[0]["Serie_R"],$TFA[0]["Retencion"],generaCeros($_SESSION['INGRESO']['IDEntidad'],3),$TFA[0]["Autorizacion_R"],$TFA[0]['Fecha']->format('Y-m-d'));

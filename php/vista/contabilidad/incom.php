@@ -127,7 +127,7 @@ function Form_Activate()
                Swal.fire({
                  title: 'El Sistema se cerro de forma inesperada, existen movimientos en transito con su codigo de usuario. Desea recuperarlos? ',
                  text: "",
-                 type: 'warning',
+                 icon: 'warning',
                  showCancelButton: true,
                  confirmButtonColor: '#3085d6',
                  cancelButtonColor: '#d33',

@@ -59,7 +59,7 @@ if(isset($_GET['Ftransporte']))
   <!-- </div> -->
 <!--Ocultar el footer porque tiene funciones integradas, no eliminar-->
 	<?php
-	require_once("../../headers/footer.php");
+	require_once("../../headers/footer_modales.php");
 	?>
 
 <!-- 
