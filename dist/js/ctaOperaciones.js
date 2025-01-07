@@ -313,7 +313,7 @@ function grabar_cuenta()
   Swal.fire({
     title: 'Esta seguro de guardar?',
     text: "la cuenta N°"+num+' '+nom+' ',
-    type: 'warning',
+    icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
@@ -328,7 +328,7 @@ function grabar_cuenta()
 function grabar()
 {
 
-  // $('#myModal_espera').modal('show');
+  $('#myModal_espera').modal('show');
   var acre = $('#MBoxCtaAcreditar').val();
   if(acre == ''){acre = 0;}
 
@@ -369,7 +369,12 @@ function grabar()
     alert('oops!');
   }
 
-}
+},
+ error: function(xhr, status, error){
+        console.error("Error en la solicitud: ", xhr, status, error);
+        
+    $('#myModal_espera').modal('hide');
+      }
 });
 }
 function forma_pago()

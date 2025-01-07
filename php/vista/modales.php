@@ -1,12 +1,4 @@
-<?php include('../../headers/header_modales.php');?>
-<script type="text/javascript">
-	 $( document ).ready(function() {
-	$('body').css('padding-top','0px');
-});
-</script>
-
-<!-- <div class="content-wrapper"> -->
-<?php
+<?php include('../../headers/header_modales.php');
 
 if(isset($_GET['FSubCtas']))
 {
@@ -53,22 +45,6 @@ if(isset($_GET['Ftransporte']))
 	require_once('gestion_social/Ftransporte.php');
 }
 
-?>
-
-<!-- </section> -->
-  <!-- </div> -->
-<!--Ocultar el footer porque tiene funciones integradas, no eliminar-->
-	<?php
 	require_once("../../headers/footer_modales.php");
-	?>
 
-<!-- 
-<div class="modal fade" id="myModal_espera" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-body text-center">
-        	<img src="../../img/gif/loader4.1.gif" width="80%"> 	
-        </div>
-      </div>
-    </div>
-  </div>	 -->			
+?>

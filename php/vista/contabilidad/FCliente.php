@@ -89,12 +89,10 @@ switch ($_SESSION['INGRESO']['modulo_']) {
   </div>
   <!-- FIN BOTONES CXC y CXP -->
 
-  <div class="box box-info p-2">
-
-    <!-- /.box-header -->
-    <!-- form start -->
-    <form class="form-horizontal" id="form_cliente">
-      <div class="box-body p-3">
+  <div class="card mt-3">
+    <div class="card-body">
+      <form class="form-horizontal" id="form_cliente">
+      <!-- <div class="box-body p-3"> -->
         <div class="row">
           <div class="col-xs-4 col-sm-3 ">
             <label for="ruc" class="control-label" id="resultado"><span style="color: red;">*</span>RUC/CI</label>
@@ -112,7 +110,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
 
           </div>
           <div class=" col-sm-3 ">
-            <label for="telefono" class="col-sm-1 control-label"><span style="color: red;">*</span>Telefono</label>
+            <label for="telefono" class=""><span style="color: red;">*</span>Telefono</label>
             <input type="text" class="form-control form-control-sm" id="telefono" name="telefono" placeholder="Telefono"
               autocomplete="off">
             <span class="help-block" id='e_telefono' style='display:none;color: red;'>Debe ingresar Telefono</span>
@@ -175,7 +173,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
             <input type="text" class="form-control form-control-sm" id="grupo" name="grupo" placeholder="Grupo" tabindex="0">
           </div>
           <div class="col-sm-5">
-            <label for="naciona" class="col-sm-1 control-label">Nacionalidad</label>
+            <label for="naciona" class="control-label">Nacionalidad</label>
             <input type="text" class="form-control form-control-sm" id="naciona" name="naciona" placeholder="Nacionalidad" tabindex="0">
           </div>
         </div>
@@ -208,30 +206,35 @@ switch ($_SESSION['INGRESO']['modulo_']) {
             </div>
           </div>
         <?php endif ?>
-      </div>
+      <!-- </div> -->
       <!-- /.box-body -->
-      <div class="box-footer p-3">
-        <div class="footer-content">
-          <button type="button" id="BtnGuardarClienteFCliente" onclick="guardar_cliente()" class="btn btn-primary ms-2">Guardar
+      <div class="row mt-3">
+        <div class="col-sm-6">
+            <button type="button" id="BtnGuardarClienteFCliente" onclick="guardar_cliente()" class="btn btn-primary">Guardar
           </button>
-          <!--PRODUCTOS RELACIONADOS -->
+
+          <br>
+           <div class="text-left LblSRI"></div>
+          
+        </div>
+         <div class="col-sm-6">
           <div class="panel panel-default border" id="panel-container">
             <div class="panel-heading border p-2 custom-gray">
               <h3 class="panel-title h6 text-center">PRODUCTOS RELACIONADOS</h3>
             </div>
-            <div class="panel-body" style="max-height: 95px; overflow-y: auto;">
+            <div class="panel-body p-2" style="max-height: 95px; overflow-y: auto;">
               <ul style="padding-left: 15px;" id="listaProductosRelacionados">
 
               </ul>
             </div>
-          </div>
-          <!--FIN PRODUCTOS RELACIONADOS -->
-        </div>
-        <div class="text-left LblSRI">
-        </div>
+          </div>          
+        </div>        
       </div>
+     
       <!-- /.box-footer -->
     </form>
+      
+    </div>    
   </div>
   <!-- Modal CXC y CXP -->
   <div class="modal fade" id="modal_cuentas" role="dialog" data-keyboard="false" data-backdrop="static">

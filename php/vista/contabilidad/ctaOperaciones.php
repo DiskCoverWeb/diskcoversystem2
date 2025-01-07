@@ -35,7 +35,7 @@
         </div>
     </div>
   </div>
-  <div class="row p-2"><br>
+  <div class="row mt-3">
     <input type="hidden" name="txt_anterior" id="txt_anterior">
     <div class="col-sm-4" id="tabla" style="overflow-y: scroll;"></div>
     <div class="col-sm-8">      
@@ -43,37 +43,36 @@
         <li class="active"><a data-toggle="tab" href="#home">DATOS PRINCIPALES</a></li>
         <li><a data-toggle="tab" href="#menu1">PRESUPUESTOS DE SUBMODULOS</a></li>
       </ul> -->
-      <div class="tab-content"><br>
-        <div id="home" class="tab-pane fade show active">
+      <div class="card"><br>
+        <div id="home" class="card-body">
           <div class="row">
             <div class="col-sm-4">
-            <b>Codigo de cuenta</b><br>
-            <input type="" name="MBoxCta" class="form-control form-control-sm" id="MBoxCta" placeholder="<?php 
-            echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>" onblur="tip_cuenta(this.value)" ><br>
-          </div>
-          <div class="col-sm-8">
-            <b>Nombre de cuenta</b> <br>
-            <input type="" name="TextConcepto" class="form-control form-control-sm" id="TextConcepto"> <br>           
-          </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-3">
-              <b>Cuenta superior</b><br>
-              <input type="" name="LabelCtaSup" class="form-control form-control-sm" id="LabelCtaSup" readonly=""><br>         
+              <b>Codigo de cuenta</b>
+              <input type="" name="MBoxCta" class="form-control form-control-sm" id="MBoxCta" placeholder="<?php echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>" onblur="tip_cuenta(this.value)" ><br>
             </div>
-            <div class="col-sm-3">
-              <b>Tipo de cuenta</b>
-                <input type="" name="LabelTipoCta" class="form-control form-control-sm" id="LabelTipoCta" readonly>                       
+            <div class="col-sm-8">
+              <b>Nombre de cuenta</b> <br>
+              <input type="" name="TextConcepto" class="form-control form-control-sm" id="TextConcepto"> <br>           
             </div>
+          </div>
+          <div class="row">
               <div class="col-sm-3">
-              <b>Codigo Externo</b>
-              <input type="" name="TxtCodExt" class="form-control form-control-sm" id="TxtCodExt" value="0">        
-            </div>
-            <div class="col-sm-3">
-              <b>Numero</b>
-              <input type="" name="LabelNumero" class="form-control form-control-sm" id="LabelNumero" value="0">
-            </div>     
-        </div> 
+                <b>Cuenta superior</b><br>
+                <input type="" name="LabelCtaSup" class="form-control form-control-sm" id="LabelCtaSup" readonly=""><br>         
+              </div>
+              <div class="col-sm-3">
+                <b>Tipo de cuenta</b>
+                  <input type="" name="LabelTipoCta" class="form-control form-control-sm" id="LabelTipoCta" readonly>                       
+              </div>
+                <div class="col-sm-3">
+                <b>Codigo Externo</b>
+                <input type="" name="TxtCodExt" class="form-control form-control-sm" id="TxtCodExt" value="0">        
+              </div>
+              <div class="col-sm-3">
+                <b>Numero</b>
+                <input type="" name="LabelNumero" class="form-control form-control-sm" id="LabelNumero" value="0">
+              </div>     
+          </div> 
         <div class="row">  
           <div class="col-sm-3">
               <b>Tipo de cuenta</b><br>
@@ -121,7 +120,7 @@
             <input type="" name="MBoxCtaAcreditar" class="form-control input-sm" id="MBoxCtaAcreditar" placeholder="<?php 
             echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>" style="display: none;">             
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <div class="panel panel-default">
             <div class="panel-heading form-check-inline"><b>Rol de Pagos para Empleados</b></div>
             <label class="form-check-label"><input class="form-check-input" type="radio" name="rbl_rol" id="OpcNoAplica" checked=""> <b>No Aplica</b> </label><br>
@@ -130,8 +129,8 @@
             <label class="form-check-label"><input class="form-check-input" type="checkbox" name="rbl_rol" id="CheqConIESS"> <b>Ingreso extra con Aplicacion al IESS</b></label>
           </div>  
         </div> 
-        <div class="col-sm-2">
-            <b>PRESUPUESTOS</b>          
+        <div class="col-sm-3">
+            <b class="text-sm">PRESUPUESTOS</b>          
             <input type="" name="TextPresupuesto" class="form-control" id="TextPresupuesto" value="0.0">  
         </div>   
         </div>
@@ -163,7 +162,7 @@
         
       </div>
     </div>
-    <div id="menu1" class="tab-pane fade">
+   <!--  <div id="menu1" class="tab-pane fade">
       <div class="row">
         <div class="col-sm-12">
           <h3>Menu 1</h3>
@@ -171,7 +170,7 @@
       <input type="" name="">
         </div>
       </div>
-    </div>
+    </div> -->
   </div>  
   </div>
 

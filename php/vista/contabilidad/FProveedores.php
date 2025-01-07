@@ -1,6 +1,8 @@
-<script src="../../dist/js/FProveedores.js">
-
+<?php  $tipo = ''; if(isset($_GET['tipo'])){$tipo = $_GET['tipo'];}?>
+<script type="text/javascript">
+    var TipoProveedor = '<?= echo $tipo; ?>'
 </script>
+<script src="../../dist/js/FProveedores.js"></script>
 <form id="form_nuevo_proveedor">
     <div class="panel">
         <div class="panel-body" style="background-color:antiquewhite;">

@@ -545,50 +545,8 @@ class incomM
          AND T_No = '".$_SESSION['INGRESO']['modulo_']."'
          AND Item = '".$_SESSION['INGRESO']['item']."'
          AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'";
-// print_r($sql);
-   //      $stmt = sqlsrv_query( $cid, $sql);
-			// if( $stmt === false)  
-			// {  
-			// 	 echo "Error en consulta PA.\n";  
-			// 	 die( print_r( sqlsrv_errors(), true));  
-			// }
-			// else
-			// {
-
-<<<<<<< HEAD
-       		// $botones[0] = array('boton'=>'Eliminar Gasto', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'ID,Codigo' );
-		      // $tbl = grilla_generica_new($sql);
-          // if(!empty($tbl['data'])){ 
-          //   foreach ($tbl['data'] as &$fila){ 
-          //     $ids = explode(',', $botones[0]['id']);
-          //     $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
-          //     $ids, 
-          //     array_keys($ids));
-          //     $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
-          //                 onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
-          //                 title="'.$botones[0]['boton'].'">'.
-          //                 $botones[0]['icono'].
-          //                 '</button>';
-          //   }
-          // }
           $result = $this->conn->datos($sql);
-=======
-       		$botones[0] = array('boton'=>'Eliminar Gasto', 'icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'ID,Codigo' );
-		      $tbl = $this->conn->datos($sql); 
-          if(!empty($tbl)){ 
-            foreach ($tbl as &$fila){ 
-              $ids = explode(',', $botones[0]['id']);
-              $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
-              $ids, 
-              array_keys($ids));
-              array_unshift($fila, '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
-                          onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
-                          title="'.$botones[0]['boton'].'">'.
-                          $botones[0]['icono'].
-                          '</button>');
-            }
-          }
->>>>>>> 3b48ccd536d3a1a21acaef18ef5031e9339ece1d
+
 			 // print_r($tbl);die();
 		     return $result;
     }

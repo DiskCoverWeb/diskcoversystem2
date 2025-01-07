@@ -452,6 +452,7 @@ function cargar_cuentas(tipo) {
 function DLCxCxP() {
   $('#DLCxCxP').select2({
     placeholder: 'Seleccione una beneficiario',
+    dropdownParent: "#modal_cuentas",
     ajax: {
       url: '../controlador/modalesC.php?DLCxCxP=true&SubCta=' + $('#SubCta').val(),
       dataType: 'json',

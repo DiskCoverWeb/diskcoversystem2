@@ -213,22 +213,30 @@ function limpiar_t()
 
 function guardar_proveedor()
 {
- abre = $('#txt_ejec').val();
- console.log(abre);
- if($('#txt_actividad').val()=='' || $('#txt_actividad').val()==null)
- {
-    Swal.fire("Seleccione tipo de proveedor","","info");
-    return false;
- }
- if(abre.length >5 || abre=='.' || abre=='' || abre.length <2)
- {
-     Swal.fire('Abreviatura incorrecta ','Asegurese de colocar una abreviatura mayor a 2 digitos y menor o igual 5 digitos y diferente de punto (.)','info')
-    return false;
- }
- 
- $('#myModal_espera').modal('show');
+
  var datos =  $("#form_nuevo_proveedor").serialize();
- datos = datos+'&actividad='+$('#txt_actividad option:selected').text()+'&CTipoProv='+$('#CTipoProv').val()
+    if(TipoProveedor!='')
+    {
+         abre = $('#txt_ejec').val();
+         console.log(abre);
+         if($('#txt_actividad').val()=='' || $('#txt_actividad').val()==null)
+         {
+            Swal.fire("Seleccione tipo de proveedor","","info");
+            return false;
+         }
+         if(abre.length >5 || abre=='.' || abre=='' || abre.length <2)
+         {
+             Swal.fire('Abreviatura incorrecta ','Asegurese de colocar una abreviatura mayor a 2 digitos y menor o igual 5 digitos y diferente de punto (.)','info')
+            return false;
+         }
+         datos = datos+'&actividad='+$('#txt_actividad option:selected').text()+'&CTipoProv='+$('#CTipoProv').val()
+    }else
+    {
+         datos = datos+'&actividad=.&CTipoProv=.'
+    }
+
+
+ $('#myModal_espera').modal('show');
  $.ajax({
   data:  datos,
   url:   '../controlador/farmacia/articulosC.php?proveedor_nuevo=true',
