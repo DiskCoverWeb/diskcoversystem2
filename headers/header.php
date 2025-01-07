@@ -74,6 +74,7 @@ function estado_licencia($f3)
 <html lang="en" class="semi-dark">
 
 <head>
+
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -106,6 +107,9 @@ function estado_licencia($f3)
 	<link rel="stylesheet" href="../../dist/css/sweetalert2.min.css"/>
 	<link rel="stylesheet" href="../../assets/css/jquery-ui.min.css"/>
 	<link rel="stylesheet" href="../../dist/css/style_acordeon.css"/>
+	<script type="text/javascript">
+		var ModuloActual = '<?php echo $modulo;  ?>'; 
+	</script>
 	<script src="../../assets/js/jquery.min.js"></script>
 	<script src="../../assets/js/jquery-ui.js"></script>
 	<script src="../../dist/js/js_globales.js"></script>	
@@ -116,6 +120,11 @@ function estado_licencia($f3)
     	} ?>";
 	</script>
 	<title>Diskcover system - <?php  $_SESSION['INGRESO']['NombreModulo'] = $NombreModulo; echo $NombreModulo; ?></title>
+	<script type="text/javascript">
+		$(document).ready(function () {
+      		 setInterval(validar_session_Activa, 5000);
+	    });
+	</script>
 </head>
 
 <body>

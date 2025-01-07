@@ -698,3 +698,28 @@ function alignEnd(row, data){
 	});
 } 
 
+ function validar_session_Activa()
+{
+	// console.log('hola adentro')
+   $.ajax({
+    url: '../controlador/panel.php?validar_session_Activa=true',
+    type: 'post',
+    data: { 'NumModulo': ModuloActual },
+    dataType: 'json',
+    success: function (response) {
+      if(response=='-1')
+      {
+          Swal.fire({
+          icon: 'info',
+          title: 'Session Expirada',
+          confirmButtonText: 'Ok!',
+          allowOutsideClick: false,
+        }).then(function () {
+          window.location = '../vista/login.php';
+        })
+      }
+    }
+  });
+
+}
+

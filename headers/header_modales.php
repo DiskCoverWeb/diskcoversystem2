@@ -108,6 +108,11 @@ include_once("../funciones/funciones.php");
   <script src="../../dist/js/jquery-ui.js"></script>
 
   <script type="text/javascript">
+
+    $(document).ready(function () {
+       setInterval(validar_session_Activa, 360 * 1000);
+    });
+
   var formato = "<?php if(isset($_SESSION['INGRESO']['Formato_Cuentas'])){echo $_SESSION['INGRESO']['Formato_Cuentas'];}?>";
   function addCliente(){
     $("#myModal").modal("show");
