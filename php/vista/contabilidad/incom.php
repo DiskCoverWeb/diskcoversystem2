@@ -438,355 +438,296 @@ function Form_Activate()
       </div>          
     </div>
 
-    <div>
-      <div class="row p-1">
-        <div class="mb-1 col-sm-4 col-md-4 col-lg-4 btn-group">
-          <div class="">
-            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CD');" 
-            id='CD' title='Comprobante diario'>Diario</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CI');" 
-            id='CI' title='Comprobante de ingreso'>Ingreso</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CE');" 
-            id='CE' title='Comprobante de egreso'>Egreso</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','ND');" 
-            id='ND' title='Comprobante nota de debito'>N/D</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','NC');" 
-            id='NC' title='Comprobante nota de credito'>N/C</button>
-            <input id="tipoc" name="tipoc" type="hidden" value="CD">
-            <input type="hidden" name="NuevoComp" id="NuevoComp">
-            <input type="hidden" name="num_load" id="num_load" value="0">
-          </div>
-        </div>                      
-        <div class="mt-1 col col-sm-4 col-md-4 col-lg-4">
-          <div align='top' style="float: top;">
-            <h4 align='center' id='num_com'
-            class="h6">Comprobante de Diario No. 0000-00000000
-            </h4>
-          </div>
-        </div>
-      
-        <div class="mt-1 col col-sm-4 col-md-4 col-lg-4 text-end">
-          <label class="">
-            <input class="form-check-input" type="checkbox"> Imprimir copia
-          </label>
-        </div>
-      </div>
+<div class="row p-1">
+  <div class="mb-1 col-sm-4 col-md-4 col-lg-4 btn-group">
+    <div class="">
+      <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CD');" 
+      id='CD' title='Comprobante diario'>Diario</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CI');" 
+      id='CI' title='Comprobante de ingreso'>Ingreso</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CE');" 
+      id='CE' title='Comprobante de egreso'>Egreso</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','ND');" 
+      id='ND' title='Comprobante nota de debito'>N/D</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','NC');" 
+      id='NC' title='Comprobante nota de credito'>N/C</button>
+      <input id="tipoc" name="tipoc" type="hidden" value="CD">
+      <input type="hidden" name="NuevoComp" id="NuevoComp">
+      <input type="hidden" name="num_load" id="num_load" value="0">
     </div>
-    <div class="box table-responsive p-2">
-    
-            <div class="box-header">      
-        
-                <form action="#" class="credit-card-div" id='formu1'>
-                  <div class="panel panel-default" >
-                    
-                    <div class="panel-heading">
-                      <div class="row " style="padding-bottom: 5px;">
-                        
-                        <div class="col col-sm-3 col-md-3 col-lg-3">                          
-                          <!-- <div class="form-group"> -->
-                               <div class="input-group">
-                                 <div class="input-group-addon form-control-sm p-2 text-box">
-                                   <b>FECHA:</b>
-                                 </div>
-                                 <input type="date" class="form-control form-control-sm" name="fecha1" id="fecha1" placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' maxlength='10' size='15' onblur="validar_fecha();fecha_valida(this)">
-                               </div>
-                          <!-- </div> -->
-                        </div>
-                        <div class="col-sm-6 col-md-6 col-lg-6 d-flex flex-nowrap">
-                          <!-- <div class="form-group"> -->
-                               <div class="input-group">
-                                 <div class="input-group-addon d-flex align-items-center p-2 text-box">
-                                   <b>BENEFICIARIO:</b>
-                                 </div>                        
-                                  <select id="beneficiario1" name='beneficiario1' class='form-control form-control-sm' onchange="benefeciario_edit()">
-                                    <option value="">Seleccione beneficiario</option>                                
-                                  </select>
-                                  <input type="hidden" name="beneficiario2" id="beneficiario2" value='' />
-                               </div>
-                          <!-- </div> -->
-                        </div>
-                        
-                        <div class="col-md-3 col-sm-3 col-lg-3">
-                          <!-- <div class="form-group"> -->
-                               <div class="input-group">
-                                 <div class="input-group-addon p-2 text-box">
-                                   <b>R.U.C / C.I:</b>
-                                 </div>
-                                 <input type="text" class=" form-control form-control-sm" id="ruc" name='ruc' placeholder="R.U.C / C.I" value='000000000' maxlength='30' size='25' onblur="" onkeyup="solo_numeros(this)">
-                               </div>
-                          <!-- </div> -->
-                        </div>
-                        
-                      </div>
-                      <div class="row ">
-                         <div class="col col-sm-3 col-md-3 col-lg-3">
-                               <div class="input-group">
-                                 <div class="input-group-addon p-2 text-box">
-                                   <b>Email:</b>
-                                 </div>
-                                 <input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="prueba@prueba.com" 
-                            maxlength='255' size='100'/>
-                               </div>
-                        </div>        
+  </div>                      
+  <div class="mt-1 col col-sm-4 col-md-4 col-lg-4">
+    <div align='top' style="float: top;">
+      <h4 align='center' id='num_com'
+      class="h6">Comprobante de Diario No. 0000-00000000
+      </h4>
+    </div>
+  </div>
 
+  <div class="mt-1 col col-sm-4 col-md-4 col-lg-4 text-end">
+    <label class="">
+      <input class="form-check-input" type="checkbox"> Imprimir copia
+    </label>
+  </div>
+</div>
 
-                      <!--   <div class="col-md-6 col-sm-6 col-xs-6">
-                          <div class="input-group">
-                            <div class="btn_f input-xs col-sm-12 text-center">
-                              <b>EMAIL:</b>
-                            </div>
-                                <input type="email" class="form-control input-xs" id="email" name="email" placeholder="prueba@prueba.com" 
-                            maxlength='255' size='100'/>
+<form action="#" class="credit-card-div" id='formu1'>
+  <div class="card mb-3">
+    <div class="card-body">
+       <div class="row mb-2">                        
+          <div class="col col-sm-3 col-md-3 col-lg-3">                          
+            <!-- <div class="form-group"> -->
+                 <div class="input-group">
+                   <div class="input-group-addon form-control-sm p-2 text-box">
+                     <b>FECHA:</b>
+                   </div>
+                   <input type="date" class="form-control form-control-sm" name="fecha1" id="fecha1" placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' maxlength='10' size='15' onblur="validar_fecha();fecha_valida(this)">
+                 </div>
+            <!-- </div> -->
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-6 d-flex flex-nowrap">
+            <!-- <div class="form-group"> -->
+                 <div class="input-group">
+                   <div class="input-group-addon d-flex align-items-center p-2 text-box">
+                     <b>BENEFICIARIO:</b>
+                   </div>                        
+                    <select id="beneficiario1" name='beneficiario1' class='form-control form-control-sm' onchange="benefeciario_edit()">
+                      <option value="">Seleccione beneficiario</option>                                
+                    </select>
+                    <input type="hidden" name="beneficiario2" id="beneficiario2" value='' />
+                 </div>
+            <!-- </div> -->
+          </div>
+          
+          <div class="col-md-3 col-sm-3 col-lg-3">
+            <!-- <div class="form-group"> -->
+                 <div class="input-group">
+                   <div class="input-group-addon p-2 text-box">
+                     <b>R.U.C / C.I:</b>
+                   </div>
+                   <input type="text" class=" form-control form-control-sm" id="ruc" name='ruc' placeholder="R.U.C / C.I" value='000000000' maxlength='30' size='25' onblur="" onkeyup="solo_numeros(this)">
+                 </div>
+            <!-- </div> -->
+          </div>          
+        </div>
+        <div class="row mb-2">
+           <div class="col col-sm-3 col-md-3 col-lg-3">
+              <div class="input-group">
+                <div class="input-group-addon p-2 text-box"><b>Email:</b></div>
+                <input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="prueba@prueba.com" maxlength='255' size='100'/>
+              </div>
+          </div>       
+          <div class="col-md-3 col-sm-3 col-lg-3">
+             <div class="input-group">
+                <div class="input-group-addon p-2 text-box"><b>COTIZACION:</b></div>
+                <input type="text" class="form-control form-control-sm" id="cotizacion" name='cotizacion' placeholder="0.00" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" style="text-align:right; width: 70px;" maxlength='20' />
+             </div>
+          </div>  
+          <div class="col-md-3 col-sm-3 row row-cols-auto p-0 m-0 ">
+              <div class="input-group">
+                <div class="input-group-addon text-box d-flex align-items-center ps-2 pe-2"><b>Tipo de conversión  :</b></div>
+                <div class="small-text d-flex align-items-center ps-1">
+                    <label class="customradio form-check-label">
+                        <span class="radiotextsty">(/)</span>
+                        <input class="form-check-input" type="radio" checked="checked" name="con" id='con' value='/'>
+                        <span class="checkmark"></span>
+                    </label>        
+                    <label class="customradio form-check-label"><span class="radiotextsty">(X)</span>
+                      <input class="form-check-input" type="radio" name="con" id='con' value='X'>
+                      <span class="checkmark"></span>
+                    </label>
+                </div> 
+              </div>
+            </div>       
+           <div class="col-md-3 col-sm-3 col-lg-3">
+             <div class="input-group">
+               <div class="input-group-addon p-2 text-box"><b>VALOR TOTAL:</b></div>
+                <input type="text" class="form-control form-control-sm" id="VT" name='VT' placeholder="0.00" style="text-align:right;" onKeyPress='return soloNumerosDecimales(event)' maxlength='20' size='33' readonly="">
+             </div>
+           </div>     
+        </div>
+        <div class="row mb-2" id='ineg' style="display:none;">
+          <div class="col-sm-12">
+             <div class="row">
+                <div class="col-2" style="padding-right: 0px;">
+                  <label class="label-inline" id="rbl_efec"><input type="checkbox" id='efec' name='efec'onclick="mostrar_efectivo()" /> Efectivo</label>
+                </div>
+                <div class="col-9 d-none" id="ineg1">
+                  <div class="row">
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon d-flex align-items-center form-control-sm">
+                          <b>CUENTA:</b>
+                        </div>
+                        <select class="form-select form-select-sm" name="conceptoe" id='conceptoe'>
+                         <option value="">Seleccione cuenta de efectivo</option>
+                        </select>
+                      </div>                            
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="input-group">
+                           <div class="input-group-addon d-flex align-items-center form-control-sm">
+                             <b><?php echo $_SESSION['INGRESO']['S_M']; ?>:</b>
+                           </div>
+                           <input type="text" class="form-control form-control-sm d-flex align-items-center" id="vae" name='vae' placeholder="0.00" style="text-align:right;" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" maxlength='20' size='13'>
+                         </div>                           
+                    </div>                               
+                  </div>                                                  
+                </div>                        
+              </div>            
+          </div>
+          <div class="col-sm-12">
+            <div class="row pt-2 pb-2">
+                <div class="col-2" style="padding-right: 0px;">
+                  <label class="label-inline" id="rbl_banco"><input type="checkbox" id='ban' name='ban'onclick="mostrar_banco()"/> Banco</label>
+                </div>
+                <div class="col-9 d-none" id='ineg2'>
+                  <div class="row">
+                    <div class="col-9">
+                      <div class="input-group">
+                          <div class="input-group-addon form-control-sm">
+                            <b>CUENTA:</b>
                           </div>
-                        </div> -->
-                        <div class="col-md-3 col-sm-3 col-lg-3">
-                               <div class="input-group">
-                                 <div class="input-group-addon p-2 text-box">
-                                   <b>COTIZACION:</b>
-                                 </div>
-                                 <input type="text" class="form-control form-control-sm" id="cotizacion" name='cotizacion' placeholder="0.00" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" style="text-align:right; width: 70px;" maxlength='20' />
-                               </div>
-                        </div>     
-
-                      <!--   <div class="col-md-2 col-sm-2 col-xs-2">
-                          <div class="input-group">
-                            <div class="btn_f input-xs col-sm-12 text-center">
-                              <b>COTIZACIÓN:</b>
-                            </div>
-                                <input type="text" class="form-control input-xs" id="cotizacion" name='cotizacion' placeholder="0.00" onKeyPress='return soloNumerosDecimales(event)' style="text-align:right;" maxlength='20' size='25' />
+                          <select class="form-select form-select-sm" name="conceptob" id='conceptob'onchange="DCBanco_LostFocus()">
+                             <option value="">Seleccione cuenta de banco</option>
+                          </select>
+                      </div>                            
+                    </div>
+                    <div class="col-md-3"  id="ingreso_val_banco">
+                      <div class="input-group">
+                          <div class="input-group-addon d-flex align-items-center form-control-sm">
+                             <b><?php echo $_SESSION['INGRESO']['S_M']; ?>:</b>
                           </div>
-                        </div> -->
-
-                        <div class="col-md-3 col-sm-3 row row-cols-auto p-0 m-0 ">
-                                <div class="input-group">
-                                  <div class="input-group-addon text-box d-flex align-items-center ps-2 pe-2">
-                                    <b>Tipo de conversión  :</b>
-                                  </div>
-                                  <div class="small-text d-flex align-items-center ps-1">
-                                    <label class="customradio form-check-label"><span class="radiotextsty">(/)</span>
-                                    <input class="form-check-input" type="radio" checked="checked" name="con" id='con' value='/'>
-                                    <span class="checkmark"></span>
-                                    </label>        
-                                    <label class="customradio form-check-label"><span class="radiotextsty">(X)</span>
-                                      <input class="form-check-input" type="radio" name="con" id='con' value='X'>
-                                      <span class="checkmark"></span>
-                                    </label>
-                                  </div> 
-                                </div>
-                          </div>   
-
-                    <!--     <div class="" style="float: left;position:relative;left:1%;width: 10%;margin-bottom: 1px;">
-                            <label class="labeltext" style="margin-bottom: 1px;">Tipo de conversión</label><br>
-                            <div class="">
-                              <label class="customradio" style="margin-bottom: 1px;"><span class="radiotextsty">(/)</span>
-                                <input type="radio" checked="checked" name="con" id='con' value='/'>
-                                <span class="checkmark"></span>
-                              </label>        
-                              <label class="customradio" style="margin-bottom: 1px;"><span class="radiotextsty">(X)</span>
-                                <input type="radio" name="con" id='con' value='X'>
-                                <span class="checkmark"></span>
-                              </label>
-                            </div>
-                        </div> -->
-
-                         <div class="col-md-3 col-sm-3 col-lg-3">
-                               <div class="input-group">
-                                 <div class="input-group-addon p-2 text-box">
-                                   <b>VALOR TOTAL:</b>
-                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="VT" name='VT' placeholder="0.00" style="text-align:right;" onKeyPress='return soloNumerosDecimales(event)' maxlength='20' size='33' readonly="">
-                               </div>
-                         </div>     
-
-
-                        <!-- <div class="col-md-2 col-sm-2 col-xs-2">
-                          <div class="input-group">
-                            <div class="btn_f input-xs col-sm-12 text-center">
-                              <b>VALOR TOTAL:</b>
-                            </div>
-                                <input type="text" class="form-control input-xs" id="VT" name='VT' placeholder="0.00" style="text-align:right;" onKeyPress='return soloNumerosDecimales(event)' maxlength='20' size='33' readonly="">
+                          <input type="text" class="form-control form-control-sm d-flex align-items-center" id="vab" name='vab' placeholder="0.00" style="text-align:right;"  onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" maxlength='20' size='13' value='0.00'>
+                      </div>  
+                    </div> 
+                    <div class="col-md-3" id="no_cheque" style="display: none;">
+                      <div class="input-group">
+                          <div class="input-group-addon input-xs">
+                            <b>No. Cheq:</b>
                           </div>
-                        </div> -->
+                          <input type="text" class="form-control input-xs" id="no_cheq" name='no_cheq' placeholder="00000001" style="text-align:right;"  onKeyPress='return soloNumerosDecimales(event)' maxlength='20' size='13' value='00000001' onblur="agregar_depo()">
+                      </div>  
+                    </div>
+                  </div>
+                </div>                          
+              </div>            
+          </div>          
+          <div class="col-12 flex-nowrap d-none text-sm" id='ineg3' >
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <table class="table text-sm w-100" id="div_tabla">
+                      <thead>
+                        <tr>
+                          <th class ="text-center"></th>
+                          <th class ="text-center">CTA_BANCO</th>
+                          <th class ="text-center">BANCO</th>
+                          <th class ="text-center">CHEQ_DEP</th>
+                          <th class ="text-center">EFECTIVIZAR</th>
+                          <th class ="text-center">VALOR</th>
+                          <th class ="text-center">ME</th>
+                          <th class ="text-center">T_No</th>
+                          <th class ="text-center">Item</th>
+                          <th class ="text-center">CodigoU</th>
+                        </tr> 
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td></td> 
+                          <td></td> 
+                          <td></td> 
+                          <td></td> 
+                          <td></td> 
+                          <td></td> 
+                          <td></td> 
+                          <td></td> 
+                          <td></td> 
+                          <td></td> 
+                        </tr> 
+                      </tbody>  
+                    </table> 
+                  <input type="hidden" id='reg1' name='reg1'  value='' />
+                </div>
+                <div class="col-2">
+                  <div class="input-group">
+                      <div class="btn_f form-control-sm col-sm-12 text-center">
+                        <b>Efectivizar:</b>
                       </div>
-                      <div id='ineg' class="row" style="display: none;"> <br>
-                        <div class="row">
-                          <div class="col-2" style="padding-right: 0px;">
-                            <label class="label-inline" id="rbl_efec"><input type="checkbox" id='efec' name='efec'onclick="mostrar_efectivo()" /> Efectivo</label>
-                          </div>
-                          <div class="col-9 d-none" id="ineg1">
-                            <div class="row">
-                              <div class="col-sm-9">
-                                <div class="input-group">
-                                  <div class="input-group-addon d-flex align-items-center form-control-sm">
-                                    <b>CUENTA:</b>
-                                  </div>
-                                  <select class="form-select form-select-sm" name="conceptoe" id='conceptoe'>
-                                   <option value="">Seleccione cuenta de efectivo</option>
-                                  </select>
-                                </div>                            
-                              </div>
-                              <div class="col-sm-3">
-                                <div class="input-group">
-                                     <div class="input-group-addon d-flex align-items-center form-control-sm">
-                                       <b><?php echo $_SESSION['INGRESO']['S_M']; ?>:</b>
-                                     </div>
-                                     <input type="text" class="form-control form-control-sm d-flex align-items-center" id="vae" name='vae' placeholder="0.00" style="text-align:right;" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" maxlength='20' size='13'>
-                                   </div>                           
-                              </div>                               
-                            </div>                                                  
-                          </div>                        
-                        </div>
-                        <div class="row pt-2 pb-2">
-                          <div class="col-2" style="padding-right: 0px;">
-                          <label class="label-inline" id="rbl_banco"><input type="checkbox" id='ban' name='ban'onclick="mostrar_banco()"/> Banco</label>
-                          </div>
-                          <div class="col-9 d-none" id='ineg2'>
-                            <div class="row">
-                              <div class="col-9">
-                              <div class="input-group">
-                                     <div class="input-group-addon form-control-sm">
-                                         <b>CUENTA:</b>
-                                     </div>
-                                     <select class="form-select form-select-sm" name="conceptob" id='conceptob'onchange="DCBanco_LostFocus()">
-                                         <option value="">Seleccione cuenta de banco</option>
-                                    </select>
-                                  </div>                            
-                            </div>
-                            <div class="col-md-3"  id="ingreso_val_banco">
-                              <div class="input-group">
-                                     <div class="input-group-addon d-flex align-items-center form-control-sm">
-                                         <b><?php echo $_SESSION['INGRESO']['S_M']; ?>:</b>
-                                     </div>
-                                     <input type="text" class="form-control form-control-sm d-flex align-items-center" id="vab" name='vab' placeholder="0.00" 
-                                style="text-align:right;"  onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)"
-                                maxlength='20' size='13' value='0.00'>
-                                  </div>  
-                            </div> 
-                            <div class="col-md-3" id="no_cheque" style="display: none;">
-                              <div class="input-group">
-                                     <div class="input-group-addon input-xs">
-                                         <b>No. Cheq:</b>
-                                     </div>
-                                     <input type="text" class="form-control input-xs" id="no_cheq" name='no_cheq' placeholder="00000001" 
-                                style="text-align:right;"  onKeyPress='return soloNumerosDecimales(event)' 
-                                maxlength='20' size='13' value='00000001' onblur="agregar_depo()">
-                                  </div>  
-                            </div>
-                            </div>
-                          </div>                          
-                        </div>
-                        <div class="col-12 flex-nowrap d-none text-sm" id='ineg3' >
-                          <div class="row d-flex align-items-center">
-                            <div class="col-8">
-                              <table class="table text-sm w-100" id="div_tabla">
-                                  <thead>
-                                    <tr>
-                                      <th class ="text-center"></th>
-                                      <th class ="text-center">CTA_BANCO</th>
-                                      <th class ="text-center">BANCO</th>
-                                      <th class ="text-center">CHEQ_DEP</th>
-                                      <th class ="text-center">EFECTIVIZAR</th>
-                                      <th class ="text-center">VALOR</th>
-                                      <th class ="text-center">ME</th>
-                                      <th class ="text-center">T_No</th>
-                                      <th class ="text-center">Item</th>
-                                      <th class ="text-center">CodigoU</th>
-                                    </tr> 
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <td></td> 
-                                      <td></td> 
-                                      <td></td> 
-                                      <td></td> 
-                                      <td></td> 
-                                      <td></td> 
-                                      <td></td> 
-                                      <td></td> 
-                                      <td></td> 
-                                      <td></td> 
-                                    </tr> 
-                                  </tbody>  
-                                </table> 
-                              <input type="hidden" id='reg1' name='reg1'  value='' />
-                            </div>
-                            <div class="col-2">
-                              <div class="input-group">
-                                  <div class="btn_f form-control-sm col-sm-12 text-center">
-                                    <b>Efectivizar:</b>
-                                  </div>
-                                  <input type="date" class="form-control form-control-sm" id="efecti" name='efecti' placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' onblur="fecha_valida(this)">
-                                </div>                            
-                            </div>
-                            <div class="col-2">
-                              <div class="input-group" id="deposito_no">
-                                  <div class="btn_f form-control-sm col-sm-12 text-center">
-                                    <b>Deposito No:</b>
-                                  </div>
-                                  <input type="text" class="form-control form-control-sm w-100" id="depos" onkeyup="solo_numeros(this)" name='depos' placeholder="12345" onblur="agregar_depo()">
-                                </div>
-                            </div>
-                          </div>                        
-                        </div>                      
+                      <input type="date" class="form-control form-control-sm" id="efecti" name='efecti' placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' onblur="fecha_valida(this)">
+                    </div>                            
+                </div>
+                <div class="col-2">
+                  <div class="input-group" id="deposito_no">
+                      <div class="btn_f form-control-sm col-sm-12 text-center">
+                        <b>Deposito No:</b>
                       </div>
+                      <input type="text" class="form-control form-control-sm w-100" id="depos" onkeyup="solo_numeros(this)" name='depos' placeholder="12345" onblur="agregar_depo()">
+                    </div>
+                </div>
+              </div>                        
+            </div>          
+        </div>
+        <div class="row mb-2"> 
+          <div class="col-md-12 col-sm-12 col-lg-12">
+             <div class="input-group">
+                <div class="input-group-addon form-control-sm p-2 text-box">
+                   <b>CONCEPTO:</b>
+                </div>
+                <input type="text" class="form-control form-control-sm" id="concepto" name="concepto" placeholder="concepto" maxlength='150'/>
+             </div>
+          </div>                        
+        </div>
+        <div class="row">
+          <div class="col-md-2 col-sm-1 col-xs-1">
+            <div class="input-group">
+              <div class="text-box col-md-12 btn_f text-center">
+                <b>CODIGO:</b>
+              </div>
+               <input type="text" class="form-control form-control-sm" title="Teclas especiales CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12' onblur="cargar_modal();" onkeyup="mayusculas('codigo',this.value)" />
+            </div>
+          </div>
+          <div class="col-md-8 col-sm-8 col-lg-8">
+             <div class="input-group" style="display: block;">
+               <div class="btn_f text-box col-md-12 text-center">
+                  <b>DIGITE LA CLAVE O SELECCIONE LA CUENTA:</b>
+               </div>
+               <select id="cuentar" class=" form-select form-select-sm" style="width:100%" onchange="abrir_modal_cuenta()">
+                  <option value="">Seleccione una cuenta</option>   
+               </select>
+                 <!--  <input type="text" class="xs" id="cuenta" name='cuenta' placeholder="cuenta" maxlength='70' size='153'/>
+                  <input type="hidden" id='codigo_cu' name='codigo_cu' value='' />-->
+                <input type="hidden" id='aux' name='TC'  value='' />
+             </div>
+          </div>
+          <div class="col-md-2 col-sm-2 col-xs-2">
+             <div class="input-group">
+                <div class="btn_f text-box col-md-12 text-center">
+                  <b>VALOR:</b>
+                </div>
+                <input type="text" class="form-control form-control-sm" id="va" name='va' placeholder="0.00" style="text-align:right;"  onkeyup="validar_numeros_decimal(this)" onblur="ingresar_asiento();validar_float(this,2)" value="0.00">
+             </div>
+          </div>
+        </div>
+          <div class="row">
+            <input type="hidden" name="txt_cuenta" id="txt_cuenta">
+            <input type="hidden" name="txt_codigo" id="txt_codigo">
+            <input type="hidden" name="txt_tipocta" id="txt_tipocta">
+            <input type="hidden" name="txt_subcta" id="txt_subcta">
+            <input type="hidden" name="txt_tipopago" id="txt_tipopago">
+            <input type="hidden" name="txt_moneda_cta" id="txt_moneda_cta">   
+            <input type="hidden" name="Serie_R" id="Serie_R" value=".">  
+            <input type="hidden" name="Retencion" id="Retencion" value="."> 
+            <input type="hidden" name="Autorizacion_R" id="Autorizacion_R" value=".">  
+            <input type="hidden" name="Autorizacion_LC" id="Autorizacion_LC" value="."> 
+            <input type="hidden" name="txt_cta_modificar" id="txt_cta_modificar" value="."> 
+          </div>
 
-                      <div class="row " style="padding-bottom: 5px;"><br> 
-                        <div class="col-md-12 col-sm-12 col-lg-12 pt-2 pb-2 ps-3 pe-3">
-                               <div class="input-group">
-                                 <div class="input-group-addon form-control-sm p-2 text-box">
-                                   <b>CONCEPTO:</b>
-                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="concepto" name="concepto" placeholder="concepto" maxlength='150'/>
-                               </div>
-                        </div>                        
-                      </div>
+   
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
 
-                      <div class="row">
-                        <div class="col-md-2 col-sm-1 col-xs-1">
-                          <div class="input-group">
-                            <div class="text-box col-md-12 btn_f text-center">
-                              <b>CODIGO:</b>
-                            </div>
-                             <input type="text" class="form-control form-control-sm" title="Teclas especiales
-CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12' onblur="cargar_modal();" onkeyup="mayusculas('codigo',this.value)" />
-                          </div>
-                        </div>
-                        <div class="col-md-8 col-sm-8 col-lg-8">
-                               <div class="input-group" style="display: block;">
-                                 <div class="btn_f text-box col-md-12 text-center">
-                                  <b>DIGITE LA CLAVE O SELECCIONE LA CUENTA:</b>
-                                 </div>
-                                 <select id="cuentar" class=" form-select form-select-sm" style="width:100%" onchange="abrir_modal_cuenta()">
-                                  <option value="">Seleccione una cuenta</option>   
-                                 </select>
-                                   <!--  <input type="text" class="xs" id="cuenta" name='cuenta' placeholder="cuenta" maxlength='70' size='153'/>
-                                    <input type="hidden" id='codigo_cu' name='codigo_cu' value='' />-->
-                                    <input type="hidden" id='aux' name='TC'  value='' />
-                               </div>
-                        </div>
-                        <div class="col-md-2 col-sm-2 col-xs-2">
-                               <div class="input-group">
-                                 <div class="btn_f text-box col-md-12 text-center">
-                                  <b>VALOR:</b>
-                                 </div>
-                                   <input type="text" class="form-control form-control-sm" id="va" name='va' 
-                              placeholder="0.00" style="text-align:right;"  onkeyup="validar_numeros_decimal(this)" onblur="ingresar_asiento();validar_float(this,2)" value="0.00">
-                               </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <input type="hidden" name="txt_cuenta" id="txt_cuenta">
-                        <input type="hidden" name="txt_codigo" id="txt_codigo">
-                        <input type="hidden" name="txt_tipocta" id="txt_tipocta">
-                        <input type="hidden" name="txt_subcta" id="txt_subcta">
-                        <input type="hidden" name="txt_tipopago" id="txt_tipopago">
-                        <input type="hidden" name="txt_moneda_cta" id="txt_moneda_cta">   
-                        <input type="hidden" name="Serie_R" id="Serie_R" value=".">  
-                        <input type="hidden" name="Retencion" id="Retencion" value="."> 
-                        <input type="hidden" name="Autorizacion_R" id="Autorizacion_R" value=".">  
-                        <input type="hidden" name="Autorizacion_LC" id="Autorizacion_LC" value="."> 
-                        <input type="hidden" name="txt_cta_modificar" id="txt_cta_modificar" value="."> 
-                      </div>
                       <div class="row">
                           <div class="col-12 p-3">
                             <div class="panel-heading">
@@ -932,7 +873,7 @@ CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12'
                                         <th class="text-center">BaseImpIce</th>
                                         <th class="text-center">PorcentajeIce</th>
                                         <th class="text-center">MontoIce</th>
-                                        <th class="text-center">MontoIvaBienes	</th>
+                                        <th class="text-center">MontoIvaBienes  </th>
                                         <th class="text-center">PorRetBienes</th>
                                         <th class="text-center">ValorRetBienes</th>
                                         <th class="text-center">MontoIvaServicios</th>
@@ -940,7 +881,7 @@ CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12'
                                         <th class="text-center">ValorRetServicios</th>
                                         <th class="text-center">Cta_Servicio</th>
                                         <th class="text-center">Cta_Bienes</th>
-                                        <th class="text-center">Porc_Bienes	</th>
+                                        <th class="text-center">Porc_Bienes </th>
                                         <th class="text-center">Porc_Servicios</th>
                                         <th class="text-center">DocModificado</th>
                                         <th class="text-center">FechaEmiModificado</th>
@@ -1281,41 +1222,43 @@ CE: ESC" id="codigo" name='codigo' placeholder="codigo" maxlength='30' size='12'
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <div class="row d-flex align-items-center">
-                          <div class="col-6 pt-4">
-                             <button type="button"  class="btn btn-primary btn-sm" id='grabar1' onclick="validar_comprobante()">Guardar</button>
-                             <a  href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" title="Salir de modulo" class="btn btn-danger btn-sm">
-                                Cancelar
-                              </a>
-                             <!-- 
-                              <button type="button"  class="btn btn-danger" id='' onclick="xml()">xml</button>
-                             -->                            
-                          </div>
-                          <div class="row col-6">
-                            <div class="col-4">
-                              <b>Diferencia</b>
-                                <input type="text" name="txt_diferencia" id="txt_diferencia" class="form-control form-control-sm text-right" readonly="" value="0">
-                            </div>
-                            <div class="col-4">
-                              <b>Totales</b>
-                               <input type="text" name="txt_debe" id="txt_debe" class="form-control form-control-sm text-right" readonly="" value="0">
-                            </div>
-                            <div class="col-4"><br>
-                                <input type="text" name="txt_haber" id="txt_haber" class="form-control form-control-sm text-right" readonly="" value="0">
-                            </div>
-                          </div>
-                        </div>                        
+                        </div>                                        
                     </div>
-                                          
-                      
-                    </div>
-                  </form>   
-                    
-                </div>
-            </div>
+                                    
+      
+    </div>    
   </div>
-</div>
+  <div class="card">
+    <div class="card-body">
+       <div class="row align-items-center">
+          <div class="col-6 pt-4">
+             <button type="button"  class="btn btn-primary btn-sm" id='grabar1' onclick="validar_comprobante()">Guardar</button>
+             <a  href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" title="Salir de modulo" class="btn btn-danger btn-sm">
+                Cancelar
+              </a>
+             <!-- 
+              <button type="button"  class="btn btn-danger" id='' onclick="xml()">xml</button>
+             -->                            
+          </div>
+          <div class="row col-6">
+            <div class="col-4">
+              <b>Diferencia</b>
+                <input type="text" name="txt_diferencia" id="txt_diferencia" class="form-control form-control-sm text-right" readonly="" value="0">
+            </div>
+            <div class="col-4">
+              <b>Totales</b>
+               <input type="text" name="txt_debe" id="txt_debe" class="form-control form-control-sm text-right" readonly="" value="0">
+            </div>
+            <div class="col-4"><br>
+                <input type="text" name="txt_haber" id="txt_haber" class="form-control form-control-sm text-right" readonly="" value="0">
+            </div>
+          </div>
+        </div>       
+      
+    </div>    
+  </div>
+</form> 
+
 
 <div class="modal fade" id="modal_cuenta" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog modal-dialog-centered modal-sm" role="document" style="margin-right: 50px; margin-top: 200px;">

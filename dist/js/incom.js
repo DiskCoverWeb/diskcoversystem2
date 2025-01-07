@@ -543,6 +543,11 @@ function cargar_tablas_contabilidad()
     $('#tbl_contabilidad').DataTable().clear().destroy();
   }
   tbl_contabilidad = $('#tbl_contabilidad').DataTable({
+      searching: false,
+      responsive: true,
+      paging: false,   
+      info: false,   
+      autoWidth: false,
     language: {
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
     },
@@ -609,6 +614,11 @@ function cargar_tablas_sc()
     $('#tbl_subcuentas').DataTable().clear().destroy();
   }
   tbl_subcuentas = $('#tbl_subcuentas').DataTable({
+    searching: false,
+    responsive: true,
+    paging: false,   
+    info: false,   
+    autoWidth: false,
     language: {
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
     },
@@ -698,6 +708,11 @@ function cargar_tablas_retenciones()
         success:  function (response) {
         
           tbl_ac = $('#tbl_ac').DataTable({ 
+            searching: false,
+            responsive: true,
+            paging: false,   
+            info: false,   
+            autoWidth: false,
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             },
@@ -788,6 +803,11 @@ function cargar_tablas_retenciones()
             }
           });
           tbl_asientosR = $('#tbl_asientoR').DataTable({
+              searching: false,
+              responsive: true,
+              paging: false,   
+              info: false,   
+              autoWidth: false,
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             }, 
@@ -868,7 +888,14 @@ function cargar_tablas_tab4()
             scrollCollapse: true
           };   
           let tbl_av = $('#tbl_av').DataTable({
-            ...commonConfig, 
+            searching: false,
+            responsive: true,
+            paging: false,   
+            info: false,   
+            autoWidth: false,
+            language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            }, 
             data: ProcesarDatos(response.AV.data), 
             columns: [
               { data: null,
@@ -927,7 +954,14 @@ function cargar_tablas_tab4()
             }
           });
           let tbl_ae = $('#tbl_ae').DataTable({
-            ...commonConfig, 
+             searching: false,
+            responsive: true,
+            paging: false,   
+            info: false,   
+            autoWidth: false,
+            language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            }, 
             data: ProcesarDatos(response.AE.data),
             columns: [
               { data: null,
@@ -983,7 +1017,14 @@ function cargar_tablas_tab4()
             }
           });
           let tbl_ai = $('#tbl_ai').DataTable({
-            ...commonConfig,
+             searching: false,
+            responsive: true,
+            paging: false,   
+            info: false,   
+            autoWidth: false,
+            language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            }, 
             data: ProcesarDatos(response.AI.data),
             columns: [ 
               { data: null,

@@ -610,3 +610,12 @@ $(document).ready(function () {
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+  function cerrarModal() {
+       // window.parent.document.getElementById('modal_subcuentas').style.display = 'none';
+       // window.parent.document.getElementById('modal_subcuentas').click();
+   window.parent.postMessage("closeModal", "*");
+    // $('#modal_subcuentas').hide();
+  }
+</script>
