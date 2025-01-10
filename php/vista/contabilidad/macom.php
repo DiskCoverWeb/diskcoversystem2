@@ -234,4 +234,4 @@
 		 </div>
 	  </div> -->
 
-<script src="../../dist/js/macom.js"></script>
+<script src="../../dist/js/Contabilidad/macom.js"></script>

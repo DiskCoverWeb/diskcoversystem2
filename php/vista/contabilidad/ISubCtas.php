@@ -67,7 +67,7 @@ date_default_timezone_set('America/Guayaquil');
     }
 </style>
 
-<script src="../../dist/js/ISubCtas.js"></script>
+<script src="../../dist/js/Contabilidad/ISubCtas.js"></script>
 
 <script>
     //btnNuevo

@@ -1,6 +1,6 @@
 
 
-<script src="../../dist/js/libro_banco.js"></script>
+<script src="../../dist/js/Contabilidad/libro_banco.js"></script>
 <?php
 	Ejecutar_SQL_SP("UPDATE Comprobantes " .
         "SET Cotizacion = 0.004 " .

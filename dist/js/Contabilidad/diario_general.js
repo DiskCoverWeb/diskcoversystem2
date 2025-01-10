@@ -115,7 +115,12 @@ function cargar_libro_general()
     scrollCollapse: true,
     scrollX: true, 
     columns: [
-      { data: 'Fecha'}, 
+      { data: 'Fecha',
+        render: function(data, type, item) {
+          const fecha = data?.date;
+          return fecha ? new Date(fecha).toLocaleDateString() : '';
+        }
+      }, 
       { data: 'TP'},
       { data: 'Numero'},
       { data: 'Beneficiario'},

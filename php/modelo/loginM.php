@@ -27,6 +27,171 @@ class loginM
 		return $datos;		
 	}
 
+	function getAccesoEmpresasMYSQL()
+	{
+		$usuario=array();
+		$sql="SELECT * 
+		FROM acceso_empresas 
+		WHERE CI_NIC='".$_SESSION['INGRESO']['CodigoU']."' AND Item='".$_SESSION['INGRESO']['item']."'
+		 ";
+		// echo $sql;die();
+		$consulta=$this->db->query($sql);
+		if($consulta)
+		{
+          $i=0;
+			while($filas=$consulta->fetch_assoc()) 
+			{
+				//echo "entro 1";
+				$usuario[$i]['Modulo']=$filas['Modulo'];	
+				//echo " mmm ".$permiso[$i]['Modulo'].' ind= '.$i.'<br>';
+				$usuario[$i]['Item']=$filas['Item'];					
+				//echo $empresa[$i]['Opc'].' '.$empresa[$i]['Sucursal'];
+				//die(); 			
+				//echo $empresa[$i]['Fecha_Inicial'];
+				$i++;
+			}
+			//no existe
+			if($i==0)
+			{
+				//echo "entro 2";
+				$usuario[$i]['Modulo']='TODOS';
+				$usuario[$i]['Item']='TODOS';
+				$_SESSION['INGRESO']['accesoe']='TODOS';
+				$_SESSION['INGRESO']['modulo'][$i]='TODOS';
+			}
+			else
+			{
+				//hacemos ciclo para buscar si puede acceder a la empresa y que modulos
+				$j=0;
+				for($i=0;$i<count($usuario);$i++)
+				{
+					if($usuario[$i]['Item']==$_SESSION['INGRESO']['item'])
+					{
+						//echo $permiso[$i]['Item']." ".$_SESSION['INGRESO']['item']."<br>";
+						$_SESSION['INGRESO']['accesoe']='1';
+						$_SESSION['INGRESO']['modulo'][$j]=$usuario[$i]['Modulo'];
+						//echo ' per '.$permiso[$i]['Modulo'].' '.$_SESSION['INGRESO']['modulo'][$j].' ind= '.$i.'<br>';
+						$j++;
+					}
+				}
+			}
+        } 
+
+        return $usuario;
+	}
+
+	function getAccesoEmpresasSQL()
+	{
+		// print_r($_SESSION['INGRESO']);die();
+		$permiso=array();
+		$_SESSION['INGRESO']['modulo']=array();
+		$sql="SELECT * 
+		FROM Acceso_Empresa 
+		WHERE  Codigo='".$_SESSION['INGRESO']['CodigoU']."' ";
+
+			// print_r($sql);die();
+		if($_SESSION['INGRESO']['Tipo_Base']!='MY SQL')
+		{
+			$datos = $this->db->datos($sql);
+
+		}else
+		{
+			$datos = $this->db->datos($sql,$tipo='MY SQL');
+
+		}
+
+			// print_r($datos);die();
+		if(count($datos)>0)
+		{
+			foreach ($datos as $key => $value) {
+				// print_r($value);die();
+			  $_SESSION['INGRESO']['accesoe']='1';
+			  $_SESSION['INGRESO']['modulo'][$key]=$value['Modulo'];
+		    }
+
+		}else
+		{
+			$_SESSION['INGRESO']['accesoe']='TODOS';
+			$_SESSION['INGRESO']['modulo'][0]='TODOS';
+		}
+		
+
+	}
+
+	function getAccesoEmpresasSQL1()
+	{
+		// $permiso=array();
+		// $_SESSION['INGRESO']['modulo']=array();
+		// $sql="SELECT    * FROM Acceso_Empresa 
+		// 		WHERE  Codigo='".$_SESSION['INGRESO']['CodigoU']."' ";
+		// $stmt = false;
+		// if($this->dbs!='')
+		// {
+		// 	$stmt = sqlsrv_query( $this->dbs, $sql);
+		// }
+		if( $stmt === false)  
+		{  
+			 // //echo "Error en consulta PA.\n";  
+			 // echo "<script>
+				// 			/*Swal.fire({
+				// 				type: 'error',
+				// 				title: 'Fallo',
+				// 				text: 'Error en consulta PA.',
+				// 				footer: ''
+				// 			})*/
+				// 			alert('Error en consulta');
+				// 	</script>";
+			 // if($_SESSION['INGRESO']['ERROR']==1)
+			 // {
+				// die( print_r( sqlsrv_errors(), true)); 
+			 // }
+			 // die();
+		} 
+		else
+		{
+			$i=0;
+			while( $obj = sqlsrv_fetch_object( $stmt)) 
+			{
+				//echo "entro 1";
+				$permiso[$i]['Modulo']=$obj->Modulo;	
+				//echo " mmm ".$permiso[$i]['Modulo'].' ind= '.$i.'<br>';
+				$permiso[$i]['Item']=$obj->Item;					
+				//echo $empresa[$i]['Opc'].' '.$empresa[$i]['Sucursal'];
+				//die(); 			
+				//echo $empresa[$i]['Fecha_Inicial'];
+				$i++;
+			}
+			//no existe
+			if($i==0)
+			{
+				//echo "entro 2";
+				$permiso[$i]['Modulo']='TODOS';
+				$permiso[$i]['Item']='TODOS';
+				$_SESSION['INGRESO']['accesoe']='TODOS';
+				$_SESSION['INGRESO']['modulo'][$i]='TODOS';
+			}
+			else
+			{
+				//hacemos ciclo para buscar si puede acceder a la empresa y que modulos
+				$j=0;
+				for($i=0;$i<count($permiso);$i++)
+				{
+					if($permiso[$i]['Item']==$_SESSION['INGRESO']['item'])
+					{
+						//echo $permiso[$i]['Item']." ".$_SESSION['INGRESO']['item']."<br>";
+						$_SESSION['INGRESO']['accesoe']='1';
+						$_SESSION['INGRESO']['modulo'][$j]=$permiso[$i]['Modulo'];
+						//echo ' per '.$permiso[$i]['Modulo'].' '.$_SESSION['INGRESO']['modulo'][$j].' ind= '.$i.'<br>';
+						$j++;
+					}
+				}
+			}
+			sqlsrv_close( $this->dbs );
+		}
+		//die();
+        return $permiso;
+	}
+
 	function ValidarUser1($usuario,$entidad,$item)
 	{
 

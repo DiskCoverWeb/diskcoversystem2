@@ -306,7 +306,10 @@ if(isset($_GET['facturas_pendientes'])){
     $parametros = $_GET;
     echo json_encode($controlador->Facturas_Pendientes_SC($parametros));
 }
-
+if(isset($_GET['generar_num_comp'])){
+    $parametros = $_POST;
+    echo json_encode($controlador->Generar_Num_Comprobante($parametros));
+}
 
 class incomC
 {
@@ -687,8 +690,6 @@ class incomC
           	$NumComp = explode('-', $parametros['num_com']);
           	$NumComp = trim($NumComp[1]);
           }
-
-          // print_r($NumComp);die();
 
           $FechaTexto = $parametros['fecha'];
           $Co = datos_Co();
@@ -2405,5 +2406,14 @@ function ExistenMovimientos($parametros)
 		return $lista;		
 	}
 
+    function Generar_Num_Comprobante($datos){
+        $parametros = $datos['parametros'];
+        If($parametros['tip']=='CD'){ $NumComp = ReadSetDataNum("Diario", True, false,$parametros['fecha']);}
+        If($parametros['tip']=='CI'){ $NumComp = ReadSetDataNum("Ingresos", True, false,$parametros['fecha']);}
+        If($parametros['tip']=='CE'){ $NumComp = ReadSetDataNum("Egresos", True, false,$parametros['fecha']);}
+        If($parametros['tip']=='ND'){ $NumComp = ReadSetDataNum("NotaDebito", True, false,$parametros['fecha']);}
+        If($parametros['tip']=='NC'){ $NumComp = ReadSetDataNum("NotaCredito", True, false,$parametros['fecha']);}
+        return $NumComp; 
+    }
 }
 ?>

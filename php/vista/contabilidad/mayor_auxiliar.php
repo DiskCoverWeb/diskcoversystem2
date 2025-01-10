@@ -1,4 +1,4 @@
-<script src="../../dist/js/mayor_auxiliar.js"></script>
+<script src="../../dist/js/Contabilidad/mayor_auxiliar.js"></script>
 <div class="overflow-auto p-2 ">
 	<div class="">
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -99,19 +99,21 @@
 				<table class="table text-sm w-100" id="tbl_Mayor_Auxiliar">
 					<thead>
 						<tr>
-							<th class="text-center">Cta</th>
 							<th class="text-center">Fecha</th>
 							<th class="text-center">TP</th>
 							<th class="text-center">Numero</th>
-							<th class="text-center">Cheq_Dep</th>
 							<th class="text-center">Cliente</th>
 							<th class="text-center">Concepto</th>
+							<th class="text-center">Cheq_Dep</th>
 							<th class="text-center">Debe</th>
 							<th class="text-center">Haber</th>
 							<th class="text-center">Saldo</th>
 							<th class="text-center">Parcial_ME</th>
 							<th class="text-center">Saldo_ME</th>
-							<th class="text-center">T</th>
+							<th class="text-center">ID</th>
+							<th class="text-center">Cta</th>
+							<th class="text-center">TC</th>
+							<th class="text-center">Cuenta</th>
 							<th class="text-center">Item</th>
 						</tr>
 					</thead>

@@ -25,6 +25,11 @@ if(isset($_GET['comprobantes']))
 	$parametros = $_POST['parametros'];
 	echo json_encode(comprobantes_procesados($parametros));
 }
+if(isset($_GET['comprobantes_lista']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode(comprobantes_procesados_lista($parametros));
+}
 if(isset($_GET['tipo_balance']))
 {
 	echo json_encode(tipo_balance());
@@ -1127,6 +1132,13 @@ function comprobantes_procesados($parametros)
     }
 
 	return $op;
+}
 
+//Funcion para listar comprobantes
+function comprobantes_procesados_lista($parametros)
+{
+	$modelo = new contabilidad_model();
+	$datos = $modelo->comprobantes_procesados($parametros);
+	return $datos;
 }
 ?>

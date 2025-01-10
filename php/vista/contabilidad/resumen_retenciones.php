@@ -3,7 +3,7 @@
 //require_once("../vista/header.php");
 
 ?>
-  <script type="../../dist/js/resumen_retenciones.js"></script>
+  <script type="../../dist/js/Contabilidad/resumen_retenciones.js"></script>
 
    <div class="container">
    <div class="col-ms-12" style="margin-top: -60px">

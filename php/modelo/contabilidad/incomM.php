@@ -217,10 +217,12 @@ class incomM
 	    $tbl = grilla_generica_new($sql);
 			if(!empty($tbl['data'])){ 
         foreach ($tbl['data'] as &$fila){ 
-          $ids = explode(',', $botones[0]['id']);
-          $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
-          $ids, 
-          array_keys($ids));
+          $ids = explode(',', $botones[0]['id']); // Extrae las claves de $fila que se usarán
+
+          // Mapeamos cada ID correctamente con su valor en $fila
+          $parametros = array_map(function($id) use ($fila) {
+              return $fila[$id] ?? ''; // Asigna el valor correspondiente o una cadena vacía si no existe
+          }, $ids);
           $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                       onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                       title="'.$botones[0]['boton'].'">'.

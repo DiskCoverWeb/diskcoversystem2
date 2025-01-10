@@ -40,7 +40,7 @@ if (isset($_GET["num_load"])) {
 $_SESSION['INGRESO']['modulo_'] = $_GET['mod'];
 ?>
 
-<script src="../../dist/js/incom.js"></script>
+<script src="../../dist/js/Contabilidad/incom.js"></script>
 <script type="text/javascript">
 var Trans_No = 1; var Ln_No = 1; var Ret_No = 1; var LnSC_No = 1;
 function Form_Activate()
@@ -174,12 +174,13 @@ function Form_Activate()
   $(document).ready(function () {
     Form_Activate();
     cargar_cuenta();
+    
     var modificar = '<?php echo $variables_mod; ?>';
     var load = '<?php echo $load; ?>';
 
     $('#codigo').on('keyup', function(event) {
         var codigoTecla = event.which || event.keyCode;
-        console.log(codigoTecla);
+        //console.log(codigoTecla);
         if(codigoTecla==27)
         {
           // tecla escape
@@ -326,71 +327,72 @@ function Form_Activate()
   });
 }
 
-    function validar_comprobante() 
+function validar_comprobante() 
+{
+  numero_comprobante(function () {
+    var debe =$('#txt_debe').val();
+    var haber = $('#txt_haber').val(); 
+    var ben = $('#beneficiario1').val();
+    var fecha = $('#fecha1').val();
+    var tip = $('#tipoc').val();
+    var ruc = $('#ruc').val();
+    var concepto = $('#concepto').val();
+    var haber = $('#txt_haber').val();
+    var com = $('#num_com').text();
+    var modificar = '<?php echo $NuevoComp; ?>';
+    // var comprobante = com.split('.');
+    if((debe != haber) || (debe==0 && haber==0) )
     {
-      numero_comprobante(function () {
-        var debe =$('#txt_debe').val();
-        var haber = $('#txt_haber').val(); 
-        var ben = $('#beneficiario1').val();
-        var fecha = $('#fecha1').val();
-        var tip = $('#tipoc').val();
-        var ruc = $('#ruc').val();
-        var concepto = $('#concepto').val();
-        var haber = $('#txt_haber').val();
-        var com = $('#num_com').text();
-        var modificar = '<?php echo $NuevoComp; ?>';
-        // var comprobante = com.split('.');
-        if((debe != haber) || (debe==0 && haber==0) )
-        {
-          Swal.fire( 'Las transacciones no cuadran correctamente corrija los resultados de las cuentas','','info');
-          return false;
-        }
-        if(ben =='')
-        {      
-          ben = '.';
-        }
+      Swal.fire( 'Las transacciones no cuadran correctamente corrija los resultados de las cuentas','','info');
+      return false;
+    }
+    if(ben =='')
+    {      
+      ben = '.';
+    }
 
-        var parametros = 
-        {
-          'ruc': ruc, //codigo del cliente que sale co el ruc del beneficiario codigo
-          'tip':tip,//tipo de cuenta contable cd, etc
-          "fecha": fecha,// fecha actual 2020-09-21
-          'concepto':concepto, //detalle de la transaccion realida
-          'totalh': haber, //total del haber
-          'num_com':com,
-          'CodigoB':$('#ruc').val(),
-          'Serie_R':$('#Serie_R').val(),
-          'Retencion':$('#Retencion').val(),
-          'Autorizacion_R':$('#Autorizacion_R').val(),
-          'Autorizacion_LC':$('#Autorizacion_LC').val(),
-          'TD':'C',
-          'bene':$('select[name="beneficiario1"] option:selected').text(),
-          'email':$('#email').val(),
-          'Cta_modificar':$('#txt_cta_modificar').val(),
-          'T':'N',
-          'monto_total':$('#VT').val(),
-          'Abono':$('#vae').val(),
-          'TextCotiza':$("#cotizacion").val(),
-          'NuevoComp':modificar,
-        }
+    var parametros = 
+    {
+      'ruc': ruc, //codigo del cliente que sale co el ruc del beneficiario codigo
+      'tip':tip,//tipo de cuenta contable cd, etc
+      "fecha": fecha,// fecha actual 2020-09-21
+      'concepto':concepto, //detalle de la transaccion realida
+      'totalh': haber, //total del haber
+      'num_com':com,
+      'CodigoB':$('#ruc').val(),
+      'Serie_R':$('#Serie_R').val(),
+      'Retencion':$('#Retencion').val(),
+      'Autorizacion_R':$('#Autorizacion_R').val(),
+      'Autorizacion_LC':$('#Autorizacion_LC').val(),
+      'TD':'C',
+      'bene':$('select[name="beneficiario1"] option:selected').text(),
+      'email':$('#email').val(),
+      'Cta_modificar':$('#txt_cta_modificar').val(),
+      'T':'N',
+      'monto_total':$('#VT').val(),
+      'Abono':$('#vae').val(),
+      'TextCotiza':$("#cotizacion").val(),
+      'NuevoComp':modificar,
+    }
 
-        // Continuar con el resto de la lógica después de numero_comprobante
-        Swal.fire({
-          title: "Esta seguro de Grabar el " + $('#num_com').text(),
-          text: "con fecha: " + $('#fecha1').val(),
-          type: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Si!'
-        }).then((result) => {
-          if (result.value == true) {
-            grabar_comprobante(parametros);
-          } else {
-            // alert('cancelado');
-          }
-        });
-  });
+    // Continuar con el resto de la lógica después de numero_comprobante
+    Swal.fire({
+      title: "Esta seguro de Grabar el " + $('#num_com').text(),
+      text: "con fecha: " + $('#fecha1').val(),
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si!'
+    }).then((result) => {
+      if (result.value == true) {
+        console.log(JSON.stringify(parametros, null, 2));
+        grabar_comprobante(parametros);
+      } else {
+        // alert('cancelado');
+      }
+    });
+    });
 }
 
   // function Tipo_De_Comprobante_No()
@@ -422,7 +424,41 @@ function Form_Activate()
     {
       numero_comprobante();
     }
+  }  
+
+  function String_Header(tipo){
+    switch(tipo){
+      case('CD'):
+        tip = 'Diario';
+        break;
+      case('CI'):
+        tip = 'Ingresos';
+        break;
+      case('CE'):
+        tip = 'Egresos';
+        break;
+      case('ND'):
+        tip = 'Nota Debito';
+        break;
+      case('NC'):
+        tip = 'Nota Credito';
+        break;
+      default:
+        tip = 'Diario';
+        break;
+    }
+    fecha = $('#fecha1').val();
+    Num_Nuevo_Comp(tipo, fecha, function(result){
+      numComp = result;
+      console.log(numComp); 
+      console.log(result);
+      if (numComp){
+        $("#num_com").html('Comprobante de '+tip+' No. <?php echo date('Y');?>-' + numComp);
+      }
+    });
+
   }
+
 </script>
   <div class="box-body overflow auto">
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -442,7 +478,7 @@ function Form_Activate()
   <div class="mb-1 col-sm-4 col-md-4 col-lg-4 btn-group">
     <div class="">
       <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CD');" 
-      id='CD' title='Comprobante diario'>Diario</button>
+      id='CD' title='Comprobante diario' aria-pressed='true'>Diario</button>
       <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CI');" 
       id='CI' title='Comprobante de ingreso'>Ingreso</button>
       <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CE');" 

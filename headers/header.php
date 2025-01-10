@@ -1,5 +1,6 @@
 <?php  
 include_once("../db/chequear_seguridad.php"); 
+include_once("../controlador/panel.php");
 include_once(dirname(__DIR__,1)."/php/controlador/menuC.php"); 
 include_once(dirname(__DIR__,1)."\php\controlador\contabilidad\contabilidad_controller.php");
 include_once(dirname(__DIR__,1)."\php\modelo\contabilidad\contabilidad_model.php");
@@ -453,7 +454,7 @@ function estado_licencia($f3)
 									</div>
 								</div>
 							</li>
-
+								<!--Notificaciones del la suscripcion--->
 								<li class="nav-item dropdown dropdown-large">
 								<a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <?php if($noty_lic!=0){ ?>
 									<span class="alert-count"><?php echo $noty_lic; ?></span>
@@ -534,6 +535,7 @@ function estado_licencia($f3)
 											<p class="msg-header-badge">8 New</p>
 										</div>
 									</a>
+								<!--Barra de notificaciones (Icono de campana)-->
 									<div class="header-notifications-list">
 										<a class="dropdown-item" href="javascript:;">
 											<div class="d-flex align-items-center">

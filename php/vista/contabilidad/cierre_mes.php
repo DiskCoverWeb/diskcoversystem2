@@ -7,7 +7,7 @@
   })
 
 </script>
-<script src="../../dist/js/cierre_mes.js"></script>
+<script src="../../dist/js/Contabilidad/cierre_mes.js"></script>
 <div class="container-lg">
   <div class="row">
     <!-- <button class="" onclick="abrir_modal()">o</button> -->

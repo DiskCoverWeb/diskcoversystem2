@@ -11,7 +11,7 @@ function FormActivate() {
   cargar_tablas_retenciones();
   cargar_tablas_sc();
   ListarAsientoB();
-
+  reset_1('concepto', 'CD');
   $('#codigo').val('');
 }
 
@@ -66,7 +66,6 @@ function cargar_beneficiario(ci)
   type:  'get',
   dataType: 'json',
     success:  function (response) {
-      console.log(response);
       var valor = response[0].id;
       var parte = valor.split('-');
         $('#ruc').val(parte[0]);
@@ -215,6 +214,30 @@ function cargar_cuenta_banco()
   // });
 }
 
+//Consultar el total de comprobantes para saber cual fue el ultimo. 
+function comprobantes(tp, callback)
+{
+  console.log(tp);
+  var parametros = 
+  {
+    'MesNo':'0',
+    'TP':tp,
+  }
+  $.ajax({
+    data:  {parametros:parametros},
+    url:   '../controlador/contabilidad/contabilidad_controller.php?comprobantes_lista',
+    type:  'post',
+    dataType: 'json',
+    success:  function (response) {
+      const numeros = response.map(item => item.Numero);
+      callback(numeros);
+    },
+    error: function(error){
+      console.error("No se logro realizar la solicitud: ", error);
+    }
+  }); 
+}
+
 function cargar_cuenta()
 {
   $('#cuentar').select2({
@@ -260,7 +283,6 @@ function reset_1(concepto,tipo)
 
   }else if(tipo=='CE')
   {
-
   $('#myModal_espera').modal('show');
     $('#tipoc').val(tipo);
     $('#CE').addClass("active");
@@ -289,6 +311,7 @@ function reset_1(concepto,tipo)
     numero_comprobante();
 
   }
+  String_Header(tipo);
 }
 
 function eliminar_todo_asisntoB()
@@ -808,6 +831,7 @@ function cargar_tablas_retenciones()
               paging: false,   
               info: false,   
               autoWidth: false,
+              destroy: true,
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             }, 
@@ -893,6 +917,7 @@ function cargar_tablas_tab4()
             paging: false,   
             info: false,   
             autoWidth: false,
+            destroy: true, 
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             }, 
@@ -959,6 +984,7 @@ function cargar_tablas_tab4()
             paging: false,   
             info: false,   
             autoWidth: false,
+            destroy: true,
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             }, 
@@ -1022,6 +1048,7 @@ function cargar_tablas_tab4()
             paging: false,   
             info: false,   
             autoWidth: false,
+            destroy: true,
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             }, 
@@ -1331,7 +1358,7 @@ function Command2_Click(){
     success:  function (data) {
       $('#modal_CC').modal('hide');
       $('#cuentar').empty();
-      console.log($('#aux').val());
+      //console.log($('#aux').val());
     }
   });
 }
@@ -1636,7 +1663,7 @@ function eliminar(codigo,tabla,ID)
     'Codigo':codigo,
     'ID':ID,
   }
-  console.log(parametros);
+  //console.log(parametros);
 
   Swal.fire({
     title: 'Esta seguro de eliminar este registro',
@@ -1805,7 +1832,7 @@ function DCBanco_LostFocus()
         dataType: 'json',
           success:  function (response) { 
             $('#no_cheq').val(response);
-            console.log(response);     
+            //console.log(response);     
         }
       });
   
@@ -1814,4 +1841,24 @@ function DCBanco_LostFocus()
 function salir_todo()
 {
   alert('ccera')
+}
+
+function Num_Nuevo_Comp(tip, fecha, callback){
+  var parametros = {
+    'tip': tip,
+    'fecha': fecha
+  }
+  $.ajax({
+    data: {parametros:parametros},
+    url: '../controlador/contabilidad/incomC.php?generar_num_comp=true',
+    type: 'post',
+    dataType: 'json',
+    success: function(response){
+      callback(response);
+    },
+    error: function(error, xhr, status){
+      console.error("Error en la solicitud: "+error);
+      callback(null);
+    }
+  })
 }

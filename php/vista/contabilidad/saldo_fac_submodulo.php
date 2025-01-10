@@ -1,4 +1,4 @@
-<script src="../../dist/js/saldo_fac_submodulo.js"></script>
+<script src="../../dist/js/Contabilidad/saldo_fac_submodulo.js"></script>
 
 <div class="overflow-auto p-1">
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">

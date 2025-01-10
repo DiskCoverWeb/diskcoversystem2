@@ -15,7 +15,7 @@
 ?>
 <!-- <meta charset="ISO-8859-1"> -->
 
-<script src="../../dist/js/compro.js"></script>
+<script src="../../dist/js/Contabilidad/compro.js"></script>
 <script>	
 	 //------------------------------------
 	 function confirmar_edicion(response)

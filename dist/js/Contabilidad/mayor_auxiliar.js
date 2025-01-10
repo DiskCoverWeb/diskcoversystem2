@@ -109,19 +109,26 @@ function consultar_datos(OpcUno,PorConceptos)
                     scrollY: '300px',
                     scrollColapse: true,
                     "columns": [
-                        {"data": "Cta"},
-                        {"data": "Fecha"},
+                        {"data": "Fecha",
+                            render: function(data, type, item) {
+                                const fecha = data?.date;
+                                return fecha ? new Date(fecha).toLocaleDateString() : '';
+                            }
+                        },
                         {"data": "TP"},
                         {"data": "Numero"},
-                        {"data": "Cheq_Dep"},
                         {"data": "Cliente"},
                         {"data": "Concepto"},
+                        {"data": "Cheq_Dep"},
                         {"data": "Debe"},
                         {"data": "Haber"},
                         {"data": "Saldo"},
                         {"data": "Parcial_ME"},
                         {"data": "Saldo_ME"},
-                        {"data": "T"},
+                        {"data": "ID"},
+                        {"data": "Cta"}, 
+                        {"data": "TC"},
+                        {"data": "Cuenta"},
                         {"data": "Item"}
                     ], 
                     order: [
