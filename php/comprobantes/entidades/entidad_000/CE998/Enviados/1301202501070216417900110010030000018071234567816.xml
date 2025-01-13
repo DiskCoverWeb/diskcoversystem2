@@ -5,56 +5,56 @@
     <razonSocial>VACA PRIETO WALTER JALIL</razonSocial>
     <nombreComercial>DISKCOVER SYSTEM</nombreComercial>
     <ruc>0702164179001</ruc>
-    <claveAcceso>1001202401070216417900110010030000017901234567817</claveAcceso>
+    <claveAcceso>1301202501070216417900110010030000018071234567816</claveAcceso>
     <codDoc>01</codDoc>
     <estab>001</estab>
     <ptoEmi>003</ptoEmi>
-    <secuencial>000001790</secuencial>
+    <secuencial>000001807</secuencial>
     <dirMatriz>Desarrollo para programacion de DiskCover System</dirMatriz>
   </infoTributaria>
   <infoFactura>
-    <fechaEmision>10/01/2024</fechaEmision>
+    <fechaEmision>13/01/2025</fechaEmision>
     <dirEstablecimiento>direccion de empresa xyz</dirEstablecimiento>
     <obligadoContabilidad>NO</obligadoContabilidad>
     <tipoIdentificacionComprador>05</tipoIdentificacionComprador>
     <razonSocialComprador>javier farinango</razonSocialComprador>
     <identificacionComprador>1722214507</identificacionComprador>
-    <totalSinImpuestos>18.00</totalSinImpuestos>
-    <totalDescuento>7.00</totalDescuento>
+    <totalSinImpuestos>15.00</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
     <totalConImpuestos>
       <totalImpuesto>
         <codigo>2</codigo>
         <codigoPorcentaje>0</codigoPorcentaje>
         <descuentoAdicional>0.00</descuentoAdicional>
-        <baseImponible>18.00</baseImponible>
+        <baseImponible>15.00</baseImponible>
         <valor>0.00</valor>
       </totalImpuesto>
     </totalConImpuestos>
     <propina>0.00</propina>
-    <importeTotal>18.00</importeTotal>
+    <importeTotal>15.00</importeTotal>
     <moneda>DOLAR</moneda>
     <pagos>
       <pago>
         <formaPago>01</formaPago>
-        <total>18.00</total>
+        <total>15.00</total>
       </pago>
     </pagos>
   </infoFactura>
   <detalles>
     <detalle>
-      <codigoPrincipal>01.13</codigoPrincipal>
-      <descripcion>Becas Basica Superior  undefined  undefined, 2024: Noviembre </descripcion>
+      <codigoPrincipal>01.02</codigoPrincipal>
+      <descripcion>Pension Basica  undefined  undefined, 2025: Abril </descripcion>
       <unidadMedida>DOLAR</unidadMedida>
       <cantidad>1.000000</cantidad>
-      <precioUnitario>25.000000</precioUnitario>
-      <descuento>7.00</descuento>
-      <precioTotalSinImpuesto>18.00</precioTotalSinImpuesto>
+      <precioUnitario>15.000000</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>15.00</precioTotalSinImpuesto>
       <impuestos>
         <impuesto>
           <codigo>2</codigo>
           <codigoPorcentaje>0</codigoPorcentaje>
           <tarifa>0</tarifa>
-          <baseImponible>18.00</baseImponible>
+          <baseImponible>15.00</baseImponible>
           <valor>0.00</valor>
         </impuesto>
       </impuestos>
@@ -73,34 +73,34 @@
     <campoAdicional nombre="PlacaVehiculo">.</campoAdicional>
     <campoAdicional nombre="CtaEstablecimiento">.</campoAdicional>
   </infoAdicional>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature618115">
-<ds:SignedInfo Id="Signature-SignedInfo966888">
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature204481">
+<ds:SignedInfo Id="Signature-SignedInfo418875">
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-<ds:Reference Id="SignedPropertiesID712578" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature618115-SignedProperties749553">
+<ds:Reference Id="SignedPropertiesID937748" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature204481-SignedProperties928297">
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>xtBfiUbXIVBWJNTJOsYp3EIxmk0=</ds:DigestValue>
+<ds:DigestValue>Hq67v8VT7XQGRhbtZSbQjB5tm94=</ds:DigestValue>
 </ds:Reference>
-<ds:Reference URI="#Certificate1687643">
+<ds:Reference URI="#Certificate1615074">
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>x52SnzQztMaKk1Csfl0vfUr4Auo=</ds:DigestValue>
+<ds:DigestValue>qcrMWbOJOX72VppPRLLUNoOrgoY=</ds:DigestValue>
 </ds:Reference>
-<ds:Reference Id="Reference-ID-490343" URI="#comprobante">
+<ds:Reference Id="Reference-ID-111973" URI="#comprobante">
 <ds:Transforms>
 <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>X3pLuvYo8dCo3vcXuZbIzBtcW3s=</ds:DigestValue>
+<ds:DigestValue>Rzj4GTp4YStq6x6CEVsqFyeCbdE=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
-<ds:SignatureValue Id="SignatureValue67821">
-b96PIpYZYPiGtwqO9ys+dIYfk9XpYjBpfssRu97ewWjUmxLU5ingRsBXj+BwvoTW2J6mT54qjWNm
-6iP+SaLzk/GOCYnpWjZ9XV88nsoAm4lEljv6Hyuqrr7UP1FnDCacxrvwS/WA53jMeep1XX3hopAe
-VXQV51uiX3h2Pmxf76wdNfbWJr/06hPxK70Qcgoz2tE6+NaIQ3BvB/+hGDD8i8DzWfgESugZFGSp
-yzWUDsXLPfKJlB3JECZhxsbepw7Rr7KoZpjboyZ8ApJC1W5LZ5BbD4vqFQJKlQSqnrFEHbXolAfA
-FjzG+nSNiz9Yn4oHoN478uGNq6mdMfWmR8vIgQ==
+<ds:SignatureValue Id="SignatureValue719024">
+XhXbIuuyzgR4ao0q4R1rGzPasQHfvUZ3PKhzWCJF+/FKpOOniBpxC3PFrceGB1KX+tmohuqy7jCV
+pj+4FB3TJ36Z3jatqhMzdlYfpF1pxCLOxvrgap01Y6833ZNIW9VCBUheglcDK0oy5PbbIPtJpKEH
+UTCXBBdi3nLMR1g45CWE4q8tYC7vlwLYinBrL7PjXnGhxVKholwIzTiMcXOwYtoDZpFOIeFS2xig
+HImWEn/x7SH0Rq7IUZ8PDgl2htQedkH7TJyuYG9/xHy0vgaoXHqhanayk7MWzRsTDuzmECKhtkjd
+A+6g9317T0R5OZS+ZY+g1Ac4zLEecg9kbnFPbg==
 </ds:SignatureValue>
-<ds:KeyInfo Id="Certificate1687643">
+<ds:KeyInfo Id="Certificate1615074">
 <ds:X509Data>
 <ds:X509Certificate>
 MIILkjCCCXqgAwIBAgIEXDrIAjANBgkqhkiG9w0BAQsFADCBmTELMAkGA1UEBhMCRUMxHTAbBgNV
@@ -171,4 +171,4 @@ LRuAVSyi58qyAD0Eu1zLMc3KhEUXoxF7aA8P0w==
 </ds:RSAKeyValue>
 </ds:KeyValue>
 </ds:KeyInfo>
-<ds:Object Id="Signature618115-Object447488"><etsi:QualifyingProperties Target="#Signature618115"><etsi:SignedProperties Id="Signature618115-SignedProperties749553"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-01-10T14:16:37-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>m8okW/lbE8bTuXKKJc3pO5HpQGc=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-1 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 1,C=EC</ds:X509IssuerName><ds:X509SerialNumber>1547356162</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-490343"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature></factura>
+<ds:Object Id="Signature204481-Object434934"><etsi:QualifyingProperties Target="#Signature204481"><etsi:SignedProperties Id="Signature204481-SignedProperties928297"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-01-13T16:54:15-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>m8okW/lbE8bTuXKKJc3pO5HpQGc=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-1 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 1,C=EC</ds:X509IssuerName><ds:X509SerialNumber>1547356162</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-111973"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature></factura>

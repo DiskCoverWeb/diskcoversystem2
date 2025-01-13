@@ -359,7 +359,10 @@
           $("#descuentop").val(parseFloat(0.00).toFixed(2));
         }else{
           console.log("No tiene datos");
-        }            
+        }    
+
+        setTimeout(function() {   $('#myModal_espera').modal('hide');   }, 1500);
+     
       },
       complete: function (argument) {
         $('#myModal_espera').modal('hide');
@@ -1234,6 +1237,7 @@
         })
     }else{
       Swal.fire({type: 'info',title: 'NO SE ACTUALIZARA DATOS PORQUE USTED NO HA REALIZADO CAMBIOS DEL REPRESENTANTE',text: ''});
+      $('#myModal_espera').modal('hide')
     }
   }
 

@@ -3116,15 +3116,20 @@ function generar_xml_retencion($cabecera,$detalle)
     	$comprobar_sri = dirname(__DIR__).'/SRI/firmar/JavClientSri.jar';
     	$url_autorizado=dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/Autorizados/';
  	    $url_No_autorizados =dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/No_autorizados/';
- 	   
 
-   		 $command = $this->rutaJava8."java -jar ".$comprobar_sri." 2 ".$clave_acceso." ".$url_autorizado." ".$url_No_autorizados." ".$link_autorizacion; 
-   		 // print_r($command);die();
-
-   		$output = shell_exec($command);   		
-   		$output = mb_convert_encoding($output, 'UTF-8', 'ISO-8859-1');
-   		// print_r($output);die();
-		// $output = json_decode($output,true); 	
+ 	    $comprobado = true;
+ 	    $output = '';
+ 	    while ($comprobado) {
+ 	    	$command = $this->rutaJava8."java -jar ".$comprobar_sri." 2 ".$clave_acceso." ".$url_autorizado." ".$url_No_autorizados." ".$link_autorizacion; 
+	   		$output = shell_exec($command);   
+	   		// print_r($output);die();		
+	   		$output = mb_convert_encoding($output, 'UTF-8', 'ISO-8859-1');
+			$output = json_decode($output,true); // <== para que la respuesta se haga un array
+			if($output[2]=='AUTORIZADO')
+			{
+				$comprobado = false;
+			}	
+ 	    }  		 
    		
    		return $output;
     }
@@ -3156,8 +3161,11 @@ function generar_xml_retencion($cabecera,$detalle)
    		 // print_r($command);die();
 
    		$output = shell_exec($command);
-   		$output = mb_convert_encoding($output, 'UTF-8', 'ISO-8859-1');
-   		// $output = json_decode($output,true);
+   		if($output!=null && $output!='')
+   		{
+   			$output = mb_convert_encoding($output, 'UTF-8', 'ISO-8859-1');
+   		}
+   		$output = json_decode($output,true);
    		// print_r($output);die();
    		return $output;
     }

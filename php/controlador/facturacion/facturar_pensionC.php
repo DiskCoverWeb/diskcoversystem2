@@ -986,12 +986,12 @@ class facturar_pensionC
               $rep = $resultado = $this->autorizar_sri->Autorizar_factura_o_liquidacion($FA);
               $dataFac = $this->facturacion->getDataBasicFactura($FA['Serie'], $FA['Factura'], $FA['CodigoC']);
 
-              $rep = json_decode($rep, true);
+              // $rep = json_decode($rep, true);
               // print_r($rep[3]);die();
               // print_r($dataFac);die();
               if($rep[0]==1)
               {
-                $resultado = array('respuesta'=>$rep[0], 'auto'=>$dataFac['Autorizacion'], 'per' => $dataFac['Periodo'],'Factura'=>$FA['Factura'],'Serie'=>$FA['Serie'],'CodigoCliente'=>$FA['CodigoCliente']);
+                $resultado = array('respuesta'=>$rep[0], 'auto'=>$rep[1], 'per' => $dataFac['Periodo'],'Factura'=>$FA['Factura'],'Serie'=>$FA['Serie'],'CodigoCliente'=>$FA['CodigoCliente'],'sri'=>$rep);
               }else{ $resultado = array('respuesta'=>-1,'text'=>$this->autorizar_sri->quitar_carac($rep[3]),'auto'=>$dataFac['Autorizacion'], 'per' => $dataFac['Periodo']);}
             } catch (Exception $e) {
               $resultado = array('respuesta'=>-1,'text'=>$e->getMessage());
