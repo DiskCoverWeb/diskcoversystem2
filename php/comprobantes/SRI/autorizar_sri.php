@@ -3119,16 +3119,18 @@ function generar_xml_retencion($cabecera,$detalle)
 
  	    $comprobado = true;
  	    $output = '';
+ 	    $veces_envio = 1;
  	    while ($comprobado) {
  	    	$command = $this->rutaJava8."java -jar ".$comprobar_sri." 2 ".$clave_acceso." ".$url_autorizado." ".$url_No_autorizados." ".$link_autorizacion; 
 	   		$output = shell_exec($command);   
 	   		// print_r($output);die();		
 	   		$output = mb_convert_encoding($output, 'UTF-8', 'ISO-8859-1');
 			$output = json_decode($output,true); // <== para que la respuesta se haga un array
-			if($output[2]=='AUTORIZADO')
+			if($output[2]=='AUTORIZADO' || $veces_envio>=3)
 			{
 				$comprobado = false;
 			}	
+			$veces_envio = $veces_envio+1;
  	    }  		 
    		
    		return $output;
