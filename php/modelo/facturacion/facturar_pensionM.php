@@ -5,12 +5,12 @@ require_once(dirname(__DIR__,2)."/funciones/funciones.php");
 
 class facturar_pensionM
 {
-	private $db;
-	public function __construct(){
+  private $db;
+  public function __construct(){
     //base de datos
     $this->db = new db();
   }
-	
+  
   function SelectDatos($sSQL)
   {
     return $this->db->datos($sSQL);
@@ -39,7 +39,7 @@ class facturar_pensionM
     return $stmt;
   }
   
-	function getClientes($query,$ruc=false)
+  function getClientes($query,$ruc=false)
   {
 
       $sql = "SELECT TOP 50  ".Full_Fields('Clientes')."
@@ -118,24 +118,24 @@ class facturar_pensionM
 
   public function getCatalogoCuentas(){
     $sql="SELECT Codigo, Cuenta As NomCuenta, TC 
-       		FROM Catalogo_Cuentas 
-       		WHERE TC IN ('C','P','BA','CJ','TJ') 
-       		AND DG = 'D' 
-       		AND Item = '".$_SESSION['INGRESO']['item']."'
-       		AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
-       		ORDER BY TC,Codigo";
+          FROM Catalogo_Cuentas 
+          WHERE TC IN ('C','P','BA','CJ','TJ') 
+          AND DG = 'D' 
+          AND Item = '".$_SESSION['INGRESO']['item']."'
+          AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+          ORDER BY TC,Codigo";
     $stmt = $this->db->datos($sql);
     return $stmt;
   }
 
   public function getNotasCredito(){
     $sql = "SELECT Codigo, Cuenta As NomCuenta, TC 
-			FROM Catalogo_Cuentas 
-			WHERE SUBSTRING (Codigo,1,1) = '4' 
-			AND DG = 'D'
-			AND Item = '".$_SESSION['INGRESO']['item']."'
-       		AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
-			ORDER BY TC,Codigo";
+      FROM Catalogo_Cuentas 
+      WHERE SUBSTRING (Codigo,1,1) = '4' 
+      AND DG = 'D'
+      AND Item = '".$_SESSION['INGRESO']['item']."'
+          AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+      ORDER BY TC,Codigo";
     $stmt = $this->db->datos($sql);
     return $stmt;
   }
@@ -155,15 +155,15 @@ class facturar_pensionM
   public function getCatalogoProductos($codigoCliente, $CMedidor=G_NINGUNO){
     $Codigo_Auto = ($CMedidor!=G_NINGUNO)?str_pad($CMedidor, 6, "0", STR_PAD_LEFT):G_NINGUNO;
     $sql = "SELECT CF.Mes,CF.Num_Mes,CF.Valor,CF.Descuento,CF.Descuento2,CF.Codigo,CF.Periodo As Periodos,CF.Mensaje,CF.Credito_No, CF.Codigo_Auto ,CP.*
-			FROM Clientes_Facturacion As CF,Catalogo_Productos As CP
-			WHERE CF.Codigo = '".$codigoCliente."'
-			AND CP.Item = '".$_SESSION['INGRESO']['item']."'
-			AND CP.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-			AND CF.Mes <> '.'
-			AND CF.Item = CP.Item 
-			AND CF.Codigo_Inv = CP.Codigo_Inv 
+      FROM Clientes_Facturacion As CF,Catalogo_Productos As CP
+      WHERE CF.Codigo = '".$codigoCliente."'
+      AND CP.Item = '".$_SESSION['INGRESO']['item']."'
+      AND CP.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+      AND CF.Mes <> '.'
+      AND CF.Item = CP.Item 
+      AND CF.Codigo_Inv = CP.Codigo_Inv 
       ".(($Codigo_Auto!=G_NINGUNO)?" AND CF.Codigo_Auto='$Codigo_Auto' ":"")."
-			ORDER BY CF.Periodo,CF.Num_Mes,CF.Codigo_Inv,CF.Credito_No";
+      ORDER BY CF.Periodo,CF.Num_Mes,CF.Codigo_Inv,CF.Credito_No";
       // print_r($sql);die();
     $stmt = $this->db->datos($sql);
     return $stmt;
@@ -171,20 +171,20 @@ class facturar_pensionM
 
   public function getSaldoFavor($codigoCliente){
     $SubCtaGen = Leer_Seteos_Ctas("Cta_Anticipos_Clientes");
-  	$sql = "SELECT Codigo, SUM(Creditos-Debitos) As Saldo_Pendiente
-       		  FROM Trans_SubCtas
-       		  WHERE Item = '".$_SESSION['INGRESO']['item']."'
-       		  AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
-       		  AND Codigo = '".$codigoCliente."'
-       		  AND Cta = '".$SubCtaGen."'
-       		  AND T = 'N'
-       		  GROUP BY Codigo ";
+    $sql = "SELECT Codigo, SUM(Creditos-Debitos) As Saldo_Pendiente
+            FROM Trans_SubCtas
+            WHERE Item = '".$_SESSION['INGRESO']['item']."'
+            AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+            AND Codigo = '".$codigoCliente."'
+            AND Cta = '".$SubCtaGen."'
+            AND T = 'N'
+            GROUP BY Codigo ";
     $stmt = $this->db->datos($sql);
     return $stmt;
   }
 
   public function getSaldoPendiente($codigoCliente){
-		$sql = "SELECT CodigoC,SUM(Saldo_MN) As Saldo_Pend 
+    $sql = "SELECT CodigoC,SUM(Saldo_MN) As Saldo_Pend 
               FROM Facturas 
               WHERE Item = '".$_SESSION['INGRESO']['item']."'
               AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
@@ -197,11 +197,11 @@ class facturar_pensionM
   }
 
   public function updateClientesFacturacion($TxtGrupo,$codigoCliente){
-  	$sql = "UPDATE Clientes_Facturacion
-                	SET GrupoNo = '".$TxtGrupo."'
-                	WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'
-                	AND Item = '".$_SESSION['INGRESO']['item']."'
-                	AND Codigo = '".$codigoCliente."' ";
+    $sql = "UPDATE Clientes_Facturacion
+                  SET GrupoNo = '".$TxtGrupo."'
+                  WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'
+                  AND Item = '".$_SESSION['INGRESO']['item']."'
+                  AND Codigo = '".$codigoCliente."' ";
     $stmt = $this->db->String_Sql($sql);
     return $stmt;
   }
@@ -221,22 +221,22 @@ class facturar_pensionM
 
   public function updateClientesMatriculas($TextRepresentante,$TextCI,$TD_Rep,$TxtTelefono,$TxtDireccion,$TxtEmail,$TxtGrupo,$codigoCliente,$CTipoCta,$TxtCtaNo,$CheqPorDeposito,$Caducidad,$DCDebito){
     $sql = "UPDATE Clientes_Matriculas
-                	SET T = '".G_NORMAL."',
+                  SET T = '".G_NORMAL."',
                   Representante = '".$TextRepresentante."', 
-                	Cedula_R = '".$TextCI."', 
-                	TD = '".$TD_Rep."', 
-                	Telefono_R = '".$TxtTelefono."', 
-                	Lugar_Trabajo_R = '".$TxtDireccion."', 
-                	Email_R = '".$TxtEmail."', 
-                	Grupo_No = '".$TxtGrupo."',
+                  Cedula_R = '".$TextCI."', 
+                  TD = '".$TD_Rep."', 
+                  Telefono_R = '".$TxtTelefono."', 
+                  Lugar_Trabajo_R = '".$TxtDireccion."', 
+                  Email_R = '".$TxtEmail."', 
+                  Grupo_No = '".$TxtGrupo."',
                   Cta_Numero ='".$TxtCtaNo."' ,
                   Tipo_Cta ='".$CTipoCta."' ,
                   Caducidad ='".$Caducidad."' ,
                   Por_Deposito ='".$CheqPorDeposito."' ,
                   Cod_Banco ='".$DCDebito."' 
-                	WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'
-                	AND Item = '".$_SESSION['INGRESO']['item']."'
-                	AND Codigo = '".$codigoCliente."' ";
+                  WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'
+                  AND Item = '".$_SESSION['INGRESO']['item']."'
+                  AND Codigo = '".$codigoCliente."' ";
     $stmt = $this->db->String_Sql($sql);
     return $stmt;
   }
@@ -275,10 +275,10 @@ class facturar_pensionM
 
   public function getAsiento(){
     $sql = "SELECT ".Full_Fields("Asiento_F")." 
-       			FROM Asiento_F
-       			WHERE Item = '".$_SESSION['INGRESO']['item']."' 
-       			AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
-       			ORDER BY A_No ";
+            FROM Asiento_F
+            WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+            AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
+            ORDER BY A_No ";
     $stmt = $this->db->datos($sql);
     return $stmt;
   }
@@ -337,6 +337,7 @@ class facturar_pensionM
           AND Credito_No = '".$Codigo3."' 
           ".(($Codigo_Auto!="")?" AND Codigo_Auto = '".$Codigo_Auto."'":"")."
           AND Mes = '".$Codigo2."' ";
+          // print_r($sql);die();
     $stmt = $this->db->String_Sql($sql);
     return $stmt;
 
@@ -425,9 +426,17 @@ class facturar_pensionM
           WHERE Item = '".$_SESSION['INGRESO']['item']."' 
           AND Codigo = '$codigoCliente' 
           AND Codigo_Inv = '$CodigoInv' 
-          AND Periodo = '$Anio' 
-          AND Num_Mes = '$NoMes'
-          ".(($Codigo_Auto!=G_NINGUNO)?" AND Codigo_Auto='".$Codigo_Auto."'":"");
+          AND Periodo = '$Anio' ";
+           if(is_numeric($NoMes))
+          {
+            $sSQL.=" AND Num_Mes = '$NoMes'";
+          }else
+          {
+            $sSQL.=" AND Mes = '$NoMes' ";
+          }
+
+          $sSQL.=(($Codigo_Auto!=G_NINGUNO)?" AND Codigo_Auto='".$Codigo_Auto."'":"");
+          // print_r($sSQL);die();
     $stmt = $this->db->String_Sql($sSQL);
     return $stmt;
   }
@@ -531,47 +540,11 @@ class facturar_pensionM
   {
     $sSQL = "SELECT Codigo " .
         "FROM Clientes_Matriculas " .
-        "WHERE Codigo = '" . $data['codigoCliente'] . "' " .
+        "WHERE Codigo = '" . $data . "' " .
         "AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' " .
         "AND Item = '" . $_SESSION['INGRESO']['item'] . "' ";
-    $AdoAux = $this->db->datos($sSQL);
-    $MBFecha = (($data['MBFecha']!="")?UltimoDiaMes2("01/".$data['MBFecha'], 'Ymd'):null);
-
-    SetAdoAddNew("Clientes_Matriculas");
-    SetAdoFields("T", G_NORMAL);
-    SetAdoFields("Grupo_No", $data['Grupo_No']);
-    SetAdoFields("Lugar_Trabajo_R", $data['TxtDirS']);
-    SetAdoFields("Email_R", $data['TxtEmail']);
-    SetAdoFields("Representante", $data['TextRepresentante']);
-    SetAdoFields("Cedula_R", $data['TextCI']);
-    SetAdoFields("TD", (isset($data['Label18'])?$data['Label18']:$data['TD_Rep']));
-    SetAdoFields("Telefono_R", $data['TxtTelefono']);
-    SetAdoFields("Cta_Numero", $data['TxtCtaNo']);
-    SetAdoFields("Tipo_Cta", $data['CTipoCta']);
-    SetAdoFields("Caducidad", $MBFecha);
-    SetAdoFields("Por_Deposito", (bool)$data['CheqPorDeposito']);
-    SetAdoFields("Cod_Banco", (isset($data['Documento'])?$data['Documento']:$data['DCDebito']));
-
-    if (count($AdoAux) <= 0) {
-      SetAdoFields("Codigo", $data['codigoCliente']);
-      SetAdoFields("Periodo", $_SESSION['INGRESO']['periodo']);
-      SetAdoFields("Item", $_SESSION['INGRESO']['item']);
-      SetAdoUpdate();
-    } else {
-      SetAdoFieldsWhere("Periodo", $_SESSION['INGRESO']['periodo']);
-      SetAdoFieldsWhere("Item", $_SESSION['INGRESO']['item']);
-      SetAdoFieldsWhere("Codigo", $data['codigoCliente']);
-      SetAdoUpdateGeneric();
+      return $this->db->datos($sSQL);
     }
-
-    $sSQL = "UPDATE Clientes "
-           ."SET Grupo = '" . $data['Grupo_No'] . "', Direccion = '" .$data['TxtDirS'] . "' "
-           ."WHERE Codigo = '" . $data['codigoCliente'] . "' ";
-          Ejecutar_SQL_SP($sSQL);
-
-    Leer_Datos_Clientes2($data['codigoCliente']);
-    return true;
-  }
 
   public function Reporte_Cartera_Clientes_PDF_Data($CodigoCliente)
   {

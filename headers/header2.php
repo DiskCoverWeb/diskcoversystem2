@@ -83,7 +83,14 @@ function estado_licencia($f3)
 	<link rel="stylesheet" href="../../assets/css/TopMenu/dark-theme.css" />
 	<link rel="stylesheet" href="../../assets/css/TopMenu/semi-dark.css" />
 	<link rel="stylesheet" href="../../assets/css/TopMenu/header-colors.css" />
+	<script src="../../dist/js/js_globales.js"></script>	
+	
 	<title>Diskcover system - Modulos</title>
+	<script type="text/javascript">
+		$(document).ready(function () {
+      		 setInterval(validar_session_Activa, 5000);
+	    });
+	</script>
 </head>
 
 <body>
