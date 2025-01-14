@@ -1,12 +1,14 @@
 function consultar_datos()
 {
-    if($.fn.dataTable.isDataTable('#tbl_tablaCta') && $.fn.dataTable.isDataTable('#tbl_tablaCtaGrupos') && $.fn.dataTable.isDataTable('#tbl_tablaCtaDetalles')){
+    $('#myModal_espera').modal('show');
+    if($.fn.dataTable.isDataTable('#tbl_tablaCta')){
         $('#tbl_tablaCta').DataTable().clear().destroy();
-        $('#tbl_tablaCtaGrupos').DataTable().clear().destroy();
-        $('#tbl_tablaCtaDetalles').DataTable().clear().destroy(); 
     }
     var columnasIdxNum = [];
     tbl_catalogoCta = $('#tbl_tablaCta').DataTable({
+        lengthChange: false, // Desactiva el menú de selección de registros por página
+        paging: true,        // Mantiene la paginación habilitada
+        pageLength: 10,
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },
@@ -15,9 +17,9 @@ function consultar_datos()
             type: 'post',
             data: function(d){
                 var parametros = {
-                    'OpcT': true,
-                    'OpcG': false,
-                    'OpcD': false,
+                    'OpcT': $('#OpcT').prop('checked'),
+                    'OpcG': $('#OpcG').prop('checked'),
+                    'OpcD': $('#OpcD').prop('checked'),
                     'txt_CtaI': $('#txt_CtaI').val() || "",
                     'txt_CtaF': $('#txt_CtaF').val() || ""
                 };
@@ -27,9 +29,9 @@ function consultar_datos()
                 response = ProcesarDatos(response);
                 return response;
             },
-            beforeSend: function(){
-                $('#myModal_espera').modal('show');
-            },
+            // beforeSend: function(){
+            //     $('#myModal_espera').modal('show');
+            // },
             complete: function(){
                 $('#myModal_espera').modal('hide');
                 tbl_catalogoCta.columns.adjust().draw();
@@ -61,115 +63,115 @@ function consultar_datos()
         ]
     });
 
-    tbl_catalogoCtaGrupos = $('#tbl_tablaCtaGrupos').DataTable({
-        responsive: true, 
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-        },
-        ajax: {
-            url: '../controlador/contabilidad/catalogoCtaC.php?consultar=true',
-            type: 'post',
-            data: function(d){
-                var parametros = {
-                    'OpcT': false,
-                    'OpcG': true, 
-                    'OpcD': false, 
-                    'txt_CtaI': $('#txt_CtaI').val(),
-                    'txt_CtaF': $('#txt_CtaF').val()
-                };
-                return { parametros:parametros }
-            },
-            dataSrc: function(response){
-                response = ProcesarDatos(response);
-                return response;
-            },
-            beforeSend: function(){
-                $('#myModal_espera').modal('show');
-            },
-            complete: function(){
-                $('#myModal_espera').modal('hide');
-                tbl_catalogoCtaGrupos.columns.adjust().draw();
-            },
-            error: function(xhr, status, error){
-                console.log("Error en la solicitud: ", status, error);
-            }
-        },
-        searching: false,
-        scrollX: true,
-        scrollY: '400px', 
-        scrollCollapse: true,
-        columns: [
-            { data: 'Clave' },
-            { data: 'TC' },
-            { data: 'ME' },
-            { data: 'DG' },
-            { data: 'Codigo' },
-            { data: 'Cuenta' },
-            { data: 'Presupuesto' },
-            { data: 'Codigo_Ext' }
-        ],
-        createdRow: function(row, data){
-            alignEnd(row, data);
-        },
-        order: [
-            [0, 'asc']
-        ]
-    });
+    // tbl_catalogoCtaGrupos = $('#tbl_tablaCtaGrupos').DataTable({
+    //     responsive: true, 
+    //     language: {
+    //         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+    //     },
+    //     ajax: {
+    //         url: '../controlador/contabilidad/catalogoCtaC.php?consultar=true',
+    //         type: 'post',
+    //         data: function(d){
+    //             var parametros = {
+    //                 'OpcT': false,
+    //                 'OpcG': true, 
+    //                 'OpcD': false, 
+    //                 'txt_CtaI': $('#txt_CtaI').val(),
+    //                 'txt_CtaF': $('#txt_CtaF').val()
+    //             };
+    //             return { parametros:parametros }
+    //         },
+    //         dataSrc: function(response){
+    //             response = ProcesarDatos(response);
+    //             return response;
+    //         },
+    //         beforeSend: function(){
+    //             $('#myModal_espera').modal('show');
+    //         },
+    //         complete: function(){
+    //             $('#myModal_espera').modal('hide');
+    //             tbl_catalogoCtaGrupos.columns.adjust().draw();
+    //         },
+    //         error: function(xhr, status, error){
+    //             console.log("Error en la solicitud: ", status, error);
+    //         }
+    //     },
+    //     searching: false,
+    //     scrollX: true,
+    //     scrollY: '400px', 
+    //     scrollCollapse: true,
+    //     columns: [
+    //         { data: 'Clave' },
+    //         { data: 'TC' },
+    //         { data: 'ME' },
+    //         { data: 'DG' },
+    //         { data: 'Codigo' },
+    //         { data: 'Cuenta' },
+    //         { data: 'Presupuesto' },
+    //         { data: 'Codigo_Ext' }
+    //     ],
+    //     createdRow: function(row, data){
+    //         alignEnd(row, data);
+    //     },
+    //     order: [
+    //         [0, 'asc']
+    //     ]
+    // });
 
-    tbl_catalogoCtaDetalles = $('#tbl_tablaCtaDetalles').DataTable({
-        responsive: true, 
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-        },
-        ajax: {
-            url: '../controlador/contabilidad/catalogoCtaC.php?consultar=true',
-            type: 'post',
-            data: function(d){
-                var parametros = {
-                    'OpcT': false,
-                    'OpcG': false,
-                    'OpcD': true,
-                    'txt_CtaI': $('#txt_CtaI').val(),
-                    'txt_CtaF': $('#txt_CtaF').val()
-                };
-                return { parametros:parametros }
-            },
-            dataSrc: function(response){
-                //Procesar Datos en Js Globales, para cambiar datos numericos. 
-                response = ProcesarDatos(response);
-                return response;
-            },
-            beforeSend: function(){
-                $('#myModal_espera').modal('show');
-            },
-            complete: function(){
-                $('#myModal_espera').modal('hide');
-            },
-            error: function(xhr, status, error){
-                console.log("Error en la solicitud: ", status, error);
-            }
-        },
-        scrollX: true,
-        scrollY: '400px', 
-        scrollCollapse: true,
-        searching: false,
-        columns: [
-            { data: 'Clave' },
-            { data: 'TC' },
-            { data: 'ME' },
-            { data: 'DG' },
-            { data: 'Codigo' },
-            { data: 'Cuenta' },
-            { data: 'Presupuesto' },
-            { data: 'Codigo_Ext' }
-        ],
-        createdRow: function(row, data){
-            alignEnd(row, data);
-        },
-        order: [
-            [0, 'asc']
-        ]
-    });
+    // tbl_catalogoCtaDetalles = $('#tbl_tablaCtaDetalles').DataTable({
+    //     responsive: true, 
+    //     language: {
+    //         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+    //     },
+    //     ajax: {
+    //         url: '../controlador/contabilidad/catalogoCtaC.php?consultar=true',
+    //         type: 'post',
+    //         data: function(d){
+    //             var parametros = {
+    //                 'OpcT': false,
+    //                 'OpcG': false,
+    //                 'OpcD': true,
+    //                 'txt_CtaI': $('#txt_CtaI').val(),
+    //                 'txt_CtaF': $('#txt_CtaF').val()
+    //             };
+    //             return { parametros:parametros }
+    //         },
+    //         dataSrc: function(response){
+    //             //Procesar Datos en Js Globales, para cambiar datos numericos. 
+    //             response = ProcesarDatos(response);
+    //             return response;
+    //         },
+    //         beforeSend: function(){
+    //             $('#myModal_espera').modal('show');
+    //         },
+    //         complete: function(){
+    //             $('#myModal_espera').modal('hide');
+    //         },
+    //         error: function(xhr, status, error){
+    //             console.log("Error en la solicitud: ", status, error);
+    //         }
+    //     },
+    //     scrollX: true,
+    //     scrollY: '400px', 
+    //     scrollCollapse: true,
+    //     searching: false,
+    //     columns: [
+    //         { data: 'Clave' },
+    //         { data: 'TC' },
+    //         { data: 'ME' },
+    //         { data: 'DG' },
+    //         { data: 'Codigo' },
+    //         { data: 'Cuenta' },
+    //         { data: 'Presupuesto' },
+    //         { data: 'Codigo_Ext' }
+    //     ],
+    //     createdRow: function(row, data){
+    //         alignEnd(row, data);
+    //     },
+    //     order: [
+    //         [0, 'asc']
+    //     ]
+    // });
 }
 $(document).ready(function()
 {

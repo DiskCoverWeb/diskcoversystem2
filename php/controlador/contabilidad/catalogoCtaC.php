@@ -41,6 +41,8 @@ class catalogoCtaC
 
 	function cargar_datos($parametros)
 	{     
+
+		// print_r($parametros);die();
       $datos = $this->modelo->cargar_datos_cuenta_tabla($parametros['OpcT'],$parametros['OpcG'],$parametros['OpcD'],$parametros['txt_CtaI'],$parametros['txt_CtaF']);
       // print_r($datos);die();
       return $datos;
