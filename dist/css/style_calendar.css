@@ -1,0 +1,39 @@
+.container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+  background-color: white;
+}
+
+th, td {
+  text-align: center;
+  padding: 12px 0;
+}
+th {
+  text-decoration: underline;
+}
+
+td {
+  cursor: pointer;
+}
+td.selected {
+  color: white;
+  background-color: red;
+}
+td.current {
+  color: blue;
+}
+td.inactive {
+  opacity: 0.5;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}

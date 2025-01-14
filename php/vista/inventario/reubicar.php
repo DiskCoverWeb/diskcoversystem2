@@ -1,0 +1,146 @@
+<?php date_default_timezone_set('America/Guayaquil'); ?>
+  <link rel="stylesheet" href="../../dist/css/arbol_bodegas/reset.min.css">
+  <link rel="stylesheet" href="../../dist/css/arbol_bodegas/arbol_bodega.css">
+  <script src="../../dist/js/arbol_bodegas/prefixfree.min.js"></script>
+ 
+<script type="text/javascript" src="../../dist/js/reubicar.js">
+  
+</script>
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+    <div class="ps-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+          <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+          </li>
+        </ol>
+      </nav>
+    </div>          
+</div>
+
+<div class="row row-cols-auto gx-3 pb-2 d-flex align-items-center ps-2">
+  	<div class="row row-cols-auto btn-group">
+		<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
+			print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
+			<img src="../../img/png/salire.png">
+		</a>
+		<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
+			<img src="../../img/png/grabar.png">
+		</button>
+  	</div>
+</div>
+
+<form id="form_correos" class="mb-2">
+	<div class="row p-2 border-top border-3 border-secondary-subtle" style="background: antiquewhite;">					
+		<div class="row d-flex align-items-end border-1">
+			<div class="col-sm-4">
+				<b>Buscar Bodega</b>
+				
+				<div class="input-group input-group-sm">
+					<input type="" name="" class="form-control form-control-sm" id="txt_bodega" name="txt_bodega" placeholder="Buscar Bodega" onblur="lista_stock_ubicado()">
+					<button type="button" class="btn btn-info btn-sm" style="font-size: 8pt;" onclick="abrir_modal_bodegas()"><i class="fa fa-sitemap" style="font-size: 8pt;"></i></button>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<b>Buscar Articulo</b>
+				<input type="" name="" class="form-control form-control-sm" id="txt_cod_barras" name="txt_cod_barras" placeholder="Buscar" onblur="lista_stock_ubicado()">
+			</div>
+			<div class="col-sm-4 d-flex justify-content-end">
+				<button type="button" class="btn btn-primary btn-sm" onclick="lista_stock_ubicado()"><i class="fa fa-search" style="font-size:8pt;"></i> Buscar</button>
+			</div>
+		</div>
+		<div class="row border-1 mt-3">
+			<br>
+				<div class="col-sm-12">
+					<b>Contenido De bodega</b>
+					<h3 class="box-title" id="txt_bodega_title">Ruta: </h3>
+					<table class="table-sm table-hover table bg-light">
+						<thead class="text-center bg-primary text-white">
+							<th>Codigo</th>
+							<th><b>Producto</b></th>
+							<th><b>Stock</b></th>
+							<th>Codigo bodega</th>
+							<th><b>Ruta</b></th>
+							<th></th>
+						</thead>
+						<tbody id="tbl_asignados">
+							
+						</tbody>
+					</table>
+				</div>					
+		</div>
+	</div>
+</form>
+
+<br><br>
+
+
+<div id="myModal_cambiar_bodegas" class="modal fade myModalNuevoCliente" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: antiquewhite;">
+            <div class="modal-header bg-primary">
+				<h4 class="modal-title text-white">Seleccion manual de bodegas</h4>
+                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="contenido_prov">
+        		<div class="row">
+        			<div class="col-sm-12">
+        				<div class="input-group input-group-sm mb-2">
+							<input type="hidden" name="txt_id_inv" id="txt_id_inv">
+        					<input type="text" id="txt_cod_lugar" name="txt_cod_lugar" class="form-control form-control-sm" placeholder="Nueva ruta" onblur="buscar_ruta()">        				
+							<button type="button" class="btn btn-info btn-sm" onclick="abrir_modal_bodegas(2)" style="font-size:8pt"><i class="fa fa-sitemap" style="font-size:8pt"></i></button>
+						</div>						
+        				<label id="txt_bodega_title2">Ruta:</label>
+
+        			</div>
+        		</div>             
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light border border-1" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="Guardar_bodega()">Guardar</button>
+            </div> 
+        </div>
+    </div>
+  </div>
+
+
+
+
+<div id="myModal_arbol_bodegas" class="modal fade myModalNuevoCliente" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: antiquewhite;">
+            <div class="modal-header bg-primary">
+				<h4 class="modal-title text-white">Seleccion manual de bodegas</h4>
+                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="contenido_prov">
+            		<ul class="tree_bod" id="arbol_bodegas">
+								</ul>               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="cargar_bodegas();lista_stock_ubicado();" data-bs-dismiss="modal">OK</button>
+            </div> 
+        </div>
+    </div>
+  </div>
+
+  <div id="myModal_arbol_bodegas2" class="modal fade myModalNuevoCliente" role="dialog"  data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: antiquewhite;">
+            <div class="modal-header bg-primary">
+				<h4 class="modal-title text-white">Seleccion manual de bodegas</h4>
+                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="contenido_prov">
+            		<ul class="tree_bod" id="arbol_bodegas2">
+								</ul>               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="cargar_bodegas();lista_stock_ubicado();" data-bs-dismiss="modal">OK</button>
+            </div> 
+        </div>
+    </div>
+  </div>
+
+ <script src="../../dist/js/arbol_bodegas/arbol_bodega.js"></script>
+

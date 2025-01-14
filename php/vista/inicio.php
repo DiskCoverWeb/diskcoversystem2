@@ -422,6 +422,11 @@ require_once("../../headers/header.php");
 			case 'catalogoPro':
 				require_once("inventario/catalogo_producto.php");
 				break;
+				
+			//Facturacion -> Archivo -> Catalogo de inventario
+			case 'catalogoProBaq':
+				require_once("inventario/catalogo_producto_baq.php");
+				break;
 
 			//Inventario -> Archivo -> Asignación categorias generales
 			case 'catalogo_bodega':

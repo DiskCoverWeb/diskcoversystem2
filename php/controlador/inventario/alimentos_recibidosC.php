@@ -1512,7 +1512,7 @@ class alimentos_recibidosC
 	{
 		$datos = $this->modelo->preguntas_transporte();
 		$html='<li class="list-group-item">
-					<a href="#" style="padding:0px">
+					<a href="#" style="padding:0px" class="d-flex justify-content-between">
 							<label></label>
 					 		<div class="btn-group pull-right">
 					 			<span class="label-default btn-sm btn"><img src="../../img/png/bueno2.png" style="width: 14px;"></span>
@@ -1522,7 +1522,7 @@ class alimentos_recibidosC
 				</li>';
 		foreach ($datos as $key => $value) {
 			$html.='<li class="list-group-item">
-						<a href="#" style="padding:0px">
+						<a href="#" style="padding:0px" class="d-flex justify-content-between">
 								<label>'.$value['Proceso'].'</label>
 						 		<div class="btn-group pull-right">
 						 			<span class="label-success btn-sm btn"><input type="radio" class="rbl_opciones" name="'.$value['Cmds'].'_'.$value['TP'].'" id="'.$value['Cmds'].'_1" value="1"></span>
