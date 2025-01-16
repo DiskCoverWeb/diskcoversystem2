@@ -44,18 +44,18 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 		}
 </style>
 <!--<div id="interfaz_facturacion" style="display:flex; flex-direction:column; min-height:inherit;">-->
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+	<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+	<div class="ps-3">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+				<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+				</li>
+			</ol>
+		</nav>
+	</div>          
+</div>
 <div id="interfaz_facturacion">
-	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
-		<div class="ps-3">
-			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
-					<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-					</li>
-				</ol>
-			</nav>
-		</div>          
-  	</div>
 	<div class="interfaz_botones">
 		<!--<div class="row row-no-gutters">-->
 			<?php
