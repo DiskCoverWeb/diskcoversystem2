@@ -1076,13 +1076,13 @@ $("#btnEgresos").click(function () {
     <tr>
         <td>${servicio}</td>
         <td>
-            <select class="form-control input-xs">
+            <select class="form-select form-select-sm">
                 <option value="" selected disabled>Seleccione</option>
                 <option value="si">Sí</option>
                 <option value="no">No</option>
             </select>
         </td>
-        <td><input type="text" class="form-control input-xs" onchange="verificarDecimales(this)"></td>            
+        <td><input type="text" class="form-select form-select-sm" onchange="verificarDecimales(this)"></td>            
     </tr>
 `;
         $("#tablaServicios tbody").append(fila);
@@ -1097,13 +1097,13 @@ $("#btnEgresos").click(function () {
     <tr>
         <td>${otrosGastos}</td>
         <td>
-            <select class="form-control input-xs">
+            <select class="form-select form-select-sm">
                 <option value="" selected disabled>Seleccione</option>
                 <option value="si">Sí</option>
                 <option value="no">No</option>
             </select>
         </td>
-        <td><input type="text" class="form-control input-xs" onchange="verificarDecimales(this)"></td>            
+        <td><input type="text" class="form-select form-select-sm" onchange="verificarDecimales(this)"></td>            
     </tr>
 `;
         $("#tablaOtrosGastos tbody").append(fila);
@@ -1508,6 +1508,7 @@ var eventosEliminados = [];
 var eventosEditados = [];
 var eventosCreados = [];
 function inicializarCalendario(events) {
+    $('#myModal_espera').modal('hide')
     $('#mycalendar').modal('show');
     var calendarEl = $("#calendar")[0];
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -1913,7 +1914,7 @@ function llenarCarousels(valor, valor2) {
                             carouselInner.empty();
                         }
                         datos.forEach(function (item, index) {
-                            var carouselItem = $('<div class="item">');
+                            var carouselItem = $('<div class="carousel-item">');
                             if (index === 0) {
                                 carouselItem.addClass('active');
                             }
@@ -1933,11 +1934,11 @@ function llenarCarousels(valor, valor2) {
                             var opt = '<option value="">Estado</option>';
                             datos.forEach(function (item) {
                                 option += '<div class="col-md-6 col-sm-6">' +
-                                    '<button type="button" class="btn btn-default btn-sm"><img src="../../img/png/' +
+                                    '<button type="button" class="btn btn-light border border-1 btn-sm"><img src="../../img/png/' +
                                     item.picture + '.png" onclick="itemSelect(\'' + item.picture +
                                     '\',\'' + item.text + '\', \'' + item.color + '\', \'' + item.id +
                                     '\')" style="width: 60px;height: 60px;"></button><br>' +
-                                    '<b>' + item.text + '</b>' +
+                                    '<b class="text-center">' + item.text + '</b>' +
                                     '</div>';
                                 opt += '<option value="' + item.id + '">' + item.text + '</option>';
                             });
@@ -1947,14 +1948,14 @@ function llenarCarousels(valor, valor2) {
                             var opt = '<option value="">Beneficiario</option>';
                             datos.forEach(function (item) {
                                 option += '<div class="col-md-6 col-sm-6">' +
-                                    '<button type="button" class="btn btn-default btn-sm" onclick="' +
+                                    '<button type="button" class="btn btn-light border border-1 btn-sm" onclick="' +
                                     (item.id === '93.04' ? "itemSelect('" + item.picture + "','" + item.text +
                                         "','" + item.color + "','" + item.id + "'); abrirModal('pAliado');" :
                                         "itemSelect('" + item.picture + "','" + item.text + "','" + item.color +
                                         "','" + item.id + "');") +
                                     '">' +
                                     '<img src="../../img/png/' + item.picture + '.png" style="width: 60px;height: 60px;"></button><br>' +
-                                    '<b>' + item.text + '</b>' +
+                                    '<b class="text-center">' + item.text + '</b>' +
                                     '</div>';
                                 opt += '<option value="' + item.id + '">' + item.text + '</option>';
                             });
@@ -1964,11 +1965,11 @@ function llenarCarousels(valor, valor2) {
                             var opt = '<option value="">Programa</option>';
                             datos.forEach(function (item) {
                                 option += '<div class="col-md-6 col-sm-6">' +
-                                    '<button type="button" class="btn btn-default btn-sm"><img src="../../img/png/' +
+                                    '<button type="button" class="btn btn-light border border-1 btn-sm"><img src="../../img/png/' +
                                     item.picture + '.png" onclick="itemSelect(\'' + item.picture +
                                     '\',\'' + item.text + '\', \'' + item.color + '\', \'' + item.id +
                                     '\')" style="width: 60px;height: 60px;"></button><br>' +
-                                    '<b>' + item.text + '</b>' +
+                                    '<b class="text-center">' + item.text + '</b>' +
                                     '</div>';
                                 opt += '<option value="' + item.id + '">' + item.text + '</option>';
                             });
@@ -2034,7 +2035,7 @@ function itemSelect(picture, text, color, id) {
     if (id.length == 3) {
         var imagen = "../../img/png/" + picture + ".png";
 
-        $("#carouselBtnImaDon .item.active img").attr("src", imagen);
+        $("#carouselBtnImaDon .carousel-item.active img").attr("src", imagen);
         $("#carouselBtnImaDon").carousel("pause");
         $("#modalsBtnDon").modal("hide");
         var newOption = new Option(text, id, true, true);
@@ -2043,7 +2044,7 @@ function itemSelect(picture, text, color, id) {
         var valor = id.substring(0, 2);
         var imagen = "../../img/png/" + picture + ".png";
 
-        $("#carouselBtnIma_" + valor + " .item.active img").attr("src", imagen);
+        $("#carouselBtnIma_" + valor + " .carousel-item.active img").attr("src", imagen);
         $("#carouselBtnIma_" + valor).carousel("pause");
         $("#modalsBtn" + valor).modal("hide");
 
@@ -2133,6 +2134,7 @@ $('#select_86').change(function () {
 $('#btnMostrarModal').click(function () {
     var valorSeleccionado = $('#select_93').val();
     if (valorSeleccionado !== null && valorSeleccionado !== undefined) {
+        $('#myModal_espera').modal('show');
         LlenarCalendario(valorSeleccionado);
     } else {
         Swal.fire({
@@ -2244,6 +2246,7 @@ function LlenarSelectRucCliente() {
     });
 
     $('#cliente').select2({
+        width: '84%',
         placeholder: 'Seleccione una opción',
         ajax: {
             url: '../controlador/inventario/registro_beneficiarioC.php?',
@@ -3022,11 +3025,11 @@ function actualizarEstilo(colorValor) {
     if (colorValor) {
         var hexColor = colorValor.substring(4);
         var darkerColor = darkenColor(hexColor, 20);
-        $('.card-body').css('background-color', '#' + hexColor);
-        $('.card-header, .modal-header').css('background-color', darkerColor);
+        $('.accordion-body').css('background-color', '#' + hexColor);
+        $('.accordion-header button, .modal-header, .table thead').css('background-color', darkerColor);
     } else {
-        $('.card-body').css('background-color', '#fffacd');
-        $('.card-header, .modal-header').css('background-color', '#f3e5ab');
+        $('.accordion-body').css('background-color', '#fffacd');
+        $('.accordion-header button, .modal-header, .table thead').css('background-color', '#f3e5ab');
     }
 }
 

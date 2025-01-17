@@ -57,7 +57,7 @@
                     <div class="accordion-body" style="background-color:#fffacd;">
                         
                         <div class="d-flex flex-wrap">
-                            <div id="carouselBtnIma_93" class="carousel slide" data-bs-ride="carousel">
+                            <div id="carouselBtnIma_93" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
                                 <div class="carousel-inner">
                                 </div>
                             </div>
@@ -69,11 +69,11 @@
             
                             <div class="flex-grow-1 me-2">
                                 <label for="select_93" style="display: block;"><b>Tipo de Beneficiario</b></label>
-                                <select class="form-control input-xs" name="select_93" id="select_93"
+                                <select class="form-control form-control-sm" name="select_93" id="select_93"
                                     style="width: 100%;"></select>
                             </div>
             
-                            <div id="carouselBtnImaDon" class="carousel slide" data-bs-ride="carousel">
+                            <div id="carouselBtnImaDon" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
                                 <div class="carousel-inner">
                                 </div>
                             </div>
@@ -85,13 +85,13 @@
 
                             <div class="flex-grow-1 me-2">
                                 <label for="select_CxC" style="display: block;"><b>Tipo de Donación</b></label>
-                                <select class="form-control input-xs" name="select_CxC" id="select_CxC"
+                                <select class="form-control form-control-sm" name="select_CxC" id="select_CxC"
                                     style="width: 100%;"></select>
                             </div>
             
                             <div class="campoSocial" class="flex-grow-1">
                                 <label for="ruc" style="display: block;"><b>CI/RUC</b></label>
-                                <select class="form-control input-xs" name="ruc" id="ruc" style="width: 100%;"></select>
+                                <select class="form-control form-control-sm" name="ruc" id="ruc" style="width: 100%;"></select>
                             </div>
             
                             <div class="campoSocial justify-content-center align-items-center">
@@ -103,25 +103,24 @@
                                 <div class="col-sm-6" style="width:100%">
                                     <label for="cliente" style="display: block;"><b>Nombre del
                                         Beneficiario/Usuario</b></label>
-                                    <div class="input-group">
-                                        <select class="form-control input-xs" name="cliente" id="cliente"
+                                    <div class="input-group input-group-sm">
+                                        <select class="form-control form-control-sm" name="cliente" id="cliente"
                                             style="width: 100%;"></select>
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-success btn-xs btn-flat"
-                                                id="btn_nuevo_cli" onclick="addCliente()" title="Nuevo cliente">
-                                                <span class="fa fa-user-plus"></span>
-                                            </button>
-                                        </span>
+                                        <button type="button" class="btn btn-success btn-sm"
+                                            id="btn_nuevo_cli" onclick="addCliente()" title="Nuevo cliente" style="font-size: 8pt;">
+                                            <span class="fa fa-user-plus" style="font-size: 8pt;"></span>
+                                        </button>
+                                        
                                     </div>
                                 </div>
                             </div>
             
-                            <div class="campoFamilia w-100">
+                            <div class="campoFamilia flex-grow-1">
                                 <label for="fechaIngreso" style="display: block;"><b>Fecha de ingreso</b></label>
-                                <input type="date" id="fechaIngreso">
+                                <input type="date" id="fechaIngreso" class="form-control form-control-sm">
                             </div>
 
-                            <div id="carouselBtnIma_87" class="carousel slide" data-bs-ride="carousel">
+                            <div id="carouselBtnIma_87" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
                                 <div class="carousel-inner">
                                 </div>
                             </div>
@@ -134,82 +133,94 @@
             
                             <div class="flex-grow-1">
                                 <label for="select_87" style="display: initial;"><b>Estado</b></label>
-                                <select class="form-control input-xs" name="select_87" id="select_87"
+                                <select class="form-select form-select-sm" name="select_87" id="select_87"
                                     style="width: 100%;"></select>
                             </div>
                         </div>
                         <div class="row campoSocial" style="margin: 10px; display: flex; flex-wrap: wrap;">
                             <div style="flex: 1; margin-right: 10px; ">
                                 <div class="col" style="width:100%">
-                                    <label for="nombreRepre" style="display: block;">Nombre Representante
-                                        Legal</label>
-                                    <input class="form-control input-xs" type="text" name="nombreRepre" id="nombreRepre"
+                                    <label for="nombreRepre" style="display: block;"><b>Nombre Representante
+                                        Legal</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="nombreRepre" id="nombreRepre"
                                         placeholder="Nombre Representante">
                                 </div>
                             </div>
                             <div style="flex: 1; margin-right: 10px; ">
-                                <label for="ciRepre" style="display: block;">CI Representante Legal</label>
-                                <input class="form-control input-xs" type="text" name="ciRepre" id="ciRepre"
+                                <label for="ciRepre" style="display: block;"><b>CI Representante Legal</b></label>
+                                <input class="form-control form-control-sm" type="text" name="ciRepre" id="ciRepre"
                                     placeholder="CI Representante">
                             </div>
                             <div style="flex: 1;">
-                                <label for="telfRepre" style="display: block;">Teléfono Representante Legal</label>
-                                <input class="form-control input-xs" type="text" name="telfRepre" id="telfRepre"
+                                <label for="telfRepre" style="display: block;"><b>Teléfono Representante Legal</b></label>
+                                <input class="form-control form-control-sm" type="text" name="telfRepre" id="telfRepre"
                                     placeholder="Representante legal">
                             </div>
                         </div>
             
-                        <div class="row campoSocial" style="margin: 10px; display: flex; flex-wrap: wrap;">
-                            <div style="flex: 1; margin-right: 10px; ">
-                                <label for="contacto" style="display: block;">Contacto/Encargado</label>
-                                <input class="form-control input-xs" type="text" name="contacto" id="contacto"
+                        <div class="campoSocial flex-wrap" style="display:flex;">
+                            <div class="flex-grow-1 me-1">
+                                <label for="contacto" style="display: block;"><b>Contacto/Encargado</b></label>
+                                <input class="form-control form-control-sm" type="text" name="contacto" id="contacto"
                                     placeholder="Contacto">
                             </div>
-                            <div style="flex: 1; margin-right: 10px; ">
-                                <label for="cargo" style="display: block;">Cargo</label>
-                                <input class="form-control input-xs" type="text" name="cargo" id="cargo"
+                            <div class="flex-grow-1 me-1">
+                                <label for="cargo" style="display: block;"><b>Cargo</b></label>
+                                <input class="form-control form-control-sm" type="text" name="cargo" id="cargo"
                                     placeholder="Profesión">
                             </div>
-                            <div style="margin-right: 10px;  display: flex; ">
+                            <div style="max-width:60px">
                                 <img src="../../img/png/calendario2.png" width="60" height="60">
                             </div>
-                            <div style="flex: 1; margin-right: 10px; ">
-                                <label for="diaEntrega" style="display: block;">Día Entrega a Usuarios
+                            <div class="flex-grow-1 me-1">
+                                <label for="diaEntrega" style="display: block;"><b>Día Entrega a Usuarios</b>
                                     Finales</label>
-                                <select class="form-control input-xs" name="diaEntrega" id="diaEntrega"></select>
+                                <select class="form-select form-select-sm" name="diaEntrega" id="diaEntrega"></select>
                             </div>
-                            <div style="margin-right: 10px;  display: flex; ">
+                            <div style="max-width:60px">
                                 <img src="../../img/png/reloj.png" width="55" height="55">
                             </div>
-                            <div style="flex: 1; ">
-                                <label for="horaEntrega" style="display: block;">Hora Entrega a Usuarios
-                                    Finales</label>
-                                <input type="time" name="horaEntrega" id="horaEntrega" class="form-control input-xs">
+                            <div class="flex-grow-1 me-1">
+                                <label for="horaEntrega" style="display: block;"><b>Hora Entrega a Usuarios
+                                    Finales</b></label>
+                                <input type="time" name="horaEntrega" id="horaEntrega" class="form-control form-control-sm">
                             </div>
                         </div>
+                        
             
-                        <div class="row" style="margin: 10px; display: flex; justify-content: center;">
+                        <div class="row mt-2 d-flex justify-content-center">
                             <div class="col-sm-3 campoFamilia" style="margin-right:10px;">
-                                <div class="row" style="display: flex; flex: 1; align-items: center;">
+                                <!-- <div class="row" style="display: flex; flex: 1; align-items: center;">
                                     <div style="flex: 0 0 auto; margin-right: 10px;" id="btnPrograma">
                                         <img src="../../img/png/programa.png" width="60" height="60"
                                             title="TIPO DE PROGRAMA" class="icon">
                                     </div>
                                     <div style="flex: 1; margin-right: 10px; margin-left: 10px;">
                                         <label for="select_85" style="display: block;">Programa</label>
-                                        <select class="form-control input-xs" name="select_85" id="select_85"
+                                        <select class="form-select form-select-sm" name="select_85" id="select_85"
                                             style="width: 100%;">
-                                            <!--<option value="" selected disabled></option>
-                                            <option value="familias">Familias</option>
-                                            <option value="setentaYPiquito">70 y piquito</option>-->
+                                            
+                                        </select>
+                                    </div>
+                                </div> -->
+                                <div class="row d-flex flex-wrap align-items-center">
+                                    <div class="col-3" id="btnPrograma" style="cursor:pointer">
+                                        <img src="../../img/png/programa.png" width="60" height="60"
+                                            title="TIPO DE PROGRAMA" class="icon">
+                                    </div>
+                                    <div class="col-9">
+                                        <label for="select_85" style="display: block;"><b>Programa</b></label>
+                                        <select class="form-select form-select-sm" name="select_85" id="select_85"
+                                            style="width: 100%;">
+                                            
                                         </select>
                                     </div>
                                 </div>
             
                                 <div class="row">
                                     <div style="flex: 1; margin-right: 10px; margin-left: 10px;">
-                                        <label for="grupo" style="display: block;">Grupo</label>
-                                        <select class="form-control input-xs" name="grupo" id="grupo"
+                                        <label for="grupo" style="display: block;"><b>Grupo</b></label>
+                                        <select class="form-select form-select-sm" name="grupo" id="grupo"
                                             style="width: 100%;"></select>
                                     </div>
                                 </div>
@@ -217,31 +228,31 @@
             
                             <div class="col-sm-3 campoFamilia" style="margin-right:10px;">
                                 <div class="row">
-                                    <label for="nombres" style="display: block;">Nombres</label>
-                                    <input class="form-control input-xs" type="text" name="nombres" id="nombres"
+                                    <label for="nombres" style="display: block;"><b>Nombres</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="nombres" id="nombres"
                                         placeholder="Nombres">
                                 </div>
                                 <div class="row">
-                                    <label for="apellidos" style="display: block;">Apellidos</label>
-                                    <input class="form-control input-xs" type="text" name="apellidos" id="apellidos"
+                                    <label for="apellidos" style="display: block;"><b>Apellidos</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="apellidos" id="apellidos"
                                         placeholder="Apellidos">
                                 </div>
             
                                 <div class="row">
-                                    <label for="cedula" style="display: block;">Cédula de identidad</label>
-                                    <input class="form-control input-xs" type="text" name="cedula" id="cedula"
+                                    <label for="cedula" style="display: block;"><b>Cédula de identidad</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="cedula" id="cedula"
                                         placeholder="Cédula de identidad">
                                 </div>
             
                                 <div class="row">
-                                    <label for="nivelEscolar" style="display: block;">Nivel escolar</label>
-                                    <input class="form-control input-xs" type="text" name="nivelEscolar"
+                                    <label for="nivelEscolar" style="display: block;"><b>Nivel escolar</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="nivelEscolar"
                                         id="nivelEscolar" placeholder="Cédula de identidad">
                                 </div>
             
                                 <div class="row">
-                                    <label for="estadoCivil" style="display: block;">Estado civil</label>
-                                    <select class="form-control input-xs" name="estadoCivil" id="estadoCivil"
+                                    <label for="estadoCivil" style="display: block;"><b>Estado civil</b></label>
+                                    <select class="form-select form-select-sm" name="estadoCivil" id="estadoCivil"
                                         style="width: 100%;">
                                         <option value='' disabled selected>Seleccione</option>
                                     </select>
@@ -250,33 +261,33 @@
             
                             <div class="col-sm-3 campoFamilia" style="margin-right:10px;">
                                 <div class="row">
-                                    <label for="edad" style="display: block;">Edad</label>
-                                    <input class="form-control input-xs" type="number" name="edad" id="edad"
+                                    <label for="edad" style="display: block;"><b>Edad</b></label>
+                                    <input class="form-control form-control-sm" type="number" name="edad" id="edad"
                                         placeholder="Edad">
                                 </div>
             
                                 <div class="row">
-                                    <label for="ocupacion" style="display: block;">Ocupación</label>
-                                    <input class="form-control input-xs" type="text" name="ocupacion" id="ocupacion"
+                                    <label for="ocupacion" style="display: block;"><b>Ocupación</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="ocupacion" id="ocupacion"
                                         placeholder="Ocupación">
                                 </div>
             
                                 <div class="row">
-                                    <label for="telefonoFam" style="display: block;">Teléfono</label>
-                                    <input class="form-control input-xs" type="text" name="telefonoFam" id="telefonoFam"
+                                    <label for="telefonoFam" style="display: block;"><b>Teléfono</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="telefonoFam" id="telefonoFam"
                                         placeholder="Teléfono">
                                 </div>
             
                                 <div class="row">
-                                    <label for="pregunta" style="display: block;">¿Cómo se enteró del BAQ?</label>
-                                    <input class="form-control input-xs" type="text" name="pregunta" id="pregunta"
+                                    <label for="pregunta" style="display: block;"><b>¿Cómo se enteró del BAQ</b>?</label>
+                                    <input class="form-control form-control-sm" type="text" name="pregunta" id="pregunta"
                                         placeholder="¿Cómo se enteró del BAQ?">
                                 </div>
                             </div>
             
                             <div class="col-sm-6 col-md-2 p-1 d-flex justify-content-center align-items-center text-center flex-column campoVolNo"
                                 style="margin-right:10px; text-align: center; padding: 10px;">
-                                <div class="row" id="btnMostrarDir">
+                                <div class="row" id="btnMostrarDir" style="cursor:pointer">
                                     <img src="../../img/png/map.png" width="60" height="60" title="INGRESAR DIRECCIÓN"
                                         class="icon">
                                 </div>
@@ -285,40 +296,40 @@
                                         <label><b>Ingresar Dirección</b></label>
                                     </div>
                                 </div>
-            
-                                <div class="row campoFamilia" id="btnInfoUser">
+                                <br>
+                                <div class="row campoFamilia" id="btnInfoUser" style="cursor:pointer">
                                     <img src="../../img/png/infoUser.png" width="60" height="60"
                                         title="INFORMACIÓN DEL USUARIO" class="icon">
                                 </div>
                                 <div class="row campoFamilia">
                                     <div class="form-group">
-                                        <label>Información del usuario</label>
+                                        <label><b>Información del usuario</b></label>
                                     </div>
                                 </div>
                             </div>
             
                             <div class="col-sm-3 campoSocial" style="margin-right:10px;">
                                 <div class="row">
-                                    <label for="email" style="display: block;">Email</label>
-                                    <input class="form-control input-xs" type="text" name="email" id="email"
+                                    <label for="email" style="display: block;"><b>Email</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="email" id="email"
                                         placeholder="Email">
                                 </div>
                                 <div class="row">
-                                    <label for="email2" style="display: block;">Email 2</label>
-                                    <input class="form-control input-xs" type="text" name="email2" id="email2"
+                                    <label for="email2" style="display: block;"><b>Email 2</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="email2" id="email2"
                                         placeholder="Email2">
                                 </div>
                             </div>
             
                             <div class="col-sm-3 campoSocial" style="margin-right:10px;">
                                 <div class="row">
-                                    <label for="telefono" style="display: block;">Teléfono 1</label>
-                                    <input class="form-control input-xs" type="text" name="telefono" id="telefono"
+                                    <label for="telefono" style="display: block;"><b>Teléfono 1</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="telefono" id="telefono"
                                         placeholder="Teléfono ">
                                 </div>
                                 <div class="row">
-                                    <label for="telefono2" style="display: block;">Teléfono 2</label>
-                                    <input class="form-control input-xs" type="text" name="telefono2" id="telefono2"
+                                    <label for="telefono2" style="display: block;"><b>Teléfono 2</b></label>
+                                    <input class="form-control form-control-sm" type="text" name="telefono2" id="telefono2"
                                         placeholder="Teléfono 2">
                                 </div>
                             </div>
@@ -527,7 +538,7 @@
         </div>
         
     </div>
-
+    <br><br>
     <div class="modal" id="mycalendar">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="background-color: white; ">
@@ -558,7 +569,7 @@
                     <div class="form-group row">
                         <label for="Provincia" class="col-sm-3 col-form-label">Provincia</label>
                         <div class="col-sm-9">
-                            <select class="form-control input-sm" id="select_prov" onchange="ciudad(this.value)">
+                            <select class="form-select" id="select_prov" onchange="ciudad(this.value)">
                                 <option value="">Seleccione provincia</option>
                             </select>
                         </div>
@@ -566,7 +577,7 @@
                     <div class="form-group row">
                         <label for="Ciudad" class="col-sm-3 col-form-label">Ciudad</label>
                         <div class="col-sm-9">
-                            <select class="form-control input-sm" id="select_ciud">
+                            <select class="form-select" id="select_ciud">
                                 <option value="">Seleccione ciudad</option>
                             </select>
                         </div>
@@ -714,14 +725,14 @@
                     <div class="row" style="margin: 10px; display: flex;">
                         <div id="" style="display: flex; flex-wrap: wrap; overflow-y: auto; max-height: 200px;">
                             <div class="col-md-6 col-sm-6">
-                                <button type="button" class="btn btn-default btn-sm">
+                                <button type="button" class="btn btn-light border border-1 btn-sm">
                                     <img src="../../img/png/industrial.png" style="width: 90%; height: 90%;"
                                         alt="Imagen">
                                 </button>
                                 <b>Industrial</b>
                             </div>
                             <div class="col-md-6 col-sm-6">
-                                <button type="button" class="btn btn-default btn-sm">
+                                <button type="button" class="btn btn-light border border-1 btn-sm">
                                     <img src="../../img/png/animales.png" style="width: 90%; height: 90%;" alt="Imagen">
                                 </button>
                                 <b>Artesanal</b>
@@ -753,8 +764,8 @@
     <div id="modalsBtn93" class="modal fade" role="dialog">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Beneficiario</h4>
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">Beneficiario</h4>
                     <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -794,7 +805,7 @@
                 </div>
                 <div class="modal-body" style="overflow-y: auto; max-height: 300px;">
                     <div style="margin: 10px; overflow-x: auto;">
-                        <table class="table campos-d" id="tablaIntegrantes">
+                        <table class="table table-sm table-hover campos-d" id="tablaIntegrantes">
                             <thead>
                                 <tr>
                                     <th>Nombres y Apellidos</th>
@@ -812,17 +823,17 @@
                             </thead>
                             <tbody>
                                 <tr id="filaAgregar">
-                                    <td><input type="text" class="form-control imput-xs" id="nuevoNombre"></td>
+                                    <td><input type="text" class="form-control" id="nuevoNombre"></td>
                                     <td>
-                                        <select class="form-control imput-xs" id="nuevoGenero">
+                                        <select class="form-select" id="nuevoGenero">
                                             <option value="" selected disabled>Seleccione</option>
                                             <option value="masculino">Masculino</option>
                                             <option value="femenino">Femenino</option>
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control imput-xs" id="nuevoParentesco"></td>
+                                    <td><input type="text" class="form-control" id="nuevoParentesco"></td>
                                     <td>
-                                        <select class="form-control imput-xs" id="nuevoRangoEdad">
+                                        <select class="form-select" id="nuevoRangoEdad">
                                             <option value="" selected disabled>Seleccione</option>
                                             <option value="0-5">0-5 años</option>
                                             <option value="6-12">6-12 años</option>
@@ -831,9 +842,9 @@
                                             <option value="65+">65 años o más</option>
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control imput-xs" id="nuevaOcupacion"></td>
+                                    <td><input type="text" class="form-control" id="nuevaOcupacion"></td>
                                     <td>
-                                        <select class="form-control imput-xs" id="nuevoEstadoCivil">
+                                        <select class="form-select" id="nuevoEstadoCivil">
                                             <option value="" selected disabled>Seleccione</option>
                                             <option value="soltero">Soltero/a</option>
                                             <option value="casado">Casado/a</option>
@@ -842,7 +853,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control imput-xs" id="nuevoNivelEscolaridad" onchange="validarNinguno(this, 'nuevoNombreInstitucion', 'nuevoTipoInstitucion')">
+                                        <select class="form-control" id="nuevoNivelEscolaridad" onchange="validarNinguno(this, 'nuevoNombreInstitucion', 'nuevoTipoInstitucion')">
                                             <option value="" selected disabled>Seleccione</option>
                                             <option value="ninguno">Ninguna</option>
                                             <option value="primaria">Primaria</option>
@@ -853,10 +864,10 @@
                                             <option value="posgrado">Posgrado</option>
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control imput-xs" id="nuevoNombreInstitucion" disabled>
+                                    <td><input type="text" class="form-control" id="nuevoNombreInstitucion" disabled>
                                     </td>
                                     <td>
-                                        <select class="form-control imput-xs" id="nuevoTipoInstitucion" disabled>
+                                        <select class="form-select" id="nuevoTipoInstitucion" disabled>
                                             <option value="" selected disabled>Seleccione</option>
                                             <option value="fiscal">Fiscal</option>
                                             <option value="fiscomisional">Fiscomisional</option>
@@ -864,7 +875,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control imput-xs" id="nuevaVulnerabilidad">
+                                        <select class="form-select" id="nuevaVulnerabilidad">
                                             <option value="" selected disabled>Seleccione</option>
                                             <option value="discapacidad">Discapacidad</option>
                                             <option value="enfermedad">Enfermedad</option>
@@ -958,19 +969,19 @@
                 </div>
                 <div class="modal-body">
                     <div class="row" style="margin: 10px;">
-                        <div id="modal_" style="display: flex; flex-wrap: wrap; overflow-y: auto; max-height: 200px;">
-                            <div class="col-md-6 col-sm-6 d-flex justify-content-center">
-                                <button id="btnIngresos" type="button" class="btn btn-default btn-sm">
+                        <div id="modal_" style="display: flex; flex-wrap: wrap; overflow-y: auto; max-height: 200px;" class="justify-content-around">
+                            <div class="d-flex flex-column justify-content-center">
+                                <button id="btnIngresos" type="button" class="btn btn-light border border-1 btn-sm">
                                     <img src="../../img/png/ingresos.png" style="width: 60px; height: 60px">
                                 </button>
-                                <br>
+                                
                                 <b>Ingresos</b>
                             </div>
-                            <div class="col-md-6 col-sm-6 d-flex justify-content-center">
-                                <button id="btnEgresos" type="button" class="btn btn-default btn-sm">
+                            <div class="d-flex flex-column justify-content-center">
+                                <button id="btnEgresos" type="button" class="btn btn-light border border-1 btn-sm">
                                     <img src="../../img/png/egresos.png" style="width: 60px; height: 60px">
                                 </button>
-                                <br>
+                                
                                 <b>Egresos</b>
                             </div>
                         </div>
@@ -1060,7 +1071,7 @@
                     </div>
                     <div class="row" style=" margin:10px">
                         <div class="col-6">
-                            <label for="totalIngresos">Total ingresos:</label>
+                            <label for="totalIngresos"><b>Total ingresos:</b></label>
                             <input class="form-control imput-xs" id="totalIngresos" value="0.00" readonly></input>
                         </div>
                     </div>
@@ -1082,7 +1093,7 @@
                 </div>
                 <div class="modal-body" style="overflow-y: auto; max-height: 300px;">
                     <div style="margin: 10px; overflow-x: auto;">
-                        <table class="table" id="tablaSituacionE">
+                        <table class="table table-sm table-hover" id="tablaSituacionE">
                             <thead>
                                 <tr>
                                     <th>Tipo de vivienda</th>
@@ -1092,7 +1103,7 @@
                             </thead>
                             <tbody>
                                 <td>
-                                    <select class="form-control imput-xs" id="tipoVivienda">
+                                    <select class="form-select form-select-sm" id="tipoVivienda">
                                         <option value="" selected disabled>Seleccione</option>
                                         <option value="casa">Casa</option>
                                         <option value="departamento">Departamento</option>
@@ -1101,7 +1112,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control imput-xs" id="laViviendaEs">
+                                    <select class="form-select form-select-sm" id="laViviendaEs">
                                         <option value="" disabled selected>Seleccione</option>
                                         <option value="propia">Propia</option>
                                         <option value="prestada">Prestada</option>
@@ -1109,10 +1120,10 @@
                                         <option value="compartida">Compartida</option>
                                     </select>
                                 </td>
-                                <td><input type="text" class="form-control imput-xs" id="valor" onchange="verificarDecimales(this)"></td>
+                                <td><input type="text" class="form-control form-control-sm" id="valor" onchange="verificarDecimales(this)"></td>
                             </tbody>
                         </table>
-                        <table class="table" id="tablaServicios">
+                        <table class="table table-sm table-hover" id="tablaServicios">
                             <thead>
                                 <tr>
                                     <th>¿Qué servicios posee?</th>
@@ -1123,7 +1134,7 @@
                             <tbody>
                             </tbody>
                         </table>
-                        <table class="table" id="tablaOtrosGastos">
+                        <table class="table table-sm table-hover" id="tablaOtrosGastos">
                             <thead>
                                 <tr>
                                     <th>Otros Gastos</th>
@@ -1137,7 +1148,7 @@
                     </div>
                     <div class="row" style=" margin:10px">
                         <div class="col-6">
-                            <label for="totalEgresos">Total egresos:</label>
+                            <label for="totalEgresos"><b>Total egresos:</b></label>
                             <input class="form-control imput-xs" id="totalEgresos" readonly></input>
                         </div>
                     </div>
@@ -1259,7 +1270,7 @@
     </div>
 
     <div id="modalEvaluacionFam" class="modal">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Evaluación</h4>
@@ -1267,7 +1278,7 @@
                 </div>
                 <div class="modal-body" style="overflow-y: auto; max-height: 300px; margin:5px">
                     <div style="overflow-x: auto;">
-                        <table class="table table-xs" id="tablaEvaluacion">
+                        <table class="table table-sm table-hover" id="tablaEvaluacion">
                             <thead>
                                 <tr>
                                     <th>Concepto</th>
@@ -1277,20 +1288,20 @@
                             <tbody>
                                 <tr>
                                     <td>Ingresos</td>
-                                    <td><input type="number" class="form-control imput-xs" id="ingresos" readonly></td>
+                                    <td><input type="number" class="form-control" id="ingresos" readonly></td>
                                 </tr>
                                 <tr>
                                     <td>Egresos</td>
-                                    <td><input type="number" class="form-control imput-xs" id="egresos" readonly></td>
+                                    <td><input type="number" class="form-control" id="egresos" readonly></td>
                                 </tr>
                                 <tr>
                                     <td>Disponible</td>
-                                    <td><input type="number" class="form-control imput-xs" id="disponible" readonly>
+                                    <td><input type="number" class="form-control" id="disponible" readonly>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <table class="table" id="tabla evaluacion completa">
+                        <table class="table table-sm table-hover" id="tabla evaluacion completa">
                             <thead>
                                 <tr>
                                     <th>Título</th>
@@ -1364,11 +1375,11 @@
                         </table>
                         <div class="row">
                             <div class="col-6 col-sm-3">
-                                <label for="totalAplica">TOTAL:</label>
+                                <label for="totalAplica"><b>TOTAL:</b></label>
                                 <input class="form-control imput-xs" id="totalAplica" readonly></input>
                             </div>
                             <div class="col-6 col-sm-8">
-                                <label for="totalAplicaVC">VALOR CONTEXTUAL:</label>
+                                <label for="totalAplicaVC"><b>VALOR CONTEXTUAL:</b></label>
                                 <input class="form-control imput-xs" id="totalAplicaVC" readonly></input>
                             </div>
                         </div>
@@ -1383,7 +1394,7 @@
     </div>
 
     <div id="modalInfoUserFam" class="modal">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Información del Usuario</h4>
@@ -1394,24 +1405,24 @@
                         <div class="row form-group form-group-xs">
                             <div class="col-sm-6">
                                 <div>
-                                    <label for="trabajaSelect">¿Trabaja?</label>
+                                    <label for="trabajaSelect"><b>¿Trabaja?</b></label>
                                     <div class="d-flex">
-                                        <select class="form-control input-xs" id="trabajaSelect">
+                                        <select class="form-select form-select-sm" id="trabajaSelect">
                                             <option value="0" selected>Sí</option>
                                             <option value="1">No</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="trabajaAct" style="display: none;">
-                                    <label for="comentarioAct">Actividad:</label>
-                                    <textarea class="form-control input-xs" id="comentarioAct" rows="2"
+                                    <label for="comentarioAct"><b>Actividad:</b></label>
+                                    <textarea class="form-control form-control-sm" id="comentarioAct" rows="2"
                                         style="resize: none"></textarea>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="trabajaAct">
-                                    <label for="modalidadSelect">Modalidad</label>
-                                    <select class="form-control input-xs" id="modalidadSelect">
+                                    <label for="modalidadSelect"><b>Modalidad</b></label>
+                                    <select class="form-select form-select-sm" id="modalidadSelect">
                                         <option value="" selected disabled>Seleccione una opción</option>
                                         <option value="0">Dependiente</option>
                                         <option value="1">Independiente</option>
@@ -1422,24 +1433,24 @@
                         <div class="row form-group form-group-xs">
                             <div class="col-sm-6">
                                 <div>
-                                    <label for="conyugeSelect">¿Cónyuge trabaja?</label>
+                                    <label for="conyugeSelect"><b>¿Cónyuge trabaja?</b></label>
                                     <div class="d-flex">
-                                        <select class="form-control input-xs" id="conyugeSelect">
+                                        <select class="form-select form-select-sm" id="conyugeSelect">
                                             <option value="0" selected>Sí</option>
                                             <option value="1">No</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="conyugeAct" style="display: none;">
-                                    <label for="comentarioConyugeAct">Actividad:</label>
-                                    <textarea class="form-control input-xs" id="comentarioConyugeAct" rows="2"
+                                    <label for="comentarioConyugeAct"><b>Actividad:</b></label>
+                                    <textarea class="form-control form-control-sm" id="comentarioConyugeAct" rows="2"
                                         style="resize: none"></textarea>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="conyugeAct">
-                                    <label for="modalidadConyugeSelect">Modalidad</label>
-                                    <select class="form-control input-xs" id="modalidadConyugeSelect">
+                                    <label for="modalidadConyugeSelect"><b>Modalidad</b></label>
+                                    <select class="form-select form-select-sm" id="modalidadConyugeSelect">
                                         <option value="" disabled selected>Seleccione una opción</option>
                                         <option value="0">Dependiente</option>
                                         <option value="1">Independiente</option>
@@ -1448,32 +1459,29 @@
                             </div>
                         </div>
                         <div class="row form-group form-group-xs">
-                            <div>
-                                <div class="col-sm-6">
-                                    <label for="numHijosI">Número de hijos</label>
-                                    <input class="form-control input-xs" type="number" id="numHijosI" name="numHijosI"
-                                        min="0">
+                            <div class="col-sm-6">
+                                <label for="numHijosI"><b>Número de hijos</b></label>
+                                <input class="form-control form-control-sm" type="number" id="numHijosI" name="numHijosI"
+                                    min="0">
+                            </div>
+                            <div class="col-sm-6 hijosAct" style="display: none;">
+                                <div>
+                                    <label for="numHijosMayores"><b>Mayores de edad</b></label>
+                                    <input class="form-control form-control-sm" type="number" id="numHijosMayores"
+                                        name="numHijosMayores" min="0" value="">
                                 </div>
-                                <div class="col-sm-6 hijosAct" style="display: none;">
-                                    <div>
-                                        <label for="numHijosMayores">Mayores de edad</label>
-                                        <input class="form-control input-xs" type="number" id="numHijosMayores"
-                                            name="numHijosMayores" min="0" value="">
-                                    </div>
-                                    <div>
-                                        <label for="numHijosMenores">Menores de edad</label>
-                                        <input class="form-control input-xs" type="number" id="numHijosMenores"
-                                            name="numHijosMenores" min="0" value="">
-                                    </div>
+                                <div>
+                                    <label for="numHijosMenores"><b>Menores de edad</b></label>
+                                    <input class="form-control form-control-sm" type="number" id="numHijosMenores"
+                                        name="numHijosMenores" min="0" value="">
                                 </div>
                             </div>
-                            <div>
-                                <div class="col-sm-6">
-                                    <label for="numPersonas">Número de personas que viven en la casa</label>
-                                    <input class="form-control input-xs" type="number" id="numPersonas"
-                                        name="numPersonas" min="0">
-                                </div>
+                            <div class="col-sm-6">
+                                <label for="numPersonas"><b>Número de personas que viven en la casa</b></label>
+                                <input class="form-control form-control-sm" type="number" id="numPersonas"
+                                    name="numPersonas" min="0">
                             </div>
+                            
                         </div>
                     </div>
                 </div>
