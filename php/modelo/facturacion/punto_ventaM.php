@@ -3,6 +3,7 @@
 require_once(dirname(__DIR__, 2) . "/db/db1.php");
 require_once(dirname(__DIR__, 2) . "/funciones/funciones.php");
 require_once(dirname(__DIR__, 3) . "/lib/fpdf/reporte_de.php");
+require_once(dirname(__DIR__, 3) . "/lib/TCPDF/Reportes/reportes_all.php");
 require_once(dirname(__DIR__, 3) . "/lib/phpmailer/enviar_emails.php");
 
 class punto_ventaM
@@ -10,6 +11,7 @@ class punto_ventaM
   private $db;
   private $email;
   private $pdf;
+  private $reportes;
 
   public function __construct()
   {
@@ -17,6 +19,7 @@ class punto_ventaM
     $this->db = new db();
     $this->email = new enviar_emails();
     $this->pdf = new cabecera_pdf();
+    $this->reportes = new reportes_all();
   }
 
   function Listar_Clientes_PV($query)
@@ -586,7 +589,7 @@ class punto_ventaM
       $datos_fac[0]['Tipo_Pago'] = $forma_pago[0]['CTipoPago'];
     }
 
-    imprimirDocEle_fac($datos_fac, $detalle_fac, $datos_cli_edu, $nombre, null, 'factura', null, null, $imp = $descargar, $detalle_abonos, $sucursal);
+    $this->reportes->imprimirDocEle_fac($datos_fac, $detalle_fac, $datos_cli_edu, $nombre, null, 'factura', null, null, $imp = $descargar, $detalle_abonos, $sucursal);
     if ($to_correo != '') {
       $titulo_correo = 'comprobantes electronicos';
       $cuerpo_correo = 'comprobantes electronico';

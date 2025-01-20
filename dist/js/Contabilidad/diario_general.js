@@ -64,8 +64,13 @@ function sucursal_exis()
 
 }
 
-
 function cargar_libro_general()
+{
+  cargar_libro_general_tbl();
+  libro_submodulo();
+}
+
+function cargar_libro_general_tbl()
 { 
   var parametros= {
     'OpcT':$("#OpcT").is(':checked'),
@@ -92,6 +97,9 @@ function cargar_libro_general()
     }
 
   tbl_diarioGeneral = $('#tbl_DiarioGeneral').DataTable({
+    lengthChange: false, // Desactiva el menú de selección de registros por página
+    paging: true,        // Mantiene la paginación habilitada
+    pageLength: 10,
     language:{
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
     },
@@ -103,7 +111,6 @@ function cargar_libro_general()
       },
       dataSrc: function(response){
         libro_general_saldos(); 
-        libro_submodulo();
         response.data = ProcesarDatos(response.data);
         return response.data;             
       },
@@ -111,9 +118,9 @@ function cargar_libro_general()
         console.log("Error en la solicutud: ", status, error);
       }
     },
-    scrollY: '300px',
-    scrollCollapse: true,
-    scrollX: true, 
+    // scrollY: '300px',
+    // scrollCollapse: true,
+    // scrollX: true, 
     columns: [
       { data: 'Fecha',
         render: function(data, type, item) {
@@ -174,6 +181,9 @@ function libro_submodulo()
   }
 
   tbl_submodulos = $('#tbl_Submodulos').DataTable({
+    lengthChange: false, // Desactiva el menú de selección de registros por página
+    paging: true,        // Mantiene la paginación habilitada
+    pageLength: 10,
     language:{
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
     },
@@ -191,11 +201,16 @@ function libro_submodulo()
         console.log("Error en la solicutud: ", status, error);
       }
     },
-    scrollY: '300px',
-    scrollCollapse: true,
-    scrollX: true,
+    // scrollY: '300px',
+    // scrollCollapse: true,
+    // scrollX: true,
     columns: [
-      { data: 'Fecha'}, 
+      { data: 'Fecha',
+        render: function(data, type, item) {
+          const fecha = data?.date;
+          return fecha ? new Date(fecha).toLocaleDateString() : '';
+        }
+      }, 
       { data: 'TP'},
       { data: 'Numero'},
       { data: 'Cliente'},
@@ -336,7 +351,7 @@ $(document).ready(function()
   consultarDatosAgenciaUsuario();
   cargar_libro_general();
   sucursal_exis();
-  libro_submodulo();
+  // libro_submodulo();
   libro_general_saldos();
 
   $('#txt_CtaI').keyup(function(e){ 

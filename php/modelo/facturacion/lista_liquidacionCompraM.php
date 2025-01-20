@@ -1,6 +1,7 @@
 <?php
 include(dirname(__DIR__,2).'/funciones/funciones.php');
 include(dirname(__DIR__,3).'/lib/fpdf/reporte_de.php');
+require_once(dirname(__DIR__, 3) . "/lib/TCPDF/Reportes/reportes_all.php");
 @session_start(); 
 /**
  * 
@@ -9,10 +10,12 @@ class lista_liquidacionCompraM
 {
 	private $conn;	
 	private $db;
+  	private $reportes;
 	function __construct()
 	{
 		$this->conn = cone_ajax();
 		$this->db = new db();
+    	$this->reportes = new reportes_all();
 	}
  
    function facturas_emitidas_excel($codigo,$reporte_Excel=false,$periodo=false)
@@ -168,15 +171,16 @@ class lista_liquidacionCompraM
 	{
 		$datos_fac['Tipo_contribuyente'] = $tipo_con;
 	}
+	$abonos = array();
 
     $datos_cli_edu=$this->cliente_matri($ci);
 	   if($datos_cli_edu != '' && !empty($datos_cli_edu))
 	   {
-	   		imprimirDocEle_fac($datos_fac,$detalle_fac,$datos_cli_edu,'matr',$id,null,'factura',null,null,false,false,$sucursal);
+	   		$this->reportes->imprimirDocEle_fac($datos_fac,$detalle_fac,$datos_cli_edu,'matr',$id,null,'factura',null,null,false,$abonos,$sucursal);
 	   }else
 	   {
 		    $datos_cli_edu=$this->Cliente($ci);
-		    imprimirDocEle_fac($datos_fac,$detalle_fac,$datos_cli_edu,false,null,'factura',null,null,false,false,$sucursal);
+		    $this->reportes->imprimirDocEle_fac($datos_fac,$detalle_fac,$datos_cli_edu,false,null,'factura',null,null,false,$abonos,$sucursal);
 	   }
 
    }

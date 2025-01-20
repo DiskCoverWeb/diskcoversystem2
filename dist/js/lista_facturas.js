@@ -252,7 +252,7 @@ $(document).ready(function()
           data.forEach(function(item,i){
             serie = item.id.split(' ');
             serie = serie[1];
-             $("#DCLinea").append('<option value="' + item.id +" "+item.text+ ' ">' + serie + '</option>');
+             $("#DCLinea").append('<option value="'+serie+ ' ">' + serie + '</option>');
 
             // console.log(item);
              // console.log(i);
