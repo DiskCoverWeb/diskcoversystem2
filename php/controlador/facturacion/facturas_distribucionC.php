@@ -1998,7 +1998,7 @@ class facturas_distribucion
 				// print_r($FA)
 				$imp_guia = '';
 				if ($FA['TC'] <> "NDO" || $FA['TC'] <> "NDU") {
-					//la respuesta puede se texto si envia numero significa que todo saliobien
+					/*//la respuesta puede se texto si envia numero significa que todo saliobien
 					$rep = $this->sri->Autorizar_factura_o_liquidacion($FA);
 
 					// print_r($rep);die();
@@ -2028,11 +2028,52 @@ class facturas_distribucion
 
 					} else {
 						return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep, 'clave' => $clave,'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
+					}*/
+
+					$respuesta = '';
+					// 'Autorizamos la factura
+					if (strlen($FA['Autorizacion']) == 13) {
+						$respuesta = $this->sri->Autorizar_factura_o_liquidacion($FA);
+						if($respuesta == 1){
+						   $clave = $this->sri->Clave_acceso($FA['Fecha'], '01', $FA['Serie'], $FA['Factura']);
+						   $FA['Autorizacion'] = $clave;
+						   $FA['Clave_Acceso'] = $clave;
+						}
 					}
+
+					sp_Actualizar_Saldos_Facturas($FA['TC'], $FA['Serie'], $FA['Factura']);
+					$imp = '';
+					// 'MsgBox FA.Autorizacion & vbCrLf & FA.Autorizacion_GR
+					if (strlen($FA['Autorizacion']) >= 13) {
+						//print_r($FA['Autorizacion']);
+						if (/*$Grafico_PV*/$_SESSION['INGRESO']['Impresora_Rodillo'] == 1) {
+						   //print_r("con rodillo");
+						   $TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+						   $TFA['CLAVE'] = '1';
+						   $TFA['PorcIva'] = $FA['Porc_IVA'];
+						   $this->pdf->Imprimir_Punto_Venta_Grafico($TFA);
+						   $imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+						} else {
+						   //print_r("sin rodillo");
+						   $TFA = Imprimir_Punto_Venta_datos($FA);
+						   $TFA['CLAVE'] = '1';
+						   $TFA['PorcIva'] = $FA['Porc_IVA'];
+						   //$this->pdf->Imprimir_Punto_Venta($info);
+						   $imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+						   $clave = $this->sri->Clave_acceso($TA['Fecha'], '01', $TA['Serie'], $FA['Factura']);
+						   $this->modelo->pdf_factura_elec($FA['Factura'], $FA['Serie'], $FA['CodigoC'], $imp, $clave, $periodo = false, 0, 1);
+						}
+					 } 
+					 
+					 $FA['Desde'] = $FA['Factura'];
+					 $FA['Hasta'] = $FA['Factura'];
+					 $this->modelo->Facturas_Impresas($FA); 
+
+					 return array('respuesta' => $respuesta, 'pdf' => $imp, 'clave' => $clave, 'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
 				}
 			} else {
 				// print_r('dddd');die();
-				if ($Grafico_PV) {
+				/*if ($Grafico_PV) {
 					$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
 					$TFA['PorcIva'] = $FA['Porc_IVA'];
 					$this->pdf->Imprimir_Punto_Venta_Grafico($TFA);
@@ -2052,6 +2093,26 @@ class facturas_distribucion
 
 					// ojo ver cula se piensa imprimir
 					// Imprimir_Punto_Venta($FA);
+				}*/
+				/*$FA = array(
+					'Factura' => $cod,
+					'Serie' => $ser,
+					'Autorizacion' => $auto,
+					'TC' => $tc
+				);*/
+		
+				$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+				$TFA['CLAVE'] = '.';
+				//$TFA['PorcIva'] = $FA['Porc_IVA'];
+				$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
+				$this->pdf->Imprimir_Punto_Venta($TFA);
+				//Imprimir_Punto_Venta_Grafico($TFA);
+				$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+				$rep = 1;
+				if ($rep == 1) {
+					return array('respuesta' => $rep, 'pdf' => $imp);
+				} else {
+					return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep);
 				}
 			}
 			//print_r($imp);

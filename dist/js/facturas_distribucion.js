@@ -699,8 +699,8 @@ var valTC = 'FA';
 						tr.append($('<td></td>').text(parseFloat(totalProducto).toFixed(2)));
 						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodBodega2']));
 						tr.append($('<td style="display:none;"></td>').text(fila['Productos']['Codigo_Inv']));
-						tr.append($('<td></td>').html('<input type="checkbox" id="producto_cheking" name="producto_cheking">'));
-						tr.append($('<td></td>').html('<button style="width:50px" onclick="modificarLineaFac(this)"><i class="fa fa-pencil" aria-hidden="true"></i></button>'));
+						tr.append($('<td></td>').html('<input type="checkbox" id="producto_cheking" name="producto_cheking" class="form-check-input border-secondary">'));
+						tr.append($('<td></td>').html('<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil"></i></button>'));
 						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodigoU']));
 						tBody.append(tr);
 
@@ -708,7 +708,7 @@ var valTC = 'FA';
 						tTotalProds += parseFloat(totalProducto);
 						console.log(tTotalProds);
 					}
-					let tr = $('<tr></tr>');
+					let tr = $('<tr class="bg-primary-subtle"></tr>');
 					tr.append($('<td colspan="3"></td>').html('<b>Total</b>'));
 					tr.append($('<td id="ADCantTotal"></td>').html(`<b>${cTotalProds}</b>`));
 					tr.append($('<td></td>'));
@@ -731,12 +731,14 @@ var valTC = 'FA';
 		let fila = campo.parentElement.parentElement;
 		let valAnt = parseInt(fila.childNodes[3].innerText);
 		fila.childNodes[3].innerHTML = `
-			<input type="text" class="form-control text-center" style="max-width:136px;" placeholder="Cambie la cantidad">
+			<input type="text" class="form-control form-control-sm text-center" style="max-width:136px;" placeholder="Cambie la cantidad">
 		`; //name = cod_prod + usuario_q_agg
 		fila.childNodes[9].innerHTML = `
-			<input type="text" class="form-control" style="min-width:250px;" placeholder="Coloque un comentario">
-			<button style="width:50px" onclick="aceptarModificarLF(this)"><i class="fa fa-check" aria-hidden="true"></i></button>
-			<button style="width:50px" onclick="cancelarModificarLF(this, ${valAnt})"><i class="fa fa-times" aria-hidden="true"></i></button>
+			<div class="input-group input-group-sm" style="min-width: 176px;">
+				<input type="text" class="form-control form-control-sm" placeholder="Coloque un comentario">
+				<button class="btn btn-sm btn-success" style="font-size:8pt;" onclick="aceptarModificarLF(this)"><i class="fa fa-check" aria-hidden="true" style="font-size:8pt;"></i></button>
+				<button class="btn btn-sm btn-success" style="font-size:8pt;" onclick="cancelarModificarLF(this, ${valAnt})"><i class="fa fa-times" aria-hidden="true" style="font-size:8pt;"></i></button>
+			</div>
 		`;
 	}
 

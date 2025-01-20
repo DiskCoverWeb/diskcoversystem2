@@ -716,7 +716,7 @@ if (isset ($_GET['tipo'])) {
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success" id="btnAceptarEvaluacion" data-dismiss="modal">Aceptar</button>
+				<button type="button" class="btn btn-success" id="btnAceptarEvaluacion" data-bs-dismiss="modal">Aceptar</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 			</div>
 		</div>
@@ -831,7 +831,7 @@ if (isset ($_GET['tipo'])) {
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success" data-dismiss="modal" id="btnAceptarInfoGavetas">Aceptar</button>
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal" id="btnAceptarInfoGavetas">Aceptar</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetInputsGavetas()">Cancelar</button>
 			</div>
 		</div>
