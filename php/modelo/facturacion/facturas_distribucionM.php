@@ -33,6 +33,24 @@ class facturas_distribucionM
     return $this->db->datos($sql);
   }
 
+  function Facturas_Impresas($TFA)
+  {
+    $sql = "UPDATE Facturas 
+          SET P = 1 
+          WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+          AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' 
+          AND TC = '" . $TFA['TC'] . "' 
+          AND Serie = '" . $TFA['Serie'] . "' 
+          AND P = 0 ";
+    if (($TFA['Desde'] + $TFA['Hasta']) > 0 && ($TFA['Desde'] <= $TFA['Hasta'])) {
+      $sql .= " AND Factura BETWEEN " . $TFA['Desde'] . " and " . $TFA['Hasta'] . " ";
+    } else {
+      $sql .= " AND Factura = " . $TFA['Factura'] . " ";
+    }
+    $respuest = $this->db->String_Sql($sql);
+    return $respuest;
+  }
+
   /*function ConsultarKardex($codBarras){
     $sql ="SELECT TK.CodBodega, TK.Codigo_Barra,CP.Producto,CP.PVP, CP.Unidad
             FROM trans_kardex TK

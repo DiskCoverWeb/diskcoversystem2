@@ -229,8 +229,8 @@
 				</div>
 				<div class="box-body">
 					<div class="col-sm-12">
-						<table class="table table-hover" style="width:100%">
-							<thead>
+						<table class="table table-hover bg-white" style="width:100%">
+							<thead class="bg-primary text-white text-center">
 								<tr>
 									<th width="10%"></th>
 									<th>FECHA ATENCION</th>

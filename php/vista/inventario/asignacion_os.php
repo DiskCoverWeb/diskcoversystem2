@@ -462,11 +462,11 @@
 <div class="row" id="panel_add_productos"><!-- DEFINIR EL ID SEGUN SEA NECESARIO -->
     <div class="col-sm-12">
         <div class="box">
-            <div class="card_body" style="background:antiquewhite;">
+            <div class="card_body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <table class="table table-hover" style="width:100%">
-                            <thead>
+                        <table class="table table-hover bg-white" style="width:100%">
+                            <thead class="bg-primary text-white text-center">
                                 <tr>
                                     <th style="width:7%;">ITEM</th>
                                     <th>PRODUCTO</th>
