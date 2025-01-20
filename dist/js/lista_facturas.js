@@ -259,7 +259,7 @@ $(document).ready(function()
           })
         }else{
           Swal.fire({
-            type:'info',
+            icon:'info',
             title: 'Usted no tiene un punto de venta asignado o esta mal configurado, contacte con la administracion del sistema',
             text:'',
             allowOutsideClick: false,
