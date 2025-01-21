@@ -1,5 +1,5 @@
 <!--SCRIPT IMPORTADO-->
-<script src="../../dist/js/Contabilidad/ctaOperaciones.js"></script>
+<script src="../../dist/js/contabilidad/ctaOperaciones.js"></script>
 <!--Comienzo de la vista-->
 <div class="overflow-auto"> 
   <div class="">

@@ -1,18 +1,20 @@
-<script src="../../dist/js/Contabilidad/mayor_auxiliar.js"></script>
-<div class="overflow-auto p-2 ">
+<script src="../../dist/js/contabilidad/mayor_auxiliar.js"></script>
+<div class="p-2">
 	<div class="">
-	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
+		<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+			<div class="breadcrumb-title pe-3">
+				<?php echo $NombreModulo; ?>
+			</div>
+			<div class="ps-3">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+					<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+					</li>
+					</ol>
+				</nav>
+			</div>          
 		</div>
-		<div class="ps-3">
-		<nav aria-label="breadcrumb">
-			<ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
-			<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-			</li>
-			</ol>
-		</nav>
-    </div>          
-  </div>
+	</div>
 	<div class="row row-cols-auto d-flex align-items-center w-auto ps-2 pb-2">
 		<div class="row row-cols-auto btn-group" role="group">
 			<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
@@ -25,8 +27,8 @@
 				<img src="../../img/png/pdf.png">
 			</button>
 			<ul class="dropdown-menu">
-				<li><a href="#" id="imprimir_pdf">Impresion normal</a></li>
-				<li><a href="#" id="imprimir_pdf_2">Por Sub Modulo / Centro de costos</a></li>
+				<li><a class="dropdown-item" href="#" id="imprimir_pdf">Impresion normal</a></li>
+				<li><a class="dropdown-item" href="#" id="imprimir_pdf_2">Por Sub Modulo / Centro de costos</a></li>
 			</ul>
 			<button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown"  title="Descargar Excel">
 			<img src="../../img/png/table_excel.png">
@@ -41,51 +43,60 @@
 		</div> 
 	</div>
 	<div class="row row-cols-auto">          
-		<div class="col-3 p-0 m-0 ps-3"><br>
+		<div class="col-3"><br>
 			<div>	
 				<b class="">Cuenta inicial:</b>
 				<br>
-				<input type="text" name="txt_CtaI" id="txt_CtaI" class="form-control form-control-sm h-50 col-7 border border-2" placeholder="<?php echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>">
+				<input type="text" name="txt_CtaI" id="txt_CtaI" class="form-control form-control-sm" placeholder="<?php echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>">
 			</div>
 			<div> 
 				<b>Cuenta final:</b>
 				<br>
-				<input type="text" name="txt_CtaF" id="txt_CtaF" onblur="llenar_combobox_cuentas()" class="form-control form-control-sm h-50 col-7 border border-2" placeholder="<?php echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>" > 
+				<input type="text" name="txt_CtaF" id="txt_CtaF" onblur="llenar_combobox_cuentas()" class="form-control form-control-sm" placeholder="<?php echo $_SESSION['INGRESO']['Formato_Cuentas']; ?>" > 
 			</div>
 		</div>
-		<div class="col-4 pt-4 p-0 m-0"><br>
-			<div class="col-10 row row-cols-auto p-0 m-0">
-				<b class="w-25">Desde:</b>
-				<input type="date" name="desde" id="desde" class="form-control form-control-sm border rounded w-75" style="font-size: 0.8rem"  value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">
+		<div class="col-3"><br>
+			<div class="row">
+				<b class="fw-bold col-3">Desde:</b>
+				<div class="col-8">
+					<input type="date" name="desde" id="desde" class="form-control form-control-sm" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">
+				</div>
 			</div>
-			<div class="col-10 row row-cols-auto p-0 m-0">
-				<label class="fw-bold w-25">Hasta:</label>
-				<input type="date" name="hasta" id="hasta"  class="form-control form-control-sm border rounded w-75" style="font-size: 0.8rem" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">  	              	
+			<div class="row">
+				<label class="fw-bold col-3">Hasta:</label>
+				<div class="col-8"> 
+					<input type="date" name="hasta" id="hasta"  class="form-control form-control-sm" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">  	              	
+				</div>
 			</div>
 		</div>
 
-		<div class="col-5 pt-4 pe-5">
+		<div class="col-6">
 			<div class="row row-cols-auto">
-				<label style="margin:0px"><input type="checkbox" name="CheckUsu" id="CheckUsu"><b class=""> Por usuario</b></label>
-				<select class="form-select form-control-sm h-25 " style="font-size: 0.83rem;" id="DCUsuario"  onchange="consultar_datos(true,Individual);">
-					<option value="" >Seleccione usuario</option>
-				</select>
-				<b>Por cuenta</b>
-				<select class="form-select form-control-sm h-25 " style="font-size: 0.83rem" id="DCCtas" onchange="consultar_datos(true,Individual);">
-					<option value="">Seleccione cuenta</option>
-				</select>
+				<div class="col-6">
+					<label class="m-0"><input type="checkbox" name="CheckUsu" id="CheckUsu"><b class=""> Por usuario</b></label>
+					<select class="form-select form-select-sm" id="DCUsuario"  onchange="consultar_datos(true,Individual);">
+						<option value="" >Seleccione usuario</option>
+					</select>
+				</div>
+				<div class="col-6"> 
+					<b>Por cuenta</b>
+					<select class="form-select form-select-sm" id="DCCtas" onchange="consultar_datos(true,Individual);">
+						<option value="">Seleccione cuenta</option>
+					</select>
+				</div>
+				<div class="col-6">
+					<label id="lblAgencia"><input type="checkbox" name="CheckAgencia" id="CheckAgencia"><b class=""> Agencia</b></label>
+					<select class="form-select form-select-sm" id="DCAgencia" onchange="consultar_datos(true,Individual);">
+						<option value="">Seleccione agencia</option>
+					</select>
+				</div>   
+				<div class="col-6">
+					<b>Saldo anterior MN:</b> 
+					<input type="text" name="OpcP" id="LabelTotSaldoAnt" class="form-control form-control-sm">          
+				</div>	
 			</div>
-			<div class="col-6">
-				<label id="lblAgencia"><input type="checkbox" name="CheckAgencia" id="CheckAgencia"><b class=""> Agencia</b></label>
-				<select class="form-control" class="" style="font-size: 0.83rem; height: 26%" id="DCAgencia" onchange="consultar_datos(true,Individual);">
-					<option value="">Seleccione agencia</option>
-				</select>
-			</div>             
 		</div>
-		<div class="col-3 pt-4">
-				<b>Saldo anterior MN:</b> 
-				<input type="text" name="OpcP" id="LabelTotSaldoAnt" class="border border-1">          
-		</div>		
+			
 	</div>
 	<!--seccion de panel-->
 	<div class="row pt-3">
@@ -95,48 +106,52 @@
 				<li class="active p-2 fw-normal">
 				<h6 id="tit">Mayores auxiliares</h6></li>
 			</ul>
-		<div class="table-responsive">
-				<table class="table text-sm w-100" id="tbl_Mayor_Auxiliar">
-					<thead>
-						<tr>
-							<th class="text-center">Fecha</th>
-							<th class="text-center">TP</th>
-							<th class="text-center">Numero</th>
-							<th class="text-center">Cliente</th>
-							<th class="text-center">Concepto</th>
-							<th class="text-center">Cheq_Dep</th>
-							<th class="text-center">Debe</th>
-							<th class="text-center">Haber</th>
-							<th class="text-center">Saldo</th>
-							<th class="text-center">Parcial_ME</th>
-							<th class="text-center">Saldo_ME</th>
-							<th class="text-center">ID</th>
-							<th class="text-center">Cta</th>
-							<th class="text-center">TC</th>
-							<th class="text-center">Cuenta</th>
-							<th class="text-center">Item</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</tbody>
-				</table> 	 	
-			</div> 
+		</div> 
+		<div class="tab-content">
+			<div class='col-sm-12'> 
+				<div class="table-responsive overflow-y-auto" style="max-height: 400px;">
+					<table class="table text-sm w-100" id="tbl_Mayor_Auxiliar">
+						<thead>
+							<tr>
+								<th class="text-center">Fecha</th>
+								<th class="text-center">TP</th>
+								<th class="text-center">Numero</th>
+								<th class="text-center">Cliente</th>
+								<th class="text-center">Concepto</th>
+								<th class="text-center">Cheq_Dep</th>
+								<th class="text-center">Debe</th>
+								<th class="text-center">Haber</th>
+								<th class="text-center">Saldo</th>
+								<th class="text-center">Parcial_ME</th>
+								<th class="text-center">Saldo_ME</th>
+								<th class="text-center">ID</th>
+								<th class="text-center">Cta</th>
+								<th class="text-center">TC</th>
+								<th class="text-center">Cuenta</th>
+								<th class="text-center">Item</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table> 	 	
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="row">

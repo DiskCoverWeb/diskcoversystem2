@@ -31,12 +31,10 @@ function fecha_fin()
     var ano = fecha.getFullYear();
     if(partes[0] <= (ano+30) && partes[0]>1999)
     {
-        console.log(ano+10);
         var date = new Date($fecha);
         var primerDia = new Date(date.getFullYear(), date.getMonth(), 1);
         var ultimoDia = new Date(partes[0],partes[1],0);
         var mes= date.getMonth()+1;
-        console.log(ultimoDia);
 
         if(mes <10)
         {
@@ -96,16 +94,12 @@ function ConsultarDatosLibroBanco()
 
     }
     $titulo = 'Mayor de '+$('#DCCtas option:selected').html();
-    if($.fn.dataTable.isDataTable('#tbl_libro_banco')){
-        $('#tbl_libro_banco').DataTable().clear().destroy();
-    }
     $.ajax({
         data: { parametros:parametros },
         url: '../controlador/contabilidad/libro_bancoC.php?consultar=true',
         type: 'post', 
         dataType: 'json',
         beforeSend: function(){
-            console.log("...");
         }, 
         success: function(response){
             $('#debe').val(addCommas(response.LabelTotDebe));
@@ -118,51 +112,37 @@ function ConsultarDatosLibroBanco()
                 $('#saldo_ant_').val(addCommas(response.LabelSaldoAntME));
                 $('#saldo_').val(addCommas(response.LabelTotSaldoME));
                 $('#tit').text($titulo+" (Registros: "+response.TotalRegistros+")");
-                console.log("ok")
-                tbl_libro_banco = $('#tbl_libro_banco').DataTable({
+                $('#tbl_libro_banco').DataTable({
                     language: {
                         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
                     },
-                    "ajax": {
-                        'url': '../controlador/contabilidad/libro_bancoC.php?consultar=true', 
-                        'type': 'post',
-                        'data': function(d){
-                            return { parametros:parametros }
-                        },
-                        'dataSrc': function (response){
-                            response.DGBanco.data = ProcesarDatos(response.DGBanco.data);
-                            return response.DGBanco.data || [];
-                        },
-                        'error': function(xhr, status, error){
-                            console.error("Error: ", xhr, status, error);
-                        }
-                    },
-                    scrollX: true,
-                    scrollY: '300px', 
-                    scrollColapse: true,
-                    'colums': [
-                        {"data": "Cta"},
-                        {"data": "Fecha"},
-                        {"data": "TP"},
-                        {"data": "Numero"},
-                        {"data": "Cheq_Dep"},
-                        {"data": "Cliente"},
-                        {"data": "Concepto"},
-                        {"data": "Debe"},
-                        {"data": "Haber"},
-                        {"data": "Saldo"},
-                        {"data": "Parcial_ME"},
-                        {"data": "Saldo_ME"},
-                        {"data": "T"},
-                        {"data": "Item"},                        
+                    data: ProcesarDatos(response.DGBanco.data),
+                    destroy: true,
+                    paging: false,
+                    searching: false,   
+                    'columns': [
+                        {data: "Cta"},
+                        {data: "Fecha"},
+                        {data: "TP"},
+                        {data: "Numero"},
+                        {data: "Cheq_Dep"},
+                        {data: "Cliente"},
+                        {data: "Concepto"},
+                        {data: "Debe"},
+                        {data: "Haber"},
+                        {data: "Saldo"},
+                        {data: "Parcial_ME"},
+                        {data: "Saldo_ME"},
+                        {data: "T"},
+                        {data: "Item"},                        
                     ],
                     order: [
                         [0, 'asc']
                     ],
                     createdRow: function(row, data){ 
                         alingEnd(row, data);
-                    }
-                })
+                    },
+                });
         }, 
         error: function(xhr, status, error){ 
             console.error(xhr, status, error); 

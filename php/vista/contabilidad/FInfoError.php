@@ -1,4 +1,4 @@
-<script src="/../../dist/js/Contabilidad/FInfoError.js"></script>		
+<script src="/../../dist/js/contabilidad/FInfoError.js"></script>		
 
 <style type="text/css">
 .col{

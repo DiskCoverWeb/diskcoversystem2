@@ -216,9 +216,7 @@ tbl_saldo_meses = $('#tbl_saldo_meses').DataTable({
             console.error("Error: ", xhr, status, error);
         }
     },
-    scrollX: true, 
     scrollY: '300px',
-    scrollColapse: true, 
     columns: [
         { "data":"Cta" },
         { "data":"Beneficiario" },
@@ -319,9 +317,7 @@ tbl_saldo_temp = $('#tbl_saldo_temporal').DataTable({
             console.error("Error: ", xhr, status, error);
         }
     },
-    scrollX: true,
     scrollY: '300px',
-    scrollColapse: true, 
     'colums': [
         {"data": "Cuenta"},
         {"data": "Cliente"},

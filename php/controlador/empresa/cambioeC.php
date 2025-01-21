@@ -539,71 +539,93 @@ class cambioeC
 	{
 		$item = $parametros['item'];
 		$entidad = $parametros['ent'];
-    // print_r($parametros);die();
-    $nl = $parametros['nivel'];
-	  $h='';
+    	// print_r($parametros);die();
+		$datos = $this->modelo->Catalogo_Lineas($entidad, $item); 
+		$niveles = ["Autorizacion","Serie","Fact"];
+		$arbol = [];
+
+		foreach ($datos as $registro){
+			$nodo = &$arbol;
+
+			foreach ($niveles as $nivel){ 
+				$valorNivel = $registro[$nivel];
+				if(!isset($nodo[$valorNivel])){
+					$nodo[$valorNivel] = [];
+				}
+				$nodo = &$nodo[$valorNivel];
+			}
+			$nodo[] = $registro;
+		}
+		$html = '<li>
+					<label id="label_'.str_replace('.','_','A').'" for="A">AUTORIZACIONES</label>
+					<input type="checkbox" id="A" onclick="TVcatalogo(1,\'A\',\'\',\'\',\'\')" />
+					<ol id="hijos_'.str_replace('.','_','A').'">';
+		$html .= $this->generarLista($arbol, 1);
+		$html .= '</ol></li>';
+		return $html;
+	  	/*$nl = $parametros['nivel'];
+		$h='';
 		if($nl!='')
 		{
+		if($nl==1)
+		{
+			$datos = $this->modelo->nivel1($entidad, $item);
+			foreach ($datos as $key => $value) {
+			$h.= '<li  title="Presione Suprimir para eliminar">
+					<label id="label_'.str_replace('.','_','A1_'.$key).'" for="A1_'.$key.'">'.$value['Autorizacion'].'</label>
+					<input type="checkbox" id="A1_'.$key.'" onclick="TVcatalogo(2,\'A1_'.$key.'\',\''.$value['Autorizacion'].'\',\'\',\'\')" />
+					<ol id="hijos_'.str_replace('.','_','A1_'.$key).'"></ol></li>';
+			}
+		}
 
-      if($nl==1)
-      {
-        $datos = $this->modelo->nivel1($entidad, $item);
-        foreach ($datos as $key => $value) {
-           $h.= '<li  title="Presione Suprimir para eliminar">
-                  <label id="label_'.str_replace('.','_','A1_'.$key).'" for="A1_'.$key.'">'.$value['Autorizacion'].'</label>
-                  <input type="checkbox" id="A1_'.$key.'" onclick="TVcatalogo(2,\'A1_'.$key.'\',\''.$value['Autorizacion'].'\',\'\',\'\')" />
-                 <ol id="hijos_'.str_replace('.','_','A1_'.$key).'"></ol></li>';
-        }
-      }
+		if($nl==2)
+		{
+			$datos = $this->modelo->nivel2($entidad, $item, $parametros['auto']);
+			foreach ($datos as $key => $value) {
+			$h.= '<li  title="Presione Suprimir para eliminar">
+					<label id="label_'.str_replace('.','_','A2_'.$key).'" for="A2_'.$key.'">'.$value['Serie'].'</label>
+					<input type="checkbox" id="A2_'.$key.'" onclick="TVcatalogo(3,\'A2_'.$key.'\',\''.$parametros['auto'].'\',\''.$value['Serie'].'\',\'\')" />
+					<ol id="hijos_'.str_replace('.','_','A2_'.$key).'"></ol></li>';
+			}
+		}
 
-      if($nl==2)
-      {
-        $datos = $this->modelo->nivel2($entidad, $item, $parametros['auto']);
-        foreach ($datos as $key => $value) {
-           $h.= '<li  title="Presione Suprimir para eliminar">
-                  <label id="label_'.str_replace('.','_','A2_'.$key).'" for="A2_'.$key.'">'.$value['Serie'].'</label>
-                  <input type="checkbox" id="A2_'.$key.'" onclick="TVcatalogo(3,\'A2_'.$key.'\',\''.$parametros['auto'].'\',\''.$value['Serie'].'\',\'\')" />
-                 <ol id="hijos_'.str_replace('.','_','A2_'.$key).'"></ol></li>';
-        }
-      }
+		if($nl==3)
+		{
+			$datos = $this->modelo->nivel3($entidad, $item, $parametros['auto'],$parametros['serie']);
+			foreach ($datos as $key => $value) {
+			$h.= '<li  title="Presione Suprimir para eliminar">
+					<label id="label_'.str_replace('.','_','A3_'.$key).'" for="A3_'.$key.'">'.$value['Fact'].'</label>
+					<input type="checkbox" id="A3_'.$key.'" onclick="TVcatalogo(4,\'A3_'.$key.'\',\''.$parametros['auto'].'\',\''.$parametros['serie'].'\',\''.$value['Fact'].'\')" />
+					<ol id="hijos_'.str_replace('.','_','A3_'.$key).'"></ol></li>';
+			}
+		}
 
-      if($nl==3)
-      {
-        $datos = $this->modelo->nivel3($entidad, $item, $parametros['auto'],$parametros['serie']);
-        foreach ($datos as $key => $value) {
-           $h.= '<li  title="Presione Suprimir para eliminar">
-                  <label id="label_'.str_replace('.','_','A3_'.$key).'" for="A3_'.$key.'">'.$value['Fact'].'</label>
-                  <input type="checkbox" id="A3_'.$key.'" onclick="TVcatalogo(4,\'A3_'.$key.'\',\''.$parametros['auto'].'\',\''.$parametros['serie'].'\',\''.$value['Fact'].'\')" />
-                 <ol id="hijos_'.str_replace('.','_','A3_'.$key).'"></ol></li>';
-        }
-      }
-
-      if($nl==4)
-      {
-        $datos = $this->modelo->nivel4($entidad, $item, $parametros['auto'],$parametros['serie'],$parametros['fact']);
-        foreach ($datos as $key => $value) {
-          $h.='<li class="file" id="label_'.str_replace('.','_','A4_'.$key).'" title=""><a href="#" onclick="detalle_linea(\''.$value['ID'].'\',\'A4_'.$key.'\')">'.$value['Concepto'].'</a></li>';
+		if($nl==4)
+		{
+			$datos = $this->modelo->nivel4($entidad, $item, $parametros['auto'],$parametros['serie'],$parametros['fact']);
+			foreach ($datos as $key => $value) {
+			$h.='<li class="file" id="label_'.str_replace('.','_','A4_'.$key).'" title=""><a href="#" onclick="detalle_linea(\''.$value['ID'].'\',\'A4_'.$key.'\')">'.$value['Concepto'].'</a></li>';
 
 
-           // $h.= '<li  title="Presione Suprimir para eliminar">
-           //        <label id="label_'.str_replace('.','_','A4_'.$key).'" for="A4_'.$key.'">'.$value['Concepto'].'</label>
-           //        <input type="checkbox" id="A4_'.$key.'" onclick="detalle_linea(\''.$value['ID'].'\')" />
-           //       <ol id="hijos_'.str_replace('.','_','A2_'.$key).'"></ol></li>';
-        }
-      }
+			// $h.= '<li  title="Presione Suprimir para eliminar">
+			//        <label id="label_'.str_replace('.','_','A4_'.$key).'" for="A4_'.$key.'">'.$value['Concepto'].'</label>
+			//        <input type="checkbox" id="A4_'.$key.'" onclick="detalle_linea(\''.$value['ID'].'\')" />
+			//       <ol id="hijos_'.str_replace('.','_','A2_'.$key).'"></ol></li>';
+			}
+		}
 
 		}else
 		{
 			$codigo = 'A';
-		  $detalle = 'AUTORIZACIONES';
+		$detalle = 'AUTORIZACIONES';
 
-			 $h = '<li  title="Presione Suprimir para eliminar">
-							    <label id="label_'.str_replace('.','_','A').'" for="A">AUTORIZACIONES</label>
-							    <input type="checkbox" id="A" onclick="TVcatalogo(1,\'A\',\'\',\'\',\'\')" />
-							   <ol id="hijos_'.str_replace('.','_','A').'"></ol></li>';
+			$h = '<li  title="Presione Suprimir para eliminar">
+								<label id="label_'.str_replace('.','_','A').'" for="A">AUTORIZACIONES</label>
+								<input type="checkbox" id="A" onclick="TVcatalogo(1,\'A\',\'\',\'\',\'\')" />
+							<ol id="hijos_'.str_replace('.','_','A').'"></ol></li>';
 		}
 
-		return $h;
+		return $h;*/
 	}
 	function detalle_linea($id, $item, $entidad)
 	{
@@ -612,6 +634,70 @@ class cambioeC
       $datos = $this->modelo->Catalogo_Lineas($entidad, $item, $id);
     }
 		return $datos;
+	}
+	function generarLista($data, $nivel, $parametros=array()){
+		$html = '';
+		$indice = 0;
+		$param = $parametros;
+		foreach ($data as $clave => $valor){
+			$auto = "";
+			$serie = ""; 
+			$fact = "";
+			$codigo = ""; 
+			switch($nivel){
+				case 1:
+				{
+					$param['auto'] = $clave;
+					$auto = $clave;
+				}
+				break;
+				case 2:
+				{
+					$param['serie'] = $clave;
+					$auto = $param['auto'];
+					$serie = $clave;
+				}
+				break;
+				case 3:
+				{
+					$param['fact'] = $clave;
+					$auto = $param['auto'];
+					$serie = $param['serie'];
+					$fact = $clave;
+				}
+				break;
+				case 4:
+				{
+					$param['codigo'] = $valor['Codigo'];
+					$auto = $param['auto'];
+					$serie = $param['serie'];
+					$fact = $param['fact'];
+					$codigo = $valor['Codigo'];
+				}
+				break;
+			}
+			if($nivel < 4){
+				if (is_array($valor)) {
+					/*$html .= "<li><strong>$clave</strong>";
+					$html .= $this->generarLista($valor, $nivel+1); // Llamada recursiva para arrays anidados
+					$html .= "</li>";*/
+					$html .= '<li><label id="label_A'.$nivel.'_'.$indice.$auto.$serie.$fact.'" for="A'.$nivel.'_'.$indice.$auto.$serie.$fact.'">'.$clave.'</label>
+									<input type="checkbox" id="A'.$nivel.'_'.$indice.$auto.$serie.$fact.'" onclick="TVcatalogo('.strval($nivel+1).',\'A'.$nivel.'_'.$indice.'\',\''.$auto.'\',\''.$serie.'\',\''.$fact.'\')">
+									<ol id="hijos_A'.$nivel.'_'.$indice.$auto.$serie.$fact.'">';
+					$html .= $this->generarLista($valor, $nivel+1, $param);
+					$html .= '</ol></li>';
+				} else {
+					$html .= "<li><strong>Item $indice</strong></li>";
+				}
+			}else{
+				//$html .= "<li><strong>".$valor['Concepto']."</strong></li>";
+				$html .= '<li class="file" id="label_A'.$nivel.'_'.$indice.'_'.$valor["ID"].'" title="">
+							<a href="#" onclick="detalle_linea(\''.$valor["ID"].'\', \'A'.$nivel.'_'.$indice.'\')">'.$valor['Concepto'].'</a>
+						</li>';
+			}
+			$indice += 1;
+		}
+		return $html;
 	}
 	function  GrabarArticulos($parametros)
 	{

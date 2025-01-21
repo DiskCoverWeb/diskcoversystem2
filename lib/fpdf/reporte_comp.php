@@ -673,7 +673,6 @@ function imprimirDocERRORPDF($stmt,$id=null,$formato=null,$nombre_archivo=null,$
 		//cabecera de tabla
 		$y=$y+15;
 		$pdf->SetXY($x, $y);
-		
 		$pdf->Cell(97,15,'','1',1,'Q');
 		$pdf->SetXY($x+97, $y);
 		$pdf->Cell(189,15,'','1',1,'Q');
