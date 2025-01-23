@@ -1,20 +1,15 @@
 <?php 
+
+@session_start(); 
+include_once(dirname(__DIR__,2).'/db/db1.php');
+include_once(dirname(__DIR__,3).'/lib/TCPDF/Reportes/reportes_all.php');
+
 if(!include_once(dirname(__DIR__,2).'/funciones/funciones.php'))
 {
 	include_once(dirname(__DIR__,2).'/funciones/funciones.php');
 }
-if(!class_exists('PDF'))
-{
-	include(dirname(__DIR__,3).'/lib/fpdf/reporte_de.php');
-}
 
-if(!class_exists('db'))
-{
-	include(dirname(__DIR__,2).'/db/db1.php');
-}
-// print(dirname(__DIR__));die();
-// include(dirname(__DIR__).'/contabilidad_model.php');
-@session_start(); 
+
 
 /**
  * 
@@ -23,9 +18,11 @@ class incomM
 {
 	
 	private $conn ;
+	private $reportes;
 	function __construct()
 	{
 	   $this->conn = new db();
+	   $this->reportes = new reportes_all();
 	}
 
 	function beneficiarios($query)
@@ -1408,7 +1405,7 @@ class incomM
 
      }
 
-    function reporte_retencion($numero,$TP,$retencion,$serie,$imp=0)
+  function reporte_retencion($numero,$TP,$retencion,$serie,$imp=0)
 	{
 		$datos = array();
 		$detalle = array(); 
@@ -1416,9 +1413,6 @@ class incomM
 		$TFA = array();
 
 
-		$sql2 = "SELECT * FROM lista_tipo_contribuyente WHERE RUC = '".$_SESSION['INGRESO']['RUC']."'";
-	    $tipo_con = $this->conn->datos($sql2, 'MYSQL');
-		
 
 		$sql = "SELECT C.Cliente,C.CI_RUC,C.TD,C.Direccion,C.Email,C.Ciudad,C.DirNumero,C.Telefono,TC.* 
         FROM Trans_Compras As TC,Clientes As C 
@@ -1456,10 +1450,14 @@ class incomM
          $Porc_IVA = Validar_Porc_IVA($datos[0]["Fecha"]->format('Y-m-d'));
          $ConsultarDetalle = True;
 	   }
-	  if(count($datos)>0 && count($tipo_con)>0)
-	  {
-	    $TFA['Tipo_contribuyente'] = $tipo_con;
-	  }
+	  
+	  $tipo_con = Tipo_Contribuyente_SP_MYSQL($_SESSION['INGRESO']['RUC']);
+
+		if(count($datos)>0 && count($tipo_con)>0)
+			{
+				$datos_fac['Tipo_contribuyente'] = $tipo_con;
+			}
+
 
 	   // print_r($TFA);die();
 
@@ -1493,14 +1491,14 @@ class incomM
     	ORDER BY R.Cta_Retencion ";
     	$datos2 = $this->conn->datos($sql);
 
-    	$datos = array_merge($datos,$TFA);
-   // 'Encabezado Factura
-
- 	// print_r($TFA);
- 	// print_r($datos2);
- 	// die();    
-
-	  imprimirDocEle_ret($datos,$datos2,'Retencion',$imp);
+    	$resultado = array();
+			foreach ($datos as $key => $value) {
+			    $resultado[] = array_merge($value, $TFA);
+			}
+		$datos = $resultado;
+ 		$datos[0]['TC'] = 'RE';
+    $sucursal = $this->catalogo_lineas('RE',$serie);
+	  $this->reportes->imprimirDocEle_ret($datos,$datos2,'Retencion',$imp,$sucursal);
 
 	}	
 
@@ -1773,6 +1771,22 @@ class incomM
 	   return $this->conn->datos($sql);
 	   
 	}
+
+	function catalogo_lineas($TC,$SerieFactura)
+  {
+  	$sql = "SELECT *
+         FROM Catalogo_Lineas
+         WHERE Item = '".$_SESSION['INGRESO']['item']."'
+         AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+         AND Fact = '".$TC."'
+         AND Serie = '".$SerieFactura."'
+         AND Autorizacion = '".$_SESSION['INGRESO']['RUC']."'
+         AND TL <> 0
+         ORDER BY Codigo ";
+         // print_r($sql);die();
+	  return $this->conn->datos($sql);
+
+  }
 
 
 }

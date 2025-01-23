@@ -76,7 +76,6 @@ $(document).ready(function(){
                   
                     return `<div class="input-group-btn">
                                 <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">Acciones
-                                    <span class="fa fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu">`+options+`</ul>
                             </div>`;                    

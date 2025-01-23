@@ -319,7 +319,7 @@ class punto_ventaM
       $AdoDBFA[0]['Tipo_Pago'] = $forma_pago[0]['CTipoPago'];
     }
 
-    imprimirDocEle_guia($AdoDBFA, $AdoDBDet, $datos_cli_edu, $nombre_archivo, null, 'factura', null, null, $imp = $descargar, $sucursal);
+    $this->reportes->imprimirDocEle_guia($AdoDBFA, $AdoDBDet, $datos_cli_edu, $nombre_archivo, null, 'factura', null, null, $imp = $descargar, $sucursal);
     if ($to_correo != '') {
       $titulo_correo = 'comprobantes electronicos';
       $cuerpo_correo = 'comprobantes electronico';
@@ -428,8 +428,10 @@ class punto_ventaM
     if (count($forma_pago) > 0) {
       $AdoDBFA[0]['Tipo_Pago'] = $forma_pago[0]['CTipoPago'];
     }
+    $AdoDBFA[0]['TC'] = 'GR';
+    // $AdoDBFA[0]['Fecha_V'] = date('Y-m-d');
 
-    imprimirDocEle_guia($AdoDBFA, $AdoDBDet, $datos_cli_edu, $nombre_archivo, null, 'factura', null, null, $imp = $descargar, $sucursal);
+    $this->reportes->imprimirDocEle_guia($AdoDBFA, $AdoDBDet, $datos_cli_edu, $nombre_archivo, null, 'factura', null, null, $imp = $descargar, $sucursal);
     if ($to_correo != '') {
       $titulo_correo = 'comprobantes electronicos';
       $cuerpo_correo = 'comprobantes electronico';
