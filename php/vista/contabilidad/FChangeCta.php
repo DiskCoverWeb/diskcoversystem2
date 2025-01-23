@@ -10,6 +10,7 @@
         $('#DCCuentaChangeCa').select2({
             placeholder: 'Seleccionar Cuenta',
             width:'90%',
+            dropdownParent: $('#ModalChangeCa'), 
             ajax: {
               url:   '../controlador/contabilidad/FChangeCtaC.php?CargarDCCuenta=true&Codigo1='+Codigo1,
               dataType: 'json',
@@ -31,7 +32,7 @@
              cancelButtonColor: '#d33',
              confirmButtonText: 'Ok'
            }).then((result) => {
-				 console.log("pasando el modal");
+				 //console.log("pasando el modal");
                  $('#ModalChangeCa').modal('hide');
            })
     }
@@ -39,7 +40,7 @@
 </script>
 <script src="../../dist/js/FChangeCta.js"></script>
 <div class="modal fade bd-example-modal" id="ModalChangeCa" tabindex="-1" role="dialog" aria-labelledby="ModalChangeCa" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
-  <div class="modal-dialog modal-md" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="Label6ModalChangeCa"><b>CAMBIO DE VALORES DE LA CUENTA</b></h5>
@@ -52,7 +53,7 @@
 								<b id="cambiar_select"></b>
 							</div>
 						</div>
-						<select class="form-control input-sm" id="DCCuentaChangeCa">
+						<select class="form-select form-select-sm" id="DCCuentaChangeCa">
 							<option>Seleccionar Cuenta</option>
 						</select> 
 						<input type="hidden" name="Codigo1" id="Codigo1ChangeCta">           
@@ -71,7 +72,7 @@
 							</div>
 							<div class="col-md-12 col-sm-6">
 								<br>
-								<button type="button" class="btn btn-outline-secondary" title="Cerrar" data-dismiss="modal">
+								<button type="button" class="btn btn-outline-secondary" title="Cerrar" data-bs-dismiss="modal">
 									<img src="../../img/png/salire.png"><br>&nbsp; &nbsp;Salir&nbsp;&nbsp;&nbsp;
 								</button>
 							</div>              

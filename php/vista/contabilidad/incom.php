@@ -40,7 +40,7 @@ if (isset($_GET["num_load"])) {
 $_SESSION['INGRESO']['modulo_'] = $_GET['mod'];
 ?>
 
-<script src="../../dist/js/Contabilidad/incom.js"></script>
+<script src="../../dist/js/contabilidad/incom.js"></script>
 <script type="text/javascript">
 var Trans_No = 1; var Ln_No = 1; var Ret_No = 1; var LnSC_No = 1;
 function Form_Activate()
@@ -58,6 +58,7 @@ function Form_Activate()
     else if(tp=='CE'){tip = 'Egresos';}
     else if(tp=='ND'){tip = 'NotaDebito';}
     else if(tp=='NC'){tip= 'NotaCredito';}
+    Disable_Buttons();
 
     $("#num_com").html('Comprobante de '+tip+' No. <?php echo date('Y');?>-'+comprobante);
     Listar_Comprobante_SP(comprobante,tp);
@@ -82,6 +83,9 @@ function Form_Activate()
   // TipoBusqueda = "%"
   
   FormActivate();
+  if(ModificarComp==0){
+    reset_1('concepto', 'CD');
+  }
 
  //  Llenar_Encabezado_Comprobante
  //  CalculosTotalAsientos AdoAsientos, LabelDebe, LabelHaber, LabelDiferencia
@@ -386,8 +390,8 @@ function validar_comprobante()
       confirmButtonText: 'Si!'
     }).then((result) => {
       if (result.value == true) {
-        console.log(JSON.stringify(parametros, null, 2));
         grabar_comprobante(parametros);
+        
       } else {
         // alert('cancelado');
       }
@@ -477,8 +481,8 @@ function validar_comprobante()
 <div class="row p-1">
   <div class="mb-1 col-sm-4 col-md-4 col-lg-4 btn-group">
     <div class="">
-      <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CD');" 
-      id='CD' title='Comprobante diario' aria-pressed='true'>Diario</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text active" onclick="reset_1('comproba','CD');" 
+      id='CD' title='Comprobante diario'>Diario</button>
       <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CI');" 
       id='CI' title='Comprobante de ingreso'>Ingreso</button>
       <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text" onclick="reset_1('comproba','CE');" 

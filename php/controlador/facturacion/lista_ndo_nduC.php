@@ -2,7 +2,7 @@
 $tipo = 2; //Se usa para saber que debe regresar dos carpetas en chequear_seguridad
 require_once(dirname(__DIR__, 2) . "/db/chequear_seguridad.php");
 require_once(dirname(__DIR__, 2) . "/modelo/facturacion/lista_ndo_nduM.php");
-require_once(dirname(__DIR__, 2) . "/modelo/facturacion/punto_ventaM.php");
+//require_once(dirname(__DIR__, 2) . "/modelo/facturacion/punto_ventaM.php");
 require(dirname(__DIR__, 3) . '/lib/fpdf/cabecera_pdf.php');
 if (!class_exists('enviar_emails')) {
 	require_once(dirname(__DIR__, 3) . '/lib/phpmailer/enviar_emails.php');
@@ -177,7 +177,7 @@ class lista_facturasC
 		$this->email = new enviar_emails();
 		$this->empresaGeneral = $this->modelo->Empresa_data();
 		$this->sri = new autorizacion_sri();
-		$this->punto_venta = new punto_ventaM();
+		//$this->punto_venta = new punto_ventaM();
 		//$this->modelo = new MesaModel();
 	}
 

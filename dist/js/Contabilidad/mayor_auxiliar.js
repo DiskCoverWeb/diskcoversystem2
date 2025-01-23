@@ -46,10 +46,6 @@ $(document).ready(function()
     
 function consultar_datos(OpcUno,PorConceptos)
 {
-    if($.fn.dataTable.isDataTable('#tbl_Mayor_Auxiliar')){
-        $('#tbl_Mayor_Auxiliar').DataTable().clear().destroy();
-    }
-    
     $('#OpcU').val(OpcUno);
     var parametros =
     {
@@ -87,27 +83,13 @@ function consultar_datos(OpcUno,PorConceptos)
                     $('#myModal_espera').modal('hide'); 			    
                 }, 500)
                 tbl_Mayor_Auxiliar = $('#tbl_Mayor_Auxiliar').DataTable({
-                    responsive: true,
                     language: {
                         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
                     },
-                    "ajax": {
-                        "url": "../controlador/contabilidad/mayor_auxiliarC.php?consultar=true",
-                        "type": "post",
-                        "data": function(d){ 
-                            return { parametros:parametros }
-                        },
-                        "dataSrc": function (response) {
-                            response.DGMayor.data = ProcesarDatos(response.DGMayor.data);
-                            return response.DGMayor.data || [];
-                        },
-                        "error": function(xhr, status, error){
-                            console.log("Error al generar la tabla: ", xhr, status, error); 
-                        }
-                    }, 
-                    scrollX: true, 
-                    scrollY: '300px',
-                    scrollColapse: true,
+                    data: ProcesarDatos(response.DGMayor.data),
+                    destroy: true, 
+                    paging: false, 
+                    searching: false, 
                     "columns": [
                         {"data": "Fecha",
                             render: function(data, type, item) {

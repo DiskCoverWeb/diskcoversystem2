@@ -16,7 +16,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
     echo 1;
   } ?>'
 </script>
-<script src="../../dist/js/Contabilidad/FCliente.js"></script>
+<script src="../../dist/js/contabilidad/FCliente.js"></script>
 
 <style type="text/css">
   .visible {

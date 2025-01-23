@@ -1,6 +1,6 @@
 
 
-<script src="../../dist/js/Contabilidad/libro_banco.js"></script>
+<script src="../../dist/js/contabilidad/libro_banco.js"></script>
 <?php
 	Ejecutar_SQL_SP("UPDATE Comprobantes " .
         "SET Cotizacion = 0.004 " .
@@ -8,132 +8,130 @@
         "AND Item = '" . $_SESSION['INGRESO']['item'] . "' " .
         "AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "'");
 ?>
-<style>
-  .font-box{
-    font-size: 0.9rem;
-    margin-bottom: 10px; 
-  }
-</style>
+
 <div>
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
+		<div class="breadcrumb-title pe-3">
+			<?php echo $NombreModulo; ?>
 		</div>
 		<div class="ps-3">
-		<nav aria-label="breadcrumb">
+			<nav aria-label="breadcrumb">
 			<ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
-			<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-			</li>
+			<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
 			</ol>
-		</nav>
+			</nav>
 		</div>          
 	</div>
 
-   	<div class="row row-cols-auto pb-2">
-   		<div class="row row-cols-auto btn-group">
-				<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
-					<img src="../../img/png/salire.png">
-				</a>
+   	<div class="row row-cols-auto">
+   		<div class="btn-group">
+			<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
+				<img src="../../img/png/salire.png">
+			</a>
 
-				<button title="Consultar"  data-toggle="tooltip" class="btn btn-outline-secondary" onclick="ConsultarDatosLibroBanco();">
-					<img src="../../img/png/consultar.png" >
-				</button>
-			
-				<a href="#" id="imprimir_pdf" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Descargar PDF">
-					<img src="../../img/png/pdf.png">
-				</a>                          	
-					
-				<a href="#" id="imprimir_excel"  class="btn btn-outline-secondary" data-toggle="tooltip" title="Descargar excel">
-				<img src="../../img/png/table_excel.png">
-				</a>                          	
+			<button title="Consultar"  data-toggle="tooltip" class="btn btn-outline-secondary" onclick="ConsultarDatosLibroBanco();">
+				<img src="../../img/png/consultar.png" >
+			</button>
+		
+			<a href="#" id="imprimir_pdf" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Descargar PDF">
+				<img src="../../img/png/pdf.png">
+			</a>                          	
+				
+			<a href="#" id="imprimir_excel"  class="btn btn-outline-secondary" data-toggle="tooltip" title="Descargar excel">
+			<img src="../../img/png/table_excel.png">
+			</a>                          	
    		</div>
-   		
    	</div>
 	<div class="row row-cols-auto">   	  	
 	  	<div class="col-4"><br>
-	  		<div class="row p-0 m-0">
-				<b class="col-2">Desde:</b>
-            	<input type="date" name="desde" id="desde" class="form-control form-control-sm col-6 border rounded ms-2 w-50" style="font-size: 0.8rem"  value="<?php echo date("Y-m-d");?>" onblur="validar_year_menor(this.id);fecha_fin()" onkeyup="validar_year_mayor(this.id)">
+	  		<div class="row">
+				<b class='col-sm-3'>Desde:</b>
+				<div class='col-sm-8'>
+					<input type="date" name="desde" id="desde" class="form-control form-control-sm" value="<?php echo date("Y-m-d");?>" onblur="validar_year_menor(this.id);fecha_fin()" onkeyup="validar_year_mayor(this.id)">
+				</div>
 			</div>
-			<div class="row p-0 m-0">
-            	<b class="col-2">Hasta:&nbsp;</b>
-            	<input type="date" name="hasta" id="hasta"  class="form-control form-control-sm col-6 border rounded ms-2 w-50" style="font-size: 0.8rem" value="<?php echo date("Y-m-d");?>" onblur="validar_year_menor(this.id);ConsultarDatosLibroBanco();" onkeyup="validar_year_mayor(this.id)">  	              	
+			<div class="row">
+				<b class='col-sm-3'>Hasta:&nbsp;</b>
+				<div class="col-sm-8">
+					<input type="date" name="hasta" id="hasta" class="form-control form-control-sm" value="<?php echo date("Y-m-d");?>" onblur="validar_year_menor(this.id);ConsultarDatosLibroBanco();" onkeyup="validar_year_mayor(this.id)">  	              	
+				</div> 
 			</div>
 		</div>
-
-	  	<div class="col-4">
-                <label style="margin:0px"><input type="checkbox" name="CheckUsu" id="CheckUsu">  <b>Por usuario</b></label>
-                <select class="form-select form-select-sm w-75 font-box" id="DCUsuario"  onchange="ConsultarDatosLibroBanco();">
+	  	<div class="col-4 row">
+			<div class="">
+                <label><input type="checkbox" name="CheckUsu" id="CheckUsu">  <b>Por usuario</b></label>
+                <select class="form-select form-select-sm" id="DCUsuario"  onchange="ConsultarDatosLibroBanco();">
                 	<option value="" class="">Seleccione usuario</option>
                 </select>
-          	    <label id="lblAgencia" style="margin:0px"><input type="checkbox" name="CheckAgencia" id="CheckAgencia">  <b>Agencia</b></label>
-          	     <select class="form-select form-select-sm w-75 font-box" id="DCAgencia" onchange="ConsultarDatosLibroBanco();">
+          	    <label id="lblAgencia"><input type="checkbox" name="CheckAgencia" id="CheckAgencia">  <b>Agencia</b></label>
+          	     <select class="form-select form-select-sm" id="DCAgencia" onchange="ConsultarDatosLibroBanco();">
                 	<option value="" class="">Seleccione agencia</option>
-                </select>             
+                </select>  
+			</div>           
         </div>
         <div class="col-4">
         	<b>Por cuenta</b>
-                <select class="form-select form-control-sm w-75 font-box" id="DCCtas" onchange="ConsultarDatosLibroBanco();">
-                	<option value="">Seleccione cuenta</option>
-                </select>
-          	   
+			<select class="form-select form-select-sm" id="DCCtas" onchange="ConsultarDatosLibroBanco();">
+				<option value="">Seleccione cuenta</option>
+			</select>
         </div>		
 	</div>
 	<br>
 	  <!--seccion de panel-->
-	  <div class="row">
-	  	<input type="input" name="OpcU" id="OpcU" value="true" hidden="">
-	  	<div class="col-sm-12">
-	  		<ul class="nav nav-tabs p-2">
-	  		   <li class="active">
-	  		   	<h6 id="tit">Mayores auxiliares</h6></li>
-	  		</ul>
-	  	    <div class="tab-content">
-	  	    	<div id="home" class="">	  	    			
-	  	    	   <div class="table-responsive">
-	  	    	   		<table class="table text-sm w-100" id="tbl_libro_banco">
-  							<thead>
-								<tr>
-									<th class="text-center">Cta</th> 
-									<th class="text-center">Fecha</th> 
-									<th class="text-center">TP</th> 
-									<th class="text-center">Numero</th> 
-									<th class="text-center">Cheq_Dep</th> 
-									<th class="text-center">Cliente</th> 
-									<th class="text-center">Concepto</th> 
-									<th class="text-center">Debe</th> 
-									<th class="text-center">Haber</th> 
-									<th class="text-center">Saldo</th> 
-									<th class="text-center">Parcial_ME</th> 
-									<th class="text-center">Saldo_ME</th> 
-									<th class="text-center">T</th> 
-									<th class="text-center">Item</th> 
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-							</tbody>
-						</table>
-	  	    	   </div>
-	  	    	 </div>		  	    	  	    	
-	  	    </div>	  	  
-	  	</div>
-	  </div>
-	<div class="p-2 border">
+	<div class="row">
+	<input type="input" name="OpcU" id="OpcU" value="true" hidden="">
+		<div class="col-sm-12">
+			<ul class="nav nav-tabs">
+				<li class="active">
+				<h6 id="tit">Mayores auxiliares</h6></li>
+			</ul>
+		</div>
+		<div class="tab-content">
+			<div id="home" class="col-sm-12">
+				<div class="table-responsive">
+					<table class="table text-sm" id="tbl_libro_banco">
+						<thead>
+							<tr>
+								<th class="text-center">Cta</th> 
+								<th class="text-center">Fecha</th> 
+								<th class="text-center">TP</th> 
+								<th class="text-center">Numero</th> 
+								<th class="text-center">Cheq_Dep</th> 
+								<th class="text-center">Cliente</th> 
+								<th class="text-center">Concepto</th> 
+								<th class="text-center">Debe</th> 
+								<th class="text-center">Haber</th> 
+								<th class="text-center">Saldo</th> 
+								<th class="text-center">Parcial_ME</th> 
+								<th class="text-center">Saldo_ME</th> 
+								<th class="text-center">T</th> 
+								<th class="text-center">Item</th> 
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>		  	    	  	    	
+		</div>	  	  
+	</div>
+	<div class="">
 		<div class="row row-cols-auto">
 			<div class="col-2">
 				<b>Saldo Ant MN:</b>

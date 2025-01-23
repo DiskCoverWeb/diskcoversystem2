@@ -1,4 +1,4 @@
-<script src="../../dist/js/Contabilidad/Subcta_proyectos.js"></script>
+<script src="../../dist/js/contabilidad/Subcta_proyectos.js"></script>
 <!--Mas pequeño de la clase definia por BS5 (Para acoplar el contenido de los boxes)-->
 <style>
   .font-box { 

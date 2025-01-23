@@ -162,9 +162,7 @@ function Consultar_Un_Submodulo()
                         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
                     },
                     data: ProcesarDatos(response.tbl.data),
-                    scrollX: true, 
                     scrollY: '300px',
-                    scrollColapse: true,
                     'columns': [
                         {"data":"Cta"},
                         {"data":"Fecha"},

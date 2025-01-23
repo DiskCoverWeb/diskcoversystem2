@@ -128,6 +128,7 @@ class recuperar_facturaC
                
             }   
         }
+        /*
         $tr='';
         foreach ($lista_faltantes as $key => $value) {
             $tr.='<tr>
@@ -136,9 +137,9 @@ class recuperar_facturaC
             <td>'.$value['Serie'].'</td>
             <td>'.$value['Documento'].'</td>
             </tr>';
-        }
+        }*/
 
-        return array('tabla'=>$tr,'num'=>count($lista_faltantes));
+        return array('tabla'=>$lista_faltantes,'num'=>count($lista_faltantes));
 
     }
 

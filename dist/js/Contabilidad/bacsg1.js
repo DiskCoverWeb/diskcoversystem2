@@ -140,9 +140,7 @@ function cargar_datos(item,nombre,imprimir=false)
                         data: key,
                         title: key
                     })), 
-                    scrollX: true, 
                     scrollY: '300px',
-                    destroy: true
                 });
                 $('#tbl_datos').on('init.dt', function() {
                     $('#tbl_datos th').each(function(index) {

@@ -2,7 +2,7 @@
 <script type="text/javascript">
     var TipoProveedor = '<?= echo $tipo; ?>'
 </script>
-<script src="../../dist/js/Contabilidad/FProveedores.js"></script>
+<script src="../../dist/js/contabilidad/FProveedores.js"></script>
 <form id="form_nuevo_proveedor">
     <div class="panel">
         <div class="panel-body" style="background-color:antiquewhite;">

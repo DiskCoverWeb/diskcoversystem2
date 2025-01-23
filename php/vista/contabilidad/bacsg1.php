@@ -17,7 +17,7 @@
 		$_SESSION['INGRESO']['ti']='BALANCE DE COMPROBACIÓN';
 	}
 ?>
-<script src="../../dist/js/Contabilidad/bacsg1.js"></script>
+<script src="../../dist/js/contabilidad/bacsg1.js"></script>
 
 
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">

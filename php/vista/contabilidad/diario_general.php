@@ -2,7 +2,7 @@
 //require_once("panel.php");
 
 ?>
-<script src="../../dist/js/Contabilidad/diario_general.js"></script>
+<script src="../../dist/js/contabilidad/diario_general.js"></script>
 <style>
   .font-box{
     font-size: 0.85rem;

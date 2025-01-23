@@ -133,10 +133,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl1.data),
-              scrollY: '400px',
-              scrollX: true,
-              scrollCollapse: true,
-              autoWidth: true,
+              paging: false,
+              searching: false,
               columns: [
                 { 
                   data : null,
@@ -184,9 +182,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl2.data),
-              scrollY: '150px',
-              scrollCollapse: true, 
-              scrollX: true,
+              paging: false, 
+              searching: false, 
               columns: [
                 { data : "T" },
                 { data : "CodRet" },
@@ -233,9 +230,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl2_1.data),
-              scrollY: '150px', 
-              scrollCollapse: true, 
-              scrollX: true,
+              paging: false, 
+              searching: false,
               columns: [
                 { data: "Linea_SRI" },
                 { data: "Cliente" },
@@ -297,9 +293,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl2_2.data),
-              scrollY: '150px',
-              scrollCollapse: true, 
-              scrollX: true,
+              paging: false, 
+              searching: false, 
               columns: [
                 { data: "Linea_SRI" }, 
                 { data: "Cliente" }, 
@@ -349,9 +344,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl3.data),
-              scrollY: '150px',
-              scrollCollapse: true, 
-              scrollX: true,
+              paging: false,
+              searching: false, 
               columns: [
                 { data: "TC" },
                 { data: "Detalles" },
@@ -381,9 +375,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl4.data),
-              scrollY: '300px',
-              scrollCollapse: true,
-              scrollX: true,
+              paging: false, 
+              searching: false,
               columns: [
                 { data: "Codigo_Inv" },
                 { data: "Producto" },

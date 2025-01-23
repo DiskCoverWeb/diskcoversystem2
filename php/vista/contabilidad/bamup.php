@@ -17,7 +17,7 @@
 		$_SESSION['INGRESO']['ti']='BALANCE DE COMPROBACIÓN';
 	}
 ?>
-<script src="../../dist/js/Contabilidad/bamup.js"></script>
+<script src="../../dist/js/contabilidad/bamup.js"></script>
 
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
 		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>

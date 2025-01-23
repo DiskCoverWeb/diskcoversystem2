@@ -12,13 +12,13 @@ function validar_cuenta(campo)
 	let parte = formato.split('.');
 	var nuevo =  new Array(); 
 	let cadnew ='';
-	console.log(parte)
+	//console.log(parte)
 	for (var i = 0 ; i < parte.length; i++) {
 
 		if(cuentaini.length != '')
 		{
 			var b = parte[i].length;
-			console.log("Parte: ", parte[i], "Parte.lenght: ", parte[i].length)
+			//console.log("Parte: ", parte[i], "Parte.lenght: ", parte[i].length)
 			var c = cuentaini.substr(0,b);
 			if(c.length==b)
 			{
