@@ -17,12 +17,38 @@ class MYPDF extends TCPDF
 		$this->sucursal = $sucursal;
 	}
 
+	function url_logo($logoName = false)
+	{
+		$logo = $_SESSION['INGRESO']['Logo_Tipo'];
+		if ($logoName) {
+			$logo = $logoName;
+		}
+
+		$src_jpg = dirname(__DIR__, 2) . '/img/logotipos/' . $logo . '.jpg';
+		//gif
+		$src_gif = dirname(__DIR__, 2) . '/img/logotipos/' . $logo . '.gif';
+		//png
+		$src_png = dirname(__DIR__, 2) . '/img/logotipos/' . $logo . '.png';
+
+		if (@getimagesize($src_png)) {
+			return $src_png;
+		} else if (@getimagesize($src_jpg)) {
+			return $src_jpg;
+		} else if (@getimagesize($src_gif)) {
+			return $src_gif;
+		} else {
+			return '.';
+
+		}
+		//En caso de que ninguno de los 3 exista, no se muestra nada como logo. 
+	}
+
 	public function Header() {
         // Logo
 
         // print_r($this->datos[0]);die();
         $this->SetXY(13,7);
-      		$src = url_logo();
+      		$src = $this->url_logo();
 		if ($src !== '.') {
 			$this->Image($src, 13, 5, 42, 20);
 		} 
@@ -898,11 +924,11 @@ retencion dentro del plazo maximo de CINCO dias de recibido el comprobante de ve
 		$pdf->Output('Facturas_'.$suc . '_' . $punto . '_' . generaCeros($datos[0]['Factura'], 9).'.pdf', 'I');
 	}
 	if ($imp1 == 1) {
-		if(!file_exists(dirname(__DIR__, 2) . '/TEMP/'))
+		if(!file_exists(dirname(__DIR__, 3) . '/TEMP/'))
 		{
-			mkdir(dirname(__DIR__, 2) . '/TEMP/', 0777);
+			mkdir(dirname(__DIR__, 3) . '/TEMP/', 0777);
 		}
-		$pdf->Output(dirname(__DIR__, 2) . '/TEMP/' . $datos[0]['Serie'] . '-' . generaCeros($datos[0]['Factura'], 7) . '.pdf','F');
+		$pdf->Output(dirname(__DIR__,3) . '/TEMP/' . $datos[0]['Serie'] . '-' . generaCeros($datos[0]['Factura'], 7) . '.pdf','F');
 
 		// $pdf->Output('TEMP/'.$nombre.'.pdf','F'); 
 	}
@@ -1225,7 +1251,7 @@ function imprimirDocEle_guia($datos, $detalle, $educativo, $matri = false, $nomb
 		$pdf->Output('Guia_remision_'.$datos[0]['Serie_GR'] . '-' . generaCeros($datos[0]['Remision'], 7).'.pdf', 'I');
 	}
 	if ($imp1 == 1) {
-		$pdf->Output('F', dirname(__DIR__, 2) . '/TEMP/' . $datos[0]['Serie_GR'] . '-' . generaCeros($datos[0]['Remision'], 7) . '.pdf');
+		$pdf->Output('F', dirname(__DIR__, 3) . '/TEMP/' . $datos[0]['Serie_GR'] . '-' . generaCeros($datos[0]['Remision'], 7) . '.pdf');
 
 		// $pdf->Output('TEMP/'.$nombre.'.pdf','F'); 
 	}
@@ -1403,50 +1429,23 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		
 
 
-		$pdf->Output('Guia_remision_.pdf', 'I');
+		// $pdf->Output('Guia_remision_.pdf', 'I');
 
 
 	if ($imp1 == false || $imp1 == 0) {
 		$pdf->Output('Retencion_' . $datos[0]['Serie_Retencion'] . '-' . generaCeros($datos[0]['SecRetencion'], 9) . '.pdf', 'I');
 	}
 	if ($imp1 == 1) {
-		if(!file_exists(dirname(__DIR__, 2) . '/TEMP/'))
+		if(!file_exists(dirname(__DIR__, 3) . '/TEMP/'))
 		{
 			mkdir(dirname(__DIR__, 2) . '/TEMP/', 0777);
 		}
-		$pdf->Output('F', dirname(__DIR__, 2) . '/TEMP/RE_' . $datos[0]['Serie_Retencion'] . '-' . generaCeros($datos[0]['SecRetencion'], 9) . '.pdf');
+		$pdf->Output(dirname(__DIR__,3) . '/TEMP/RE_' . $datos[0]['Serie_Retencion'] . '-' . generaCeros($datos[0]['SecRetencion'], 9) . '.pdf','F');
 
 		// $pdf->Output('TEMP/'.$nombre.'.pdf','F'); 
 	}
 }
 
-
-
-	function url_logo($logoName = false)
-	{
-		$logo = $_SESSION['INGRESO']['Logo_Tipo'];
-		if ($logoName) {
-			$logo = $logoName;
-		}
-
-		$src_jpg = dirname(__DIR__, 2) . '/img/logotipos/' . $logo . '.jpg';
-		//gif
-		$src_gif = dirname(__DIR__, 2) . '/img/logotipos/' . $logo . '.gif';
-		//png
-		$src_png = dirname(__DIR__, 2) . '/img/logotipos/' . $logo . '.png';
-
-		if (@getimagesize($src_png)) {
-			return $src_png;
-		} else if (@getimagesize($src_jpg)) {
-			return $src_jpg;
-		} else if (@getimagesize($src_gif)) {
-			return $src_gif;
-		} else {
-			return '.';
-
-		}
-		//En caso de que ninguno de los 3 exista, no se muestra nada como logo. 
-	}
 
 }
 ?>

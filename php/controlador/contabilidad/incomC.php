@@ -1382,7 +1382,7 @@ class incomC
             if(strlen($Autorizacion_R) >= 13){
             	// $res = '0';
             	$res = $this->sri->Autorizar_retencion($parametros_xml);
-            	$res = json_decode($res,true); 
+            	// $res = json_decode($res,true); 
 
             	// $res = $this->SRI_Crear_Clave_Acceso_Retencines($parametros_xml); //function xml
             	// print_r($res);die();

@@ -684,7 +684,7 @@ function generar_factura() {
                     {
                         var url = '../../TEMP/' + data['pdf'] + '.pdf';
                         window.open(url, '_blank'); 
-                        window.reload();
+                        location.reload();
                     }else
                     {                       
                         Re_imprimir($('#TextFacturaNo').val(),$('#LblSerie').text(),$('#LblRUC').val(),tc[0])

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<comprobanteRetencion id="comprobante" version="2.0.0">
+  <infoTributaria>
+    <ambiente>1</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>VACA PRIETO WALTER JALIL</razonSocial>
+    <nombreComercial>DISKCOVER SYSTEM</nombreComercial>
+    <ruc>0702164179001</ruc>
+    <claveAcceso>2301202507070216417900110010030000000871234567817</claveAcceso>
+    <codDoc>07</codDoc>
+    <estab>001</estab>
+    <ptoEmi>003</ptoEmi>
+    <secuencial>000000087</secuencial>
+    <dirMatriz>Desarrollo para programacion de DiskCover System</dirMatriz>
+  </infoTributaria>
+  <infoCompRetencion>
+    <fechaEmision>23/01/2025</fechaEmision>
+    <dirEstablecimiento>DESARROLLO PARA PROGRAMACION DE DISKCOVER SYSTEM</dirEstablecimiento>
+    <obligadoContabilidad>NO</obligadoContabilidad>
+    <tipoIdentificacionSujetoRetenido>04</tipoIdentificacionSujetoRetenido>
+    <parteRel>NO</parteRel>
+    <razonSocialSujetoRetenido>PRISMANET PROFESIONAL S.A</razonSocialSujetoRetenido>
+    <identificacionSujetoRetenido>1792164710001</identificacionSujetoRetenido>
+    <periodoFiscal>01/2025</periodoFiscal>
+  </infoCompRetencion>
+  <docsSustento>
+    <docSustento>
+      <codSustento>01</codSustento>
+      <codDocSustento>01</codDocSustento>
+      <numDocSustento>001003000000032</numDocSustento>
+      <fechaEmisionDocSustento>23/01/2025</fechaEmisionDocSustento>
+      <fechaRegistroContable>23/01/2025</fechaRegistroContable>
+      <numAutDocSustento>0000000001</numAutDocSustento>
+      <pagoLocExt>01</pagoLocExt>
+      <totalSinImpuestos>320.00</totalSinImpuestos>
+      <importeTotal>332.00</importeTotal>
+      <impuestosDocSustento>
+        <impuestoDocSustento>
+          <codImpuestoDocSustento>2</codImpuestoDocSustento>
+          <codigoPorcentaje>4</codigoPorcentaje>
+          <baseImponible>300.00</baseImponible>
+          <tarifa>15</tarifa>
+          <valorImpuesto>12.00</valorImpuesto>
+        </impuestoDocSustento>
+        <impuestoDocSustento>
+          <codImpuestoDocSustento>2</codImpuestoDocSustento>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <baseImponible>20.00</baseImponible>
+          <tarifa>0</tarifa>
+          <valorImpuesto>0.00</valorImpuesto>
+        </impuestoDocSustento>
+      </impuestosDocSustento>
+      <retenciones>
+        <retencion>
+          <codigo>1</codigo>
+          <codigoRetencion>303</codigoRetencion>
+          <baseImponible>420.00</baseImponible>
+          <porcentajeRetener>10.00</porcentajeRetener>
+          <valorRetenido>42.00</valorRetenido>
+        </retencion>
+        <retencion>
+          <codigo>2</codigo>
+          <codigoRetencion>9</codigoRetencion>
+          <baseImponible>6.00</baseImponible>
+          <porcentajeRetener>10</porcentajeRetener>
+          <valorRetenido>0.60</valorRetenido>
+        </retencion>
+        <retencion>
+          <codigo>2</codigo>
+          <codigoRetencion>2</codigoRetencion>
+          <baseImponible>6.00</baseImponible>
+          <porcentajeRetener>70</porcentajeRetener>
+          <valorRetenido>4.20</valorRetenido>
+        </retencion>
+      </retenciones>
+      <pagos>
+        <pago>
+          <formaPago>01</formaPago>
+          <total>332.00</total>
+        </pago>
+      </pagos>
+    </docSustento>
+  </docsSustento>
+  <infoAdicional>
+    <campoAdicional nombre="Direccion">SD</campoAdicional>
+    <campoAdicional nombre="Telefono">098765432</campoAdicional>
+    <campoAdicional nombre="Email">JAVIER.FARINANGO92@GMAIL.COM</campoAdicional>
+    <campoAdicional nombre="Comprobante No">CD-000000087</campoAdicional>
+    <campoAdicional nombre="Contribuyente Regimen Microempresas"> </campoAdicional>
+  </infoAdicional>
+</comprobanteRetencion>

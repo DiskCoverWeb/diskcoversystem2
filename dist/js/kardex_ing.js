@@ -669,7 +669,15 @@ function grabar_comprobante()
                       tipo_error_sri(data[1]);
                     }); 
 
-               }
+               }else if(data[0]==-1)
+                  {
+
+                    Swal.fire('XML DEVUELTO:',data[3],'error').then(function(){ 
+                      var url=  '../../TEMP/'+data.pdf+'.pdf';    
+                      window.open(url, '_blank');   
+                      tipo_error_sri(data[1]);
+                    }); 
+                  }
                   // if(data.respuesta==1)
                   // { 
                   //   Swal.fire({
