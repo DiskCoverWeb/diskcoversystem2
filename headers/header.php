@@ -2,8 +2,8 @@
 include_once("../db/chequear_seguridad.php"); 
 include_once("../controlador/panel.php");
 include_once(dirname(__DIR__,1)."/php/controlador/menuC.php"); 
-include_once(dirname(__DIR__,1)."\php\controlador\contabilidad\contabilidad_controller.php");
-include_once(dirname(__DIR__,1)."\php\modelo\contabilidad\contabilidad_model.php");
+include_once(dirname(__DIR__,1)."/php/controlador/contabilidad/contabilidad_controller.php");
+include_once(dirname(__DIR__,1)."/php/modelo/contabilidad/contabilidad_model.php");
 $menuC = new menuC();
 
 $pagina =  isset($_GET['acc']) ? $_GET['acc'] : "";

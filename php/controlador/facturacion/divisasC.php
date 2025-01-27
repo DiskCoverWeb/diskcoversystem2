@@ -683,11 +683,11 @@ Email: ".$datos_pre['cliente']['Email']."
 print_r($d);die();
 
 
-    //  $url_firmados = 'C:\xampp\htdocs\diskcoversystem\php\comprobantes/entidades/entidad_0/CE998/Firmados/';
-    //  $url_autorizados = 'C:\xampp\htdocs\diskcoversystem\php\comprobantes/entidades/entidad_0/CE998/Autorizados/';
-    //  $url_rechazados = 'C:\xampp\htdocs\diskcoversystem\php\comprobantes/entidades/entidad_0/CE998/No_autorizados/';
-    //  $url_No_autorizados = 'C:\xampp\htdocs\diskcoversystem\php\comprobantes/entidades/entidad_0/CE998/No_autorizados/';
-    //  $url_enviados = 'C:\xampp\htdocs\diskcoversystem\php\comprobantes/entidades/entidad_0/CE998/Enviados/';
+    //  $url_firmados = 'C:/xampp/htdocs/diskcoversystem/php/comprobantes/entidades/entidad_0/CE998/Firmados/';
+    //  $url_autorizados = 'C:/xampp/htdocs/diskcoversystem/php/comprobantes/entidades/entidad_0/CE998/Autorizados/';
+    //  $url_rechazados = 'C:/xampp/htdocs/diskcoversystem/php/comprobantes/entidades/entidad_0/CE998/No_autorizados/';
+    //  $url_No_autorizados = 'C:/xampp/htdocs/diskcoversystem/php/comprobantes/entidades/entidad_0/CE998/No_autorizados/';
+    //  $url_enviados = 'C:/xampp/htdocs/diskcoversystem/php/comprobantes/entidades/entidad_0/CE998/Enviados/';
     //  $link_recepcion = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl';
     //  $link_autorizacion = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl';
 
