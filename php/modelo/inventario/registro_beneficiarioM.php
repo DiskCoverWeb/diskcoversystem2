@@ -144,11 +144,13 @@ class registro_beneficiarioM
 
     function llenarCamposInfoAdd($valor)
     {
-        $sql = "SELECT CodigoA AS CodigoA2, Dia_Ent AS Dia_Ent2, Hora_Ent AS Hora_Ent2,
+        $sql = "SELECT TOP 1 CodigoA AS CodigoA2, Dia_Ent AS Dia_Ent2, Hora_Ent AS Hora_Ent2,
                     Envio_No, No_Soc, Area, Acreditacion, Tipo_Dato,
                     Cod_Fam, Evidencias, Observaciones, Item, Etapa_Procesal
                 FROM  Clientes_Datos_Extras
-                WHERE Codigo = '" . $valor . "'";
+                WHERE Codigo = '" . $valor . "' 
+                AND Acreditacion = '92.02' 
+                ORDER BY Fecha_Registro DESC";
         $resultado = $this->db->datos($sql);
         if (!empty($resultado)) {
             return $resultado[0];
@@ -312,12 +314,21 @@ class registro_beneficiarioM
 
         $resultadoFecha = $this->db->datos($sqlFecha);
 
-        $ultimaFecha = $resultadoFecha[0]['UltimaFecha']->format('Y-m-d');
+        // print_r($resultadoFecha);die();
+
+        $ultimaFecha = $resultadoFecha[0]['UltimaFecha']->format('Y-m-d H:i:s.v');
+        //print_r($ultimaFecha);die();
 
         $sqlRegistros = "SELECT * FROM Trans_Tipo_Poblacion 
                          WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
                          AND CodigoC = '" . $codigo . "' 
                          AND FechaM = '" . $ultimaFecha . "'";
+        /*
+            SELECT Hombres, Mujeres, Total, Cmds, FechaM
+            FROM Trans_Tipo_Poblacion
+            WHERE Item='003' AND CodigoC = '0010000002' AND FechaM = (SELECT TOP 1 MAX(FechaM) FROM Trans_Tipo_Poblacion WHERE Item='003' AND CodigoC = '0010000002' GROUP BY FechaM)
+            ORDER BY FechaM DESC, Cmds ASC;
+        */
 
         return $this->db->datos($sqlRegistros);
     }

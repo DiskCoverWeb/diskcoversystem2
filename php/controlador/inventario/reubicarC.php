@@ -42,7 +42,7 @@ class reubicarC
     			<td>".$stock."</td>
     			<td>".$value['CodBodega']."</td>
     			<td>".$rutas."</td>
-    			<td><button type='button' title = 'Cambiar ubicacion' class='btn btn-xs btn-primary' onclick='cambiar_bodegas(\"".$value['ID']."\")'><i class='fa fa-refresh'></i></button></td>
+    			<td><button type='button' title = 'Cambiar ubicacion' class='btn btn-sm btn-primary p-1' onclick='cambiar_bodegas(\"".$value['ID']."\")'><i class='bx bx-refresh'></i></button></td>
     		</tr>";
     	}
     	return $tr;

@@ -1,4 +1,11 @@
+var video;
+var canvasElement;
+var canvas;
+var scanning = false;
 $(document).ready(function () {
+    video = document.createElement("video");
+	canvasElement = document.getElementById("qr-canvas");
+	canvas = canvasElement.getContext("2d", { willReadFrequently: true });
     // cargar_bodegas();
     // cargar_bodegas2();
        lista_stock_ubicado();
@@ -234,3 +241,70 @@ $.ajax({
     }
 });
 } 
+
+function bodegaPorQR(codigo){
+    $('#txt_bodega').val(codigo.trim());
+    $('#txt_bodega').trigger('blur');
+}
+
+function escanear_qr(){
+	/*if(campo == 'lugar' && $('#txt_codigo').val() == ''){
+		Swal.fire('Seleccione un codigo de ingreso', '', 'error');
+		return;
+	}*/
+	$('#modal_qr_escaner').modal('show');
+	navigator.mediaDevices
+	.getUserMedia({ video: { facingMode: "environment" } })
+	.then(function (stream) {
+	$('#qrescaner_carga').hide();
+		scanning = true;
+		//document.getElementById("btn-scan-qr").hidden = true;
+		canvasElement.hidden = false;
+		video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+		video.srcObject = stream;
+		video.play();
+		tick();
+		scan();
+	});
+}
+
+//funciones para levantar las funiones de encendido de la camara
+function tick() {
+	canvasElement.height = video.videoHeight;
+	canvasElement.width = video.videoWidth;
+	//canvasElement.width = canvasElement.height + (video.videoWidth - video.videoHeight);
+	canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+
+	scanning && requestAnimationFrame(tick);
+}
+
+function scan() {
+	try {
+		qrcode.decode();
+	} catch (e) {
+		setTimeout(scan, 300);
+	}
+}
+
+const cerrarCamara = () => {
+	video.srcObject.getTracks().forEach((track) => {
+		track.stop();
+	});
+	canvasElement.hidden = true;
+$('#qrescaner_carga').show();
+	$('#modal_qr_escaner').modal('hide');
+};
+
+//callback cuando termina de leer el codigo QR
+qrcode.callback = (respuesta) => {
+	if (respuesta) {
+		//console.log(respuesta);
+		//Swal.fire(respuesta)
+
+        bodegaPorQR(respuesta);
+		
+		//activarSonido();
+		//encenderCamara();    
+		cerrarCamara();    
+	}
+};
