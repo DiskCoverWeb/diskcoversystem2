@@ -2,6 +2,7 @@
   <link rel="stylesheet" href="../../dist/css/arbol_bodegas/reset.min.css">
   <link rel="stylesheet" href="../../dist/css/arbol_bodegas/arbol_bodega.css">
   <script src="../../dist/js/arbol_bodegas/prefixfree.min.js"></script>
+  <script src="../../dist/js/qrCode.min.js"></script>
  
 <script type="text/javascript" src="../../dist/js/reubicar.js">
   
@@ -34,15 +35,16 @@
 	<div class="row p-2 border-top border-3 border-secondary-subtle" style="background: antiquewhite;">					
 		<div class="row d-flex align-items-end border-1">
 			<div class="col-sm-4">
-				<b>Buscar Bodega</b>
+				<b class="fw-semibold">Buscar Bodega</b>
 				
 				<div class="input-group input-group-sm">
 					<input type="" name="" class="form-control form-control-sm" id="txt_bodega" name="txt_bodega" placeholder="Buscar Bodega" onblur="lista_stock_ubicado()">
 					<button type="button" class="btn btn-info btn-sm" style="font-size: 8pt;" onclick="abrir_modal_bodegas()"><i class="fa fa-sitemap" style="font-size: 8pt;"></i></button>
+					<button type="button" class="btn btn-primary btn-sm" style="font-size: 8pt;" title="Escanear QR" onclick="escanear_qr()"><i class="fa fa-qrcode" style="font-size: 8pt;"></i></button>
 				</div>
 			</div>
 			<div class="col-sm-4">
-				<b>Buscar Articulo</b>
+				<b class="fw-semibold">Buscar Articulo</b>
 				<input type="" name="" class="form-control form-control-sm" id="txt_cod_barras" name="txt_cod_barras" placeholder="Buscar" onblur="lista_stock_ubicado()">
 			</div>
 			<div class="col-sm-4 d-flex justify-content-end">
@@ -52,9 +54,9 @@
 		<div class="row border-1 mt-3">
 			<br>
 				<div class="col-sm-12">
-					<b>Contenido De bodega</b>
-					<h3 class="box-title" id="txt_bodega_title">Ruta: </h3>
-					<table class="table-sm table-hover table bg-light">
+					<b class="fw-semibold">Contenido De bodega</b>
+					<h3 class="h3" id="txt_bodega_title">Ruta: </h3>
+					<table class="table-sm table-striped table-hover table bg-light">
 						<thead class="text-center bg-primary text-white">
 							<th>Codigo</th>
 							<th><b>Producto</b></th>
@@ -141,6 +143,26 @@
         </div>
     </div>
   </div>
+
+  <div id="modal_qr_escaner" class="modal fade"  role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content" style="background: antiquewhite;">
+          <div class="modal-header bg-primary">
+			  <h4 class="modal-title text-white">Escanear QR</h4>
+              <button type="button" class="btn-close" aria-label="Close" onclick="cerrarCamara()"></button>
+          </div>
+          <div class="modal-body">
+            <div id="qrescaner_carga">
+              <div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;"><img src="../../img/gif/loader4.1.gif" width="20%"></div>
+            </div>
+		  	    <canvas hidden="" id="qr-canvas" class="img-fluid" style="height: 100%;width: 100%;"></canvas>
+          </div>
+          <div class="modal-footer" style="background-color:antiquewhite;">
+              <button type="button" class="btn btn-danger" onclick="cerrarCamara()">Cerrar</button>
+          </div>
+      </div>
+  </div>
+</div>
 
  <script src="../../dist/js/arbol_bodegas/arbol_bodega.js"></script>
 

@@ -388,7 +388,7 @@
                                     title="CALENDARIO ASIGNACION">
                             </div>
                             <div class="flex-grow-1 mx-2">
-                                <b>Día de Entrega</b>
+                                <b>Día de Entrega a BAQ</b>
                                 <select class="form-select form-select-sm" name="diaEntregac" id="diaEntregac"
                                     style="width: 100%;"></select>
                             </div>
@@ -396,7 +396,7 @@
                                 <img src="../../img/png/reloj.png" width="55" height="55">
                             </div>
                             <div class="flex-grow-1 flex-fill mx-2">
-                                <b>Hora de Entrega</b>
+                                <b>Hora de Entrega a BAQ</b>
                                 
                                 <input type="time" name="horaEntregac" id="horaEntregac" class="form-control form-control-sm">
                             </div>
