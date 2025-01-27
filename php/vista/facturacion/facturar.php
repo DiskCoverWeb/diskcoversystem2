@@ -877,11 +877,11 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 	<br><br>
 </div>
 <div class="modal fade" id="cambiar_nombre" role="dialog" data-keyboard="false" data-backdrop="static" tabindex="-1">
-	<div class="modal-dialog modal-dialog modal-dialog-centered modal-sm"
+	<div class="modal-dialog modal-dialog modal-sm"
 		style="margin-left: 25%; margin-top: 30%;">
 		<div class="modal-content">
 			<div class="modal-body text-center">
-				<textarea class="form-control" style="resize: none;" rows="4" id="TxtDetalle" name="TxtDetalle"
+				<textarea class="form-control form-control-sm" style="resize: none;" rows="4" id="TxtDetalle" name="TxtDetalle"
 					onblur="cerrar_modal_cambio_nombre()"></textarea>
 			</div>
 		</div>
