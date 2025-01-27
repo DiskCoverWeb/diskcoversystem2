@@ -707,7 +707,7 @@ class facturar_pensionC
         if(count($datos)>0)
         {
             $intersection = array_intersect(array_column($datos, 'CODIGO'), array(JG01, JG02, JG03));
-            if (!empty($intersection)) {
+            if (count($intersection)>0) {
               return array('respuesta'=>-1,'text'=>"Esta operacion no se puede procesar con pago parcial.");
             }
         }else{

@@ -23,6 +23,8 @@
 <script type="text/javascript">
   mostrar_medidor = '<?php echo $mostrar_medidor; ?>'
 </script>
+
+<script type="text/javascript" src="../../dist/js/preFactura.js?<?php echo date('mdh') ?>"></script>
 <script src="../../dist/js/facturacion/facturar_pension.js"></script>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
   <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
@@ -52,7 +54,11 @@
          <a href="#" title="Presenta la Deuda Pendiente"  class="btn btn-outline-secondary" onclick="DeudaPensionPDF()">
           <img src="../../img/png/project.png" width="25" height="30">
         </a>
+
         <?php include_once("prefactura.php") ?>
+        <a href="#" title="Insertar Prefacturacion Mensual"  class="btn btn-outline-secondary" onclick="OpenModalPreFactura(<?php echo cantidadProductoPreFacturar ?>)">
+          <img src="../../img/png/doc-green.png" width="25" height="30">
+        </a>
         <a href="#" title="Insertar nuevo Beneficiario/Cliente"  class="btn btn-outline-secondary" onclick="addCliente(1)">
           <img src="../../img/png/group.png" width="25" height="30">
         </a>

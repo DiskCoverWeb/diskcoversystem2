@@ -723,3 +723,32 @@ function alignEnd(row, data){
 
 }
 
+  function ListarMedidoresHeader(select, codigo, ninguno = false) {
+      if (codigo != "" && codigo != ".") {
+        $.ajax({
+          url: '../controlador/modalesC.php?ListarMedidores=true',
+          type: 'POST',
+          dataType: 'json',
+          data: { 'codigo': codigo },
+          success: function (response) {
+            select.empty(); // limpia las opciones existentes
+            $.each(response, function (i, opcion) {
+
+              if (i == 0 && ninguno) {
+                select.append($('<option>', {
+                  value: '.',
+                  text: (opcion.Cuenta_No != ".") ? 'Selecciona un Medidor' : 'NINGUNO'
+                }));
+              }
+
+              if (opcion.Cuenta_No != ".") {
+                select.append($('<option>', {
+                  value: opcion.Cuenta_No,
+                  text: opcion.Cuenta_No
+                }));
+              }
+            });
+          }
+        });
+      }
+    }
