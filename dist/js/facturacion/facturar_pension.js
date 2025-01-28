@@ -802,8 +802,8 @@
       'CodigoCliente':$("#codigoCliente").val(),
       'Telefono': $("#telefono").val(),
       'DirS':$("#direccion1").val().toUpperCase(),
-      'Direccion':$("#direccion").val(),
-      'Email':$("#email").val().toUpperCase(),
+      'Direccion':$("#direccion").val().toUpperCase(),
+      'Email':$("#email").val(),
       'MBFecha':$('#caducidad_debito_automatico').val(),
       'Representante':$("#persona").val(),
       'TextCI':$("#TextCI").val(),
@@ -1185,7 +1185,7 @@
     tempCaducidad !== $('#caducidad_debito_automatico').val()) {
       Swal.fire({
           title: 'DESEA ACTUALIZAR DATOS DEL REPRESENTANTE',
-          type: 'warning',
+          icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
@@ -1204,20 +1204,22 @@
               dataType: 'json',
               url: '../controlador/facturacion/facturar_pensionC.php?ActualizaDatosCliente=true',
               data: {
-                "TextRepresentante" : $("#persona").val(),
-                "TxtDireccion" : $("#direccion").val(),
-                "TxtTelefono" : $("#telefono").val(),
+                "Representante" : $("#persona").val(),
+                "Direccion" : $("#direccion").val(),
+                "Telefono" : $("#telefono").val(),
                 "Grupo_No" : $("#DCGrupo_No").val(),
                 "TextCI" : $("#TextCI").val(),
-                "TxtEmail" : $("#email").val().toUpperCase(),
-                "TxtDirS" : $("#direccion1").val().toUpperCase(),
-                "codigoCliente" : $("#codigoCliente").val(),
+                "Email" : $("#email").val(),
+                "DirS" : $("#direccion1").val().toUpperCase(),
+                "CodigoCliente" : $("#codigoCliente").val(),
                 "Documento" : $('#debito_automatica').val(),
                 "CTipoCta" : $('#tipo_debito_automatico').val(),
                 "TxtCtaNo" : $('#numero_cuenta_debito_automatico').val(),
                 "MBFecha" : $('#caducidad_debito_automatico').val(),
                 "Label18" : $("#tdCliente").val(),
-                "CheqPorDeposito" : CheqPorDeposito
+                "CheqPorDeposito" : CheqPorDeposito,
+                'DCDebito':$('#debito_automatica').val(),
+                'TD_Rep':$("#tdCliente").val(),
               }, 
               success: function(response)
               {
@@ -1253,3 +1255,27 @@
      $('#lbl_iva2').text(valiva);
      $('#lbl_iva').text(valiva);
   }
+
+  function codigo() {
+  $("#myModal_espera").modal('show');
+  var ci = $('#TextCI').val();
+  if (ci != '') {
+    $.ajax({
+      url: '../controlador/modalesC.php?codigo=true',
+      type: 'post',
+      dataType: 'json',
+      data: { ci: ci },
+     
+      success: function (response) {
+        console.log(response);
+        // $('#codigoc').val(response.Codigo_RUC_CI);
+        $('.spanNIC').text(response.Tipo_Beneficiario);
+        $('#tdCliente').val(response.Tipo_Beneficiario)
+        $("#myModal_espera").modal('hide');
+      }
+    });
+  } else {
+   
+  }
+
+}

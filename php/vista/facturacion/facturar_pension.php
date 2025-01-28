@@ -74,7 +74,7 @@
                   <div class="input-group-addon form-control-sm p-2 text-box">
                     <b>Inicio Resumen</b>
                  </div>
-                 <input type="date" class="form-control form-control-sm" id="MBHistorico" name="MBHistorico" readonly>
+                 <input type="date" class="form-control form-control-sm" id="MBHistorico" name="MBHistorico">
               </div>
           </div>
           <div class="col-lg-5">
@@ -152,7 +152,7 @@
             </div>
 
             <div class="row">
-              <div class="col-xs-12 col-md-3 text-end bg-amarillo">
+              <div class="col-xs-12 col-md-2 p-1 text-end bg-amarillo">
                 <b>Razón social</b>
               </div>
               <div class="col-xs-12 col-md-5 bg-amarillo-suave p-1">
@@ -161,32 +161,32 @@
               <div class="col-xs-12 col-md-2 text-end  bg-amarillo">
                 <b>CI/RUC(<span class="spanNIC"></span>) </b>
               </div>
-              <div class="col-xs-12 col-md-2 text-end  bg-amarillo-suave  p-1">
+              <div class="col-xs-12 col-md-3 text-end  bg-amarillo-suave  p-1">
                 <input  type="hidden" class="form-control form-control-sm" name="tdCliente" id="tdCliente" readonly>
-                <input type="text" tabindex="11" name="TextCI" id="TextCI" class="form-control form-control-sm red text-end bg-amarillo-suave">
+                <input type="text" tabindex="11" name="TextCI" id="TextCI" class="form-control form-control-sm red text-end bg-amarillo-suave" onblur="codigo()">
               </div>
             </div>
 
             <div class="row bg-amarillo-suave">
-              <div class="col-xs-12 col-md-3 text-end  bg-amarillo">
+              <div class="col-xs-12 col-md-2 p-1 text-end  bg-amarillo">
                 <b>Dirección</b>
               </div>
-              <div class="col-xs-12 col-md-9  bg-amarillo-suave  p-1">
+              <div class="col-xs-12 col-md-10  bg-amarillo-suave  p-1">
                 <input tabindex="12" type="input" class="form-control form-control-sm  bg-amarillo-suave" style="text-transform: uppercase;" name="direccion1" id="direccion1">
               </div>  
             </div>
 
             <div class="row bg-amarillo-suave">
-              <div class="col-xs-12 col-md-3 text-end  bg-amarillo">
+              <div class="col-xs-12 col-md-2 text-end  bg-amarillo">
                 <b>Email</b>
               </div>
               <div class="col-xs-12 col-md-5  bg-amarillo-suave  p-1">
-                <input tabindex="13" type="input" class="form-control form-control-sm bg-amarillo-suave"style="text-transform: uppercase;" name="email" id="email">
+                <input tabindex="13" type="input" class="form-control form-control-sm bg-amarillo-suave" name="email" id="email">
               </div>
               <div class="col-xs-12 col-md-2 text-end  bg-amarillo">
                 <b>Telefono </b>
               </div>
-              <div class="col-xs-12 col-md-2 text-end  bg-amarillo-suave  p-1">
+              <div class="col-xs-12 col-md-3 text-end  bg-amarillo-suave  p-1">
                 <input type="text" tabindex="14" name="telefono" id="telefono" class="form-control form-control-sm red text-end bg-amarillo-suave">
               </div>
             </div>

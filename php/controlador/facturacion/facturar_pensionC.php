@@ -668,7 +668,7 @@ class facturar_pensionC
 
     $MBFecha = (($parametros['MBFecha']!="")?UltimoDiaMes2("01/".$parametros['MBFecha'], 'Ymd'):null);
 
-    // print_r($MBFecha);die();
+    // print_r($parametros);die();
 
     SetAdoAddNew("Clientes_Matriculas");
     SetAdoFields("T", G_NORMAL);
@@ -1167,7 +1167,7 @@ class facturar_pensionC
 
   public function ActualizaDatosCliente($post)
   {
-    if($this->facturacion->Actualiza_Datos_Cliente($post)){
+    if($this->ActualizarCliente($post)){
       return (array("rps" => 1 , "mensaje" => "PROCESO EXITOSO."));
     }else{
       return (array("rps" => 0 , "mensaje" => "No fue posible procesar su solicitud."));
