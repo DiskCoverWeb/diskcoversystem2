@@ -17,7 +17,7 @@
 <div class="row">
 	<div class="col-sm-11">
 		<div class="box">
-			<div class="box border-top border-3 border-secondary-subtle bg-white" id="tabla" style="overflow-y:auto; height: 204px;">
+			<div class="box border-top border-3 border-secondary-subtle bg-white" id="tabla" style="overflow-y: auto;min-height: fit-content;max-height: 40vh;">
 				<ol class="tree" id="tree1">
 				</ol>	
 			</div>		

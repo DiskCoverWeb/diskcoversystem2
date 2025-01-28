@@ -1,8 +1,8 @@
 $(document).ready(function () { 
     console.log("Funciona");
     TVcatalogo();
-    var h = (screen.height)-478;
-    $('#tabla').css('height',h);
+    /*var h = (screen.height)-478;
+    $('#tabla').css('height',h);*/
 
     $('#txt_codigo').keyup(function(e){ 
         if(e.keyCode != 46 && e.keyCode !=8)
