@@ -22,9 +22,9 @@
 		print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
 		<img src="../../img/png/salire.png">
 	</a>
-	<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
+	<!-- <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
 		<img src="../../img/png/grabar.png">
-	</button>
+	</button> -->
   </div>
 </div>
 <form id="form_correos" class="mb-2">

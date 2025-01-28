@@ -128,10 +128,10 @@ function estado_licencia($f3)
 					</div>
 					<div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#SearchModal">
 						
-						<span class="px-5"></b> <?php if(strlen($_SESSION['INGRESO']['Nombre_Comercial'])<30) { 
-														echo $_SESSION['INGRESO']['Nombre_Comercial'].' ...Ver mas';
+						<span class="px-5"></b> <?php if(strlen($_SESSION['INGRESO']['Nombre_Comercial'])<25) { 
+														echo $_SESSION['INGRESO']['Nombre_Comercial'].' ...<b>Ver mas</b>';
 														}else{
-															$newName  = substr($_SESSION['INGRESO']['Nombre_Comercial'], 0,32);
+															$newName  = substr($_SESSION['INGRESO']['Nombre_Comercial'], 0,25);
 															echo $newName.'... <b>Ver mas</b>';
 														} ?></span>
 						<span class="position-absolute top-50 search-show ms-3 translate-middle-y start-0 top-50 fs-5"><i class='bx bx-buildings'></i></span>
@@ -602,7 +602,8 @@ function estado_licencia($f3)
 							<img id="img_foto" src="../../img/usuarios/<?php echo $_SESSION['INGRESO']['Foto']; ?>" class="user-img border border-dark"  alt="user avatar">
 							<div class="user-info">
 								<p class="user-name mb-0"><?php echo $_SESSION['INGRESO']['Nombre']; ?></p>
-								<p class="designattion mb-0">Web Designer</p>
+								<p class="designattion mb-0"><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "AMBIENTE DE PRUEBA" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "AMBIENTE EN PRODUCCION" : ""); ?></p>
+								<!-- <p class="designattion mb-0">Web Designer</p> -->
 							</div>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end">
