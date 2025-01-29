@@ -1,8 +1,8 @@
 $(document).ready(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip();
     DGCostos();
     DCProyecto();
     DCSubModulos();
-
 });
   
 function DGCostos(todas=false)
@@ -29,7 +29,6 @@ function DGCostos(todas=false)
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             }, 
             data: ProcesarDatos(response.data),
-            scrollY: '300px',
             columns: [
               { data: null, 
                 render: function(data, type, row){

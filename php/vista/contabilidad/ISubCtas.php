@@ -60,18 +60,18 @@ date_default_timezone_set('America/Guayaquil');
 <div class="row row-cols-auto mb-2">
     <div class="btn-group">
         <a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
-        print_r($ruta[0] . '#'); ?>" data-bs-toggle="tooltip" title="Salir" class="btn btn-outline-secondary btn-small">
+        print_r($ruta[0] . '#'); ?>" data-bs-toggle="tooltip" title="Salir" class="btn btn-outline-secondary btn-sm">
             <img src="../../img/png/salire.png">
         </a>
-        <button class="btn btn-outline-secondary btn-small" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Grabar" id="btnGrabar"
+        <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Grabar" id="btnGrabar"
             onclick="GrabarCta();">
             <img src="../../img/png/grabar.png">
         </button>
-        <button class="btn btn-outline-secondary btn-small" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Nuevo" id="btnNuevo"
+        <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Nuevo" id="btnNuevo"
             onclick="">
             <img src="../../img/png/nuevo.png">
         </button>
-        <button class="btn btn-outline-secondary btn-small" data-bs-toggle="tooltip" data-bs-placement="bottom"
+        <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom"
             title="Seleccione una SubCuenta" id="btnEliminar" onclick="Eliminar();">
             <img src="../../img/png/eliminar.png">
         </button>
@@ -138,15 +138,15 @@ date_default_timezone_set('America/Guayaquil');
             <div class="col-sm-3 text-end">
                 <button class="btn btn-outline-secondary btn-sm" data-toggle="tooltip" title="Primero"
                     id="btnPrimero">
-                    <img src="../../img/png/primero.png" style="width: 20px; height: 20px;">
+                    <img src="../../img/png/primero.png">
                 </button>
                 <button class="btn btn-outline-secondary rotar-180 btn-sm" data-toggle="tooltip"
                     title="Anterior" id="btnAnterior">
-                    <img src="../../img/png/siguiente.png" style="width: 20px; height: 20px;">
+                    <img src="../../img/png/siguiente.png">
                 </button>
                 <button class="btn btn-outline-secondary btn-sm" data-toggle="tooltip"
                     title="Siguiente" id="btnSiguiente">
-                    <img src="../../img/png/siguiente.png" style="width: 20px; height: 20px;">
+                    <img src="../../img/png/siguiente.png">
                 </button>
                 <button class="btn btn-outline-secondary btn-sm" data-toggle="tooltip"
                     title="Ultimo" id="btnUltimo">
@@ -206,7 +206,7 @@ date_default_timezone_set('America/Guayaquil');
                     value="0" style="text-align:right;" onclick="MarcarTexto(this);">
             </div>
             <!-- CUENTA RELACIONADA -->
-            <div class="col-sm-2 p-0">
+            <div class="col-sm-2">
                 <b>CUENTA RELACIONADA</b>
                 <input type="text" class="form-control form-control-sm" id="MBoxCta" placeholder="0" value="0"
                     style="text-align:right;" onclick="MarcarTexto(this);">

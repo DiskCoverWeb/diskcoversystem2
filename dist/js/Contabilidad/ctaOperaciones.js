@@ -1,6 +1,6 @@
 $(document).ready(function()
     {
-    
+    $('[data-bs-toggle="tooltip"]').tooltip();
     var h = (screen.height)-280;
     $('#tabla').css('height',h);
     meses();
@@ -285,7 +285,7 @@ function meses()
 
 function tipo_pago()
 {
-  var pago = '<option value="">Selecciopne tipo de pago</option>';
+  var pago = '<option value="">Seleccione tipo de pago</option>';
   $.ajax({
  // data:  {parametros:parametros},
  url:   '../controlador/contabilidad/ctaOperacionesC.php?tipo_pago=true',
@@ -557,6 +557,7 @@ $.ajax({
 }
 function validar_cambiar()
 {
+console.log($('#txt_ti').val());
 if($('#txt_ti').val() != 'G')
 {
   $('#cambiar_select').text($('#MBoxCta').val()+'-'+$('#TextConcepto').val());

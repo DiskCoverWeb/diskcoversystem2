@@ -20,17 +20,17 @@
   <div class="row row-cols-auto">
     <div class="d-flex justify-content-center align-items-center">
         <div class="btn-group p-0">
-          <a href="inicio.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
+          <a href="inicio.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
             <img src="../../img/png/salire.png">
           </a>
-          <button type="button" class="btn btn-sm btn-outline-secondary" title="Copiar Catalogo" onclick="mostrarModalPass()" >
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Copiar Catalogo" onclick="mostrarModalPass()" >
             <img src="../../img/png/copiar_1.png">
           </button>
-          <button type="button" class="btn btn-sm btn-outline-secondary" title="Cambiar Cuentas" onclick="validar_cambiar()">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Cambiar Cuentas" onclick="validar_cambiar()">
             <img src="../../img/png/pbcs.png">
           </button>
-          <button title="Guardar"  class="btn btn-sm btn-outline-secondary" onclick="grabar_cuenta()">
-            <img src="../../img/png/grabar.png" >
+          <button title="Guardar"  class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" onclick="grabar_cuenta()">
+            <img src="../../img/png/grabar.png">
           </button>
         </div>
     </div>
@@ -75,22 +75,14 @@
           </div> 
         <div class="row">  
           <div class="col-sm-3">
-              <b>Tipo de cuenta</b><br>
-            <div class="form-check form-check-inline d-dlex align-items-center">
-              <input class="form-check-input" type="radio" name="rbl_t" id="OpcG" value="G" checked>
-              <label class="form-check-label" for="OpcG"><b>Grupo</b></label>
-            </div>
-            <br>
-            <div class="form-check form-check-inline">
-              <label class="form-check-label"><input type="radio" name="rbl_t" id="OpcD" class="form-check-input"> <b>Detalle</b> </label>
-            </div>
-            <br>
-            <div class="form-check form-check-inline">
+          <b>Tipo de cuenta</b><br>
+           <label class="form-check-label"><input class="form-check-input" type="radio" name="rbl_t" id="OpcG" checked=""> <b>Grupo</b> </label><br>
+           <label class="form-check-label"><input class="form-check-input" type="radio" name="rbl_t" id="OpcD" > <b>Detalle</b> </label>
+           <input type="hidden" name="" id="txt_ti" value="G">
+           <br>
             <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqModGastos" id="CheqModGastos"> <b>Para gastos de caja chica</b></label> <br> 
-            <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqUS" id="CheqUS"> <b>Cuenta M/E</b></label>  <br>
-            <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqFE" id="CheqFE"> <b>Flujo efectivo</b></label>  <br>              
-            </div>
-            
+           <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqUS" id="CheqUS"> <b>Cuenta M/E</b></label>  <br>
+           <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqFE" id="CheqFE"> <b>Flujo efectivo</b></label>  <br>             
           </div>
           <div class="col-sm-3">
             <b>Tipo de cuenta</b><br>
@@ -134,11 +126,11 @@
             <input type="" name="TextPresupuesto" class="form-control" id="TextPresupuesto" value="0.0">  
         </div>   
         </div>
+        <br>
         <div class="row">
-          
-        <div class="col-sm-3">
-          <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqTipoPago" id="CheqTipoPago" onclick="forma_pago()"> TIPO DE PAGO</label>
-        </div>
+          <div class="col-sm-3">
+            <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqTipoPago" id="CheqTipoPago" onclick="forma_pago()"> TIPO DE PAGO</label>
+          </div>
           <div class="col-sm-9">
               <select class="form-select form-select-sm" id="DCTipoPago" style="display: none;">
                 <option>Seleccione tipo de pago</option>
@@ -178,27 +170,27 @@
   </div>
 
 
-  <div class="modal fade bd-example-modal-sm" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal fade bd-example-modal-sm" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLongTitle">Ingrese Presupuesto</h5>
         </div>
         <div class="modal-body">
-          <select class="form-control input-sm" id="DCMes">
+          <select class="form-select form-select-sm" id="DCMes">
             <option>Seleccione mes</option>
           </select>
-          <input type="" name="" id="txt_val_pre" class="form-control input-sm" placeholder="0.00">
+          <input type="" name="" id="txt_val_pre" class="form-control form-control-sm" placeholder="0.00">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
           <button type="button" class="btn btn-primary" onclick="ingresar_presu()">Ingresar</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="modal fade bd-example-modal-sm" id="modal_copiar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal fade bd-example-modal-sm" id="modal_copiar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog modal-md" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -207,26 +199,26 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-md-9">
-                <select class="form-control input-sm" id="DLEmpresa">
+                <select class="form-select form-select-sm" id="DLEmpresa">
                   <option>Elija empresa a copiar el catalogo</option>
                 </select><br>
-                <label class="checkbox-inline"><input type="checkbox" name="CheqCatalogo" id="CheqCatalogo"> Catalogo de cuentas</label><br>
-                <label class="checkbox-inline"><input type="checkbox" name="CheqSetImp" id="CheqSetImp"> Seteos de impresion</label><br>
-                <label class="checkbox-inline"><input type="checkbox" name="CheqFact" id="CheqFact"> Seteos de facturacion</label><br>
-                <label class="checkbox-inline"><input type="checkbox" name="CheqSubCta" id="CheqSubCta"> SubCuentas de Ingreso, Gastos y costos</label><br>
-                <label class="checkbox-inline"><input type="checkbox" name="CheqSubCP" id="CheqSubCP"> SubCuentas de CxC y CxP</label>            
+                <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqCatalogo" id="CheqCatalogo"> Catalogo de cuentas</label><br>
+                <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqSetImp" id="CheqSetImp"> Seteos de impresion</label><br>
+                <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqFact" id="CheqFact"> Seteos de facturacion</label><br>
+                <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqSubCta" id="CheqSubCta"> SubCuentas de Ingreso, Gastos y costos</label><br>
+                <label class="form-check-label"><input class="form-check-input" type="checkbox" name="CheqSubCP" id="CheqSubCP"> SubCuentas de CxC y CxP</label>            
             </div>
             <div class="col-md-3 text-center">
               <div class="row">
-                <div class="col-md-12 col-sm-6 col-xs-2">                
-                  <button type="button" class="btn btn-default" id="btn_copiar_cata" title="Copiar Catalogo" data-toggle="modal" data-target="#modal_copiar" onclick="copiar_op('false')">
+                <div class="col-md-12 col-sm-6">                
+                  <button type="button" class="btn btn-outline-secondary" id="btn_copiar_cata" title="Copiar Catalogo" data-bs-toggle="modal" data-bs-target="#modal_copiar" onclick="copiar_op('false')">
                     <img src="../../img/png/agregar.png"><br>
                     Aceptar
                   </button>
                 </div>
-                <div class="col-md-12 col-sm-6 col-xs-2">
+                <div class="col-md-12 col-sm-6">
                   <br>
-                  <button type="button" class="btn btn-default" title="Cerrar" data-dismiss="modal">
+                  <button type="button" class="btn btn-outline-secondary" title="Cerrar" data-bs-dismiss="modal">
                     <img src="../../img/png/salire.png"><br>&nbsp; &nbsp;Salir&nbsp;&nbsp;&nbsp;
                   </button>
                 </div>              
@@ -243,24 +235,24 @@
     </div>
   </div>
 
-  <div class="modal fade bd-example-modal-sm" id="modal_periodo" tabindex="-1" role="dialog" aria-labelledby="modal_periodo" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal fade bd-example-modal-sm" id="modal_periodo" tabindex="-1" role="dialog" aria-labelledby="modal_periodo" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLongTitle">Ingrese Periodo</h5>
         </div>
         <div class="modal-body">
-          <input type="" name="" id="txt_perido_c" class="form-control input-sm" value=".">
+          <input type="" name="" id="txt_perido_c" class="form-control form-control-sm" value=".">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" onclick="copiar()">Aceptar</button>
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-outline-secondary" onclick="copiar()">Aceptar</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="modal fade bd-example-modal" id="modal_cambiar" tabindex="-1" role="dialog" aria-labelledby="modal_cambiar" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal fade bd-example-modal" id="modal_cambiar" tabindex="-1" role="dialog" aria-labelledby="modal_cambiar" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog modal-md" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -275,21 +267,21 @@
                       <b id="cambiar_select"></b>
                     </div>
                   </div>
-                <select class="form-control input-sm" id="DLEmpresa_">
+                <select class="form-select form-select-sm" id="DLEmpresa_">
                   <option>Seleccione la cuenta a cambiar</option>
                 </select>            
             </div>
             <div class="col-md-3 text-center">
               <div class="row">
-                <div class="col-md-12 col-sm-6 col-xs-2">                
-                  <button type="button" class="btn btn-default" onclick="cambiar_op()">
+                <div class="col-md-12 col-sm-6">                
+                  <button type="button" class="btn btn-outline-secondary" onclick="cambiar_op()">
                     <img src="../../img/png/agregar.png"><br>
                     Aceptar
                   </button>
                 </div>
-                <div class="col-md-12 col-sm-6 col-xs-2">
+                <div class="col-md-12 col-sm-6">
                   <br>
-                  <button type="button" class="btn btn-default" title="Cerrar" data-dismiss="modal">
+                  <button type="button" class="btn btn-outline-secondary" title="Cerrar" data-bs-dismiss="modal">
                     <img src="../../img/png/salire.png"><br>&nbsp; &nbsp;Salir&nbsp;&nbsp;&nbsp;
                   </button>
                 </div>              
@@ -312,7 +304,7 @@
     <div class="modal-dialog modal-md" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle"><b>No se pueden borrar esta(s) cuenta(s) </b></h5>
+          <h5 class="modal-title" id="exampleModalLongTitle"><b>No se pueden borrar esta(s) cuenta(s)</b></h5>
         </div>
         <div class="modal-body">       
           <div class="row" >
@@ -322,7 +314,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
           <!-- <button type="button" class="btn btn-primary" onclick="ingresar_presu()">Ingresar</button> -->
         </div>
       </div>

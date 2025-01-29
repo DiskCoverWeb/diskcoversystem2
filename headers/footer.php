@@ -9,7 +9,7 @@
 		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
 		<!--End Back To Top Button-->
 		<footer class="page-footer" id="footerInfo" style="font-size: x-small;">
-			<p class="mb-0"><img src="../../img/logotipos/diskcover_web.gif" class="m-1" style="width:60px"><b class="breadcrumb-title pe-1" style="font-size: 12px;">Diskcover Systema </b> <b class="m-1">DIRECCION:</b> Atacames N23-226 y Av. La Gasca - <b>EMAIL:</b> prisma_net@hotmail.com / diskcove@msn.com / info@diskcoversystem.com - <b>TELEFONO:</b> (+593)989105300 - 999654196 - 986524396</p>
+			<p class="mb-0"><img src="../../img/logotipos/diskcover_web.gif" class="m-1" style="width:60px"><b class="breadcrumb-title pe-1" style="font-size: 12px;">Diskcover System </b> <b class="m-1">DIRECCION:</b> Atacames N23-226 y Av. La Gasca - <b>EMAIL:</b> prisma_net@hotmail.com / informacion@diskcoversystem.com / diskcoversystem@msn.com - <b>TELEFONO:</b> (+593)989105300 - 999654196 - 986524396</p>
 		</footer>
 	</div>
 	
