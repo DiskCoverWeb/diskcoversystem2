@@ -130,7 +130,8 @@ function estado_licencia($f3)
 		var periodo = '<?php echo $_SESSION['INGRESO']['periodo'] ?>'
 		function labelPeriodo(){
 			if (periodo != '.'){
-				var txt = '<b>Periodo: </b><label>'+ periodo +'<label>';
+				var txt = '<b>Periodo: </b><label>'+ periodo +'</label>';
+				console.log(txt);
 				$('#periodo').html(txt);
 			}
 		}
@@ -191,7 +192,7 @@ function estado_licencia($f3)
 					<div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
 					</div>
 
-					  <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#SearchModal" style="width: 100%;">
+					  <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#SearchModal">
 						
 						<span class="px-5"></b> <?php if(strlen($_SESSION['INGRESO']['Nombre_Comercial'])<25) { 
 														echo $_SESSION['INGRESO']['Nombre_Comercial'].' ...<b>Ver mas</b>';
@@ -232,8 +233,9 @@ function estado_licencia($f3)
 									</li>
 								</ul>
 							</li> -->
+
 							<li>
-								<div id="periodo" class="txt-sm"></div>
+								<div id="periodo"></div>
 							</li>
 
 							<li class="nav-item dark-mode d-none d-sm-flex">
