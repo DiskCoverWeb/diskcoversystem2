@@ -736,9 +736,6 @@ function cargar_tablas_retenciones()
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             },
             data: ProcesarDatos(response.b.data),
-            scrollX: true,
-            scrollY: '150px',
-            scrollCollapse: true,
             destroy: true,
             columns: [
               { data: null,
@@ -825,15 +822,11 @@ function cargar_tablas_retenciones()
               searching: false,
               paging: false,   
               info: false,   
-              autoWidth: false,
               destroy: true,
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             }, 
             data: ProcesarDatos(response.r.data), 
-            scrollX: true, 
-            scrollY: '150px', 
-            scrollCollapse: true, 
             columns: [
               { data: null,
                 render: function(data, type, row){
@@ -1702,9 +1695,6 @@ function ListarAsientoB()
         return response.data;
       }
     }, 
-    scrollY: '300px',
-    scrollCollapse: true,
-    scrollX: true,
     searching: false,
     info: false,
     paging: false,

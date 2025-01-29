@@ -5,10 +5,11 @@ var cadenaEliminar = "";//Para eliminar la subcuenta
 var codigosCC = new Set();//Para guardar los codigos de las subcuentas de centro de costos
 
 $(document).ready(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip();
     OpcI_Click();
     CheqBloquear_Click();
     $('#DLCtas').tooltip('disable');
-
+    var tooltipEliminar  =  new bootstrap.Tooltip($('#btnEliminar')[0]);
     deshabilitarbtnEliminar();
 
     $('#btnSiguiente').click(function () {
@@ -70,23 +71,17 @@ $(document).ready(function () {
 
     });
 
-    //Para que el tooltip solo se muestre cuando el boton esta deshabilitado
-    $('[data-bs-toggle="tooltip"]').tooltip();
-
-
     $('#btnEliminar').hover(function () {
         // Verifica si el botón está deshabilitado
         if ($(this).is(':disabled')) {
             // Muestra el tooltip
-            console.log("Show")
             $(this).tooltip('show');
         } else {
-            console.log("Hide")
             // Oculta el tooltip
             $(this).tooltip('hide');
         }
     });
-
+    
 });
 
 function habilitarbtnEliminar() {

@@ -1,6 +1,8 @@
 <?php 
 include(dirname(__DIR__,2).'/modelo/contabilidad/comproM.php');
-include(dirname(__DIR__,3).'/lib/fpdf/reporte_comp.php');
+include(dirname(__DIR__, 3).'/lib/TCPDF/Reportes/reportes_comp.php');
+//include(dirname(__DIR__,3).'/lib/fpdf/reporte_comp.php');
+
 /**
  * 
  */
@@ -35,7 +37,7 @@ class comproC
 	function __construct()
 	{
 		$this->modelo = new comproM();
-		$this->pdf = new PDF();
+		//$this->pdf = new PDF();
 	}
 
 	function reporte_com($parametro)

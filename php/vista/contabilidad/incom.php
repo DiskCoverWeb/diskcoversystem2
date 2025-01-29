@@ -478,8 +478,8 @@ function validar_comprobante()
       </div>          
     </div>
 
-<div class="row p-1">
-  <div class="mb-1 col-sm-4 col-md-4 col-lg-4 btn-group">
+<div class="row">
+  <div class="col-sm-4 col-md-4 col-lg-4 btn-group">
     <div class="">
       <button type="button" class="btn btn-outline-secondary btn-sm border border-2 small-text active" onclick="reset_1('comproba','CD');" 
       id='CD' title='Comprobante diario'>Diario</button>
@@ -496,7 +496,7 @@ function validar_comprobante()
       <input type="hidden" name="num_load" id="num_load" value="0">
     </div>
   </div>                      
-  <div class="mt-1 col col-sm-4 col-md-4 col-lg-4">
+  <div class="col-sm-4 col-md-4 col-lg-4">
     <div align='top' style="float: top;">
       <h4 align='center' id='num_com'
       class="h6">Comprobante de Diario No. 0000-00000000
@@ -504,7 +504,7 @@ function validar_comprobante()
     </div>
   </div>
 
-  <div class="mt-1 col col-sm-4 col-md-4 col-lg-4 text-end">
+  <div class="col-sm-4 col-md-4 col-lg-4 text-end">
     <label class="">
       <input class="form-check-input" type="checkbox"> Imprimir copia
     </label>
@@ -563,7 +563,7 @@ function validar_comprobante()
                 <input type="text" class="form-control form-control-sm" id="cotizacion" name='cotizacion' placeholder="0.00" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" style="text-align:right; width: 70px;" maxlength='20' />
              </div>
           </div>  
-          <div class="col-md-3 col-sm-3 row row-cols-auto p-0 m-0 ">
+          <div class="col-md-3 col-sm-3 row row-cols-auto">
               <div class="input-group">
                 <div class="input-group-addon text-box d-flex align-items-center ps-2 pe-2"><b>Tipo de conversión  :</b></div>
                 <div class="small-text d-flex align-items-center ps-1">
@@ -617,7 +617,7 @@ function validar_comprobante()
               </div>            
           </div>
           <div class="col-sm-12">
-            <div class="row pt-2 pb-2">
+            <div class="row">
                 <div class="col-2" style="padding-right: 0px;">
                   <label class="label-inline" id="rbl_banco"><input type="checkbox" id='ban' name='ban'onclick="mostrar_banco()"/> Banco</label>
                 </div>
@@ -656,36 +656,38 @@ function validar_comprobante()
           <div class="col-12 flex-nowrap d-none text-sm" id='ineg3' >
               <div class="row align-items-center">
                 <div class="col-8">
-                  <table class="table text-sm w-100" id="div_tabla">
-                      <thead>
-                        <tr>
-                          <th class ="text-center"></th>
-                          <th class ="text-center">CTA_BANCO</th>
-                          <th class ="text-center">BANCO</th>
-                          <th class ="text-center">CHEQ_DEP</th>
-                          <th class ="text-center">EFECTIVIZAR</th>
-                          <th class ="text-center">VALOR</th>
-                          <th class ="text-center">ME</th>
-                          <th class ="text-center">T_No</th>
-                          <th class ="text-center">Item</th>
-                          <th class ="text-center">CodigoU</th>
-                        </tr> 
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td></td> 
-                          <td></td> 
-                          <td></td> 
-                          <td></td> 
-                          <td></td> 
-                          <td></td> 
-                          <td></td> 
-                          <td></td> 
-                          <td></td> 
-                          <td></td> 
-                        </tr> 
-                      </tbody>  
-                    </table> 
+                  <div class="table-responsive">
+                    <table class="table text-sm w-100" id="div_tabla">
+                        <thead>
+                          <tr>
+                            <th class ="text-center"></th>
+                            <th class ="text-center">CTA_BANCO</th>
+                            <th class ="text-center">BANCO</th>
+                            <th class ="text-center">CHEQ_DEP</th>
+                            <th class ="text-center">EFECTIVIZAR</th>
+                            <th class ="text-center">VALOR</th>
+                            <th class ="text-center">ME</th>
+                            <th class ="text-center">T_No</th>
+                            <th class ="text-center">Item</th>
+                            <th class ="text-center">CodigoU</th>
+                          </tr> 
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td></td> 
+                            <td></td> 
+                            <td></td> 
+                            <td></td> 
+                            <td></td> 
+                            <td></td> 
+                            <td></td> 
+                            <td></td> 
+                            <td></td> 
+                            <td></td> 
+                          </tr> 
+                        </tbody>  
+                      </table> 
+                  </div>
                   <input type="hidden" id='reg1' name='reg1'  value='' />
                 </div>
                 <div class="col-2">
@@ -772,10 +774,10 @@ function validar_comprobante()
                           <div class="col-12 p-3">
                             <div class="panel-heading">
                               <ul class="nav nav-pills">
-                                <li class="p-2 nav-item"><a class="nav-link active" href="#contabilidad" data-bs-toggle="tab" aria-selected="true">4. Contabilización</a></li>
-                                <li class="p-2 nav-item"><a class="nav-link" href="#subcuentas" data-bs-toggle="tab" onclick="cargar_tablas_sc();">5. Subcuentas</a></li>
-                                <li class="p-2 nav-item"><a class="nav-link" href="#retenciones" data-bs-toggle="tab" onclick="cargar_tablas_retenciones();">6. Retenciones</a></li>
-                                <li class="p-2 nav-item"><a class="nav-link" href="#ac_av_ai_ae" data-bs-toggle="tab" onclick="cargar_tablas_tab4();">7. AC-AV-AI-AE</a></li>
+                                <li class="nav-item"><a class="nav-link active" href="#contabilidad" data-bs-toggle="tab" aria-selected="true">4. Contabilización</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#subcuentas" data-bs-toggle="tab" onclick="cargar_tablas_sc();">5. Subcuentas</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#retenciones" data-bs-toggle="tab" onclick="cargar_tablas_retenciones();">6. Retenciones</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#ac_av_ai_ae" data-bs-toggle="tab" onclick="cargar_tablas_tab4();">7. AC-AV-AI-AE</a></li>
                               </ul>
                             </div>
                             <div class="panel-body" style="padding-top: 2px;">
@@ -784,480 +786,494 @@ function validar_comprobante()
                                   <!--<div class="text-center">
                                     <img src="../../img/gif/loader4.1.gif" width="10%">                                        
                                   </div>-->
-                                  <table class="table text-sm w-100" id="tbl_contabilidad">
-                                    <thead>
-                                      <tr>
-                                        <th class="text-center"></th> 
-                                        <th class="text-center">CODIGO</th> 
-                                        <th class="text-center">CUENTA</th> 
-                                        <th class="text-center">PARCIAL_ME</th> 
-                                        <th class="text-center">DEBE</th> 
-                                        <th class="text-center">HABER</th> 
-                                        <th class="text-center">CHEQ_DEP</th> 
-                                        <th class="text-center">DETALLE</th> 
-                                        <th class="text-center">EFECTIVIZAR</th> 
-                                        <th class="text-center">CODIGO_C</th> 
-                                        <th class="text-center">CODIGO_CC</th> 
-                                        <th class="text-center">BENEFICIARIO</th> 
-                                        <th class="text-center">ME</th> 
-                                        <th class="text-center">T_No</th> 
-                                        <th class="text-center">Item</th> 
-                                        <th class="text-center">CodigoU</th> 
-                                        <th class="text-center">A_No</th> 
-                                        <th class="text-center">TC</th> 
-                                        <th class="text-center">X</th> 
-                                        <th class="text-center">ID</th> 
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                      </tr>
-                                    </tbody>  
-                                  </table>                          
+                                  <div class="table-responsive">
+                                    <table class="table text-sm w-100" id="tbl_contabilidad">
+                                      <thead>
+                                        <tr>
+                                          <th class="text-center"></th> 
+                                          <th class="text-center">CODIGO</th> 
+                                          <th class="text-center">CUENTA</th> 
+                                          <th class="text-center">PARCIAL_ME</th> 
+                                          <th class="text-center">DEBE</th> 
+                                          <th class="text-center">HABER</th> 
+                                          <th class="text-center">CHEQ_DEP</th> 
+                                          <th class="text-center">DETALLE</th> 
+                                          <th class="text-center">EFECTIVIZAR</th> 
+                                          <th class="text-center">CODIGO_C</th> 
+                                          <th class="text-center">CODIGO_CC</th> 
+                                          <th class="text-center">BENEFICIARIO</th> 
+                                          <th class="text-center">ME</th> 
+                                          <th class="text-center">T_No</th> 
+                                          <th class="text-center">Item</th> 
+                                          <th class="text-center">CodigoU</th> 
+                                          <th class="text-center">A_No</th> 
+                                          <th class="text-center">TC</th> 
+                                          <th class="text-center">X</th> 
+                                          <th class="text-center">ID</th> 
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                        </tr>
+                                      </tbody>  
+                                    </table>                
+                                  </div>
                                 </div>
                                 <div class="tab-pane fade" id="subcuentas">
                                   <!--<div class="text-center">
                                     <img src="../../img/gif/loader4.1.gif" width="10%">                                        
                                   </div>-->
-                                  <table class="table text-sm w-100" id="tbl_subcuentas">
-                                    <thead>
-                                      <tr>
-                                        <th class="text-center"></th>
-                                        <th class="text-center">Codigo</th>
-                                        <th class="text-center">Beneficiario</th>
-                                        <th class="text-center">Serie</th>
-                                        <th class="text-center">Factura</th>
-                                        <th class="text-center">Prima</th>
-                                        <th class="text-center">DH</th>
-                                        <th class="text-center">Valor</th>
-                                        <th class="text-center">Valor_ME</th>
-                                        <th class="text-center">Detalle_SubCta</th>
-                                        <th class="text-center">FECHA_V</th>
-                                        <th class="text-center">FECHA_E</th>
-                                        <th class="text-center">TC</th>
-                                        <th class="text-center">Cta</th>
-                                        <th class="text-center">TM</th>
-                                        <th class="text-center">T_No</th>
-                                        <th class="text-center">SC_No</th>
-                                        <th class="text-center">Fecha_D</th>
-                                        <th class="text-center">Fecha_H</th>
-                                        <th class="text-center">Bloquear</th>
-                                        <th class="text-center">Item</th>
-                                        <th class="text-center">CodigoU</th>
-                                        <th class="text-center">ID</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                      </tr> 
-                                    </tbody>  
-                                  </table> 
+                                  <div class="table-responsive">
+                                    <table class="table text-sm w-100" id="tbl_subcuentas">
+                                      <thead>
+                                        <tr>
+                                          <th class="text-center"></th>
+                                          <th class="text-center">Codigo</th>
+                                          <th class="text-center">Beneficiario</th>
+                                          <th class="text-center">Serie</th>
+                                          <th class="text-center">Factura</th>
+                                          <th class="text-center">Prima</th>
+                                          <th class="text-center">DH</th>
+                                          <th class="text-center">Valor</th>
+                                          <th class="text-center">Valor_ME</th>
+                                          <th class="text-center">Detalle_SubCta</th>
+                                          <th class="text-center">FECHA_V</th>
+                                          <th class="text-center">FECHA_E</th>
+                                          <th class="text-center">TC</th>
+                                          <th class="text-center">Cta</th>
+                                          <th class="text-center">TM</th>
+                                          <th class="text-center">T_No</th>
+                                          <th class="text-center">SC_No</th>
+                                          <th class="text-center">Fecha_D</th>
+                                          <th class="text-center">Fecha_H</th>
+                                          <th class="text-center">Bloquear</th>
+                                          <th class="text-center">Item</th>
+                                          <th class="text-center">CodigoU</th>
+                                          <th class="text-center">ID</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                        </tr> 
+                                      </tbody>  
+                                    </table> 
+                                  </div>
                                 </div>
                                 <div class="tab-pane fade" id="retenciones">
                                   <!--<div class="text-center">
                                     <img src="../../img/gif/loader4.1.gif" width="10%">                                        
                                   </div>-->
-                                  <table class="table text-sm w-100" id="tbl_ac">
-                                    <thead>
-                                      <tr>
-                                        <th class="text-center"></th>
-                                        <th class="text-center">IdProv</th>
-                                        <th class="text-center">DevIva</th>
-                                        <th class="text-center">CodSustento</th>
-                                        <th class="text-center">TipoComprobante</th>
-                                        <th class="text-center">Establecimiento</th>
-                                        <th class="text-center">PuntoEmision</th>
-                                        <th class="text-center">Secuencial</th>
-                                        <th class="text-center">Autorizacion</th>
-                                        <th class="text-center">FechaEmision</th>
-                                        <th class="text-center">FechaRegistro</th>
-                                        <th class="text-center">FechaCaducidad</th>
-                                        <th class="text-center">BaseNoObjIVA</th>
-                                        <th class="text-center">BaseImponible</th>
-                                        <th class="text-center">BaseImpGrav</th>
-                                        <th class="text-center">PorcentajeIva</th>
-                                        <th class="text-center">MontoIva</th>
-                                        <th class="text-center">BaseImpIce</th>
-                                        <th class="text-center">PorcentajeIce</th>
-                                        <th class="text-center">MontoIce</th>
-                                        <th class="text-center">MontoIvaBienes  </th>
-                                        <th class="text-center">PorRetBienes</th>
-                                        <th class="text-center">ValorRetBienes</th>
-                                        <th class="text-center">MontoIvaServicios</th>
-                                        <th class="text-center">PorRetServicios</th>
-                                        <th class="text-center">ValorRetServicios</th>
-                                        <th class="text-center">Cta_Servicio</th>
-                                        <th class="text-center">Cta_Bienes</th>
-                                        <th class="text-center">Porc_Bienes </th>
-                                        <th class="text-center">Porc_Servicios</th>
-                                        <th class="text-center">DocModificado</th>
-                                        <th class="text-center">FechaEmiModificado</th>
-                                        <th class="text-center">EstabModificado</th>
-                                        <th class="text-center">PtoEmiModificado</th>
-                                        <th class="text-center">SecModificado</th>
-                                        <th class="text-center">AutModificado</th>
-                                        <th class="text-center">ContratoPartidoPolitico</th>
-                                        <th class="text-center">MontoTituloOneroso</th>
-                                        <th class="text-center">MontoTituloGratuito</th>
-                                        <th class="text-center">Item</th>
-                                        <th class="text-center">CodigoU</th>
-                                        <th class="text-center">A_No</th>
-                                        <th class="text-center">T_No</th>
-                                        <th class="text-center">PagoLocExt</th>
-                                        <th class="text-center">PaisEfecPago</th>
-                                        <th class="text-center">AplicConvDobTrib</th>
-                                        <th class="text-center">PagExtSujRetNorLeg</th>
-                                        <th class="text-center">FormaPago</th>
-                                        <th class="text-center">Clave_Acceso_NCD</th>
-                                        <th class="text-center">Devolucion</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                      </tr>
-                                    </tbody>
-                                  </table>
+                                  <div class="table-responsive">
+                                    <table class="table text-sm w-100" id="tbl_ac">
+                                      <thead>
+                                        <tr>
+                                          <th class="text-center"></th>
+                                          <th class="text-center">IdProv</th>
+                                          <th class="text-center">DevIva</th>
+                                          <th class="text-center">CodSustento</th>
+                                          <th class="text-center">TipoComprobante</th>
+                                          <th class="text-center">Establecimiento</th>
+                                          <th class="text-center">PuntoEmision</th>
+                                          <th class="text-center">Secuencial</th>
+                                          <th class="text-center">Autorizacion</th>
+                                          <th class="text-center">FechaEmision</th>
+                                          <th class="text-center">FechaRegistro</th>
+                                          <th class="text-center">FechaCaducidad</th>
+                                          <th class="text-center">BaseNoObjIVA</th>
+                                          <th class="text-center">BaseImponible</th>
+                                          <th class="text-center">BaseImpGrav</th>
+                                          <th class="text-center">PorcentajeIva</th>
+                                          <th class="text-center">MontoIva</th>
+                                          <th class="text-center">BaseImpIce</th>
+                                          <th class="text-center">PorcentajeIce</th>
+                                          <th class="text-center">MontoIce</th>
+                                          <th class="text-center">MontoIvaBienes  </th>
+                                          <th class="text-center">PorRetBienes</th>
+                                          <th class="text-center">ValorRetBienes</th>
+                                          <th class="text-center">MontoIvaServicios</th>
+                                          <th class="text-center">PorRetServicios</th>
+                                          <th class="text-center">ValorRetServicios</th>
+                                          <th class="text-center">Cta_Servicio</th>
+                                          <th class="text-center">Cta_Bienes</th>
+                                          <th class="text-center">Porc_Bienes </th>
+                                          <th class="text-center">Porc_Servicios</th>
+                                          <th class="text-center">DocModificado</th>
+                                          <th class="text-center">FechaEmiModificado</th>
+                                          <th class="text-center">EstabModificado</th>
+                                          <th class="text-center">PtoEmiModificado</th>
+                                          <th class="text-center">SecModificado</th>
+                                          <th class="text-center">AutModificado</th>
+                                          <th class="text-center">ContratoPartidoPolitico</th>
+                                          <th class="text-center">MontoTituloOneroso</th>
+                                          <th class="text-center">MontoTituloGratuito</th>
+                                          <th class="text-center">Item</th>
+                                          <th class="text-center">CodigoU</th>
+                                          <th class="text-center">A_No</th>
+                                          <th class="text-center">T_No</th>
+                                          <th class="text-center">PagoLocExt</th>
+                                          <th class="text-center">PaisEfecPago</th>
+                                          <th class="text-center">AplicConvDobTrib</th>
+                                          <th class="text-center">PagExtSujRetNorLeg</th>
+                                          <th class="text-center">FormaPago</th>
+                                          <th class="text-center">Clave_Acceso_NCD</th>
+                                          <th class="text-center">Devolucion</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                   <br>
-                                  <table class="table text-sm w-100" id="tbl_asientoR">
-                                    <thead>
-                                      <tr>
-                                        <th class="text-center"></th>
-                                        <th class="text-center">CodRet</th>
-                                        <th class="text-center">Detalle</th>
-                                        <th class="text-center">BaseImp</th>
-                                        <th class="text-center">Porcentaje</th>
-                                        <th class="text-center">ValRet</th>
-                                        <th class="text-center">EstabRetencion</th>
-                                        <th class="text-center">PtoEmiRetencion</th>
-                                        <th class="text-center">SecRetencion</th>
-                                        <th class="text-center">AutRetencion</th>
-                                        <th class="text-center">FechaEmiRet</th>
-                                        <th class="text-center">Cta_Retencion</th>
-                                        <th class="text-center">EstabFactura</th>
-                                        <th class="text-center">PuntoEmiFactura</th>
-                                        <th class="text-center">Factura_No</th>
-                                        <th class="text-center">IdProv</th>
-                                        <th class="text-center">Item</th>
-                                        <th class="text-center">CodigoU</th>
-                                        <th class="text-center">A_No</th>
-                                        <th class="text-center">T_No</th>
-                                        <th class="text-center">Tipo_Trans</th>
-                                      </tr> 
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                      </tr>
-                                    </tbody> 
-                                  </table>  
+                                  <div class="table-responsive">
+                                    <table class="table text-sm w-100" id="tbl_asientoR">
+                                      <thead>
+                                        <tr>
+                                          <th class="text-center"></th>
+                                          <th class="text-center">CodRet</th>
+                                          <th class="text-center">Detalle</th>
+                                          <th class="text-center">BaseImp</th>
+                                          <th class="text-center">Porcentaje</th>
+                                          <th class="text-center">ValRet</th>
+                                          <th class="text-center">EstabRetencion</th>
+                                          <th class="text-center">PtoEmiRetencion</th>
+                                          <th class="text-center">SecRetencion</th>
+                                          <th class="text-center">AutRetencion</th>
+                                          <th class="text-center">FechaEmiRet</th>
+                                          <th class="text-center">Cta_Retencion</th>
+                                          <th class="text-center">EstabFactura</th>
+                                          <th class="text-center">PuntoEmiFactura</th>
+                                          <th class="text-center">Factura_No</th>
+                                          <th class="text-center">IdProv</th>
+                                          <th class="text-center">Item</th>
+                                          <th class="text-center">CodigoU</th>
+                                          <th class="text-center">A_No</th>
+                                          <th class="text-center">T_No</th>
+                                          <th class="text-center">Tipo_Trans</th>
+                                        </tr> 
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                        </tr>
+                                      </tbody> 
+                                    </table>  
+                                  </div>
                                 </div>
                                 <div class="tab-pane fade" id="ac_av_ai_ae">
                                   <!--<div class="text-center">
                                     <img src="../../img/gif/loader4.1.gif" width="10%">                                        
                                   </div>-->
-                                  <table class="table text-sm w-100" id="tbl_av">
-                                    <thead>
-                                      <tr>
-                                        <th class="text-center"></th>
-                                        <th class="text-center">IdProv</th>
-                                        <th class="text-center">TipoComprobante</th>
-                                        <th class="text-center">FechaRegistro</th>
-                                        <th class="text-center">Establecimiento</th>
-                                        <th class="text-center">PuntoEmision</th>
-                                        <th class="text-center">Secuencial</th>
-                                        <th class="text-center">NumeroComprobantes</th>
-                                        <th class="text-center">FechaEmision</th>
-                                        <th class="text-center">BaseImponible</th>
-                                        <th class="text-center">IvaPresuntivo</th>
-                                        <th class="text-center">BaseImpGrav</th>
-                                        <th class="text-center">PorcentajeIva</th>
-                                        <th class="text-center">MontoIva</th>
-                                        <th class="text-center">BaseImpIce</th>
-                                        <th class="text-center">PorcentajeIce</th>
-                                        <th class="text-center">MontoIce</th>
-                                        <th class="text-center">MontoIvaBienes</th>
-                                        <th class="text-center">PorRetBienes</th>
-                                        <th class="text-center">ValorRetBienes</th>
-                                        <th class="text-center">MontoIvaServicios</th>
-                                        <th class="text-center">PorRetServicios</th>
-                                        <th class="text-center">ValorRetServicios</th>
-                                        <th class="text-center">RetPresuntiva</th>
-                                        <th class="text-center">TP</th>
-                                        <th class="text-center">Cta_Servicio</th>
-                                        <th class="text-center">Cta_Bienes</th>
-                                        <th class="text-center">Numero</th>
-                                        <th class="text-center">Item</th>
-                                        <th class="text-center">CodigoU</th>
-                                        <th class="text-center">A_No</th>
-                                        <th class="text-center">T_No</th>
-                                        <th class="text-center">Porc_Bienes</th>
-                                        <th class="text-center">Porc_Servicios</th>
-                                        <th class="text-center">Tipo_Pago</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                  <table class="table text-sm w-100" id="tbl_ae">
-                                    <thead>
-                                      <tr>
-                                        <th class="text-center"></th>
-                                        <th class="text-center">Codigo</th>
-                                        <th class="text-center">CtasxCobrar</th>
-                                        <th class="text-center">ExportacionDe</th>
-                                        <th class="text-center">TipoComprobante</th>
-                                        <th class="text-center">FechaEmbarque</th>
-                                        <th class="text-center">NumeroDctoTransporte</th>
-                                        <th class="text-center">IdFiscalProv</th>
-                                        <th class="text-center">ValorFOB</th>
-                                        <th class="text-center">DevIva</th>
-                                        <th class="text-center">FacturaExportacion</th>
-                                        <th class="text-center">ValorFOBComprobante</th>
-                                        <th class="text-center">DistAduanero</th>
-                                        <th class="text-center">Anio</th>
-                                        <th class="text-center">Regimen</th>
-                                        <th class="text-center">Correlativo</th>
-                                        <th class="text-center">Verificador</th>
-                                        <th class="text-center">Establecimiento</th>
-                                        <th class="text-center">PuntoEmision</th>
-                                        <th class="text-center">Secuencial</th>
-                                        <th class="text-center">Autorizacion</th>
-                                        <th class="text-center">FechaEmision</th>
-                                        <th class="text-center">FechaRegistro</th>
-                                        <th class="text-center">Item</th>
-                                        <th class="text-center">CodigoU</th>
-                                        <th class="text-center">A_No</th>
-                                        <th class="text-center">T_No</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                  <table class="table text-sm w-100" id="tbl_ai">
-                                    <thead>
-                                      <tr>
-                                        <th class="text-center">  </th>
-                                        <th class="text-center">  CodSustento  </th>
-                                        <th class="text-center">  ImportacionDe  </th>
-                                        <th class="text-center">  FechaLiquidacion  </th>
-                                        <th class="text-center">  TipoComprobante  </th>
-                                        <th class="text-center">  DistAduanero  </th>
-                                        <th class="text-center">  Anio  </th>
-                                        <th class="text-center">  Regimen  </th>
-                                        <th class="text-center">  Correlativo  </th>
-                                        <th class="text-center">  Verificador  </th>
-                                        <th class="text-center">  IdFiscalProv  </th>
-                                        <th class="text-center">  ValorCIF  </th>
-                                        <th class="text-center">  BaseImponible  </th>
-                                        <th class="text-center">  BaseImpGrav  </th>
-                                        <th class="text-center">  PorcentajeIva  </th>
-                                        <th class="text-center">  MontoIva  </th>
-                                        <th class="text-center">  BaseImpIce  </th>
-                                        <th class="text-center">  PorcentajeIce  </th>
-                                        <th class="text-center">  MontoIce  </th>
-                                        <th class="text-center">  Item  </th>
-                                        <th class="text-center">  CodigoU  </th>
-                                        <th class="text-center">  A_No  </th>
-                                        <th class="text-center">  T_No  </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td>  
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                        <td></td> 
-                                      </tr>
-                                    </tbody> 
-                                  </table>  
+                                  <div class="table-responsive">
+                                    <table class="table text-sm w-100" id="tbl_av">
+                                      <thead>
+                                        <tr>
+                                          <th class="text-center"></th>
+                                          <th class="text-center">IdProv</th>
+                                          <th class="text-center">TipoComprobante</th>
+                                          <th class="text-center">FechaRegistro</th>
+                                          <th class="text-center">Establecimiento</th>
+                                          <th class="text-center">PuntoEmision</th>
+                                          <th class="text-center">Secuencial</th>
+                                          <th class="text-center">NumeroComprobantes</th>
+                                          <th class="text-center">FechaEmision</th>
+                                          <th class="text-center">BaseImponible</th>
+                                          <th class="text-center">IvaPresuntivo</th>
+                                          <th class="text-center">BaseImpGrav</th>
+                                          <th class="text-center">PorcentajeIva</th>
+                                          <th class="text-center">MontoIva</th>
+                                          <th class="text-center">BaseImpIce</th>
+                                          <th class="text-center">PorcentajeIce</th>
+                                          <th class="text-center">MontoIce</th>
+                                          <th class="text-center">MontoIvaBienes</th>
+                                          <th class="text-center">PorRetBienes</th>
+                                          <th class="text-center">ValorRetBienes</th>
+                                          <th class="text-center">MontoIvaServicios</th>
+                                          <th class="text-center">PorRetServicios</th>
+                                          <th class="text-center">ValorRetServicios</th>
+                                          <th class="text-center">RetPresuntiva</th>
+                                          <th class="text-center">TP</th>
+                                          <th class="text-center">Cta_Servicio</th>
+                                          <th class="text-center">Cta_Bienes</th>
+                                          <th class="text-center">Numero</th>
+                                          <th class="text-center">Item</th>
+                                          <th class="text-center">CodigoU</th>
+                                          <th class="text-center">A_No</th>
+                                          <th class="text-center">T_No</th>
+                                          <th class="text-center">Porc_Bienes</th>
+                                          <th class="text-center">Porc_Servicios</th>
+                                          <th class="text-center">Tipo_Pago</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <div class="table-responsive">
+                                    <table class="table text-sm w-100" id="tbl_ae">
+                                      <thead>
+                                        <tr>
+                                          <th class="text-center"></th>
+                                          <th class="text-center">Codigo</th>
+                                          <th class="text-center">CtasxCobrar</th>
+                                          <th class="text-center">ExportacionDe</th>
+                                          <th class="text-center">TipoComprobante</th>
+                                          <th class="text-center">FechaEmbarque</th>
+                                          <th class="text-center">NumeroDctoTransporte</th>
+                                          <th class="text-center">IdFiscalProv</th>
+                                          <th class="text-center">ValorFOB</th>
+                                          <th class="text-center">DevIva</th>
+                                          <th class="text-center">FacturaExportacion</th>
+                                          <th class="text-center">ValorFOBComprobante</th>
+                                          <th class="text-center">DistAduanero</th>
+                                          <th class="text-center">Anio</th>
+                                          <th class="text-center">Regimen</th>
+                                          <th class="text-center">Correlativo</th>
+                                          <th class="text-center">Verificador</th>
+                                          <th class="text-center">Establecimiento</th>
+                                          <th class="text-center">PuntoEmision</th>
+                                          <th class="text-center">Secuencial</th>
+                                          <th class="text-center">Autorizacion</th>
+                                          <th class="text-center">FechaEmision</th>
+                                          <th class="text-center">FechaRegistro</th>
+                                          <th class="text-center">Item</th>
+                                          <th class="text-center">CodigoU</th>
+                                          <th class="text-center">A_No</th>
+                                          <th class="text-center">T_No</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <div class="table-responsive">
+                                    <table class="table text-sm w-100" id="tbl_ai">
+                                      <thead>
+                                        <tr>
+                                          <th class="text-center">  </th>
+                                          <th class="text-center">  CodSustento  </th>
+                                          <th class="text-center">  ImportacionDe  </th>
+                                          <th class="text-center">  FechaLiquidacion  </th>
+                                          <th class="text-center">  TipoComprobante  </th>
+                                          <th class="text-center">  DistAduanero  </th>
+                                          <th class="text-center">  Anio  </th>
+                                          <th class="text-center">  Regimen  </th>
+                                          <th class="text-center">  Correlativo  </th>
+                                          <th class="text-center">  Verificador  </th>
+                                          <th class="text-center">  IdFiscalProv  </th>
+                                          <th class="text-center">  ValorCIF  </th>
+                                          <th class="text-center">  BaseImponible  </th>
+                                          <th class="text-center">  BaseImpGrav  </th>
+                                          <th class="text-center">  PorcentajeIva  </th>
+                                          <th class="text-center">  MontoIva  </th>
+                                          <th class="text-center">  BaseImpIce  </th>
+                                          <th class="text-center">  PorcentajeIce  </th>
+                                          <th class="text-center">  MontoIce  </th>
+                                          <th class="text-center">  Item  </th>
+                                          <th class="text-center">  CodigoU  </th>
+                                          <th class="text-center">  A_No  </th>
+                                          <th class="text-center">  T_No  </th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td>  
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                          <td></td> 
+                                        </tr>
+                                      </tbody> 
+                                    </table>  
+                                  </div>
                                 </div>
                               </div>
                             </div>

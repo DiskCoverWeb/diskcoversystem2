@@ -56,7 +56,6 @@ switch ($_SESSION['INGRESO']['modulo_']) {
     background-color: #f2f2f2; /*Un gris claro que he definido, fuera de bootstrap*/ }
 </style>
 <div class="overflow-auto">
-  <div class="">
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
       <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
       </div>
@@ -69,32 +68,28 @@ switch ($_SESSION['INGRESO']['modulo_']) {
         </nav>
       </div>          
     </div>
-	</div>
   <!-- BOTONES CXC y CXP -->
   <div class="row row-cols-auto">
     <div class="d-flex justify-content-center align-items-center btn-group">
-        <a href="./farmacia.php?mod=Farmacia#" data-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary"
-          >
+        <a href="./farmacia.php?mod=Farmacia#" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
           <img src="../../img/png/salire.png">
         </a>
-        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="cargar_cuentas('cxc')" data-toggle="tooltip"
-          title="Asignar a Cuenta por Cobrar Contabilidad" >
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="cargar_cuentas('cxc')" data-bs-toggle="tooltip" title="Asignar a Cuenta por Cobrar Contabilidad">
           <img src="../../img/png/cxc.png">
         </button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="cargar_cuentas('cxp')" data-toggle="tooltip"
-          title="Asignar a Cuenta por Pagar Contabilidad " >
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="cargar_cuentas('cxp')" data-bs-toggle="tooltip" title="Asignar a Cuenta por Pagar Contabilidad">
           <img src="../../img/png/cxp.png">
         </button>
     </div>
   </div>
   <!-- FIN BOTONES CXC y CXP -->
 
-  <div class="card mt-3">
+  <div class="card">
     <div class="card-body">
       <form class="form-horizontal" id="form_cliente">
       <!-- <div class="box-body p-3"> -->
         <div class="row">
-          <div class="col-xs-4 col-sm-3 ">
+          <div class="col-sm-3">
             <label for="ruc" class="control-label" id="resultado"><span style="color: red;">*</span>RUC/CI</label>
             <input type="hidden" class="form-control" id="txt_id" name="txt_id" placeholder="ruc" autocomplete="off">
             <input type="text" class="form-control form-control-sm" id="ruc" name="ruc" placeholder="RUC/CI" autocomplete="off"
@@ -102,20 +97,20 @@ switch ($_SESSION['INGRESO']['modulo_']) {
             <span class="help-block" id='e_ruc' style='display:none;color: red;'>Debe ingresar RUC/CI</span>
 
           </div>
-          <div class="col-sm-1 p-0"><br>
+          <div class="col-sm-1"><br>
             <!-- <iframe src="https://srienlinea.sri.gob.ec/sri-catastro-sujeto-servicio-internet/rest/ConsolidadoContribuyente/existePorNumeroRuc?numeroRuc=1722214507001&output=embed"></iframe> -->
             <button type="button" class="btn btn-sm" onclick="validar_sriC($('#ruc').val())">
               <img src="../../img/png/SRI.jpg" style="width: 60%">
             </button>
 
           </div>
-          <div class=" col-sm-3 ">
+          <div class="col-sm-3">
             <label for="telefono" class=""><span style="color: red;">*</span>Telefono</label>
             <input type="text" class="form-control form-control-sm" id="telefono" name="telefono" placeholder="Telefono"
               autocomplete="off">
             <span class="help-block" id='e_telefono' style='display:none;color: red;'>Debe ingresar Telefono</span>
           </div>
-          <div class="col-sm-3 ">
+          <div class="col-sm-3">
             <label for="codigoc" class="control-label"><span style="color: red;">*</span>Codigo</label>
             <input type="hidden" id='buscar' name='buscar' value='' />
             <input type="text" id='TD' name='TD' value='' readonly style="width:30px" />
@@ -124,13 +119,13 @@ switch ($_SESSION['INGRESO']['modulo_']) {
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-9 col-sm-11 col-lg-10">
+          <div class="col-sm-9 col-md-11 col-lg-10">
             <label for="nombrec" class="control-label"><span style="color: red;">*</span>Apellidos y Nombres</label>
             <input type="text" class="form-control form-control-sm" id="nombrec" name="nombrec" placeholder="Razon social"
               onkeyup="buscar_cliente_nom();" onblur="mayusculas('nombrec',this.value);">
             <span class="help-block" id='e_nombrec' style='display:none;color: red;'>Debe ingresar nombre</span>
           </div>
-          <div class="col-sm-3 col-sm-1 col-lg-2">
+          <div class="col-sm-3 col-md-1 col-lg-2">
             <br>
             <label> </label><input type="checkbox" name="rbl_facturar" id="rbl_facturar" checked> Para Facturar
           </div>
@@ -150,11 +145,11 @@ switch ($_SESSION['INGRESO']['modulo_']) {
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-4 col-xs-4">
+          <div class="col-sm-4">
             <b>Abreviado</b>
             <input type="" name="txt_ejec" id="txt_ejec" class="form-control form-control-sm">
           </div>
-          <div class="col-sm-8 col-xs-8">
+          <div class="col-sm-8">
             <b>Tipo de proveedor</b>
             <select class="form-select form-select-sm" id="txt_actividadC" name="txt_actividad">
               <option value=".">Seleccione</option>
@@ -191,7 +186,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
         </div>
         <?php if ($mostrar_medidor): ?>
           <div class="row">
-            <div class="col-sm-6 col-sm-4">
+            <div class="col-sm-6 col-md-4">
               <label for="CMedidor" class="control-label">Medidor No.</label>
               <div class="input-group contenedor_item_center">
                 <select class="form-control form-control-sm" id="CMedidor" name="CMedidor">
@@ -208,7 +203,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
         <?php endif ?>
       <!-- </div> -->
       <!-- /.box-body -->
-      <div class="row mt-3">
+      <div class="row">
         <div class="col-sm-6">
             <button type="button" id="BtnGuardarClienteFCliente" onclick="guardar_cliente()" class="btn btn-primary">Guardar
           </button>
@@ -219,10 +214,10 @@ switch ($_SESSION['INGRESO']['modulo_']) {
         </div>
          <div class="col-sm-6">
           <div class="panel panel-default border" id="panel-container">
-            <div class="panel-heading border p-2 custom-gray">
-              <h3 class="panel-title h6 text-center">PRODUCTOS RELACIONADOS</h3>
+            <div class="panel-heading border custom-gray">
+              <h6 class="panel-title text-center">PRODUCTOS RELACIONADOS</h6>
             </div>
-            <div class="panel-body p-2" style="max-height: 95px; overflow-y: auto;">
+            <div class="panel-body" style="max-height: 95px; overflow-y: auto;">
               <ul style="padding-left: 15px;" id="listaProductosRelacionados">
 
               </ul>
@@ -310,9 +305,9 @@ switch ($_SESSION['INGRESO']['modulo_']) {
             </form>
             <div class="col-sm-2">
               <div class="btn-group">
-                <button class="btn btn-default btn-sm" onclick="guardar_cuentas()"><img
+                <button class="btn btn-outline-secondary btn-sm" onclick="guardar_cuentas()"><img
                     src="../../img/png/grabar.png"><br>&nbsp;&nbsp;&nbsp;Aceptar&nbsp;&nbsp;&nbsp;</button>
-                <button class="btn btn-default" data-bs-dismiss="modal" onclick="cancelar()"> <img
+                <button class="btn btn-outline-danger" data-bs-dismiss="modal" onclick="cancelar()"> <img
                     src="../../img/png/bloqueo.png"><br> Cancelar</button>
               </div>
             </div>

@@ -123,8 +123,18 @@ function estado_licencia($f3)
 	<title>Diskcover system - <?php  $_SESSION['INGRESO']['NombreModulo'] = $NombreModulo; echo $NombreModulo; ?></title>
 	<script type="text/javascript">
 		$(document).ready(function () {
-      		 setInterval(validar_session_Activa, 5000);
+      		setInterval(validar_session_Activa, 5000);
+			labelPeriodo();
 	    });
+
+		var periodo = '<?php echo $_SESSION['INGRESO']['periodo'] ?>'
+		function labelPeriodo(){
+			if (periodo != '.'){
+				var txt = '<b>Periodo: </b><label>'+ periodo +'<label>';
+				$('#periodo').html(txt);
+			}
+		}
+
 	</script>
 </head>
 
@@ -222,10 +232,16 @@ function estado_licencia($f3)
 									</li>
 								</ul>
 							</li> -->
+							<li>
+								<div id="periodo" class="txt-sm"></div>
+							</li>
+
 							<li class="nav-item dark-mode d-none d-sm-flex">
 								<a class="nav-link dark-mode-icon" href="javascript:;"><i class='bx bx-moon'></i>
 								</a>
 							</li>
+
+							
 
 							<li class="nav-item dropdown dropdown-app" style="display:none;">
 								<a class="nav-link dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" href="javascript:;"><i class='bx bx-grid-alt'></i></a>

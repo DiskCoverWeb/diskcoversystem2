@@ -17,20 +17,20 @@
     </nav>
   </div>          
 </div>
-<div class="row row-cols-auto mb-2">
+<div class="row row-cols-auto">
   <div class="btn-group">
-      <a  href="./contabilidad.php?mod=contabilidad#"  title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
+      <a  href="./contabilidad.php?mod=contabilidad#" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
         <img src="../../img/png/salire.png">
       </a>
-      <a href="#" onclick="imprimir_excel()"  class="btn btn-outline-secondary btn-sm" title="Descargar excel" id='imprimir_excel'>
+      <a href="#" onclick="imprimir_excel()" data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" title="Descargar excel" id='imprimir_excel'>
             <img src="../../img/png/table_excel.png">
       </a>      
-      <button class="btn btn-outline-secondary btn-sm" title="Autorizar" onclick="todas();">
+      <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Autorizar" onclick="todas();">
         <img src="../../img/png/autorizar1.png">
       </button>
   </div>
 </div>
-<div class="card md-2">
+<div class="card">
   <div class="card-body"> 
     <form  id="form_filtros"> 
       <div class="row">

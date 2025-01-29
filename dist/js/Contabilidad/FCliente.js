@@ -8,6 +8,10 @@ $(document).ready(function () {
 
   provincias();
   tipo_proveedor_Cliente()
+  $('[data-bs-toggle="tooltip"]').tooltip();
+  tooltips.on('shown.bs.tooltip', function () {
+    console.log(`Tooltip activado para: ${this.outerHTML}`);
+  });
 
   $("#CMedidor").on('change', function () {
     if ($("#CMedidor").val() != "." && $("#CMedidor").val() != "") {
