@@ -1,11 +1,9 @@
+var tbl_pedidos_all ;
+var tbl_procesados_all;
 $(document).ready(function () {
-    cargar_datos_procesados();
+    
     preguntas_transporte();
-    notificaciones();
-     setInterval(function() {
-       notificaciones();
-       cargar_datos();
-        }, 5000); 
+    
     $('#btn_guardar').focus();
      $(document).on('focus', '.sele+ct2-selection.select2-selection--single', function (e) {
     $(this).closest(".select2-container").siblings('select:enabled').select2('open');
@@ -19,7 +17,6 @@ $(document).ready(function () {
     autocoplet_ingreso();
     autocoplet_ingreso_donante();
     autocoplet_ingreso2();
-    cargar_datos();
 
      $('#txt_cantidad2').keydown( function(e) { 
         var keyCode1 = e.keyCode || e.which; 
@@ -49,12 +46,124 @@ $(document).ready(function () {
       $('#modal_proveedor').on('shown.bs.modal', function () {
           $('#ddl_ingreso').focus();
       })  
+
+
+      tbl_pedidos_all = $('#tbl_body').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url:   '../controlador/inventario/alimentos_recibidosC.php?cargar_datos=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {                    
+                    fecha:$('#txt_fecha_b').val(),
+                    fechah:$('#txt_fecha_bh').val(),
+                    query:$('#txt_query').val(),
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',             
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+              { data: null, // Columna autoincremental
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1; // meta.row es el índice de la fila
+                    }
+              },
+              { data: 'Envio_No' },
+              { data: 'Fecha_P.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data:  null,
+                render: function(data, type, item) {
+                    return `${data.Cliente}<br>${data.notificaciones}`;                    
+                  }
+
+              },
+              { data: 'Proceso' },
+              { data: 'TOTAL' },
+              { data: 'Porc_C' },
+              { data: null,
+                 render: function(data, type, item) {
+                    return `<button type="button" class="btn-sm btn-primary btn" onclick="editar_pedido('${data.ID}')"><i class="bx bx-pencil m-0"></i></button>
+                    <button type="button" class="btn-sm btn-danger btn" onclick="eliminar_pedido('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;                    
+                  }
+              },
+              
+          ],
+          order: [
+              [1, 'asc']
+          ]
+      });
+
+
+       tbl_procesados_all = $('#tbl_body_procesados').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url:   '../controlador/inventario/alimentos_recibidosC.php?cargar_datos_procesados=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {                    
+                    fecha:$('#txt_fecha_b').val(),
+                    fechah:$('#txt_fecha_bh').val(),
+                    query:$('#txt_query').val(),
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',             
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+              { data: null, // Columna autoincremental
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1; // meta.row es el índice de la fila
+                    }
+              },
+              { data: 'Envio_No' },
+              { data: 'Fecha_P.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data:  null,
+                render: function(data, type, item) {
+                    return `${data.Cliente}<br>${data.notificaciones}`;                    
+                  }
+
+              },
+              { data: 'Proceso' },
+              { data: 'TOTAL' },
+              { data: 'Porc_C' },
+              { data: 'proceso' },
+              { data: null,
+                 render: function(data, type, item) {
+                    return `<button type="button" class="btn-sm btn-primary btn" onclick="editar_pedido('${data.ID}')"><i class="bx bx-pencil m-0"></i></button>
+                    <button type="button" class="btn-sm btn-danger btn" onclick="eliminar_pedido('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;                    
+                  }
+              },
+              
+          ],
+          order: [
+              [1, 'asc']
+          ]
+      });
   
 
+  
 
-
-
-
+     setInterval(function() {
+       cargar_datos();
+        }, 5000); 
 })
 
 
@@ -289,7 +398,7 @@ $('#ddl_ingreso_edi').select2({
 function autocoplet_ingreso_donante(){
 $('#txt_donante').select2({
   placeholder: 'Seleccione',
-  width:'88%',
+  width:'100%',
   ajax: {
    url:   '../controlador/inventario/alimentos_recibidosC.php?detalle_ingreso2=true',
     dataType: 'json',
@@ -414,7 +523,7 @@ function autoincrementable(){
       });  	
 }
 
-function cargar_datos(){
+function cargar_datos2(){
         parametros = 
         {
             'fecha':$('#txt_fecha_b').val(),
@@ -437,7 +546,14 @@ function cargar_datos(){
       });  	
 }
 
- function cargar_datos_procesados(){
+function cargar_datos()
+{
+     tbl_pedidos_all.ajax.reload(null, false);
+}
+
+
+
+ function cargar_datos_procesados2(){
         parametros = 
         {
             'fecha':$('#txt_fecha_b').val(),
@@ -458,6 +574,10 @@ function cargar_datos(){
               
           }
       });  	
+}
+
+ function cargar_datos_procesados(){
+       tbl_procesados_all.ajax.reload(null, false);
 }
 
 function preguntas_transporte(){
@@ -710,45 +830,7 @@ function validar_cantidad()
      }
 }
 
-function notificaciones()
-{
-    $.ajax({
-          type: "POST",
-            url:   '../controlador/inventario/alimentos_recibidosC.php?listar_notificaciones=true',
-            // data:datos,
-          dataType:'json',
-          success: function(data)
-          {		    	    	
-              if(data.length>0)
-              {
-                  var mensajes = '';
-                  var cantidad  = 0;
-                   $('#pnl_notificacion').css('display','block');
-                   data.forEach(function(item,i){
-                       mensajes+='<li>'+
-                                          '<a href="#" data-toggle="modal" onclick="mostrar_notificacion(\''+item.Texto_Memo+'\',\''+item.ID+'\',\''+item.Pedido+'\')">'+
-                                              '<h4 style="margin:0px">'+
-                                                  item.Asunto+
-                                                  '<small>'+formatoDate(item.Fecha.date)+' <i class="fa fa-calendar-o"></i></small>'+
-                                              '</h4>'+
-                                              '<p>'+item.Texto_Memo.substring(0,15)+'...</p>'+
-                                          '</a>'+
-                                      '</li>';
-                                      cantidad = cantidad+1;
-                   })
 
-                   $('#pnl_mensajes').html(mensajes);
-                   $('#cant_mensajes').text(cantidad);
-              }else
-              {
-
-                   $('#pnl_notificacion').css('display','none');
-              }
-              console.log(data);
-          }
-      });  	
-
-}
 
 function mostrar_notificacion(text,id,pedido)
 {

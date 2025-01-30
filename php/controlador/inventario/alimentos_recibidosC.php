@@ -980,39 +980,21 @@ class alimentos_recibidosC
 			if(count($noti)>0)
 			{
 				$alerta = '<div class="btn-group pull-right">
-						<button type="button" class="label label-warning btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-							<i class="fa fa-commenting"></i>
+						<button type="button" class="btn btn-xs btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="bx bx-comment-dots"></i>
 						</button>
 						<ul class="dropdown-menu">';
 						foreach ($noti as $key2 => $value2) {
 							$texto2 = str_replace(array("\r", "\n"), '', $value2['Texto_Memo']);
-							$alerta.='<li><a href="#" onclick="mostrar_notificacion(\''.$texto2.'\',\''.$value2['ID'].'\',\''.$value['Envio_No'].'\')">Notificacion'.($key2+1).'</a></li>';
+							$alerta.='<li><a href="#" class="dropdown-item" onclick="mostrar_notificacion(\''.$texto2.'\',\''.$value2['ID'].'\',\''.$value['Envio_No'].'\')">Notificacion'.($key2+1).'</a></li>';
 						}
 						$alerta.='</ul>
-					</div>	';
-			}
-			// print_r($value);
-			// print_r($noti);die();
-			$tr.='<tr>
-
-					<td>'.($key+1).'</td>
-					<td>'.$value['Envio_No'].'</td>
-					<td>'.$value['Fecha_P']->format('Y-m-d').'</td>
-					<td>'.$value['Cliente'].' 
-					'.$alerta.'						
-					</td>
-					<td>'.$value['Proceso'].'</td>
-					<td>'.number_format($value['TOTAL'],2,'.','').'</td>
-					<td>'.$value['Porc_C'].'</td>
-					<td>
-					<button type="button" class="btn-sm btn-primary btn" onclick="editar_pedido(\''.$value['ID'].'\')"><i class="fa fa-pencil"></i></button>
-					<button type="button" class="btn-sm btn-danger btn" onclick="eliminar_pedido(\''.$value['ID'].'\')"><i class="fa fa-trash"></i></button></td>
-
-				  </tr>';
+					</div>	';					
+			} 
+			$datos[$key]['notificaciones'] = $alerta;
+			
 		}
-
-		return $tr;
-		// print_r($datos);die();
+		return $datos;
 	}
 
 	function cargar_datos_procesados($parametros)
@@ -1047,21 +1029,13 @@ class alimentos_recibidosC
 					</div>	';
 			}
 
-			$tr.='<tr>			
-					<td>'.($key+1).'</td>
-					<td>'.$value['Envio_No'].'</td>
-					<td>'.$value['Fecha_P']->format('Y-m-d').'</td>
-					<td>'.$value['Cliente'].''.$alerta.'</td>
-					<td>'.$value['Proceso'].'</td>
-					<td>'.number_format($value['TOTAL'],2,'.','').'</td>
-					<td>'.$value['Porc_C'].'</td>
-					<td>'.$proceso.'</td>
-					<td><button type="button" class="btn-sm btn-primary btn" onclick="editar_pedido(\''.$value['ID'].'\')"><i class="fa fa-pencil"></i></button></td>
+			$datos[$key]['notificaciones'] = $alerta;
+			$datos[$key]['proceso'] = $proceso;
 
-				  </tr>';
+		
 		}
 
-		return $tr;
+		return $datos;
 		// print_r($datos);die();
 	}
 

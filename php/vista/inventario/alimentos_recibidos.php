@@ -21,128 +21,135 @@
       </nav>
     </div>          
 </div>
-<div class="row row-cols-auto gx-3 pb-2 d-flex align-items-center ps-2">
-    <div class="row row-cols-auto">
-		<div class="btn-group">
+<div class="row mb-2">
+	<div class="col-sm-6">
+		 <div class="btn-group" role="group" aria-label="Basic example">
 			<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
-						  print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
-				  <img src="../../img/png/salire.png">
-			</a>
-			<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()" id="btn_guardar">
-			  <img src="../../img/png/grabar.png">
-			</button>
-			<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir QR" onclick="imprimir_pedido()">
-				<img src="../../img/png/paper.png" height="32px">
-			</button>
-			<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir QR PDF" onclick="imprimir_pedido_pdf()">
-				<img src="../../img/png/impresora.png" height="32px">
-			</button>
-		</div>
-		<div class="col-xs-2 col-md-2 col-sm-2" style="display:none;" id="pnl_notificacion">
-			<div class="navbar-custom-menu">
-				<ul class="nav navbar-nav">
-						<li class="dropdown messages-menu">
-							<button class="btn btn-danger dropdown-toggle" title="Guardar"  data-bs-toggle="dropdown" aria-expanded="false">
-									<img src="../../img/gif/notificacion.gif" style="width:32px;height: 32px;">
-							</button>  	
-							<ul class="dropdown-menu">
-								<li class="header">tienes <b id="cant_mensajes">0</b> mensajes</li>
-								<li>
-									<ul class="menu" id="pnl_mensajes">
-										
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
+							  print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
+					  <img src="../../img/png/salire.png">
+				</a>
+				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()" id="btn_guardar">
+				  <img src="../../img/png/grabar.png">
+				</button>
+				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir QR" onclick="imprimir_pedido()">
+					<img src="../../img/png/paper.png" height="32px">
+				</button>
+				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir QR PDF" onclick="imprimir_pedido_pdf()">
+					<img src="../../img/png/impresora.png" height="32px">
+				</button>		
 			</div>
-    	</div>
-    </div>
+	</div>
 </div>
-<form id="form_correos" class="mb-2">
-    <div class="row p-2 border-top border-3 border-secondary-subtle" style="background-color: antiquewhite;">
-		<div class="row border-1">
-			<div class="col-sm-12 col-md-8">
-				<div class="row mb-1">
-					<div class="col-sm-2 pe-0 align-self-center">
-						<button type="button" class="btn btn-light border border-1 w-100" onclick="show_proveedor();"><img
-						src="../../img/png/donacion2.png" style="width: 60px;height: 60px;"/></button>
-						
+
+<form id="form_correos">
+<div class="row">
+	<div class="card mb-2" style="background-color: antiquewhite;">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-lg-4 col-md-12 col-sm-12">
+							<div class="row">
+									<div class="col-lg-2 col-md-2 col-sm-2 d-flex align-items-center justify-content-center">
+											<button type="button" class="btn btn-light" onclick="show_proveedor();">
+												<img src="../../img/png/donacion2.png"/></button>
+									</div>
+									<div class="col-lg-9 col-md-10 col-sm-10">
+									  <b>Detalle de ingreso</b>
+									  <div class="d-flex align-items-center input-group-sm">
+									    <select class="form-select form-select-sm" name="txt_donante" id="txt_donante" onchange="option_select2()">
+									      <option value="">Seleccione</option>
+									    </select>
+									    <button type="button" class="btn btn-danger btn-sm" onclick="limpiar_donante()">
+									      <i class="fa fa-times m-0" style="font-size:8pt;"></i>
+									    </button>
+									  </div>
+									  <input type="text" class="form-control form-control-sm" id="txt_tipo" name="txt_tipo" readonly>
+									</div>
+							</div>
+						</div>	
+						<div class="col-lg-4 col-md-6 col-sm-12">
+							<div class="row">
+			  					<div class="col-lg-2 col-md-4 col-sm-2 d-flex align-items-center justify-content-center">
+								  	<button type="button" class="btn btn-light" onclick="show_temperatura()"><img src="../../img/png/temperatura2.png"></button>
+								</div>
+								<div class="col-lg-10 col-md-8 col-sm-10">
+									<b>TEMPERATURA DE RECEPCION:</b>	
+									<div class="input-group input-group-sm mb-1">
+										<input type="text" class="form-control form-control-sm" id="txt_temperatura" name="txt_temperatura" autocomplete="false" >
+										<span class="input-group-text">°C</span>
+									</div>
+								</div>
+							</div>
 					</div>
-					<div class="col-sm-5">
-						<b>Detalle de ingreso</b>
-						<div class="input-group input-group-sm">
-							<select class="form-select form-select-sm" style="width: 60%;" name="txt_donante" id="txt_donante" onchange="option_select2()">
-								<option value="">Seleccione</option>
-							</select>
-							<button type="button" class="btn btn-danger btn-sm" style="font-size:8pt;" onclick="limpiar_donante()"><i class="fa fa-times" style="font-size:8pt;"></i></button>
-						</div>
+					<div class="col-lg-4 col-md-6 col-sm-12">
 						<div class="row">
-							<div class="col-sm-12">
-								<input type="" class="form-control form-control-sm" id="txt_tipo" name="txt_tipo" readonly>
+							<label for="txt_fecha" class="col-sm-6 col-form-label"><b>Fecha de Ingreso</b></label>
+							<div class="col-sm-6">
+								<input type="date" class="form-control form-control-sm" id="txt_fecha" name="txt_fecha" value="<?php echo date('Y-m-d'); ?>" readonly>		
 							</div>
 						</div>
-					</div>
-  					<div class="col-sm-2 pe-0 align-self-center">
-					  	<button type="button" class="btn btn-light border border-1 w-100" onclick="show_temperatura()"><img src="../../img/png/temperatura2.png"  style="width: 60px;height: 60px;"></button>
-					</div>
-					<div class="col-sm-3">
-						<b>TEMPERATURA DE RECEPCION:</b>	
-						<div class="input-group input-group-sm mb-1">
-							<input type="text" class="form-control form-control-sm" id="txt_temperatura" name="txt_temperatura" autocomplete="false" >
-							<span class="input-group-text">°C</span>
+						<div class="row">
+							<label for="txt_codigo" class="col-sm-6 col-form-label"><b>Codigo de Ingreso</b></label>
+							<div class="col-sm-6">
+								<input type="text" class="form-control form-control-sm px-1" id="txt_codigo" name="txt_codigo" readonly>		
+							</div>
 						</div>
-					</div>
+						<div class="row">	
+							<label for="txt_ci" class="col-sm-6 col-form-label"><b>RUC / CI</b></label>
+							<div class="col-sm-6">
+								<input type="text" class="form-control form-control-sm px-1" id="txt_ci" name="txt_ci" readonly>		
+							</div>		
+						</div>	
+					</div>				
 				</div>
 				<div class="row">
-					<div class="col-sm-2 pe-0 align-self-center">
-						<button type="button" class="btn btn-light border border-1 w-100" onclick="show_tipo_donacion()"><img
-							src="../../img/png/tipo_donacion.png" style="width: 60px;height: 60px;"/></button>
-						
-					</div>
-					<div class="col-sm-5">
-						<b>ALIMENTO RECIBIDO:</b>
-						<div class="input-group input-group-sm mb-1">
-							<select class="form-select form-select-sm" id="ddl_tipo_alimento" name="ddl_tipo_alimento" onchange="tipo_seleccion()">
-								<option value="">Tipo donacion</option>
-							</select>
-							<button type="button" class="btn btn-danger btn-sm" style="font-size:8pt;" onclick="limpiar_alimento_rec()"><i class="fa fa-times" style="font-size:8pt;"></i></button>
-						</div>
-						<input type="hidden" class="form-control form-control-sm" id="ddl_alimento_text" name="ddl_alimento_text" readonly>
-						<input type="hidden" class="form-control form-control-sm" id="ddl_alimento" name="ddl_alimento" readonly>
-					</div>
-					<div class="col-sm-2 pe-0 align-self-center">
-						<button type="button" class="btn btn-light border border-1 w-100" id="btn_cantidad" onclick="show_cantidad()"><img src="../../img/png/kilo2.png"  style="width: 60px;height: 60px;"></button>
-					</div>
-					<div class="col-sm-3">
-						<b>CANTIDAD:</b>
-						<input type="" class="form-control form-control-sm" id="txt_cant" name="txt_cant">	
-					</div>
-					<div class="offset-sm-7 col-sm-5">
+					<div class="col-lg-4 col-md-6 col-sm-12">
 						<div class="row">
-							<div class="col-sm-6">
+							<div class="col-lg-2 col-md-4 col-sm-2 d-flex align-items-center justify-content-center">
+								<button type="button" class="btn btn-light" onclick="show_tipo_donacion()">
+									<img src="../../img/png/tipo_donacion.png"/></button>
+							</div>
+							<div class="col-lg-9 col-md-8 col-sm-10">
+								<b>ALIMENTO RECIBIDO:</b>
+								<div class="d-flex align-items-center input-group-sm">
+									<select class="form-select form-select-sm w-100" id="ddl_tipo_alimento" name="ddl_tipo_alimento" onchange="tipo_seleccion()">
+										<option value="">Tipo donacion</option>
+									</select>
+									<button type="button" class="btn btn-danger btn-sm" style="font-size:8pt;" onclick="limpiar_alimento_rec()"><i class="fa fa-times" style="font-size:8pt;"></i></button>
+								</div>
+								<input type="hidden" class="form-control form-control-sm" id="ddl_alimento_text" name="ddl_alimento_text" readonly>
+								<input type="hidden" class="form-control form-control-sm" id="ddl_alimento" name="ddl_alimento" readonly>
+							</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-12">
+					<div class="row">
+						<div class="col-lg-2 col-md-4 col-sm-2 d-flex align-items-center justify-content-center">
+							<button type="button" class="btn btn-light" id="btn_cantidad" onclick="show_cantidad()">
+									<img src="../../img/png/kilo2.png">
+							</button>
+						</div>
+						<div class="col-lg-10 col-md-8 col-sm-10">
+							<b>CANTIDAD:</b>
+							<input type="" class="form-control form-control-sm" id="txt_cant" name="txt_cant">	
+						</div>
+					</div>
+						<div class="row">
+							<div class="col-sm-6 p-0">
 								<div class="row">
-									<b>Llegaron en Transporte?</b>
-									<!--<label class="label-success btn-sm btn">
-									<input type="radio" id="" value="SI" name="rbx_trasporte" onclick="mostraTransporte()">SI</label>
-									<label class="label-danger btn-sm btn">
-									<input type="radio" id="" value="NO" name="rbx_trasporte" onclick="mostraTransporte()" checked>NO</label>	-->
+									<b>Llegaron en Transporte?</b>								
 									<div class="form-check form-check-inline px-0 d-flex justify-content-center gap-1">
 										<input type="radio" id="rbx_trasporte_si" value="SI" name="rbx_trasporte" onclick="mostraTransporte()" class="btn-check" autocomplete="off">
-										<label class="btn btn-outline-success" for="rbx_trasporte_si">SI</label>
+										<label class="btn btn-outline-success  btn-sm" for="rbx_trasporte_si">SI</label>
 
 										<input type="radio" id="rbx_trasporte_no" value="NO" name="rbx_trasporte" onclick="mostraTransporte()" class="btn-check" autocomplete="off" checked>
-										<label class="btn btn-outline-danger" for="rbx_trasporte_no">NO</label>
+										<label class="btn btn-outline-danger  btn-sm" for="rbx_trasporte_no">NO</label>
 									</div>
 								</div>
 								<div class="row">
-									
-										
 									<button type="button" class="btn btn-light border border-1" title="Guardar" style="display:none;" onclick="show_estado_transporte()" id="btn_transporte">
 											<img src="../../img/png/camion.png" style="width:22px; height: :92px;">
 											<br><b>Estado de Trasporte</b>
 									</button>
-
 								</div>
 							</div>
 							<div class="col-sm-6">
@@ -151,153 +158,138 @@
 									
 									<div class="form-check form-check-inline px-0 d-flex justify-content-center gap-1">
 										<input type="radio" id="rbx_gaveta" value="SI" name="rbx_gaveta" onclick="show_gaveta()" class="btn-check" autocomplete="off">
-										<label class="btn btn-outline-success" for="rbx_gaveta">SI</label>
+										<label class="btn btn-outline-success btn-sm" for="rbx_gaveta">SI</label>
 
 										<input type="radio" id="rbx_gaveta_no" value="NO" name="rbx_gaveta" onclick="show_gaveta()" class="btn-check" autocomplete="off" checked>
-										<label class="btn btn-outline-danger" for="rbx_gaveta_no">NO</label>
+										<label class="btn btn-outline-danger btn-sm" for="rbx_gaveta_no">NO</label>
 									</div>
-									<!-- <label class="label-success btn-sm btn">
-									<input type="radio" id="rbx_gaveta" value="SI" name="rbx_gaveta" onclick="show_gaveta()">SI</label>
-									<label class="label-danger btn-sm btn">
-									<input type="radio" id="rbx_gaveta_no" value="NO" name="rbx_gaveta" onclick="show_gaveta()" checked>NO</label>												 -->
+								</div>
+								<div class="row">
+										<button type="button" style="display:none;" id="btn_gavetas" class="btn btn-light border border-1" title="Guardar" onclick="$('#modal_gavetas').modal('show');">
+									<img src="../../img/png/gavetas.png" style="width:45px;">
+								</button>				
+									
 								</div>
 									
-
-								<button type="button" style="display:none;" id="btn_gavetas" class="btn btn-light border border-1" title="Guardar" onclick="$('#modal_gavetas').modal('show');">
-									<img src="../../img/png/gavetas.png" style="width:45px;">
-								</button>											
+														
 							</div>
 						</div>
+				</div>
+				<div class="col-lg-4 col-md-12 col-sm-12">
+					<div class="row" id="pnl_comentario">
+						<div class="col-sm-12">
+							<b>COMENTARIO GENERAL</b>
+							<textarea rows="2" class="form-control form-control-sm"  id="txt_comentario" name="txt_comentario" style="font-size: 16px;" placeholder="Comentario / Observacion de Recepcion"></textarea>	
+						</div>
+					</div>
+				</div>
+			</div>		
+		</div>
+	</div>
+</div>
+<div class="row mb-1">
+	<div class="card mb-2">
+		<div class="card-body">
+			<div class="row mb-2">
+				<div class="col-sm-4" style="display:none;">
+					<b>Codigo de orden</b>
+					<input type="" name="txt_query" id="txt_query" class="form-control form-control-sm">
+				</div>
+				<div class="col-sm-2">							
+					<b>Fecha Desde</b>
+					<input type="date" name="txt_fecha_b" id="txt_fecha_b" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>">
+				</div>
+				<div class="col-sm-2">							
+					<b>Fecha Hasta</b>
+					<input type="date" name="txt_fecha_bh" id="txt_fecha_bh" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>">
+				</div>
+				<div class="col-sm-8">							
+					<br>
+					<button type="button" class="btn-sm btn-primary btn" id="" name="" onclick="cargar_datos();cargar_datos_procesados()"><i class="fa fa-search"></i> Buscar</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="nav nav-tabs" id="nav-tab" role="tablist">
+						<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Registrados</button>
+						<button class="nav-link" id="menu1-tab" data-bs-toggle="tab" data-bs-target="#menu1" type="button" role="tab" aria-controls="menu1" aria-selected="false">En Proceso</button>
+					</div>
+					<div class="tab-content bg-body" id="nav-tabContent">
+						<div id="home" class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+							<div class="row p-2">
+								<div class="col-sm-12">
+									<div class="table-responsive">
+											<table class="table table-hover" id="tbl_body">
+												<thead class="text-center">														
+													<th>Item</th>
+													<th>Codigo</th>
+													<th>Fecha de ingreso</th>
+													<th>Donante / Proveedor</th>
+													<th>Alimento Recibido </th>
+													<th>Cantidad</th>
+													<th>Temperatura de ingreso</th>
+													<th style="width: 8%;"></th>
+												</thead>
+												<tbody >
+													<tr>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>									    		
+								</div>
+							</div>
+						</div>
+						<div id="menu1" class="tab-pane fade" role="tabpanel" aria-labelledby="menu1-tab" tabindex="0">
+							<div class="row">
+								<br>
+								<div class="col-sm-12">
+									<div class="table-responsive">
+											<table class="table table-hover" id="tbl_body_procesados">
+												<thead class="text-center">
+													<th>Item</th>
+													<th>Codigo</th>
+													<th>Fecha de ingreso</th>
+													<th>Donante / Proveedor</th>
+													<th>Alimento Recibido </th>
+													<th>Cantidad</th>
+													<th>Temperatura de ingreso</th>
+													<th>Proceso</th>
+													<th></th>
+												</thead>
+												<tbody >
+														<tr>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>									    		
+								</div>
+							</div>
+						</div>							 
 					</div>
 				</div>
 				
 			</div>
-			<div class="col-sm-12 col-md-4 pe-0">
-				<div class="row col-sm-6 col-md-12">
-					<label for="txt_fecha" class="col-sm-6 px-0 col-form-label"><b>Fecha de Ingreso</b></label>
-					<div class="col-sm-6 px-0">
-						<input type="date" class="form-control form-control-sm" id="txt_fecha" name="txt_fecha" value="<?php echo date('Y-m-d'); ?>" readonly>		
-					</div>
-
-					
-				</div>
-				<div class="row col-sm-6 col-md-12">
-					<label for="txt_codigo" class="col-sm-6 px-0 col-form-label"><b>Codigo de Ingreso</b></label>
-					<div class="col-sm-6 px-0">
-						<input type="text" class="form-control form-control-sm px-0" id="txt_codigo" name="txt_codigo" readonly>		
-					</div>
-				</div>
-				<div class="row col-sm-6 col-md-12">	
-					<label for="txt_ci" class="col-sm-6 px-0 col-form-label"><b>RUC / CI</b></label>
-					<div class="col-sm-6 px-0">
-						<input type="text" class="form-control form-control-sm px-0" id="txt_ci" name="txt_ci" readonly>		
-					</div>						
-					
-				</div>						
-				<!-- <div class="col-sm-6 col-md-12">							
-						<div class="form-group">
-								<label  class="col-sm-12 control-label">ESTADO DE TRANSPORTE</label>
-									<div class="col-sm-6 text-center">									
-						<label style="padding-right: 10px;">
-								<img src="../../img/png/bueno2.png" onclick="ocultar_comentario()">
-								<input type="radio" name="cbx_estado_tran" onclick="ocultar_comentario()" checked value="1"></label>		
-						<label style="padding-left: 10px;">
-								<img src="../../img/png/close.png" onclick="ocultar_comentario()">
-								<input type="radio" name="cbx_estado_tran" onclick="ocultar_comentario()" value="0"></label>					
-								</div>
-						</div>	
-				</div> -->
-				<div class="row col-sm-12 col-md-12 px-0" id="pnl_comentario">
-					<div class="col-sm-12 px-0">
-						<b>COMENTARIO GENERAL</b>
-						<textarea rows="2" class="form-control form-control-sm"  id="txt_comentario" name="txt_comentario" style="font-size: 16px;" placeholder="Comentario / Observacion de Recepcion"></textarea>	
-					</div>
-				</div>
-			</div>
-		</div>
-		<hr class="border-2 my-2">
-		<div class="row border-1">
-			<div class="col-sm-4" style="display:none;">
-				<b>Codigo de orden</b>
-				<input type="" name="txt_query" id="txt_query" class="form-control form-control-sm">
-			</div>
-			<div class="col-sm-2">							
-				<b>Fecha Desde</b>
-				<input type="date" name="txt_fecha_b" id="txt_fecha_b" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>">
-			</div>
-			<div class="col-sm-2">							
-				<b>Fecha Hasta</b>
-				<input type="date" name="txt_fecha_bh" id="txt_fecha_bh" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>">
-			</div>
-			<div class="col-sm-8">							
-				<br>
-				<button type="button" class="btn-sm btn-primary btn" id="" name="" onclick="cargar_datos();cargar_datos_procesados()"><i class="fa fa-search"></i> Buscar</button>
-			</div>
-		</div>
-		<br>
-		<div class="row mt-2">
-			<div class="col-sm-12">
-				<div class="nav nav-tabs" id="nav-tab" role="tablist">
-					<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Registrados</button>
-					<button class="nav-link" id="menu1-tab" data-bs-toggle="tab" data-bs-target="#menu1" type="button" role="tab" aria-controls="menu1" aria-selected="false">En Proceso</button>
-				</div>
-
-				<div class="tab-content bg-body" id="nav-tabContent">
-					<div id="home" class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-						<div class="row">
-							<br>
-							<div class="col-sm-12">
-								<div class="table-responsive">
-										<table class="table table-hover">
-											<thead class="text-center">														
-												<th>Item</th>
-												<th>Codigo</th>
-												<th>Fecha de ingreso</th>
-												<th>Donante / Proveedor</th>
-												<th>Alimento Recibido </th>
-												<th>Cantidad</th>
-												<th>Temperatura de ingreso</th>
-												<th style="width: 8%;"></th>
-											</thead>
-											<tbody id="tbl_body">
-												<tr></tr>
-											</tbody>
-										</table>
-									</div>									    		
-							</div>
-						</div>
-					</div>
-					<div id="menu1" class="tab-pane fade" role="tabpanel" aria-labelledby="menu1-tab" tabindex="0">
-						<div class="row">
-							<br>
-							<div class="col-sm-12">
-								<div class="table-responsive">
-										<table class="table table-hover">
-											<thead class="text-center">
-												<th>Item</th>
-												<th>Codigo</th>
-												<th>Fecha de ingreso</th>
-												<th>Donante / Proveedor</th>
-												<th>Alimento Recibido </th>
-												<th>Cantidad</th>
-												<th>Temperatura de ingreso</th>
-												<th>Proceso</th>
-												<th></th>
-											</thead>
-											<tbody id="tbl_body_procesados">
-												<tr></tr>
-											</tbody>
-										</table>
-									</div>									    		
-							</div>
-						</div>
-					</div>							 
-				</div>
-			</div>
-		</div>
+		</div>		
 	</div>
+	
+</div>	
 </form>
-<br><br>
 
 
 <div id="modal_tipo_donacion" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
