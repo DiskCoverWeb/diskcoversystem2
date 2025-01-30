@@ -90,6 +90,18 @@
                         <input type="text" class="form-control form-control-sm" id="txtConcepto">
                     </div>
                 </div>
+                <div id="cuentasContainer" style="display: none; margin-top:5px;">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="txtDebe"><b>Cta. Debe</b></label>
+                            <input type="text" class="form-control form-control-sm" id="txtDebe" placeholder="C.C.CC.CC.CC">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="txtHaber"><b>Cta. Haber</b></label>
+                            <input type="text" class="form-control form-control-sm" id="txtHaber" placeholder="C.C.CC.CC.CC">
+                        </div>
+                    </div>
+                </div>
                 <span style="margin-top:5px; display:none">Tipo de producto</span>
                 <div class="row" id="checkboxContainer" style="display: none; margin-top:10px;">
                     <div class="col-sm-12">
@@ -156,7 +168,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row gap-3 px-2" style="display:none;margin-top:10px;" id="pictureContainer">
+                <div class="row" style="display:none;margin-top:10px;" id="pictureContainer">
                     <!--<div class="row">
                         <label>Color</label><br>
                     </div>
@@ -168,7 +180,7 @@
                             <input type="color" class="form-control input-xs" id="colorPick" value ="#000000">
                         </div>
                     </div>-->
-                    <div class="row col-sm-6 d-flex flex-column justify-content-center">
+                    <div class="col-sm-6 d-flex flex-column justify-content-center">
                         <label for="picture"><b>Imagen:</b></label>
                         <input type="hidden" value="" id="input_existeimg">
                         <input type="text" class="form-control form-control-sm" id="picture" placeholder="." onchange="validarExisteImg()" aria-describedby="pictureFeedback">
@@ -177,19 +189,41 @@
                         </div>
                         <input type="file" style="margin-top: 10px;" id="imagenPicker" accept="image/png" onchange="previsualizarImagen(this)">
                     </div>
-                    <div class="row col-sm-6 d-flex flex-column align-items-center">
+                    <div class="col-sm-6 d-flex flex-column align-items-center">
                         <div id="imagePreview" class="border rounded bg-white" style="width:fit-content">
                             <img id="imageElement" src="" style="min-width:130px;min-height:130px;max-height:130px;max-width:130px;object-fit:cover;"/>
                         </div>
                     </div>
                 </div>
-                <div class="row p-1" style="display:none" id="nombresContainer">
-                    <div class="col-sm-12 bg-primary-subtle rounded py-2" id="archivosContainer">
+                <div class="row mt-2" style="display:none" id="nombresContainer">
+                    <div class="card">
+                        <div class="card-body bg-primary-subtle rounded" id="archivosContainer">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label for="select_archivos" id="archivosLbl"><b>Nombres de archivos en uso:</b></label>
+                                    <select class="form-select" id="select_archivos" size="5" aria-label="Size 3 select example" onchange="previsualizar_ImagenArc()">
+                                        
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 d-flex flex-column align-items-center">
+                                    <div id="imagePreviewArc" class="border rounded bg-white d-flex justify-content-center align-items-center" style="min-width:130px;min-height:130px;max-height:130px;max-width:130px">
+                                        <img id="imageElementArc" src="" style="min-width: 60px;min-height: 60px;max-height:130px;max-width:130px;object-fit:cover;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-sm-6 bg-primary-subtle rounded py-2" id="archivosContainer">
                         <label for="select_archivos" id="archivosLbl"><b>Nombres de archivos en uso:</b></label>
                         <select class="form-select" id="select_archivos" size="4" aria-label="Size 3 select example">
                             
                         </select>
                     </div>
+                    <div class="col-sm-6 d-flex flex-column align-items-center">
+                        <div id="imagePreviewArc" class="border rounded bg-white" style="width:fit-content">
+                            <img id="imageElementArc" src="" style="min-width:130px;min-height:130px;max-height:130px;max-width:130px;object-fit:cover;"/>
+                        </div>
+                    </div> -->
                 </div>
 
                 <div class="alert alert-light" id="alertUse" style="display: none; margin-top: 5px; padding: 2px;">

@@ -256,6 +256,7 @@ function LlenarInv(cod)
 
 function guardarINV()
 {
+    $('#myModal_espera').modal('show');
     var datos = $('#form_datos').serialize();
     $.ajax({
         type: "POST",
@@ -264,6 +265,7 @@ function guardarINV()
         dataType:'json',
         success: function(data)
         {
+            $('#myModal_espera').modal('hide');
             if(data==1)
             {
                 var padre_nl = $('#txt_padre_nl').val();
