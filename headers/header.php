@@ -123,9 +123,23 @@ function estado_licencia($f3)
 	<title>Diskcover system - <?php  $_SESSION['INGRESO']['NombreModulo'] = $NombreModulo; echo $NombreModulo; ?></title>
 	<script type="text/javascript">
 		$(document).ready(function () {
+<<<<<<< HEAD
       		 setInterval(validar_session_Activa, 5000);
       		 setInterval(notificaciones,6000)
+=======
+      		setInterval(validar_session_Activa, 5000);
+			labelPeriodo();
+>>>>>>> f3857d56aa5791c9d39e188b1ebdbfd4a330f69e
 	    });
+
+		var periodo = '<?php echo $_SESSION['INGRESO']['periodo'] ?>'
+		function labelPeriodo(){
+			if (periodo != '.'){
+				var txt = '<b>Periodo: </b><label>'+ periodo +'<label>';
+				$('#periodo').html(txt);
+			}
+		}
+
 	</script>
 </head>
 
@@ -223,10 +237,16 @@ function estado_licencia($f3)
 									</li>
 								</ul>
 							</li> -->
+							<li>
+								<div id="periodo" class="txt-sm"></div>
+							</li>
+
 							<li class="nav-item dark-mode d-none d-sm-flex">
 								<a class="nav-link dark-mode-icon" href="javascript:;"><i class='bx bx-moon'></i>
 								</a>
 							</li>
+
+							
 
 							<li class="nav-item dropdown dropdown-app" style="display:none;">
 								<a class="nav-link dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" href="javascript:;"><i class='bx bx-grid-alt'></i></a>
@@ -660,7 +680,7 @@ function estado_licencia($f3)
 							<img id="img_foto" src="../../img/usuarios/<?php echo $_SESSION['INGRESO']['Foto']; ?>" class="user-img border border-dark"  alt="user avatar">
 							<div class="user-info">
 								<p class="user-name mb-0"><?php echo $_SESSION['INGRESO']['Nombre']; ?></p>
-								<p class="designattion mb-0"><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "AMBIENTE DE PRUEBA" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "AMBIENTE EN PRODUCCION" : ""); ?></p>
+								<p class="designattion mb-0"><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "Ambiente de prueba" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "Ambiente en producción" : ""); ?></p>
 							</div>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end">

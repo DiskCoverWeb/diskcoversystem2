@@ -29,12 +29,20 @@ $("#btnGuardar").click(function () {
     var picture = $('#picture').val().trim()==''?'.':$('#picture').val();
 
     if(picture == '.' && (imgRef != ''|| imagen)){
-        Swal.fire("Error", "Ingrese un nombre para la imagen", "error");
+        Swal.fire({
+            title: "Error", 
+            text: "Ingrese un nombre para la imagen", 
+            icon:"error"
+        });
         return;
     }
 
     if(validarExisteImg()){
-        Swal.fire('No se puede guardar porque el nombre de la imagen esta en uso.', 'Por favor, cambie el nombre a la imagen.', 'error');
+        Swal.fire({
+            title:'No se puede guardar porque el nombre de la imagen esta en uso.', 
+            text:'Por favor, cambie el nombre a la imagen.', 
+            icon:'error'
+        });
         return;
     }
 
@@ -75,7 +83,9 @@ $("#btnGuardar").click(function () {
         "nivel": nivel,
         "tp": tp,
         "picture": (!imagen&&imgRef=='') ? '.' : picture,
-        "color": color.replace('#','Hex_')
+        "color": color.replace('#','Hex_'),
+        "cta_debe": $('#txtDebe').val() == '' ? '.' : $('#txtDebe').val(),
+        "cta_haber": $('#txtHaber').val() == '' ? '.' : $('#txtHaber').val()
     };
 
     let formData = new FormData();
@@ -116,6 +126,7 @@ function marcarCampos(estado,coincidencia=null){
         $('#archivosLbl b').addClass('text-danger');
         //$('#input_existeimg').val(coincidencia);
         $('#select_archivos').val(coincidencia);
+        $('#select_archivos').trigger('change');
         $(`#select_archivos option[value="${coincidencia}"]`).addClass('bg-danger text-white');
     }else{
         $('#picture').removeClass('is-invalid');
@@ -177,8 +188,16 @@ function validarExisteImg(){
 function previsualizarImagen(elem){
     // $(`#select_archivos option`).removeClass('bg-danger text-white');
     // $('#picture').removeClass('is-invalid');
-    marcarCampos('normal');
     const archivo = elem.files[0];
+    if(!archivo['type'].includes('png')){
+        $('#imagenPicker').val("");
+        Swal.fire({
+            title: 'Elija un archivo con extensión .png', 
+            icon: 'error'
+        });
+        return;
+    }
+    marcarCampos('normal');
 
     let formData = new FormData();
     formData.append('imagen', archivo);
@@ -201,13 +220,22 @@ function previsualizarImagen(elem){
                     $('#picture').addClass('is-invalid');
                     //$('#input_existeimg').val(respuesta['imagen']);
                     $('#select_archivos').val(respuesta['imagen']);
+                    $('#select_archivos').trigger('change');
                     $(`#select_archivos option[value="${respuesta['imagen']}"]`).addClass('bg-danger text-white');
-                    Swal.fire('Ya existe una imagen con ese nombre en el directorio', 'Por favor, cambie el nombre antes de guardar.', 'warning')
+                    Swal.fire({
+                        title:'Ya existe una imagen con ese nombre en el directorio', 
+                        title:'Por favor, cambie el nombre antes de guardar.', 
+                        icon:'warning'
+                    })
                 }
             }else{
                 $('#picture').val(".");
                 $('#imageElement').prop('src','');
-                Swal.fire("Error", "Hubo un problema al mostrar la imagen", "error");
+                Swal.fire({
+                    title:"Error", 
+                    text:"Hubo un problema al mostrar la imagen", 
+                    icon: "error"
+                });
             }
         },
         error: function (error) {
@@ -215,7 +243,11 @@ function previsualizarImagen(elem){
             $('#picture').val(".");
             $('#imagenPicker').val('');
             $('#imageElement').prop('src','');
-            Swal.fire("Error al procesar la imagen", "Error: " + error, "error");
+            Swal.fire({
+                title:"Error al procesar la imagen", 
+                text:"Error: " + error, 
+                icon:"error"
+            });
         }
     })}, 1000)
 }
@@ -312,8 +344,11 @@ function actualizarProducto(parametros) {
                             timer: 1000,
                             showConfirmButton: false
                         });
+                        llenarNombreArchivos();
                         $('#codigoP').val('');
                         $('#txtConcepto').val('');
+                        $('#txtDebe').val('');
+                        $('#txtHaber').val('');
                         $("input[name='cbxProdc']").prop("checked", false);
                         $('#picture').val('');
                         $('#imagenPicker').val('');
@@ -374,8 +409,11 @@ function guardarNuevoProducto(parametros) {
                             timer: 1000,
                             showConfirmButton: false
                         });
+                        llenarNombreArchivos()
                         $('#codigoP').val('');
                         $('#txtConcepto').val('');
+                        $('#txtDebe').val('');
+                        $('#txtHaber').val('');
                         $("input[name='cbxProdc']").prop("checked", false);
                         $('#picture').val('');
                         $('#imagenPicker').val('');
@@ -536,6 +574,8 @@ function clickProducto(dato, e=null) {
     } else {
         $('#noFA').prop('checked', true);
     }
+    $('#txtDebe').val(dato.Cta_Debe);
+    $('#txtHaber').val(dato.Cta_Haber);
     $('#txtConcepto').val(dato.Proceso);
     $("input[name='cbxProdc']").prop('checked', false);
     if(dato.DC != '.' && dato.DC != 'FA'){
@@ -597,12 +637,15 @@ $("#btnEliminar").on('click', function () {
                                         if (data['status'] == 200) {
                                             Swal.fire({
                                                 title: 'Éxito!, los datos se eliminaron correctamente.',
-                                                type: 'success',
+                                                icon: 'success',
                                                 timer: 1000,
                                                 showConfirmButton: false
                                             });
+                                            llenarNombreArchivos()
                                             $('#codigoP').val('');
                                             $('#txtConcepto').val('');
+                                            $('#txtDebe').val('');
+                                            $('#txtHaber').val('');
                                             $("input[name='cbxProdc']").prop("checked", false);
                                             $('#picture').val('');
                                             $('#imagenPicker').val('');
@@ -616,7 +659,7 @@ $("#btnEliminar").on('click', function () {
                                         } else {
                                             Swal.fire({
                                                 title: 'Error, no se pudieron eliminar los datos.',
-                                                type: 'error',
+                                                icon: 'error',
                                                 timer: 1000,
                                                 showConfirmButton: false
                                             });
@@ -633,7 +676,7 @@ $("#btnEliminar").on('click', function () {
                     } else {
                         Swal.fire({
                             title: 'No hay datos para eliminar',
-                            type: 'info',
+                            icon: 'info',
                             timer: 2000,
                             showConfirmButton: false
                         });
@@ -647,7 +690,7 @@ $("#btnEliminar").on('click', function () {
     } else {
         Swal.fire({
             title: 'Error, seleccione un producto',
-            type: 'error',
+            icon: 'error',
             timer: 1000,
             showConfirmButton: false
         });
@@ -677,6 +720,7 @@ function llenarListaTipoProcesosGenerales() {
 }
 
 function llenarNombreArchivos() {
+    arr_archivos = [];
     $.ajax({
         url: '../controlador/inventario/catalogo_bodegaC.php?cargar_imgs=true',
         type:'post',
@@ -713,25 +757,28 @@ function tipoProceso() {
                     case '99':
                         $('#txtConcepto').attr('placeholder', '');
                         $('#pictureContainer').css('display', 'flex');
-                        $('#nombresContainer').css('display', 'block');
+                        $('#nombresContainer').css('display', 'flex');
                         $('#reqFacturaContainer').css('display', 'block');
                         $('#checkboxContainer').css('display', 'block');
+                        $('#cuentasContainer').css('display', 'block');
                         $('#colorContainer').css('display', 'block');
                         break;
                     case '00':
                         $('#txtConcepto').attr('placeholder', '');
                         $('#tp').val('CATEGORI');
                         $('#pictureContainer').css('display', 'flex');
-                        $('#nombresContainer').css('display', 'block');
+                        $('#nombresContainer').css('display', 'flex');
                         $('#reqFacturaContainer').css('display', 'block');
                         $('#checkboxContainer').css('display', 'block');
+                        $('#cuentasContainer').css('display', 'block');
                         $('#colorContainer').css('display', 'block');
                         break;
                     default:
                         $('#pictureContainer').css('display', 'flex'); //none
-                        $('#nombresContainer').css('display', 'block'); //none
+                        $('#nombresContainer').css('display', 'flex'); //none
                         $('#reqFacturaContainer').css('display', 'block'); //none
                         $('#checkboxContainer').css('display', 'block'); //none
+                        $('#cuentasContainer').css('display', 'block'); //none
                         $('#colorContainer').css('display', 'block');
                         break;
                 }
@@ -810,6 +857,11 @@ function tipoProceso() {
 
 }
 
+function previsualizar_ImagenArc(){
+    let nombre_img = $('#select_archivos').val();
+    let ruta = '../../img/png/'+nombre_img;
+    $('#imageElementArc').prop('src',ruta);
+}
 
 
 

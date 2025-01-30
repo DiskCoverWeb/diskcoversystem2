@@ -15,11 +15,11 @@ class catalogo_bodegaM
     {
         $sql = "";
         if($parametros['nivel'] == '99'){
-            $sql = "INSERT INTO Catalogo_Proceso(DC, Cmds, Proceso, TP, Nivel, Item, Picture, Color) 
-                    VALUES ('" . $parametros['tipo'] . "', '0000', '" . $parametros['concepto'] . "', '".$parametros['codigo']."', '".$parametros['nivel']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."')";
+            $sql = "INSERT INTO Catalogo_Proceso(DC, Cmds, Proceso, TP, Nivel, Item, Picture, Color, Cta_Debe, Cta_Haber) 
+                    VALUES ('" . $parametros['tipo'] . "', '0000', '" . $parametros['concepto'] . "', '".$parametros['codigo']."', '".$parametros['nivel']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."', '".$parametros['cta_debe']."', '".$parametros['cta_haber']."')";
         }else {
-            $sql = "INSERT INTO Catalogo_Proceso(DC, Cmds, Proceso, TP, Nivel, Item, Picture, Color) 
-                    VALUES ('" . $parametros['tipo'] . "', '" . $parametros['codigo'] . "', '" . $parametros['concepto'] . "', '".$parametros['tp']."', '".$parametros['nivel']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."')";
+            $sql = "INSERT INTO Catalogo_Proceso(DC, Cmds, Proceso, TP, Nivel, Item, Picture, Color, Cta_Debe, Cta_Haber) 
+                    VALUES ('" . $parametros['tipo'] . "', '" . $parametros['codigo'] . "', '" . $parametros['concepto'] . "', '".$parametros['tp']."', '".$parametros['nivel']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."', '".$parametros['cta_debe']."', '".$parametros['cta_haber']."')";
         }
         return $this->db->datos($sql);
     }
@@ -28,13 +28,13 @@ class catalogo_bodegaM
     {
         $sql = "";
         if($parametros['nivel'] == '99'){
-            $sql = "SELECT DC, Cmds, Proceso, TP, Nivel, Item, ID, Picture
+            $sql = "SELECT DC, Cmds, Proceso, TP, Nivel, Item, ID, Picture, Cta_Debe, Cta_Haber
                     FROM Catalogo_Proceso
                     WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
                     AND Nivel = '".$parametros['nivel']."'
                     ORDER BY Cmds";
         }else{
-            $sql = "SELECT DC, Cmds, Proceso, TP, Nivel, Item, ID, Picture, Color
+            $sql = "SELECT DC, Cmds, Proceso, TP, Nivel, Item, ID, Picture, Cta_Debe, Cta_Haber, Color
                     FROM Catalogo_Proceso
                     WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
                     AND TP = '".$parametros['tp']."'
@@ -98,7 +98,9 @@ class catalogo_bodegaM
                     Cmds = '0000', 
                     Proceso = '" . $parametros['concepto'] . "', 
                     Picture = '".$parametros['picture']."', 
-                    Color = '".$parametros['color']."' 
+                    Color = '".$parametros['color']."', 
+                    Cta_Debe = '".$parametros['cta_debe']."', 
+                    Cta_Haber = '".$parametros['cta_haber']."' 
                 WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
                 AND ID = '" . $parametros['id'] . "'
                 AND TP = '" . $parametros['codigo'] . "'
@@ -109,7 +111,9 @@ class catalogo_bodegaM
                     Cmds = '" . $parametros['codigo'] . "', 
                     Proceso = '" . $parametros['concepto'] . "', 
                     Picture = '".$parametros['picture']."', 
-                    Color = '".$parametros['color']."' 
+                    Color = '".$parametros['color']."', 
+                    Cta_Debe = '".$parametros['cta_debe']."', 
+                    Cta_Haber = '".$parametros['cta_haber']."' 
                 WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
                 AND ID = '" . $parametros['id'] . "'
                 AND TP = '" . $parametros['tp'] . "'
