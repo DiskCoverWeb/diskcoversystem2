@@ -675,7 +675,7 @@ function estado_licencia($f3)
 							<img id="img_foto" src="../../img/usuarios/<?php echo $_SESSION['INGRESO']['Foto']; ?>" class="user-img border border-dark"  alt="user avatar">
 							<div class="user-info">
 								<p class="user-name mb-0"><?php echo $_SESSION['INGRESO']['Nombre']; ?></p>
-								<p class="designattion mb-0"><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "AMBIENTE DE PRUEBA" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "AMBIENTE EN PRODUCCION" : ""); ?></p>
+								<p class="designattion mb-0"><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "Ambiente de prueba" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "Ambiente en producción" : ""); ?></p>
 							</div>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end">
