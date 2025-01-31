@@ -1,3 +1,5 @@
+var num_notificaciones = 0;
+var cantidad_notificaciones = 0;
 function validar_cuenta(campo)
 {
 
@@ -752,3 +754,96 @@ function alignEnd(row, data){
         });
       }
     }
+function notificaciones()
+{
+	num_notificaciones = num_notificaciones+1;
+    $.ajax({
+          type: "POST",
+            url:   '../controlador/inventario/alimentos_recibidosC.php?listar_notificaciones=true',
+            // data:datos,
+          dataType:'json',
+          success: function(data)
+          {		    	    	
+              if(data.length>0)
+              {
+                
+                 var mensajes = '';
+                  var cantidad  = 0;
+                  if(num_notificaciones==1)
+                  {                  	
+	                  $('#icono_bell').removeClass('bx bx-bell')
+	                  $('#icono_campana').append('<span class="alert-count">'+data.length+'</span>')
+                  	  .append('<img src="../../img/gif/notificacion.gif" style="width:32px;height: 32px;">')
+                  }
+                  if(cantidad_notificaciones!=data.length)
+                  {
+                  	$('#pnl_notificaciones').html('');
+                  	$('#icono_campana').html('');
+                  	$('#icono_campana').append('<span class="alert-count">'+data.length+'</span>') 
+                  	.append('<img src="../../img/gif/notificacion.gif" style="width:32px;height: 32px;">')
+                  	data.forEach(function(item,i){
+                     	$('#pnl_notificaciones').append(`<a class="dropdown-item" href="javascript:;">
+                                <div class="d-flex align-items-center" onclick="mostrar_notificacion('`+item.Texto_Memo+`','`+item.ID+`','`+item.Pedido+`')">
+                                    <div class="user-online">
+                                        <img src="../../assets/images/avatars/avatar-1.png" class="msg-avatar" alt="user avatar">
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="msg-name">`+item.Asunto+`<span class="msg-time float-end">5 sec
+                                    ago</span></h6>
+                                        <p class="msg-info">`+item.Texto_Memo.substring(0,15)+`</p>
+                                    </div>
+                                </div>
+                            </a>`)
+
+                        cantidad = cantidad+1;
+
+                   	})
+
+                  }
+
+
+                 
+                   // $('#pnl_notificacion').css('display','block');
+                   // data.forEach(function(item,i){
+                   //     mensajes+='<li>'+
+                   //                        '<a href="#" data-toggle="modal" onclick="mostrar_notificacion(\''+item.Texto_Memo+'\',\''+item.ID+'\',\''+item.Pedido+'\')">'+
+                   //                            '<h4 style="margin:0px">'+
+                   //                                item.Asunto+
+                   //                                '<small>'+formatoDate(item.Fecha.date)+' <i class="fa fa-calendar-o"></i></small>'+
+                   //                            '</h4>'+
+                   //                            '<p>'+item.Texto_Memo.substring(0,15)+'...</p>'+
+                   //                        '</a>'+
+                   //                    '</li>';
+                   //                    cantidad = cantidad+1;
+
+
+                   //   $('#pnl_notificaciones').append(`<a class="dropdown-item" href="javascript:;">
+                   //                          <div class="d-flex align-items-center" onclick="mostrar_notificacion('`+item.Texto_Memo+`','`+item.ID+`','`+item.Pedido+`')">
+                   //                              <div class="user-online">
+                   //                                  <img src="../../assets/images/avatars/avatar-1.png" class="msg-avatar" alt="user avatar">
+                   //                              </div>
+                   //                              <div class="flex-grow-1">
+                   //                                  <h6 class="msg-name">`+item.Asunto+`<span class="msg-time float-end">5 sec
+                   //                              ago</span></h6>
+                   //                                  <p class="msg-info">`+item.Texto_Memo.substring(0,15)+`</p>
+                   //                              </div>
+                   //                          </div>
+                   //                      </a>`)
+
+                   // })
+
+                   // $('#pnl_mensajes').html(mensajes);
+                   // $('#cant_mensajes').text(cantidad);
+                   cant_mensajes = cantidad;
+              }else
+              {
+                $('#aleta_activa').val(0);
+                $('#pnl_notificaciones').html('');
+                $('#icono_campana').html('')
+                $('#icono_campana').append('<i class="bx bx-bell" id="icono_bell"></i>')
+              }
+              console.log(data);
+          }
+      });  	
+
+}

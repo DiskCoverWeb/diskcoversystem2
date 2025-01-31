@@ -123,8 +123,13 @@ function estado_licencia($f3)
 	<title>Diskcover system - <?php  $_SESSION['INGRESO']['NombreModulo'] = $NombreModulo; echo $NombreModulo; ?></title>
 	<script type="text/javascript">
 		$(document).ready(function () {
+<<<<<<< HEAD
+      		 setInterval(validar_session_Activa, 5000);
+      		 setInterval(notificaciones,6000)
+=======
       		setInterval(validar_session_Activa, 5000);
 			labelPeriodo();
+>>>>>>> f3857d56aa5791c9d39e188b1ebdbfd4a330f69e
 	    });
 
 		var periodo = '<?php echo $_SESSION['INGRESO']['periodo'] ?>'
@@ -543,8 +548,8 @@ function estado_licencia($f3)
 							</li>
 
 							<li class="nav-item dropdown dropdown-large">
-								<a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" data-bs-toggle="dropdown"><span class="alert-count">7</span>
-									<i class='bx bx-bell'></i>
+								<a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" data-bs-toggle="dropdown" id="icono_campana">
+									<i class='bx bx-bell' id="icono_bell"></i>
 								</a>
 								<div class="dropdown-menu dropdown-menu-end">
 									<a href="javascript:;">
@@ -554,7 +559,7 @@ function estado_licencia($f3)
 										</div>
 									</a>
 								<!--Barra de notificaciones (Icono de campana)-->
-									<div class="header-notifications-list">
+									<div class="header-notifications-list" id="pnl_notificaciones">
 										<a class="dropdown-item" href="javascript:;">
 											<div class="d-flex align-items-center">
 												<div class="user-online">
