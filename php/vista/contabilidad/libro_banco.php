@@ -25,19 +25,19 @@
 
    	<div class="row row-cols-auto">
    		<div class="btn-group">
-			<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
+			<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
 				<img src="../../img/png/salire.png">
 			</a>
 
-			<button title="Consultar"  data-toggle="tooltip" class="btn btn-outline-secondary" onclick="ConsultarDatosLibroBanco();">
+			<button title="Consultar"  data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" onclick="ConsultarDatosLibroBanco();">
 				<img src="../../img/png/consultar.png" >
 			</button>
 		
-			<a href="#" id="imprimir_pdf" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Descargar PDF">
+			<a href="#" id="imprimir_pdf" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Descargar PDF">
 				<img src="../../img/png/pdf.png">
 			</a>                          	
 				
-			<a href="#" id="imprimir_excel"  class="btn btn-outline-secondary" data-toggle="tooltip" title="Descargar excel">
+			<a href="#" id="imprimir_excel"  class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Descargar excel">
 			<img src="../../img/png/table_excel.png">
 			</a>                          	
    		</div>
@@ -57,17 +57,15 @@
 				</div> 
 			</div>
 		</div>
-	  	<div class="col-4 row">
-			<div class="">
-                <label><input type="checkbox" name="CheckUsu" id="CheckUsu">  <b>Por usuario</b></label>
-                <select class="form-select form-select-sm" id="DCUsuario"  onchange="ConsultarDatosLibroBanco();">
-                	<option value="" class="">Seleccione usuario</option>
-                </select>
-          	    <label id="lblAgencia"><input type="checkbox" name="CheckAgencia" id="CheckAgencia">  <b>Agencia</b></label>
-          	     <select class="form-select form-select-sm" id="DCAgencia" onchange="ConsultarDatosLibroBanco();">
-                	<option value="" class="">Seleccione agencia</option>
-                </select>  
-			</div>           
+	  	<div class="col-4">
+            <label><input type="checkbox" name="CheckUsu" id="CheckUsu">  <b>Por usuario</b></label>
+			<select class="form-select form-select-sm" id="DCUsuario" onchange="ConsultarDatosLibroBanco();">
+				<option value="">Seleccione usuario</option>
+			</select>
+			<label id="lblAgencia"><input type="checkbox" name="CheckAgencia" id="CheckAgencia">  <b>Agencia</b></label>
+				<select class="form-select form-select-sm" id="DCAgencia" onchange="ConsultarDatosLibroBanco();">
+				<option value="" class="">Seleccione agencia</option>
+			</select> 
         </div>
         <div class="col-4">
         	<b>Por cuenta</b>
@@ -131,58 +129,56 @@
 			</div>		  	    	  	    	
 		</div>	  	  
 	</div>
-	<div class="">
-		<div class="row row-cols-auto">
-			<div class="col-2">
-				<b>Saldo Ant MN:</b>
-			</div>
-			<div class="col-1">
-				<input type="text" id="saldo_ant" class="text-right rounded border w-100" readonly value="0.00" />
-			</div>
-			<div class="col-2">
-				<b>Debe MN:</b>
-			</div>
-			<div class="col-1">
-				<input type="text" id="debe" class="text-right rounded border w-100" readonly value="0.00" />
-			</div>
-			<div class="col-2">
-				<b>Haber MN:</b>
-			</div>
-			<div class="col-1">
-				<input type="text" id="haber" class="text-right rounded border w-100" readonly value="0.00" />
-			</div>
-			<div class="col-2">
-				<b>Saldo MN:</b>
-			</div>
-			<div class="col-1">
-				<input type="text" id="saldo" class="text-right rounded border w-100" readonly value="0.00"/>
-			</div>	  	
+	<div class="row row-cols-auto">
+		<div class="col-2">
+			<b>Saldo Ant MN:</b>
 		</div>
-		<div class="row row-cols-auto">
-			<div class="col-2">
-				<b>Saldo Ant ME:</b>
-			</div>
-			<div class="col-1">
-				<input type="text" id="saldo_ant_" class="text-right rounded border w-100" readonly value="0.00"/>
-			</div>
-			<div class="col-2">
-				<b>Debe ME:</b>
-			</div>
-			<div class="col-1">
-				<input type="text" id="debe_" class="text-right rounded border w-100" readonly value="0.00"/>
-			</div>
-			<div class="col-2">
-				<b>Haber ME:</b>
-			</div>
-			<div class="col-1">
-				<input type="text" id="haber_" class="text-right rounded border w-100" readonly value="0.00"/>
-			</div>
-			<div class="col-2">
-				<b>Saldo ME:</b>
-			</div>
-			<div class="col-1">
-				<input type="text" id="saldo_" class="text-right rounded border w-100" readonly value="0.00"/>
-			</div>
+		<div class="col-1">
+			<input type="text" id="saldo_ant" class="text-right rounded border w-100" readonly value="0.00" />
+		</div>
+		<div class="col-2">
+			<b>Debe MN:</b>
+		</div>
+		<div class="col-1">
+			<input type="text" id="debe" class="text-right rounded border w-100" readonly value="0.00" />
+		</div>
+		<div class="col-2">
+			<b>Haber MN:</b>
+		</div>
+		<div class="col-1">
+			<input type="text" id="haber" class="text-right rounded border w-100" readonly value="0.00" />
+		</div>
+		<div class="col-2">
+			<b>Saldo MN:</b>
+		</div>
+		<div class="col-1">
+			<input type="text" id="saldo" class="text-right rounded border w-100" readonly value="0.00"/>
+		</div>	  	
+	</div>
+	<div class="row row-cols-auto">
+		<div class="col-2">
+			<b>Saldo Ant ME:</b>
+		</div>
+		<div class="col-1">
+			<input type="text" id="saldo_ant_" class="text-right rounded border w-100" readonly value="0.00"/>
+		</div>
+		<div class="col-2">
+			<b>Debe ME:</b>
+		</div>
+		<div class="col-1">
+			<input type="text" id="debe_" class="text-right rounded border w-100" readonly value="0.00"/>
+		</div>
+		<div class="col-2">
+			<b>Haber ME:</b>
+		</div>
+		<div class="col-1">
+			<input type="text" id="haber_" class="text-right rounded border w-100" readonly value="0.00"/>
+		</div>
+		<div class="col-2">
+			<b>Saldo ME:</b>
+		</div>
+		<div class="col-1">
+			<input type="text" id="saldo_" class="text-right rounded border w-100" readonly value="0.00"/>
 		</div>
 	</div>
 </div>

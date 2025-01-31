@@ -93,9 +93,9 @@ $.ajax({
         });
         $('#select_beneficiario').html(bene);
         
-setTimeout(function(){
-    $('#myModal_espera').modal('hide');
-    }, 500);   
+        setTimeout(function(){
+            $('#myModal_espera').modal('hide');
+        }, 2000);   
     }
 
 });
@@ -130,7 +130,7 @@ $.ajax({
         totales();
         setTimeout(function(){
             $('#myModal_espera').modal('hide');          
-        }, 500);  
+        }, 2000);  
         
         
     }
@@ -208,7 +208,7 @@ tbl_saldo_meses = $('#tbl_saldo_meses').DataTable({
         'dataSrc': function(response){
             setTimeout(function(){
                 $('#myModal_espera').modal('hide');          
-            }, 500);
+            }, 2000);
             response.data = ProcesarDatos(response.data);
             return response.data || [];
         },
@@ -216,7 +216,8 @@ tbl_saldo_meses = $('#tbl_saldo_meses').DataTable({
             console.error("Error: ", xhr, status, error);
         }
     },
-    scrollY: '300px',
+    paging: false, 
+    searching: false,
     columns: [
         { "data":"Cta" },
         { "data":"Beneficiario" },
@@ -261,7 +262,7 @@ $.ajax({
             $('#saldo_mn').text(addCommas(Number(response.Saldo.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0])));  
             setTimeout(function(){
                 $('#myModal_espera').modal('hide');          
-            }, 500)
+            }, 2000)
     }
 });
 
@@ -303,6 +304,8 @@ tbl_saldo_temp = $('#tbl_saldo_temporal').DataTable({
     language: {
         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
     },
+    paging: false, 
+    searching: false,
     "ajax": {
         'url': '../controlador/contabilidad/saldo_fac_submoduloC.php?consultar_tempo=true',
         'type': 'post', 
@@ -317,7 +320,6 @@ tbl_saldo_temp = $('#tbl_saldo_temporal').DataTable({
             console.error("Error: ", xhr, status, error);
         }
     },
-    scrollY: '300px',
     'colums': [
         {"data": "Cuenta"},
         {"data": "Cliente"},
@@ -353,43 +355,43 @@ if(tab=='titulo2_tab')
 
 $(document).ready(function()
 {
+    $('[data-bs-toggle="tooltip"]').tooltip();
+    $("#descargar_pdf").click(function(){
 
-$("#descargar_pdf").click(function(){
+    if($('#reporte_tipo').val()==1)
+    {
+        var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?pdf_submodulo_mes=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&Cta='+$('#select_cuenta').val();       		
+    }
+    if($('#activo').val()=='1' && $('#reporte_tipo').val()==0){   
 
-   if($('#reporte_tipo').val()==1)
-   {
-       var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?pdf_submodulo_mes=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&Cta='+$('#select_cuenta').val();       		
-   }
-   if($('#activo').val()=='1' && $('#reporte_tipo').val()==0){   
+    var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?Mostrar_pdf=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&OpcP='+$("#OpcP").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&CheqDet='+$("#CheqDet").is(':checked')+'&CheqIndiv='+$("#CheqIndiv").is(':checked')+'&CodigoCli='+$('#select_beneficiario').val()+'&Cta='+$('#select_cuenta').val()+'&DCDet='+$('#select_detalle').val()+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&tipo=mostrar&tabla=normal'; 
+    }else if($('#activo').val()=='2' && $('#reporte_tipo').val()==0){
 
-   var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?Mostrar_pdf=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&OpcP='+$("#OpcP").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&CheqDet='+$("#CheqDet").is(':checked')+'&CheqIndiv='+$("#CheqIndiv").is(':checked')+'&CodigoCli='+$('#select_beneficiario').val()+'&Cta='+$('#select_cuenta').val()+'&DCDet='+$('#select_detalle').val()+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&tipo=mostrar&tabla=normal'; 
-}else if($('#activo').val()=='2' && $('#reporte_tipo').val()==0){
-
-  var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?Mostrar_pdf=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&OpcP='+$("#OpcP").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&CheqDet='+$("#CheqDet").is(':checked')+'&CheqIndiv='+$("#CheqIndiv").is(':checked')+'&CodigoCli='+$('#select_beneficiario').val()+'&Cta='+$('#select_cuenta').val()+'&DCDet='+$('#select_detalle').val()+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&tipo=imprimir&tabla=temp';  
-  } 	    
-     
-      window.open(url, '_blank');
-});
+    var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?Mostrar_pdf=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&OpcP='+$("#OpcP").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&CheqDet='+$("#CheqDet").is(':checked')+'&CheqIndiv='+$("#CheqIndiv").is(':checked')+'&CodigoCli='+$('#select_beneficiario').val()+'&Cta='+$('#select_cuenta').val()+'&DCDet='+$('#select_detalle').val()+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&tipo=imprimir&tabla=temp';  
+    } 	    
+        
+        window.open(url, '_blank');
+    });
 
 
 
-$('#descargar_excel').click(function(){
+    $('#descargar_excel').click(function(){
 
-   if($('#reporte_tipo').val()==1)
-   {
-        var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?excel_submodulo_mes=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&Cta='+$('#select_cuenta').val();
-   }
+    if($('#reporte_tipo').val()==1)
+    {
+            var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?excel_submodulo_mes=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&Cta='+$('#select_cuenta').val();
+    }
 
-   if($('#activo').val()=='1' && $('#reporte_tipo').val()==0 ){   
+    if($('#activo').val()=='1' && $('#reporte_tipo').val()==0 ){   
 
-   var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?Mostrar_excel=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&OpcP='+$("#OpcP").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&CheqDet='+$("#CheqDet").is(':checked')+'&CheqIndiv='+$("#CheqIndiv").is(':checked')+'&CodigoCli='+$('#select_beneficiario').val()+'&Cta='+$('#select_cuenta').val()+'&DCDet='+$('#select_detalle').val()+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&tipo=mostrar&tabla=normal'; 
-}else if($('#activo').val()=='2' && $('#reporte_tipo').val()==0){
+    var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?Mostrar_excel=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&OpcP='+$("#OpcP").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&CheqDet='+$("#CheqDet").is(':checked')+'&CheqIndiv='+$("#CheqIndiv").is(':checked')+'&CodigoCli='+$('#select_beneficiario').val()+'&Cta='+$('#select_cuenta').val()+'&DCDet='+$('#select_detalle').val()+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&tipo=mostrar&tabla=normal'; 
+    }else if($('#activo').val()=='2' && $('#reporte_tipo').val()==0){
 
-  var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?Mostrar_excel=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&OpcP='+$("#OpcP").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&CheqDet='+$("#CheqDet").is(':checked')+'&CheqIndiv='+$("#CheqIndiv").is(':checked')+'&CodigoCli='+$('#select_beneficiario').val()+'&Cta='+$('#select_cuenta').val()+'&DCDet='+$('#select_detalle').val()+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&tipo=imprimir&tabla=temp';  
-  } 	    
-     
-      window.open(url, '_blank');
-});
+    var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?Mostrar_excel=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&OpcP='+$("#OpcP").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&CheqDet='+$("#CheqDet").is(':checked')+'&CheqIndiv='+$("#CheqIndiv").is(':checked')+'&CodigoCli='+$('#select_beneficiario').val()+'&Cta='+$('#select_cuenta').val()+'&DCDet='+$('#select_detalle').val()+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&tipo=imprimir&tabla=temp';  
+    } 	    
+        
+        window.open(url, '_blank');
+    });
 
 
 });

@@ -1,6 +1,5 @@
 <script src="../../dist/js/contabilidad/saldo_fac_submodulo.js"></script>
 
-<div class="overflow-auto p-1">
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
 		<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?>
 		</div>
@@ -16,8 +15,7 @@
 
 
    <div class="row row-cols-auto">
-	   <div class="col-12 d-flex align-items-center ps-4">
-	    <div class="row row-cols-auto btn-group col-4">          
+	    <div class="btn-group">          
         	<a  href="./contabilidad.php?mod=contabilidad#" data-bs-toggle="tooltip"  title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
         		<img src="../../img/png/salire.png">
         	</a>
@@ -38,33 +36,31 @@
         	</a> 
         	<input type="hidden" name="reporte_tipo" id="reporte_tipo" value="0">        	
 	    </div>
-	  	<div class="ps-5">
-	  		<div class="row row-cols-auto">
-	  			<div class="col-4">
-	         		<b>Desde:</b>
-	         		<br>
-	         	   <input type="date" class="form-control form-control-sm" style="width:125px; height: 48%" name="txt_desde" id="txt_desde" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">
-	         	</div>
-	            <div class="col-4">
-	         	   <b>Hasta:</b>
-	         	<br>
-	         	   <input type="date" class="form-control form-control-sm" style="width:125px; height: 48%" name="txt_hasta" id="txt_hasta" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);"> 
-	         	</div>             	
-	         	<div class="col-4">
-	         	<br>
-	         		<select id="tipo_cuenta" name="tipo_cuenta" class="form-select form-select-sm" onchange="cargar_cbx()">
-	         		<option value="">Seleccione</option>
-	         	   	<option value="C">CxC</option>
-	         	   	<option value="P">CxP</option>
-	         	   	<option value="I">Ingresos</option>
-	         	   	<option value="G">Egresos</option>
-	         	   	<option value="CC">Centro de costos</option>             	   	
-	         	   </select>             		
-	             </div>	  		
-	  			
-	  		</div>             	
-	  	</div>
-	  	<div class="col-sm-3 text-center ps-4">
+		<div class="row row-cols-auto">
+			<div class="col-4">
+				<b>Desde:</b>
+				<br>
+				<input type="date" class="form-control form-control-sm" style="width:125px; height: 48%" name="txt_desde" id="txt_desde" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);">
+			</div>
+			<div class="col-4">
+				<b>Hasta:</b>
+			<br>
+				<input type="date" class="form-control form-control-sm" style="width:125px; height: 48%" name="txt_hasta" id="txt_hasta" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);"> 
+			</div>             	
+			<div class="col-4">
+			<br>
+				<select id="tipo_cuenta" name="tipo_cuenta" class="form-select form-select-sm" onchange="cargar_cbx()">
+				<option value="">Seleccione</option>
+				<option value="C">CxC</option>
+				<option value="P">CxP</option>
+				<option value="I">Ingresos</option>
+				<option value="G">Egresos</option>
+				<option value="CC">Centro de costos</option>             	   	
+				</select>             		
+				</div>	  		
+			
+		</div>             	
+	  	<div class="col-sm-3 text-center">
 	     	<div class="row">
 	     		<div class="col-sm-12">
 	     	    <label class="radio-inline" style="font-size: 0.8rem;"><input class="" type="radio" name="OpcP" value="1" id="OpcP" checked=""><b class="ps-1">Pendientes</b></label>
@@ -75,8 +71,7 @@
 	     		</div>             		
 	        </div>
 	    </div>	
-	 </div>
-	  <div class="col-12 row fw-bold pt-2">
+	<div class="col-12 row fw-bold">
 			  		
 	  	<div class="col-4">
 		  	<label class="form-check-label"><input type="checkbox" name="CheqCta" id="CheqCta" onchange="cuenta()" value="true"> Por Cta.</label>
@@ -102,7 +97,7 @@
 	</div>
 	 
 	  <!--seccion de panel-->
-	<div class="row pt-3">
+	<div class="row">
 	  <br>
 	  	<input type="input" name="activo" id="activo" value="1" hidden="">
 	  	<div class="col-sm-12">
@@ -189,9 +184,7 @@
 	  	</div>
 	  </div>
 	  <div class="row">
-	  	<div class="">
-	  		
-	  	</div>
+
 	  	<!-- <table>
 	  		<tr><td width="75px"><b>Total MN</b></td><td width="75px" ></td><td width="75px"><b>Saldo MN</b></td><td width="75px" id="saldo_mn"></td></tr>
 	  	</table>	  	 -->
@@ -204,5 +197,4 @@
 	  		<b>Saldo MN: </b><i id="saldo_mn"></i>	  		
 	  	</div>
 	</div>
-</div>
 </div>

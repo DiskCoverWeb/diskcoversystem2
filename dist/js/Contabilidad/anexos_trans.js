@@ -1,6 +1,7 @@
 
 $(document).ready(function()
 {
+  $('[data-bs-toggle="tooltip"]').tooltip();
   cargar_meses();
   cargar_year();
 })

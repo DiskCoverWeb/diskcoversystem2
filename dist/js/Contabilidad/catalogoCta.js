@@ -33,7 +33,9 @@ function consultar_datos()
             //     $('#myModal_espera').modal('show');
             // },
             complete: function(){
-                $('#myModal_espera').modal('hide');
+                setTimeout(()=>{
+                    $('#myModal_espera').modal('hide');
+                }, 2000);
                 tbl_catalogoCta.columns.adjust().draw();
                 //consulta ajax dentro del dataTable, hacer esto
             },
@@ -41,9 +43,6 @@ function consultar_datos()
                 console.log("Error en la solicitud: ", status, error);
             }
         },
-        scrollX: true,
-        scrollY: '400px', 
-        scrollCollapse: true,
         searching: false,
         columns: [
             { data: 'Clave' },
@@ -176,6 +175,7 @@ function consultar_datos()
 $(document).ready(function()
 {
     var timeout; 
+    $('[data-bs-toggle="tooltip"]').tooltip();
     consultar_datos();
 
     $('#txt_CtaI').keyup(function(e){ 

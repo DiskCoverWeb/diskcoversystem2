@@ -15,29 +15,29 @@
 			</div>          
 		</div>
 	</div>
-	<div class="row row-cols-auto d-flex align-items-center w-auto ps-2 pb-2">
+	<div class="row row-cols-auto d-flex align-items-center">
 		<div class="row row-cols-auto btn-group" role="group">
-			<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
+			<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
 				<img src="../../img/png/salire.png">
 			</a>
-			<button title="Consultar un Mayor Auxiliar"  data-toggle="tooltip" class="btn btn-outline-secondary" onclick="consultar_datos(true,Individual);">
+			<button title="Consultar un Mayor Auxiliar"  data-bs-toggle="tooltip" class="btn btn-outline-secondary" onclick="consultar_datos(true,Individual);">
 				<img src="../../img/png/consultar.png" >
 			</button>
-			<button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" title="Descargar PDF">
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="dropdown" title="Descargar PDF">
 				<img src="../../img/png/pdf.png">
 			</button>
 			<ul class="dropdown-menu">
 				<li><a class="dropdown-item" href="#" id="imprimir_pdf">Impresion normal</a></li>
 				<li><a class="dropdown-item" href="#" id="imprimir_pdf_2">Por Sub Modulo / Centro de costos</a></li>
 			</ul>
-			<button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown"  title="Descargar Excel">
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="dropdown"  title="Descargar Excel">
 			<img src="../../img/png/table_excel.png">
 			</button>
 			<ul class="dropdown-menu">
 			<li><a href="#" id="imprimir_excel">Impresion normal</a></li>
 			<li><a href="#" id="imprimir_excel_2">Por Sub Modulo / Centro de costos</a></li>
 			</ul>            	
-			<button title="Consultar Varios Mayor Auxiliar"  class="btn btn-outline-secondary" data-toggle="tooltip" onclick="consultar_datos(false,Individual);">
+			<button title="Consultar Varios Mayor Auxiliar"  class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" onclick="consultar_datos(false,Individual);">
 				<img src="../../img/png/es.png" >
 			</button>
 		</div> 
@@ -73,7 +73,7 @@
 		<div class="col-6">
 			<div class="row row-cols-auto">
 				<div class="col-6">
-					<label class="m-0"><input type="checkbox" name="CheckUsu" id="CheckUsu"><b class=""> Por usuario</b></label>
+					<label><input type="checkbox" name="CheckUsu" id="CheckUsu"><b> Por usuario</b></label>
 					<select class="form-select form-select-sm" id="DCUsuario"  onchange="consultar_datos(true,Individual);">
 						<option value="" >Seleccione usuario</option>
 					</select>
@@ -85,7 +85,7 @@
 					</select>
 				</div>
 				<div class="col-6">
-					<label id="lblAgencia"><input type="checkbox" name="CheckAgencia" id="CheckAgencia"><b class=""> Agencia</b></label>
+					<label id="lblAgencia"><input type="checkbox" name="CheckAgencia" id="CheckAgencia"><b> Agencia</b></label>
 					<select class="form-select form-select-sm" id="DCAgencia" onchange="consultar_datos(true,Individual);">
 						<option value="">Seleccione agencia</option>
 					</select>
@@ -99,11 +99,11 @@
 			
 	</div>
 	<!--seccion de panel-->
-	<div class="row pt-3">
+	<div class="row">
 		<input type="input" name="OpcU" id="OpcU" value="true" hidden="">
 		<div class="col-sm-12">
 			<ul class="nav nav-tabs">
-				<li class="active p-2 fw-normal">
+				<li class="active fw-normal">
 				<h6 id="tit">Mayores auxiliares</h6></li>
 			</ul>
 		</div> 
@@ -155,22 +155,22 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-2 pt-2">
+		<div class="col-sm-2">
 			<b>DEBE:</b>
 		</div>
-		<div class="col-sm-2 pt-2">
+		<div class="col-sm-2">
 			<input type="text" class="form-control form-control-sm" style="font-size: 0.70rem" name="debe" id="debe" value="0.00" readonly>	  		
 		</div>
-		<div class="col-sm-2 pt-2">
+		<div class="col-sm-2">
 			<b>HABER:</b>
 		</div>
-		<div class="col-sm-2 pt-2">	  		
+		<div class="col-sm-2">	  		
 			<input type="text" class="form-control form-control-sm" style="font-size: 0.70rem" name="haber" id="haber" value="0.00" readonly>
 		</div>
-		<div class="col-sm-2 pt-2">
+		<div class="col-sm-2">
 			<b>SALDO MN:</b>
 		</div>
-		<div class="col-sm-2 pt-2">	  		
+		<div class="col-sm-2">	  		
 			<input type="text" class="form-control form-control-sm" style="font-size: 0.70rem" name="saldo" id="saldo" value="0.00" readonly>
 		</div>
 	</div>

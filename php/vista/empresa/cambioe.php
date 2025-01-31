@@ -16,19 +16,19 @@
 	</div>
 	<div class="row row-cols-auto">
 		<div class="btn-group">
-			<a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-outline-secondary">
+			<a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
 				<img src="../../img/png/salire.png">
 			</a>
-			<button type="button" class="btn btn-outline-secondary" title="Email masivo todas las empresas" onclick='emasivo();'><img src="../../img/png/email.png"></button>
-			<button type="button" class="btn btn-outline-secondary" title="Mensaje masivo todas las empresas" onclick='mmasivo();'><img src="../../img/png/masivo.png"></button>
-			<button type="button" class="btn btn-outline-secondary" title="Mensaje masivo a grupo seleccionado" onclick='mgrupo();'><img src="../../img/png/email_grupo.png" ></button>
-			<button type="button" class="btn btn-outline-secondary" title="Mensaje solo a empresa" onclick='mindividual();'><img src="../../img/png/mensajei.png" ></button>
-			<button type="button" class="btn btn-outline-secondary" title="Guardar" onclick="cambiarEmpresa();"><img src="../../img/png/grabar.png"></button>
-			<button type="button" id="btnLineasGrabar" class="btn btn-outline-secondary" title="Actualizar Puntos de Emisión" onclick="confirmar()" disabled><img src="../../img/png/grabar_lineascxc.png"></button>
-			<button type="button" class="btn btn-outline-secondary" title="Guardar Masivo: Fechas de renovaciones" onclick='cambiarEmpresaMa();'><img src="../../img/png/guardarmasivo.png"></button>
-			<button type="button" class="btn btn-outline-secondary" title="Mostrar Vencimiento" onclick='mostrarEmpresa();'><img src="../../img/png/reporte_1.png"></button>
-			<button type="button" class="btn btn-outline-secondary" title="Asignar credenciales de comprobanmtes electronicos" onclick='asignar_clave();'><img src="../../img/png/credencial_cliente.png"></button>
-			<a href="#" class="btn btn-outline-secondary" style="display: none;" title="Asignar reserva" id="reporte_exc" onclick="reporte()"><img img src="../../img/png/table_excel.png"></a>
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Email masivo todas las empresas" onclick='emasivo();'><img src="../../img/png/email.png"></button>
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Mensaje masivo todas las empresas" onclick='mmasivo();'><img src="../../img/png/masivo.png"></button>
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Mensaje masivo a grupo seleccionado" onclick='mgrupo();'><img src="../../img/png/email_grupo.png" ></button>
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Mensaje solo a empresa" onclick='mindividual();'><img src="../../img/png/mensajei.png" ></button>
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Guardar" onclick="cambiarEmpresa();"><img src="../../img/png/grabar.png"></button>
+			<button type="button" id="btnLineasGrabar" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Actualizar Puntos de Emisión" onclick="confirmar()" disabled><img src="../../img/png/grabar_lineascxc.png"></button>
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Guardar Masivo: Fechas de renovaciones" onclick='cambiarEmpresaMa();'><img src="../../img/png/guardarmasivo.png"></button>
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Mostrar Vencimiento" onclick='mostrarEmpresa();'><img src="../../img/png/reporte_1.png"></button>
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Asignar credenciales de comprobanmtes electronicos" onclick='asignar_clave();'><img src="../../img/png/credencial_cliente.png"></button>
+			<a href="#" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" style="display: none;" title="Asignar reserva" id="reporte_exc" onclick="reporte()"><img img src="../../img/png/table_excel.png"></a>
 		</div>
 	</div>
 		<div id="form_vencimiento" style="display:none;">

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iva>
+	<TipoIDInformante>R</TipoIDInformante>
+	<IdInformante>0702164179001</IdInformante>
+	<razonSocial>DISKCOVER SYSTEM</razonSocial>
+	<Anio>2024</Anio>
+	<Mes>07</Mes>
+	<numEstabRuc>1</numEstabRuc>
+	<totalVentas>159.00</totalVentas>
+	<codigoOperativo>IVA</codigoOperativo>
+	<compras/>
+</iva>

@@ -1,7 +1,7 @@
 var Individual = false;
 $(document).ready(function()
 {
-
+    $('[data-bs-toggle="tooltip"]').tooltip(); 
     // console.log(screen.height);
     sucursal_exis();
     llenar_combobox();
@@ -62,7 +62,9 @@ function sucursal_exis()
         $('#tabla_').html(spiner);
     },*/
     success:  function (response) { 
-    $('#myModal_espera').modal('hide');	
+        setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+          }, 2000);	
     if(response == 1)
     {
         $("#CheckAgencia").show();
@@ -165,7 +167,9 @@ function llenar_combobox()
                 $('#tabla_').html(spiner);
         },*/
             success:  function (response) {		
-            $('#myModal_espera').modal('hide');			
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);			
             $.each(response.agencia, function(i, item){
                 agencia+='<option value="'+response.agencia[i].Item+'">'+response.agencia[i].NomEmpresa+'</option>';
             });				
@@ -177,7 +181,9 @@ function llenar_combobox()
             
         },
         error: function(xhr, status, error){
-            $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
             console.error("Error en la solicitud: ", status, error);
         }
     });
@@ -192,7 +198,9 @@ function llenar_combobox_cuentas()
         type:  'post',
         dataType: 'json',
             success:  function (response) {
-            $('#myModal_espera').modal('hide');	
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);	
             $.each(response, function(i, item){
                 cuentas+='<option value="'+response[i].Codigo+'" '+((i==0)?'selected':'')+'>'+response[i].Nombre_Cta+'</option>';
             });				
@@ -203,7 +211,9 @@ function llenar_combobox_cuentas()
             ConsultarDatosLibroBanco();				
         },
         error: function(xhr, status, error){
-            $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
             console.error("Error en la solicitud: ", status, error);
         }
     });

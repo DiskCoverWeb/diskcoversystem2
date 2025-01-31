@@ -441,9 +441,9 @@ function listar_comprobante()
                 $('#LabelEst').text('NORMAL');
             }
         }
-        setTimeout(function(){
-        $('#myModal_espera').modal('hide');
-        }, 1000);
+        setTimeout(()=>{
+          $('#myModal_espera').modal('hide');
+        }, 2000);
         
 
   }
@@ -519,7 +519,7 @@ function anular_comprobante()
     Swal.fire({
          title: 'Seguro de Anular El Comprobante No. '+$('#tipoc').val()+' - '+$('#ddl_comprobantes').val(),
          // text: "You won't be able to revert this!",
-         type: 'warning',
+         icon: 'warning',
          showCancelButton: true,
          confirmButtonColor: '#3085d6',
          cancelButtonColor: '#d33',
@@ -549,8 +549,10 @@ function anular_comprobante_procesar()
          type:  'post',
          dataType: 'json',
            success:  function (response) {
-               $('#myModal_espera').modal('hide');
-               $('#myModal_anular').modal('hide');	
+              setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+                $('#myModal_anular').modal('hide');	
+              }, 2000);
                setTimeout(listar_comprobante, 1000);
          }
        }); 
@@ -560,7 +562,7 @@ function BtnFechaClick(){
  Swal.fire({
    title: 'PREGUNTA DE MODIFICACION',
    text: "Seguro desea cambiar la Fecha del Comprobante",
-   type: 'warning',
+   icon: 'warning',
    showCancelButton: true,
    confirmButtonColor: '#3085d6',
    cancelButtonColor: '#d33',
@@ -581,7 +583,7 @@ function MBFecha_LostFocus() {
    Swal.fire({
      title: 'PREGUNTA DE MODIFICACION',
      text: "Seguro de realizar el cambio",
-     type: 'warning',
+     icon: 'warning',
      showCancelButton: true,
      confirmButtonColor: '#3085d6',
      cancelButtonColor: '#d33',
@@ -601,7 +603,9 @@ function MBFecha_LostFocus() {
          success:  function (response) {
            Swal.fire('Proceso terminado con exito, vuelva a listar el comprobante','','info');
            $('#MBFecha').attr('disabled','disabled');
-           $('#myModal_espera').modal('hide');
+           setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+            }, 2000);
          }
        }); 
 
@@ -616,7 +620,7 @@ function Eliminar_Cuenta(Cta, CuentaBanco, Debe, Haber, Asiento) {
   Swal.fire({
  title: 'PREGUNTA DE ELIMINACION',
  text: "Esta seguro de eliminar la cuenta: "+Cta+' '+CuentaBanco,
- type: 'warning',
+ icon: 'warning',
  showCancelButton: true,
  confirmButtonColor: '#3085d6',
  cancelButtonColor: '#d33',
@@ -635,7 +639,9 @@ function Eliminar_Cuenta(Cta, CuentaBanco, Debe, Haber, Asiento) {
      },
      dataType: 'json',
      success:  function (response) {
-         $('#myModal_espera').modal('hide');
+       setTimeout(()=>{
+        $('#myModal_espera').modal('hide');
+       }, 2000);
        Swal.fire('Proceso terminado con exito, vuelva a listar el comprobante','','info');
      }
    }); 
@@ -682,6 +688,7 @@ window.open(url, '_blank');
 $( document ).ready(function() {
     //buscar('comproba');
     comprobante();
+    $('[data-bs-toggle="tooltip"]').tooltip();
     // listar_comprobante();
 
 });

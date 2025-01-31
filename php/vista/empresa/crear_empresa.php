@@ -17,15 +17,16 @@
 	</div> 
     <div class="row row-cols-auto">
         <div class="btn-group">
-                <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-outline-secondary">
-                    <img src="../../img/png/salire.png">
-                </a>
-                <button  title="Eliminar Registro" data-bs-toggle="tooltip" class="btn btn-outline-secondary" onclick="eliminar_empresa()">
-                    <img src="../../img/png/delete_file.png" >
-                </button>
-                <button type="button" class="btn btn-outline-secondary" title="Grabar Empresa" onclick="guardar_empresa()">
-                    <img src="../../img/png/grabar.png">
-                </button>
+            <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
+                <img src="../../img/png/salire.png">
+            </a>
+            <button  title="Eliminar Registro" data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" onclick="eliminar_empresa()">
+                <img src="../../img/png/delete_file.png" >
+            </button>
+            <button type="button" data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" title="Grabar Empresa" onclick="guardar_empresa()">
+                <img src="../../img/png/grabar.png">
+            </button>
+        </div>
     </div>
 
 

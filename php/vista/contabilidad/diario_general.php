@@ -14,7 +14,7 @@
         Swal.fire({
     title: 'Esta seguro?',
     text: "Eliminar Comprobantes Incompletos",
-    type: 'warning',
+    icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
@@ -28,7 +28,7 @@
         dataType: 'json',
         success: function (response) {
             Swal.fire({
-                type: response ?'success':'error',
+                icon: response ?'success':'error',
                 title: response ?'Fin del Proceso':'Ocurrio un error inesperando realizando el proceso',
                 text: ''
             });
@@ -59,34 +59,34 @@
       </div>          
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row">
     <div class="col-sm-6">
       <div class="btn-group">
          <a  href="./contabilidad.php?mod=contabilidad#"   data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
               <img src="../../img/png/salire.png">
             </a>          
-          <button type="button" class="btn btn-outline-secondary"  data-bs-toggle="dropdown" title="Descargar PDF">
+          <button type="button" class="btn btn-outline-secondary btn-sm"  data-bs-toggle="dropdown" title="Descargar PDF">
             <img src="../../img/png/pdf.png">
           </button>
             <ul class="dropdown-menu">
               <li><a href="#" class="dropdown-item" id="imprimir_pdf">Diario General</a></li>
               <li><a href="#" class="dropdown-item" id="imprimir_pdf_2">Libro Diario</a></li>
             </ul>
-          <button type="button" class="btn btn-outline-secondary"   data-bs-toggle="dropdown" title="Descargar Excel">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="dropdown" title="Descargar Excel">
             <img src="../../img/png/table_excel.png">
           </button>
           <ul class="dropdown-menu">
             <li><a href="#" class="dropdown-item" id="imprimir_excel">Diario General</a></li>
             <li><a href="#" class="dropdown-item" id="imprimir_excel_2">Libro Diario</a></li>
           </ul>
-          <button title="Consultar Catalogo de cuentas"  class="btn btn-outline-secondary" data-bs-toggle="tooltip" onclick="cargar_libro_general();">
+          <button title="Consultar Catalogo de cuentas"  class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" onclick="cargar_libro_general();">
             <img src="../../img/png/consultar.png" >
           </button>
-          <button data-bs-toggle="tooltip"class="btn btn-outline-secondary" title="Autorizar" onclick="Swal.fire('No tiene accesos a esta opcion','','info')">
+          <button data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" title="Autorizar" onclick="Swal.fire('No tiene accesos a esta opcion','','info')">
             <img src="../../img/png/autorizar1.png">
           </button>
         <?php if ($_SESSION['INGRESO']['Nombre_Completo']=="Administrador de Red"): ?>
-            <button data-bs-toggle="tooltip"class="btn btn-outline-secondary" title="Eliminar Comprobantes Incompletos" onclick="Eliminar_ComprobantesIncompletos()">
+            <button data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" title="Eliminar Comprobantes Incompletos" onclick="Eliminar_ComprobantesIncompletos()">
               <img src="../../img/png/borrar_archivo.png" style="max-width: 32px;">
             </button>
         <?php endif ?>        
@@ -96,18 +96,18 @@
       <div class="row">
         <div class="col-6">
           <b>Desde:</b><br>
-            <input class="form-control form-control-sm h-25" type="date" min="01-01-2000" max="31-12-2050"  name="txt_desde" id="txt_desde" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);cargar_libro_general();">  
+            <input class="form-control form-control-sm" type="date" min="01-01-2000" max="31-12-2050"  name="txt_desde" id="txt_desde" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);cargar_libro_general();">  
         </div>  
         <div class="col-6">
           <b>Hasta:</b><br>
-            <input class="form-control form-control-sm h-25" type="date"  min="01-01-2000" max="31-12-2050" name="txt_hasta" id="txt_hasta" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);cargar_libro_general();"> 
+            <input class="form-control form-control-sm" type="date"  min="01-01-2000" max="31-12-2050" name="txt_hasta" id="txt_hasta" value="<?php echo date("Y-m-d");?>" onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id);cargar_libro_general();"> 
         </div>   
       </div>        
     </div>
   </div>
-  <div class="card mb-3">
+  <div class="card">
     <div class="card-body">
-      <div class="row mb-2">
+      <div class="row">
         <div class="col col-sm-12 col-md-6 col-lg-12">                          
             <b>COMPROBANTES DE</b>                  
         </div>
@@ -145,7 +145,7 @@
           
         </div>        
       </div>
-      <div class="row mb-2">
+      <div class="row">
           <div class="col-sm-6">
             <div class="row">
               <div class="col-4">
@@ -173,12 +173,12 @@
       </div>
     </div>
   </div>
-  <div class="card md-2">
+  <div class="card">
     <div class="card-body">
       <div class="row">
       <input type="input" name="activo" id="activo" value="1" hidden="">
       <div class="col-12">
-        <ul class="nav nav-pills pt-1" role="tablist">
+        <ul class="nav nav-pills" role="tablist">
             <li class="nav-item" role="presentation">
             <a data-bs-toggle="pill" href="#Primary-DG" id="titulo_tab" class="nav-link active">
               <div class="tab-title">DIARIO GENERAL</div>
@@ -192,103 +192,97 @@
         </ul>       
          <div class="tab-content">          
             <div class="tab-pane fade active show" id="Primary-DG">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="table-responsive">
-                     <table class="table text-sm" id="tbl_DiarioGeneral">
-                      <thead>
-                        <tr>
-                          <th class="text-center">Fecha</th>
-                          <th class="text-center">TP</th>
-                          <th class="text-center">Número</th>
-                          <th class="text-center">Beneficiario</th>
-                          <th class="text-center">Concepto</th>
-                          <th class="text-center">Cta</th>
-                          <th class="text-center">Cuenta</th>
-                          <th class="text-center">Parcial_ME</th>
-                          <th class="text-center">Debe</th>
-                          <th class="text-center">Haber</th>
-                          <th class="text-center">Detalle</th>
-                          <th class="text-center">Nombre_Completo</th>
-                          <th class="text-center">CodigoU</th>
-                          <th class="text-center">Autorizado</th>
-                          <th class="text-center">Item</th>
-                          <th class="text-center">ID</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                      </tbody>
-                    </table>                        
-                  </div>
-                  
-                </div>                   
-              </div>                 
+              <div class="col-sm-12">
+                <div class="table-responsive">
+                  <table class="table text-sm" id="tbl_DiarioGeneral">
+                    <thead>
+                      <tr>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">TP</th>
+                        <th class="text-center">Número</th>
+                        <th class="text-center">Beneficiario</th>
+                        <th class="text-center">Concepto</th>
+                        <th class="text-center">Cta</th>
+                        <th class="text-center">Cuenta</th>
+                        <th class="text-center">Parcial_ME</th>
+                        <th class="text-center">Debe</th>
+                        <th class="text-center">Haber</th>
+                        <th class="text-center">Detalle</th>
+                        <th class="text-center">Nombre_Completo</th>
+                        <th class="text-center">CodigoU</th>
+                        <th class="text-center">Autorizado</th>
+                        <th class="text-center">Item</th>
+                        <th class="text-center">ID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>                        
+                </div>
+              </div>                   
             </div>
             <div class="tab-pane fade" id="Primary-SM">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="table-responsive">
-                    <table class="table text-sm" id="tbl_Submodulos">
-                      <thead>
-                        <tr>
-                          <th class="text-center">Fecha</th>
-                          <th class="text-center">TP</th>
-                          <th class="text-center">Numero</th>
-                          <th class="text-center">Cliente</th>
-                          <th class="text-center">Cta</th>
-                          <th class="text-center">TC</th>
-                          <th class="text-center">Factura</th>
-                          <th class="text-center">Debitos</th>
-                          <th class="text-center">Creditos</th>
-                          <th class="text-center">Prima</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                      </tbody>
-                    </table>   
-                    
-                  </div>                  
-                </div>                
-              </div>              
+              <div class="col-sm-12">
+                <div class="table-responsive">
+                  <table class="table text-sm" id="tbl_Submodulos">
+                    <thead>
+                      <tr>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">TP</th>
+                        <th class="text-center">Numero</th>
+                        <th class="text-center">Cliente</th>
+                        <th class="text-center">Cta</th>
+                        <th class="text-center">TC</th>
+                        <th class="text-center">Factura</th>
+                        <th class="text-center">Debitos</th>
+                        <th class="text-center">Creditos</th>
+                        <th class="text-center">Prima</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>   
+                </div>                  
+              </div>                
             </div>
           </div>
         </div>
       </div>      
     </div>    
   </div>
-  <div class="card mb-3">
+  <div class="card">
     <div class="card-body">
-       <div class="row row-cols-auto p-0 m-0">
+       <div class="row row-cols-auto">
         <div class="col-2">
           <b>Total Debe</b>
         </div>
@@ -308,7 +302,7 @@
           <label id="Saldo"></label>       
         </div>
       </div>
-      <div class="row p-0 m-0">
+      <div class="row">
         <div class="col-2">
           <b >Total Debe ME</b>
         </div>
