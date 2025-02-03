@@ -835,9 +835,12 @@
   function GuardarFactura()
   {
      TextFacturaNo = $("#factura").val();
+     TextSerie = $("#DCLinea").val();
+     var Serie = TextSerie.split(" ");
+console.log(Serie)
       Swal.fire({
           title: 'Esta seguro?',
-          text: "Esta seguro que desea guardar \n La factura No."+TextFacturaNo,
+          text: "Esta seguro que desea guardar \n La factura No."+ Serie[1] +"-"+TextFacturaNo,
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
