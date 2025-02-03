@@ -2,11 +2,10 @@ var video;
 var canvasElement;
 var canvas;
 var scanning = false;
+var tbl_pedidos_all;
 $(document).ready(function () {
-video = document.createElement("video");
-canvasElement = document.getElementById("qr-canvas");
-canvas = canvasElement.getContext("2d", { willReadFrequently: true });
 
+  pedidos();
    window.addEventListener("message", function(event) {
         if (event.data === "closeModal") {
             autocoplet_ingreso();
@@ -14,20 +13,100 @@ canvas = canvasElement.getContext("2d", { willReadFrequently: true });
     });    
   autocoplet_alimento();
   autocoplet_ingreso();
-  pedidos();
 
-  notificaciones();
+  // notificaciones();
+
+    $('#txt_codigo').on('select2:select', function (e) {
+      var data = e.params.data.data;
+      setearCamposPedidos(data);
+    });
 
 
+    tbl_pedidos_all = $('#tbl_body').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url:   '../controlador/inventario/alimentos_recibidosC.php?pedido_checking=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {                    
+                   num_ped:$('#txt_codigo').val(),
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: function(json) {
+                $('#txt_cant_total').val(json.cant_total);
+
+                 $('#tbl_body tbody').append(`
+                    <tr>
+                        <td colspan="6" style="text-align: right; font-weight: bold;">Total:</td>
+                        <td style="font-weight: bold;">0.00</td>
+                        <td colspan="3"></td>
+                    </tr>
+                `);
+                return json.tabla;
+            }             
 
 
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+              { data: null, // Columna autoincremental
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1; // meta.row es el índice de la fila
+                    }
+              },
+              { data: 'Fecha_Exp.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              {data: 'Fecha_Fab.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'Producto' },
+              { data: 'Unidad' },
+              { data: null,
+                render: function(data, type, item) {
+                    return `<input class="form-control"  id="txt_pvp_linea_${data.ID}" name="txt_pvp_linea_${data.ID}" onblur="recalcular('${data.ID}')" input-sm" value="${data.Valor_Unitario}">`;
+                }      
+              },
+              { data: 'Valor_Total' },
+              { data: null,
+                 render: function(data, type, item) {
+                    return`${data.Nombre_Completo} <span class="badge bg-danger rounded-pill" onclick="abrir_modal_notificar('${data.CodigoU}')" title="Notificar"><i class="bx bx-message-square-detail"></i></span>`
+                 }
+              },
+              { data: null,
+                 render: function(data, type, item) {
+                    if(data.T == 'C')
+                    {
+                        return `<input type="checkbox" class="rbl_conta" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}" checked  />`;
+                    }else
+                    {
+                       return `<input type="checkbox" class="rbl_conta" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}"  />`;
+                    }                    
+                  }
+              },
+              { data: null,
+                 render: function(data, type, item) {
+                    botons = `<button class="btn btn-sm btn-primary" onclick="editar_precio('${data.ID}');guardar_check()"><i class="fa fa-save"></i></button>`;
+                    if(data.TDP=='R')
+                    {
+                        botons+=`<button class="btn btn-sm btn-warning" onclick="cargar_tras_pedidos('${data.Producto}','${data.Orden_No}')"><i class="fa fa-list"></i></button>`;
+                    }
 
-  $('#txt_codigo').on('select2:select', function (e) {
-          var data = e.params.data.data;
-
-          setearCamposPedidos(data);
-
-       });
+                    return botons;                    
+                  }
+              },
+              
+          ]
+      });
 
 
 })
@@ -70,29 +149,27 @@ console.log(data);
 
             $('#pnl_factura').css('display','none');
         }
-
-      // setInterval(function() {         	
+       	
                 // cargar_pedido();
-      // }, 5000); 
 }
 
 function pedidos(){
-$('#txt_codigo').select2({
-placeholder: 'Seleccione una beneficiario',
-// width:'90%',
-ajax: {
-  url:   '../controlador/inventario/alimentos_recibidosC.php?pedidos_proce=true',          
-  dataType: 'json',
-  delay: 250,
-  processResults: function (data) {
-    // console.log(data);
-    return {
-      results: data
-    };
-  },
-  cache: true
-}
-});
+    $('#txt_codigo').select2({
+    placeholder: 'Seleccione una beneficiario',
+    // width:'90%',
+    ajax: {
+      url:   '../controlador/inventario/alimentos_recibidosC.php?pedidos_proce=true',          
+      dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+        // console.log(data);
+        return {
+          results: data
+        };
+      },
+      cache: true
+    }
+    });
 
 }
 function pedidosPorQR(codigo){
@@ -394,7 +471,7 @@ function cargar_tras_pedidos(nombre,pedido)
     console.log(response);
     var lista = '';
     response.forEach(function(item,i){
-        lista+='<li style="font-size: large;"><a href="#" style="padding-right:0px"><label>'+item.Producto+'</label><span class="label label-danger pull-right">'+item.Cantidad+' - '+item.UNIDAD+'</span></a></li>';
+        lista+='<li class="list-group-item d-flex justify-content-between align-items-center">'+item.Producto+'</label><span class="badge bg-primary rounded-pill">'+item.Cantidad+' - '+item.UNIDAD+'</span></li>';
     })
     $('#lista_pedido').html(lista);    
   }
@@ -652,45 +729,6 @@ function nueva_notificacion()
 $('#modal_notificar').modal('show');
 }
 
-function notificaciones()
-{
-  $.ajax({
-        type: "POST",
-          url:   '../controlador/inventario/alimentos_recibidosC.php?listar_notificaciones=true',
-          // data:datos,
-        dataType:'json',
-        success: function(data)
-        {		    	    	
-            if(data.length>0)
-            {
-                var mensajes = '';
-                var cantidad  = 0;
-                 $('#pnl_notificacion').css('display','block');
-                 data.forEach(function(item,i){
-                     mensajes+='<li>'+
-                                        '<a href="#" data-toggle="modal" onclick="mostrar_notificacion(\''+item.Texto_Memo+'\',\''+item.ID+'\',\''+item.Pedido+'\')">'+
-                                            '<h4 style="margin:0px">'+
-                                                item.Asunto+
-                                                '<small>'+formatoDate(item.Fecha.date)+' <i class="fa fa-calendar-o"></i></small>'+
-                                            '</h4>'+
-                                            '<p>'+item.Texto_Memo.substring(0,15)+'...</p>'+
-                                        '</a>'+
-                                    '</li>';
-                                    cantidad = cantidad+1;
-                 })
-
-                 $('#pnl_mensajes').html(mensajes);
-                 $('#cant_mensajes').text(cantidad);
-            }else
-            {
-
-                 $('#pnl_notificacion').css('display','none');
-            }
-            console.log(data);
-        }
-    });  	
-
-}
 
 function mostrar_notificacion(text,id,pedido)
 {
@@ -757,88 +795,74 @@ $.ajax({
 
 
 
-function escanear_qr(){
-    $('#modal_qr_escaner').modal('show');
-    navigator.mediaDevices
-    .getUserMedia({ video: { facingMode: "environment" } })
-    .then(function (stream) {
-        $('#qrescaner_carga').hide();
-        scanning = true;
-        //document.getElementById("btn-scan-qr").hidden = true;
-        canvasElement.hidden = false;
-        video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-        video.srcObject = stream;
-        video.play();
-        tick();
-          scan();
-    });
+  function escanear_qr(){
+    iniciarEscanerQR();
+        $('#modal_qr_escaner').modal('show');
+    }
+
+ let scanner;
+ function iniciarEscanerQR() {
+
+    scanner = new Html5Qrcode("reader");
+    $('#qrescaner_carga').hide();
+    Html5Qrcode.getCameras().then(devices => {
+        if (devices.length > 0) {
+            let cameraId = devices[0].id; // Usa la primera cámara disponible
+            scanner.start(
+                cameraId,
+                {
+                    fps: 10, // Velocidad de escaneo
+                    qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
+                },
+                (decodedText) => {
+                    // document.getElementById("resultado").innerText = decodedText;
+                    pedidosPorQR(decodedText);
+                    scanner.stop(); // Detiene la cámara después de leer un código
+                    $('#modal_qr_escaner').modal('hide');
+                },
+                (errorMessage) => {
+                    console.log("Error de escaneo:", errorMessage);
+                }
+            );
+        } else {
+            alert("No se encontró una cámara.");
+        }
+    }).catch(err => console.error("Error al obtener cámaras:", err));
 }
 
-//funciones para levantar las funiones de encendido de la camara
-function tick() {
-    canvasElement.height = video.videoHeight;
-    canvasElement.width = video.videoWidth;
-    //canvasElement.width = canvasElement.height + (video.videoWidth - video.videoHeight);
-    canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-
-    scanning && requestAnimationFrame(tick);
-}
-
-function scan() {
-    try {
-        qrcode.decode();
-    } catch (e) {
-        setTimeout(scan, 300);
+  function cerrarCamara() {
+    if (scanner) {
+        scanner.stop().then(() => {            
+          $('#qrescaner_carga').show();
+          $('#modal_qr_escaner').modal('hide');
+        }).catch(err => {
+            console.error("Error al detener el escáner:", err);
+        });
     }
 }
-
-const cerrarCamara = () => {
-    video.srcObject.getTracks().forEach((track) => {
-        track.stop();
-    });
-    canvasElement.hidden = true;
-    $('#qrescaner_carga').show();
-    $('#modal_qr_escaner').modal('hide');
-};
-
-//callback cuando termina de leer el codigo QR
-qrcode.callback = (respuesta) => {
-    if (respuesta) {
-        //console.log(respuesta);
-        //Swal.fire(respuesta)
-        console.log(respuesta);
-        pedidosPorQR(respuesta);
-        //activarSonido();
-        //encenderCamara();    
-        cerrarCamara();    
-    }
-};
-
-
-$( document ).ready(function() {
-    cargar_pedido();
-// cargar_productos();
-autocoplet_pro();
-})
  
 function cargar_pedido()
 {
-var parametros=
-{
-  'num_ped':$('#txt_codigo').val(),
-}
- $.ajax({
-  data:  {parametros:parametros},
-  url:   '../controlador/inventario/alimentos_recibidosC.php?pedido_checking=true',
-  type:  'post',
-  dataType: 'json',
-  success:  function (response) {
-    console.log(response);
-    $('#tbl_body').html(response.tabla);
-    $('#txt_cant_total').val(response.cant_total);
-   
-  }
-});
+
+
+     tbl_pedidos_all.ajax.reload(null, false);
+
+        // var parametros=
+        // {
+        //   'num_ped':$('#txt_codigo').val(),
+        // }
+        //  $.ajax({
+        //   data:  {parametros:parametros},
+        //   url:   '../controlador/inventario/alimentos_recibidosC.php?pedido_checking=true',
+        //   type:  'post',
+        //   dataType: 'json',
+        //   success:  function (response) {
+        //     console.log(response);
+        //     $('#tbl_body').html(response.tabla);
+        //     $('#txt_cant_total').val(response.cant_total);
+           
+        //   }
+        // });
 }
 
 function calculos()
@@ -900,7 +924,7 @@ var parametros2 = $("#form_correos").serialize();
        if(response==1)
        {
           Swal.fire({
-            type:'success',
+            icon:'success',
             title: 'Pedido contabilizado',
             text :'',
           }).then( function() {
@@ -921,6 +945,7 @@ function limpiar()
   $("#ddl_descripcion").empty();
   $("#ddl_pro").empty();
 }
+
 function autocoplet_pro(){
   $('#ddl_producto').select2({
     placeholder: 'Seleccione una producto',
