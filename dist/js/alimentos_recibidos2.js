@@ -1,16 +1,15 @@
-var video;
+
 	var canvasElement;
 	var canvas;
 	var scanning = false;
+  var tbl_pedidos_all;
   $(document).ready(function () {
-    video = document.createElement("video");
-    canvasElement = document.getElementById("qr-canvas");
-    canvas = canvasElement.getContext("2d", { willReadFrequently: true });
-    notificaciones();
+    // video = document.createElement("video");
+    // canvasElement = document.getElementById("qr-canvas");
+    // canvas = canvasElement.getContext("2d", { willReadFrequently: true });
+    // notificaciones();
     cargar_paquetes();
-     setInterval(function() {
-         notificaciones();
-          }, 5000); 
+    
     $('#txt_fecha').focus();
 
     $(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
@@ -122,6 +121,97 @@ var video;
       var data = e.params.data.data;
     	setearCamposPedidos(data);
     });
+
+
+     tbl_pedidos_all = $('#tbl_body').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+               url:   '../controlador/inventario/alimentos_recibidosC.php?pedido=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {                    
+                    num_ped:$('#txt_codigo').val(),
+                  };
+                  return { parametros: parametros };
+              },              
+              dataSrc: function(json) {
+              
+                var diff = parseFloat(json.cant_total)-parseFloat(json.reciclaje);
+                if(diff < 0)
+                {
+                  diff = diff*(-1);
+                }
+                $('#txt_primera_vez').val(json.primera_vez);
+
+                var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
+                var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
+                var total_pedido = $('#txt_cant').val();
+                var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
+
+
+                $('#txt_faltante').val(faltantes.toFixed(2));
+
+                // console.log(json);
+
+                // Devolver solo la parte de la tabla para DataTables
+                return json.tabla;
+            }        
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+              { data: null, // Columna autoincremental
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1; // meta.row es el índice de la fila
+                    }
+              },
+               { data: 'Fecha_Fab.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'Fecha_Exp.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'Producto' },
+              { data: 'Entrada' },
+              { data: 'Nombre_Completo' },
+              { data: 'Codigo_Barra'},
+              { data: 'sucursal' },
+              { data: null,
+                 render: function(data, type, row) {
+                    return `<div id="qr_${data.Codigo_Barra}"></div>
+                            <script>
+                                setTimeout(() => {
+                                    new QRCode(document.getElementById('qr_${data.Codigo_Barra}'), {
+                                        text: '${data.Codigo_Barra}',
+                                        width: 70,
+                                        height: 70
+                                    });
+                                }, 100);
+                            </script>`;
+                }
+              },
+              { data: null,
+                 render: function(data, type, item) {
+                      var botones = `<button class="btn btn-sm btn-danger" title="Eliminar linea"  onclick="eliminar_lin('${data.ID}','${data.TDP}')" ><i class="bx bx-trash m-0"></i></button>`;                      
+                    
+                    if(data.TDP !='.'){
+                      botones+=`<button class="btn btn-sm btn-primary" title="Agregar a ${data.Producto}"  onclick=" show_producto2('${data.ID}')" ><i class=" bx bx-list-ol m-0"></i></button>`;  
+                    }
+
+                    return botones;         
+                  }
+              },
+              
+          ]
+     });
+
 
   })
 
@@ -236,7 +326,7 @@ function cargar_paquetes()
        dataType:'json',
       success: function(data)
       {
-        var op = '<option value="">Seleccione empaque</option>';
+        var op = '<option value="">Empaques</option>';
         var option = '';
         data.forEach(function(item,i){
 
@@ -813,47 +903,6 @@ function autocoplet_ingreso()
     });
  }
 
-
-   function notificaciones()
-  {
-    $.ajax({
-        type: "POST",
-          url:   '../controlador/inventario/alimentos_recibidosC.php?listar_notificaciones=true',
-          // data:datos,
-          dataType:'json',
-        success: function(data)
-        {               
-          if(data.length>0)
-          {
-            var mensajes = '';
-            var cantidad  = 0;
-             $('#pnl_notificacion').css('display','block');
-             data.forEach(function(item,i){
-              mensajes+='<li>'+
-                      '<a href="#" data-toggle="modal" onclick="mostrar_notificacion(\''+item.Texto_Memo+'\',\''+item.ID+'\',\''+item.Pedido+'\')">'+
-                        '<h4 style="margin:0px">'+
-                          item.Asunto+
-                          '<small>'+formatoDate(item.Fecha.date)+' <i class="fa fa-calendar-o"></i></small>'+
-                        '</h4>'+
-                        '<p>'+item.Texto_Memo.substring(0,15)+'...</p>'+
-                      '</a>'+
-                    '</li>';
-                    cantidad = cantidad+1;
-             })
-
-             $('#pnl_mensajes').html(mensajes);
-             $('#cant_mensajes').text(cantidad);
-          }else
-          {
-
-             $('#pnl_notificacion').css('display','none');
-          }
-          // console.log(data);
-        }
-    });   
-
-  }
-
   function mostrar_notificacion(text,id,pedido)
   {
    cargar_notificacion(id);
@@ -1047,57 +1096,423 @@ function autocoplet_ingreso()
 	 
 
   function escanear_qr(){
+    iniciarEscanerQR();
 		$('#modal_qr_escaner').modal('show');
-		navigator.mediaDevices
-		.getUserMedia({ video: { facingMode: "environment" } })
-		.then(function (stream) {
-      $('#qrescaner_carga').hide();
-			scanning = true;
-			//document.getElementById("btn-scan-qr").hidden = true;
-			canvasElement.hidden = false;
-			video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-			video.srcObject = stream;
-			video.play();
-			tick();
-      		scan();
-		});
 	}
 
-	//funciones para levantar las funiones de encendido de la camara
-	function tick() {
-		canvasElement.height = video.videoHeight;
-		canvasElement.width = video.videoWidth;
-		//canvasElement.width = canvasElement.height + (video.videoWidth - video.videoHeight);
-		canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
 
-		scanning && requestAnimationFrame(tick);
-	}
 
-	function scan() {
-		try {
-			qrcode.decode();
-		} catch (e) {
-			setTimeout(scan, 300);
-		}
-	}
+ let scanner;
+ function iniciarEscanerQR() {
 
-	const cerrarCamara = () => {
-		video.srcObject.getTracks().forEach((track) => {
-			track.stop();
-		});
-		canvasElement.hidden = true;
-    $('#qrescaner_carga').show();
-		$('#modal_qr_escaner').modal('hide');
-	};
+    scanner = new Html5Qrcode("reader");
+    $('#qrescaner_carga').hide();
+    Html5Qrcode.getCameras().then(devices => {
+        if (devices.length > 0) {
+            let cameraId = devices[0].id; // Usa la primera cámara disponible
+            scanner.start(
+                cameraId,
+                {
+                    fps: 10, // Velocidad de escaneo
+                    qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
+                },
+                (decodedText) => {
+                    // document.getElementById("resultado").innerText = decodedText;
+                    pedidosPorQR(decodedText);
+                    scanner.stop(); // Detiene la cámara después de leer un código
+                    $('#modal_qr_escaner').modal('hide');
+                },
+                (errorMessage) => {
+                    console.log("Error de escaneo:", errorMessage);
+                }
+            );
+        } else {
+            alert("No se encontró una cámara.");
+        }
+    }).catch(err => console.error("Error al obtener cámaras:", err));
+}
 
-	//callback cuando termina de leer el codigo QR
-	qrcode.callback = (respuesta) => {
-		if (respuesta) {
-			//console.log(respuesta);
-			//Swal.fire(respuesta)
-			pedidosPorQR(respuesta);
-			//activarSonido();
-			//encenderCamara();    
-			cerrarCamara();    
-		}
-	};
+  function cerrarCamara() {
+    if (scanner) {
+        scanner.stop().then(() => {            
+          $('#qrescaner_carga').show();
+          $('#modal_qr_escaner').modal('hide');
+        }).catch(err => {
+            console.error("Error al detener el escáner:", err);
+        });
+    }
+}
+
+
+  function cargar_pedido()
+  {
+
+     tbl_pedidos_all.ajax.reload(null, false);
+  }
+
+
+  function cargar_pedido2()
+  {
+    var parametros=
+    {
+      'num_ped':$('#txt_codigo').val(),
+    }
+     $.ajax({
+      data:  {parametros:parametros},
+      url:   '../controlador/inventario/alimentos_recibidosC.php?pedido_trans=true',
+      type:  'post',
+      dataType: 'json',
+      success:  function (response) {
+        console.log(response);
+        $('#tbl_body_pedido').html(response.tabla);
+        $('#txt_cant_total_pedido').val(response.cant_total);   
+        $('#txt_total_lin_pedido').val(response.num_lin);       
+      }
+    });
+  }
+
+ function calculos()
+   {
+     let cant = parseFloat($('#txt_canti').val());
+     let pre = parseFloat($('#txt_precio').val());
+     let des = 0; //parseFloat($('#txt_descto').val());
+     if($('#rbl_si').prop('checked'))
+     {
+       let subtotal = pre*cant;
+       let dscto = (subtotal*des)/100;
+       let total = (subtotal-dscto)*1.12;
+
+       let iva = parseFloat($('#txt_iva').val()); 
+       $('#txt_subtotal').val(subtotal-dscto);
+       $('#txt_total').val(total);
+       $('#txt_iva').val(total-(subtotal-dscto));
+
+     }else
+     {
+      $('#txt_iva').val(0);
+       let iva = parseFloat($('#txt_iva').val());       
+       let sub = (pre*cant);
+       let dscto = (sub*des)/100;
+
+       let total = (sub-dscto);
+       $('#txt_subtotal').val(sub-dscto);
+       $('#txt_total').val(total);
+     }
+   }
+
+   function limpiar_nuevo_producto()
+   {
+     $('#ddl_cta_inv').empty();
+     $('#ddl_cta_CV').empty();
+     $('#ddl_cta_venta').empty();
+     $('#ddl_cta_ventas_0').empty();
+     $('#ddl_cta_vnt_anti').empty();
+     $('#ddl_familia_modal').empty();
+     $('#txt_ref').val('');
+     $('#txt_nombre').val('');
+     $('#txt_max').val('');
+     $('#txt_min').val('');
+     $('#txt_reg_sanitario').val('');
+     $('#txt_cod_barras').val('');
+   }
+
+  function agregar()
+  {
+    var reci = $('#txt_TipoSubMod').val();
+    
+    var parametros = $("#form_add_producto").serialize();    
+    var parametros2 = $("#form_correos").serialize();
+       $.ajax({
+         data:  parametros2+'&txt_referencia='+$('#txt_referencia').val()+'&txt_referencia2='+$('#txt_referencia2').val(),
+         url:   '../controlador/inventario/alimentos_recibidosC.php?guardar_recibido=true',
+         type:  'post',
+         dataType: 'json',
+           success:  function (response) { 
+
+            // console.log(response);
+           if(response.resp==1)
+           {
+            $('#txt_pedido').val(response.ped);
+              Swal.fire({
+                icon:'success',
+                title: 'Agregado a pedido',
+                text :'',
+              }).then( function() {                 
+                   cargar_pedido(); 
+                   $('#txt_paquetes').val('');
+                   $('#ddl_sucursales').val('');                
+              });
+
+            // Swal.fire('','Agregado a pedido.','success');
+            limpiar();
+            // location.reload();
+           }else
+           {
+            Swal.fire('','Algo extraño a pasado.','error');
+           }           
+         }
+       });    
+
+    
+  }
+
+
+  function limpiar()
+  {
+     var tpd = $('#txt_TipoSubMod').val();
+      $("#txt_cantidad").val('');
+      $("#txt_unidad").val('');
+      $("#txt_grupo").val('');
+      $("#txt_fecha_exp").val('');
+
+
+     if(tpd=='R')
+     {
+
+      $("#txt_referencia2").val('');
+      $("#txt_producto2").val(null).trigger('change');
+      $("#ddl_producto2").val(null).trigger('change');
+      $("#txt_producto2").prop('disabled',false);
+
+      $("#txt_producto").prop('disabled',false);      
+      $("#txt_producto").val(null).trigger('change');
+
+     }else{
+      $("#txt_producto").val('');
+    
+      $("#txt_cantidad2").val('');
+      $("#txt_referencia").val('');
+      $("#ddl_producto").val(null).trigger('change');
+      $("#txt_producto").prop('disabled',false);      
+      $("#txt_producto").val(null).trigger('change');
+      
+    }
+  }
+
+
+  function autocoplet_pro(){
+    $('#ddl_producto').select2({
+      placeholder: 'Seleccione una producto',
+      ajax: {
+        url:   '../controlador/inventario/alimentos_recibidosC.php?autocom_pro=true',
+        dataType: 'json',
+        delay: 250,
+        processResults: function (data) {
+          // console.log(data);
+            return {
+              results: data
+            };
+        },
+        cache: true
+      }
+    });
+  }
+
+   function autocoplet_producto(){
+    $('#txt_producto').select2({
+      placeholder: 'Seleccione una producto',
+      ajax: {
+        url:   '../controlador/inventario/alimentos_recibidosC.php?autocom_pro=true',
+        dataType: 'json',
+        delay: 250,
+        processResults: function (data) {
+          // console.log(data);
+            return {
+              results: data
+            };
+        },
+        cache: true
+      }
+    });
+  }
+
+  function autocoplet_pro2(){
+    $('#ddl_producto2').select2({
+      placeholder: 'Seleccione una producto',
+      dropdownParent: $('#modal_producto_2'),
+      ajax: {
+        url:   '../controlador/inventario/alimentos_recibidosC.php?autocom_pro2=true',
+        dataType: 'json',
+        delay: 250,
+        processResults: function (data) {
+          // console.log(data);
+            return {
+              results: data
+            };
+        },
+        cache: true
+      }
+    });
+  }
+
+function eliminar_lin(num,tipo)
+{
+  pedido = $('#txt_codigo').val();
+  // console.log(cli);
+
+    if(tipo=='R')
+    {
+      Swal.fire({
+        title: 'Quiere eliminar este registro?',
+        text: "Al eliminar este registro se borrara tambien los productos ligados a este item!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si'
+      }).then((result) => {
+          if (result.value) {
+            eliminar_all_pedido(pedido);
+            eliminar_linea_trans(num,'1');
+            $('#txt_TipoSubMod').val('.');    
+            $('#btn_cantidad').prop('disabled',false);    
+            limpiar();
+            limpiar_reciclaje();         
+          }
+        });
+    }else{
+    eliminar_linea_trans(num);
+  }
+}
+
+function eliminar_linea_trans(num,tpd=0)
+{
+   var parametros=
+    {
+      'lin':num,
+      'TPD':tpd,
+    }
+     $.ajax({
+      data:  {parametros:parametros},
+      url:   '../controlador/inventario/alimentos_recibidosC.php?lin_eli=true',
+      type:  'post',
+      dataType: 'json',
+      success:  function (response) { 
+        if(response==1)
+        {
+          cargar_pedido();
+          cargar_pedido2();
+        }
+      }
+    });
+}
+
+
+function eliminar_all_pedido(pedido)
+{
+    var parametros=
+      {
+        'pedido':pedido,
+      }
+       $.ajax({
+        data:  {parametros:parametros},
+        url:   '../controlador/inventario/alimentos_recibidosC.php?eli_all_pedido=true',
+        type:  'post',
+        dataType: 'json',
+        success:  function (response) { 
+          if(response==1)
+          {
+            cargar_pedido2();
+          }
+        }
+      });
+
+}
+
+  function eliminar_lin_pedido(num)
+  {
+    var ruc = $('#txt_ruc').val();
+    var cli = $('#ddl_paciente').text();
+    // console.log(cli);
+    Swal.fire({
+      title: 'Quiere eliminar este registro?',
+      text: "Esta seguro de eliminar este registro!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si'
+    }).then((result) => {
+        if (result.value) {
+            var parametros=
+            {
+              'lin':num,
+            }
+             $.ajax({
+              data:  {parametros:parametros},
+              url:   '../controlador/inventario/alimentos_recibidosC.php?lin_eli_pedido=true',
+              type:  'post',
+              dataType: 'json',
+              success:  function (response) { 
+                if(response==1)
+                {
+                  cargar_pedido2();
+                }
+              }
+            });
+        }
+      });
+  }
+
+  function terminar_pedido()
+  {
+    pro = $('#txt_producto option:selected').text();
+    var id = $('#txt_id_linea_pedido').val(); 
+    
+    if($('#txt_cant_total_pedido').val()==0 || $('#txt_cant_total_pedido').val()=='')
+    {
+      Swal.fire('Agrege productos para terminar','','info')
+      return false;
+    }
+
+    primera_vez = $('#txt_primera_vez').val();
+
+    if(primera_vez==0 || primera_vez==''){
+      $('#txt_cantidad').val($('#txt_cant_total_pedido').val());
+      // $('#btn_cantidad').prop('disabled',true);
+      if($('#txt_cantidad').val()==0 || $('#txt_cantidad').val()=='')
+      {
+        Swal.fire('No se olvide de agregar: '+pro,'','info')
+        return false;
+      }
+      show_panel();
+      limpiar();
+
+         $('#modal_producto_2').modal('hide');
+    }else{
+
+         $('#modal_producto_2').modal('hide');
+          Swal.fire('Cantidad Modificada automaticamente','','success');
+
+     total = $('#txt_cant_total_pedido').val();
+    
+      var parametros=
+        {
+          'txt_codigo':$('#txt_codigo').val(),
+          'total_cantidad':$('#txt_cant_total_pedido').val(),
+          'id':id,
+          'producto': $('#txt_producto option:selected').text(),
+        }
+         $.ajax({
+          data:  {parametros:parametros},
+          url:   '../controlador/inventario/alimentos_recibidosC.php?actualizar_trans_kardex=true',
+          type:  'post',
+          dataType: 'json',
+          success:  function (response) { 
+            if(response==1)
+            {
+              cargar_pedido();
+              cargar_pedido2();
+            }
+          }
+        });
+
+          limpiar();
+    }
+
+
+
+
+
+
+  }

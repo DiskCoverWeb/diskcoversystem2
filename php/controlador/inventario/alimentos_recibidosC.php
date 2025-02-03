@@ -1,6 +1,7 @@
 <?php 
 require_once(dirname(__DIR__,2)."/modelo/inventario/alimentos_recibidosM.php");
 require_once(dirname(__DIR__,2)."/funciones/funciones.php");
+require_once(dirname(__DIR__,3)."/lib/fpdf/fpdf.php");
 
 /*
 -----------------nota importante en campo (T)----------------------
@@ -295,6 +296,10 @@ if(isset($_GET['placas_auto']))
 {
 	$tipo = $_POST['tipo'];
 	echo json_encode($controlador->placas_auto($tipo));
+}
+if (isset($_GET['imprimir_etiquetas'])) {
+	$parametros = $_POST;
+	echo json_encode($controlador->imprimir_etiquetas($parametros));
 }
 
 /**
@@ -628,6 +633,8 @@ class alimentos_recibidosC
     	// print_r($ordenes);die();
     	$datos = $this->modelo->cargar_pedidos_trans($parametros['num_ped'],false);
 
+    	// return $datos;
+
 		// print_r($datos);die();
 		$num = count($datos);
 
@@ -637,22 +644,17 @@ class alimentos_recibidosC
 		$procedimiento = '';
 		$cabecera = '';
 		$reciclaje = 0;
-        $pie = ' 
-        </tbody>
-      </table>';
-      $d='';
-      $canti = 0;
-      $canti2 = 0;
-      $primeravez = 0;
+       
+      	$canti = 0;
+      	$canti2 = 0;
+      	$primeravez = 0;
 		foreach ($datos as $key => $value) 
 		{
-			// print_r($value);die();
-			$sucursal = '.';
+			$datos[$key]['sucursal'] = '.';
 			if($value['Codigo_Dr']!='.')
 			{
 				$dato_sucursal = $this->modelo->sucursales($query = false,$codigo=false,$value['Codigo_Dr']);
-				// print_r($dato_sucursal);die();
-				$sucursal = $dato_sucursal[0]['Direccion']; 
+				$datos[$key]['sucursal'] =   $dato_sucursal[0]['Direccion'];
 			} 
 
 			$prod = $this->modelo->catalogo_productos($value['Codigo_Inv']);
@@ -672,8 +674,10 @@ class alimentos_recibidosC
  	 		$CodBodega = '01';
 			$costo_existencias =  Leer_Codigo_Inv($value['Codigo_Inv'],$FechaInventario,$CodBodega,$CodMarca='');
 		
-			if($costo_existencias['respueta']!=1){$costo_existencias['datos']['Stock'] = 0; $costo_existencias['datos']['Costo'] = 0;}
-			else{
+			if($costo_existencias['respueta']!=1){
+					$costo_existencias['datos']['Stock'] = 0; 
+					$costo_existencias['datos']['Costo'] = 0;
+			}else{
 				$exis = number_format($costo_existencias['datos']['Stock']-$value['Entrada'],2);
 				if($exis<0)
 				{
@@ -681,55 +685,35 @@ class alimentos_recibidosC
 					$negativos = true;
 				}
 			}
-			$nega = 0;			
+			$nega = 0;		
 			
-
-			if($d=='')
-			{
-			$d =  dimenciones_tabl(strlen($value['ID']));
-			$d1 =  dimenciones_tabl(strlen($value['Fecha_Exp']->format('Y-m-d')));
-			$d2 =  dimenciones_tabl(strlen($value['Fecha_Fab']->format('Y-m-d')));
-			$d3 =  dimenciones_tabl(strlen($value['Producto']));
-			$d4 =  dimenciones_tabl(strlen($value['Entrada']));
-		  }
-			$tr.='<tr>
-  					<td width="'.$d.'">'.($key+1).'</td>
-  					<td width="'.$d1.'">'.$value['Fecha_Fab']->format('Y-m-d').'</td>
-  					<td width="'.$d2.'">'.$value['Fecha_Exp']->format('Y-m-d').'</td>
-  					<td width="'.$d3.'">'.$value['Producto'].'</td>
-  					<td width="'.$d4.'">'.number_format($value['Entrada'],2,'.','').' '.$value['Unidad'].'</td>
-  					<td width="'.$d4.'">'.$value['Nombre_Completo'].'</td>
-  					<td width="'.$d4.'">'.$value['Codigo_Barra'].'</td>
-  					<td width="'.$d4.'">'.$sucursal.'</td>
-  					<td>';
-  					if($art!='.')
-  					{
-  						$tr.='<button class="btn btn-xs btn-primary" title="Agregar a '.$value['Producto'].'"  onclick=" show_producto2(\''.$value['ID'].'\')" ><i class=" fa fa-list"></i></button>';
-  						$primeravez = 1;
-  						$canti2 = $canti2+$value['Entrada'];
-  					}
-
-  					$tr.='<button class="btn btn-xs btn-danger" title="Eliminar linea"  onclick="eliminar_lin(\''.$value['ID'].'\',\''.$art.'\')" ><span class="glyphicon glyphicon-trash"></span></button>
-  					</td>
-  				</tr>';
+			if($value['TDP']!='.')
+			{  						
+				$primeravez = 1;
+				$canti2 = $canti2+$value['Entrada'];
+			}
 			
 		}
-		$tr.='<tr>
-  				<td colspan="4"><b>TOTALES</b></td>	
-  				<td>'.$canti.'</td>	
-  				<td></td>		
-  			</tr>';
+		// $tr.='<tr>
+  		// 		<td colspan="4"><b>TOTALES</b></td>	
+  		// 		<td>'.$canti.'</td>	
+  		// 		<td></td>		
+  		// 	</tr>';
 
-		if($num!=0)
-		{
-			// print_r($tr);die();
-			$tabla = array('num_lin'=>$num,'tabla'=>$tr,'item'=>$num,'cant_total'=>$canti,'reciclaje'=>$canti2,'primera_vez'=>$primeravez);	
-			return $tabla;		
-		}else
-		{
-			$tabla = array('num_lin'=>0,'tabla'=>'<tr><td colspan="9" class="text-center"><b><i>Sin registros...<i></b></td></tr>','item'=>0,'cant_total'=>0,'reciclaje'=>0);
-			return $tabla;		
-		}		
+  		// return $datos;
+
+  		return  array('num_lin'=>$num,'tabla'=>$datos,'item'=>$num,'cant_total'=>$canti,'reciclaje'=>$canti2,'primera_vez'=>$primeravez);	
+
+		// if($num!=0)
+		// {
+		// 	// print_r($tr);die();
+		// 	$tabla = array('num_lin'=>$num,'tabla'=>$tr,'item'=>$num,'cant_total'=>$canti,'reciclaje'=>$canti2,'primera_vez'=>$primeravez);	
+		// 	return $tabla;		
+		// }else
+		// {
+		// 	$tabla = array('num_lin'=>0,'tabla'=>'<tr><td colspan="9" class="text-center"><b><i>Sin registros...<i></b></td></tr>','item'=>0,'cant_total'=>0,'reciclaje'=>0);
+		// 	return $tabla;		
+		// }		
     }
 
     function cargar_productos_trans_pedidos_datos($parametros)
@@ -786,7 +770,7 @@ class alimentos_recibidosC
   					<td width="'.$d4.'">'.number_format($value['Cantidad'],2,'.','').' '.$value['UNIDAD'].'</td>
   					<td width="90px">
   					<!--	<button class="btn btn-sm btn-primary" onclick="editar_lin(\''.$value['ID'].'\')" title="Editar linea"><span class="glyphicon glyphicon-floppy-disk"></span></button> -->
-  						<button class="btn btn-sm btn-danger" title="Eliminar linea"  onclick="eliminar_lin_pedido(\''.$value['ID'].'\')" ><span class="glyphicon glyphicon-trash"></span></button>
+  						<button class="btn btn-sm btn-danger" title="Eliminar linea"  onclick="eliminar_lin_pedido(\''.$value['ID'].'\')" ><b class="bx bx-trash"></b></button>
   					</td>
   				</tr>';
 			
@@ -817,22 +801,13 @@ class alimentos_recibidosC
     	$datos = $this->modelo->cargar_pedidos_trans($parametros['num_ped'],false);
     	// $pedido = $this->modelo->
 
-		// print_r($datos);die();
-		$num = count($datos);
+				
+	    $canti = 0;
+	    $PVP = 0;      
+	    $total = 0;
+	    $reciclaje = 0;
 
-		$tr = '';
-		$iva = 0;$subtotal=0;$total=0;
-		$negativos = false;
-		$procedimiento = '';
-		$cabecera = '';
-        $pie = ' 
-        </tbody>
-      </table>';
-      $d='';
-      $canti = 0;
-      $PVP = 0;      
-      $total = 0;
-      $reciclaje = 0;
+		$num = count($datos);
 		foreach ($datos as $key => $value) 
 		{
 			// print_r($datos);die();
@@ -841,69 +816,11 @@ class alimentos_recibidosC
       		$canti = $canti+$value['Entrada'];	
       		$PVP = $PVP+$value['Valor_Unitario'];	
       		$total = $total+$value['Valor_Total'];	
-
-			if($d=='')
-			{
-			$d =  dimenciones_tabl(strlen($value['ID']));
-			$d1 =  dimenciones_tabl(strlen($value['Fecha_Exp']->format('Y-m-d')));
-			$d2 =  dimenciones_tabl(strlen($value['Fecha_Fab']->format('Y-m-d')));
-			$d3 =  dimenciones_tabl(strlen($value['Producto']));
-			$d4 =  dimenciones_tabl(strlen($value['Entrada']));
-		  }
-			$tr.='<tr>
-  					<td width="'.$d.'">'.($key+1).'</td>
-  					<td width="'.$d1.'">'.$value['Fecha_Exp']->format('Y-m-d').'</td>
-  					<td width="'.$d2.'">'.$value['Fecha_Fab']->format('Y-m-d').'</td>
-  					<td width="'.$d3.'">'.$value['Producto'].'</td>
-  					<td width="'.$d4.'" id="txt_cant_ped_'.$value['ID'].'">'.number_format($value['Entrada'],2,'.','').' '.$value['Unidad'].'</td>
-  					<td width="'.$d4.'"><input class="form-control"  id="txt_pvp_linea_'.$value['ID'].'" name="txt_pvp_linea_'.$value['ID'].'" onblur="recalcular('.$value['ID'].')" input-sm" value="'.$value['Valor_Unitario'].'"></td>
-  					<td width="'.$d4.'"><input class="form-control" id="txt_total_linea_'.$value['ID'].'" name="txt_total_linea_'.$value['ID'].'"  input-sm" value="'.$value['Valor_Total'].'" readonly></td>
-
-  					<td>	  					
-						'.$value['Nombre_Completo'].'<br>
-						<small class="label label-danger" onclick="abrir_modal_notificar(\''.$value['CodigoU'].'\')" title="Notificar"><i class="fa fa-commenting"></i></small>
-						<!--- <small class="label label-danger" onclick="abrir_modal_notificar(\''.$value['CodigoU'].'\')"><i class="fa fa-exclamation-triangle"></i></small>
-						<small class="label label-danger" onclick="abrir_modal_notificar(\''.$value['CodigoU'].'\')"><i class="fa fa-commenting"></i></small>
-						<small class="label label-danger" onclick="abrir_modal_notificar(\''.$value['CodigoU'].'\')"><i class="fa fa-commenting"></i></small>
-						 --->
-  					 </td>
-  					<td width="90px">';
-  					if($value['T']=='C')
-  					{
-  					  $tr.='<input type="checkbox" class="rbl_conta" name="rbl_conta" id="rbl_conta_'.$value['ID'].'" value="'.$value['ID'].'" checked  />';
-  					}else
-  					{
-  						$tr.='<input type="checkbox" class="rbl_conta" onclick="guardar_check()" name="rbl_conta" id="rbl_conta_'.$value['ID'].'" value="'.$value['ID'].'" />';
-  					}
-  					$tr.='</td>
-  					<td>
-  						<button class="btn btn-sm btn-primary" onclick="editar_precio('.$value['ID'].');guardar_check()"><i class="fa fa-save"></i></button>';
-  						if($value['TDP']=='R')
-  						{
-  							$tr.='<button class="btn btn-sm btn-warning" onclick="cargar_tras_pedidos(\''.$value['Producto'].'\',\''.$parametros['num_ped'].'\')"><i class="fa fa-list"></i></button>';
-  						}
-  					$tr.='</td>
-  				</tr>';
-			
 		}
-		$tr.='<tr>
-  				<td colspan="4"><b>TOTALES</b></td>	
-  				<td>'.$canti.'</td>	
-  				<td>'.$PVP.'</td>	
-  				<td>'.$total.'</td>	
-  				<td></td>		
-  			</tr>';
-
-		if($num!=0)
-		{
-			// print_r($tr);die();
-			$tabla = array('num_lin'=>$num,'tabla'=>$tr,'item'=>$num,'cant_total'=>$canti);	
+		
+		$tabla = array('num_lin'=>$num,'tabla'=>$datos,'item'=>$num,'cant_total'=>$canti,'total'=>$total,'pvp'=>$PVP);	
 			return $tabla;		
-		}else
-		{
-			$tabla = array('num_lin'=>0,'tabla'=>'<tr><td colspan="9" class="text-center"><b><i>Sin registros...<i></b></td></tr>','item'=>0,'cant_total'=>0);
-			return $tabla;		
-		}		
+	
     }
 
 
@@ -1583,6 +1500,60 @@ class alimentos_recibidosC
 	{
 		return $this->modelo->placas_auto($tipo);
 	}
+	function imprimir_etiquetas($parametros)//cambiar
+	{
+		$tbl = $this->modelo->cargar_pedidos_trans($parametros['num_ped'],false);
+
+		$pdf = new FPDF();
+		$pdf->SetMargins(3, 0, 0);
+		$pdf->SetAutoPageBreak(false);
+
+		$archivo = 'ETIQUETA_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item'].'_'.str_replace('-', '', $parametros['num_ped']);
+		$ruta = dirname(__DIR__, 3).'/TEMP/'.$archivo.'.pdf';
+		foreach ($tbl as $key => $value) 
+		{
+
+			$archivo_qr = 'QR_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item'].'_'.str_replace('-', '', $value['Codigo_Barra']).'.png';
+			$ruta_qr = "/TEMP/".$archivo_qr;
+			if(!file_exists(dirname(__DIR__, 3) . $ruta_qr)){
+				$this->generarQR($value['Codigo_Barra']);
+			}
+
+			$pdf->AddPage('L', array(60, 20));
+			$pdf->SetFont('Arial', 'B', 10);
+			$pdf->Cell(0, 5, $value['Producto'],0);
+			$pdf->Image(dirname(__DIR__, 3) . $ruta_qr,3,5,12,12);
+			$pdf->SetXY(14,5);
+			$pdf->SetFont('Arial', 'B', 8);
+			$pdf->MultiCell(0, 10, $value['Codigo_Barra'],0,0);
+		}
+
+		$pdf->Output('F',$ruta);
+		
+		return array('pdf' => $archivo);
+	}
+
+	function generarQR($codigo){
+		require_once(dirname(__DIR__,3)."/lib/phpqrcode/qrlib.php");
+		$archivo = 'QR_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item'].'_'.str_replace('-', '', $codigo).'.png';
+		$ruta = dirname(__DIR__, 3) . "/TEMP/".$archivo;
+		
+		$qr_correccion = QR_ECLEVEL_L; //Nivel de correccion de errores (L, M, Q, H)
+		$qr_tamano = 7; //Define el tamano del qr. Enteros entre 1 a 10
+		$qr_margenes = 2; //Margenes del qr
+
+		QRcode::png($codigo, $ruta, $qr_correccion, $qr_tamano, $qr_margenes);
+		
+		/*$filename = dirname(__DIR__, 3) . "/TEMP/png/qr_baq.png";
+		$qr_correccion = QR_ECLEVEL_L; //Nivel de correccion de errores (L, M, Q, H)
+		$qr_tamano = 7; //Define el tamano del qr. Enteros entre 1 a 10
+		$qr_margenes = 2; //Margenes del qr
+
+		QRcode::png($content, $filename, $qr_correccion, $qr_tamano, $qr_margenes);*/
+
+		return array('res' => 1, 'qr' => '../../TEMP/'.$archivo);
+	}
+
 
 
 }
