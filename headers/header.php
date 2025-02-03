@@ -123,13 +123,9 @@ function estado_licencia($f3)
 	<title>Diskcover system - <?php  $_SESSION['INGRESO']['NombreModulo'] = $NombreModulo; echo $NombreModulo; ?></title>
 	<script type="text/javascript">
 		$(document).ready(function () {
-<<<<<<< HEAD
-      		 setInterval(validar_session_Activa, 5000);
-      		 setInterval(notificaciones,6000)
-=======
       		setInterval(validar_session_Activa, 5000);
->>>>>>> f2511010f114b6714cd66661dfd705e3b9bb885e
-			labelPeriodo();
+      		setInterval(notificaciones,6000)
+      		labelPeriodo();
 	    });
 
 		var periodo = '<?php echo $_SESSION['INGRESO']['periodo'] ?>'
