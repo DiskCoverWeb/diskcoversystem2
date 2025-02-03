@@ -9,9 +9,6 @@ $(document).ready(function () {
   provincias();
   tipo_proveedor_Cliente()
   $('[data-bs-toggle="tooltip"]').tooltip();
-  tooltips.on('shown.bs.tooltip', function () {
-    console.log(`Tooltip activado para: ${this.outerHTML}`);
-  });
 
   $("#CMedidor").on('change', function () {
     if ($("#CMedidor").val() != "." && $("#CMedidor").val() != "") {
@@ -174,7 +171,9 @@ function guardar_cliente() {
   $('#myModal_espera').modal('show');
   if (validar() == true) {
     swal.fire('Llene todos los campos', '', 'info').then(() => { 
-      $('#myModal_espera').modal('hide');
+      setTimeout(()=>{
+        $('#myModal_espera').modal('hide');
+      }, 2000);
     });
     return false;
   }
@@ -186,7 +185,9 @@ function guardar_cliente() {
     type: 'post',
     dataType: 'json',
     success: function (response) {
-      $('#myModal_espera').modal('hide');
+      setTimeout(()=>{
+        $('#myModal_espera').modal('hide');
+      }, 2000);
       // console.log(response);
       var url = location.href;
       if (response == 1) {
@@ -218,7 +219,7 @@ function guardar_cliente() {
       swal.fire('Ocurrio un error al procesar la solicitud. Error: ' + err, '', 'error');
       setTimeout(() => {
         $('#myModal_espera').modal('hide');
-      }, 500)
+      }, 2000)
     }
   });
 }
@@ -302,7 +303,9 @@ function AddMedidor() {
               $('#myModal_espera').modal('show');
             },
             success: function (response) {
-              $('#myModal_espera').modal('hide');
+              setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+              }, 2000);
               if (response.rps) {
                 Swal.fire('¡Bien!', response.mensaje, 'success')
                 ListarMedidores(CodigoC)
@@ -311,7 +314,9 @@ function AddMedidor() {
               }
             },
             error: function () {
-              $('#myModal_espera').modal('hide');
+              setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+              }, 2000);
               alert("Ocurrio un error inesperado, por favor contacte a soporte.");
             }
           });
@@ -331,7 +336,7 @@ function DeleteMedidor() {
   if (idMedidor != "." && idMedidor != "") {
     Swal.fire({
       title: `Esta seguro que desea Eliminar\nEl Medidor No. ${idMedidor} \nDe ${TxtApellidosS}`,
-      type: 'warning',
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -348,7 +353,9 @@ function DeleteMedidor() {
             $('#myModal_espera').modal('show');
           },
           success: function (response) {
-            $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+              $('#myModal_espera').modal('hide');
+            }, 2000);
             if (response.rps) {
               Swal.fire('¡Bien!', response.mensaje, 'success')
             } else {
@@ -357,7 +364,9 @@ function DeleteMedidor() {
             ListarMedidores(CodigoC)
           },
           error: function () {
-            $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+              $('#myModal_espera').modal('hide');
+            }, 2000);
             alert("Ocurrio un error inesperado, por favor contacte a soporte.");
           }
         });
@@ -422,7 +431,9 @@ function tipo_proveedor_Cliente() {
       $('#txt_actividadC').html(op);
     },
     error: function (xhr, textStatus, error) {
-      $('#myModal_espera').modal('hide');
+      setTimeout(()=>{
+        $('#myModal_espera').modal('hide');
+      }, 2000);
     }
   });
 }

@@ -1,6 +1,7 @@
 var Individual = false;
 $(document).ready(function()
 {
+    $('[data-bs-toggle="tooltip"]').tooltip();
     sucursal_exis();
     llenar_combobox();
     llenar_combobox_cuentas();    
@@ -81,7 +82,7 @@ function consultar_datos(OpcUno,PorConceptos)
                 $('#tit').text($titulo+" (Registros: "+response.TotalRegistros+")");
                 setTimeout(function(){
                     $('#myModal_espera').modal('hide'); 			    
-                }, 500)
+                }, 2000)
                 tbl_Mayor_Auxiliar = $('#tbl_Mayor_Auxiliar').DataTable({
                     language: {
                         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
@@ -123,7 +124,9 @@ function consultar_datos(OpcUno,PorConceptos)
             
         }, 
         error: function(xhr, status, error){
-            $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
             console.error(xhr, status, error);
         }
     });

@@ -70,7 +70,9 @@ function consultar_datos()
                     alignEnd(row, data);
                 }
             })
-            $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+              $('#myModal_espera').modal('hide');
+            }, 2000);
         
       
       }

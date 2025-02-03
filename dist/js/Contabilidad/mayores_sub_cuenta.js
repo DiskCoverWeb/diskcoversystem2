@@ -1,5 +1,6 @@
 $(document).ready(function()
   {
+    $('[data-bs-toggle="tooltip"]').tooltip();
   	sucursal_exis();
   	consultar_datos();
   	// FDLCtas();
@@ -156,13 +157,14 @@ function Consultar_Un_Submodulo()
                 $('#txt_saldo_ant').val(response.SaldoAnt);
                 setTimeout(function(){
                     $('#myModal_espera').modal('hide');
-                }, 1000); 
+                }, 2000); 
                 tbl_body = $('#tbl_body').DataTable({
                     language: {
                         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
                     },
+                    searching: false, 
+                    paging: false,
                     data: ProcesarDatos(response.tbl.data),
-                    scrollY: '300px',
                     'columns': [
                         {"data":"Cta"},
                         {"data":"Fecha"},

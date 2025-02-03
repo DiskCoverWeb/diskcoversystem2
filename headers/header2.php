@@ -84,12 +84,22 @@ function estado_licencia($f3)
 	<link rel="stylesheet" href="../../assets/css/TopMenu/semi-dark.css" />
 	<link rel="stylesheet" href="../../assets/css/TopMenu/header-colors.css" />
 	<script src="../../dist/js/js_globales.js"></script>	
+	<script src="../../assets/js/jquery.min.js"></script>
 	
 	<title>Diskcover system - Modulos</title>
 	<script type="text/javascript">
 		$(document).ready(function () {
-      		 setInterval(validar_session_Activa, 5000);
+			labelPeriodo();
+      		setInterval(validar_session_Activa, 5000);
 	    });
+
+		var periodo = '<?php echo $_SESSION['INGRESO']['periodo'] ?>'
+		function labelPeriodo(){
+			if (periodo != '.'){
+				var txt = '<b>Periodo: </b>'+ periodo;
+				$('#periodo').html(txt);
+			}
+		}
 	</script>
 </head>
 
@@ -165,6 +175,11 @@ function estado_licencia($f3)
 									</li>
 								</ul>
 							</li> -->
+
+							<li>
+								<div id="periodo"></div>
+							</li>
+
 							<li class="nav-item dark-mode d-none d-sm-flex">
 								<a class="nav-link dark-mode-icon" href="javascript:;"><i class='bx bx-moon'></i>
 								</a>

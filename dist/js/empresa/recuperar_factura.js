@@ -136,7 +136,9 @@ function recuperar()
      dataType:'json',
      success: function(data)
      {
-          $('#myModal_espera').modal('hide');
+         setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
          if(data==1)
          {
              Swal.fire('Factura recuperada de xml','','info');
@@ -151,7 +153,9 @@ function recuperar()
          console.log(data);
      },error: function (request, status, error) {   
        Swal.fire('Error inesperado ','consulte con su proveedor de servicio','error');         
-       $('#myModal_espera').modal('hide');
+       setTimeout(()=>{
+        $('#myModal_espera').modal('hide');
+    }, 2000);
    }
  });
 }
@@ -171,7 +175,9 @@ function lista_recuperar()
          dataType:'json',
          success: function(data)
          {
-             $('#myModal_espera').modal('hide');			
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);			
              $('#tbl_datos').DataTable({
                  language: {
                      url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json',
@@ -198,7 +204,9 @@ function lista_recuperar()
          },
    error: function (request, status, error) {   
        Swal.fire('Error inesperado ','consulte con su proveedor de servicio','error');         
-       $('#myModal_espera').modal('hide');
+       setTimeout(()=>{
+        $('#myModal_espera').modal('hide');
+    }, 2000);
    }
      });
 }
@@ -232,7 +240,9 @@ function editar_fechas()
 
          },error: function (request, status, error) {   
              Swal.fire('Error inesperado ','consulte con su proveedor de servicio','error');         
-             $('#myModal_espera').modal('hide');
+             setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
            }
      });
 

@@ -2,6 +2,7 @@ buscar_empresas();
 // TraerCheqCopiarEmpresa();
 $(document).ready(function()
 {
+    $('[data-bs-toggle="tooltip"]').tooltip();
     autocompletar();
     // autocompletarCempresa();
     informacion_empresa();
@@ -599,7 +600,7 @@ function eliminar_empresa()
  		Swal.fire({
       title: 'Quiere eliminar esta empresa?',
       text: "Esta seguro de eliminar esta empresa!",
-      type: 'warning',
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',

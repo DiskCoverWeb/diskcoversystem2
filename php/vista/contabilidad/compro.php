@@ -28,7 +28,7 @@
 	 	 Swal.fire({
          title: 'Esta seguro que quiere modificar el comprobante '+ti+' No. '+co+' de '+be,
          text: "Esta usted seguro de que quiere modificar!",
-         type: 'warning',
+         icon: 'warning',
          showCancelButton: true,
          confirmButtonColor: '#3085d6',
          cancelButtonColor: '#d33',
@@ -57,25 +57,25 @@
 	</div>
 	<div class="row">
 		<div class="d-flex align-items-center btn-group col-sm-12 col-md-6 col-lg-5">
-			<a class="btn btn-sm btn-outline-secondary" title="Sa lir del modulo" href="./contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>">
+			<a class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Salir del modulo" href="./contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>">
 				<img src="../../img/png/salire.png">
 			</a>
-			<a class="btn btn-sm btn-outline-secondary" title="Exportar Excel" href="javascript:void(0)" onclick="GenerarExcelResultadoComprobante()">
+			<a class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Exportar Excel" href="javascript:void(0)" onclick="GenerarExcelResultadoComprobante()">
 				<img src="../../img/png/table_excel.png">
 			</a>   
-			<button class="btn btn-sm btn-outline-secondary" title="Modificar el comprobante" onclick="IngClave('Contador')">
+			<button class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Modificar el comprobante" onclick="IngClave('Contador')">
 				<img src="../../img/png/modificar.png">
 			</button>
-			<button type="button" id='l2' class="btn btn-sm btn-outline-secondary" title="Anular comprobante" onclick="anular_comprobante()">
+			<button type="button" id='l2' class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Anular comprobante" onclick="anular_comprobante()">
 				<img src="../../img/png/anular.png">
 			</button>
-			<a id='l3' class="btn btn-sm btn-outline-secondary" title="Autorizar comprobante autorizado">
+			<a id='l3' class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Autorizar comprobante autorizado">
 				<img src="../../img/png/autorizar.png">
 			</a>
-			<a id='l4' class="btn btn-sm btn-outline-secondary" title="Realizar una copia al comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta balance de Comprobación&ti=BALANCE DE COMPROBACIÓN&Opcb=1&Opcen=0&b=1">
+			<a id='l4' class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Realizar una copia al comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta balance de Comprobación&ti=BALANCE DE COMPROBACIÓN&Opcb=1&Opcen=0&b=1">
 				<img src="../../img/png/copiar.png">
 			</a>
-			<a id='l5' class="btn btn-sm btn-outline-secondary" title="Copiar a otra empresa el comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta estado de situación (general)&ti=ESTADO SITUACIÓN&Opcb=5&Opcen=1&b=0">
+			<a id='l5' class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Copiar a otra empresa el comprobante" href="contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_'];?>&acc=bacsg&acc1=Presenta estado de situación (general)&ti=ESTADO SITUACIÓN&Opcb=5&Opcen=1&b=0">
 				<img src="../../img/png/copiare.png">
 			</a>
 		</div>
@@ -101,16 +101,12 @@
 			</div>
 		</div>
 		<div class="d-flex col-sm-12 col-md-5 col-lg-3">
-			<div class="">
 				<select class="form-select form-select-sm" name="tipo" id="mes" onchange="comprobante()">
 					<option value="0">Todos</option><?php echo  Tabla_Dias_Meses();?>
 				</select>
-			</div>
-			<div class="">
 				<select class="form-select form-select-sm" name="ddl_comprobantes" id="ddl_comprobantes" onchange="listar_comprobante()">
 					<option value="">Seleccione</option>
 				</select> 
-			</div>
 		</div>
 	</div>
 	<br> 
@@ -125,7 +121,7 @@
 		</div>
 		<div class="col-6">
 			<div class="input-group input-group-sm">
-				<div class="input-group-text col-12 p-1 d-flex justify-content-center border">
+				<div class="input-group-text col-12 d-flex justify-content-center border">
 					<b id="LabelEst">Normal</b>
 				</div>       
 			</div>
@@ -582,17 +578,17 @@
 								</div>                   	 	
 							</div>
 							<div class="row d-flex align-items-center">
-								<div class="col-sm-6">	
-									<div class="col-sm-1 p-0">
+								<div class="col-sm-6 row">
+									<div class="col-sm-3">
 										<b>Total compra</b>
 									</div> 
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										<input type="text" name="txt_total" readonly="" class="form-control form-control-sm" id="txt_total">
-									</div> 
-									<div class="col-sm-1 p-0">
+									</div>
+									<div class="col-sm-3">
 										<b>Total costo</b>
 									</div>                   	 	
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										<input type="text" name="txt_saldo" readonly="" class="form-control form-control-sm" id="txt_saldo">
 									</div> 
 								</div>

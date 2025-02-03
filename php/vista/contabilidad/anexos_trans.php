@@ -25,7 +25,7 @@
 <div class="container-lg">
   <div class="row row-cols auto">
     <div class="col-lg-8 col-sm-10 col-md-8"> 
-      <a  href="./contabilidad.php?mod=contabilidad#" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
+      <a  href="./contabilidad.php?mod=contabilidad#" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
         <img src="../../img/png/salire.png">
       </a>
       <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" title="Año" data-bs-toggle="dropdown">
@@ -43,16 +43,16 @@
       <ul class="dropdown-menu" role="menu" id="meses">      
         <li><a class="dropdown-item" href="#">Smartphone</a></li>
       </ul>
-      <button title="ATS"  class="btn btn-outline-secondary btn-sm" onclick="generar_ats()">
+      <button title="ATS" data-bs-toggle="tooltip"  class="btn btn-outline-secondary btn-sm" onclick="generar_ats()">
         <img src="../../img/png/ats.png" >
       </button>
-      <button title="ATS Financ"  class="btn btn-outline-secondary btn-sm" onclick="vista_ATS()">
+      <button title="ATS Financ" data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" onclick="vista_ATS()">
         <img src="../../img/png/ats_fin.png" >
       </button>
-      <button title="REOC"  class="btn btn-outline-secondary btn-sm" onclick="downloadURI()">
+      <button title="REOC" data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" onclick="downloadURI()">
         <img src="../../img/png/es.png" >
       </button>
-      <button title="RDEP"  class="btn btn-outline-secondary btn-sm" onclick="grabar_cuenta()">
+      <button title="RDEP" data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" onclick="grabar_cuenta()">
         <img src="../../img/png/bc.png" >
       </button>
  </div>

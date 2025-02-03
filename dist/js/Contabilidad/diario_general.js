@@ -98,8 +98,8 @@ function cargar_libro_general_tbl()
 
   tbl_diarioGeneral = $('#tbl_DiarioGeneral').DataTable({
     lengthChange: false, // Desactiva el menú de selección de registros por página
-    paging: true,        // Mantiene la paginación habilitada
-    pageLength: 10,
+    paging: false,        // Mantiene la paginación habilitada
+    searching: false,
     language:{
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
     },
@@ -118,9 +118,6 @@ function cargar_libro_general_tbl()
         console.log("Error en la solicutud: ", status, error);
       }
     },
-    // scrollY: '300px',
-    // scrollCollapse: true,
-    // scrollX: true, 
     columns: [
       { data: 'Fecha',
         render: function(data, type, item) {
@@ -182,8 +179,8 @@ function libro_submodulo()
 
   tbl_submodulos = $('#tbl_Submodulos').DataTable({
     lengthChange: false, // Desactiva el menú de selección de registros por página
-    paging: true,        // Mantiene la paginación habilitada
-    pageLength: 10,
+    paging: false,
+    searching: false,
     language:{
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
     },
@@ -201,9 +198,6 @@ function libro_submodulo()
         console.log("Error en la solicutud: ", status, error);
       }
     },
-    // scrollY: '300px',
-    // scrollCollapse: true,
-    // scrollX: true,
     columns: [
       { data: 'Fecha',
         render: function(data, type, item) {
@@ -353,6 +347,7 @@ $(document).ready(function()
   sucursal_exis();
   // libro_submodulo();
   libro_general_saldos();
+  $('[data-bs-toggle="tooltip"]').tooltip();
 
   $('#txt_CtaI').keyup(function(e){ 
     if(e.keyCode != 46 && e.keyCode !=8)

@@ -3,8 +3,9 @@ var lineaValAnteriores = {};
 var lineaValNuevos = {};
 $(document).ready(function () 
 {
+  $('[data-bs-toggle="tooltip"]').tooltip();
   ddl_estados();
-   ddl_naciones();
+  ddl_naciones();
   $('#ciudad').select2();
   autocmpletar_entidad(); 
 
@@ -163,7 +164,9 @@ function subir_img()
            {
                datos_empresa();
            } 
-           $('#myModal_espera').modal('hide');
+           setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 2000);
         }
     });
 
@@ -454,7 +457,9 @@ $.ajax({
     dataType:'json',
     success: function(data)
     {	
-        $('#myModal_espera').modal('hide');
+        setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 2000);
 
         if($('#file_firma').val()!='')
         {
@@ -587,7 +592,9 @@ $.ajax({
             Swal.fire('Intente mas tarde','','error');
         }	
 
-        $('#myModal_espera').modal('hide');		
+        setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 2000);	
     }
 });
 }
@@ -646,7 +653,9 @@ function consultar_datos(reporte = null)
                         alignEnd(row, data);
                     }
                 });
-                $('#myModal_espera').modal('hide');
+                setTimeout(()=>{
+                    $('#myModal_espera').modal('hide');
+                }, 2000);
         }
     });
 //document.getElementById('desde').value=desde;
@@ -679,7 +688,9 @@ $.ajax({
     success: function(data)
     {
 
-        $('#myModal_espera').modal('hide');
+        setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 2000);
         if(data==1)
         {
             Swal.fire('Credenciales de comprobantes electronicos Asignados.','','success');
@@ -734,7 +745,7 @@ async function datos_empresa()
     dataType:'json',
     success: function(data)
     {
-        console.log(data);
+        //console.log(data);
         empresa = data.empresa1[0];
         empresa2 = '';
         contribuyente = '';
@@ -748,8 +759,8 @@ async function datos_empresa()
         }
         
 
-        console.log(data.empresa2);
-        console.log(contribuyente);
+        //console.log(data.empresa2);
+        //console.log(contribuyente);
          limpiar_tabs();
         $('#datos_empresa').html(data.datos);
         $('#ci_ruc').val(data.ci);
@@ -774,11 +785,12 @@ async function datos_empresa()
 
         //----------------fin tab 1---------------------
 
-        $('#myModal_espera').modal('hide');
+        setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 2000);
 
         if (empresa2 == '') 
         {						
-            console.log('fola')
             $('#txt_sqlserver').val(0);
             Swal.fire('Esta empresa no tiene una configuracion SQL server','','warning');
             $('#li_tab1').addClass('active');
@@ -1008,7 +1020,9 @@ async function datos_empresa()
 
         //-----------------------------fin tab5-----------------------------
     },error: function (jqXHR, textStatus, errorThrown) {
-       $('#myModal_espera').modal('hide');
+        setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 2000);
       }
 
 });
@@ -1034,7 +1048,7 @@ $.ajax({
     data:{item,entidad},
     dataType:'json',
     success: function (data) {
-        console.log(data);
+        //console.log(data);
         // Insertar la lista en el elemento con id 'contenedor'
         /*document.getElementById("prueba_contenedor").appendChild(generarLista(data));
         $("#modal_prueba").modal('show');*/
@@ -1347,12 +1361,12 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
     //let listaTxtLineas = [];
     if($('#TxtIDLinea').val() != '.'){
         lineaValNuevos[$('#TxtIDLinea').val()] = param_linea_nuevo;
-        console.log(lineaValNuevos);
+        //console.log(lineaValNuevos);
     }else{
         let indiceRepe = arrNuevasLineas.findIndex(rep => rep['TextCodigo'] == $('#TextCodigo').val());
         if(indiceRepe == -1){
             arrNuevasLineas.push(param_linea_nuevo);
-            console.log(arrNuevasLineas);
+            //console.log(arrNuevasLineas);
         }
     }
 
@@ -1379,7 +1393,7 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
           //title: 'Esta seguro de guardar las siguientes lineas:</br>'+listaTxtLineas.join(', '),
           title: 'Esta seguro de guardar las lineas modificadas',
           text: "",
-          type: 'warning',
+          icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
@@ -1412,8 +1426,10 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
     dataType:'json',       
       success: function(data)
       {
-        $('#myModal_espera').modal('hide');
-           console.log(data);
+        setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 2000);
+           //console.log(data);
            if(data==1)
            {
                TVcatalogo();
@@ -1430,7 +1446,9 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
            }
       },
       error: (err) => {
-        $('#myModal_espera').modal('hide');
+        setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 2000);
         Swal.fire('Ocurrio un error al procesar su solicitud. Error: ' + err, '', 'error');
       }
     })
@@ -1442,7 +1460,7 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
        Swal.fire({
      title: 'Esta seguro de Grabar el Producto'+det,
      text: "",
-     type: 'warning',
+     icon: 'warning',
      showCancelButton: true,
      confirmButtonColor: '#3085d6',
      cancelButtonColor: '#d33',
@@ -1473,7 +1491,7 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
      Swal.fire({
      title: 'Esta seguro de eliminar: '+strAlerta,
      text: "",
-     type: 'warning',
+     icon: 'warning',
      showCancelButton: true,
      confirmButtonColor: '#3085d6',
      cancelButtonColor: '#d33',
@@ -1512,19 +1530,21 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
         dataType:'json',       
         success: function(data)
         {
-            $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
             if(data==1){
                 if($('#TxtIDLinea').val() != ''){
                     let param_linea_nuevo = parametrizarCampos(false);
                     
                     if($('#TxtIDLinea').val() != '.'){
                         lineaValNuevos[$('#TxtIDLinea').val()] = param_linea_nuevo;
-                        console.log(lineaValNuevos);
+                        //console.log(lineaValNuevos);
                     }else{
                         let indiceRepe = arrNuevasLineas.findIndex(rep => rep['TextCodigo'] == $('#TextCodigo').val());
                         if(indiceRepe == -1){
                             arrNuevasLineas.push(param_linea_nuevo);
-                            console.log(arrNuevasLineas);
+                            //console.log(arrNuevasLineas);
                         }
                     }
                 }
@@ -1535,7 +1555,7 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
                     let entradasObj = Object.entries(lineaValNuevos);
                     if(codigo){
                         let entObj = entradasObj.find(obj => obj[1]['TextCodigo'] == codigo && obj[1]['CTipo'] == fact && obj[1]['TxtNumAutor'] == auto && obj[1]['TxtNumSerieUno'] == serie.substring(0,3) && obj[1]['TxtNumSerieDos'] == serie.substring(3,6));
-                        console.log(entObj);
+                        //console.log(entObj);
                         
                         if(entObj){
                             delete lineaValNuevos[entObj[0]];
@@ -1577,7 +1597,9 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
             }
         },
         error: function(err){
-            $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
             Swal.fire('Ocurrio un error al realizar la peticion', '', 'error');
         }
     })
@@ -1685,7 +1707,7 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
           success: function(data)
           {
               data = data[0];
-               console.log(data);
+               //console.log(data);
 
                $('#TxtIDLinea').val(data.ID)
                $('#span_id_linea').text(data.ID)
@@ -1884,7 +1906,7 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
                 //title: 'Usted va a cambiar de Empresa. Se perderan los cambios realizados en las lineas:</br>'+listaTxtLineas.join(', '),
                 title: 'Usted va a cambiar de Empresa. Se perderan los cambios realizados en las lineas',
                 text: "",
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Guardar cambios',
                 confirmButtonColor: '#3085d6',
@@ -1930,17 +1952,21 @@ function validar_codigo(){
         dataType:'json',       
         success: function(data)
         {
-            $('#myModal_espera').modal('hide');
             if(data.res==1)
             {
                 $('#TxtIDLinea').val(data.ID);
             }else{
                 $('#TxtIDLinea').val('.');
             }
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
         },
         error: (err) => {
-            $('#myModal_espera').hide();
             Swal.fire('Ocurrio un error al procesar su solicitud. Error: ' + err, '', 'error');
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
         }
     })
 }

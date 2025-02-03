@@ -48,6 +48,7 @@ function seleccionar_periodo(periodo='.')
 }
 function cambiarPeriodo()
 {
+    let mod = '<?php echo $_GET['mod']; ?>';
     var periodo = $('#opcion').val();
         $.ajax({
         data:  {periodo:periodo},
@@ -58,7 +59,7 @@ function cambiarPeriodo()
         // console.log(response);
         if(response==1)
         {
-            Swal.fire('Periodo Cambiado','','success').then(function(){ location.href ="inicio.php?mod=10"; })
+            Swal.fire('Periodo Cambiado','','success').then(function(){ location.href ="inicio.php?mod="+mod; })
         }
         }
     });
