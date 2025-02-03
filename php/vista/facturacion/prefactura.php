@@ -38,7 +38,7 @@
     <img src="../../img/png/doc-green.png" width="25" height="30">
   </a>
 </div> -->
-<div id="myModalPreFactura" class="modal fade" role="dialog">
+<div id="myModalPreFactura" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header">
@@ -117,7 +117,7 @@
         <button  class="btn btn-danger" title="Eliminar Rubros" onclick="EliminarPreFactura()">
           <img src="../../img/png/delete_file.png" width="25" height="30">
         </button>
-        <button class="btn btn-warning" id="btnSalirModuloPF" title="Salir del Modulo" data-dismiss="modal">
+        <button class="btn btn-warning" id="btnSalirModuloPF" title="Salir del Modulo" data-bs-dismiss="modal">
           <img  src="../../img/png/salire.png" width="25" height="30">
         </button>
       </div>

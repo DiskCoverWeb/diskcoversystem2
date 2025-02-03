@@ -56,9 +56,9 @@
         </a>
 
         <?php include_once("prefactura.php") ?>
-        <a href="#" title="Insertar Prefacturacion Mensual"  class="btn btn-outline-secondary" onclick="OpenModalPreFactura(<?php echo cantidadProductoPreFacturar ?>)">
+        <button  title="Insertar Prefacturacion Mensual"  class="btn btn-outline-secondary" onclick="OpenModalPreFactura(<?php echo cantidadProductoPreFacturar ?>)">
           <img src="../../img/png/doc-green.png" width="25" height="30">
-        </a>
+        </button>
         <a href="#" title="Insertar nuevo Beneficiario/Cliente"  class="btn btn-outline-secondary" onclick="addCliente(1)">
           <img src="../../img/png/group.png" width="25" height="30">
         </a>

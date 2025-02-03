@@ -661,8 +661,11 @@ class facturar_pensionC
 
   function ActualizarCliente($parametros)
   {
+    // print_r($parametros);die();
     $updateCliF = $this->facturacion->updateClientesFacturacion($parametros['Grupo_No'] ,$parametros['CodigoCliente']);
     $updateCli = $this->facturacion->updateClientes($parametros['Telefono'],$parametros['DirS'],$parametros['Direccion'],$parametros['Email'],$parametros['Grupo_No'] ,$parametros['CodigoCliente']);
+
+    // print_r($parametros);die();
 
     $Cliente_Matricula = $this->facturacion->Actualiza_Datos_Cliente($parametros['CodigoCliente']);
 

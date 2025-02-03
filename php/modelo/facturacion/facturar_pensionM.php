@@ -248,6 +248,7 @@ class facturar_pensionM
     SetAdoFields("DireccionT", $TxtDirS);
     SetAdoFields("Direccion", $TxtDireccion);
     SetAdoFields("Email", $TxtEmail);
+    SetAdoFields("EmailR", $TxtEmail);
     SetAdoFields("Grupo", $TxtGrupo);
     SetAdoFieldsWhere("Codigo", $codigoCliente);
     return SetAdoUpdateGeneric();

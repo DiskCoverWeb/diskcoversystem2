@@ -84,11 +84,15 @@ function GuardarPreFactura() {
         {
           $('#myModal_espera').modal('hide');  
           if(response.rps){
-            Swal.fire('¡Bien!', response.mensaje, 'success')
+            Swal.fire('¡Bien!', response.mensaje, 'success').then(function(){
+                $('[data-bs-dismiss="modal"]').trigger('click');
+              })
             $('#myModalPreFactura').modal('hide');
 
             if($('#persona').val()!=""){
-              ClientePreseleccion($('#persona').val());
+
+              // console.log($('#cliente').val())
+              ClientePreseleccion($('#cliente').val());
             }
             
           }else{
@@ -128,14 +132,17 @@ function EliminarPreFactura() {
           $('#myModal_espera').modal('hide');  
           if(response.rps){
             if(response.mensaje_extra){
-              Swal.fire(response.mensaje, response.mensaje_extra, 'success')
+              Swal.fire(response.mensaje, response.mensaje_extra, 'success').then(function(){
+                $('[data-bs-dismiss="modal"]').trigger('click');
+              })
             }else{
               Swal.fire('¡Bien!', response.mensaje, 'success')
             }
             $('#myModalPreFactura').modal('hide');
             
             if($('#persona').val()!=""){
-              ClientePreseleccion($('#persona').val());
+              ClientePreseleccion($('#cliente').val());
+
             }
           }else{
             Swal.fire('¡Oops!', response.mensaje, 'warning')
