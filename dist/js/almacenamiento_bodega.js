@@ -449,19 +449,32 @@ async function buscar_ruta()
 		    }
 		});
 }
+
+function cambiarCamara()
+{
+    cerrarCamara();
+    setTimeout(() => {
+        iniciarEscanerQR();
+        $('#modal_qr_escaner').modal('show');
+         $('#qrescaner_carga').hide();
+    }, 1000);
+}
+
  function escanear_qr(campo){
     iniciarEscanerQR(campo);
         $('#modal_qr_escaner').modal('show');
     }
 
- let scanner;
+ let scanner; 
+ let NumCamara = 0;
  function iniciarEscanerQR(campo_qr) {
 
+    NumCamara = $('#ddl_camaras').val();
     scanner = new Html5Qrcode("reader");
     $('#qrescaner_carga').hide();
     Html5Qrcode.getCameras().then(devices => {
         if (devices.length > 0) {
-            let cameraId = devices[0].id; // Usa la primera cámara disponible
+            let cameraId = devices[NumCamara].id; // Usa la primera cámara disponible
             scanner.start(
                 cameraId,
                 {
