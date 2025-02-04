@@ -2,7 +2,7 @@
 <script type="text/javascript">
     var TipoProveedor = '<?php echo $tipo; ?>'
 </script>
-<script src="../../dist/js/Contabilidad/FProveedores.js"></script>
+<script src="../../dist/js/contabilidad/FProveedores.js"></script>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
     <div class="ps-3">

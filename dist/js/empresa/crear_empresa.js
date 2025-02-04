@@ -36,10 +36,11 @@ function buscar_empresas()
     $.ajax({
         url:'../controlador/empresa/crear_empresaC.php?empresas=true',
         type:'post',
-        dataTye:'jason',
+        dataTye:'json',
         success: function(response){
-            response.forEach(function(data,index){
-                option+="<option value='"+data.Codigo+"'>"+data.Descripcion_Rubro+"</option>";
+            console.log(response);
+            response.forEach(function (data, index){
+                option += "<option value='"+data.Codigo+"'>"+data.Descripcion_Rubro+"</option>";
             });
             $('#select_empresa').html(option);
             //console.log(response);

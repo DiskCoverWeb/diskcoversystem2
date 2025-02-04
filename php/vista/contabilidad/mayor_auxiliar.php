@@ -1,6 +1,6 @@
 <script src="../../dist/js/contabilidad/mayor_auxiliar.js"></script>
-<div class="p-2">
-	<div class="">
+<div>
+	<div>
 		<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
 			<div class="breadcrumb-title pe-3">
 				<?php echo $NombreModulo; ?>

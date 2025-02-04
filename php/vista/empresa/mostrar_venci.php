@@ -1,9 +1,8 @@
-<?php  date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//print_r($_SESSION['INGRESO']);die();
-
+<?php  date_default_timezone_set('America/Guayaquil');  
+ //print_r($_SESSION);die();//print_r($_SESSION['INGRESO']);die();
  //verificacion titulo accion
   $_SESSION['INGRESO']['ti']='';
   if(isset($_GET['ti'])) { $_SESSION['INGRESO']['ti']=$_GET['ti']; } else{ unset( $_SESSION['INGRESO']['ti']); $_SESSION['INGRESO']['ti']='ADMINISTRAR EMPRESA';}
-
 ?>
 <script type="text/javascript" src="../../dist/js/empresa/mostrar_venci.js"></script>
 <div>
@@ -24,11 +23,11 @@
 	</div> 
     <div class="row row-cols-auto">
         <div class="btn-group">
-            <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-outline-secondary">
+            <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
                 <img src="../../img/png/salire.png">
             </a>
-            <button type="button" class="btn btn-outline-secondary" title="Mostrar Vencimiento" onclick='mostrarEmpresa();'><img src="../../img/png/reporte_1.png"></button>
-            <button type="button" class="btn btn-outline-secondary" title="Mostrar Vencimiento" onclick="reporte()"><img src="../../img/png/table_excel.png"></button>
+            <button type="button" data-bs-toggle="tooltip" class="btn btn-outline-secondary" title="Mostrar Vencimiento" onclick='mostrarEmpresa();'><img src="../../img/png/reporte_1.png"></button>
+            <button type="button" data-bs-toggle="tooltip" class="btn btn-outline-secondary" title="Mostrar Vencimiento" onclick="reporte()"><img src="../../img/png/table_excel.png"></button>
         </div>
         <!-- <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
             <a href="#" class="btn btn-default" title="Asignar reserva" onclick="Autorizar_Factura_Actual2();" target="_blank" ><img src="../../img/png/archivero2.png"></a>
@@ -55,7 +54,6 @@
                         <th>Item</th>
                         <th>Empresa</th>
                         <th>Fecha</th>
-                        <th>Enero</th>
                     </thead>
                     <tbody>
                     </tbody>

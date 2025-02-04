@@ -1,6 +1,5 @@
 $(document).ready(function () {
-  	
-
+  	$('[data-bs-toggle="tooltip"]').tooltip();
 });
 
 function mostrarEmpresa()
@@ -47,6 +46,7 @@ function consultar_datos()
       },
         success:  function (response) {
 
+          var fecha
           /*var tr ='';
           response.forEach(function(item,i)
           {
@@ -64,7 +64,6 @@ function consultar_datos()
                     {data: 'Item'},
                     {data: 'Empresa'},
                     {data: 'Fecha'},
-                    {data: 'enero'}
                 ],
                 createdRow: function (row, data){
                     alignEnd(row, data);

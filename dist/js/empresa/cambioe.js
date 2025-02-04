@@ -4,6 +4,16 @@ var lineaValNuevos = {};
 $(document).ready(function () 
 {
   $('[data-bs-toggle="tooltip"]').tooltip();
+  $('#btnLineasGrabar').parent().on({
+    mouseenter: function() {
+        // Forzar mostrar tooltip
+        $('#btnLineasGrabar').tooltip('show');
+    },
+    mouseleave: function() {
+        // Ocultar tooltip
+        $('#btnLineasGrabar').tooltip('hide');
+    }
+  });
   ddl_estados();
   ddl_naciones();
   $('#ciudad').select2();
@@ -646,7 +656,6 @@ function consultar_datos(reporte = null)
                         {data: 'Item'},
                         {data: 'Empresa'},
                         {data: 'Fecha'},
-                        {data: 'enero'}
                     ],
                     destroy: true,
                     createdRow: function(row, data) {

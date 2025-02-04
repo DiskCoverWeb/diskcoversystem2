@@ -127,8 +127,8 @@ function cambiarPeriodo()
     <div class="modal-dialog" >
     		<div class="modal-content">
     				<div class="modal-header">
-				  		<button type="button" class="btn-close justify-content-end" data-bs-dismiss="modal"></button>
-				  		<h4 class="modal-title ps-2"><img  width='5%'  height='5%' src="../../img/jpg/logo.jpg"> Cambio de periodo</h4>
+                        <h4 class="modal-title ps-2"><img  width='5%'  height='5%' src="../../img/jpg/logo.jpg"> Cambio de periodo</h4>
+				  		<button type="button" class="btn-close d-flex justify-content-end" data-bs-dismiss="modal"></button>
 						</div>
 						<div class="modal-body">
 								<div class="form-group">
@@ -159,8 +159,8 @@ function cambiarPeriodo()
 								</div>
 						</div>
 						<div class="modal-footer" style="background-color: #fff;">
-							<button id="btnCopiar" class="btn btn-outline-primary" onclick='cambiarPeriodo();'>Cambiar</button>
-						    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cerrar</button>
+							<button id="btnCopiar" class="btn btn-primary" onclick='cambiarPeriodo();'>Cambiar</button>
+						    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
 						</div>
 			  </div>			  
 			</div>

@@ -24,7 +24,9 @@
 			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Mensaje masivo a grupo seleccionado" onclick='mgrupo();'><img src="../../img/png/email_grupo.png" ></button>
 			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Mensaje solo a empresa" onclick='mindividual();'><img src="../../img/png/mensajei.png" ></button>
 			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Guardar" onclick="cambiarEmpresa();"><img src="../../img/png/grabar.png"></button>
-			<button type="button" id="btnLineasGrabar" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Actualizar Puntos de Emisión" onclick="confirmar()" disabled><img src="../../img/png/grabar_lineascxc.png"></button>
+			<div>
+				<button type="button" id="btnLineasGrabar" class="btn btn-outline-secondary btn-sm rounded-0" disabled data-bs-toggle="tooltip" title="Actualizar Puntos de Emisión" onclick="confirmar()"><img src="../../img/png/grabar_lineascxc.png"></button>
+			</div>
 			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Guardar Masivo: Fechas de renovaciones" onclick='cambiarEmpresaMa();'><img src="../../img/png/guardarmasivo.png"></button>
 			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Mostrar Vencimiento" onclick='mostrarEmpresa();'><img src="../../img/png/reporte_1.png"></button>
 			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Asignar credenciales de comprobanmtes electronicos" onclick='asignar_clave();'><img src="../../img/png/credencial_cliente.png"></button>
@@ -32,7 +34,7 @@
 		</div>
 	</div>
 		<div id="form_vencimiento" style="display:none;">
-			<div class="row row-cols-auto p-2">
+			<div class="row row-cols-auto">
 				<div>
 					<button class="btn btn-danger btn-sm" type="button" onclick="cerrarEmpresa()">
 						<i class="bx bx-close"></i>Cerrar
@@ -51,16 +53,15 @@
 					</div>
 				</div>		
 			</div>
-			<div class='col-12'>
+			<div class='col-12-sm'>
 				<div class="table-responsive overflow-y-auto w-100" style="max-height: 400px;">
-					<table class="teble text-sm"id="tbl_vencimiento">
+					<table class="table text-sm"id="tbl_vencimiento">
 						<thead>
 							<tr>
 								<th class="text-center" >Tipo</th>
 								<th class="text-center" >Item</th>
 								<th class="text-center" >Empresa</th>
 								<th class="text-center" >Fecha</th>
-								<th class="text-center" >Enero</th>
 							</tr>
 						</thead>
 						<tbody>

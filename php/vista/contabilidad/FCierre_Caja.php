@@ -505,4 +505,4 @@ switch ($_SESSION['INGRESO']['modulo_']) {
   </div>
 </div>
 
-<script src="/../../dist/js/FCierre_Caja.js"></script>
+<script src="../../dist/js/FCierre_Caja.js"></script>
