@@ -554,7 +554,7 @@
 									<label class="btn btn-light border border-1 btn-sm" id="rb_furgon_lbl"><img src="../../img/png/furgon.png"><br><input type="radio" name="rb_tipo_vehiculo" value="1" checked />  Furgón</label>
 									<label class="btn btn-light border border-1 btn-sm"><img src="../../img/png/camion2.png"><br><input type="radio" id="rb_camion" name="rb_tipo_vehiculo" value="2" onchange="placas_auto('81')" />  Camión</label>
 									<label class="btn btn-light border border-1 btn-sm"><img src="../../img/png/livianoAu.png"><br><input type="radio" id="rb_" name="rb_tipo_vehiculo" value="3" onchange="placas_auto('82')" />  Liviano</label>
-									<select class="form-control form-control-sm" style="display: none;" id="ddl_datos_vehiculo" name="ddl_datos_vehiculo">
+									<select class="form-select form-select-sm" style="display: none;" id="ddl_datos_vehiculo" name="ddl_datos_vehiculo">
 										<option>Seleccione vehiculo</option>
 									</select>
 								
