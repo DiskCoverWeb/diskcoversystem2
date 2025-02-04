@@ -88,20 +88,20 @@
 			dataType: 'json',
 			success: (data) => {
 				console.log(data);
-        if(data.length > 0){
-          let datos = data[0];
-          // Crear una nueva opción con los 3 parámetros y asignarla al select2
-          const nuevaOpcion = new Option('<div style="background:'+datos.fondo+'"><span style="color:'+datos.texto+';font-weight: bold;">' + datos.text + '</span></div>', datos.id, true, true);
-  
-          // Agregar el atributo `data` a la opción
-          //$(nuevaOpcion).data('data', datos.data);
-  
-          // Añadir y seleccionar la nueva opción
-          $('#txt_codigo').append(nuevaOpcion).trigger('change');//'select2:select'
-          setearCamposPedidos(datos.data);
-        }else{
-          Swal.fire('No se encontró información para el codigo: '+codigo, '', 'error');
-        }
+		        if(data.length > 0){
+		          let datos = data[0];
+		          // Crear una nueva opción con los 3 parámetros y asignarla al select2
+		          const nuevaOpcion = new Option('<div style="background:'+datos.fondo+'"><span style="color:'+datos.texto+';font-weight: bold;">' + datos.text + '</span></div>', datos.id, true, true);
+		  
+		          // Agregar el atributo `data` a la opción
+		          //$(nuevaOpcion).data('data', datos.data);
+		  
+		          // Añadir y seleccionar la nueva opción
+		          $('#txt_codigo').append(nuevaOpcion).trigger('change');//'select2:select'
+		          setearCamposPedidos(datos.data);
+		        }else{
+		          Swal.fire('No se encontró información para el codigo: '+codigo, '', 'error');
+		        }
 			}
 		});
 	}
@@ -469,6 +469,7 @@ async function buscar_ruta()
                     qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
                 },
                 (decodedText) => {
+                	console.log(campo_qr)
                     if(campo_qr == 'ingreso'){
 						pedidosPorQR(decodedText);
 					}else if(campo_qr == 'lugar'){

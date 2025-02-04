@@ -29,12 +29,12 @@
         <img src="../../img/png/pdf.png" height="32px">
       </button>
       
-      <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir etiquetas" onclick="imprimir_etiquetas()">
-        <img src="../../img/png/paper.png" height="32px">
-      </button>
+     <!--  <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir etiquetas" onclick="imprimir_etiquetas()">
+        <img src="../../img/png/impresora.png" height="32px">
+      </button> -->
       
       <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir etiquetas PDF" onclick="imprimir_etiquetas_pdf()">
-        <img src="../../img/png/impresora.png" height="32px">
+        <img src="../../img/png/paper.png" height="32px">
       </button>
     </div>
   </div>  

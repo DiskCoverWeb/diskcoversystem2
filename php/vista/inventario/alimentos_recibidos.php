@@ -23,11 +23,11 @@
 				<button type="button" class="btn btn-outline-secondary" title="Guardar" id="btn_guardar" onclick="guardar()" >
 				  <img src="../../img/png/grabar.png">
 				</button>
-				<button type="button" class="btn btn-outline-secondary" title="Imprimir QR" onclick="imprimir_pedido()">
-					<img src="../../img/png/paper.png" height="32px">
-				</button>
-				<button type="button" class="btn btn-outline-secondary" title="Imprimir QR PDF" onclick="imprimir_pedido_pdf()">
+			<!-- 	<button type="button" class="btn btn-outline-secondary" title="Imprimir QR" onclick="imprimir_pedido()">
 					<img src="../../img/png/impresora.png" height="32px">
+				</button> -->
+				<button type="button" class="btn btn-outline-secondary" title="Imprimir QR PDF" onclick="imprimir_pedido_pdf()">
+					<img src="../../img/png/paper.png" height="32px">
 				</button>		
 			</div>
 	</div>

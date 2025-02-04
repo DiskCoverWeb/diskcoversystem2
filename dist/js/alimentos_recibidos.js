@@ -963,47 +963,21 @@ function imprimir_pedido()
 
 function imprimir_pedido_pdf()
 {  
-  var id = $('#txt_donante').val();
-   var codigo = $('#txt_codigo').val();
+    var id = $('#txt_donante').val();
+    var codigo = $('#txt_codigo').val();
 
-   if(id==null || id=='')
-  {
-      Swal.fire('Seleccione un detalle de ingreso', '', 'error');
-      return;
-  }
-   if(codigo==null || codigo=='')
-  {
-      Swal.fire('No se ha generado un codigo de ingreso', '', 'error');
-      return;
-  }
-
-    $('#myModal_espera').modal('show');
-    $.ajax({
-      type: "POST",
-      url: '../controlador/inventario/alimentos_recibidosC.php?imprimir_pedido=true',
-      data: {id, codigo}, 
-      dataType:'json',
-      success: function(data)
+    if(id==null || id=='')
       {
-        $('#myModal_espera').modal('hide');
-
-        /*let host = location.pathname;
-
-        let url = "";
-        if (host.includes('diskcover')) {
-          
-          //  let indiceFinal = indiceInicial + subcadena.length - 1;
-            url = '/'+host.split('/')[1]+'/TEMP/' + data.pdf + '.pdf';
-        } else {
-            url = '/TEMP/' + data.pdf + '.pdf';
-        }
-
-        printJS({ 
-          printable: url,
-          type: 'pdf'
-        });*/
-        var url = '../../TEMP/' + data.pdf + '.pdf';
-        window.open(url, '_blank');
+          Swal.fire('Seleccione un detalle de ingreso', '', 'error');
+          return;
       }
-    })
+       if(codigo==null || codigo=='')
+      {
+          Swal.fire('No se ha generado un codigo de ingreso', '', 'error');
+          return;
+      }
+
+      var url = '../controlador/inventario/alimentos_recibidosC.php?imprimir_pedido=true&codigo='+codigo+'&id='+id;
+       window.open(url, '_blank');
+
 }

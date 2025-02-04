@@ -1,7 +1,7 @@
 <?php 
 require_once(dirname(__DIR__,2)."/modelo/inventario/alimentos_recibidosM.php");
 require_once(dirname(__DIR__,2)."/funciones/funciones.php");
-require_once(dirname(__DIR__,3)."/lib/fpdf/fpdf.php");
+require_once(dirname(__DIR__,3)."/lib/TCPDF/Reportes/reportes_varios.php");
 
 /*
 -----------------nota importante en campo (T)----------------------
@@ -298,13 +298,17 @@ if(isset($_GET['placas_auto']))
 	echo json_encode($controlador->placas_auto($tipo));
 }
 if (isset($_GET['imprimir_etiquetas'])) {
-	$parametros = $_POST;
+	$parametros = $_GET;
 	echo json_encode($controlador->imprimir_etiquetas($parametros));
 }
 if(isset($_GET['estado_gaveta']))
 {
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->estado_gaveta($parametros));
+}
+if (isset($_GET['imprimir_pedido'])) {
+	$parametros = $_GET;
+	echo json_encode($controlador->imprimir_pedido($parametros));
 }
 
 /**
@@ -315,9 +319,11 @@ class alimentos_recibidosC
 	private $modelo;
 	private $barras;
 	private $modales;
+	private $reportes;
 	function __construct()
 	{
 		$this->modelo = new alimentos_recibidosM();
+		$this->reportes = new reportes_varios();
 	}
 
 	function guardar($parametros,$transporte,$gavetas)
@@ -1524,34 +1530,7 @@ class alimentos_recibidosC
 	function imprimir_etiquetas($parametros)//cambiar
 	{
 		$tbl = $this->modelo->cargar_pedidos_trans($parametros['num_ped'],false);
-
-		$pdf = new FPDF();
-		$pdf->SetMargins(3, 0, 0);
-		$pdf->SetAutoPageBreak(false);
-
-		$archivo = 'ETIQUETA_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item'].'_'.str_replace('-', '', $parametros['num_ped']);
-		$ruta = dirname(__DIR__, 3).'/TEMP/'.$archivo.'.pdf';
-		foreach ($tbl as $key => $value) 
-		{
-
-			$archivo_qr = 'QR_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item'].'_'.str_replace('-', '', $value['Codigo_Barra']).'.png';
-			$ruta_qr = "/TEMP/".$archivo_qr;
-			if(!file_exists(dirname(__DIR__, 3) . $ruta_qr)){
-				$this->generarQR($value['Codigo_Barra']);
-			}
-
-			$pdf->AddPage('L', array(60, 20));
-			$pdf->SetFont('Arial', 'B', 10);
-			$pdf->Cell(0, 5, $value['Producto'],0);
-			$pdf->Image(dirname(__DIR__, 3) . $ruta_qr,3,5,12,12);
-			$pdf->SetXY(14,5);
-			$pdf->SetFont('Arial', 'B', 8);
-			$pdf->MultiCell(0, 10, $value['Codigo_Barra'],0,0);
-		}
-
-		$pdf->Output('F',$ruta);
-		
-		return array('pdf' => $archivo);
+		$this->reportes->etiqueta_clasificacion_BAQ($tbl);
 	}
 
 	function generarQR($codigo){
@@ -1585,8 +1564,14 @@ class alimentos_recibidosC
 			$gavetas[0] = array('Entrada'=>'','Producto'=>'No hay gavetas');
 		}
 		return $gavetas;
+	}
 
-
+	function imprimir_pedido($parametros)//cambiar
+	{		
+		// print_r($parametros);die();
+		$datos = $this->modelo->detalle_ingreso($parametros['id']);
+		if(count($datos)>0) {$datos[0]['Codigo_qr']=$parametros['codigo'];}
+		$this->reportes->etiqueta_recepcion_BAQ($datos);
 	}
 
 
