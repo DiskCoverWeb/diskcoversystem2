@@ -657,6 +657,8 @@ function ver_detalle_trasorte()
           success:  function (response) { 
               var test = '';
 
+              console.log(response);
+
               if(response[0].Conductor!='.')
               {		 
                   test+='<li class="list-group-item">'+

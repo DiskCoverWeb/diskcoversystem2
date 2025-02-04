@@ -499,7 +499,7 @@
 </script>
 
 
-<div id="myModal_notificar_usuario" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="myModal_notificar_usuario" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog modal-sm" style="background: antiquewhite;">
         <div class="modal-content">
             <div class="modal-header">
@@ -519,7 +519,7 @@
 
 
 
-<div id="modal_notificar" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_notificar" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-sm" style="background: antiquewhite;">
       <div class="modal-content">
           <div class="modal-header">
@@ -537,7 +537,7 @@
   </div>
 </div>
 
-<div id="modal_qr_escaner" class="modal fade"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_qr_escaner" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header">
@@ -559,11 +559,11 @@
 </div>
 
 
-<div id="modal_estado_transporte" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_estado_transporte" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header bg-primary">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
               <h4 class="modal-title">Estado de trasporte</h4>
           </div>
           <div class="modal-body" style="background: antiquewhite;">
@@ -571,45 +571,45 @@
           		<form id="form_estado_transporte">
           			<div class="col-sm-12">
           				<div class="direct-chat-messages">	
-											<ul class="list-group list-group-flush" id="lista_preguntas">
-												
-											</ul>											
-										</div>
+							<ul class="list-group list-group-flush" id="lista_preguntas">
+								
+							</ul>											
+						</div>
           			</div>
           		</form>
           	</div>
           					
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
           </div>
       </div>
   </div>
 </div>
 
-<div id="modal_estado_gavetas" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_estado_gavetas" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header bg-primary">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Estado de trasporte</h4>
+              <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Favetas</h4>
           </div>
           <div class="modal-body" style="background: antiquewhite;">
           	<div class="row">
           		<form id="form_estado_transporte">
           			<div class="col-sm-12">
           				<div class="direct-chat-messages">	
-											<ul class="list-group list-group-flush" id="lista_gavetas">
-												
-											</ul>											
-										</div>
+							<ul class="list-group list-group-flush" id="lista_gavetas">
+								
+							</ul>											
+						</div>
           			</div>
           		</form>
           	</div>
           					
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
           </div>
       </div>
   </div>

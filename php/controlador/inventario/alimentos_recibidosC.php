@@ -301,6 +301,11 @@ if (isset($_GET['imprimir_etiquetas'])) {
 	$parametros = $_POST;
 	echo json_encode($controlador->imprimir_etiquetas($parametros));
 }
+if(isset($_GET['estado_gaveta']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->estado_gaveta($parametros));
+}
 
 /**
  * 
@@ -1378,7 +1383,17 @@ class alimentos_recibidosC
 	function estado_trasporte($parametros)
 	{
 		$codigo = $parametros['pedido'];
-		return $this->modelo->estado_trasporte($codigo);
+		$estado =  $this->modelo->estado_trasporte($codigo);
+		$estado[0]['placa'] = '.';
+		if($estado[0]['CodigoC']!='.')
+		{
+			$placa = $this->modelo->placar_search($codigo);			
+			$estado[0]['placa'] = $placa[0]['Proceso'];
+		}
+		
+
+		// print_r($estado);die();
+		return $estado;
 	}
 
 	function editar_comentarios_trans_correos($pedido,$asunto,$texto)
@@ -1553,6 +1568,21 @@ class alimentos_recibidosC
 
 		return array('res' => 1, 'qr' => '../../TEMP/'.$archivo);
 	}
+
+
+	function estado_gaveta($parametros)
+	{
+		$codigo = $parametros['pedido'];
+		$gavetas =  $this->modelo->estado_gaveta($codigo);
+		if(count($gavetas)==0)
+		{
+			$gavetas[0] = array('Entrada'=>'','Producto'=>'No hay gavetas');
+		}
+		return $gavetas;
+
+
+	}
+
 
 
 
