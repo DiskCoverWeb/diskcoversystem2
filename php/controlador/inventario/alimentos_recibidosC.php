@@ -374,10 +374,16 @@ class alimentos_recibidosC
 					break;
 			}
 			foreach ($transporte as $key => $value) {
-				$Cmds = explode('_', $key);
+				$Cmds = '.';
+				$pos = strpos($key, '_ESTTRANS');
+				if ($pos !== false) {
+				   
+					$Cmds = str_replace('_ESTTRANS','', $key);
+					$Cmds = str_replace('_','.', $Cmds);
+				} 
 				SetAdoAddNew('Trans_Fletes');
-			    SetAdoFields('TP',$Cmds[0]);
-			    SetAdoFields('Referencia',$Cmds[1]);
+			    SetAdoFields('TP',$Cmds);
+			    SetAdoFields('Referencia','ESTTRANS');
 			    SetAdoFields('Cumple',$value);
 			    SetAdoFields('CodigoC',$placa);	
 			    SetAdoFields('Carga',$tipo_ve);	
