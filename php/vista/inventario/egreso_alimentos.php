@@ -79,170 +79,212 @@
 </div>
 
 <form id="form_correos">
-<div class="row p-2 border-top border-3 border-secondary-subtle" style="background: antiquewhite;">		
-	<form id="form_datos">			
-		<div class="row border-1 mb-1 ms-2">	
-			<!-- <div class="col-sm-9"></div> -->
-			<div class="row row-cols-auto">
-				<label class="col-auto px-0 col-form-label"><b>Fecha de Egreso</b></label>
-				<div class="col-auto">
-					<input type="date" class="form-control form-control-sm" id="txt_fecha" name="txt_fecha" value="<?php echo date('Y-m-d'); ?>" readonly>		
+<div class="row">
+	<div class="card mb-2" style="background: antiquewhite;">		
+		<div class="card-body">
+			<form id="form_datos">			
+				<div class="row mb-1 ms-2">	
+					<!-- <div class="col-sm-9"></div> -->
+					<div class="row row-cols-auto">
+						<label class="col-auto px-0 col-form-label"><b>Fecha de Egreso</b></label>
+						<div class="col-auto">
+							<input type="date" class="form-control form-control-sm" id="txt_fecha" name="txt_fecha" value="<?php echo date('Y-m-d'); ?>" readonly>		
+						</div>
+					</div>
+				</div>
+				<!-- <div class="row mb-2">
+					<div class="col-sm-1 pe-0">
+						<button type="button" style="width: initial;" class="btn btn-light border border-1 w-100 p-2" onclick="abrir_modal('A')">
+							<img src="../../img/png/area_egreso.png" style="width: 55px;height: 55px;" />
+						</button>
+					</div>
+					<div class="col-sm-2">
+						<b>Area de egreso:</b>
+						<select class="form-select form-select-sm" id="ddl_areas" name="ddl_areas">
+							<option value="">Seleccione</option>
+						</select>
+					</div>
+					
+					<div class="col-sm-1 pe-0">
+						<button type="button" style="width: initial;" class="btn btn-light border border-1 w-100 p-2" onclick="abrir_modal('M')">
+							<img src="../../img/png/transporte_caja.png" style="width: 55px;height: 55px;">
+						</button>
+					</div>
+					<div class="col-sm-2">
+						<b>Motivo de egreso</b>								
+						<select class="form-select form-select-sm" id="ddl_motivo" name="ddl_motivo">
+							<option value="">Seleccione</option>
+						</select>
+					</div>
+		
+					
+		
+					<div class="col-sm-1 pe-0">
+						<button type="button" style="width: initial;" class="btn btn-light border border-1 w-100 p-2">
+							<img src="../../img/png/detalle_egreso.png" style="width: 55px;height: 55px;">
+						</button>
+					</div>
+					<div class="col-sm-2">
+						<b>Detalle de egreso:</b>
+						<textarea id="txt_detalle" name="txt_detalle"  class="form-control form-control-sm"></textarea>
+					</div>
+		
+					
+					<div class="col-sm-3">						
+						<form enctype="multipart/form-data" id="form_img" method="post" style="width: inherit;">
+							<div class="fileupload fileupload-new" data-provides="fileupload">
+								<span class="btn btn-light border border-1 btn-file">
+								<img src="../../img/png/clip.png" style="width: 60px;height: 60px;">
+								<span class="fileupload-new">Archivo Adjunto</span>
+								<span class="fileupload-exists">Archivo Adjunto</span> 
+									<input type="file" id="file_doc" name="file_doc" />
+								</span> <br>
+								<span class="fileupload-preview"></span>
+								<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+							</div>
+						</form>
+					</div>					
+				</div> -->
+				<div class="row align-items-center">
+					<div class="col-sm-10">
+						<div class="row">
+							<div class="col-lg-4 col-md-12 col-sm-12">
+								<div class="row">
+									<div class="col-lg-3 col-md-3 col-sm-3 d-flex align-items-center justify-content-center">
+										<button type="button" class="btn btn-light" onclick="abrir_modal('A')">
+											<img src="../../img/png/area_egreso.png" style="width: 55px;height: 55px;"/>
+										</button>
+									</div>
+									<div class="col-lg-9 col-md-10 col-sm-10">
+										<b>Area de egreso:</b>
+										<select class="form-select form-select-sm" id="ddl_areas" name="ddl_areas">
+											<option value="">Seleccione</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4 col-md-12 col-sm-12">
+								<div class="row">
+									<div class="col-lg-3 col-md-3 col-sm-3 d-flex align-items-center justify-content-center">
+										<button type="button" class="btn btn-light" onclick="abrir_modal('M')">
+											<img src="../../img/png/transporte_caja.png" style="width: 55px;height: 55px;"/>
+										</button>
+									</div>
+									<div class="col-lg-9 col-md-10 col-sm-10">
+										<b>Motivo de egreso</b>
+										<select class="form-select form-select-sm" id="ddl_motivo" name="ddl_motivo">
+											<option value="">Seleccione</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4 col-md-12 col-sm-12">
+								<div class="row">
+									<div class="col-lg-3 col-md-3 col-sm-3 d-flex align-items-center justify-content-center">
+										<button type="button" class="btn btn-light" onclick="abrir_modal('M')">
+											<img src="../../img/png/detalle_egreso.png" style="width: 55px;height: 55px;"/>
+										</button>
+									</div>
+									<div class="col-lg-9 col-md-10 col-sm-10">
+										<b>Detalle de egreso:</b>
+										<textarea id="txt_detalle" name="txt_detalle"  class="form-control form-control-sm"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-2">
+						<div class="row">
+							<div class="col-12">
+								<form enctype="multipart/form-data" id="form_img" method="post" style="width: inherit;">
+									<div class="fileupload fileupload-new" data-provides="fileupload">
+										<span class="btn btn-light btn-file">
+										<img src="../../img/png/clip.png" style="width: 60px;height: 60px;">
+										<span class="fileupload-new">Archivo Adjunto</span>
+										<span class="fileupload-exists">Archivo Adjunto</span> 
+											<input type="file" id="file_doc" name="file_doc" />
+										</span> <br>
+										<span class="fileupload-preview"></span>
+										<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row border-1 mb-2">
+					<div class="col-sm-3">
+						<b>Codigo productos</b>
+						<div class="input-group input-group-sm">
+							<input type="" class="form-control form-control-sm" id="txt_cod_producto" name="txt_cod_producto" onblur="buscar_producto()">			
+							<button type="button" class="btn btn-primary btn-sm" style="font-size:8pt;" title="Escanear QR" onclick="escanear_qr()">
+								<i class="fa fa-qrcode" aria-hidden="true" style="font-size:8pt;"></i>
+							</button>
+							
+						</div>
+						
+						<input type="hidden" id="txt_id" name="">								
+					</div>	
+					<div class="col-sm-3">
+						<b>Proveedor / Donante</b>
+						<input type="" class="form-control form-control-sm" id="txt_donante" name="txt_donante" readonly>	
+								
+					</div>														
+					<div class="col-sm-3">
+						<b>Grupo de producto</b>
+						<input type="" class="form-control form-control-sm" id="txt_grupo" name="txt_grupo" readonly>	
+								
+					</div>	
+					<div class="col-sm-1">
+						<b>Stock</b>
+						<input type="" class="form-control form-control-sm" id="txt_stock" name="txt_stock" readonly>	
+								
+					</div>	
+					<div class="col-sm-1">
+						<b>Unidad</b>
+						<input type="" class="form-control form-control-sm" id="txt_unidad" name="txt_unidad" readonly>	
+					</div>	
+					<div class="col-sm-1">
+						<b>Cantidad</b>
+						<input type="" class="form-control form-control-sm" id="txt_cantidad" name="txt_cantidad">									
+					</div>	
+				</div>
+				<div class="row border-1">
+					
+					<div class="col-sm-12 d-flex gap-2 justify-content-end">
+						<button class="btn btn-danger btn-sm"><b>Borrar</b></button>
+						<button type="button" class="btn btn-success btn-sm" onclick="add_egreso()"><b>Agregar</b></button>
+					</div>
+				</div>			
+			</form>
+		</div>
+		
+	</div>
+</div>
+<div class="row">		
+	<div class="card mb-2">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="table-responsive">
+						<table class="table-sm table-hover table" id="tbl_asignados_all">
+							<thead class="text-center">
+								<th>Item</th>
+								<th>Fecha de Egreso</th>
+								<th>Producto</th>
+								<th>Cantidad</th>
+								<th></th>
+							</thead>
+							<tbody id="tbl_asignados">
+								<tr>
+									<td colspan="5">Productos asignados</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="row border-1 mb-2">
-			<div class="col-sm-1 pe-0">
-				<button type="button" style="width: initial;" class="btn btn-light border border-1 w-100 p-2" onclick="abrir_modal('A')">
-					<img src="../../img/png/area_egreso.png" style="width: 55px;height: 55px;" />
-				</button>
-			</div>
-			<div class="col-sm-2">
-				<b>Area de egreso:</b>
-				<select class="form-select form-select-sm" id="ddl_areas" name="ddl_areas">
-					<option value="">Seleccione</option>
-				</select>
-			</div>
-			<!-- <div class="col-sm-3">
-				<div class="input-group">
-					<div class="input-group-btn" style="padding-right:5px">
-						<button type="button" class="btn btn-default btn-sm" onclick="abrir_modal('A')">
-							<img src="../../img/png/area_egreso.png" style="width: 60px;height: 60px;">
-						</button>
-					</div>
-					<br>
-					<b>Area de egreso:</b>
-					<select class="form-control" id="ddl_areas" name="ddl_areas">
-						<option value="">Seleccione</option>
-					</select>
-				</div>				        
-			</div> -->
-			<div class="col-sm-1 pe-0">
-				<button type="button" style="width: initial;" class="btn btn-light border border-1 w-100 p-2" onclick="abrir_modal('M')">
-					<img src="../../img/png/transporte_caja.png" style="width: 55px;height: 55px;">
-				</button>
-			</div>
-			<div class="col-sm-2">
-				<b>Motivo de egreso</b>								
-				<select class="form-select form-select-sm" id="ddl_motivo" name="ddl_motivo">
-					<option value="">Seleccione</option>
-				</select>
-			</div>
-
-			<!-- <div class="col-sm-3">
-				<div class="input-group">
-					<div class="input-group-btn" style="padding-right:5px">
-						<button type="button" class="btn btn-default btn-sm" onclick="abrir_modal('M')">
-							<img src="../../img/png/transporte_caja.png" style="width: 60px;height: 60px;">
-						</button>
-					</div>
-					<br>
-					<b>Motivo de egreso</b>								
-					<select class="form-control" id="ddl_motivo" name="ddl_motivo">
-						<option value="">Seleccione</option>
-					</select>
-				</div>
-			</div> -->
-
-			<div class="col-sm-1 pe-0">
-				<button type="button" style="width: initial;" class="btn btn-light border border-1 w-100 p-2">
-					<img src="../../img/png/detalle_egreso.png" style="width: 55px;height: 55px;">
-				</button>
-			</div>
-			<div class="col-sm-2">
-				<b>Detalle de egreso:</b>
-				<textarea id="txt_detalle" name="txt_detalle"  class="form-control form-control-sm"></textarea>
-			</div>
-
-			<!-- <div class="col-sm-3">
-				<div class="input-group">
-					<div class="input-group-btn" style="padding-right:5px">
-						<button type="button" class="btn btn-default btn-sm">
-							<img src="../../img/png/detalle_egreso.png" style="width: 60px;height: 60px;">
-						</button>
-					</div>
-					<br>
-					<b>Detalle de egreso:</b>
-					<textarea id="txt_detalle" name="txt_detalle"  class="form-control input-xs"></textarea>
-				</div>
-			</div> -->
-			<div class="col-sm-3">						
-				<form enctype="multipart/form-data" id="form_img" method="post" style="width: inherit;">
-					<div class="fileupload fileupload-new" data-provides="fileupload">
-						<span class="btn btn-light border border-1 btn-file">
-						<img src="../../img/png/clip.png" style="width: 60px;height: 60px;">
-						<span class="fileupload-new">Archivo Adjunto</span>
-						<span class="fileupload-exists">Archivo Adjunto</span> 
-							<input type="file" id="file_doc" name="file_doc" />
-						</span> <br>
-						<span class="fileupload-preview"></span>
-						<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
-					</div>
-				</form>
-			</div>					
-		</div>
-		<div class="row border-1 mb-2">
-			<div class="col-sm-3">
-				<b>Codigo productos</b>
-				<div class="input-group input-group-sm">
-					<input type="" class="form-control form-control-sm" id="txt_cod_producto" name="txt_cod_producto" onblur="buscar_producto()">			
-					<button type="button" class="btn btn-primary btn-sm" style="font-size:8pt;" title="Escanear QR" onclick="escanear_qr()">
-						<i class="fa fa-qrcode" aria-hidden="true" style="font-size:8pt;"></i>
-					</button>
-					   
-				</div>
-				
-				<input type="hidden" id="txt_id" name="">								
-			</div>	
-			<div class="col-sm-3">
-				<b>Proveedor / Donante</b>
-				<input type="" class="form-control form-control-sm" id="txt_donante" name="txt_donante" readonly>	
-						
-			</div>														
-			<div class="col-sm-3">
-				<b>Grupo de producto</b>
-				<input type="" class="form-control form-control-sm" id="txt_grupo" name="txt_grupo" readonly>	
-						
-			</div>	
-			<div class="col-sm-1">
-				<b>Stock</b>
-				<input type="" class="form-control form-control-sm" id="txt_stock" name="txt_stock" readonly>	
-						
-			</div>	
-			<div class="col-sm-1">
-				<b>Unidad</b>
-				<input type="" class="form-control form-control-sm" id="txt_unidad" name="txt_unidad" readonly>	
-			</div>	
-			<div class="col-sm-1">
-				<b>Cantidad</b>
-				<input type="" class="form-control form-control-sm" id="txt_cantidad" name="txt_cantidad">									
-			</div>	
-		</div>
-		<div class="row border-1">
-			
-			<div class="col-sm-12 d-flex gap-2 justify-content-end">
-				<button class="btn btn-danger btn-sm"><b>Borrar</b></button>
-				<button type="button" class="btn btn-success btn-sm" onclick="add_egreso()"><b>Agregar</b></button>
-			</div>
-		</div>			
-	</form>
-	<hr class="border-2 my-2">
-	<div class="row border-1">		
-		<div class="col-sm-12">
-			<table class="table-sm table-hover table bg-light">
-				<thead class="text-center bg-primary text-white">
-					<th><b>Item</b></th>
-					<th><b>Fecha de Egreso</b></th>
-					<th><b>Producto</b></th>
-					<th><b>Cantidad</b></th>
-					<th></th>
-				</thead>
-				<tbody id="tbl_asignados">
-					<tr>
-						<td colspan="5">Productos asignados</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>	
 	</div>
 	
 </div>

@@ -175,7 +175,7 @@ class egreso_alimentosC
 	{
 		$tr = '';
 		$datos = $this->modelo->buscar_producto_egreso();
-		foreach ($datos as $key => $value) {
+		/*foreach ($datos as $key => $value) {
 			$tr.='<tr>			
 			<td>'.($key+1).'</td>
 			<td>'.$value['Fecha']->format('Y-m-d').'</td>
@@ -183,8 +183,8 @@ class egreso_alimentosC
 			<td>'.$value['Salida'].' '.$value['Unidad'].'</td>
 			<td><button type="button" class="btn btn-danger btn-sm" onclick="eliminar_egreso('.$value['ID'].')"><i class="fa fa-trash"></i></button></td>
 			</tr>';
-		}
-		return $tr;
+		}*/
+		return $datos;
 	}
 
 	function eliminar_egreso($id)

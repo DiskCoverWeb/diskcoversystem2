@@ -1056,8 +1056,6 @@ class registro_esC
 
   function generar_comprobante_tipo2($parametros)
   {
-    // print_r($parametros);die();
-    $modulo = $_SESSION['INGRESO']['modulo_'];
     $cta = 'Cta_Proveedores';
     $datos1 = $this->modelo->buscar_cta($cta);
     $datos2 = $this->modelo->LeerCta($datos1[0]['Codigo']);
@@ -1098,10 +1096,9 @@ class registro_esC
             'valorn'=>  $valor,//valor de sub cuenta 
             'moneda'=> 1, /// moneda 1
             'Trans'=>'.',//detalle que se trae del asiento
-            'T_N'=> $modulo,
+            'T_N'=> $_SESSION['INGRESO']['modulo_'],
             't'=> 'P',                        
         );
-      // print_r($parametros_sc);die();
         $resp = ingresar_asientos_SC($parametros_sc);
         $this->modelo->insertar_aseinto($datos2[0]['Codigo'],$datos2[0]['Cuenta'],0,$valor,0,$chq_as='.','.',$parametros['FechaCaducidad'],$t_no=1,$A_No=4,'P');
 
@@ -1162,9 +1159,8 @@ class registro_esC
       }
     }
 
-
-
     $air = $this->modelo->Cargar_DataGrid($Trans_No);
+    $air = $air['datos'];
     $Total_Ret = 0;
 
     if(count($air)>0)
@@ -1175,7 +1171,6 @@ class registro_esC
       $ValorDH = $air[0]["ValRet"];
       $Total_Ret = $Total_Ret + $air[0]["ValRet"];
       if($ValorDH > 0 ){
-        
         $this->ingresar_asientos($DetalleComp,$ValorDH,$datosCTA,$OpcTM,$OpcDH,$A_No,$parametros['opcion_mult'],$fecha);
         }  
 
@@ -1303,11 +1298,8 @@ class registro_esC
               // actualizar
             }  
 
-            // print_r('datos');die();  
-
-            SetAdoUpdate();      
-
-            // print_r('datos');die();   
+            // print_r($datos);die();    
+            SetAdoUpdate();       
      }//abre en 
   }
   }
@@ -1357,11 +1349,10 @@ class registro_esC
   {
      $datos = $this->modelo->Cargar_DataGrid($Trans_No);
      $total = 0;
-     foreach ($datos as $key => $value) {
+     foreach ($datos['datos'] as $key => $value) {
         $total+=$value['ValRet'];
      }
-
-     return array('tbl'=>$datos,'total'=>$total);
+     return array('tbl'=>$datos['tbl'],'total'=>$total);
 
   }
 

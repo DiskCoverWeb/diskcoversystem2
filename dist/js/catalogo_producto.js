@@ -122,7 +122,7 @@ function TVcatalogo(nl='',cod=false)
 {
     var ant = $('#txt_anterior').val();
     var che = cod.split('.').join('_');	
-    if(ant==''){	$('#txt_anterior').val(che); }else{	$('#label_'+ant).css('border','0px');}
+    if(ant==''){	$('#txt_anterior').val(che); }else{	$('#label_'+ant).css('border','0px');/*$('#label_'+ant).removeAttr('title');*/}
     $('#label_'+che).css('border','1px solid');
     $('#txt_anterior').val(che); 
  }
@@ -262,6 +262,14 @@ function LlenarInv(cod)
 
 function guardarINV()
 {
+    if($('#txt_codigo').val() == '' || $('#txt_codigo').val() == '.' || $('#txt_concepto').val() == '' || $('#txt_concepto').val() == '.'){
+        Swal.fire({
+            title: 'Completar campos Codigo y Concepto del producto.',
+            icon: 'error'
+        });
+        return;
+    }
+    $('#myModal_espera').modal('show');
  var datos = $('#form_datos').serialize();
      $.ajax({
          type: "POST",
@@ -270,6 +278,7 @@ function guardarINV()
          dataType:'json',
          success: function(data)
          {
+            $('#myModal_espera').modal('hide');
              if(data==1)
              {
                  var padre_nl = $('#txt_padre_nl').val();

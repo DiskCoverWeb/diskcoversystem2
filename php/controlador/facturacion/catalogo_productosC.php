@@ -1,13 +1,10 @@
 <?php 
 require_once(dirname(__DIR__,2)."/modelo/facturacion/catalogo_productosM.php");
 require_once(dirname(__DIR__,3)."/lib/fpdf/generar_codigo_barras.php");
-
+require_once(dirname(__DIR__,3)."/lib/phpqrcode/qrlib.php");
+require_once(dirname(__DIR__,3)."/lib/fpdf/fpdf.php");
 
 $controlador = new catalogo_productosC();
-if(isset($_GET['CatalogoProductos']))
-{
-  echo json_encode($controlador->CatalogoProductos());
-}
 if(isset($_GET['TVcatalogo']))
 {
   $nivel = $_POST['nivel'];
@@ -30,6 +27,16 @@ if(isset($_GET['LlenarInvBod']))
 	$parametros = $_POST['parametros'];
   echo json_encode($controlador->LlenarInvBod($parametros));
 }
+if(isset($_GET['imprimirEtiqueta']))
+{
+	//$parametros = $_POST['parametros'];
+  echo json_encode($controlador->imprimirEtiqueta($_POST));
+}
+if(isset($_GET['generarQR']))
+{
+	$codigo = $_POST['codigo'];
+  echo json_encode($controlador->generarQR($codigo));
+}
 if(isset($_GET['guardarINV']))
 {
 	$parametros = $_POST;
@@ -48,7 +55,8 @@ if(isset($_GET['eliminarINV']))
 if(isset($_GET['eliminarINVBod']))
 {
 	$codigo = $_POST['codigo'];
-  echo json_encode($controlador->eliminarINVBod($codigo));
+	$qr = $_POST['qr'];
+  echo json_encode($controlador->eliminarINVBod($codigo, $qr));
 }
 
 if(isset($_GET['cod_barras']))
@@ -70,55 +78,13 @@ if(isset($_GET['cod_barras_grupo']))
 class catalogo_productosC
 {
 	private $modelo;
+	private $pdf;
 	private $barras;
 	function __construct()
 	{
 		$this->modelo = new catalogo_productosM();
 		$this->barras = new generar_codigo_barras();
-	}
-
-	function CatalogoProductos(){
-		$datos = $this->modelo->TVCatalogo();
-		$arbol = $this->construirArbol($datos);
-		/*$niveles = ["Autorizacion", "Serie", "Fact"];
-		$arbol = [];
-
-		foreach ($datos as $registro) {
-			$nodo = &$arbol;
-
-			foreach ($niveles as $nivel) {
-				$valorNivel = $registro[$nivel];
-
-				if (!isset($nodo[$valorNivel])) {
-					$nodo[$valorNivel] = [];
-				}
-
-				$nodo = &$nodo[$valorNivel];
-			}
-
-			$nodo[] = $registro;
-		}*/
-		return $arbol;
-	}
-
-	function construirArbol($registros) {
-		$arbol = [];
-	
-		foreach ($registros as $registro) {
-			$partes = explode('.', $registro['Codigo_Inv']);
-			$nodoActual = &$arbol;
-	
-			foreach ($partes as $parte) {
-				if (!isset($nodoActual[$parte])) {
-					$nodoActual[$parte] = ['_children' => []];
-				}
-				$nodoActual = &$nodoActual[$parte]['_children'];
-			}
-	
-			$nodoActual['_data'] = $registro['Producto'];
-		}
-	
-		return $arbol;
+		$this->pdf = new FPDF();
 	}
 
 	function TVcatalogo($nl='',$codigo=false)
@@ -201,7 +167,7 @@ class catalogo_productosC
 	function TVcatalogo_Bodega($nl='',$codigo=false)
 	{
 		if($nl==''){$nl=1;}
-		$cuenta  = $_SESSION['INGRESO']['Formato_Inventario'];
+		$cuenta  = "CCC.CCC.CCCC.CCCCC.CCCC"; //$_SESSION['INGRESO']['Formato_Inventario'];
 		$partes = explode('.',$cuenta);
 		$len = strlen($partes[0]);
 		$productos = $this->modelo->TVCatalogo_Bodega(false,'N',$len);
@@ -295,7 +261,51 @@ class catalogo_productosC
 	{
 		 $codigo = $parametros['codigo'];
 		 $detalle = $this->modelo->TVcatalogo_Bodega($query=false,$TC=false,$len=false,$codigo);
-		 return $detalle;		
+		 
+		 //Generacion del codigo QR
+		 $qr = $this->generarQR($detalle[0]['CodBod']);
+		
+		 return array('detalle' => $detalle, 'qr' => $qr['qr']);
+	}
+
+	function generarQR($codigo){
+		$archivo = 'QR_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item'].'_'.str_replace('.', '', $codigo).'.png';
+		$ruta = dirname(__DIR__, 3) . "/TEMP/".$archivo;
+		
+		$qr_correccion = QR_ECLEVEL_L; //Nivel de correccion de errores (L, M, Q, H)
+		$qr_tamano = 7; //Define el tamano del qr. Enteros entre 1 a 10
+		$qr_margenes = 2; //Margenes del qr
+
+		QRcode::png($codigo, $ruta, $qr_correccion, $qr_tamano, $qr_margenes);
+		
+		/*$filename = dirname(__DIR__, 3) . "/TEMP/png/qr_baq.png";
+		$qr_correccion = QR_ECLEVEL_L; //Nivel de correccion de errores (L, M, Q, H)
+		$qr_tamano = 7; //Define el tamano del qr. Enteros entre 1 a 10
+		$qr_margenes = 2; //Margenes del qr
+
+		QRcode::png($content, $filename, $qr_correccion, $qr_tamano, $qr_margenes);*/
+
+		return array('res' => 1, 'qr' => '../../TEMP/'.$archivo);
+	}
+
+	function imprimirEtiqueta($parametros){
+		$qr = str_replace('../..', dirname(__DIR__, 3), $parametros['qr']);
+		$archivo = 'ETIQUETA_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item'].'_'.str_replace('.', '', $parametros['codigo']);
+		$ruta = dirname(__DIR__, 3).'/TEMP/'.$archivo.'.pdf';
+
+		$this->pdf->AddPage();
+		$this->pdf->SetXY(10, 10);
+		$this->pdf->SetFont('Arial', 'B', 10);
+		$this->pdf->Cell(0, 10, "Producto: ".$parametros['producto'],0,1);
+		$this->pdf->Image($qr,10,20,20);
+		$this->pdf->Cell(20);
+		$this->pdf->Cell(0, 5, "Codigo: ".$parametros['codigo'],0,0);
+		$this->pdf->Ln(5);
+		$this->pdf->Cell(20);
+		$this->pdf->Cell(0, 10, "Nomenclatura: ".$parametros['nomenclatura'],0,0);
+		$this->pdf->Output('F',$ruta);
+		
+		return array('pdf' => $archivo);
 	}
 
 	function guardarINV($parametros)
@@ -357,9 +367,12 @@ class catalogo_productosC
 		if(substr($parametros['txt_codigo'],-1)=='.'){ $parametros['txt_codigo'] = substr($parametros['txt_codigo'],0,-1);}
 		$codigoInv = $this->modelo->TVcatalogo_Bodega($query=false,$TC=false,$len=false,$codigo=$parametros['txt_codigo']);
 	 	
-	 	SetAdoAddNew("Catalogo_Bodegas");
+		//print_r($codigoInv);die();
+	 	
+		SetAdoAddNew("Catalogo_Bodegas");
 	 	SetAdoFields("CodBod", $parametros['txt_codigo']);
 		SetAdoFields("Bodega", $parametros['txt_concepto']);
+		SetAdoFields("Nomenclatura", $parametros['txt_nomenclatura']);
 		SetAdoFields("TC", 'N');
 		/*SetAdoFields("Unidad", $parametros['txt_unidad']);
 		SetAdoFields("Maximo", $parametros['maximo']);
@@ -396,9 +409,9 @@ class catalogo_productosC
 		SetAdoFields("Por_Reservas", isset($parametros['rbl_reserva']) && $parametros['rbl_reserva'] == 'on' ? 1 : 0);
 */
 		if(count($codigoInv)>0)
-	  {	  	
-      SetAdoFieldsWhere("ID", $codigoInv[0]['ID']);
-      return SetAdoUpdateGeneric();
+	  	{	  	
+			SetAdoFieldsWhere("ID", $codigoInv[0]['ID']);
+			return SetAdoUpdateGeneric();
 		}else{
 			return SetAdoUpdate();
 		}
@@ -458,7 +471,7 @@ class catalogo_productosC
 		// }
 	 
 	}
-	function eliminarINVBod($codigo)
+	function eliminarINVBod($codigo, $qr)
 	{
 		// $codigoInv = $this->modelo->TVCatalogo($query=$codigo,$TC=false,$len=false,$codigo=false);
 		// if(count($codigoInv)>0)
@@ -481,11 +494,26 @@ class catalogo_productosC
 					return -1;
 				}else
 				{
-					return  $this->modelo->eliminar_cuenta_bod($codigo);
+					$eliminado = $this->modelo->eliminar_cuenta_bod($codigo);
+					if($eliminado == 1){
+						$eliminado = $this->eliminarQR($qr);
+					}
+					return $eliminado;
 				}
 			}
 		// }
 	 
+	}
+
+	function eliminarQR($ruta){
+		$filename = str_replace('../..', dirname(__DIR__, 3), $ruta);
+		if (file_exists($filename)) {
+			// Elimina el archivo
+			unlink($filename);
+			return 1;
+		} else {
+			return -1;
+		}
 	}
 }
 

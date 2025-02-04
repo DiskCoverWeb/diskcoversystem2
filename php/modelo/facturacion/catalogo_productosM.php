@@ -46,7 +46,7 @@ class catalogo_productosM
 	{
 		
 		// print_r($cuenta);die();
-	   $sql="SELECT TC,Bodega As 'Producto',item,Periodo,ID,CodBod
+	   $sql="SELECT TC,Bodega As 'Producto',item,Periodo,ID,CodBod,Nomenclatura
        FROM Catalogo_Bodegas
        WHERE Item = '".$_SESSION['INGRESO']['item']."' 
        AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
@@ -64,7 +64,7 @@ class catalogo_productosM
        	}
        	if($codigo)
        	{
-       		$sql.=" AND CodBod >= '".$codigo."'";
+       		$sql.=" AND CodBod = '".$codigo."'";
        	}
        	$sql.=" ORDER BY CodBod";
        	// print_r($sql);die();

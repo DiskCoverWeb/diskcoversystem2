@@ -256,6 +256,13 @@ function LlenarInv(cod)
 
 function guardarINV()
 {
+    if($('#txt_codigo').val() == '' || $('#txt_codigo').val() == '.' || $('#txt_concepto').val() == '' || $('#txt_concepto').val() == '.'){
+        Swal.fire({
+            title: 'Completar campos Codigo y Concepto del producto.',
+            icon: 'error'
+        });
+        return;
+    }
     $('#myModal_espera').modal('show');
     var datos = $('#form_datos').serialize();
     $.ajax({

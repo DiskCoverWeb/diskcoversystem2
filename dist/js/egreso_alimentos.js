@@ -2,6 +2,7 @@ var video;
 	var canvasElement;
 	var canvas;
 	var scanning = false;
+	var tbl_asignados_all;
   $(document).ready(function () {
 	video = document.createElement("video");
     canvasElement = document.getElementById("qr-canvas");
@@ -9,10 +10,73 @@ var video;
   	validar_ingreso();
   	areas();  
   	motivo_egreso()	
-  	lista_egreso();
   	notificaciones();
 
+	  $.ajax({
+		type: "POST",
+		   url:   '../controlador/inventario/egreso_alimentosC.php?listar_egresos=true',
+		// data:{parametros:parametros},
+	   dataType:'json',
+		success: function(data)
+		{
+			$('#tbl_asignados').html(data);	
+		}
+	});
 
+	  tbl_asignados_all = $('#tbl_asignados_all').DataTable({
+		// responsive: true,
+		language: {
+			url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+		},
+		ajax: {
+			url:   '../controlador/inventario/egreso_alimentosC.php?listar_egresos=true',
+			type: 'POST',  // Cambia el método a POST    
+			/*data: function(d) {
+				var parametros = {                    
+				  fecha:$('#txt_fecha_b').val(),
+				  fechah:$('#txt_fecha_bh').val(),
+				  query:$('#txt_query').val(),
+				};
+				return { parametros: parametros };
+			},*/
+			dataSrc: '',             
+		},
+		 scrollX: true,  // Habilitar desplazamiento horizontal
+ 
+		columns: [
+			{ data: null, // Columna autoincremental
+				  render: function (data, type, row, meta) {
+					  return meta.row + 1; // meta.row es el índice de la fila
+				  }
+			},
+			{ data: 'Fecha.date',  
+				render: function(data, type, item) {
+					return data ? new Date(data).toLocaleDateString() : '';
+				}
+			},
+			{ data: 'Producto' },
+			{ data:  null,
+			  render: function(data, type, item) {
+				  return `${data.Salida} ${data.Unidad}`;                    
+				}
+
+			},
+			// { data: 'Salida' },
+			// { data: 'TOTAL' },
+			// { data: 'Porc_C' },
+			// { data: 'proceso' },
+			{ data: null,
+			   render: function(data, type, item) {
+				  return `<button type="button" class="btn-sm btn-danger btn" onclick="eliminar_egreso('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;                    
+				}
+			},
+			
+		],
+		order: [
+			[1, 'asc']
+		]
+	});
+	lista_egreso();
   })
 
   function notificaciones()
@@ -130,7 +194,7 @@ var video;
 		    	if(!data=='')
 		    	{ 
 	    		Swal.fire({
-	                 title: 'Datos entontrados?',
+	                 title: 'Datos encontrados?',
 	                 text: "Se encontraron datos sin guardar desea cargarlos?",
 	                 type: 'warning',
 	                 showCancelButton: true,
@@ -351,7 +415,7 @@ var video;
 		});
 
 	}
-	function lista_egreso()
+	function lista_egreso2()
 	{		
 	 	$.ajax({
 		    type: "POST",
@@ -363,6 +427,11 @@ var video;
 		    	$('#tbl_asignados').html(data);	
 		    }
 		});
+	}
+	
+	function lista_egreso()
+	{		
+		tbl_asignados_all.ajax.reload(null, false);
 	}
 
   	function guardar()
