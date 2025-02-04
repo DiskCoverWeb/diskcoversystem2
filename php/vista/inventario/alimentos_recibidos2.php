@@ -397,7 +397,7 @@
 		         </div>
 		         <div class="row">
 		           
-		           <div class="col-sm-12 text-right">
+		           <div class="col-sm-12 text-end">
 		           	<br>
 		           		<button type="button" class="btn btn-primary btn-sm" onclick="guardar_pedido()"><i class="bx bx-plus"></i>Agregar</button>
 		           </div>
