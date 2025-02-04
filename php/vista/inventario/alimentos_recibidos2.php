@@ -410,9 +410,9 @@
 			        	 	 <table class="table table-sm">
 			        	 	 	<thead>		        	 	 		
 					        	 	 	<th>N°</th>
-					        	 	 	<th style="width:75%">Producto</th>
+					        	 	 	<th style="width:60%">Producto</th>
 					        	 	 	<th>Cantidad</th>
-					        	 	 	<th></th>
+					        	 	 	<th style="width:10%"></th>
 			        	 	 	</thead>
 			        	 	 	<tbody id="tbl_body_pedido">
 			        	 	 		<tr><td colspan="4">Sin registros</td></tr>			        	 	 		
