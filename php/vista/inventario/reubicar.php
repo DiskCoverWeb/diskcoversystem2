@@ -174,6 +174,14 @@
               <button type="button" class="btn-close" aria-label="Close" onclick="cerrarCamara()"></button>
           </div>
           <div class="modal-body">
+          	<div class="row">
+          		<div class="col-sm-12">
+          			<select class="form-select" id="ddl_camaras" name="ddl_camaras" onchange="cambiarCamara()">
+          				<option value="0">Camara 1</option>          				
+          				<option value="1">Camara 2</option>           				
+          			</select>          			
+          		</div>          		
+          	</div>
             <div id="qrescaner_carga">
               <div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;"><img src="../../img/gif/loader4.1.gif" width="20%"></div>
             </div>
