@@ -387,9 +387,9 @@
 		           <div class="col-sm-3">
                 <b>Cantidad</b>
                 <div class="input-group">
-                    <input type="text" name="txt_cantidad_pedido" id="txt_cantidad_pedido" class="form-control input-sm" />
+                    <input type="text" name="txt_cantidad_pedido" id="txt_cantidad_pedido" class="form-control form-control-sm" />
                     <input type="hidden" name="txt_id_linea_pedido" id="txt_id_linea_pedido">
-                    <span class="input-group-addon" id="lbl_unidad">-</span>
+                    <span class="input-group-text" id="lbl_unidad">-</span>
                 </div>
 
 			           
@@ -407,11 +407,10 @@
 		           	<br>
 		           	 <input type="hidden" id="txt_cant_total_pedido" name ="txt_cant_total_pedido" value="0">
                  <input type="hidden" id="txt_total_lin_pedido" name ="txt_total_lin_pedido" value="0">
-			        	 <div class="table-responsive">
-			        	 	 <table class="table table-hover">
+			        	 	 <table class="table table-sm">
 			        	 	 	<thead>		        	 	 		
 					        	 	 	<th>N°</th>
-					        	 	 	<th>Producto</th>
+					        	 	 	<th style="width:75%">Producto</th>
 					        	 	 	<th>Cantidad</th>
 					        	 	 	<th></th>
 			        	 	 	</thead>
@@ -419,7 +418,6 @@
 			        	 	 		<tr><td colspan="4">Sin registros</td></tr>			        	 	 		
 			        	 	 	</tbody>
 			        	 	 </table>
-			        	 </div>
 		           </div>       
 		        </div>					
           </div>
