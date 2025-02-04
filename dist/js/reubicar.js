@@ -137,12 +137,12 @@ url:   '../controlador/inventario/almacenamiento_bodegaC.php?contenido_bodega=tr
 dataType:'json',
 success: function(data)
 {
-    $('#arbol_bodegas li span.label-success').removeClass('label-success');
+    $('#arbol_bodegas li span.bg-success').removeClass('bg-success');
     id = $('#txt_bodega').val();
     // console.log(id);
     id = id.replaceAll('.','_');
     $('#contenido_bodega').html(data);
-    $('#c_'+id).addClass('label-success');	
+    $('#c_'+id).addClass('bg-success');	
     // productos_asignados();
 }
 });
