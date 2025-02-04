@@ -4,7 +4,6 @@ $(document).ready(function () {
     
     preguntas_transporte();
     
-    $('#btn_guardar').focus();
      $(document).on('focus', '.sele+ct2-selection.select2-selection--single', function (e) {
     $(this).closest(".select2-container").siblings('select:enabled').select2('open');
   });

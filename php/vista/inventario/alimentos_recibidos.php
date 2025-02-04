@@ -1,13 +1,5 @@
 <?php date_default_timezone_set('America/Guayaquil'); ?>
-<style type="text/css">
-	.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
-    color: #fbf0f0;
-    cursor: default;
-    background-color: #3c8dbc;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-}
-</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
 <script type="text/javascript" src="../../dist/js/alimentos_recibidos.js"></script>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -24,17 +16,17 @@
 <div class="row mb-2">
 	<div class="col-sm-6">
 		 <div class="btn-group" role="group" aria-label="Basic example">
-			<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
+				<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
 							  print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
 					  <img src="../../img/png/salire.png">
 				</a>
-				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()" id="btn_guardar">
+				<button type="button" class="btn btn-outline-secondary" title="Guardar" id="btn_guardar" onclick="guardar()" >
 				  <img src="../../img/png/grabar.png">
 				</button>
-				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir QR" onclick="imprimir_pedido()">
+				<button type="button" class="btn btn-outline-secondary" title="Imprimir QR" onclick="imprimir_pedido()">
 					<img src="../../img/png/paper.png" height="32px">
 				</button>
-				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir QR PDF" onclick="imprimir_pedido_pdf()">
+				<button type="button" class="btn btn-outline-secondary" title="Imprimir QR PDF" onclick="imprimir_pedido_pdf()">
 					<img src="../../img/png/impresora.png" height="32px">
 				</button>		
 			</div>
