@@ -297,9 +297,10 @@ function bodegaPorQR(codigo){
 function cambiarCamara()
 {
     cerrarCamara();
-    iniciarEscanerQR();
     setTimeout(() => {
+        iniciarEscanerQR();
         $('#modal_qr_escaner').modal('show');
+         $('#qrescaner_carga').hide();
     }, 1000);
 }
 
