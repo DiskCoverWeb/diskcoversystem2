@@ -43,14 +43,14 @@
 						<b class="fw-semibold">Buscar Bodega</b>
 						
 						<div class="input-group input-group-sm">
-							<input type="" name="" class="form-control form-control-sm" id="txt_bodega" name="txt_bodega" placeholder="Buscar Bodega" onblur="lista_stock_ubicado()">
+							<input type="" name="" class="form-control form-control-sm" id="txt_bodega" name="txt_bodega" placeholder="Buscar Bodega por codigo" onblur="lista_stock_ubicado()">
 							<button type="button" class="btn btn-info btn-sm" style="font-size: 8pt;" onclick="abrir_modal_bodegas()"><i class="fa fa-sitemap" style="font-size: 8pt;"></i></button>
 							<button type="button" class="btn btn-primary btn-sm" style="font-size: 8pt;" title="Escanear QR" onclick="escanear_qr()"><i class="fa fa-qrcode" style="font-size: 8pt;"></i></button>
 						</div>
 					</div>
 					<div class="col-sm-4">
 						<b class="fw-semibold">Buscar Articulo</b>
-						<input type="" name="" class="form-control form-control-sm" id="txt_cod_barras" name="txt_cod_barras" placeholder="Buscar" onblur="lista_stock_ubicado()">
+						<input type="" name="" class="form-control form-control-sm" id="txt_cod_barras" name="txt_cod_barras" placeholder="Buscar articulo por codigo" onblur="lista_stock_ubicado()">
 					</div>
 					<div class="col-sm-4 text-end">
 						<br>
