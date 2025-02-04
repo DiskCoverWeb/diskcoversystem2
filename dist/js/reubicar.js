@@ -298,6 +298,7 @@ function cambiarCamara()
 {
     cerrarCamara();
     iniciarEscanerQR();
+    $('#modal_qr_escaner').modal('hide');
 }
 
  let scanner;
