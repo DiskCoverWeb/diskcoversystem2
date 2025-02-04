@@ -661,59 +661,53 @@ function ver_detalle_trasorte()
 
               if(response[0].Conductor!='.')
               {		 
-                  test+='<li class="list-group-item">'+
-                                        '<a href="#" style="padding:0px">'+
+                  test+='<li class="list-group-item d-flex justify-content-between align-items-center">'+
                                                 '<label>Vehiculo</label>'+
                                                  '<div class="btn-group pull-right">';
                                                  
-                                                     test+='<span class="label-warning btn-sm btn">'+response[0].Conductor+'</span>'
+                                                     test+='<span class="badge bg-warning rounded-pill">'+response[0].Conductor+'</span>'
                                                  
                                                  test+='</div>'+
-                                         '</a>'+
                                     '</li>'
                     }
 
 
-              test+='<li class="list-group-item">'+
-                                        '<a href="#" style="padding:0px">'+
+              test+='<li class="list-group-item d-flex justify-content-between align-items-center">'+
                                                 '<label>Tipo de Vehiculo</label>'+
                                                  '<div class="btn-group pull-right">';
                                                  
-                                                     test+='<span class="label-warning btn-sm btn">'+response[0].Carga+'</span>'
+                                                     test+='<span class="badge bg-warning rounded-pill btn-sm btn">'+response[0].Carga+'</span>'
                                                  
                                                  test+='</div>'+
-                                         '</a>'+
                                     '</li>'
 
               if(response[0].placa!='.')
                   {		  
-                      test+='<li class="list-group-item">'+
-                                        '<a href="#" style="padding:0px">'+
+                      test+='<li class="list-group-item d-flex justify-content-between align-items-center">'+
                                                 '<label>Placa del Vehiculo</label>'+
                                                  '<div class="btn-group pull-right">';
                                                  
-                                                     test+='<span class="label-warning btn-sm btn">'+response[0].placa+'</span>'
+                                                     test+='<span class="badge bg-warning rounded-pill btn-sm btn">'+response[0].placa+'</span>'
                                                  
                                                  test+='</div>'+
-                                         '</a>'+
                                     '</li>'
                   }
               response.forEach(function(item,i){
 
                   console.log(item);
 
-                  test+='<li class="list-group-item">'+
-                                        '<a href="#" style="padding:0px">'+
+                  test+='<li class="list-group-item d-flex justify-content-between align-items-center">'+
+                                       
                                                 '<label>'+item.Proceso+'</label>'+
                                                  '<div class="btn-group pull-right">';
                                                  if(item.Cumple==1)
                                                  {
-                                                     test+='<span class="label-success btn-sm btn">Cumple</span>'
+                                                     test+='<span class="badge bg-success rounded-pill btn-sm btn">Cumple</span>'
                                                  }else{
-                                                     test+='<span class="label-danger btn-sm btn">No cumple</span>'
+                                                     test+='<span class="badge bg-danger rounded-pill btn-sm btn">No cumple</span>'
                                                  }
                                                  test+='</div>'+
-                                         '</a>'+
+                                        
                                     '</li>';
               })
               $('#lista_preguntas').html(test);

@@ -551,14 +551,18 @@ class alimentos_recibidosM
 	function estado_trasporte($pedido)
 	{
 
-		$sql = "SELECT TF.ID,CP.Proceso,Cumple,Carga,CodigoC,CP2.Proceso as 'placa',Conductor,Codigo_Inv
+		
+		$sql = "SELECT TF.ID,CP.Proceso,Cumple,Carga,CodigoC,Conductor,Codigo_Inv
 				FROM Trans_Fletes TF 
-				inner join Catalogo_Proceso CP on CP.Cmds = TF.TP 
-				left join Catalogo_Proceso CP2 on CP2.Cmds = TF.CodigoC 
+				INNER join Catalogo_Proceso CP on CP.Cmds = TF.TP 
 				WHERE  TF.Item = '".$_SESSION['INGRESO']['item']."' 
 				AND TF.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+				and TF.Item = CP.Item
 				AND Codigo_Inv= '".$pedido."'";
 				// print_r($sql);die();
+		return $this->db->datos($sql);
+
+
 		return $this->db->datos($sql);
 	}
 	
