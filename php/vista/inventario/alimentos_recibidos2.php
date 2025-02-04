@@ -365,7 +365,7 @@
 </div>
 
 
-<div id="modal_producto_2" class="modal fade myModalNuevoCliente" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_producto_2" class="modal fade myModalNuevoCliente" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog">
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header">
@@ -430,7 +430,7 @@
   </div>
 </div>
 
-<div id="modal_cantidad" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_cantidad" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-sm">
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header">
@@ -449,7 +449,7 @@
   </div>
 </div>
 
-<div id="modal_sucursal" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_sucursal" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-sm">
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header">
@@ -470,7 +470,7 @@
   </div>
 </div>
 
-<div id="modal_empaque" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_empaque" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-sm">
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header">
@@ -489,7 +489,7 @@
   </div>
 </div>
 
-<div id="modal_qr_escaner" class="modal fade"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_qr_escaner" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header">
@@ -512,7 +512,7 @@
   </div>
 </div>
 
-<div id="modal_calendar" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_calendar" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content" style="background: antiquewhite;">
             <div class="modal-header">
@@ -562,7 +562,7 @@
 <script src="../../dist/js/script_calendar.js"></script>
 
 
-<div id="modal_notificar" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="modal_notificar" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-sm">
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header">
