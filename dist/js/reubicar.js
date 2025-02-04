@@ -1,14 +1,10 @@
-var video;
-var canvasElement;
-var canvas;
+
 var scanning = false;
+var tbl_pedidos_all;
 $(document).ready(function () {
-    video = document.createElement("video");
-	canvasElement = document.getElementById("qr-canvas");
-	canvas = canvasElement.getContext("2d", { willReadFrequently: true });
     // cargar_bodegas();
     // cargar_bodegas2();
-       lista_stock_ubicado();
+       // lista_stock_ubicado();
 $('#txt_bodega').keydown( function(e) { 
   var keyCode1 = e.keyCode || e.which; 
   if (keyCode1 == 13) { 
@@ -28,6 +24,49 @@ $('#txt_cod_barras').keydown( function(e) {
        lista_stock_ubicado();
   }
 });  
+
+
+ tbl_pedidos_all = $('#tbl_asignados').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+            url:   '../controlador/inventario/reubicarC.php?lista_stock_ubicado=true',
+            type: 'POST',  // Cambia el método a POST    
+            data: function(d) {
+                  var parametros = {                    
+                    'bodegas':$('#txt_bodega').val(),
+                    'cod_articulo':$('#txt_cod_barras').val(),
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+             
+              { data: 'Codigo_Barra' },
+              { data: 'Producto' },
+              { data: 'Stock',},
+              { data: 'CodBodega' },
+              { data: 'Ruta'        },
+             
+              { data: null,
+                 render: function(data, type, item) {
+                    botons = `<button type='button' title = 'Cambiar ubicacion' class='btn btn-sm btn-primary p-1' onclick='cambiar_bodegas("${data.ID}")'><i class='bx bx-refresh'></i></button>`;
+                  
+                    return botons;                    
+                  }
+              },
+              
+          ]
+      });
+
+
+
+
 })
 
 function abrir_modal_bodegas(op='')
@@ -171,20 +210,24 @@ success: function(data)
 
 function lista_stock_ubicado()
 { 	
-var parametros = {
-    'bodegas':$('#txt_bodega').val(),
-    'cod_articulo':$('#txt_cod_barras').val(),
-}
- $.ajax({
-    type: "POST",
-   url:   '../controlador/inventario/reubicarC.php?lista_stock_ubicado=true',
-     data:{parametros:parametros},
-   dataType:'json',
-    success: function(data)
-    {
-        $('#tbl_asignados').html(data);
-    }
-}); 
+
+
+     tbl_pedidos_all.ajax.reload(null, false);
+
+// var parametros = {
+//     'bodegas':$('#txt_bodega').val(),
+//     'cod_articulo':$('#txt_cod_barras').val(),
+// }
+//  $.ajax({
+//     type: "POST",
+//    url:   '../controlador/inventario/reubicarC.php?lista_stock_ubicado=true',
+//      data:{parametros:parametros},
+//    dataType:'json',
+//     success: function(data)
+//     {
+//         $('#tbl_asignados').html(data);
+//     }
+// }); 
 }
 
 function cambiar_bodegas(id)
@@ -247,64 +290,49 @@ function bodegaPorQR(codigo){
     $('#txt_bodega').trigger('blur');
 }
 
-function escanear_qr(){
-	/*if(campo == 'lugar' && $('#txt_codigo').val() == ''){
-		Swal.fire('Seleccione un codigo de ingreso', '', 'error');
-		return;
-	}*/
-	$('#modal_qr_escaner').modal('show');
-	navigator.mediaDevices
-	.getUserMedia({ video: { facingMode: "environment" } })
-	.then(function (stream) {
-	$('#qrescaner_carga').hide();
-		scanning = true;
-		//document.getElementById("btn-scan-qr").hidden = true;
-		canvasElement.hidden = false;
-		video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-		video.srcObject = stream;
-		video.play();
-		tick();
-		scan();
-	});
+ function escanear_qr(campo){
+    iniciarEscanerQR(campo);
+        $('#modal_qr_escaner').modal('show');
+    }
+
+ let scanner;
+ function iniciarEscanerQR(campo_qr) {
+
+    scanner = new Html5Qrcode("reader");
+    $('#qrescaner_carga').hide();
+    Html5Qrcode.getCameras().then(devices => {
+        if (devices.length > 0) {
+            let cameraId = devices[0].id; // Usa la primera cámara disponible
+            scanner.start(
+                cameraId,
+                {
+                    fps: 10, // Velocidad de escaneo
+                    qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
+                },
+                (decodedText) => {
+                    pedidosPorQR(decodedText);
+                    scanner.stop(); // Detiene la cámara después de leer un código
+                    $('#modal_qr_escaner').modal('hide');
+                },
+                (errorMessage) => {
+                    console.log("Error de escaneo:", errorMessage);
+                }
+            );
+        } else {
+            alert("No se encontró una cámara.");
+        }
+    }).catch(err => console.error("Error al obtener cámaras:", err));
 }
 
-//funciones para levantar las funiones de encendido de la camara
-function tick() {
-	canvasElement.height = video.videoHeight;
-	canvasElement.width = video.videoWidth;
-	//canvasElement.width = canvasElement.height + (video.videoWidth - video.videoHeight);
-	canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-
-	scanning && requestAnimationFrame(tick);
+  function cerrarCamara() {
+    if (scanner) {
+        scanner.stop().then(() => {            
+          $('#qrescaner_carga').show();
+          $('#modal_qr_escaner').modal('hide');
+        }).catch(err => {
+            console.error("Error al detener el escáner:", err);
+        });
+    }
 }
 
-function scan() {
-	try {
-		qrcode.decode();
-	} catch (e) {
-		setTimeout(scan, 300);
-	}
-}
 
-const cerrarCamara = () => {
-	video.srcObject.getTracks().forEach((track) => {
-		track.stop();
-	});
-	canvasElement.hidden = true;
-$('#qrescaner_carga').show();
-	$('#modal_qr_escaner').modal('hide');
-};
-
-//callback cuando termina de leer el codigo QR
-qrcode.callback = (respuesta) => {
-	if (respuesta) {
-		//console.log(respuesta);
-		//Swal.fire(respuesta)
-
-        bodegaPorQR(respuesta);
-		
-		//activarSonido();
-		//encenderCamara();    
-		cerrarCamara();    
-	}
-};

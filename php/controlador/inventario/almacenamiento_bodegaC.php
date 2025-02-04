@@ -176,17 +176,26 @@ class almacenamiento_bodegaC
 			$parametros['codigo'] = $value['Codigo_Inv'];
 			$prod = $this->modelo->catalogo_productos($value['Codigo_Inv']);
 			if(count($prod)>0){
-
-				 $ls.= '<li class="list-group-item"><a href="#" style="padding:0px"><label><input type="checkbox" class="rbl_pedido" value="'.$value['ID'].'">'.$prod[0]['Producto'].'</label>
-				 		<div class="btn-group pull-right">
-				 				<span class="label-primary btn-sm btn">'.$value['Entrada'].' '.$prod[0]['Unidad'].'</span>				
-				 		</div>
-				 </a>
-				 <ul style="padding: 20px;">';
+				$ls.='<li class="list-group-item d-flex justify-content-between align-items-center">
+						<input type="checkbox" class="rbl_pedido" value="'.$value['ID'].'">'.$prod[0]['Producto'].'
+						<span class="badge bg-primary rounded-pill">'.$value['Entrada'].' '.$prod[0]['Unidad'].'</span>
+						 <ul style="padding: 20px;">';
 				 		 $ls.= $this->cargar_info($parametros);
 				 	$ls.='</ul> 
-				 </li>';
+					</li>';
+  
+
+				 // $ls.= '<li class="list-group-item">
+
+				 // <a href="#" style="padding:0px"><label><input type="checkbox" class="rbl_pedido" value="'.$value['ID'].'">'.$prod[0]['Producto'].'</label>
+				 // 		<div class="btn-group pull-right">
+				 // 				<span class="label-primary btn-sm btn">'.$value['Entrada'].' '.$prod[0]['Unidad'].'</span>				
+				 // 		</div>
+				 // </a>
+				
+				 // </li>';
 			}
+
 			
       }	
 
@@ -259,8 +268,8 @@ class almacenamiento_bodegaC
 					<td>'.$stock.'</td>
 					<td>'.$ruta.'</td>
 					<td>
-						<button type="button" onclick="eliminar_bodega(\''.$value['ID'].'\')" class="btn btn-danger btn-sm" title="Eliminar Bodega"><i class="fa fa-trash"></i></button>
-						<button type="button" onclick="$(\'#txt_cod_bodega\').val(\''.$value['CodBodega'].'\');$(\'#txt_bodega_title\').text(\''.$ruta.'\');contenido_bodega()" class="btn btn-primary btn-sm" title="Ver Bodega" ><i class="fa fa-eye"></i></button>
+						<button type="button" onclick="eliminar_bodega(\''.$value['ID'].'\')" class="btn btn-danger btn-sm" title="Eliminar Bodega"><i class="fa fa-trash m-0" style="font-size: 9pt;"></i></button>
+						<button type="button" onclick="$(\'#txt_cod_bodega\').val(\''.$value['CodBodega'].'\');$(\'#txt_bodega_title\').text(\''.$ruta.'\');contenido_bodega()" class="btn btn-primary btn-sm" title="Ver Bodega" ><i class="fa fa-eye m-0" style="font-size: 9pt;"></i></button>
 					</td>
 				</tr>';	
 

@@ -1,5 +1,6 @@
 <?php date_default_timezone_set('America/Guayaquil'); ?>
   <link rel="stylesheet" href="../../dist/css/arbol_bodegas/reset.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
   <link rel="stylesheet" href="../../dist/css/arbol_bodegas/arbol_bodega.css">
   <script src="../../dist/js/arbol_bodegas/prefixfree.min.js"></script>
   <script src="../../dist/js/qrCode.min.js"></script>
@@ -19,44 +20,57 @@
     </div>          
 </div>
 
-<div class="row row-cols-auto gx-3 pb-2 d-flex align-items-center ps-2">
-  	<div class="row row-cols-auto btn-group">
-		<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
-			print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
-			<img src="../../img/png/salire.png">
-		</a>
-		<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
-			<img src="../../img/png/grabar.png">
-		</button>
-  	</div>
+<div class="row mb-2">
+	<div class="col-sm-6">
+  		<div class="btn-group">
+			<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
+				print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
+				<img src="../../img/png/salire.png">
+			</a>
+			<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
+				<img src="../../img/png/grabar.png">
+			</button>
+	  	</div>
+	</div>
 </div>
 
-<form id="form_correos" class="mb-2">
-	<div class="row p-2 border-top border-3 border-secondary-subtle" style="background: antiquewhite;">					
-		<div class="row d-flex align-items-end border-1">
-			<div class="col-sm-4">
-				<b class="fw-semibold">Buscar Bodega</b>
-				
-				<div class="input-group input-group-sm">
-					<input type="" name="" class="form-control form-control-sm" id="txt_bodega" name="txt_bodega" placeholder="Buscar Bodega" onblur="lista_stock_ubicado()">
-					<button type="button" class="btn btn-info btn-sm" style="font-size: 8pt;" onclick="abrir_modal_bodegas()"><i class="fa fa-sitemap" style="font-size: 8pt;"></i></button>
-					<button type="button" class="btn btn-primary btn-sm" style="font-size: 8pt;" title="Escanear QR" onclick="escanear_qr()"><i class="fa fa-qrcode" style="font-size: 8pt;"></i></button>
+<form id="form_correos">
+	<div class="row mb-2">
+		<div class="card" style="background: antiquewhite;">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-sm-4">
+						<b class="fw-semibold">Buscar Bodega</b>
+						
+						<div class="input-group input-group-sm">
+							<input type="" name="" class="form-control form-control-sm" id="txt_bodega" name="txt_bodega" placeholder="Buscar Bodega" onblur="lista_stock_ubicado()">
+							<button type="button" class="btn btn-info btn-sm" style="font-size: 8pt;" onclick="abrir_modal_bodegas()"><i class="fa fa-sitemap" style="font-size: 8pt;"></i></button>
+							<button type="button" class="btn btn-primary btn-sm" style="font-size: 8pt;" title="Escanear QR" onclick="escanear_qr()"><i class="fa fa-qrcode" style="font-size: 8pt;"></i></button>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<b class="fw-semibold">Buscar Articulo</b>
+						<input type="" name="" class="form-control form-control-sm" id="txt_cod_barras" name="txt_cod_barras" placeholder="Buscar" onblur="lista_stock_ubicado()">
+					</div>
+					<div class="col-sm-4 text-end">
+						<br>
+						<button type="button" class="btn btn-primary btn-sm" onclick="lista_stock_ubicado()"><i class="fa fa-search" style="font-size:8pt;"></i> Buscar</button>
+					</div>
 				</div>
-			</div>
-			<div class="col-sm-4">
-				<b class="fw-semibold">Buscar Articulo</b>
-				<input type="" name="" class="form-control form-control-sm" id="txt_cod_barras" name="txt_cod_barras" placeholder="Buscar" onblur="lista_stock_ubicado()">
-			</div>
-			<div class="col-sm-4 d-flex justify-content-end">
-				<button type="button" class="btn btn-primary btn-sm" onclick="lista_stock_ubicado()"><i class="fa fa-search" style="font-size:8pt;"></i> Buscar</button>
-			</div>
-		</div>
-		<div class="row border-1 mt-3">
-			<br>
+				<div class="row">
+					<div class="col-sm-12">
+						<h3 class="h3" id="txt_bodega_title">Ruta: </h3>
+					</div>					
+				</div>				
+			</div>			
+		</div>		
+	</div>	
+	<div class="row mb-2">
+		<div class="card">
+			<div class="card-body">
 				<div class="col-sm-12">
 					<b class="fw-semibold">Contenido De bodega</b>
-					<h3 class="h3" id="txt_bodega_title">Ruta: </h3>
-					<table class="table-sm table-striped table-hover table bg-light">
+					<table class="table table-sm " id="tbl_asignados">
 						<thead class="text-center bg-primary text-white">
 							<th>Codigo</th>
 							<th><b>Producto</b></th>
@@ -65,16 +79,24 @@
 							<th><b>Ruta</b></th>
 							<th></th>
 						</thead>
-						<tbody id="tbl_asignados">
+						<tbody>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
 							
 						</tbody>
 					</table>
-				</div>					
-		</div>
+				</div>						
+			</div>			
+		</div>			
 	</div>
 </form>
 
-<br><br>
 
 
 <div id="myModal_cambiar_bodegas" class="modal fade myModalNuevoCliente" role="dialog" data-keyboard="false" data-backdrop="static">
@@ -144,7 +166,7 @@
     </div>
   </div>
 
-  <div id="modal_qr_escaner" class="modal fade"  role="dialog" data-keyboard="false" data-backdrop="static">
+  <div id="modal_qr_escaner" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header bg-primary">
@@ -155,7 +177,8 @@
             <div id="qrescaner_carga">
               <div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;"><img src="../../img/gif/loader4.1.gif" width="20%"></div>
             </div>
-		  	    <canvas hidden="" id="qr-canvas" class="img-fluid" style="height: 100%;width: 100%;"></canvas>
+		  	<div id="reader" style="height: 100%;width: 100%;"></div>
+            <p><strong>QR Detectado:</strong> <span id="resultado"></span></p>
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
               <button type="button" class="btn btn-danger" onclick="cerrarCamara()">Cerrar</button>

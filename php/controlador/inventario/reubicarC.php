@@ -28,24 +28,21 @@ class reubicarC
     	$cod_art = $parametros['cod_articulo'];
     	$datos = $this->modelo->lista_stock_ubicado($bodega,$cod_art);
     	$tr = '';
+
+    	
     	foreach ($datos as $key => $value) {
     		$rutas = $this->ruta_bodega($value['CodBodega']);
     		$stock = 0;
     		$datos_inv = Leer_Codigo_Inv($value['Codigo_Inv'],date('Y-m-d'));
+    		$datos[$key]['Stock'] = 0;
     		if($datos_inv['respueta']==1)
     		{
     			$stock = $datos_inv['datos']['Stock'].' '.$datos_inv['datos']['Unidad'];
+    			$datos[$key]['Stock'] = $stock;
     		}
-    		$tr.="<tr>
-    			<td>".$value['Codigo_Barra']."</td>
-    			<td>".$value['Producto']."</td>
-    			<td>".$stock."</td>
-    			<td>".$value['CodBodega']."</td>
-    			<td>".$rutas."</td>
-    			<td><button type='button' title = 'Cambiar ubicacion' class='btn btn-sm btn-primary p-1' onclick='cambiar_bodegas(\"".$value['ID']."\")'><i class='bx bx-refresh'></i></button></td>
-    		</tr>";
+    		$datos[$key]['Ruta'] = $rutas;
     	}
-    	return $tr;
+    	return $datos;
     	// print_r($datos);die();
     }
 

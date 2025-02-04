@@ -1,13 +1,7 @@
-var video;
-	var canvasElement;
-	var canvas;
 	var scanning = false;
 	var campo_qr = '';
   $(document).ready(function () {
-	video = document.createElement("video");
-	canvasElement = document.getElementById("qr-canvas");
-	canvas = canvasElement.getContext("2d", { willReadFrequently: true });
-  	cargar_bodegas()
+		cargar_bodegas()
   	cargar_paquetes()
   	pedidos();
 
@@ -136,6 +130,7 @@ var video;
  
   	$('#txt_codigo').select2({
     placeholder: 'Seleccione una beneficiario',
+    width:'100%',
     ajax: {
       url: '../controlador/inventario/almacenamiento_bodegaC.php?search_contabilizado=true',
       dataType: 'json',
@@ -454,71 +449,53 @@ async function buscar_ruta()
 		    }
 		});
 }
+ function escanear_qr(campo){
+    iniciarEscanerQR(campo);
+        $('#modal_qr_escaner').modal('show');
+    }
 
-function escanear_qr(campo){
-	/*if(campo == 'lugar' && $('#txt_codigo').val() == ''){
-		Swal.fire('Seleccione un codigo de ingreso', '', 'error');
-		return;
-	}*/
-	$('#modal_qr_escaner').modal('show');
-	navigator.mediaDevices
-	.getUserMedia({ video: { facingMode: "environment" } })
-	.then(function (stream) {
-	$('#qrescaner_carga').hide();
-		scanning = true;
-		campo_qr = campo;
-		//document.getElementById("btn-scan-qr").hidden = true;
-		canvasElement.hidden = false;
-		video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-		video.srcObject = stream;
-		video.play();
-		tick();
-		scan();
-	});
+ let scanner;
+ function iniciarEscanerQR(campo_qr) {
+
+    scanner = new Html5Qrcode("reader");
+    $('#qrescaner_carga').hide();
+    Html5Qrcode.getCameras().then(devices => {
+        if (devices.length > 0) {
+            let cameraId = devices[0].id; // Usa la primera cámara disponible
+            scanner.start(
+                cameraId,
+                {
+                    fps: 10, // Velocidad de escaneo
+                    qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
+                },
+                (decodedText) => {
+                    if(campo_qr == 'ingreso'){
+						pedidosPorQR(decodedText);
+					}else if(campo_qr == 'lugar'){
+						lugarPorQr(decodedText);
+					}
+                    scanner.stop(); // Detiene la cámara después de leer un código
+                    $('#modal_qr_escaner').modal('hide');
+                },
+                (errorMessage) => {
+                    console.log("Error de escaneo:", errorMessage);
+                }
+            );
+        } else {
+            alert("No se encontró una cámara.");
+        }
+    }).catch(err => console.error("Error al obtener cámaras:", err));
 }
 
-//funciones para levantar las funiones de encendido de la camara
-function tick() {
-	canvasElement.height = video.videoHeight;
-	canvasElement.width = video.videoWidth;
-	//canvasElement.width = canvasElement.height + (video.videoWidth - video.videoHeight);
-	canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-
-	scanning && requestAnimationFrame(tick);
+  function cerrarCamara() {
+    if (scanner) {
+        scanner.stop().then(() => {            
+          $('#qrescaner_carga').show();
+          $('#modal_qr_escaner').modal('hide');
+        }).catch(err => {
+            console.error("Error al detener el escáner:", err);
+        });
+    }
 }
 
-function scan() {
-	try {
-		qrcode.decode();
-	} catch (e) {
-		setTimeout(scan, 300);
-	}
-}
 
-const cerrarCamara = () => {
-	video.srcObject.getTracks().forEach((track) => {
-		track.stop();
-	});
-	canvasElement.hidden = true;
-$('#qrescaner_carga').show();
-	$('#modal_qr_escaner').modal('hide');
-};
-
-//callback cuando termina de leer el codigo QR
-qrcode.callback = (respuesta) => {
-	if (respuesta) {
-		//console.log(respuesta);
-		//Swal.fire(respuesta)
-
-		if(campo_qr == 'ingreso'){
-			pedidosPorQR(respuesta);
-		}else if(campo_qr == 'lugar'){
-			lugarPorQr(respuesta);
-		}
-		//activarSonido();
-		//encenderCamara();    
-		cerrarCamara();    
-	}
-};
-  
- 
