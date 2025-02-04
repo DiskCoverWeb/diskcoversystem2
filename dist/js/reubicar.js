@@ -290,13 +290,13 @@ function bodegaPorQR(codigo){
     $('#txt_bodega').trigger('blur');
 }
 
- function escanear_qr(campo){
-    iniciarEscanerQR(campo);
+ function escanear_qr(){
+    iniciarEscanerQR();
         $('#modal_qr_escaner').modal('show');
     }
 
  let scanner;
- function iniciarEscanerQR(campo_qr) {
+ function iniciarEscanerQR() {
 
     scanner = new Html5Qrcode("reader");
     $('#qrescaner_carga').hide();
@@ -310,7 +310,7 @@ function bodegaPorQR(codigo){
                     qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
                 },
                 (decodedText) => {
-                    pedidosPorQR(decodedText);
+                    bodegaPorQR(decodedText);
                     scanner.stop(); // Detiene la cámara después de leer un código
                     $('#modal_qr_escaner').modal('hide');
                 },
