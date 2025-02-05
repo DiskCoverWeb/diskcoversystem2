@@ -301,7 +301,7 @@ class asignacion_osC
                 $cantidad+= number_format($value['Cantidad'],2,'.','');
         }
 
-        $res = array('tabla'=>$tr,'cantidad'=>$cantidad);
+        $res = array('tabla'=>$datos,'cantidad'=>$cantidad);
 
         return $res;
         // print_r($datos);die();

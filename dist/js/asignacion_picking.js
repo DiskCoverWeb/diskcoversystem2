@@ -1,12 +1,17 @@
 var video;
-var canvasElement;
-var canvas;
-var scanning = false;
+var tbl_picking_os;
 
 $(document).ready(function () {
-    video = document.createElement("video");
-    canvasElement = document.getElementById("qr-canvas");
-    canvas = canvasElement.getContext("2d", { willReadFrequently: true });
+
+    tbl_picking_os = $('#tbl_picking_os').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        paging:false,
+        searching:false,
+        info:false,
+    });
 
     beneficiario();
 
@@ -255,27 +260,98 @@ function agregar_picking()
 
 function cargar_asignacion()
 {
-    var parametros = {
-    'beneficiario':$('#beneficiario').val(),
-    'FechaAte':$('#fechAten').val(),
-    }
-    $.ajax({
-        type: "POST",
-        url:   '../controlador/inventario/asignacion_pickingC.php?cargar_asignacion=true',
-            data:{parametros:parametros},
-        dataType:'json',
-        success: function(data)
-        {
-            $('#tbl_body').html(data.tabla);
+    tbl_picking_os.destroy();
 
-            var to = parseFloat( $('#txt_total').val());
-            var ing = parseFloat(data.total);
+    tbl_picking_os = $('#tbl_picking_os').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        /*columnDefs: [
+            { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
+        ],*/
+        ajax: {
+            url: '../controlador/inventario/asignacion_pickingC.php?cargar_asignacion=true',
+            type: 'POST',  // Cambia el método a POST    
+            data: function(d) {
+                /*var parametros = {
+                  'codigoCliente': '',
+                    'tamanioTblBody': altoContTbl <= 25 ? 0 : altoContTbl - 12,
+                };*/
+                var param = {
+                    'beneficiario':$('#beneficiario').val(),
+                    'FechaAte':$('#fechAten').val(),
+                }
+                return { parametros: param };
+            },              
+              dataSrc: function(json) {
+              
+                var to = parseFloat( $('#txt_total').val());
+                var ing = parseFloat(json.total);
 
-            console.log(to);
-            $('#txt_total_ing').val(to-ing);
-            console.log(data);
-        }
+                //console.log(to);
+                $('#txt_total_ing').val(to-ing);
+                //console.log(data);
+
+                // console.log(json);
+
+                // Devolver solo la parte de la tabla para DataTables
+                return json.tabla;
+            }        
+        },
+          //scrollX: true,  // Habilitar desplazamiento horizontal
+            paging:false,
+            searching:false,
+            info:false,
+            scrollY: 330,
+            scrollCollapse: true,
+        columns: [
+            { data: null,
+                render: function(data, type, item) {
+                    return `<button type="button" class="btn btn-sm btn-danger" onclick="eliminarlinea('${item.ID}')" title="Eliminar linea"><i class="bx bx-trash"></i></button>`;
+                } 
+            },
+            
+            { data: 'Fecha.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Fecha_C.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Producto' },
+            { data: 'Codigo_Barra' },
+            { data: 'Nombre_Completo' },
+            { data: 'Total' },
+            
+            
+        ]
     });
+
+    // var parametros = {
+    // 'beneficiario':$('#beneficiario').val(),
+    // 'FechaAte':$('#fechAten').val(),
+    // }
+    // $.ajax({
+    //     type: "POST",
+    //     url:   '../controlador/inventario/asignacion_pickingC.php?cargar_asignacion=true',
+    //         data:{parametros:parametros},
+    //     dataType:'json',
+    //     success: function(data)
+    //     {
+    //         $('#tbl_body').html(data.tabla);
+
+    //         var to = parseFloat( $('#txt_total').val());
+    //         var ing = parseFloat(data.total);
+
+    //         console.log(to);
+    //         $('#txt_total_ing').val(to-ing);
+    //         console.log(data);
+    //     }
+    // });
 
 }
 function eliminarlinea(id)
@@ -336,58 +412,104 @@ function Eliminar(id)
 }
 
 function escanear_qr(){
-    $('#modal_qr_escaner').modal('show');
-    navigator.mediaDevices
-    .getUserMedia({ video: { facingMode: "environment" } })
-    .then(function (stream) {
-        $('#qrescaner_carga').hide();
-        scanning = true;
-        //document.getElementById("btn-scan-qr").hidden = true;
-        canvasElement.hidden = false;
-        video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-        video.srcObject = stream;
-        video.play();
-        tick();
-        scan();
-    });
+    iniciarEscanerQR();
+        $('#modal_qr_escaner').modal('show');
 }
+
+let scanner;
+ let NumCamara = 0;
+ function iniciarEscanerQR() {
+    NumCamara = $('#ddl_camaras').val();
+    scanner = new Html5Qrcode("reader");
+    $('#qrescaner_carga').hide();
+    Html5Qrcode.getCameras().then(devices => {
+        if (devices.length > 0) {
+            let cameraId = devices[NumCamara].id; // Usa la primera cámara disponible
+            scanner.start(
+                cameraId,
+                {
+                    fps: 10, // Velocidad de escaneo
+                    qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
+                },
+                (decodedText) => {
+                    productosPorQR(decodedText);
+                    scanner.stop(); // Detiene la cámara después de leer un código
+                    $('#modal_qr_escaner').modal('hide');
+                },
+                (errorMessage) => {
+                    console.log("Error de escaneo:", errorMessage);
+                }
+            );
+        } else {
+            alert("No se encontró una cámara.");
+        }
+    }).catch(err => console.error("Error al obtener cámaras:", err));
+}
+
+  function cerrarCamara() {
+    if (scanner) {
+        scanner.stop().then(() => {            
+          $('#qrescaner_carga').show();
+          $('#modal_qr_escaner').modal('hide');
+        }).catch(err => {
+            console.error("Error al detener el escáner:", err);
+        });
+    }
+}
+
+// function escanear_qr(){
+//     $('#modal_qr_escaner').modal('show');
+//     navigator.mediaDevices
+//     .getUserMedia({ video: { facingMode: "environment" } })
+//     .then(function (stream) {
+//         $('#qrescaner_carga').hide();
+//         scanning = true;
+//         //document.getElementById("btn-scan-qr").hidden = true;
+//         canvasElement.hidden = false;
+//         video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+//         video.srcObject = stream;
+//         video.play();
+//         tick();
+//         scan();
+//     });
+// }
 
 //funciones para levantar las funiones de encendido de la camara
-function tick() {
-    canvasElement.height = video.videoHeight;
-    canvasElement.width = video.videoWidth;
-    //canvasElement.width = canvasElement.height + (video.videoWidth - video.videoHeight);
-    canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+// function tick() {
+//     canvasElement.height = video.videoHeight;
+//     canvasElement.width = video.videoWidth;
+//     //canvasElement.width = canvasElement.height + (video.videoWidth - video.videoHeight);
+//     canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
 
-    scanning && requestAnimationFrame(tick);
-}
+//     scanning && requestAnimationFrame(tick);
+// }
 
-function scan() {
-    try {
-        qrcode.decode();
-    } catch (e) {
-        setTimeout(scan, 300);
-    }
-}
+// function scan() {
+//     try {
+//         qrcode.decode();
+//     } catch (e) {
+//         setTimeout(scan, 300);
+//     }
+// }
 
-const cerrarCamara = () => {
-    video.srcObject.getTracks().forEach((track) => {
-        track.stop();
-    });
-    canvasElement.hidden = true;
-    $('#qrescaner_carga').show();
-    $('#modal_qr_escaner').modal('hide');
-};
+// const cerrarCamara = () => {
+//     video.srcObject.getTracks().forEach((track) => {
+//         track.stop();
+//     });
+//     canvasElement.hidden = true;
+//     $('#qrescaner_carga').show();
+//     $('#modal_qr_escaner').modal('hide');
+// };
 
-//callback cuando termina de leer el codigo QR
-qrcode.callback = (respuesta) => {
-    if (respuesta) {
-        //console.log(respuesta);
-        //Swal.fire(respuesta)
-        console.log(respuesta);
-        productosPorQR(respuesta);
-        //activarSonido();
-        //encenderCamara();    
-        cerrarCamara();    
-    }
-};
+// //callback cuando termina de leer el codigo QR
+// qrcode.callback = (respuesta) => {
+//     if (respuesta) {
+//         //console.log(respuesta);
+//         //Swal.fire(respuesta)
+//         console.log(respuesta);
+//         productosPorQR(respuesta);
+//         //activarSonido();
+//         //encenderCamara();    
+//         cerrarCamara();    
+//     }
+// };

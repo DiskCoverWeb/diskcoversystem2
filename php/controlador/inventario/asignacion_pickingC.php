@@ -299,6 +299,8 @@ class asignacion_pickingC
         $total = 0;
         foreach ($datos as $key => $value) {
             $producto = $this->modelo->lineasKArdex($value['CodBodega']);           
+            $datos[$key]['Producto'] = $producto[0]['Producto'];
+            $datos[$key]['Codigo_Barra'] = $producto[0]['Codigo_Barra'];
             // print_r($producto);die();
             $tbl.='<tr>
                     <td><button class="btn btn-sm btn-danger" onclick="eliminarlinea('.$value['ID'].')"><i class="fa fa-trash"></i></button></td>
@@ -312,7 +314,7 @@ class asignacion_pickingC
                 </tr>';
                   $total  =   $total +$value['Total'];
         }
-        return array('tabla'=>$tbl,'total'=>$total);
+        return array('tabla'=>$datos,'total'=>$total);
     }
 /*
     function llenarCamposPoblacion($parametros)
