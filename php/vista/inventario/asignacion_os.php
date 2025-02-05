@@ -465,8 +465,8 @@
             <div class="card_body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <table class="table table-hover bg-white" style="width:100%">
-                            <thead class="bg-primary text-white text-center">
+                        <table class="table table-hover" id="tbl_asignacion_os">
+                            <thead>
                                 <tr>
                                     <th style="width:7%;">ITEM</th>
                                     <th>PRODUCTO</th>

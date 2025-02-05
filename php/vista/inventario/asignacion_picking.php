@@ -1,3 +1,4 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="../../dist/js/qrCode.min.js"></script>
 <script type="text/javascript" src="../../dist/js/asignacion_picking.js"></script>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -229,8 +230,8 @@
 				</div>
 				<div class="box-body">
 					<div class="col-sm-12">
-						<table class="table table-hover bg-white" style="width:100%">
-							<thead class="bg-primary text-white text-center">
+						<table class="table table-hover" id="tbl_picking_os">
+							<thead>
 								<tr>
 									<th width="10%"></th>
 									<th>FECHA ATENCION</th>
@@ -260,10 +261,19 @@
               <button type="button" class="btn-close" aria-label="Close" onclick="cerrarCamara()"></button>
           </div>
           <div class="modal-body" style="background: antiquewhite;">
-		  	<div id="qrescaner_carga">
-				<div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;"><img src="../../img/gif/loader4.1.gif" width="20%"></div>
-			</div>
-		  	<canvas hidden="" id="qr-canvas" class="img-fluid" style="height: 100%;width: 100%;"></canvas>
+		  	<div class="row">
+          		<div class="col-sm-12">
+          			<select class="form-select" id="ddl_camaras" name="ddl_camaras" onchange="cambiarCamara()">
+          				<option value="0">Camara 1</option>          				
+          				<option value="1">Camara 2</option>           				
+          			</select>          			
+          		</div>          		
+          	</div>
+            <div id="qrescaner_carga">
+              <div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;"><img src="../../img/gif/loader4.1.gif" width="20%"></div>
+            </div>
+		  	<div id="reader" style="height: 100%;width: 100%;"></div>
+            <p><strong>QR Detectado:</strong> <span id="resultado"></span></p>
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
               <button type="button" class="btn btn-danger" onclick="cerrarCamara()">Cerrar</button>

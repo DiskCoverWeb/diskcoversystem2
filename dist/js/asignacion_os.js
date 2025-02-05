@@ -9,6 +9,7 @@ function eliminarTildes(cadena) {
     return cadena.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }   
 
+var tbl_asignacion_os;
 let diccionarioTP =
     [
         { 'TP': 'BENEFICI', 'inputname': 'tipoBenef' },
@@ -26,6 +27,16 @@ $(document).ready(function () {
     const today = new Date();
     const dayOfWeek = today.toLocaleDateString('es-Mx', { weekday: 'short' });
     const DiaActual =  eliminarTildes(dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase());
+
+    tbl_asignacion_os = $('#tbl_asignacion_os').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        paging:false,
+        searching:false,
+        info:false,
+    });
 
     $('#diaEntr').val(DiaActual);
 
@@ -412,22 +423,100 @@ function datosExtras(param) {
 
 
 function listaAsignacion() {
-    var param = {
-        'beneficiario':$('#beneficiario').val(),
-    }
-    $.ajax({
-        url: '../controlador/inventario/asignacion_osC.php?listaAsignacion=true',
-        type: 'POST',
-        dataType: 'json',
-        data: { param: param },
-        success: function (data) {
-            $('#tbl_body').html(data.tabla);
-            $('#CantGlobDist').val(data.cantidad);
+    tbl_asignacion_os.destroy();
+
+    tbl_asignacion_os = $('#tbl_asignacion_os').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },
-        error: function (error) {
-            console.log(error);
-        }
+        /*columnDefs: [
+            { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
+        ],*/
+        ajax: {
+            url: '../controlador/inventario/asignacion_osC.php?listaAsignacion=true',
+            type: 'POST',  // Cambia el método a POST    
+            data: function(d) {
+                /*var parametros = {
+                  'codigoCliente': '',
+                    'tamanioTblBody': altoContTbl <= 25 ? 0 : altoContTbl - 12,
+                };*/
+                var param = {
+                    'beneficiario':$('#beneficiario').val(),
+                }
+                return { param: param };
+            },              
+              dataSrc: function(json) {
+              
+                // var diff = parseFloat(json.cantidad);
+                // if(diff < 0)
+                // {
+                //   diff = diff*(-1);
+                // }
+                // $('#txt_primera_vez').val(json.primera_vez);
+
+                // var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
+                // var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
+                // var total_pedido = $('#txt_cant').val();
+                // var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
+
+                let cantidad = parseFloat(json.cantidad);
+
+                $('#CantGlobDist').val(parseInt(cantidad));
+
+                // console.log(json);
+
+                // Devolver solo la parte de la tabla para DataTables
+                return json.tabla;
+            }        
+        },
+          //scrollX: true,  // Habilitar desplazamiento horizontal
+            paging:false,
+            searching:false,
+            info:false,
+            scrollY: 330,
+            scrollCollapse: true,
+        columns: [
+            { data: null, // Columna autoincremental
+                render: function (data, type, row, meta) {
+                    return meta.row + 1; // meta.row es el índice de la fila
+                }
+            },
+
+            // { data: null,
+            //     render: function(data, type, item) {
+            //         return `<button type="button" class="btn btn-sm btn-danger" onclick="Eliminar_linea('${item.A_No}','${item.CODIGO}')" title="Eliminar linea"><i class="bx bx-trash"></i></button>`;
+            //     } 
+            // },
+            { data: 'Producto'},
+            { data: 'Cantidad',  
+                render: function(data, type, item) {
+                    return data ? parseInt(data) : '';
+                }
+            },
+            { data: 'Procedencia' },
+            { data: null,
+                render: function(data, type, item) {
+                    return `<button type="button" class="btn btn-sm btn-danger" onclick="eliminar_linea('${item.ID}')" title="Eliminar linea"><i class="bx bx-trash"></i></button>`;
+                } 
+            }
+        ]
     });
+
+    
+    // $.ajax({
+    //     url: '../controlador/inventario/asignacion_osC.php?listaAsignacion=true',
+    //     type: 'POST',
+    //     dataType: 'json',
+    //     data: { param: param },
+    //     success: function (data) {
+    //         $('#tbl_body').html(data.tabla);
+    //         $('#CantGlobDist').val(data.cantidad);
+    //     },
+    //     error: function (error) {
+    //         console.log(error);
+    //     }
+    // });
 }
 
 /**
