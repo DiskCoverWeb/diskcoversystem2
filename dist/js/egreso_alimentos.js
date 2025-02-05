@@ -1,44 +1,25 @@
-var video;
-	var canvasElement;
-	var canvas;
+
 	var scanning = false;
 	var tbl_asignados_all;
   $(document).ready(function () {
-	video = document.createElement("video");
-    canvasElement = document.getElementById("qr-canvas");
-    canvas = canvasElement.getContext("2d", { willReadFrequently: true });
   	validar_ingreso();
   	areas();  
   	motivo_egreso()	
   	notificaciones();
 
-	  $.ajax({
-		type: "POST",
-		   url:   '../controlador/inventario/egreso_alimentosC.php?listar_egresos=true',
-		// data:{parametros:parametros},
-	   dataType:'json',
-		success: function(data)
-		{
-			$('#tbl_asignados').html(data);	
-		}
-	});
 
 	  tbl_asignados_all = $('#tbl_asignados_all').DataTable({
-		// responsive: true,
+			searching: false,
+      responsive: true,
+      paging: false,   
+      info: false,   
+      autoWidth: false,   
 		language: {
 			url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
 		},
 		ajax: {
 			url:   '../controlador/inventario/egreso_alimentosC.php?listar_egresos=true',
 			type: 'POST',  // Cambia el método a POST    
-			/*data: function(d) {
-				var parametros = {                    
-				  fecha:$('#txt_fecha_b').val(),
-				  fechah:$('#txt_fecha_bh').val(),
-				  query:$('#txt_query').val(),
-				};
-				return { parametros: parametros };
-			},*/
 			dataSrc: '',             
 		},
 		 scrollX: true,  // Habilitar desplazamiento horizontal
@@ -61,10 +42,6 @@ var video;
 				}
 
 			},
-			// { data: 'Salida' },
-			// { data: 'TOTAL' },
-			// { data: 'Porc_C' },
-			// { data: 'proceso' },
 			{ data: null,
 			   render: function(data, type, item) {
 				  return `<button type="button" class="btn-sm btn-danger btn" onclick="eliminar_egreso('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;                    
@@ -76,48 +53,47 @@ var video;
 			[1, 'asc']
 		]
 	});
-	lista_egreso();
   })
 
-  function notificaciones()
-  {
-  	$.ajax({
-		    type: "POST",
-	      	url:   '../controlador/inventario/alimentos_recibidosC.php?listar_notificaciones=true',
-		      // data:datos,
-	        dataType:'json',
-		    success: function(data)
-		    {		    	    	
-		    	if(data.length>0)
-		    	{
-		    		var mensajes = '';
-		    		var cantidad  = 0;
-		    		 $('#pnl_notificacion').css('display','block');
-		    		 data.forEach(function(item,i){
-		    		 	mensajes+='<li>'+
-											'<a href="#" data-toggle="modal" onclick="mostrar_notificacion(\''+item.Texto_Memo+'\',\''+item.ID+'\',\''+item.Pedido+'\')">'+
-												'<h4 style="margin:0px">'+
-													item.Asunto+
-													'<small>'+formatoDate(item.Fecha.date)+' <i class="fa fa-calendar-o"></i></small>'+
-												'</h4>'+
-												'<p>'+item.Texto_Memo.substring(0,15)+'...</p>'+
-											'</a>'+
-										'</li>';
-										cantidad = cantidad+1;
-		    		 })
+  // function notificaciones()
+  // {
+  // 	$.ajax({
+	// 	    type: "POST",
+	//       	url:   '../controlador/inventario/alimentos_recibidosC.php?listar_notificaciones=true',
+	// 	      // data:datos,
+	//         dataType:'json',
+	// 	    success: function(data)
+	// 	    {		    	    	
+	// 	    	if(data.length>0)
+	// 	    	{
+	// 	    		var mensajes = '';
+	// 	    		var cantidad  = 0;
+	// 	    		 $('#pnl_notificacion').css('display','block');
+	// 	    		 data.forEach(function(item,i){
+	// 	    		 	mensajes+='<li>'+
+	// 										'<a href="#" data-toggle="modal" onclick="mostrar_notificacion(\''+item.Texto_Memo+'\',\''+item.ID+'\',\''+item.Pedido+'\')">'+
+	// 											'<h4 style="margin:0px">'+
+	// 												item.Asunto+
+	// 												'<small>'+formatoDate(item.Fecha.date)+' <i class="fa fa-calendar-o"></i></small>'+
+	// 											'</h4>'+
+	// 											'<p>'+item.Texto_Memo.substring(0,15)+'...</p>'+
+	// 										'</a>'+
+	// 									'</li>';
+	// 									cantidad = cantidad+1;
+	// 	    		 })
 
-		    		 $('#pnl_mensajes').html(mensajes);
-		    		 $('#cant_mensajes').text(cantidad);
-		    	}else
-		    	{
+	// 	    		 $('#pnl_mensajes').html(mensajes);
+	// 	    		 $('#cant_mensajes').text(cantidad);
+	// 	    	}else
+	// 	    	{
 
-		    		 $('#pnl_notificacion').css('display','none');
-		    	}
-		    	console.log(data);
-		    }
-		});  	
+	// 	    		 $('#pnl_notificacion').css('display','none');
+	// 	    	}
+	// 	    	console.log(data);
+	// 	    }
+	// 	});  	
 
-  }
+  // }
 
   function mostrar_notificacion(text,id,pedido)
   {
@@ -196,7 +172,7 @@ var video;
 	    		Swal.fire({
 	                 title: 'Datos encontrados?',
 	                 text: "Se encontraron datos sin guardar desea cargarlos?",
-	                 type: 'warning',
+	                 icon: 'warning',
 	                 showCancelButton: true,
 	                 confirmButtonColor: '#3085d6',
 	                 cancelButtonColor: '#d33',
@@ -248,7 +224,7 @@ var video;
    function areas(){
 	  $('#ddl_areas').select2({
 	    placeholder: 'Seleccione una beneficiario',
-	    // width:'90%',
+	    width:'100%',
 	    ajax: {
 	      url:   '../controlador/inventario/egreso_alimentosC.php?areas=true',          
 	      dataType: 'json',
@@ -296,7 +272,7 @@ var video;
 	function motivo_egreso(){
 	  $('#ddl_motivo').select2({
 	    placeholder: 'Seleccione una beneficiario',
-	    // width:'90%',
+	    width:'100%',
 	    ajax: {
 	      url:   '../controlador/inventario/egreso_alimentosC.php?motivos=true',          
 	      dataType: 'json',
@@ -344,6 +320,10 @@ var video;
 
 	function buscar_producto(codigo)
 	{
+		if(codigo=='')
+		{
+			return false;
+		}
 		var parametros = {
 		'codigo':$('#txt_cod_producto').val(),
 		}
@@ -529,58 +509,61 @@ var video;
 	}
 
 	function escanear_qr(){
-		//$('#qrescaner_carga').show();
+	   iniciarEscanerQR();
 		$('#modal_qr_escaner').modal('show');
-		navigator.mediaDevices
-		.getUserMedia({ video: { facingMode: "environment" } })
-		.then(function (stream) {
-			$('#qrescaner_carga').hide();
-			scanning = true;
-			//document.getElementById("btn-scan-qr").hidden = true;
-			canvasElement.hidden = false;
-			video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-			video.srcObject = stream;
-			video.play();
-			tick();
-      		scan();
-		});
 	}
 
-	//funciones para levantar las funiones de encendido de la camara
-	function tick() {
-		canvasElement.height = video.videoHeight;
-		canvasElement.width = video.videoWidth;
-		//canvasElement.width = canvasElement.height + (video.videoWidth - video.videoHeight);
-		canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
 
-		scanning && requestAnimationFrame(tick);
-	}
+function cambiarCamara()
+{
+    cerrarCamara();
+    setTimeout(() => {
+        iniciarEscanerQR();
+        $('#modal_qr_escaner').modal('show');
+         $('#qrescaner_carga').hide();
+    }, 1000);
+}
 
-	function scan() {
-		try {
-			qrcode.decode();
-		} catch (e) {
-			setTimeout(scan, 300);
-		}
-	}
 
-	const cerrarCamara = () => {
-		video.srcObject.getTracks().forEach((track) => {
-			track.stop();
-		});
-		canvasElement.hidden = true;
-		$('#qrescaner_carga').show();
-		$('#modal_qr_escaner').modal('hide');
-	};
+ let scanner;
+ let NumCamara = 0;
+ function iniciarEscanerQR() {
 
-	//callback cuando termina de leer el codigo QR
-	qrcode.callback = (respuesta) => {
-		if (respuesta) {
-			//console.log(respuesta);
-			//Swal.fire(respuesta)
-			productoPorQR(respuesta);
-			//activarSonido();
-			//encenderCamara();    
-			cerrarCamara();    
-		}
-	};
+    NumCamara = $('#ddl_camaras').val();
+    scanner = new Html5Qrcode("reader");
+    $('#qrescaner_carga').hide();
+    Html5Qrcode.getCameras().then(devices => {
+        if (devices.length > 0) {
+            let cameraId = devices[NumCamara].id; // Usa la primera cámara disponible
+            scanner.start(
+                cameraId,
+                {
+                    fps: 10, // Velocidad de escaneo
+                    qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
+                },
+                (decodedText) => {
+                    // document.getElementById("resultado").innerText = decodedText;
+                    productoPorQR(decodedText);
+                    scanner.stop(); // Detiene la cámara después de leer un código
+                    $('#modal_qr_escaner').modal('hide');
+                },
+                (errorMessage) => {
+                    console.log("Error de escaneo:", errorMessage);
+                }
+            );
+        } else {
+            alert("No se encontró una cámara.");
+        }
+    }).catch(err => console.error("Error al obtener cámaras:", err));
+}
+
+  function cerrarCamara() {
+    if (scanner) {
+        scanner.stop().then(() => {            
+          $('#qrescaner_carga').show();
+          $('#modal_qr_escaner').modal('hide');
+        }).catch(err => {
+            console.error("Error al detener el escáner:", err);
+        });
+    }
+}

@@ -1,7 +1,97 @@
+var tbl_motivo_all;
 $(document).ready(function () {
-    lista_egreso_checking();
+    // lista_egreso_checking();
     areas();  
     motivo_egreso()	
+
+    tbl_asignados_all = $('#tbl_asignados').DataTable({
+          searching: false,
+          // responsive: true,
+          // paging: false,   
+          info: false,   
+          // autoWidth: false,   
+        language: {
+          url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        ajax: {
+          url:    '../controlador/inventario/egreso_alimentosC.php?lista_egreso_checking=true',
+          type: 'POST',  // Cambia el método a POST   
+          data: function(d) {
+              var parametros = {                    
+               areas:$('#ddl_areas').val(),
+              };
+              return { parametros: parametros };
+          },   
+          dataSrc: '',             
+        },
+         scrollX: true,  // Habilitar desplazamiento horizontal
+     
+        columns: [
+          { data: null, // Columna autoincremental
+              render: function (data, type, row, meta) {
+                return meta.row + 1; // meta.row es el índice de la fila
+              }
+          },
+          { data: 'Fecha.date',  
+            render: function(data, type, item) {
+              return data ? new Date(data).toLocaleDateString() : '';
+            }
+          },
+          { data:  null,
+            render: function(data, type, item) {
+
+
+              return `<div class="input-group input-group-sm">
+                      ${item.usuario}                      
+                      <span class="input-group-btn">
+                      <button type="button" class="btn btn-default btn-sm" onclick="modal_mensaje('${item.Orden_No}')">
+                        <img src="../../img/png/user.png" style="width:20px">
+                      </button>
+                      </span>
+                    </div>`;                    
+            }
+
+          },
+          { data:  null,
+            render: function(data, type, item) {
+
+
+              return `<div class="input-group input-group-sm">
+                        ${item.Motivo}
+                        <span class="input-group-btn">
+                        <button type="button" class="btn btn-default btn-sm" onclick="modal_motivo('${item.Orden_No}')">
+                          <img src="../../img/png/transporte_caja.png" style="width:20px">
+                        </button>
+                        </span>
+                      </div>`;                    
+            }
+
+          },
+          {
+            data:'Detalle',
+          },
+          { data:  null,
+            render: function(data, type, item) {
+
+              return `<button type="button" class="btn btn-default btn-sm" onclick="mostra_doc('${item.procedencia}')">
+                        <img src="../../img/png/clip.png" style="width:20px">
+                      </button>
+                      <input type="file" id="file_doc" name="" style="display: none;">`;                    
+            }
+
+          },
+          { 
+            data: 'SubModulo',
+          },
+          { data: null,
+             render: function(data, type, item) {
+              return `<input type="checkbox" name="">`;                    
+            }
+          },
+          
+        ],
+      });
+
 })
 
 function modal_mensaje(orden)
@@ -78,43 +168,84 @@ function modal_motivo(orden)
 
 function cargar_motivo_lista(orden)
   {		
-      var parametros = {
-          'orden':orden
-      }
-       $.ajax({
-          type: "POST",
-             url:   '../controlador/inventario/egreso_alimentosC.php?cargar_motivo_lista=true',
-          data:{parametros:parametros},
-         dataType:'json',
-          success: function(data)
-          {
-              $('#txt_motivo_lista').html(data);	
-          }
+
+    if ($.fn.DataTable.isDataTable('#txt_motivo_lista')) {
+        $('#txt_motivo_lista').DataTable().destroy();
+    }
+     
+     return $('#txt_motivo_lista').DataTable({
+          searching: false,
+          // responsive: true,
+          paging: false,   
+          info: false,   
+          // autoWidth:true,   
+        language: {
+          url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        ajax: {
+          url:   '../controlador/inventario/egreso_alimentosC.php?cargar_motivo_lista=true',
+          type: 'POST',  // Cambia el método a POST   
+          data: function(d) {
+              var parametros = {                    
+               orden:orden
+              };
+              return { parametros: parametros };
+          },   
+          dataSrc: '',             
+        },
+         scrollX: true,  // Habilitar desplazamiento horizontal
+     
+        columns: [
+          { data: null, // Columna autoincremental
+              render: function (data, type, row, meta) {
+                return meta.row + 1; // meta.row es el índice de la fila
+              }
+          },
+          { data: 'Cliente', },
+          { data: 'Producto', },
+          { data: 'Stock', },
+          { data: 'Salida', },
+          { data: 'Valor_Unitario', },
+          { data: null, 
+             render: function (data, type,item) {
+                return data.Valor_Unitario*data.Salida;  
+              }
+          },
+          { data: null,
+             render: function(data, type, item) {
+              return `<input type="radio" name="">`;                    
+            }
+          },
+          
+        ],
       });
+
   }
 
 function lista_egreso_checking()
   {		
-      var parametros = 
-      {
-          'areas':$('#ddl_areas').val(),
-      }
-       $.ajax({
-          type: "POST",
-             url:   '../controlador/inventario/egreso_alimentosC.php?lista_egreso_checking=true',
-          data:{parametros:parametros},
-         dataType:'json',
-          success: function(data)
-          {
-              $('#tbl_asignados').html(data);	
-          }
-      });
+
+     tbl_asignados_all.ajax.reload(null, false);
+      // var parametros = 
+      // {
+      //     'areas':$('#ddl_areas').val(),
+      // }
+      //  $.ajax({
+      //     type: "POST",
+      //        url:   '../controlador/inventario/egreso_alimentosC.php?lista_egreso_checking=true',
+      //     data:{parametros:parametros},
+      //    dataType:'json',
+      //     success: function(data)
+      //     {
+      //         $('#tbl_asignados').html(data);	
+      //     }
+      // });
   }
 
    function areas(){
     $('#ddl_areas').select2({
       placeholder: 'Seleccione una Area',
-      // width:'90%',
+      width:'100%',
       ajax: {
         url:   '../controlador/inventario/egreso_alimentosC.php?areas_checking=true',          
         dataType: 'json',

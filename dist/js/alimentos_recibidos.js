@@ -90,7 +90,9 @@ $(document).ready(function () {
               { data: 'Porc_C' },
               { data: null,
                  render: function(data, type, item) {
-                    return `<button type="button" class="btn-sm btn-primary btn" onclick="editar_pedido('${data.ID}')"><i class="bx bx-pencil m-0"></i></button>
+                    return `
+                    <button type="button" class="btn-sm btn-warning btn" onclick="imprimir_pedido_pdf('${data.Envio_No}','${data.CodigoP}')"><i class="bx bx-printer m-0"></i></button>
+                    <button type="button" class="btn-sm btn-primary btn" onclick="editar_pedido('${data.ID}')"><i class="bx bx-pencil m-0"></i></button>
                     <button type="button" class="btn-sm btn-danger btn" onclick="eliminar_pedido('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;                    
                   }
               },
@@ -961,21 +963,19 @@ function imprimir_pedido()
     })
 }
 
-function imprimir_pedido_pdf()
+function imprimir_pedido_pdf(codigo,id)
 {  
-    var id = $('#txt_donante').val();
-    var codigo = $('#txt_codigo').val();
 
-    if(id==null || id=='')
-      {
-          Swal.fire('Seleccione un detalle de ingreso', '', 'error');
-          return;
-      }
-       if(codigo==null || codigo=='')
-      {
-          Swal.fire('No se ha generado un codigo de ingreso', '', 'error');
-          return;
-      }
+//     if(id==null || id=='')
+//       {
+//           Swal.fire('Seleccione un detalle de ingreso', '', 'error');
+//           return;
+//       }
+//        if(codigo==null || codigo=='')
+//       {
+//           Swal.fire('No se ha generado un codigo de ingreso', '', 'error');
+//           return;
+//       }
 
       var url = '../controlador/inventario/alimentos_recibidosC.php?imprimir_pedido=true&codigo='+codigo+'&id='+id;
        window.open(url, '_blank');

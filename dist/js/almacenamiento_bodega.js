@@ -502,6 +502,7 @@ function cambiarCamara()
 }
 
   function cerrarCamara() {
+  	$('#modal_qr_escaner').modal('hide');
     if (scanner) {
         scanner.stop().then(() => {            
           $('#qrescaner_carga').show();

@@ -1151,11 +1151,14 @@ function cambiarCamara()
 }
 
   function cerrarCamara() {
+    $('#modal_qr_escaner').modal('hide');
     if (scanner) {
         scanner.stop().then(() => {            
           $('#qrescaner_carga').show();
           $('#modal_qr_escaner').modal('hide');
         }).catch(err => {
+
+            $('#modal_qr_escaner').modal('hide');
             console.error("Error al detener el escáner:", err);
         });
     }

@@ -272,55 +272,17 @@ class egreso_alimentosC
 		// print_r($parametros);die();
 		$tr = '';
 		$datos = $this->modelo->lista_egreso_checking(false,false,$area);
+
 		foreach ($datos as $key => $value) {
-			$tr.='<tr>
-					<td>'.($key+1).'</td>
-					<td>'.$value['Fecha']->format('Y-m-d').'</td>
-					<td>
-						<div class="input-group input-group-sm">
-							'.$value['usuario'].'
-							<span class="input-group-btn">
-							<button type="button" class="btn btn-default btn-sm" onclick="modal_mensaje(\''.$value['Orden_No'].'\')">
-								<img src="../../img/png/user.png" style="width:20px">
-							</button>
-							</span>
-						</div>
-					</td>
-					<td>
-						<div class="input-group input-group-sm">
-							'.$value['Motivo'].'
-							<span class="input-group-btn">
-							<button type="button" class="btn btn-default btn-sm" onclick="modal_motivo(\''.$value['Orden_No'].'\')">
-								<img src="../../img/png/transporte_caja.png" style="width:20px">
-							</button>
-							</span>
-						</div>
-					</td>
-					<td>'.$value['Detalle'].'</td>
-					<td>
-						<button type="button" class="btn btn-default btn-sm" onclick="mostra_doc(\''.$value['procedencia'].'\')">
-							<img src="../../img/png/clip.png" style="width:20px">
-						</button>
-						<input type="file" id="file_doc" name="" style="display: none;">
-					</td>
-					<td>
-						<select class="form-control input-sm" id="ddl_subcta_'.$value['Orden_No'].'" name="ddl_subcta_'.$value['Orden_No'].'">
+			$op='<select class="select-control select-control-sm w-100" id="ddl_subcta_'.$value['Orden_No'].'" name="ddl_subcta_'.$value['Orden_No'].'">
 							<option value="">Seleccione modulo</option>
 							'.$this->catalog_cuentas().'
 						</select>
 					</td>
-					<td>
-						<input type="checkbox" name="">
-					</td>
 				</tr>';
-			// $tr.='<tr>			
-			
-			// <td>'.$value['Producto'].'</td>
-			// <td>'.$value['Salida'].'</td>
-			// <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminar_egreso('.$value['ID'].')"><i class="fa fa-trash"></i></button></td>
-			// </tr>';
+				$datos[$key]['SubModulo'] = $op ;
 		}
-		return $tr;
+		return $datos;
 	}
 
 	function lista_egreso_checking_reportados($parametros)
@@ -382,25 +344,26 @@ class egreso_alimentosC
 			// print_r($value);die();
 			$stock = 0;
 			$datos_stock = Leer_Codigo_Inv($value['Codigo_Inv'],date('Y-m-d'));
+			$datos[$key]['Stock'] = 0;
 			if($datos_stock['respueta']==1)
 			{
-				$stock = $datos_stock['datos']['Stock'];
+				$datos[$key]['Stock'] = $datos_stock['datos']['Stock'];
 			}
-			$tr.='<tr>
-					<td>'.($key+1).'</td>
-					<td>'.$value['Cliente'].'</td>
-					<td>'.$value['Producto'].'</td>
-					<td>'.$stock.'</td>
-					<td>'.$value['Salida'].' '.$value['Unidad'].'</td>
-					<td>'.$value['Valor_Unitario'].'</td>
-					<td>'.($value['Valor_Unitario']*$value['Salida']).'</td>
-					<td>
-						<input type="radio" name="">
-					</td>
-				</tr>';
+			// $tr.='<tr>
+			// 		<td>'.($key+1).'</td>
+			// 		<td>'.$value['Cliente'].'</td>
+			// 		<td>'.$value['Producto'].'</td>
+			// 		<td>'.$stock.'</td>
+			// 		<td>'.$value['Salida'].' '.$value['Unidad'].'</td>
+			// 		<td>'.$value['Valor_Unitario'].'</td>
+			// 		<td>'.($value['Valor_Unitario']*$value['Salida']).'</td>
+			// 		<td>
+			// 			<input type="radio" name="">
+			// 		</td>
+			// 	</tr>';
 		}
 
-		return $tr;
+		return $datos;
 		// print_r($parametros);
 	}
 
