@@ -1009,6 +1009,19 @@ Swal.fire({
   });
 }
 
+  function imprimir_etiquetas_pdf()
+  {  
+     var num_ped = $('#txt_codigo').val();
+     if(num_ped.trim()==''){
+      Swal.fire('Seleccione codigo de Ingreso', '', 'warning');
+      return;
+     }
+
+    var  url = '../controlador/inventario/alimentos_recibidosC.php?imprimir_etiquetas=true&num_ped='+num_ped;
+    window.open(url, '_blank');
+  }
+
+
 function notificar(usuario = false)
 {
      var mensaje = $('#txt_notificar').val();

@@ -987,38 +987,6 @@ function autocoplet_ingreso()
 
     var  url = '../controlador/inventario/alimentos_recibidosC.php?imprimir_etiquetas=true&num_ped='+num_ped;
     window.open(url, '_blank');
-
-
-      // $('#myModal_espera').modal('show');
-      // $.ajax({
-      //   type: "POST",
-      //   url: '../controlador/inventario/alimentos_recibidosC.php?imprimir_etiquetas=true',
-      //   data: {num_ped}, 
-      //   dataType:'json',
-      //   success: function(data)
-      //   {
-      //     $('#myModal_espera').modal('hide');
-      //     /*let host = location.pathname;
-
-      //     let url = "";
-      //     if (host.includes('diskcover')) {
-            
-      //       //  let indiceFinal = indiceInicial + subcadena.length - 1;
-      //         url = '/'+host.split('/')[1]+'/TEMP/' + data.pdf + '.pdf';
-      //     } else {
-      //         url = '/TEMP/' + data.pdf + '.pdf';
-      //     }
-
-      //     printJS({ 
-      //       printable: url,
-      //       type: 'pdf'
-      //     });*/
-
-      //     var url = '../../TEMP/' + data.pdf + '.pdf';
-          
-      //     window.open(url, '_blank');
-      //   }
-      // })
   }
 
   function imprimir_etiquetas()

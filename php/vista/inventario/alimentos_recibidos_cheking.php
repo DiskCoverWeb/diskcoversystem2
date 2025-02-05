@@ -27,6 +27,9 @@
 				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar checks temporalmente" onclick="guardar_check()">
 					<img src="../../img/png/check.png">
 				</button>
+				 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir etiquetas PDF" onclick="imprimir_etiquetas_pdf()">
+			        <img src="../../img/png/paper.png" height="32px">
+			      </button>
 			</div>
     </div>
 </div>
