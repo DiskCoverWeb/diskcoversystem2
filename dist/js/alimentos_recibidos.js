@@ -1,3 +1,13 @@
+/****************
+ * Desarrollador: Javier farinango.
+ * Mail         : 
+ * web          : www.diskcoversystem.com
+ * distribuidor : DiskCover System
+ * Fecha Actual : 2025-02-05
+ * Actualiza por: DiskCover System
+ ****************/
+
+
 var tbl_pedidos_all ;
 var tbl_procesados_all;
 $(document).ready(function () {
