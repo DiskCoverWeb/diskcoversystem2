@@ -138,6 +138,7 @@ function estado_licencia($f3)
 		}
 
 	</script>
+	
 </head>
 
 <body>

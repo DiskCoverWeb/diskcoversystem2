@@ -839,11 +839,13 @@ function cambiarCamara()
 }
 
   function cerrarCamara() {
+    $('#modal_qr_escaner').modal('hide');
     if (scanner) {
         scanner.stop().then(() => {            
           $('#qrescaner_carga').show();
           $('#modal_qr_escaner').modal('hide');
         }).catch(err => {
+            $('#modal_qr_escaner').modal('hide');
             console.error("Error al detener el escáner:", err);
         });
     }
@@ -1006,6 +1008,19 @@ Swal.fire({
     }
   });
 }
+
+  function imprimir_etiquetas_pdf()
+  {  
+     var num_ped = $('#txt_codigo').val();
+     if(num_ped.trim()==''){
+      Swal.fire('Seleccione codigo de Ingreso', '', 'warning');
+      return;
+     }
+
+    var  url = '../controlador/inventario/alimentos_recibidosC.php?imprimir_etiquetas=true&num_ped='+num_ped;
+    window.open(url, '_blank');
+  }
+
 
 function notificar(usuario = false)
 {

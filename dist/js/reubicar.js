@@ -28,6 +28,8 @@ $('#txt_cod_barras').keydown( function(e) {
 
  tbl_pedidos_all = $('#tbl_asignados').DataTable({
           // responsive: true,
+            searching: true,
+         
           language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
           },
@@ -335,6 +337,7 @@ function cambiarCamara()
 }
 
   function cerrarCamara() {
+    $('#modal_qr_escaner').modal('hide');
     if (scanner) {
         scanner.stop().then(() => {            
           $('#qrescaner_carga').show();
