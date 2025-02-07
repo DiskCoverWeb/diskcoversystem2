@@ -985,7 +985,7 @@ if (isset ($_GET['tipo'])) {
 					<div class="row" id="bouche_banco_input" style="margin:10px 0;display:none;">
 						
 							<b>ADJUNTAR BOUCHE:</b>
-							<input type="file" class="form-control-file" id="archivoAdd" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
+							<input type="file" class="form-control" id="archivoAdd" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
 						
 					</div>
 					

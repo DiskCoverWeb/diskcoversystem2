@@ -93,38 +93,66 @@
                 <div id="cuentasContainer" style="display: none; margin-top:5px;">
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="txtDebe"><b>Cta. Debe</b></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="habilitarDebe" id="habilitarDebe" checked onchange="toggleInput(this, 'inpDebe')">
+                                <label class="form-check-label" for="habilitarDebe">
+                                    <b>Cta. Debe</b>
+                                </label>
+                            </div>
+                            <!-- <label for="txtDebe"><b>Cta. Debe</b></label> -->
                             <input type="text" class="form-control form-control-sm" id="txtDebe" placeholder="C.C.CC.CC.CC">
                         </div>
                         <div class="col-sm-6">
-                            <label for="txtHaber"><b>Cta. Haber</b></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="habilitarHaber" id="habilitarHaber" checked onchange="toggleInput(this, 'inpHaber')">
+                                <label class="form-check-label" for="habilitarHaber">
+                                    <b>Cta. Haber</b>
+                                </label>
+                            </div>
+                            <!-- <label for="txtHaber"><b>Cta. Haber</b></label> -->
                             <input type="text" class="form-control form-control-sm" id="txtHaber" placeholder="C.C.CC.CC.CC">
                         </div>
                     </div>
                 </div>
                 <span style="margin-top:5px; display:none">Tipo de producto</span>
-                <div class="row" id="checkboxContainer" style="display: none; margin-top:10px;">
-                    <div class="col-sm-12">
-                        <b>Debito/Credito</b>
-                    </div>
-                    <div class="row col-sm-12">
-                        <div class="col-sm-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="cbxProdc" id="cbxCat" value="C">
-                                <label class="form-check-label" for="cbxCat">
-                                    Credito
-                                </label>
+                <div class="row mt-2">
+                    <div class="col-sm-6" id="checkboxContainer" style="display: none">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="habilitarDC" id="habilitarDC" checked onchange="toggleInput(this, 'containerDC');">
+                                    <label class="form-check-label" for="habilitarDC">
+                                        <b>Debito/Credito</b>
+                                    </label>
+                                </div>
+                                
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="cbxProdc" id="cbxDet" value="D" checked="">
-                                <label class="form-check-label" for="cbxDet">
-                                    Debito
-                                </label>
+                        <div class="row" id="containerDC">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="cbxProdc" id="cbxCat" value="C" onchange="">
+                                    <label class="form-check-label" for="cbxCat">
+                                        Credito
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="cbxProdc" id="cbxDet" value="D" checked="" onchange="">
+                                    <label class="form-check-label" for="cbxDet">
+                                        Debito
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm-6">
+                        <label for="txtTP"><b>Tipo de Proceso:</b></label>
+                        <input type="text" class="form-control form-control-sm" id="txtTP">
+                    </div>
+                    <!-- <div class="row col-sm-12">
+                    </div> -->
                 </div>
 
                 <div class="row">
@@ -180,18 +208,30 @@
                             <input type="color" class="form-control input-xs" id="colorPick" value ="#000000">
                         </div>
                     </div>-->
-                    <div class="col-sm-6 d-flex flex-column justify-content-center">
-                        <label for="picture"><b>Imagen:</b></label>
-                        <input type="hidden" value="" id="input_existeimg">
-                        <input type="text" class="form-control form-control-sm" id="picture" placeholder="." onchange="validarExisteImg()" aria-describedby="pictureFeedback">
-                        <div id="pictureFeedback" class="invalid-feedback">
-                            Este nombre ya esta en uso
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="divImage" id="divImage" checked onchange="toggleInput(this, 'divImg')">
+                                <label class="form-check-label" for="divImage">
+                                    <b>Imagen:</b>
+                                </label>
+                            </div>
                         </div>
-                        <input type="file" style="margin-top: 10px;" id="imagenPicker" accept="image/png" onchange="previsualizarImagen(this)">
                     </div>
-                    <div class="col-sm-6 d-flex flex-column align-items-center">
-                        <div id="imagePreview" class="border rounded bg-white" style="width:fit-content">
-                            <img id="imageElement" src="" style="min-width:130px;min-height:130px;max-height:130px;max-width:130px;object-fit:cover;"/>
+                    <div class="row" id="containerImg">
+                        <div class="col-sm-6 d-flex flex-column justify-content-start">
+                            <!-- <label for="picture"><b>Imagen:</b></label> -->
+                            <input type="hidden" value="" id="input_existeimg">
+                            <input type="text" class="form-control form-control-sm" id="picture" placeholder="." onchange="validarExisteImg()" aria-describedby="pictureFeedback">
+                            <div id="pictureFeedback" class="invalid-feedback">
+                                Este nombre ya esta en uso
+                            </div>
+                            <input type="file" style="margin-top: 10px;" id="imagenPicker" accept="image/png" onchange="previsualizarImagen(this)">
+                        </div>
+                        <div class="col-sm-6 d-flex flex-column align-items-center">
+                            <div id="imagePreview" class="border rounded bg-white" style="width:fit-content">
+                                <img id="imageElement" src="" style="min-width:130px;min-height:130px;max-height:130px;max-width:130px;object-fit:cover;"/>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -25,6 +25,16 @@ $(document).ready(function () {
         info:false,
     });
 
+    tbl_suscripcion = $('#tbl_suscripcion').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        paging:false,
+        searching:false,
+        info:false,
+    });
+
     $.ajax({
         type: "GET",
         url: '../controlador/facturacion/facturarC.php?Sesion=true',
@@ -434,8 +444,16 @@ function lineas_factura() {
                 } 
             },
             { data: 'CODIGO'},
-            { data: 'CANT' },
-            { data: 'CANT_BONIF' },
+            { data: 'CANT',  
+                render: function(data, type, item) {
+                    return data ? parseInt(data) : 0;
+                }
+            },
+            { data: 'CANT_BONIF',  
+                render: function(data, type, item) {
+                    return data ? parseInt(data) : 0;
+                }
+            },
             { data: 'PRODUCTO' },
             { data: 'PRECIO' },
             { data: 'Total_Desc' },
@@ -1382,7 +1400,8 @@ function generarPDF(titulo, datos) {
 //------------------ guia-------------
 function DCCiudadI() {
     $('#DCCiudadI').select2({
-        placeholder: 'Seleccione un cliente',
+        placeholder: 'Seleccione una ciudad',
+        dropdownParent: $('#form_guia'),
         ajax: {
             url: '../controlador/facturacion/facturarC.php?DCCiudadI=true',
             dataType: 'json',
@@ -1398,7 +1417,8 @@ function DCCiudadI() {
 }
 function DCCiudadF() {
     $('#DCCiudadF').select2({
-        placeholder: 'Seleccione un cliente',
+        placeholder: 'Seleccione una ciudad',
+        dropdownParent: $('#form_guia'),
         ajax: {
             url: '../controlador/facturacion/facturarC.php?DCCiudadF=true',
             dataType: 'json',
@@ -1415,7 +1435,8 @@ function DCCiudadF() {
 
 function AdoPersonas() {
     $('#DCRazonSocial').select2({
-        placeholder: 'Seleccione un cliente',
+        placeholder: 'Seleccione',
+        dropdownParent: $('#form_guia'),
         ajax: {
             url: '../controlador/facturacion/facturarC.php?AdoPersonas=true',
             dataType: 'json',
@@ -1431,7 +1452,8 @@ function AdoPersonas() {
 }
 function DCEmpresaEntrega() {
     $('#DCEmpresaEntrega').select2({
-        placeholder: 'Seleccione un cliente',
+        placeholder: 'Seleccione una empresa',
+        dropdownParent: $('#form_guia'),
         ajax: {
             url: '../controlador/facturacion/facturarC.php?DCEmpresaEntrega=true',
             dataType: 'json',
@@ -1499,17 +1521,63 @@ function DCSerieGR_LostFocus() {
 //---------------------fin de guia-------------
 //--------------sucripcion--------------
 function DGSuscripcion() {
-    $.ajax({
-        type: "POST",
-        url: '../controlador/facturacion/facturarC.php?DGSuscripcion=true',
-        // data: {parametros:parametros }, 
-        dataType: 'json',
-        beforeSend: function () { $('#tbl_suscripcion').html('<img src="../../img/gif/loader4.1.gif" width="40%"> '); },
-        success: function (data) {
-            $('#tbl_suscripcion').html(data);
-            // console.log(data);
-        }
-    })
+    tbl_suscripcion.destroy();
+
+    tbl_suscripcion = $('#tbl_suscripcion').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        /*columnDefs: [
+            { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
+        ],*/
+        ajax: {
+            url: '../controlador/facturacion/facturarC.php?DGSuscripcion=true',
+            type: 'POST',  // Cambia el método a POST    
+            // data: function(d) {
+            //     var parametros = {
+            //       'codigoCliente': '',
+            //         'tamanioTblBody': altoContTbl <= 25 ? 0 : altoContTbl - 12,
+            //     };
+            //     return { parametros: parametros };
+            // },
+            dataSrc: '',             
+        },
+          scrollX: true,  // Habilitar desplazamiento horizontal
+            paging:false,
+            searching:false,
+            info:false,
+            scrollY: 330,
+            scrollCollapse: true,
+        columns: [
+            
+            { data: 'Ejemplar' },
+            { data: 'Fecha.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Entregado' },
+            { data: 'Sector' },
+            { data: 'Comision' },
+            { data: 'Capital' },
+            { data: 'T_No' },
+            { data: 'Item' },
+            { data: 'CodigoU' }
+        ]
+    });
+
+    // $.ajax({
+    //     type: "POST",
+    //     url: '../controlador/facturacion/facturarC.php?DGSuscripcion=true',
+    //     // data: {parametros:parametros }, 
+    //     dataType: 'json',
+    //     beforeSend: function () { $('#tbl_suscripcion').html('<img src="../../img/gif/loader4.1.gif" width="40%"> '); },
+    //     success: function (data) {
+    //         $('#tbl_suscripcion').html(data);
+    //         // console.log(data);
+    //     }
+    // })
 }
 
 function DCCtaVenta() {
@@ -1528,6 +1596,7 @@ function DCCtaVenta() {
 function DCEjecutivoModal() {
     $('#DCEjecutivoModal').select2({
         placeholder: 'Seleccione un cliente',
+        dropdownParent: $('#myModal_suscripcion'),
         ajax: {
             url: '../controlador/facturacion/facturarC.php?DCEjecutivoModal=true',
             dataType: 'json',
@@ -1612,6 +1681,7 @@ function inicioAbono(){
 function DCVendedor() {
     $('#DCVendedor').select2({
         placeholder: 'Vendedor',
+        dropdownParent: $('#form_abonos'),
         width: 'resolve',
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCVendedor=true',
@@ -1631,6 +1701,7 @@ function DCVendedor() {
 function DCBanco() {
     $('#form_abonos #DCBanco').select2({
         placeholder: 'Cuenta Banco',
+        dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCBanco=true',
             dataType: 'json',
@@ -1648,6 +1719,7 @@ function DCBanco() {
 function DCTarjeta() {
     $('#DCTarjeta').select2({
         placeholder: 'Cuenta Banco',
+        dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCTarjeta=true',
             dataType: 'json',
@@ -1665,6 +1737,7 @@ function DCTarjeta() {
 function DCRetFuente() {
     $('#DCRetFuente').select2({
         placeholder: 'Cuenta Banco',
+        dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCRetFuente=true',
             dataType: 'json',
@@ -1682,6 +1755,7 @@ function DCRetFuente() {
 function DCRetISer() {
     $('#DCRetISer').select2({
         placeholder: 'Cuenta Banco',
+        dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCRetISer=true',
             dataType: 'json',
@@ -1699,6 +1773,7 @@ function DCRetISer() {
 function DCRetIBienes() {
     $('#DCRetIBienes').select2({
         placeholder: 'Cuenta Banco',
+        dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCRetIBienes=true',
             dataType: 'json',
@@ -1717,6 +1792,7 @@ function DCCodRet() {
     var MBFecha = $('#form_abonos #MBFecha').val();
     $('#DCCodRet').select2({
         placeholder: 'Cuenta Banco',
+        dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCCodRet=true&MBFecha=' + MBFecha,
             dataType: 'json',
@@ -2183,6 +2259,7 @@ function DCClientes(grupo) {
 
     $('#DCClientes').select2({
         placeholder: 'Seleccione',
+        dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosAnticipadoC.php?DCClientes=true',
             dataType: 'json',

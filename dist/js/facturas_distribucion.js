@@ -318,10 +318,10 @@ var valTC = 'FA';
 						let tr = $(`<tr id="${fila['Cmds']}"></tr>`);
 						tr.append($('<td></td>').html(`<b>${fila['Proceso']}</b>`));
 						td = $('<td></td>');
-						td.append($(`<input type="radio" id="${fila['Cmds']}_bueno" name="${fila['Cmds']}" checked>`));
+						td.append($(`<input type="radio" class="form-check-input" id="${fila['Cmds']}_bueno" name="${fila['Cmds']}" checked>`));
 						tr.append(td);
 						td = $('<td></td>');
-						td.append($(`<input type="radio" id="${fila['Cmds']}_malo" name="${fila['Cmds']}">`));
+						td.append($(`<input type="radio" class="form-check-input" id="${fila['Cmds']}_malo" name="${fila['Cmds']}">`));
 						tr.append(td);
 						tBody.append(tr);
 					}
@@ -476,6 +476,7 @@ var valTC = 'FA';
 		let fecha = $("#MBFecha").val();
 		$('#DCPorcenIVA').select2({
 			placeholder: 'Seleccione IVA',
+			dropdownParent: $('#modalInfoFactura'),
 			ajax: {
 				url: '../controlador/facturacion/facturas_distribucionC.php?LlenarSelectIVA=true',
 				dataType: 'json',
@@ -1114,6 +1115,8 @@ function tipo_facturacion(valor)
 		// alert('das');
 		$('#DCBanco').select2({
 			placeholder: 'Seleccione un banco',
+			dropdownParent: $('#modalInfoFactura'),
+			width: '100%',
 			ajax: {
 				url: '../controlador/facturacion/facturas_distribucionC.php?DCBanco=true',
 				dataType: 'json',

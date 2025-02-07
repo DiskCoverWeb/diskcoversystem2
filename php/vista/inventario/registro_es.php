@@ -352,12 +352,12 @@
             </div>
         </div>
         
-        <div class="tbl-container" style="margin:1vw;" id="tbl-container">
+        <div class="tbl-container" style="margin:1vw;">
             <div class="row">
                 <div class="table-responsive" style="height: 400px">
-                    <table class="table table-sm table-hover">
+                    <table class="table table-sm table-hover" id="tbl_registro">
                         <thead>
-                            <th width="25px">TP</th>
+                            <th>TP</th>
                             <th>CODIGO_INV</th>
                             <th>DH</th>
                             <th>PRODUCTO</th>
@@ -1072,7 +1072,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-hover">
+                                                <table class="table table-striped table-hover" id="tbl_retencion">
                                                     <thead>
                                                         <th>CodRet</th>
                                                         <th>Detalle</th>
@@ -1095,7 +1095,7 @@
                                                         <th>T_No</th>
                                                         <th>Tipo_Trans</th>
                                                     </thead>
-                                                    <tbody id="tbl_retencion">
+                                                    <tbody>
         
                                                     </tbody>
         

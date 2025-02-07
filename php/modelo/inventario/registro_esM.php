@@ -55,7 +55,7 @@ class registro_esM
 				AND T_No = '".$parametros['Trans_No']. "'";
 		$datos = $this->db->datos($sql);
 		$grilla = grilla_generica_new($sql, 'Asiento_K', '', '', false, false, false, 1, 1, 1, 100);
-		return array('tabla'=>$grilla, 'datos'=>$datos);
+		return array('tabla'=>$datos, 'datos'=>$datos);
 	}
 	function familias($query='')
 	{

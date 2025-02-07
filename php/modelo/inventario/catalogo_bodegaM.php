@@ -14,13 +14,14 @@ class catalogo_bodegaM
     function GuardarProducto($parametros)
     {
         $sql = "";
-        if($parametros['nivel'] == '99'){
+        if($parametros['nivel'] == '0'){
             $sql = "INSERT INTO Catalogo_Proceso(DC, Cmds, Proceso, TP, Nivel, Item, Picture, Color, Cta_Debe, Cta_Haber) 
-                    VALUES ('" . $parametros['tipo'] . "', '0000', '" . $parametros['concepto'] . "', '".$parametros['codigo']."', '".$parametros['nivel']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."', '".$parametros['cta_debe']."', '".$parametros['cta_haber']."')";
+                    VALUES ('--', '" . $parametros['codigo'] . "', '" . strtoupper($parametros['concepto']) . "', '".$parametros['tp']."', '".$parametros['nivel']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."', '".$parametros['cta_debe']."', '".$parametros['cta_haber']."')";
         }else {
             $sql = "INSERT INTO Catalogo_Proceso(DC, Cmds, Proceso, TP, Nivel, Item, Picture, Color, Cta_Debe, Cta_Haber) 
                     VALUES ('" . $parametros['tipo'] . "', '" . $parametros['codigo'] . "', '" . $parametros['concepto'] . "', '".$parametros['tp']."', '".$parametros['nivel']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."', '".$parametros['cta_debe']."', '".$parametros['cta_haber']."')";
         }
+        //print_r($sql); die();
         return $this->db->datos($sql);
     }
     
@@ -28,7 +29,7 @@ class catalogo_bodegaM
     {
         $sql = "";
         if($parametros['nivel'] == '99'){
-            $sql = "SELECT DC, Cmds, Proceso, TP, Nivel, Item, ID, Picture, Cta_Debe, Cta_Haber
+            $sql = "SELECT DC, Cmds, Proceso, TP, Nivel, Item, ID, Picture, Cta_Debe, Cta_Haber, Color
                     FROM Catalogo_Proceso
                     WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
                     AND Nivel = '".$parametros['nivel']."'
@@ -37,10 +38,11 @@ class catalogo_bodegaM
             $sql = "SELECT DC, Cmds, Proceso, TP, Nivel, Item, ID, Picture, Cta_Debe, Cta_Haber, Color
                     FROM Catalogo_Proceso
                     WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
-                    AND TP = '".$parametros['tp']."'
+                    AND TP IN ('".implode("', '", $parametros['tp'])."') 
                     AND Nivel = '".$parametros['nivel']."'
                     ORDER BY Cmds";
         }
+        //print_r($sql);die();
         return $this->db->datos($sql);
     }
 
@@ -63,6 +65,7 @@ class catalogo_bodegaM
                         AND TP = '".$registro['TP']."'
                         AND Nivel = '".$registro['Nivel']."'";
             }
+            //print_r($sqlEliminar);die();
             $this->db->datos($sqlEliminar);
         }
         return true;
@@ -74,7 +77,7 @@ class catalogo_bodegaM
         if($parametros['nivel'] == '99'){
             $sql = "SELECT ID, Cmds, Proceso, TP, Nivel 
                 FROM Catalogo_Proceso
-                WHERE TP LIKE '" . $parametros['codigo'] . "%'
+                WHERE Cmds LIKE '" . $parametros['codigo'] . "%'
                 AND Item = '" . $_SESSION['INGRESO']['item'] . "'
                 AND Nivel = '".$parametros['nivel']."'";
         }else{
@@ -82,44 +85,47 @@ class catalogo_bodegaM
                 FROM Catalogo_Proceso
                 WHERE Cmds LIKE '" . $parametros['codigo'] . "%'
                 AND Item = '" . $_SESSION['INGRESO']['item'] . "'
-                AND TP = '".$parametros['tp']."'
+                AND TP IN ('".implode("', '", $parametros['tp'])."') 
                 AND Nivel = '".$parametros['nivel']."'";
         }
+        //print_r($this->db->datos($sql));die();
         return $this->db->datos($sql);
     }
 
     function EditarProducto($parametros)
     {
         $sql = "";
-        if($parametros['nivel'] == '99'){
+        if($parametros['nivel'] == '0'){
             //print_r($parametros);die();
             $sql = "UPDATE Catalogo_Proceso 
-                SET DC = '" . $parametros['tipo'] . "', 
-                    Cmds = '0000', 
-                    Proceso = '" . $parametros['concepto'] . "', 
+                SET DC = '--', 
+                    Cmds = '" . $parametros['codigo'] . "', 
+                    TP = '" . $parametros['tp'] . "', 
+                    Proceso = '" . strtoupper($parametros['concepto']) . "', 
                     Picture = '".$parametros['picture']."', 
                     Color = '".$parametros['color']."', 
                     Cta_Debe = '".$parametros['cta_debe']."', 
                     Cta_Haber = '".$parametros['cta_haber']."' 
                 WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
-                AND ID = '" . $parametros['id'] . "'
+                AND ID = '" . $parametros['id'] . "'"/*
                 AND TP = '" . $parametros['codigo'] . "'
-                AND Nivel = '" . $parametros['nivel'] . "'";
+                AND Nivel = '" . $parametros['nivel'] . "'"*/;
         }else{
             $sql = "UPDATE Catalogo_Proceso 
                 SET DC = '" . $parametros['tipo'] . "', 
                     Cmds = '" . $parametros['codigo'] . "', 
+                    TP = '" . $parametros['tp'] . "', 
                     Proceso = '" . $parametros['concepto'] . "', 
                     Picture = '".$parametros['picture']."', 
                     Color = '".$parametros['color']."', 
                     Cta_Debe = '".$parametros['cta_debe']."', 
                     Cta_Haber = '".$parametros['cta_haber']."' 
-                WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
-                AND ID = '" . $parametros['id'] . "'
-                AND TP = '" . $parametros['tp'] . "'
-                AND Nivel = '" . $parametros['nivel'] . "'";
+                WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+                AND ID = '" . $parametros['id'] . "'"/*
+                AND TP IN ('" . implode("', '", $parametros['wtp']) . "') 
+                AND Nivel = '" . $parametros['nivel'] . "'"*/;
         }
-
+        //print_r($sql); die();
         return $this->db->datos($sql);
     }
 
@@ -133,12 +139,13 @@ class catalogo_bodegaM
         return $this->db->datos($sql);
     }
     function ListaTipoProcesosGeneralesAux($parametros){
-        $sql = "SELECT TOP 1 TP 
+        $sql = "SELECT TP 
                 FROM Catalogo_Proceso
                 WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
                 AND Nivel = '" . $parametros['tp'] . "'
                 AND TP LIKE ('%')
                 ORDER BY Proceso";
+        //print_r($sql);die();
         return $this->db->datos($sql);
     }
 }

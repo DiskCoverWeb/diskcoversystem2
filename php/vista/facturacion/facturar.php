@@ -889,8 +889,8 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 </div>
 
 <!-- Modal cliente nuevo -->
-<div id="myModal_guia" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
-	<div class="modal-dialog modal-md">
+<div id="myModal_guia" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">DATOS DE GUIA DE REMISION</h4>
@@ -1048,7 +1048,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 	}
 </script-->
 
-<div id="myModal_suscripcion" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="myModal_suscripcion" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -1064,7 +1064,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 								<div class="col-sm-12">
 									<input type="text" name="LblCliente" id="LblCliente" class="form-control form-control-sm mb-1"
 										readonly>
-									<select class="form-control form-control-sm" id="DCCtaVenta" name="DCCtaVenta">
+									<select class="form-select form-select-sm" id="DCCtaVenta" name="DCCtaVenta">
 										<option value="">Seleccione</option>
 									</select>
 								</div>
@@ -1124,7 +1124,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 										<div class="col-sm-12">
 											<b> Atención /Entregar a:</b>
 											<input type="text" name="TxtAtencion" id="TxtAtencion"
-												class="form-select form-select-sm">
+												class="form-control form-control-sm">
 										</div>
 									</div>
 
@@ -1226,7 +1226,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 											<div class="row">
 												<div class="col-sm-6">
 													<b>Ejecutivo de Venta</b>
-													<select class="form-select form-select-sm" id="DCEjecutivoModal"
+													<select class="form-control form-control-sm" id="DCEjecutivoModal"
 														name="DCEjecutivoModal">
 														<option value="">Seleccione</option>
 													</select>
@@ -1275,7 +1275,21 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 								</div>
 								<div class="col-sm-12" style="padding-top: 5px;">
 									<div class="row">
-										<div class="col-sm-12 text-center table table-hover" id="tbl_suscripcion" style="height:170px">
+										<div class="col-sm-12 text-center table table-hover">
+											<table class="table table-sm table-hover" id="tbl_suscripcion" style="width:100%">
+												<thead>
+													<th>Ejemplar</th>
+													<th>Fecha</th>
+													<th>Entregado</th>
+													<th>Sector</th>
+													<th>Comisión</th>
+													<th>Capital</th>
+													<th>T_No</th>
+													<th>Item</th>
+													<th>CodigoU</th>
+												</thead>
+												<tbody></tbody>
+											</table>
 										</div>
 										<br>
 										<div class="row g-3 align-items-center">

@@ -1,4 +1,5 @@
 var Ini_Iva;
+var tbl_retencion;
 $(document).ready(function()
   {
     ddl_DCRetIBienes();
@@ -12,6 +13,17 @@ $(document).ready(function()
     // ddl_DCConceptoRet();
     ddl_DCPais();
     Carga_RetencionIvaBienes_Servicios();
+
+    tbl_retencion = $('#tbl_retencion').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        paging:false,
+        searching:false,
+        info:false,
+    });
+
     cargar_grilla();
     // $(function() {
     // $('#TxtNumTresComRet').bind('focusout', function(e) {
@@ -788,9 +800,9 @@ function insertar_grid()
 }
 function cargar_grilla()
 {
-  if($.fn.dataTable.isDataTable('#tbl_retencion')){
-    $('#tbl_retencion').DataTable().clear().destroy();
-  }
+  // if($.fn.dataTable.isDataTable('#tbl_retencion')){
+  //   $('#tbl_retencion').DataTable().clear().destroy();
+  // }
   var  parametros= 
   {
     'Trans_No':'1',
@@ -803,7 +815,9 @@ function cargar_grilla()
         success:  function (response) {
             if (response!='') 
             {
-              $('#tbl_retencion').DataTable({
+              tbl_retencion.destroy();
+
+              tbl_retencion = $('#tbl_retencion').DataTable({
                 searching: false,
                 responsive: true,
                 paging: false,   

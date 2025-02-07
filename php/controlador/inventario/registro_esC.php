@@ -642,11 +642,12 @@ class registro_esC
   function grid_kardex($parametros){
     try{
       $response = $this->modelo->grid_kardex($parametros);
-      if(count($response['datos']) > 0){
-        return array('res' => 1, 'tabla' => $response['tabla']);
-      }else{
-        return array('res' => 0, 'msg' => 'No se encontraron registros');
-      }
+      // if(count($response['datos']) > 0){
+      //   return array('res' => 1, 'tabla' => $response['tabla']);
+      // }else{
+      //   return array('res' => 0, 'msg' => 'No se encontraron registros');
+      // }
+      return $response['tabla'];
     }catch(Exception $e){
       return array('res' => 0, 'msg' => $e->getMessage());
     }

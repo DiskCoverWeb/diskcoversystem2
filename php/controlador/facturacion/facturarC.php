@@ -699,7 +699,7 @@ class facturarC
    function DGSuscripcion()
    {
       $tabla = true;
-      $datos = $this->modelo->DGSuscripcion($tabla);
+      $datos = $this->modelo->DGSuscripcion();
       return $datos;
    }
    function DCCtaVenta()

@@ -7,26 +7,30 @@ if (isset($_GET['GuardarProducto'])) {
     $parametros = $_POST;
     
     // Verifica si se ha subido un archivo
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $localFilePath  = $_FILES['imagen'];
-        $carpetaDestino = dirname(__DIR__, 3) . "/img/png/";
-        $nombreArchivoDestino = $carpetaDestino . $parametros['picture'] . '.png';//Destino temporal para guardar el archivo
-
-        /*if (!is_dir($carpetaDestino)) {
-            // Intentar crear la carpeta, el 0777 es el modo de permiso más permisivo
-            if (!mkdir($carpetaDestino, 0777, true)) { // true permite la creación de estructuras de directorios anidados
-                throw new Exception("No se pudo crear la carpeta");
+    if (isset($_FILES['imagen'])) {
+        if($_FILES['imagen']['error'] === UPLOAD_ERR_OK){
+            $localFilePath  = $_FILES['imagen'];
+            $carpetaDestino = dirname(__DIR__, 3) . "/img/png/";
+            $nombreArchivoDestino = $carpetaDestino . $parametros['picture'] . '.png';//Destino temporal para guardar el archivo
+    
+            /*if (!is_dir($carpetaDestino)) {
+                // Intentar crear la carpeta, el 0777 es el modo de permiso más permisivo
+                if (!mkdir($carpetaDestino, 0777, true)) { // true permite la creación de estructuras de directorios anidados
+                    throw new Exception("No se pudo crear la carpeta");
+                }
+            }*/
+    
+            if (move_uploaded_file($localFilePath['tmp_name'], $nombreArchivoDestino)) {
+                echo json_encode($controlador->GuardarProducto($parametros));
+            } else {
+                throw new Exception("No se pudo guardar el archivo en el servidor");
             }
-        }*/
-
-        if (move_uploaded_file($localFilePath['tmp_name'], $nombreArchivoDestino)) {
-            echo json_encode($controlador->GuardarProducto($parametros));
         } else {
-            throw new Exception("No se pudo guardar el archivo en el servidor");
+            throw new Exception("Error al subir el archivo");
         }
     
     } else {
-        throw new Exception("Error al subir el archivo");
+        echo json_encode($controlador->GuardarProducto($parametros));
     }
 }
 
@@ -170,6 +174,8 @@ class catalogo_bodegaC
 
     function ListaProductos($parametros)
     {    
+        $parametros['tp'] = explode(',', $parametros['tp']);
+        //print_r($parametros['tp']); die();
         try {
             if($parametros['nivel'] == '00') $parametros['nivel'] = '0';
             $datos = $this->modelo->ListaProductos($parametros);             
@@ -203,6 +209,7 @@ class catalogo_bodegaC
 
     function ListaEliminar($parametros)
     {    
+        $parametros['tp'] = explode(',', $parametros['tp']);
         try {
             if($parametros['nivel'] == '00') $parametros['nivel'] = '0';
             $datos = $this->modelo->ListaEliminar($parametros);             

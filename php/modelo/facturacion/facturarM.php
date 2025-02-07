@@ -585,7 +585,7 @@ class facturarM
 
   }
 
-  function DGSuscripcion($tabla = false)
+  function DGSuscripcion()
   {
 
     $Trans_No = 250;
@@ -595,13 +595,13 @@ class facturarM
          AND T_No = " . $Trans_No . "
          AND CodigoU = '" . $_SESSION['INGRESO']['CodigoU'] . "'
          ORDER BY Cuotas,Fecha ";
-    if ($tabla) {
-      // $botones[0] = array('boton'=>'Eliminar Suscripcion', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'' );
-      $respuest = grilla_generica_new($sql, 'Asiento_P', '', $titulo = false, $botones = false, $check = false, $imagen = false, 1, 1, 1, 100);
-      $respuest = $respuest['data'];
-    } else {
-      $respuest = $this->db->datos($sql);
-    }
+    // if ($tabla) {
+    //   // $botones[0] = array('boton'=>'Eliminar Suscripcion', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'' );
+    //   $respuest = grilla_generica_new($sql, 'Asiento_P', '', $titulo = false, $botones = false, $check = false, $imagen = false, 1, 1, 1, 100);
+    //   $respuest = $respuest['data'];
+    // } else {
+    // }
+    $respuest = $this->db->datos($sql);
 
     return $respuest;
 

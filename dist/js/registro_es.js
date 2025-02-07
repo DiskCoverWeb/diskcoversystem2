@@ -7,6 +7,8 @@ let Trans_No = '97';
     let CodigoCliente = '.';
     let Cta_Inventario = '.';
     let Cod_Benef = '.';
+    var tbl_container;
+    var tbl_retencion_all;
 
     $(document).ready(function () {
         familias();
@@ -16,7 +18,30 @@ let Trans_No = '97';
         marca();
         DCPorcenIva('MBFechaI', 'DCPorcIVA');
         $('#DCPorcIVA').attr('disabled', true);
+        
+        tbl_container = $('#tbl_registro').DataTable({
+            // responsive: true,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            },
+            paging:false,
+            searching:false,
+            info:false,
+        });
+
+        // tbl_retencion_all = $('#tbl_retencion_all').DataTable({
+        //     // responsive: true,
+        //     language: {
+        //         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        //     },
+        //     paging:false,
+        //     searching:false,
+        //     info:false,
+        // });
+
         iniciar_asientos();
+
+
 
         //DCBenef_LostFocus
         $('#DCBenef').on('select2:select', function (e) {
@@ -352,23 +377,136 @@ let Trans_No = '97';
     }
 
     function grid_kardex() {
-        var parametros = {
-            'Trans_No': Trans_No
-        };
-        $.ajax({
-            data: { parametros: parametros },
-            url: '../controlador/inventario/registro_esC.php?grid_kardex=true',
-            type: 'post',
-            dataType: 'json',
-            data: { 'parametros': parametros },
-            success: function (data) {
-                if (data.res == 1) {
-                    console.log(data);
-                    $('#tbl-container').empty();
-                    $('#tbl-container').html(data.tabla);
-                }
-            }
+
+        tbl_container.destroy();
+
+        tbl_container = $('#tbl_registro').DataTable({
+            // responsive: true,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            },
+            /*columnDefs: [
+                { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
+            ],*/
+            ajax: {
+                url: '../controlador/inventario/registro_esC.php?grid_kardex=true',
+                type: 'POST',  // Cambia el método a POST    
+                data: function(d) {
+                    
+                    var parametros = {
+                        'Trans_No': Trans_No
+                    };
+
+                    return { parametros: parametros };
+                },
+                // dataSrc: function(json) {
+                
+                //     return json.tabla;
+                // }   
+            },
+            //scrollX: true,  // Habilitar desplazamiento horizontal
+                paging:false,
+                searching:false,
+                info:false,
+                scrollY: 330,
+                scrollCollapse: true,
+            columns: [
+                { data: 'TP' },
+                { data: 'CODIGO_INV' },
+                { data: 'DH' },
+                { data: 'PRODUCTO' },
+                { data: 'CANT_ES' },
+                { data: 'VALOR_UNI' },
+                { data: 'VALOR_TOTAL' },
+                { data: 'CANTIDAD' },
+                { data: 'SALDO' },
+                { data: 'P_DESC' },
+                { data: 'P_DESC1' },
+                { data: 'IVA' },
+                { data: 'CTA_INVENTARIO' },
+                { data: 'CONTRA_CTA' },
+                { data: 'UNIDAD' },
+                { data: 'CodBod' },
+                { data: 'CodMar' },
+                { data: 'COD_BAR' },
+                { data: 'T_No' },
+                { data: 'Item' },
+                { data: 'CodigoU' },
+                { data: 'SUBCTA' },
+                { data: 'Cod_Tarifa' },
+                { data: 'Fecha_DUI.date',  
+                    render: function(data, type, item) {
+                        return data ? new Date(data).toLocaleDateString() : '';
+                    }
+                },
+                { data: 'No_Refrendo' },
+                { data: 'DUI' },
+                { data: 'A_No' },
+                { data: 'ValorEM' },
+                { data: 'Especifico' },
+                {data: 'Consumo' },
+                {data: 'Antidumping' },
+                {data: 'Modernizacion' },
+                {data: 'Control' },
+                {data: 'Almacenaje' },
+                {data: 'FODIN' },
+                {data: 'Salvaguardas' },
+                {data: 'Interes' },
+                {data: 'CODIGO_INV1' },
+                {data: 'CodBod1' },
+                {data: 'Codigo_B' },
+                {data: 'Codigo_Dr' },
+                {data: 'ORDEN' },
+                {data: 'VALOR_FOB' },
+                {data: 'COMIS' },
+                {data: 'TRANS_UNI' },
+                {data: 'TRANS_TOTAL' },
+                {data: 'PRECION_CIF' },
+                {data: 'UTIL' },
+                {data: 'PVP' },
+                {data: 'CTA_COSTO' },
+                {data: 'CTA_VENTA' },
+                {data: 'TOTAL_PVP' },
+                {data: 'Codigo_Tra' },
+                {data: 'Lote_No' },
+                {data: 'Fecha_Fab.date',  
+                    render: function(data, type, item) {
+                        return data ? new Date(data).toLocaleDateString() : '';
+                    }
+                },
+                {data: 'Fecha_Exp.date',  
+                    render: function(data, type, item) {
+                        return data ? new Date(data).toLocaleDateString() : '';
+                    }
+                },
+                {data: 'Reg_Sanitario' },
+                {data: 'Modelo' },
+                {data: 'Procedencia' },
+                {data: 'Serie_No' },
+                
+                
+                
+                
+            ]
         });
+
+        // var parametros = {
+        //     'Trans_No': Trans_No
+        // };
+        // $.ajax({
+        //     data: { parametros: parametros },
+        //     url: '../controlador/inventario/registro_esC.php?grid_kardex=true',
+        //     type: 'post',
+        //     dataType: 'json',
+        //     data: { 'parametros': parametros },
+        //     success: function (data) {
+        //         if (data.res == 1) {
+        //             console.log(data);
+        //             $('#tbl-container').empty();
+        //             $('#tbl-container').html(data.tabla);
+        //         }
+        //     }
+        // });
     }
 
     function habilitar_iva() {
