@@ -457,6 +457,37 @@
         </div>
     </div>
   </div>
+  <div id="modal_qr_escaner" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content" style="background: antiquewhite;">
+          <div class="modal-header">
+            <h4 class="modal-title">Escanear QR</h4>
+            <button type="button" class="btn-close" aria-label="Close" onclick="cerrarCamara()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <select class="form-select" id="ddl_camaras" name="ddl_camaras" onchange="cambiarCamara()">
+                  <option value="0">Camara 1</option>                
+                </select>               
+              </div>              
+            </div>
+            <div id="qrescaner_carga">
+              <div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;">
+                <img src="../../img/gif/loader4.1.gif" width="20%"></div>
+            </div>
+           <div id="reader" style="height: 100%;width: 100%;"></div>
+            <p><strong>QR Detectado:</strong> <span id="resultado"></span></p>
+
+          </div>
+          <div class="modal-footer" style="background-color:antiquewhite;">
+              <button type="button" class="btn btn-danger" onclick="cerrarCamara()">Cerrar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
 
 
 <script>
@@ -651,12 +682,33 @@ $.ajax({
 });   
 }
 
+function cambiarCamara()
+{
+    cerrarCamara();
+    setTimeout(() => {
+        iniciarEscanerQR();
+        $('#modal_qr_escaner').modal('show');
+         $('#qrescaner_carga').hide();
+    }, 1000);
+}
+function cerrarCamara() {
+  	$('#modal_qr_escaner').modal('hide');
+    if (scanner) {
+        scanner.stop().then(() => {            
+          $('#qrescaner_carga').show();
+          $('#modal_qr_escaner').modal('hide');
+        }).catch(err => {
+            console.error("Error al detener el escáner:", err);
+        });
+    }
+}
+
 $(document).ready(function(){ 
-        window.addEventListener("message", function(event) {
-            if (event.data === "closeModal") {
-                $('#myModal_provedor').modal('hide');
-            }
-        });         
-    })
+    window.addEventListener("message", function(event) {
+        if (event.data === "closeModal") {
+            $('#myModal_provedor').modal('hide');
+        }
+    }); 
+})
 </script>
 

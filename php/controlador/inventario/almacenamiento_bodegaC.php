@@ -24,6 +24,11 @@ if(isset($_GET['asignar_bodega']))
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->asignar_bodega($parametros));
 }
+if(isset($_GET['asignar_bodega_partes']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->asignar_bodega_partes($parametros));
+}
 if(isset($_GET['desasignar_bodega']))
 {
 	$parametros = $_POST['parametros'];
@@ -169,36 +174,37 @@ class almacenamiento_bodegaC
     	// print_r($parametros);die();
     	// print_r($ordenes);die();
     	$datos = $this->modelo->Buscar_productos_ingresados($parametros['num_ped']);
-
+    	return $datos;
     	// print_r($datos);die();
-    	$ls='';
-		foreach ($datos as $key => $value) 
-		{
-			$parametros['codigo'] = $value['Codigo_Inv'];
-			$prod = $this->modelo->catalogo_productos($value['Codigo_Inv']);
-			if(count($prod)>0){
-				$ls.='<li class="list-group-item d-flex justify-content-between align-items-center">
-						<input type="checkbox" class="rbl_pedido" value="'.$value['ID'].'">'.$prod[0]['Producto'].'
-						<span class="badge bg-primary rounded-pill">'.$value['Entrada'].' '.$prod[0]['Unidad'].'</span>
-						 <ul style="padding: 20px;">';
-				 		 $ls.= $this->cargar_info($parametros);
-				 	$ls.='</ul> 
-					</li>';
+    // 	$ls='';
+	// 	foreach ($datos as $key => $value) 
+	// 	{
+	// 		$parametros['codigo'] = $value['Codigo_Inv'];
+	// 		$prod = $this->modelo->catalogo_productos($value['Codigo_Inv']);
+	// 		$datos['producto']
+	// 		if(count($prod)>0){
+	// 			$ls.='<li class="list-group-item d-flex justify-content-between align-items-center">
+	// 					<input type="checkbox" class="rbl_pedido" value="'.$value['ID'].'">'.$prod[0]['Producto'].'
+	// 					<span class="badge bg-primary rounded-pill">'.$value['Entrada'].' '.$prod[0]['Unidad'].'</span>
+	// 					 <ul style="padding: 20px;">';
+	// 			 		 $ls.= $this->cargar_info($parametros);
+	// 			 	$ls.='</ul> 
+	// 				</li>';
   
 
-				 // $ls.= '<li class="list-group-item">
+	// 			 // $ls.= '<li class="list-group-item">
 
-				 // <a href="#" style="padding:0px"><label><input type="checkbox" class="rbl_pedido" value="'.$value['ID'].'">'.$prod[0]['Producto'].'</label>
-				 // 		<div class="btn-group pull-right">
-				 // 				<span class="label-primary btn-sm btn">'.$value['Entrada'].' '.$prod[0]['Unidad'].'</span>				
-				 // 		</div>
-				 // </a>
+	// 			 // <a href="#" style="padding:0px"><label><input type="checkbox" class="rbl_pedido" value="'.$value['ID'].'">'.$prod[0]['Producto'].'</label>
+	// 			 // 		<div class="btn-group pull-right">
+	// 			 // 				<span class="label-primary btn-sm btn">'.$value['Entrada'].' '.$prod[0]['Unidad'].'</span>				
+	// 			 // 		</div>
+	// 			 // </a>
 				
-				 // </li>';
-			}
+	// 			 // </li>';
+	// 		}
 
 			
-      }	
+      // }	
 
       	return $ls;	
     }
@@ -284,29 +290,92 @@ class almacenamiento_bodegaC
 
 	function asignar_bodega($parametros)
 	{
-		$id = substr($parametros['id'],0,-1);
-		$id = explode(',',$id);
-		foreach ($id as $key => $value) {
-			$tipo = explode('-', $value);
+		$id = $parametros['id'];
+		$tipo = explode('-', $id);
+
+		// print_r($parametros);die();
+			// print_r($tipo);die();
 			if(count($tipo)>1)
 			{
-				SetAdoAddNew('Trans_Pedidos');
-				SetAdoFields('Codigo_Sup',$parametros['bodegas']);		
-				SetAdoFieldsWhere('ID',$tipo[0]);	
-				SetAdoFieldsWhere('TC',"E");
-				SetAdoUpdateGeneric();
-				//a transpedidos
-			}else{
-				// a transkardex
-				// print_r($value);die();
+				// print_r('ss');die();
+				$producto = $this->modelo->Buscar_productos_ingresados($tipo[0]);
+				$lineas_pedido = $this->modelo->cargar_pedidos_trans_pedidos($producto[0]['Orden_No']);
+
+				foreach ($lineas_pedido as $key => $value) {
+					SetAdoAddNew('Trans_Pedidos');
+					SetAdoFields('Codigo_Sup',$parametros['bodegas']);		
+					SetAdoFieldsWhere('ID',$value['ID']);
+					SetAdoUpdateGeneric();
+				}
 				SetAdoAddNew('Trans_Kardex');
 				SetAdoFields('CodBodega',$parametros['bodegas']);	
 				SetAdoFields('Fecha_DUI',date('Y-m-d'));	
 				SetAdoFields('T',"E");		
-				SetAdoFieldsWhere('ID',$value);
-				SetAdoUpdateGeneric();
+				SetAdoFieldsWhere('ID',$tipo[0]);
+				return SetAdoUpdateGeneric();
+
+				//a transpedidos
+			}else{
+				// a transkardex
+				SetAdoAddNew('Trans_Kardex');
+				SetAdoFields('CodBodega',$parametros['bodegas']);	
+				SetAdoFields('Fecha_DUI',date('Y-m-d'));	
+				SetAdoFields('T',"E");		
+				SetAdoFieldsWhere('ID',$id);
+				return SetAdoUpdateGeneric();
 			}
-		}
+		// }
+		// return 1;
+	}
+
+	function asignar_bodega_partes($parametros)
+	{
+
+
+		$id = $parametros['id'];
+		// print_r($id);die();
+		$producto = $this->modelo->Buscar_productos_ingresados($id);
+
+		// print_r($parametros);die();
+		foreach ($parametros['parametros'] as $key => $value) {
+			if($key==0)
+			{
+				// print_r($value);die();
+				SetAdoAddNew('Trans_Kardex');
+				SetAdoFields('CodBodega',$value['codigoBod']);
+			    SetAdoFields('Entrada',$value['cantidad']);
+			    SetAdoFields('Valor_Total',number_format($producto[0]['Valor_Unitario']*$value['cantidad'],2,'.',''));
+				SetAdoFields('T',"E");		
+				SetAdoFieldsWhere('ID',$id);
+				SetAdoUpdateGeneric();
+
+			}else
+			{
+			   SetAdoAddNew("Trans_Kardex"); 		
+			   SetAdoFields('Codigo_Inv',$producto[0]['Codigo_Inv']);
+			   SetAdoFields('Producto',$producto[0]['Producto']);
+			   SetAdoFields('UNIDAD',$producto[0]['Unidad']); /**/
+			   SetAdoFields('Entrada',$value['cantidad']);
+			   SetAdoFields('Cta_Inv',$producto[0]['Cta_Inv']);
+			   SetAdoFields('Fecha_Fab',$producto[0]['Fecha_Fab']);	
+			   SetAdoFields('Fecha_Exp',$producto[0]['Fecha_Exp']);	   
+			   SetAdoFields('CodigoU',$producto[0]['CodigoU']);   
+			   SetAdoFields('Item',$producto[0]['Item']);
+			   SetAdoFields('Orden_No',$producto[0]['Orden_No']); 
+			   SetAdoFields('Fecha',$producto[0]['Fecha']);
+			   SetAdoFields('Valor_Total',number_format($producto[0]['Valor_Unitario']*$value['cantidad'],2,'.',''));
+			   SetAdoFields('CANTIDAD',$value['cantidad']);
+			   SetAdoFields('Valor_Unitario',number_format($producto[0]['Valor_Unitario'],$_SESSION['INGRESO']['Dec_PVP'],'.',''));
+			   SetAdoFields('Codigo_Barra',$producto[0]['Codigo_Barra']);
+			   SetAdoFields('CodBodega',$value['codigoBod']);
+			   SetAdoFields('Contra_Cta',$producto[0]['Contra_Cta']);
+			   SetAdoFields('Codigo_P',$producto[0]['Codigo_P']);
+			   SetAdoFields('Codigo_Dr',$producto[0]['Codigo_Dr']);
+			   SetAdoFields('Tipo_Empaque',$producto[0]['Tipo_Empaque']);
+			   SetAdoFields('T',"E");		
+			   SetAdoUpdate();
+			}
+		}	
 		return 1;
 	}
 

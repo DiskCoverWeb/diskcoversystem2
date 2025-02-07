@@ -115,6 +115,7 @@ function estado_licencia($f3)
 	<script src="../../assets/js/jquery-ui.js"></script>
 	<script src="../../dist/js/js_globales.js"></script>	
 	<script src="../../dist/js/sweetalert2@11.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 	<script type="text/javascript">
 		var formato = "<?php if (isset($_SESSION['INGRESO']['Formato_Cuentas'])) {
       	echo $_SESSION['INGRESO']['Formato_Cuentas'];

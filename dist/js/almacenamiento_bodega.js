@@ -29,7 +29,7 @@
   function setearCamposPedidos(data){
 	console.log(data);
 
-    	$('#txt_id').val(data.ID); 
+      $('#txt_id').val(data.ID); 
       $('#txt_fecha_exp').val(formatoDate(data.Fecha_Exp.date));
       $('#txt_fecha').val(formatoDate(data.Fecha.date));
       $('#txt_donante').val(data.Cliente);
@@ -50,8 +50,8 @@
       	 $('#img_alto_stock').attr('src','../../img/png/alto_stock.png');
       }
 
-			var fecha1 = new Date();
-      var fecha2 = new Date(formatoDate(data.Fecha_Exp.date));
+		var fecha1 = new Date();
+      	var fecha2 = new Date(formatoDate(data.Fecha_Exp.date));
 			var diferenciaEnMilisegundos = fecha2 - fecha1;
 			var diferenciaEnDias = ((diferenciaEnMilisegundos/ 1000)/86400);
 			diferenciaEnDias = parseInt(diferenciaEnDias);
@@ -106,9 +106,16 @@
 		});
 	}
 
-	function lugarPorQr(codigo){
-		$('#txt_cod_lugar').val(codigo.trim());
-		$('#txt_cod_lugar').trigger('blur');
+	function lugarPorQr(codigo,item){
+		if(item=='')
+		{
+			$('#txt_cod_lugar').val(codigo.trim());
+			$('#txt_cod_lugar').trigger('blur');
+		}else
+		{
+			$('#txt_cod_lugar_div_'+item).val(codigo.trim());
+			$('#txt_cod_lugar_div_'+item).trigger('blur');
+		}
 	}
 
   function cargar_nombre_bodega(nombre,cod)
@@ -161,16 +168,123 @@ function lineas_pedidos()
 	}
  	$.ajax({
 	    type: "POST",
-       url:   '../controlador/inventario/almacenamiento_bodegaC.php?lineas_pedido=true',
-	     data:{parametros:parametros},
-       dataType:'json',
+       	url:   '../controlador/inventario/almacenamiento_bodegaC.php?lineas_pedido=true',
+	   	data:{parametros:parametros},
+       	dataType:'json',
 	    success: function(data)
 	    {
-	    	$('#lista_pedido').html(data);
+	    	tr = '';
+	    	data.forEach(function(item,i){
+	    		tdp = ''; if(item.TDP=='R'){tdp ='-'+item.TDP}
+	    		tr+=`<tr id="tr_principal">
+						<td><button type="button" class="btn btn-warning btn-sm" title="Divivir" onclick="dividir_pedido('`+item.Producto+`')"><i class="bx bx-cut"></i></button></td>
+						<td>
+						<input type="hidden" value="`+item.ID+tdp+`" id="txt_id_producto" />
+						`+item.Producto+`
+						</td>
+						<td><b id="cant_pedido">`+item.Entrada+'</b> '+item.Unidad+`<span style="display:none" id="dif_dividido"> / <b id="cant_div">`+item.Entrada+`</b>`+item.Unidad+`</span></td>
+						<td>
+							<div class="row" id="pnl_principal_ruta">									
+									<div class="col-sm-12">
+										<b>Codigo de lugar</b>
+										<div class="d-flex align-items-center input-group-sm">
+											<input type="" class="form-control form-control-sm" id="txt_cod_lugar" name="txt_cod_lugar" onblur="buscar_ruta();productos_asignados()">	
+											<button type="button" class="btn btn-info btn-sm" style="font-size:8pt;" onclick="abrir_modal_bodegas()"><i class="fa fa-sitemap" style="font-size:8pt;"></i></button>
+											<button type="button" class="btn btn-primary btn-sm" style="font-size:8pt;" title="Escanear QR" onclick="escanear_qr('lugar')">
+												<i class="fa fa-qrcode" style="font-size:8pt;" aria-hidden="true"></i>
+											</button>									
+										</div>
+									</div>
+									<div class="col-sm-12">
+										<h6 class="box-title" id="txt_bodega_title">Ruta: </h6>
+										<input type="hidden" class="form-control input-xs" id="txt_cod_bodega" name="txt_cod_bodega" readonly>
+									</div>				
+								</div>
+							</td>
+					</tr>`
+
+	    	})
+	    	$('#lista_pedido').html(tr);
 	    }
 	});
 
   
+}
+
+numerodiviciones = 1;
+function dividir_pedido(Producto)
+{
+	$('#pnl_principal_ruta').css('display','none')
+	$('#dif_dividido').css('display','initial')
+
+	tr =`<tr id="tr_divido_`+numerodiviciones+`">
+		<td><button type="button" class="btn btn-sm btn-danger " title="Eliminar linea" onclick="eliminar_linea('`+numerodiviciones+`')"><i class="bx bx-x m-0" style="font-size:8pt"></i></button></td>
+		<td>`+Producto+`</td>
+		<td><input name="dividido" id="txt_cant_div_`+numerodiviciones+`" class="form-control form-control-sm" value="0" onblur="calcular_divicion(this)" /></td>
+		<td>
+			<div class="row">									
+				<div class="col-sm-12">
+					<div class="d-flex align-items-center input-group-sm">
+						<input type="" class="form-control form-control-sm" id="txt_cod_lugar_div_`+numerodiviciones+`" name="txt_cod_lugar_div_`+numerodiviciones+`" onblur="buscar_ruta_linea('`+numerodiviciones+`');" placeholder="Codigo de lugar">	
+						<button type="button" class="btn btn-info btn-sm" style="font-size:8pt;" onclick="abrir_modal_bodegas()"><i class="fa fa-sitemap" style="font-size:8pt;"></i></button>
+						<button type="button" class="btn btn-primary btn-sm" style="font-size:8pt;" title="Escanear QR" onclick="escanear_qr('lugar','`+numerodiviciones+`')">
+							<i class="fa fa-qrcode" style="font-size:8pt;" aria-hidden="true"></i>
+						</button>									
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<h6 class="box-title" id="txt_bodega_title_`+numerodiviciones+`">Ruta: </h6>
+					<input type="hidden" class="form-control input-xs" id="txt_cod_bodega_`+numerodiviciones+`" name="txt_cod_bodega" readonly>
+				</div>
+									
+			</div>
+			
+		</td>
+	</tr>`
+	numerodiviciones = numerodiviciones+1;
+
+	$('#lista_pedido').append(tr);
+
+}
+
+function eliminar_linea(num)
+{
+	$('#tr_divido_'+num).remove();
+	let filas = document.querySelectorAll("#lista_pedido tr");
+	if (filas.length === 1) {
+		$('#pnl_principal_ruta').css('display','block')
+		$('#dif_dividido').css('display','none')
+
+	}
+}
+
+function calcular_divicion(elemento)
+{
+	pedido = $('#cant_pedido').text();
+	let pedido_total = $('#cant_pedido').text();
+	let canti_dividido = 0;
+	var catidad_div = 0;
+	$("input[name='dividido']").each(function() {
+	    valor = $(this).val();
+	    canti_dividido = canti_dividido+parseInt(valor)
+	    if(canti_dividido>parseInt(pedido_total))
+	    {
+	    	catidad_div = canti_dividido-parseInt(valor)
+	    }
+	});
+
+	canti = parseInt(pedido_total)-parseInt(canti_dividido);
+	if(canti>=0)
+	{
+		$('#cant_div').text(canti)		
+	}else
+	{
+		var cant = parseInt(pedido_total)-catidad_div
+		Swal.fire("El el valor total supera al del pedido","","info").then(function(){
+			$("#"+elemento.id).val(cant);
+			$("#"+elemento.id).focus();
+		})
+	}
 }
 
 
@@ -222,39 +336,71 @@ function cargar_paquetes()
   
 }
 
-function asignar_bodega()
+function validar_asignacion_bodega(linea='')
 {
+	let filas = document.querySelectorAll("#lista_pedido tr");
+	if (filas.length === 1) {
 
-	 id = '';
-	 $('.rbl_pedido').each(function() {
-	    const checkbox = $(this);
-	    const isChecked = checkbox.prop('checked'); 
-	    if (isChecked) {
-	        id+= checkbox.val()+',';
-	    }
-	});
+		id = $('#txt_id_producto').val();
+		bodega = $('#txt_cod_bodega').val();
+		console.log(bodega)
+		console.log(id)
+		if(bodega=='.' || bodega =='')
+		{
+			Swal.fire('Seleccione una bodega','','info');
+			return false;
+		}
 
-	 bodega = $('#txt_cod_bodega').val();
-	 paquete = $('#txt_paquetes').val();
+		if(id=='')
+		{
+			Swal.fire('Seleccione un pedido','','info');
+			return false;
+		}
+		asignar_bodega(id,bodega)
+	}else{
+		var valido = 1;
+		var total = 0;
+		var pedido = $('#cant_pedido').text();
+		var parametros = []
+		$("input[name='dividido']").each(function(i,item) {
+			var linea = parseInt(i)+parseInt(1);
+			valor = $(this).val();
+			total = parseInt(total)+parseInt(valor);
+			cod_bodega = $('#txt_cod_lugar_div_'+linea).val();
 
-	if(bodega=='.' || bodega =='')
-	{
-		Swal.fire('Seleccione una bodega','','info');
-		return false;
+			if(valor=='' || valor==0 || cod_bodega=='' || cod_bodega=='.')
+			{
+				valido = 0;
+			}
+			parametros.push({'cantidad':valor,'codigoBod':cod_bodega})
+		});
+
+		if(parseInt(total)!=parseInt(pedido))
+		{
+			Swal.fire("Las cantidades no suman el total del pedido","","error")
+			return false;
+		}
+
+		if(valido==1)
+		{
+			id = $('#txt_id_producto').val();
+			console.log(parametros)
+			asignar_bodega_partes(id,parametros)
+
+		}else
+		{
+			Swal.fire("Uno o mas campos de valor o codigo de bodega estan vacios","","error")
+			return false;
+		}
+
+		// return false;
 	}
 
-	// if(paquete=='.' || paquete =='')
-	// {
-	// 	Swal.fire('Seleccione Paquete','','info');
-	// 	return false;
-	// }
-	if(id=='')
-	{
-		Swal.fire('Seleccione un pedido','','info');
-		return false;
-	}
-	// $('#myModal_espera').modal('show');
 
+}
+
+function asignar_bodega(id,bodega)
+{
 	var parametros = {
 		'id':id,
 		'bodegas':bodega,
@@ -267,11 +413,39 @@ function asignar_bodega()
 	    success: function(data)
 	    {
 
-				$('#myModal_espera').modal('hide');
-				Swal.fire('Asignado a bodega','','success');
-	    	lineas_pedidos()   	
-	    	contenido_bodega();
-	    	productos_asignados();
+			$('#myModal_espera').modal('hide');
+			Swal.fire('Asignado a bodega','','success').then(function(){
+				location.reload();
+			});
+	    	// lineas_pedidos()   	
+	    	// contenido_bodega();
+	    	// productos_asignados();
+	    }
+	});
+	
+}
+
+function asignar_bodega_partes(id,parametros)
+{
+	var parametros = {
+		'id':id,
+		'parametros':parametros,
+	}
+	$.ajax({
+	    type: "POST",
+       url:   '../controlador/inventario/almacenamiento_bodegaC.php?asignar_bodega_partes=true',
+	     data:{parametros:parametros},
+       dataType:'json',
+	    success: function(data)
+	    {
+
+			$('#myModal_espera').modal('hide');
+			Swal.fire('Asignado a bodega','','success').then(function(){
+				location.reload();
+			});
+	    	// lineas_pedidos()   	
+	    	// contenido_bodega();
+	    	// productos_asignados();
 	    }
 	});
 	
@@ -450,29 +624,56 @@ async function buscar_ruta()
 		});
 }
 
-function cambiarCamara()
-{
-    cerrarCamara();
-    setTimeout(() => {
-        iniciarEscanerQR();
-        $('#modal_qr_escaner').modal('show');
-         $('#qrescaner_carga').hide();
-    }, 1000);
+
+async function buscar_ruta_linea(item)
+{  
+	// if($('#txt_cod_bodega').val()!='' && $('#txt_cod_bodega').val()!='.' ){cargar_bodegas();}
+
+	 codigo = $('#txt_cod_lugar_div_'+item).val();
+	 codigo = codigo.trim();
+	 $('#txt_cod_lugar_div_'+item).val(codigo);
+	 var parametros = {
+			'codigo':codigo,
+		}
+		$.ajax({
+		    type: "POST",
+	       url:   '../controlador/inventario/almacenamiento_bodegaC.php?cargar_lugar=true',
+		     data:{parametros:parametros},
+	       dataType:'json',
+		    success: function(data)
+		    {
+		    	$('#txt_bodega_title_'+item).text('Ruta:'+data);
+		    	$('#txt_cod_bodega_'+item).val(codigo);
+		    	$('#txt_cod_lugar_div_'+item).val(codigo);
+		    	// productos_asignados();
+		    }
+		});
 }
 
- function escanear_qr(campo){
-    iniciarEscanerQR(campo);
+
+
+
+ function escanear_qr(campo,item){
+ 	console.log(campo);
+    	iniciarEscanerQR(campo,item);
         $('#modal_qr_escaner').modal('show');
     }
 
  let scanner; 
  let NumCamara = 0;
- function iniciarEscanerQR(campo_qr) {
+ function iniciarEscanerQR(campo_qr,item='') {
 
+ 	console.log(campo_qr);
     NumCamara = $('#ddl_camaras').val();
     scanner = new Html5Qrcode("reader");
     $('#qrescaner_carga').hide();
     Html5Qrcode.getCameras().then(devices => {
+       op = '';
+       devices.forEach((camera, index) => {
+         op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
+       });
+       $('#ddl_camaras').html(op)
+
         if (devices.length > 0) {
             let cameraId = devices[NumCamara].id; // Usa la primera cámara disponible
             scanner.start(
@@ -485,8 +686,8 @@ function cambiarCamara()
                 	console.log(campo_qr)
                     if(campo_qr == 'ingreso'){
 						pedidosPorQR(decodedText);
-					}else if(campo_qr == 'lugar'){
-						lugarPorQr(decodedText);
+					}else if(campo_qr == 'lugar'){						
+						lugarPorQr(decodedText,item);
 					}
                     scanner.stop(); // Detiene la cámara después de leer un código
                     $('#modal_qr_escaner').modal('hide');
@@ -501,16 +702,6 @@ function cambiarCamara()
     }).catch(err => console.error("Error al obtener cámaras:", err));
 }
 
-  function cerrarCamara() {
-  	$('#modal_qr_escaner').modal('hide');
-    if (scanner) {
-        scanner.stop().then(() => {            
-          $('#qrescaner_carga').show();
-          $('#modal_qr_escaner').modal('hide');
-        }).catch(err => {
-            console.error("Error al detener el escáner:", err);
-        });
-    }
-}
+
 
 
