@@ -19,16 +19,13 @@
 <div class="row mb-2">
 	<div class="col-sm-6">
     <div class="btn-group">
-			<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
-				print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
+			<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']); echo $ruta[0]; ?>" title="Salir de modulo" class="btn btn-outline-secondary">
 				<img src="../../img/png/salire.png">
 			</a>
-			<!-- <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
-				<img src="../../img/png/grabar.png">
-			</button> -->
   	</div>
   </div>
 </div>
+
 <form id="form_correos" class="mb-2">
 	<div class="row">
 		<div class="card" style="background-color: antiquewhite;">
@@ -72,14 +69,14 @@
 						</select>
 					</div>
 					<div class="col-sm-7 text-end" id="pnl_alertas">
-						<button class="btn btn-light border border-1" type="button" id="btn_alto_stock" style="display:none;">
-							<img id="img_alto_stock"  src="../../img/gif/alto_stock_titi.gif" style="width:48px">
-							<br>
+						<button class="btn btn-light align-items-center justify-content-center" type="button" id="btn_alto_stock" style="display:none;">
+							<img id="img_alto_stock"  src="../../img/gif/alto_stock_titi.gif" style="width:32px">
 							Alto Stock
 						</button>
-						<button class="btn btn-light border border-1" type="button" id="btn_expired" style="display:none;">
-							<b id="btn_titulo">Por Expirar</b><br>
-							<img id="img_por_expirar" src="../../img/gif/expired_titi.gif" style="width:48px">
+						<button class="btn btn-light align-items-center justify-content-center" type="button" id="btn_expired" style="display:none;">
+							<img id="img_por_expirar" src="../../img/gif/expired_titi.gif" style="width:32px">
+							<b id="btn_titulo">Por Expirar</b>
+						
 							
 						</button>
 					</div>
@@ -93,12 +90,12 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<table class="table table-striped table-bordered dataTable">
-						<thead>
+						<thead class="bg-primary text-white">
 							<th></th>
 							<th>Producto</th>
 							<th>Cantidad</th>
 							<th width="40%" class="text-end">
-								<button class="btn btn-primary btn-sm" type="button" onclick="validar_asignacion_bodega()"><i class="fa fa-map-marker"></i>  Asignar</button>			
+								<button class="btn btn-secondary btn-sm" type="button" onclick="validar_asignacion_bodega()"><i class="fa fa-map-pin"></i>  Asignar</button>			
 							</th>
 						</thead>							
 							<tbody id="lista_pedido">
@@ -169,6 +166,7 @@
                 <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="contenido_prov">
+            	<input type="hidden" name="txt_busqueda_manual_lin" id="txt_busqueda_manual_lin" value="">
             		<ul class="tree_bod" id="arbol_bodegas">
 								</ul>               
             </div>

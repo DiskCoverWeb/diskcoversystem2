@@ -43,14 +43,18 @@
 						<b class="fw-semibold">Buscar Bodega</b>
 						
 						<div class="input-group input-group-sm">
-							<input type="" name="" class="form-control form-control-sm" id="txt_bodega" name="txt_bodega" placeholder="Buscar Bodega por codigo" onblur="lista_stock_ubicado()">
+							<input type="" name="" class="form-control form-control-sm" id="txt_bodega" name="txt_bodega" placeholder="Buscar Bodega por codigo" onblur="lista_stock_ubicado();buscar_ruta()">
 							<button type="button" class="btn btn-info btn-sm" style="font-size: 8pt;" onclick="abrir_modal_bodegas()"><i class="fa fa-sitemap" style="font-size: 8pt;"></i></button>
 							<button type="button" class="btn btn-primary btn-sm" style="font-size: 8pt;" title="Escanear QR" onclick="escanear_qr()"><i class="fa fa-qrcode" style="font-size: 8pt;"></i></button>
 						</div>
 					</div>
 					<div class="col-sm-4">
 						<b class="fw-semibold">Buscar Articulo</b>
-						<input type="" name="" class="form-control form-control-sm" id="txt_cod_barras" name="txt_cod_barras" placeholder="Buscar articulo por codigo" onblur="lista_stock_ubicado()">
+						<div class="input-group input-group-sm">		
+							<input type="" name="" class="form-control form-control-sm" id="txt_cod_barras" name="txt_cod_barras" placeholder="Buscar articulo por codigo" onblur="lista_stock_ubicado()">
+							<button type="button" class="btn btn-primary btn-sm" style="font-size: 8pt;" title="Escanear QR" onclick="escanear_qr('articulo')"><i class="fa fa-qrcode" style="font-size: 8pt;"></i></button>
+
+						</div>
 					</div>
 					<div class="col-sm-4 text-end">
 						<br>
@@ -59,7 +63,7 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
-						<h3 class="h3" id="txt_bodega_title">Ruta: </h3>
+						<h6 id="txt_bodega_title">Ruta: </h6>
 					</div>					
 				</div>				
 			</div>			
@@ -70,7 +74,7 @@
 			<div class="card-body">
 				<div class="col-sm-12">
 					<b class="fw-semibold">Contenido De bodega</b>
-					<table class="table table-sm " id="tbl_asignados">
+					<table class="table table-sm w-100" id="tbl_asignados">
 						<thead class="text-center bg-primary text-white">
 							<th>Codigo</th>
 							<th><b>Producto</b></th>
@@ -99,7 +103,7 @@
 
 
 
-<div id="myModal_cambiar_bodegas" class="modal fade myModalNuevoCliente" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="myModal_cambiar_bodegas" class="modal fade myModalNuevoCliente" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content" style="background: antiquewhite;">
             <div class="modal-header bg-primary">
@@ -111,8 +115,9 @@
         			<div class="col-sm-12">
         				<div class="input-group input-group-sm mb-2">
 							<input type="hidden" name="txt_id_inv" id="txt_id_inv">
-        					<input type="text" id="txt_cod_lugar" name="txt_cod_lugar" class="form-control form-control-sm" placeholder="Nueva ruta" onblur="buscar_ruta()">        				
+        					<input type="text" id="txt_cod_lugar" name="txt_cod_lugar" class="form-control form-control-sm" placeholder="Nueva ruta" onblur="buscar_ruta2()">        				
 							<button type="button" class="btn btn-info btn-sm" onclick="abrir_modal_bodegas(2)" style="font-size:8pt"><i class="fa fa-sitemap" style="font-size:8pt"></i></button>
+							<button type="button" class="btn btn-primary btn-sm" style="font-size: 8pt;" title="Escanear QR" onclick="escanear_qr('reubi')"><i class="fa fa-qrcode" style="font-size: 8pt;"></i></button>
 						</div>						
         				<label id="txt_bodega_title2">Ruta:</label>
 
@@ -130,7 +135,7 @@
 
 
 
-<div id="myModal_arbol_bodegas" class="modal fade myModalNuevoCliente" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="myModal_arbol_bodegas" class="modal fade myModalNuevoCliente" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content" style="background: antiquewhite;">
             <div class="modal-header bg-primary">
@@ -148,7 +153,7 @@
     </div>
   </div>
 
-  <div id="myModal_arbol_bodegas2" class="modal fade myModalNuevoCliente" role="dialog"  data-keyboard="false" data-backdrop="static">
+  <div id="myModal_arbol_bodegas2" class="modal fade myModalNuevoCliente" role="dialog"  data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content" style="background: antiquewhite;">
             <div class="modal-header bg-primary">

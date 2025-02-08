@@ -121,14 +121,28 @@
   function cargar_nombre_bodega(nombre,cod)
   {
 
-  	$('#txt_bodega_title').text();
-  	$('#txt_bodega_title').text(nombre);
-  	$('#txt_cod_bodega').val(cod);
-  	$('#txt_cod_lugar').val(cod);
-  	if(cod!='.')
-  	{
-  		contenido_bodega();
-  	}
+	linea = $('#txt_busqueda_manual_lin').val();
+	if(linea=='')
+	{
+	  	$('#txt_bodega_title').text();
+	  	$('#txt_bodega_title').text(nombre);
+	  	$('#txt_cod_bodega').val(cod);
+	  	$('#txt_cod_lugar').val(cod);
+	  	if(cod!='.')
+	  	{
+	  		contenido_bodega();
+	  	}
+	  }else
+	  {
+	  	$('#txt_bodega_title_'+linea).text();
+	  	$('#txt_bodega_title_'+linea).text(nombre);
+	  	$('#txt_cod_lugar_div_'+linea).val(cod);
+	  	// $('#txt_cod_lugar_'+linea).val(cod);
+	  	if(cod!='.')
+	  	{
+	  		contenido_bodega();
+	  	}
+	  }
 
   	// console.log(nombre)
   }
@@ -175,9 +189,18 @@ function lineas_pedidos()
 	    {
 	    	tr = '';
 	    	data.forEach(function(item,i){
-	    		tdp = ''; if(item.TDP=='R'){tdp ='-'+item.TDP}
+	    		tdp = ''; 
+	    		cortar = 1;
+	    		if(item.TDP=='R'){tdp ='-'+item.TDP; cortar=0}
 	    		tr+=`<tr id="tr_principal">
-						<td><button type="button" class="btn btn-warning btn-sm" title="Divivir" onclick="dividir_pedido('`+item.Producto+`')"><i class="bx bx-cut"></i></button></td>
+						<td>`
+						if(cortar==1)
+						{
+	    					tr+=`<button type="button" class="btn btn-warning btn-sm" title="Divivir" onclick="dividir_pedido('`+item.Producto+`')">
+	    						<i class="bx bx-cut m-0"></i>
+	    					</button>`
+	    				}
+	    				tr+=`</td>
 						<td>
 						<input type="hidden" value="`+item.ID+tdp+`" id="txt_id_producto" />
 						`+item.Producto+`
@@ -226,7 +249,7 @@ function dividir_pedido(Producto)
 				<div class="col-sm-12">
 					<div class="d-flex align-items-center input-group-sm">
 						<input type="" class="form-control form-control-sm" id="txt_cod_lugar_div_`+numerodiviciones+`" name="txt_cod_lugar_div_`+numerodiviciones+`" onblur="buscar_ruta_linea('`+numerodiviciones+`');" placeholder="Codigo de lugar">	
-						<button type="button" class="btn btn-info btn-sm" style="font-size:8pt;" onclick="abrir_modal_bodegas()"><i class="fa fa-sitemap" style="font-size:8pt;"></i></button>
+						<button type="button" class="btn btn-info btn-sm" style="font-size:8pt;" onclick="abrir_modal_bodegas('`+numerodiviciones+`')"><i class="fa fa-sitemap" style="font-size:8pt;"></i></button>
 						<button type="button" class="btn btn-primary btn-sm" style="font-size:8pt;" title="Escanear QR" onclick="escanear_qr('lugar','`+numerodiviciones+`')">
 							<i class="fa fa-qrcode" style="font-size:8pt;" aria-hidden="true"></i>
 						</button>									
@@ -281,7 +304,8 @@ function calcular_divicion(elemento)
 	{
 		var cant = parseInt(pedido_total)-catidad_div
 		Swal.fire("El el valor total supera al del pedido","","info").then(function(){
-			$("#"+elemento.id).val(cant);
+			$("#"+elemento.id).val(0);
+			calcular_divicion(elemento);
 			$("#"+elemento.id).focus();
 		})
 	}
@@ -290,6 +314,7 @@ function calcular_divicion(elemento)
 
 function cargar_bodegas(nivel=1,padre='')
 {
+	linea = $('#txt_busqueda_manual_lin').val();
 	var parametros = {
 		'nivel':nivel,
 		'padre':padre,
@@ -338,6 +363,13 @@ function cargar_paquetes()
 
 function validar_asignacion_bodega(linea='')
 {
+	id = $('#txt_codigo').val();
+	console.log(id);
+	if(id=='')
+	{
+		Swal.fire('Seleccione un producto','','info');
+		return false;
+	}
 	let filas = document.querySelectorAll("#lista_pedido tr");
 	if (filas.length === 1) {
 
@@ -576,8 +608,9 @@ function cargar_info(codigo)
 
 }
 
-function abrir_modal_bodegas()
+function abrir_modal_bodegas(linea='')
 {
+	 $('#txt_busqueda_manual_lin').val(linea)
 	 $('#myModal_arbol_bodegas').modal('show');
 }
 

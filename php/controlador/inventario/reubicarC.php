@@ -16,10 +16,12 @@ if (isset($_GET['cambiar_bodega'])) {
 class reubicarC
 {
     private $modelo;
+    private $rutas;
 
     function __construct()
     {
         $this->modelo = new reubicarM();
+        $this->rutas = array();
     }
 
     function lista_stock_ubicado($parametros)
@@ -31,7 +33,21 @@ class reubicarC
 
     	
     	foreach ($datos as $key => $value) {
-    		$rutas = $this->ruta_bodega($value['CodBodega']);
+
+    		// // busca en el listado de rutas
+    		// $rutas_txt = '';
+    		// foreach ($this->rutas as $key => $item) {
+		   	//  	if ($item["codigoBod"]== $value['CodBodega']) {
+		    //     	$rutas_txt = $item["ruta"];
+		    //     	// print_r($rutas_txt);die();
+		    //     	break;
+		    // 	}
+			// }
+			// if($rutas_txt=='')
+			// {
+				$rutas_txt = $this->ruta_bodega($value['CodBodega']);
+			// }
+
     		$stock = 0;
     		$datos_inv = Leer_Codigo_Inv($value['Codigo_Inv'],date('Y-m-d'));
     		$datos[$key]['Stock'] = 0;
@@ -40,8 +56,9 @@ class reubicarC
     			$stock = $datos_inv['datos']['Stock'].' '.$datos_inv['datos']['Unidad'];
     			$datos[$key]['Stock'] = $stock;
     		}
-    		$datos[$key]['Ruta'] = $rutas;
+    		$datos[$key]['Ruta'] = $rutas_txt;
     	}
+    	// print_r($this->rutas);die();
     	return $datos;
     	// print_r($datos);die();
     }
@@ -62,7 +79,8 @@ class reubicarC
 		foreach ($pasos as $key => $value) {
 			$ruta.=$value['Bodega'].'/';			
 		}
-		$ruta = substr($ruta,0,-1);
+		$ruta = substr($ruta,0,-1);		
+		array_push($this->rutas, array('codigoBod'=>$padre,'ruta'=>$ruta));
 		return $ruta;
 	}
 

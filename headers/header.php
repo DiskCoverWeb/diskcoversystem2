@@ -124,7 +124,7 @@ function estado_licencia($f3)
 	<title>Diskcover system - <?php  $_SESSION['INGRESO']['NombreModulo'] = $NombreModulo; echo $NombreModulo; ?></title>
 	<script type="text/javascript">
 		$(document).ready(function () {
-      		setInterval(validar_session_Activa, 5000);
+      		setInterval(validar_session_Activa, 15000);
       		setInterval(notificaciones,6000)
       		labelPeriodo();
 	    });
@@ -197,12 +197,7 @@ function estado_licencia($f3)
 
 					  <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#SearchModal">
 						
-						<span class="px-5"></b> <?php if(strlen($_SESSION['INGRESO']['Nombre_Comercial'])<25) { 
-														echo $_SESSION['INGRESO']['Nombre_Comercial'].' ...<b>Ver mas</b>';
-														}else{
-															$newName  = substr($_SESSION['INGRESO']['Nombre_Comercial'], 0,25);
-															echo $newName.'... <b>Ver mas</b>';
-														} ?></span>
+						<span class="px-5"></b> <?php echo $_SESSION['INGRESO']['Nombre_Comercial'].' <i class="bx bx-info-circle fs-6 ms-2" title= "click para mas informacion"></i>'; ?></span>
 						<span class="position-absolute top-50 search-show ms-3 translate-middle-y start-0 top-50 fs-5"><i class='bx bx-buildings'></i></span>
 
 					  </div>

@@ -242,6 +242,29 @@ $('#txt_id_inv').val(id);
 async function buscar_ruta()
 {  
 
+codigo = $('#txt_bodega').val();
+codigo = codigo.trim();
+$('#txt_bodega').val(codigo);
+var parametros = {
+    'codigo':codigo,
+}
+$.ajax({
+    type: "POST",
+   url:   '../controlador/inventario/almacenamiento_bodegaC.php?cargar_lugar=true',
+     data:{parametros:parametros},
+   dataType:'json',
+    success: function(data)
+    {
+        $('#txt_bodega_title').text('Ruta:'+data);
+        // $('#txt_cod_bodega').val(codigo);
+
+    }
+});
+}
+
+async function buscar_ruta2()
+{  
+
 codigo = $('#txt_cod_lugar').val();
 codigo = codigo.trim();
 $('#txt_cod_lugar').val(codigo);
@@ -255,7 +278,7 @@ $.ajax({
    dataType:'json',
     success: function(data)
     {
-        $('#txt_bodega_title').text('Ruta:'+data);
+        $('#txt_bodega_title2').text('Ruta:'+data);
         // $('#txt_cod_bodega').val(codigo);
 
     }
@@ -291,24 +314,26 @@ function bodegaPorQR(codigo){
     $('#txt_bodega').val(codigo.trim());
     $('#txt_bodega').trigger('blur');
 }
+function articuloPorQR(codigo){
+    $('#txt_cod_barras').val(codigo.trim());
+    $('#txt_cod_barras').trigger('blur');
+}
+function reubiPorQR(codigo){
+    console.log('reubi')
+    $('#txt_cod_lugar').val(codigo.trim());
+    $('#txt_cod_lugar').trigger('blur');
+    // cargar_bodegas2();
+}
 
- function escanear_qr(){
-    iniciarEscanerQR();
+ function escanear_qr(item){
+    iniciarEscanerQR(item);
         $('#modal_qr_escaner').modal('show');
 }
-function cambiarCamara()
-{
-    cerrarCamara();
-    setTimeout(() => {
-        iniciarEscanerQR();
-        $('#modal_qr_escaner').modal('show');
-         $('#qrescaner_carga').hide();
-    }, 1000);
-}
+
 
  let scanner;
  let NumCamara = 0;
- function iniciarEscanerQR() {
+ function iniciarEscanerQR(item) {
     NumCamara = $('#ddl_camaras').val();
     scanner = new Html5Qrcode("reader");
     $('#qrescaner_carga').hide();
@@ -322,7 +347,17 @@ function cambiarCamara()
                     qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
                 },
                 (decodedText) => {
-                    bodegaPorQR(decodedText);
+                    if(item=='articulo')
+                    {
+                        articuloPorQR(decodedText)
+
+                    }else if(item=='reubi')
+                    {
+                        reubiPorQR(decodedText)
+                    }else
+                    {
+                        bodegaPorQR(decodedText);
+                    }
                     scanner.stop(); // Detiene la cámara después de leer un código
                     $('#modal_qr_escaner').modal('hide');
                 },
@@ -336,16 +371,4 @@ function cambiarCamara()
     }).catch(err => console.error("Error al obtener cámaras:", err));
 }
 
-  function cerrarCamara() {
-    $('#modal_qr_escaner').modal('hide');
-    if (scanner) {
-        scanner.stop().then(() => {            
-          $('#qrescaner_carga').show();
-          $('#modal_qr_escaner').modal('hide');
-        }).catch(err => {
-            console.error("Error al detener el escáner:", err);
-        });
-    }
-}
-
-
+ 
