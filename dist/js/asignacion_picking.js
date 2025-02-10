@@ -387,7 +387,16 @@ function Eliminar(id)
         }
     });
 }
-    function guardar() {
+function guardar() {
+    
+    if(parseInt($('#txt_total_ing').val()) < parseInt($('#txt_total').val())){
+        Swal.fire('La cantidad total de productos del picking no cubre el total de productos asignados.', '', 'error');
+        return;
+    }else if(parseInt($('#txt_total_ing').val()) > parseInt($('#txt_total').val())){
+        Swal.fire('La cantidad total de productos del picking excede el total de productos asignados.', '', 'error');
+        return;
+    }
+
     codigo = $('#beneficiario').val();
     beneficiario = codigo.split('-');
     var parametros = {

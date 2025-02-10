@@ -10,17 +10,7 @@ if (isset ($_GET['tipo'])) {
 	$TC = $_GET['tipo'];
 }
 ?>
-<style>
-	#tablaGavetas td input{
-		max-width: 100px;
-		margin: 0 auto;
-		text-align: center;
-	}
 
-	#tbl_DGAsientoF td{
-		min-width: 120px;
-	}
-</style>
 <script src="../../dist/js/facturas_distribucion.js">
 	
 
@@ -162,344 +152,69 @@ if (isset ($_GET['tipo'])) {
 				<div class="row">
 				</div> -->
 			</div>
-			<div class="col-sm-3 p-2 border border-1 rounded d-flex flex-column justify-content-center">
-				<div class="row">
-					<div class="col-sm-7 text-end">
-						<b>Hora de atención:</b>
-					</div>
-					<div class="col-sm-5">
-						<input type="time" class="form-control form-control-sm" id="HoraAtencion" name="HoraAtencion" onchange="compararHoras()">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-7 text-end">
-						<b>Hora de llegada:</b>
-					</div>
-					<div class="col-sm-5">
-						<input type="time" class="form-control form-control-sm" id="HoraLlegada" name="HoraLlegada" onchange="compararHoras()">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-7 text-end">
-						<b><img src="../../img/png/hora_estado.png" height="40px" alt="">Estado:</b>
-					</div>
-					<div class="col-sm-5">
-						<input type="text" class="form-control form-control-sm" id="HorarioEstado" name="HorarioEstado" disabled>
+			<div class="col-sm-3 p-2">
+				<div class="card">
+					<div class="card-body">
+						<div class="d-flex flex-column justify-content-center">
+							<div class="row">
+								<div class="col-sm-7 text-end">
+									<b>Hora de atención:</b>
+								</div>
+								<div class="col-sm-5">
+									<input type="time" class="form-control form-control-sm" id="HoraAtencion" name="HoraAtencion" onchange="compararHoras()">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-7 text-end">
+									<b>Hora de llegada:</b>
+								</div>
+								<div class="col-sm-5">
+									<input type="time" class="form-control form-control-sm" id="HoraLlegada" name="HoraLlegada" onchange="compararHoras()">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-7 text-end">
+									<b><img src="../../img/png/hora_estado.png" height="40px" alt="">Estado:</b>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control form-control-sm" id="HorarioEstado" name="HorarioEstado" disabled>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="row p-2 border-top border-3 border-success d-flex align-items-center pb-1">
-			<div class="col-sm-3" style="width:fit-content">
-				<b>Evaluación de fundaciones:</b>
-			</div>
-			<div class="col-sm-1" style="padding: 0;cursor:pointer;" onclick="$('#modalEvaluacionFundaciones').modal('show');">
-				<div>
-					<img src="../../img/png/eval_fundaciones.png" width="50px" alt="Evaluacion fundaciones" title="EVALUACIÓN FUNDACIONES">
-				</div>
-			</div>
-			<div class="row row-cols-auto d-flex align-items-center col-sm-8">
-				<div class="col-auto text-end">
-					<b>Gavetas pendientes:</b>
-				</div>
-				<div class="col-2">
-					<input type="text" name="gavetas_pendientes" id="gavetas_pendientes2" class="form-control form-control-sm">
-				</div>
-				<div class="col-auto">
-					<button type="button" id="btn_detalle" class="btn btn-primary btn-sm btn-block" onclick="$('#modalGavetasVer').modal('show')"> Ver detalle <i class="fa fa-eye"></i></button>
+		<div class="card">
+			<div class="card-body">
+					<div class="row p-2 d-flex align-items-center pb-1">
+					<div class="col-sm-3" style="width:fit-content">
+						<b>Evaluación de fundaciones:</b>
+					</div>
+					<div class="col-sm-1" style="padding: 0;cursor:pointer;" onclick="$('#modalEvaluacionFundaciones').modal('show');">
+						<div>
+							<img src="../../img/png/eval_fundaciones.png" width="50px" alt="Evaluacion fundaciones" title="EVALUACIÓN FUNDACIONES">
+						</div>
+					</div>
+					<div class="row row-cols-auto d-flex align-items-center col-sm-8">
+						<div class="col-auto text-end">
+							<b>Gavetas pendientes:</b>
+						</div>
+						<div class="col-2">
+							<input type="text" name="gavetas_pendientes" id="gavetas_pendientes2" class="form-control form-control-sm">
+						</div>
+						<div class="col-auto">
+							<button type="button" id="btn_detalle" class="btn btn-primary btn-sm btn-block" onclick="$('#modalGavetasVer').modal('show')"> Ver detalle <i class="fa fa-eye"></i></button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<div id="contenedor-pantalla">
-<div class="row" style="display:flex;justify-content: space-between;align-items: center; width:100%; padding-bottom:5px;">
-	
-</div>
-<!-- <input type="hidden" name="CodDoc" id="CodDoc" class="form-control input-xs" value="00"> -->
-<!-- <div class="row" style="padding-bottom:5px">
-	<div class="col-sm-2">
-		<input type="hidden" id="Autorizacion">
-		<input type="hidden" id="Cta_CxP">
-		<input type="hidden" id="CodigoL">
-		<b id="title" style="display:none"></b>
-		<select class="form-control input-xs" name="DCLinea" id="DCLinea" tabindex="1"
-			onchange="numeroFactura(); tipo_documento();" style="display:none"></select>
-		<b>Fecha</b>
-		<input type="date" name="MBFecha" id="MBFecha" class="form-control input-xs"
-			value="<?php //echo date('Y-m-d'); ?>" onblur="DCPorcenIvaFD();">
-	</div>
-	<div class="col-sm-5">
-		<b>Tipo de Facturacion</b>
-		<select class="form-control input-xs" name="DCTipoFact2" id="DCTipoFact2" onblur="tipo_facturacion(this.value)">
 
-		</select>
-	</div>
-	
-	<div class="col-sm-2">
-		<b id="Label1">FACTURA No.</b>
-		<div class="row">
-			<div class="col-sm-3" id="LblSerie">
-				<b></b>
-			</div>
-			<div class="col-sm-9">
-				<input type="" class="form-control input-xs" id="TextFacturaNo" name="TextFacturaNo" readonly>
-			</div>
-		</div>
-	</div>
-	
 
-</div> -->
-
-<!-- <div class="row" style="display:flex; justify-content:center; align-items:center;">
-	<div class="col-sm-4">
-		<b>Nombre del cliente</b>
-		<div class="input-group" id="ddl" style="width:100%">
-			<select class="form-control" id="DCCliente" name="DCCliente" onchange="select()">
-				<option value="">Seleccione Cliente</option>
-			</select>
-			<span class="input-group-btn">
-				<button type="button" class="btn btn-success btn-xs btn-flat" onclick="addCliente()"
-					title="Nuevo cliente"><span class="fa fa-user-plus"></span></button>
-			</span>
-		</div>
-		<input type="hidden" name="codigoCliente" id="codigoCliente" class="form-control input-xs">
-		<input type="hidden" name="LblT" id="LblT" class="form-control input-xs">
-	</div>
-	<div class="col-sm-2">
-		<b>CI/RUC/PAS</b>
-		<input type="" name="LblRUC" id="LblRUC" class="form-control input-xs" readonly>
-		
-
-	</div>
-	<div class="col-sm-2">
-		<b>Correo Electrónico</b>
-		<input type="email" name="Lblemail" id="Lblemail" class="form-control input-xs">
-	</div>
-	
-	<div class="col-sm-4">
-		<div class="row">
-			<div class="col-sm-6 text-right">
-				<b>Hora de atención:</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="time" class="form-control input-xs" id="HoraAtencion" name="HoraAtencion" onchange="compararHoras()">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6 text-right">
-				<b>Hora de llegada:</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="time" class="form-control input-xs" id="HoraLlegada" name="HoraLlegada" onchange="compararHoras()">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6 text-right">
-				<b><img src="../../img/png/hora_estado.png" height="40px" alt="">Estado:</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="text" class="form-control input-xs text-right" id="HorarioEstado" name="HorarioEstado" disabled>
-			</div>
-		</div>
-	</div>
-</div> -->
-
-<!-- <div class="row" style="padding-bottom:5px">
-	<div class="col-sm-3">
-		<b>Saldo Pendiente</b>
-		<input name="saldoP" id="saldoP" class="form-control input-xs text-right" readonly value="0.00">
-	</div>
-	<div class="col-sm-6">
-		<b>Dirección</b>
-		<select class="form-control input-xs" id="DCDireccion" name="DCDireccion" onchange="">
-			<option value="."></option>
-		</select>
-	</div>
-</div> -->
-
-<!--<div class="row" style="padding-bottom:5px">
-	<div class="col-sm-4">
-		<div class="col-sm-5 text-right">
-			<b>Kilos a distribuir:</b>			
-		</div>
-		<div class="col-sm-7">
-			<input type="text" name="kilos_distribuir" id="kilos_distribuir" class="form-control input-xs">
-		</div>
-	</div>
-	<div class="col-sm-2">
-		<div class="col-sm-4">
-			<b>Unidad:</b>
-		</div>
-		<div class="col-sm-8">
-			<input type="text" name="unidad_dist" id="unidad_dist" class="form-control input-xs">
-		</div>
-	</div>
-	<div class="col-sm-6">
-		<div class="col-sm-3 text-right">
-			<b>Detalle:</b>
-		</div>
-		<div class="col-sm-9">
-			<input type="text" name="detalle_prod" id="detalle_prod" class="form-control input-xs">
-		</div>
-	</div>
-</div>-->
-<div class="row box box-success" style="margin-left:0; padding:5px 10px;">
-	<!--<div class="row" style="padding-bottom:5px">
-		<div class="col-sm-2">
-			<b>Kilos a distribuir:</b>			
-		</div>
-		<div class="col-sm-2">
-			<input type="text" name="kilos_distribuir" id="kilos_distribuir" class="form-control input-xs">
-		</div>
-		<div class="col-sm-2">
-			<div class="col-sm-4">
-				<b>Unidad:</b>
-			</div>
-			<div class="col-sm-8 pull-right" style="padding-right:0;padding-left:20px;">
-				<input type="text" name="unidad_dist" id="unidad_dist" class="form-control input-xs">
-			</div>
-		</div>
-		<div class="col-sm-6">
-			<div class="col-sm-3">
-				<b>Detalle:</b>
-			</div>
-			<div class="col-sm-9">
-				<input type="text" name="detalle_prod" id="detalle_prod" class="form-control input-xs">
-			</div>
-		</div>
-	</div>-->
-	<!--
-	<div class="row" style="padding-bottom:5px">
-		<div class="col-sm-6">
-			<div class="col-sm-3 text-right">
-				<b>Retirado por:</b>			
-			</div>
-			<div class="col-sm-9">
-				<input type="text" name="retirado_por" id="retirado_por" class="form-control input-xs">
-			</div>
-		</div>
-		<div class="col-sm-6">
-			<div class="col-sm-4">
-				<b>Gavetas pendientes:</b>
-			</div>
-			<div class="col-sm-3">
-				<input type="text" name="gavetas_pendientes" id="gavetas_pendientes" class="form-control input-xs">
-			</div>
-			<div class="col-sm-5">
-				<button type="button" id="btn_detalle" class="btn btn-primary btn-xs btn-block"> Ver detalle <i class="fa fa-eye"></i></button>
-			</div>
-		</div>
-	</div>
-	-->
-	<!-- <div class="row" style="padding-bottom:5px; display:flex; align-items:center">
-		<div class="col-sm-3" style="width:fit-content">
-			<b>Evaluación de fundaciones:</b>
-		</div>
-		<div class="col-sm-1" style="padding: 0;cursor:pointer;" onclick="$('#modalEvaluacionFundaciones').modal('show');">
-			<div>
-				<img src="../../img/png/eval_fundaciones.png" width="50px" alt="Evaluacion fundaciones" title="EVALUACIÓN FUNDACIONES">
-			</div>
-		</div>
-		<div class="col-sm-6">
-			<div class="col-sm-4">
-				<b>Gavetas pendientes:</b>
-			</div>
-			<div class="col-sm-3">
-				<input type="text" name="gavetas_pendientes" id="gavetas_pendientes2" class="form-control input-xs">
-			</div>
-			<div class="col-sm-5">
-				<button type="button" id="btn_detalle" class="btn btn-primary btn-xs btn-block" onclick="$('#modalGavetasVer').modal('show')"> Ver detalle <i class="fa fa-eye"></i></button>
-			</div>
-		</div>
-	</div> -->
-	<!--<div class="row" style="display:flex; align-items:center">
-		<div class="col-sm-3" style="width:fit-content">
-			<b>Evaluación de fundaciones:</b>
-		</div>
-		<div class="col-sm-1" style="padding: 0;" onclick="$('#modalEvaluacionFundaciones').modal('show');">
-			<div>
-				<img src="../../img/png/eval_fundaciones.png" width="50px" alt="Evaluacion fundaciones" title="EVALUACIÓN FUNDACIONES">
-			</div>
-		</div>
-	</div>-->
-</div>
-<!--<div class="row">
-	<div class="col-sm-4">
-		<b>NOTA</b>
-		<input type="text" name="TxtNota" id="TxtNota" class="form-control input-xs" value="." placeholder=".">
-	</div>
-	<div class="col-sm-4">
-		<b>OBSERVACION</b>
-		<input type="text" name="TxtObservacion" id="TxtObservacion" class="form-control input-xs" value="."
-			placeholder=".">
-	</div>
-	<div class="col-sm-2">
-		<b>COTIZACION</b>
-		<input type="text" name="TextCotiza" id="TextCotiza" class="form-control input-xs text-right" readonly
-			placeholder="0.00" value="0.00">
-	</div>
-	<div class="col-sm-1">
-		<b>CONVERSION</b>
-		<div class="row">
-			<div class="col-sm-6" style="padding-right:0px">
-				<label><input type="radio" name="radio_conve" id="OpcMult" value="OpcMult" disabled checked> (X)</label>
-			</div>
-			<div class="col-sm-6" style="padding-right:0px">
-				<label><input type="radio" name="radio_conve" id="OpcDiv" value="OpcDiv" disabled> (Y)</label>
-			</div>
-		</div>
-	</div>
-	<div class="col-sm-1">
-		<b>Gavetas</b>
-		<input type="text" name="TxtGavetas" id="TxtGavetas" class="form-control input-xs" value="0.00"
-			placeholder="0.00">
-	</div>
-</div>-->
 <div class="row">
-	<!--<div class="col-sm-9">
-		<div class="row box box-success" style="padding-bottom: 7px; margin-left: 0px;">
-			<div class="col-sm-6">
-				<b>Producto</b>
-				<select class="form-control input-xs" id="DCArticulo" name="DCArticulo"
-					onchange="Articulo_Seleccionado()">
-					<option value="">Seleccione un Producto</option>
-				</select>
-			</div>
-			<div class="col-sm-1" style="padding-right:0px">
-				<b>Stock</b>
-				<input type="text" name="LabelStock" id="LabelStock" class="form-control input-xs" readonly
-					style="color: red;" value="9999">
-			</div>
-			<div class="col-sm-1" style="padding-right:0px">
-				<b>Cantidad</b>
-				<input type="text" name="TextCant" id="TextCant" class="form-control input-xs" value="1"
-					onblur="valida_Stock()">
-			</div>
-			<div class="col-sm-1" style="padding-right:0px">
-				<b>P.V.P</b>
-				<input type="text" name="TextVUnit" id="TextVUnit" class="form-control input-xs" value="0.01"
-					onblur="calcular()">
-			</div>
-			<div class="col-sm-1" style="padding-right:0px">
-				<b>TOTAL</b>
-				<input type="text" name="LabelVTotal" id="LabelVTotal" class="form-control input-xs" value="0">
-			</div>
-			<div class="col-sm-2">
-				<b>Detalle</b>
-				<input type="text" name="TxtDocumentos" id="TxtDocumentos" class="form-control input-xs" value="."
-					onblur="checkModal()">
-			</div>
-
-		</div>
-		<div class="row text-center">
-			<div class="col-sm-12" id="tbl_DGAsientoF">
-
-			</div>
-
-		</div>
-
-	</div>-->
 	<div class="col-sm-12">
 		<div class="row text-center" style="padding-bottom:10px;height:250px;overflow-y:auto;">
 			<div class="col-sm-12" id="tbl_DGAsientoF">
@@ -520,18 +235,7 @@ if (isset ($_GET['tipo'])) {
 						</tr>
 					</thead>
 					<tbody id="cuerpoTablaDistri"></tbody>
-					<!--<tbody>
-						<tr>
-							<td>Código</td>
-							<td>JESUS PERDOMO</td>
-							<td>Fruver</td>
-							<td>300</td>
-							<td>0.14</td>
-							<td>42</td>
-							<td><input type="checkbox" id="producto_cheking" name="producto_cheking" checked="true"></td>
-							<td><button style="width:50px"><i class="fa fa-commenting" aria-hidden="true"></i></button></td>
-						</tr>
-					</tbody>-->
+					
 				</table>
 			</div>
 		</div>
@@ -572,100 +276,7 @@ if (isset ($_GET['tipo'])) {
 			</div>
 		</div>
 	</div>
-	<!--<div class="col-sm-3" style="display:none;">
-		<div class="row">
-			<div class="col-sm-6">
-				<b>Total Tarifa 0%</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="text" name="LabelSubTotal" id="LabelSubTotal" class="form-control input-xs text-right"
-					value="0.00" readonly onblur="TarifaLostFocus();">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<b>Total Tarifa 12%</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="text" name="LabelConIVA" id="LabelConIVA" class="form-control input-xs text-right"
-					value="0.00" readonly>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<b id="Label3">I.V.A</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="text" name="LabelIVA" id="LabelIVA" class="form-control input-xs text-right" value="0.00"
-				 readonly>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<b>Total Fact (ME)</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="text" name="LabelTotalME" id="LabelTotalME" class="form-control input-xs text-right"
-					value="0.00" readonly>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<b>EFECTIVO</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="text" name="TxtEfectivo" id="TxtEfectivo" class="form-control input-xs text-right"
-					value="0.00" onblur="calcular_pago()">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12">
-				<b>CUENTA DEL BANCO</b>
-				<select class="form-control input-xs select2" id="DCBanco" name="DCBanco">
-					<option value="">Seleccione Banco</option>
-				</select>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-3">
-				<b>Documento</b>
-			</div>
-			<div class="col-sm-9">
-				<input type="text" name="TextCheqNo" id="TextCheqNo" class="form-control input-xs" value=".">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12">
-				<b>NOMBRE DEL BANCO</b>
-				<input type="text" name="TextBanco" id="TextBanco" class="form-control input-xs" value=".">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<b>VALOR BANCO</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="text" name="TextCheque" id="TextCheque" class="form-control input-xs text-right"
-					value="0.00" onblur="calcular_pago()">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<b>CAMBIO</b>
-			</div>
-			<div class="col-sm-6">
-				<input type="text" name="LblCambio" id="LblCambio" class="form-control input-xs text-right"
-					style="color: red;" value="0.00">
-			</div>
-		</div>
-		<!--<div class="row">
-			<div class="col-sm-12"><br>
-				<button class="btn btn-default btn-block" id="btn_g"> <img src="../../img/png/grabar.png"
-						onclick="generar()"><br> Guardar</button>
-			</div>
-		</div>
-
-	</div>-->
+	
 </div>
 <br><br>
 
@@ -687,21 +298,6 @@ if (isset ($_GET['tipo'])) {
 							</tr>
 						</thead>
 						<tbody id="cuerpoTablaEFund">
-							<!--<tr>
-								<td><b>LIMPIEZA DE TRANSPORTE</b></td>
-								<td><input type="checkbox" id="limpieza_trans_bueno" name="limpieza_trans"></td>
-								<td><input type="checkbox" id="limpieza_trans_malo" name="limpieza_trans"></td>
-							</tr>
-							<tr>
-								<td><b>INSUMOS DE ALMACENAMIENTO NECESARIOS</b></td>
-								<td><input type="checkbox" id="insumos_alm_bueno" name="insumos_alm"></td>
-								<td><input type="checkbox" id="insumos_alm_malo" name="insumos_alm"></td>
-							</tr>
-							<tr>
-								<td><b>PERSONAL NECESARIO PARA RETIRO</b></td>
-								<td><input type="checkbox" id="personal_nec_bueno" name="personal_nec"></td>
-								<td><input type="checkbox" id="personal_nec_malo" name="personal_nec"></td>
-							</tr>-->
 							
 						</tbody>
 					</table>
@@ -742,90 +338,7 @@ if (isset ($_GET['tipo'])) {
 							</tr>
 						</thead>
 						<tbody id="cuerpoTablaGavetas">
-							<!--<tr>
-								<td><b>Negro</b></td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_negro_entregadas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_negro_devueltas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_negro_pendientes" onchange="calcularTotalGavetas()">
-								</td>
-							</tr>
-							<tr>
-								<td><b>Azul</b></td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_azul_entregadas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_azul_devueltas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_azul_pendientes" onchange="calcularTotalGavetas()">
-								</td>
-							</tr>
-							<tr>
-								<td><b>Gris</b></td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_gris_entregadas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_gris_devueltas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_gris_pendientes" onchange="calcularTotalGavetas()">
-								</td>
-							</tr>
-							<tr>
-								<td><b>Rojo</b></td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_rojo_entregadas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_rojo_devueltas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_rojo_pendientes" onchange="calcularTotalGavetas()">
-								</td>
-							</tr>
-							<tr>
-								<td><b>Verde</b></td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_verde_entregadas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_verde_devueltas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_verde_pendientes" onchange="calcularTotalGavetas()">
-								</td>
-							</tr>
-							<tr>
-								<td><b>Amarillo</b></td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_amarillo_entregadas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_amarillo_devueltas" onchange="calcularTotalGavetas()">
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_amarillo_pendientes" onchange="calcularTotalGavetas()">
-								</td>
-							</tr>
-							<tr>
-								<td><b>TOTAL</b></td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_total_entregadas" value="0" style="font-weight:bold" onchange="calcularTotalGavetas()" disabled>
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_total_devueltas" value="0" style="font-weight:bold" onchange="calcularTotalGavetas()" disabled>
-								</td>
-								<td>
-									<input type="text" class="form-control gavetas_info" id="gavetas_total_pendientes" value="0" style="font-weight:bold" onchange="calcularTotalGavetas()" disabled>
-								</td>
-							</tr>-->
+							
 						</tbody>
 					</table>
 				</div>
@@ -917,14 +430,7 @@ if (isset ($_GET['tipo'])) {
 					<div class="row row-cols-auto d-flex justify-content-center align-items-center gap-4 py-3">
 						<button class="col-auto btn btn-primary btn-block" id="btnToggleInfoEfectivo" stateval="1" onclick="toggleInfoEfectivo()">EFECTIVO</button>
 						<button class="col-auto btn btn-light border border-1 btn-block" id="btnToggleInfoBanco" stateval="0" onclick="toggleInfoBanco()">BANCO</button>
-						<!-- <div class="col-sm-5" style="display:flex; justify-content:center; align-items:center;">
-						</div>
-						<div class="col-sm-7" style="display:flex; justify-content:center; align-items:center;">
-						</div> -->
-						<!--<div class="col-sm-6">
-							<input type="text" name="TxtEfectivo" id="TxtEfectivo" class="form-control form-control-sm text-end"
-								value="0.00" onblur="calcular_pago()">
-						</div>-->
+						
 					</div>
 					<div id="campos_fact_efectivo" style="display:block;">
 						<div class="row">
@@ -990,12 +496,7 @@ if (isset ($_GET['tipo'])) {
 					</div>
 					
 					
-					<!--<div class="row">
-						<div class="col-sm-12"><br>
-							<button class="btn btn-default btn-block" id="btn_g"> <img src="../../img/png/grabar.png"
-									onclick="generar()"><br> Guardar</button>
-						</div>
-					</div>-->
+					
 
 				</div>
 			</div>
@@ -1059,30 +560,3 @@ if (isset ($_GET['tipo'])) {
 		</div>
 	</div>
 </div>
-<!--<div id="modalBoucher" data-backdrop="static" class="modal fade in" role="dialog" style="padding-right: 15px;">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h4 class="modal-title">Boucher</h4>
-                </div>
-                <div class="modal-body" style="margin:10px">
-                    <div class="row-sm-12">
-                        <div id="cargarArchivo" class="form-group" style="display: flex;">
-                            <label for="archivoAdd">Adjuntar recibos de pago o transferencia:</label>
-                            <input type="file" style="margin-left: 10px" class="form-control-file" id="archivoAdd" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
-                        </div>
-                    </div>
-                    <div class="row-sm-12" style="width: 100%; margin-right:10px; margin-left:10px;">
-                        <div class="form-group" style="display: flex; justify-content: center;">
-                            <div id="modalDescContainer" class="d-flex justify-content-center flex-wrap">
-								<div class="row">
-								</div>
-							</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>-->
