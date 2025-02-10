@@ -173,6 +173,7 @@ class asignacion_osM
                 {
                     $sql = " AND CP.Producto like '%".$query."%'";
                 }
+                //print_r($sql);die();
          return $this->db->datos($sql);    
     }
 

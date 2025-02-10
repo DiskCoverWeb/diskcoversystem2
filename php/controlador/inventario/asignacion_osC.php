@@ -354,15 +354,16 @@ class asignacion_osC
             $tr = '';
             foreach ($poblacion as $key => $value) {
                 $clave = array_search($value['Cmds'], array_column($datos, 'Cmds'));
-                if($clave=='') 
-                    { $item['Hombres']=0; $item['Mujeres']=0; $item['Total']=0;}else{
-                $item = $datos[$clave];
-            }   
+                if($clave==''){
+                    $item['Hombres']=0; $item['Mujeres']=0; $item['Total']=0;
+                }else{
+                    $item = $datos[$clave];
+                }   
                 // print_r($item);die();
                 $tr.='<tr><td colspan="2">'.$value['Proceso'].'</td><td>'.$item['Hombres'].'</td><td>'.$item['Mujeres'].'</td><td>'.$item['Total'].'</td></tr>';
             }
         }
-        return $tr;
+        return array('poblacion'=>$poblacion, 'datos'=>$datos);
 
     }
 

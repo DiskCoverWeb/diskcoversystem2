@@ -548,7 +548,7 @@
                 </div>
                 <div class="modal-body" style="overflow-y: auto; max-height: 300px; background: antiquewhite;">
                     <div class="table-responsive">
-                        <table class="table" id="tablaPoblacion">
+                        <table class="table table-sm table-hover" id="tablaPoblacion">
                             <thead>
                                 <tr>
                                     <th scope="col" colspan="2">Tipo de Población</th>

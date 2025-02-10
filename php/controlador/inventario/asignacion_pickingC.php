@@ -133,40 +133,44 @@ class asignacion_pickingC
             $cant_ing = $this->modelo->total_ingresados($parametros['beneficiario'],$value['Codigo'],$value['No_Hab']);
             if($cant_ing[0]['Total']!=''){ $cant = $cant_ing[0]['Total'];}
             // print_r($cant_ing);die();
-            $detalle.='<div class="row mb-3">                                    
-                   <div class="col-sm-4">   
+            $detalle.='<div class="row">                                    
+                    <div class="col-sm-4">   
                         <b>Grupo de productos</b>
-                        <h4>'.$value['Producto'].'</h4>
                     </div>
                     <div class="col-sm-4" style="padding:0px">                      
                         <b>Cantidad parcial a distribuir</b>
-                        <div class="input-group input-group-sm">
-                            <input type="text" class="form-control input-xs" value="'.number_format($value['Cantidad'],2,'.','').'" readonly="">
-                            <div class="input-group-addon input-xs">
-                                <b>Dif:</b>
-                            </div>
-                            <input type="text" class="form-control input-xs" value="'.number_format(($value['Cantidad']-$cant),2,'.','').'" readonly>                            
-                        </div>
                     </div>              
                     <div class="col-sm-4">                      
                         <b>Comentario de asignacion</b>
-                        <input type="text" class="form-control input-xs" value="'.$value['Procedencia'].'">
                     </div>                     
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <h6 class="h6 text-end">'.$value['Producto'].'</h6>
+                    </div>
+                    <div class="col-sm-4" style="padding:0px">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control form-control-sm" value="'.number_format($value['Cantidad'],2,'.','').'" readonly="">
+                            <span class="input-group-text"><b>Dif:</b></span>
+                            <input type="text" class="form-control form-control-sm" value="'.number_format(($cant),2,'.','').'" readonly>                            
+                        </div>
+                    </div>
+                    <div class="col-sm-4">                      
+                        <input type="text" class="form-control form-control-sm" value="'.$value['Procedencia'].'">
+                    </div>                               
                 </div>';
             $ddlGrupoPro.= '<option value="'.$value['Codigo'].'" >'.$value['Producto'].'</option>';
             $total =  $total+number_format($value['Cantidad'],2,'.','');
         }
         $detalle.='<div class="row">                                    
-                    <div class="col-sm-4 text-center">
-                        <label>Total</label>
+                    <div class="col-sm-4 text-end">
+                        <label><b>Total</b></label>
                     </div>
                     <div class="col-sm-4" style="padding:0px">      
                         <div class="input-group input-group-sm">
-                            <input type="text" class="form-control input-xs" value="'.$total.'" readonly>
-                            <div class="input-group-addon input-xs">
-                                <b>Dif:</b>
-                            </div>
-                            <input type="text" class="form-control input-xs" readonly>
+                            <input type="text" class="form-control form-control-sm" value="'.$total.'" readonly>
+                            <span class="input-group-text"><b>Dif:</b></span>
+                            <input type="text" class="form-control form-control-sm" readonly>
                             
                         </div>
                     </div>              

@@ -105,9 +105,9 @@
 			<div class="row">
 				<div class="input-group input-group-sm">
 					<span class="input-group-text"><b>CANTIDAD:</b></span>
-					<input type="text" class="form-control form-control-sm" id="txt_total">
+					<input type="text" class="form-control form-control-sm" id="txt_total" readonly>
 					<span class="input-group-text"><b>Dif:</b></span>
-					<input type="text" class="form-control form-control-sm" id="txt_total_ing" name="txt_total_ing">
+					<input type="text" class="form-control form-control-sm" id="txt_total_ing" name="txt_total_ing" readonly>
 					<button type="button" class="btn btn-sm btn-info" style="font-size:8pt" onclick="ver_detalle()"><i class="fa fa-eye" style="font-size:8pt;"></i>Ver detalle</button>
 				</div>
 			</div>

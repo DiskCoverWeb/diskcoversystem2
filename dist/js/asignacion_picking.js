@@ -288,13 +288,13 @@ function cargar_asignacion()
               
                 var to = parseFloat( $('#txt_total').val());
                 var ing = parseFloat(json.total);
+                // console.log(to);
+                // console.log(ing);
 
-                //console.log(to);
-                $('#txt_total_ing').val(to-ing);
-                //console.log(data);
-
-                // console.log(json);
-
+                
+                //$('#txt_total_ing').val(to-ing);
+                $('#txt_total_ing').val(ing);
+                
                 // Devolver solo la parte de la tabla para DataTables
                 return json.tabla;
             }        
