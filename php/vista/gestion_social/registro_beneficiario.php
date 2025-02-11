@@ -12,7 +12,7 @@
     <style>
         
     </style>
-    <link rel="stylesheet" href="../../dist/css/registro_beneficiario.css">
+    
 
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/es.global.min.js'></script>
@@ -56,115 +56,146 @@
                 <div id="collapseOne" class="accordion-collapse collapse show">
                     <div class="accordion-body" style="background-color:#fffacd;">
                         
-                        <div class="d-flex flex-wrap">
-                            <div id="carouselBtnIma_93" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
-                                <div class="carousel-inner">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="carouselBtnIma_93" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
+                                            <div class="carousel-inner">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <label for="select_93" style="display: block;"><b>Tipo de Beneficiario</b></label>
+                                        <select class="form-control form-control-sm" name="select_93" id="select_93"
+                                            style="width: 100%;"></select>
+                                    </div>
                                 </div>
                             </div>
-                            <!--<div id="carouselBtnIma_93" class="carousel slide" data-ride="carousel"
-                                style="margin-right: 10px;">
-                                <div class="carousel-inner">
+
+                            <div class="col-sm-3">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="carouselBtnImaDon" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
+                                            <div class="carousel-inner">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <label for="select_CxC" style="display: block;"><b>Tipo de Donación</b></label>
+                                        <select class="form-control form-control-sm" name="select_CxC" id="select_CxC"
+                                            style="width: 100%;"></select>
+                                        
+                                    </div>
                                 </div>
-                            </div>-->
+                            </div>
+
+                            <div class="col-sm-6 campoSocial">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="campoSocial">
+                                            <label for="ruc" style="display: block;"><b>CI/RUC</b></label>
+                                            <select class="form-control form-control-sm" name="ruc" id="ruc" style="width: 100%;"></select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-sm-2">
+                                        <div class="campoSocial justify-content-center align-items-center">
+                                            <img src="../../img/png/SRIlogo.png" width="80" height="50"
+                                                onclick="validarRucYValidarSriC()" id="validarSRI" title="VALIDAR RUC">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="row campoSocial">
+                                            <div class="col-sm-6" style="width:100%">
+                                                <label for="cliente" style="display: block;"><b>Nombre del
+                                                    Beneficiario/Usuario</b></label>
+                                                <div class="input-group input-group-sm">
+                                                    <select class="form-control form-control-sm" name="cliente" id="cliente"
+                                                        style="width: 100%;"></select>
+                                                    <button type="button" class="btn btn-success btn-sm"
+                                                        id="btn_nuevo_cli" onclick="addCliente()" title="Nuevo cliente" style="font-size: 8pt;">
+                                                        <span class="fa fa-user-plus" style="font-size: 8pt;"></span>
+                                                    </button>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
             
-                            <div class="flex-grow-1 me-2">
-                                <label for="select_93" style="display: block;"><b>Tipo de Beneficiario</b></label>
-                                <select class="form-control form-control-sm" name="select_93" id="select_93"
-                                    style="width: 100%;"></select>
-                            </div>
-            
-                            <div id="carouselBtnImaDon" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
-                                <div class="carousel-inner">
-                                </div>
-                            </div>
+                            
                             <!--<div id="carouselBtnImaDon" class="carousel slide" data-ride="carousel"
                                 style="margin-right: 10px;">
                                 <div class="carousel-inner">
                                 </div>
                             </div>-->
 
-                            <div class="flex-grow-1 me-2">
-                                <label for="select_CxC" style="display: block;"><b>Tipo de Donación</b></label>
-                                <select class="form-control form-control-sm" name="select_CxC" id="select_CxC"
-                                    style="width: 100%;"></select>
-                            </div>
-            
-                            <div class="campoSocial" class="flex-grow-1">
-                                <label for="ruc" style="display: block;"><b>CI/RUC</b></label>
-                                <select class="form-control form-control-sm" name="ruc" id="ruc" style="width: 100%;"></select>
-                            </div>
-            
-                            <div class="campoSocial justify-content-center align-items-center">
-                                <img src="../../img/png/SRIlogo.png" width="80" height="50"
-                                    onclick="validarRucYValidarSriC()" id="validarSRI" title="VALIDAR RUC">
-                            </div>
-            
-                            <div class="row campoSocial">
-                                <div class="col-sm-6" style="width:100%">
-                                    <label for="cliente" style="display: block;"><b>Nombre del
-                                        Beneficiario/Usuario</b></label>
-                                    <div class="input-group input-group-sm">
-                                        <select class="form-control form-control-sm" name="cliente" id="cliente"
-                                            style="width: 100%;"></select>
-                                        <button type="button" class="btn btn-success btn-sm"
-                                            id="btn_nuevo_cli" onclick="addCliente()" title="Nuevo cliente" style="font-size: 8pt;">
-                                            <span class="fa fa-user-plus" style="font-size: 8pt;"></span>
-                                        </button>
-                                        
+                            <div class="col-sm-2 campoFamilia">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label for="fechaIngreso" style="display: block;"><b>Fecha de ingreso</b></label>
+                                        <input type="date" id="fechaIngreso" class="form-control form-control-sm">
                                     </div>
                                 </div>
                             </div>
             
-                            <div class="campoFamilia flex-grow-1">
-                                <label for="fechaIngreso" style="display: block;"><b>Fecha de ingreso</b></label>
-                                <input type="date" id="fechaIngreso" class="form-control form-control-sm">
+                            <div class="col-sm-3">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="carouselBtnIma_87" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
+                                            <div class="carousel-inner">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <label for="select_87" style="display: initial;"><b>Estado</b></label>
+                                        <select class="form-select form-select-sm" name="select_87" id="select_87"
+                                            style="width: 100%;"></select>
+                                        
+                                    </div>
+                                </div>
+                
+                                <!--<div id="carouselBtnIma_87" class="carousel slide" data-ride="carousel"
+                                    style="margin-right: 10px;">
+                                    <div class="carousel-inner">
+                                    </div>
+                                </div>-->
+                
                             </div>
+            
 
-                            <div id="carouselBtnIma_87" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
-                                <div class="carousel-inner">
-                                </div>
-                            </div>
-            
-                            <!--<div id="carouselBtnIma_87" class="carousel slide" data-ride="carousel"
-                                style="margin-right: 10px;">
-                                <div class="carousel-inner">
-                                </div>
-                            </div>-->
-            
-                            <div class="flex-grow-1">
-                                <label for="select_87" style="display: initial;"><b>Estado</b></label>
-                                <select class="form-select form-select-sm" name="select_87" id="select_87"
-                                    style="width: 100%;"></select>
-                            </div>
+                            
                         </div>
-                        <div class="row campoSocial" style="margin: 10px; display: flex; flex-wrap: wrap;">
-                            <div style="flex: 1; margin-right: 10px; ">
-                                <div class="col" style="width:100%">
-                                    <label for="nombreRepre" style="display: block;"><b>Nombre Representante
-                                        Legal</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="nombreRepre" id="nombreRepre"
-                                        placeholder="Nombre Representante">
-                                </div>
+                        <div class="row campoSocial justify-content-center">
+                            <div class="col-sm-4">
+                                <label for="nombreRepre" style="display: block;"><b>Nombre Representante
+                                    Legal</b></label>
+                                <input class="form-control form-control-sm" type="text" name="nombreRepre" id="nombreRepre"
+                                    placeholder="Nombre Representante">
+                                
                             </div>
-                            <div style="flex: 1; margin-right: 10px; ">
+                            <div class="col-sm-4">
                                 <label for="ciRepre" style="display: block;"><b>CI Representante Legal</b></label>
                                 <input class="form-control form-control-sm" type="text" name="ciRepre" id="ciRepre"
                                     placeholder="CI Representante">
                             </div>
-                            <div style="flex: 1;">
+                            <div class="col-sm-4">
                                 <label for="telfRepre" style="display: block;"><b>Teléfono Representante Legal</b></label>
                                 <input class="form-control form-control-sm" type="text" name="telfRepre" id="telfRepre"
                                     placeholder="Representante legal">
                             </div>
                         </div>
             
-                        <div class="campoSocial flex-wrap" style="display:flex;">
-                            <div class="flex-grow-1 me-1">
+                        <div class="row campoSocial justify-content-center" style="display:flex;">
+                            <div class="col-sm-2">
                                 <label for="contacto" style="display: block;"><b>Contacto/Encargado</b></label>
                                 <input class="form-control form-control-sm" type="text" name="contacto" id="contacto"
                                     placeholder="Contacto">
                             </div>
-                            <div class="flex-grow-1 me-1">
+                            <div class="col-sm-2">
                                 <label for="cargo" style="display: block;"><b>Cargo</b></label>
                                 <input class="form-control form-control-sm" type="text" name="cargo" id="cargo"
                                     placeholder="Profesión">
@@ -172,15 +203,14 @@
                             <div style="max-width:60px">
                                 <img src="../../img/png/calendario2.png" width="60" height="60">
                             </div>
-                            <div class="flex-grow-1 me-1">
-                                <label for="diaEntrega" style="display: block;"><b>Día Entrega a Usuarios</b>
-                                    Finales</label>
+                            <div class="col-sm-3">
+                                <label for="diaEntrega" style="display: block;"><b>Día Entrega a Usuarios Finales</b></label>
                                 <select class="form-select form-select-sm" name="diaEntrega" id="diaEntrega"></select>
                             </div>
                             <div style="max-width:60px">
                                 <img src="../../img/png/reloj.png" width="55" height="55">
                             </div>
-                            <div class="flex-grow-1 me-1">
+                            <div class="col-sm-3">
                                 <label for="horaEntrega" style="display: block;"><b>Hora Entrega a Usuarios
                                     Finales</b></label>
                                 <input type="time" name="horaEntrega" id="horaEntrega" class="form-control form-control-sm">
@@ -188,22 +218,9 @@
                         </div>
                         
             
-                        <div class="row mt-2 d-flex justify-content-center">
+                        <div class="row mt-2 justify-content-center">
                             <div class="col-sm-3 campoFamilia" style="margin-right:10px;">
-                                <!-- <div class="row" style="display: flex; flex: 1; align-items: center;">
-                                    <div style="flex: 0 0 auto; margin-right: 10px;" id="btnPrograma">
-                                        <img src="../../img/png/programa.png" width="60" height="60"
-                                            title="TIPO DE PROGRAMA" class="icon">
-                                    </div>
-                                    <div style="flex: 1; margin-right: 10px; margin-left: 10px;">
-                                        <label for="select_85" style="display: block;">Programa</label>
-                                        <select class="form-select form-select-sm" name="select_85" id="select_85"
-                                            style="width: 100%;">
-                                            
-                                        </select>
-                                    </div>
-                                </div> -->
-                                <div class="row d-flex flex-wrap align-items-center">
+                                <div class="row align-items-center">
                                     <div class="col-3" id="btnPrograma" style="cursor:pointer">
                                         <img src="../../img/png/programa.png" width="60" height="60"
                                             title="TIPO DE PROGRAMA" class="icon">
@@ -337,30 +354,6 @@
             
                         <div class="row" style="margin: 10px; display: flex; justify-content: center;">
                             <div class="col-sm-12 campoVoluntario">
-                                <div class="mensaje-form-enviado" id="mensaje-form-enviado">
-                                    <div class="res-form" id="res-form">
-                                        <!--<div class="icon-rform rf-icheck">
-                                            <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                        </div>
-                                        <p class="msg-rform">Se pudo enviar el formulario con exito</p>-->
-                                        <!--<div class="icon-rform rf-ierr">
-                                            <i class="fa fa-times-circle" aria-hidden="true"></i>
-                                        </div>
-                                        <p class="msg-rform">No se pudo enviar el formulario</p>-->
-                                        <div class="icon-rform rf-iload">
-                                            <i class="fa fa-circle-o-notch" aria-hidden="true"></i>
-                                        </div>
-                                        <p class="msg-rform">Enviando Formulario...</p>
-                                    </div>
-                                </div>
-                                <div class="contenedor-cf" id="contenedor-cf">
-                                    <div class="cargar-formulario">
-                                        <div>
-                                            <div class="icono-cargar"><i class="fa fa-circle-o-notch" aria-hidden="true"></i></div>
-                                        </div>
-                                        <div class="p-cargar">Cargando Formulario...</div>
-                                    </div>
-                                </div>
                                 <div class="form-contenedor" id="form-contenedor">
             
                                 </div>

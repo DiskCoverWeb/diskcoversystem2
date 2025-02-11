@@ -44,7 +44,7 @@ class asignacion_osM
 
         if($dia)
         {
-            $sql.=" AND  ( C.Dia_Ent = '".$dia."'";
+            $sql.=" AND  ( CD.Dia_Ent = '".$dia."'";
         }
 
         if($estado==1)

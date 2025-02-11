@@ -21,22 +21,24 @@ function Form_ActivateVoluntarios(){
             cargarEncabezado();
             construirFormulario(data);
             setRestricciones();
-            $('#contenedor-cf').css('visibility', 'hidden');
+            //$('#contenedor-cf').css('visibility', 'hidden');
         }
     });
 }
 
 function cargarEncabezado(){
     let encabezado = `
-    <div class="f-seccion encabezado">
-        <h1>Formulario de Inscripción Voluntario Operativo</h1>
-        <p>
-            Estimado/a postulante por favor llenar el formulario 
-            correctamente, si al final le falta completar algún 
-            campo el sistema no le permitirá enviar la información. 
-            Lea detenidamente la información de cada una de los campos 
-            y secciones.
-        </p>
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">Formulario de Inscripción Voluntario Operativo</h1>
+            <p>
+                Estimado/a postulante por favor llenar el formulario 
+                correctamente, si al final le falta completar algún 
+                campo el sistema no le permitirá enviar la información. 
+                Lea detenidamente la información de cada una de los campos 
+                y secciones.
+            </p>
+        </div>
     </div>
     `;
     $('#form-contenedor').html(encabezado);
@@ -73,47 +75,85 @@ function construirFormulario(data){
         let rCodSplit = seccion['Codigo'].split('.');
         if(rCodSplit.length == 1){
             cuerpoHtml += `
-                <div class="f-seccion fc-pregunta">
-                    <h2>${capitalizarString(seccion['Cuenta'])}</h2>
-                    <p>${formatearComentarioVol((seccion['Comentario'] == '.' || seccion['Comentario'] == null) ? '' : seccion['Comentario'])}</p>
-                    <img class="center-block" src="../../img/inscripcion/${seccion['Imagen']}.png" alt="" height="250px">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">${capitalizarString(seccion['Cuenta'])}</h2>
+                        <p class="text-secondary">${formatearComentarioVol((seccion['Comentario'] == '.' || seccion['Comentario'] == null) ? '' : seccion['Comentario'])}</p>
+                        <div class="row justify-content-center">
+                            <div class="col-sm-auto">
+                                <img src="../../img/inscripcion/${seccion['Imagen']}.png" alt="" height="250px">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
         }else{
             cuerpoHtml += `
-                <div class="f-seccion fc-pregunta">
-                    <div class="f-sec-label">
-                        ${capitalizarString(seccion['Cuenta'])} <span class="f-label-obl">*</span>
-                    </div>
-                    <p>${formatearComentarioVol((seccion['Comentario'] == '.' || seccion['Comentario'] == null) ? '' : seccion['Comentario'])}</p>
+                <div class="card">
+                    <div class="card-body">
+                    <label>
+                        <b>${capitalizarString(seccion['Cuenta'])} <span class="text-danger">*</span></b>
+                    </label>
+                    <p class="text-secondary">${formatearComentarioVol((seccion['Comentario'] == '.' || seccion['Comentario'] == null) ? '' : seccion['Comentario'])}</p>
                     <div class="f-sec-input">
                 `;
             if(seccion.hasOwnProperty('Respuestas')){
-                for(respuestas of seccion['Respuestas']){
-                    cuerpoHtml += `
-                        <input class="f-input f-input-${tiposInput[respuestas['Tipo']]}" type="${tiposInput[respuestas['Tipo']]}" name="${seccion['Codigo']}" id="${respuestas['Codigo']}" value="${setVoluntarioValue(seccion, respuestas)}"> <label for="${respuestas['Codigo']}"> ${capitalizarString(respuestas['Cuenta'])}</label><br/>
-                    `;
+                let arrFormRadCheck = seccion['Respuestas'].filter(r => r['Tipo']=='B' || r['Tipo']=='M')
+                let arrFormNoRC = seccion['Respuestas'].filter(r => r['Tipo']!='B' && r['Tipo']!='M')
+                
+                if(arrFormRadCheck.length > 0){
+                    cuerpoHtml += `<div class="form-check">`;
+
+                    arrFormRadCheck.forEach(respuestas => {
+                        cuerpoHtml += `
+                            <input class="form-check-input f-input f-input-${tiposInput[respuestas['Tipo']]}" type="${tiposInput[respuestas['Tipo']]}" name="${seccion['Codigo']}" id="${respuestas['Codigo']}" value="${setVoluntarioValue(seccion, respuestas)}"> <label class="form-check-label" for="${respuestas['Codigo']}"> ${capitalizarString(respuestas['Cuenta'])}</label><br/>
+                        `;
+                    })
+
+                    cuerpoHtml += `</div>`;
+                }
+
+                if(arrFormNoRC.length > 0){
+                    arrFormRadCheck.forEach(respuestas => {
+                        cuerpoHtml += `
+                            <input class="form-control form-control-sm f-input f-input-${tiposInput[respuestas['Tipo']]}" type="${tiposInput[respuestas['Tipo']]}" name="${seccion['Codigo']}" id="${respuestas['Codigo']}" value="${setVoluntarioValue(seccion, respuestas)}"> <label for="${respuestas['Codigo']}"> ${capitalizarString(respuestas['Cuenta'])}</label><br/>
+                        `;
+                    })
                 }
             }else{
                 let esPorcentaje = (seccion['Tipo']=='%');
-                cuerpoHtml += `
-                    <input class="f-input f-input-${esPorcentaje?'perc':tiposInput[seccion['Tipo']]}" type="${tiposInput[seccion['Tipo']]}" id="${seccion['Codigo']}" name="${seccion['Codigo']}" ${esPorcentaje?'min="0" max="100"':''} ${seccion['Codigo']=="01.04"?'onblur=\"verificarCedula(this)\"':''} ${seccion['Codigo']=="01.06"?'onchange=\"setEdadVoluntario()\"':''}>${esPorcentaje?'   %':''}
-                `;
+
+                if(esPorcentaje){
+                    cuerpoHtml += `
+                        <div class="input-group input-group-sm" style="width:400px">
+                            <input class="form-control form-control-sm f-input f-input-${esPorcentaje?'perc':tiposInput[seccion['Tipo']]}" type="${tiposInput[seccion['Tipo']]}" id="${seccion['Codigo']}" name="${seccion['Codigo']}" ${esPorcentaje?'min="0" max="100"':''} ${seccion['Codigo']=="01.04"?'onblur=\"verificarCedula(this)\"':''} ${seccion['Codigo']=="01.06"?'onchange=\"setEdadVoluntario()\"':''}>
+                            <span class="input-group-text">%</span>
+                        </div>
+                    `;
+                }else{
+                    cuerpoHtml += `
+                        <input style="width:400px" class="form-control form-control-sm f-input f-input-${esPorcentaje?'perc':tiposInput[seccion['Tipo']]}" type="${tiposInput[seccion['Tipo']]}" id="${seccion['Codigo']}" name="${seccion['Codigo']}" ${esPorcentaje?'min="0" max="100"':''} ${seccion['Codigo']=="01.04"?'onblur=\"verificarCedula(this)\"':''} ${seccion['Codigo']=="01.06"?'onchange=\"setEdadVoluntario()\"':''}>
+                    `;
+                }
                 if(seccion['Tipo']=="F"){cuerpoHtml += `<div class="btnsDocumentoVol" id="documentoVoluntario-${seccion['Codigo']}" style="visibility:hidden;"><button class="btn btn-primary" >Ver archivo cargado</button> <button class="btn btn-warning" onclick="cambiarArchivoVol('${seccion['Codigo']}')">Cambiar archivo</button></div>`;}
             }
             if(seccion['Tipo']=="F") {
-                cuerpoHtml += `</div><div id="f-error-${seccion['Codigo']}" class="f-error-file">`;
+                cuerpoHtml += `</div><div id="f-error-${seccion['Codigo']}" class="f-error-file text-danger">`;
             }
-            cuerpoHtml += `</div></div>`;
+            cuerpoHtml += `</div></div></div>`;
         }
     }
 
 
     cuerpoHtml += `
-            <div class="form-footer">
+            <div class="row justify-content-between">
                 <input type="hidden" id="env-insc-modo" value="1">
-                <button class="env-insc-form" id="btnEnviarInsc" onclick="enviarFormInsc()" disabled>Enviar</button>
-                <button class="reset-insc-form" id="btnResetInsc" onclick="resetFormInsc()">Borrar formulario</button>
+                <div class="col-sm-auto">
+                    <button class="btn btn-warning env-insc-form" id="btnEnviarInsc" onclick="enviarFormInsc()" disabled>Enviar</button>
+                </div>
+                <div class="col-sm-auto">
+                    <button class="btn btn-outline-warning reset-insc-form" id="btnResetInsc" onclick="resetFormInsc()">Borrar formulario</button>
+                </div>
             </div>
         </div>
     `;
@@ -233,7 +273,7 @@ function verificarCedula(elem){
                 Swal.fire({
                     title: "Ya existe un voluntario asociado a este número de cédula.",
                     text: "¿Desea actualizar sus datos?",
-                    type: 'question',
+                    icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
@@ -399,7 +439,7 @@ function enviarFormInsc(){
         );
         return;
     }
-    $("#mensaje-form-enviado").css('visibility', 'visible');
+    $("#myModal_espera").modal('show');
 
     //TODO: RESTRICCION CAMPOS OBLIGATORIOS
     
@@ -411,7 +451,7 @@ function enviarFormInsc(){
         data: formData,
         dataType: 'json',
         success: function (respuesta) {
-            $("#mensaje-form-enviado").css('visibility', 'hidden');
+            $("#myModal_espera").modal('hide');
             console.log(respuesta);
             if(respuesta['codigo'] == 1){
                 Swal.fire(
@@ -429,7 +469,7 @@ function enviarFormInsc(){
             }
         },
         error: function(err){
-            $("#mensaje-form-enviado").css('visibility', 'hidden');
+            $("#myModal_espera").modal('hide');
             Swal.fire(
                 "Error",
                 `Hubo un error al realizar la consulta. Error: ${err}.`,
@@ -1560,7 +1600,7 @@ function inicializarCalendario(events) {
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: 'Esta acción eliminará el evento',
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar'
@@ -1659,7 +1699,7 @@ function checkFiles(input) {
             Swal.fire({
                 title: 'Solo se permiten un máximo de ' + maxFiles + ' archivos.',
                 text: 'Ya cargó ' + contador + ' archivo (s). Puede eliminar algunos si es necesario.',
-                type: 'error'
+                icon: 'error'
             });
             input.value = '';
             return;
@@ -1669,7 +1709,7 @@ function checkFiles(input) {
         Swal.fire({
             title: 'Solo se permiten un máximo de ' + maxFiles + ' archivos.',
             text: 'Intentó cargar ' + files.length + ' archivo (s).',
-            type: 'error'
+            icon: 'error'
         });
         input.value = '';
     } else if (files.length > 0) {
@@ -1700,14 +1740,14 @@ function checkFiles(input) {
             Swal.fire({
                 title: 'Los nombres de los archivos no deben contener caracteres especiales',
                 text: specialChar,
-                type: 'error'
+                icon: 'error'
             });
             input.value = '';
         } else if (fileSizeLimit) {
             Swal.fire({
                 title: 'El tamaño máximo permitido por archivo es de ' + maxFileSize + 'MB.',
                 text: '',
-                type: 'error'
+                icon: 'error'
             });
             input.value = '';
         } else {
@@ -1719,7 +1759,7 @@ function checkFiles(input) {
                 Swal.fire({
                     title: 'La longitud total de los nombres de archivo supera el máximo de caracteres.',
                     text: '',
-                    type: 'error'
+                    icon: 'error'
                 });
                 input.value = '';
             } else {
@@ -1727,7 +1767,7 @@ function checkFiles(input) {
                 Swal.fire({
                     title: 'Archivos cargados con éxito',
                     text: 'Archivos seleccionados: ' + fileList,
-                    type: 'success'
+                    icon: 'success'
                 });
                 $('#modalDescarga .modal-footer').hide();
             }
@@ -2066,7 +2106,7 @@ function validarRucYValidarSriC() {
         Swal.fire({
             title: 'Por favor, seleccione un RUC',
             text: '',
-            type: 'error'
+            icon: 'error'
         });
     }
 }
@@ -2140,7 +2180,7 @@ $('#btnMostrarModal').click(function () {
         Swal.fire({
             title: 'Por favor, seleccione una organización',
             text: '',
-            type: 'info'
+            icon: 'info'
         });
     }
 });
@@ -2160,7 +2200,7 @@ function LlenarCalendario(TB) {
                     Swal.fire({
                         title: 'No se encontraron datos de asignación',
                         text: '',
-                        type: 'info'
+                        icon: 'info'
                     });
                 }
             }
@@ -2353,7 +2393,7 @@ function autorizarCambios() {
     Swal.fire({
         title: "Se requiere autorización para modificar el beneficiario: " + miCliente,
         text: "¿Desea proceder ingresando su contraseña?",
-        type: 'question',
+        icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -2376,7 +2416,7 @@ $('#btnAutorizarCambios').click(function () {
             Swal.fire({
                 title: 'No se seleccionó un Cliente',
                 text: '',
-                type: 'warning',
+                icon: 'warning',
             });
         }
     }
@@ -2582,7 +2622,7 @@ $('#btnGuardarAsignacion').click(function () {
                 Swal.fire({
                     title: '',
                     text: "Usted no está autorizado.",
-                    type: 'error',
+                    icon: 'error',
                     confirmButtonText: 'Aceptar'
                 });
             } else if (camposVacios.length > 0) {
@@ -2593,7 +2633,7 @@ $('#btnGuardarAsignacion').click(function () {
                 Swal.fire({
                     title: 'Campos Vacíos',
                     text: mensaje,
-                    type: 'error',
+                    icon: 'error',
                     confirmButtonText: 'Aceptar'
                 });
             } else {
@@ -2611,13 +2651,13 @@ $('#btnGuardarAsignacion').click(function () {
                             Swal.fire({
                                 title: 'AVISO',
                                 text: response.mensaje + (response.datos || ''),
-                                type: 'error',
+                                icon: 'error',
                                 confirmButtonText: 'Aceptar'
                             });
                         } else {
                             Swal.fire({
                                 title: response.mensaje,
-                                type: 'success',
+                                icon: 'success',
                                 confirmButtonText: 'Aceptar'
                             });
                             nombreArchivo = response.datos.result;
@@ -2679,7 +2719,7 @@ $('#btnGuardarAsignacion').click(function () {
             Swal.fire({
                 title: 'ERROR',
                 text: 'Porfavor seleccione un Tipo de Beneficiario',
-                type: 'error',
+                icon: 'error',
                 confirmButtonText: 'Aceptar'
             });
         }
@@ -2905,7 +2945,7 @@ function CamposPanelOrgSocial() {
                     Swal.fire({
                         title: 'No se encontraron datos adicionales',
                         text: '',
-                        type: 'info'
+                        icon: 'info'
                     });
                 }
             }
@@ -2917,7 +2957,7 @@ function CamposPanelOrgSocial() {
         Swal.fire({
             title: 'No se seleccionó un Beneficiario/Usuario',
             text: '',
-            type: 'warning',
+            icon: 'warning',
         });
     }
 }
@@ -3066,7 +3106,7 @@ function descargarArchivo(url, nombre) {
     Swal.fire({
         title: '',
         text: "Archivo descargado con éxito",
-        type: 'success',
+        icon: 'success',
     });
     var ruta = "../../" + url + nombre;
     var enlaceTemporal = $('<a></a>')
@@ -3088,7 +3128,7 @@ function eliminarArchivo(url, nombre) {
     Swal.fire({
         title: 'Formulario de confirmación',
         text: "(SI) Eliminar el archivo: " + nombre + "\n(NO) Cancelar",
-        type: 'question',
+        icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -3106,7 +3146,7 @@ function eliminarArchivo(url, nombre) {
                         Swal.fire({
                             title: 'Archivo eliminado con éxito',
                             text: '',
-                            type: 'success',
+                            icon: 'success',
                         });
                         nombreArchivo = data.res2;
                         $('#modalDescarga .modal-footer').hide();
@@ -3187,7 +3227,7 @@ $('#descargarArchivo').click(function () {
         Swal.fire({
             title: 'Seleccione un nombre de Beneficiario/Usuario o CI/RUC',
             text: '',
-            type: 'error',
+            icon: 'error',
         });
     }
 });

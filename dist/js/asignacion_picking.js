@@ -359,7 +359,7 @@ function eliminarlinea(id)
     Swal.fire({
         title: 'Esta seguro?',
         text: "Esta usted seguro de que quiere borrar este registro!",
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
