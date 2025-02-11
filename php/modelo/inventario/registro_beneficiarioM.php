@@ -149,8 +149,9 @@ class registro_beneficiarioM
                     Cod_Fam, Evidencias, Observaciones, Item, Etapa_Procesal
                 FROM  Clientes_Datos_Extras
                 WHERE Codigo = '" . $valor . "' 
-                AND Acreditacion = '92.02' 
                 ORDER BY Fecha_Registro DESC";
+                // AND Acreditacion = '92.02'  esto se quito del where ojo 
+                // print_r($sql);die();
         $resultado = $this->db->datos($sql);
         if (!empty($resultado)) {
             return $resultado[0];

@@ -1,466 +1,415 @@
-<html>
 
 <!--
     AUTOR DE RUTINA	: Dallyana Vanegas
-    MODIFICADO POR : Teddy Moreira
+    MODIFICADO POR : Javier farinango
     FECHA CREACION : 16/02/2024
-    FECHA MODIFICACION : 28/05/2024
+    FECHA MODIFICACION : 10/02/2025
     DESCIPCION : Interfaz de modulo Gestion Social/Registro Beneficiario
  -->
-
-<head>
-    <style>
-        
-    </style>
-    <link rel="stylesheet" href="../../dist/css/registro_beneficiario.css">
-
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/es.global.min.js'></script>
+<link rel="stylesheet" href="../../dist/css/registro_beneficiario.css">
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/es.global.min.js'></script>
    
-</head>
-<body>
-    <div>
-    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
-            <div class="ps-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
-                    <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-                    </li>
-                    </ol>
-                </nav>
-            </div>          
-        </div>
-        <div class="row row-cols-auto gx-3 pb-2 d-flex align-items-center ps-2">
-            <div class="row row-cols-auto btn-group" id="btnsContainers">
-                <a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
-                                print_r($ruta[0] . '#'); ?>" title="Salir" class="btn btn-outline-secondary">
-                    <img src="../../img/png/salire.png" width="35" height="35" alt="Salir">
-                </a>
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" id="btnGuardarAsignacion">
-                    <img src="../../img/png/disco.png" width="35" height="35" alt="Guardar">
-                </button>
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Autorizar" id="btnAutorizarCambios">
-                    <img src="../../img/png/admin.png" width="35" height="35" alt="Autorizar">
-                </button>
-            </div>
-        </div>
 
-        <div class="accordion" id="accordionExample">
-            <div class="accordion-item" id="headingOne">
-                <h2 class="accordion-header">
-                    <button class="accordion-button fw-bold" style="background-color:#f3e5ab; color:#000" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        INFORMACION GENERAL
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show">
-                    <div class="accordion-body" style="background-color:#fffacd;">
-                        
-                        <div class="d-flex flex-wrap">
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
+    <div class="ps-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0"  id="ruta_menu">
+            <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+            </li>
+            </ol>
+        </nav>
+    </div>          
+</div>
+
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <div class="btn-group" id="btnsContainers">
+            <a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
+                            print_r($ruta[0] . '#'); ?>" title="Salir" class="btn btn-outline-secondary">
+                <img src="../../img/png/salire.png" alt="Salir">
+            </a>
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" id="btnGuardarAsignacion">
+                <img src="../../img/png/grabar.png" alt="Guardar">
+            </button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Autorizar" id="btnAutorizarCambios">
+                <img src="../../img/png/admin.png" width="32" height="32" alt="Autorizar">
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item mb-2" id="headingOne">
+        <h2 class="accordion-header">
+            <button class="accordion-button fw-bold" style="background-color:#f3e5ab; color:#000" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                INFORMACION GENERAL
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show">
+            <div class="accordion-body" style="background-color:#fffacd;">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="input input-group">
                             <div id="carouselBtnIma_93" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
                                 <div class="carousel-inner">
                                 </div>
                             </div>
-                            <!--<div id="carouselBtnIma_93" class="carousel slide" data-ride="carousel"
-                                style="margin-right: 10px;">
-                                <div class="carousel-inner">
-                                </div>
-                            </div>-->
-            
                             <div class="flex-grow-1 me-2">
                                 <label for="select_93" style="display: block;"><b>Tipo de Beneficiario</b></label>
                                 <select class="form-control form-control-sm" name="select_93" id="select_93"
                                     style="width: 100%;"></select>
-                            </div>
-            
-                            <div id="carouselBtnImaDon" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
-                                <div class="carousel-inner">
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row">
+                            <div class="col-2">
+                                <div id="carouselBtnImaDon" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
+                                    <div class="carousel-inner">
+                                    </div>
                                 </div>
                             </div>
-                            <!--<div id="carouselBtnImaDon" class="carousel slide" data-ride="carousel"
-                                style="margin-right: 10px;">
-                                <div class="carousel-inner">
-                                </div>
-                            </div>-->
-
-                            <div class="flex-grow-1 me-2">
-                                <label for="select_CxC" style="display: block;"><b>Tipo de Donación</b></label>
-                                <select class="form-control form-control-sm" name="select_CxC" id="select_CxC"
-                                    style="width: 100%;"></select>
+                            <div class="col-10">
+                                <label for="select_CxC"><b>Tipo de Donación</b></label>
+                                <select class="form-control form-control-sm" name="select_CxC" id="select_CxC"></select>
                             </div>
-            
-                            <div class="campoSocial" class="flex-grow-1">
-                                <label for="ruc" style="display: block;"><b>CI/RUC</b></label>
-                                <select class="form-control form-control-sm" name="ruc" id="ruc" style="width: 100%;"></select>
+                            
+                        </div>
+                    </div>
+                   
+                    <div class="col-lg-4 campoSocial">
+                        <div class="row">
+                            <div class="col-2 p-0">
+                                 <div class="campoSocial justify-content-center align-items-center">
+                                    <img src="../../img/png/SRIlogo.png" width="52" height="52"
+                                        onclick="validarRucYValidarSriC()" id="validarSRI" title="VALIDAR RUC">
+                                </div> 
                             </div>
-            
-                            <div class="campoSocial justify-content-center align-items-center">
-                                <img src="../../img/png/SRIlogo.png" width="80" height="50"
-                                    onclick="validarRucYValidarSriC()" id="validarSRI" title="VALIDAR RUC">
-                            </div>
-            
-                            <div class="row campoSocial">
-                                <div class="col-sm-6" style="width:100%">
-                                    <label for="cliente" style="display: block;"><b>Nombre del
-                                        Beneficiario/Usuario</b></label>
+                            <div class="col-10 ">
+                                 <label for="cliente"><b>Nombre del Beneficiario/Usuario</b></label>
                                     <div class="input-group input-group-sm">
-                                        <select class="form-control form-control-sm" name="cliente" id="cliente"
-                                            style="width: 100%;"></select>
+                                        <select class="form-control form-control-sm" name="cliente" id="cliente"></select>
                                         <button type="button" class="btn btn-success btn-sm"
                                             id="btn_nuevo_cli" onclick="addCliente()" title="Nuevo cliente" style="font-size: 8pt;">
                                             <span class="fa fa-user-plus" style="font-size: 8pt;"></span>
                                         </button>
                                         
                                     </div>
-                                </div>
-                            </div>
-            
-                            <div class="campoFamilia flex-grow-1">
-                                <label for="fechaIngreso" style="display: block;"><b>Fecha de ingreso</b></label>
-                                <input type="date" id="fechaIngreso" class="form-control form-control-sm">
-                            </div>
-
-                            <div id="carouselBtnIma_87" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
-                                <div class="carousel-inner">
-                                </div>
-                            </div>
-            
-                            <!--<div id="carouselBtnIma_87" class="carousel slide" data-ride="carousel"
-                                style="margin-right: 10px;">
-                                <div class="carousel-inner">
-                                </div>
-                            </div>-->
-            
-                            <div class="flex-grow-1">
-                                <label for="select_87" style="display: initial;"><b>Estado</b></label>
-                                <select class="form-select form-select-sm" name="select_87" id="select_87"
-                                    style="width: 100%;"></select>
+                                    <label for="ruc"><b>CI/RUC:</b><span id="lbl_ci"></span></label>
                             </div>
                         </div>
-                        <div class="row campoSocial" style="margin: 10px; display: flex; flex-wrap: wrap;">
-                            <div style="flex: 1; margin-right: 10px; ">
-                                <div class="col" style="width:100%">
-                                    <label for="nombreRepre" style="display: block;"><b>Nombre Representante
-                                        Legal</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="nombreRepre" id="nombreRepre"
-                                        placeholder="Nombre Representante">
+                    </div>
+                    <div class="col-lg-4 campoFamilia">
+                        <div class="flex-grow-1">
+                            <label for="fechaIngreso"><b>Fecha de ingreso</b></label>
+                            <input type="date" id="fechaIngreso" class="form-control form-control-sm">
+                        </div>
+                       
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row">
+                            <div class="col-2 p-0">
+                                <div id="carouselBtnIma_87" class="carousel slide" data-bs-ride="carousel" style="cursor:pointer">
+                                    <div class="carousel-inner">
+                                    </div>
                                 </div>
                             </div>
-                            <div style="flex: 1; margin-right: 10px; ">
-                                <label for="ciRepre" style="display: block;"><b>CI Representante Legal</b></label>
-                                <input class="form-control form-control-sm" type="text" name="ciRepre" id="ciRepre"
-                                    placeholder="CI Representante">
-                            </div>
-                            <div style="flex: 1;">
-                                <label for="telfRepre" style="display: block;"><b>Teléfono Representante Legal</b></label>
-                                <input class="form-control form-control-sm" type="text" name="telfRepre" id="telfRepre"
-                                    placeholder="Representante legal">
-                            </div>
-                        </div>
-            
-                        <div class="campoSocial flex-wrap" style="display:flex;">
-                            <div class="flex-grow-1 me-1">
-                                <label for="contacto" style="display: block;"><b>Contacto/Encargado</b></label>
-                                <input class="form-control form-control-sm" type="text" name="contacto" id="contacto"
-                                    placeholder="Contacto">
-                            </div>
-                            <div class="flex-grow-1 me-1">
-                                <label for="cargo" style="display: block;"><b>Cargo</b></label>
-                                <input class="form-control form-control-sm" type="text" name="cargo" id="cargo"
-                                    placeholder="Profesión">
-                            </div>
-                            <div style="max-width:60px">
+                            <div class="col-10">
+                                <label for="select_87"><b>Estado</b></label>
+                                <select class="form-select form-select-sm" name="select_87" id="select_87"></select>                                
+                            </div>                            
+                        </div> 
+                    </div>
+                </div> 
+                <div class="row campoSocial">
+                    <div class="col-lg-4">
+                        <label for="nombreRepre" style="display: block;"><b>Nombre Representante Legal</b></label>
+                        <input class="form-control form-control-sm" type="text" name="nombreRepre" id="nombreRepre" placeholder="Nombre Representante">                        
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="ciRepre" style="display: block;"><b>CI Representante Legal</b></label>
+                        <input class="form-control form-control-sm" type="text" name="ciRepre" id="ciRepre" placeholder="CI Representante">                        
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="telfRepre"><b>Teléfono Representante Legal</b></label>
+                        <input class="form-control form-control-sm" type="text" name="telfRepre" id="telfRepre" placeholder="Representante legal">                        
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="contacto"><b>Contacto/Encargado</b></label>
+                        <input class="form-control form-control-sm" type="text" name="contacto" id="contacto" placeholder="Contacto">                        
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="cargo"><b>Cargo</b></label>
+                        <input class="form-control form-control-sm" type="text" name="cargo" id="cargo" placeholder="Profesión">                        
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="row">
+                            <div class="col-3">
                                 <img src="../../img/png/calendario2.png" width="60" height="60">
                             </div>
-                            <div class="flex-grow-1 me-1">
-                                <label for="diaEntrega" style="display: block;"><b>Día Entrega a Usuarios</b>
-                                    Finales</label>
+                            <div class="col-9">
+                                 <label for="diaEntrega"><b>Día Entrega visita</b></label>
                                 <select class="form-select form-select-sm" name="diaEntrega" id="diaEntrega"></select>
                             </div>
-                            <div style="max-width:60px">
-                                <img src="../../img/png/reloj.png" width="55" height="55">
-                            </div>
-                            <div class="flex-grow-1 me-1">
-                                <label for="horaEntrega" style="display: block;"><b>Hora Entrega a Usuarios
-                                    Finales</b></label>
-                                <input type="time" name="horaEntrega" id="horaEntrega" class="form-control form-control-sm">
-                            </div>
                         </div>
-                        
-            
-                        <div class="row mt-2 d-flex justify-content-center">
-                            <div class="col-sm-3 campoFamilia" style="margin-right:10px;">
-                                <!-- <div class="row" style="display: flex; flex: 1; align-items: center;">
-                                    <div style="flex: 0 0 auto; margin-right: 10px;" id="btnPrograma">
-                                        <img src="../../img/png/programa.png" width="60" height="60"
-                                            title="TIPO DE PROGRAMA" class="icon">
-                                    </div>
-                                    <div style="flex: 1; margin-right: 10px; margin-left: 10px;">
-                                        <label for="select_85" style="display: block;">Programa</label>
-                                        <select class="form-select form-select-sm" name="select_85" id="select_85"
-                                            style="width: 100%;">
-                                            
-                                        </select>
-                                    </div>
-                                </div> -->
-                                <div class="row d-flex flex-wrap align-items-center">
-                                    <div class="col-3" id="btnPrograma" style="cursor:pointer">
-                                        <img src="../../img/png/programa.png" width="60" height="60"
-                                            title="TIPO DE PROGRAMA" class="icon">
-                                    </div>
-                                    <div class="col-9">
-                                        <label for="select_85" style="display: block;"><b>Programa</b></label>
-                                        <select class="form-select form-select-sm" name="select_85" id="select_85"
-                                            style="width: 100%;">
-                                            
-                                        </select>
-                                    </div>
-                                </div>
-            
-                                <div class="row">
-                                    <div style="flex: 1; margin-right: 10px; margin-left: 10px;">
-                                        <label for="grupo" style="display: block;"><b>Grupo</b></label>
-                                        <select class="form-select form-select-sm" name="grupo" id="grupo"
-                                            style="width: 100%;"></select>
-                                    </div>
-                                </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="row">
+                            <div class="col-3">
+                                <img src="../../img/png/reloj.png" width="55" height="55">                                
+                            </div>         
+                            <div class="col-9">
+                                <label for="horaEntrega"><b>Hora de visita</b></label>
+                                <input type="time" name="horaEntrega" id="horaEntrega" class="form-control form-control-sm">                                
+                            </div>                   
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 campoFamilia">
+                        <div class="row">
+                            <div class="col-3"  id="btnPrograma" style="cursor:pointer">
+                                <img src="../../img/png/programa.png" width="60" height="60" title="TIPO DE PROGRAMA" class="icon">
                             </div>
-            
-                            <div class="col-sm-3 campoFamilia" style="margin-right:10px;">
-                                <div class="row">
-                                    <label for="nombres" style="display: block;"><b>Nombres</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="nombres" id="nombres"
-                                        placeholder="Nombres">
-                                </div>
-                                <div class="row">
-                                    <label for="apellidos" style="display: block;"><b>Apellidos</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="apellidos" id="apellidos"
-                                        placeholder="Apellidos">
-                                </div>
-            
-                                <div class="row">
-                                    <label for="cedula" style="display: block;"><b>Cédula de identidad</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="cedula" id="cedula"
-                                        placeholder="Cédula de identidad">
-                                </div>
-            
-                                <div class="row">
-                                    <label for="nivelEscolar" style="display: block;"><b>Nivel escolar</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="nivelEscolar"
+                            <div class="col-9">
+                                <label for="select_85" style="display: block;"><b>Programa</b></label>
+                                <select class="form-select form-select-sm" name="select_85" id="select_85"></select>
+                                
+                            </div>                            
+                        </div>
+                        <div class="row">
+                            <label for="grupo"><b>Grupo</b></label>
+                            <select class="form-select form-select-sm" name="grupo" id="grupo"></select>
+                        </div>                        
+                    </div>
+                    <div class="col-lg-5 campoFamilia">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="nombres"><b>Nombres</b></label>
+                                <input class="form-control form-control-sm" type="text" name="nombres" id="nombres" placeholder="Nombres">                                
+                            </div>
+                            <div class="col-6">
+                                <label for="edad"><b>Edad</b></label>
+                                <input class="form-control form-control-sm" type="number" name="edad" id="edad" placeholder="Edad">                                
+                            </div>                            
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="apellidos"><b>Apellidos</b></label>
+                                <input class="form-control form-control-sm" type="text" name="apellidos" id="apellidos"
+                                        placeholder="Apellidos">                                
+                            </div>  
+                             <div class="col-6">
+                                <label for="ocupacion"><b>Ocupación</b></label>
+                                <input class="form-control form-control-sm" type="text" name="ocupacion" id="ocupacion"placeholder="Ocupación">
+                                
+                            </div>                           
+                        </div>
+                         <div class="row">
+                            <div class="col-6">
+                                <label for="cedula"><b>Cédula de identidad</b></label>
+                                <input class="form-control form-control-sm" type="text" name="cedula" id="cedula"       placeholder="Cédula de identidad">                                
+                            </div>  
+                             <div class="col-6">
+                                <label for="telefonoFam"><b>Teléfono</b></label>
+                                <input class="form-control form-control-sm" type="text" name="telefonoFam" id="telefonoFam" placeholder="Teléfono">
+                            </div>                           
+                        </div>
+                         <div class="row">
+                            <div class="col-6">
+                                <label for="nivelEscolar"><b>Nivel escolar</b></label>
+                                <input class="form-control form-control-sm" type="text" name="nivelEscolar"
                                         id="nivelEscolar" placeholder="Cédula de identidad">
-                                </div>
-            
-                                <div class="row">
-                                    <label for="estadoCivil" style="display: block;"><b>Estado civil</b></label>
-                                    <select class="form-select form-select-sm" name="estadoCivil" id="estadoCivil"
-                                        style="width: 100%;">
+                                
+                            </div>  
+                             <div class="col-6">
+                                <label for="pregunta" style="display: block;"><b>¿Cómo se enteró del BAQ</b>?</label>
+                                <input class="form-control form-control-sm" type="text" name="pregunta" id="pregunta"
+                                        placeholder="¿Cómo se enteró del BAQ?">                                
+                            </div>                           
+                        </div>
+                         <div class="row">
+                            <div class="col-6">
+                                <label for="estadoCivil" style="display: block;"><b>Estado civil</b></label>
+                                <select class="form-select form-select-sm" name="estadoCivil" id="estadoCivil">
                                         <option value='' disabled selected>Seleccione</option>
-                                    </select>
-                                </div>
-                            </div>
-            
-                            <div class="col-sm-3 campoFamilia" style="margin-right:10px;">
-                                <div class="row">
-                                    <label for="edad" style="display: block;"><b>Edad</b></label>
-                                    <input class="form-control form-control-sm" type="number" name="edad" id="edad"
-                                        placeholder="Edad">
-                                </div>
-            
-                                <div class="row">
-                                    <label for="ocupacion" style="display: block;"><b>Ocupación</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="ocupacion" id="ocupacion"
-                                        placeholder="Ocupación">
-                                </div>
-            
-                                <div class="row">
-                                    <label for="telefonoFam" style="display: block;"><b>Teléfono</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="telefonoFam" id="telefonoFam"
-                                        placeholder="Teléfono">
-                                </div>
-            
-                                <div class="row">
-                                    <label for="pregunta" style="display: block;"><b>¿Cómo se enteró del BAQ</b>?</label>
-                                    <input class="form-control form-control-sm" type="text" name="pregunta" id="pregunta"
-                                        placeholder="¿Cómo se enteró del BAQ?">
-                                </div>
-                            </div>
-            
-                            <div class="col-sm-6 col-md-2 p-1 d-flex justify-content-center align-items-center text-center flex-column campoVolNo"
-                                style="margin-right:10px; text-align: center; padding: 10px;">
-                                <div class="row" id="btnMostrarDir" style="cursor:pointer">
-                                    <img src="../../img/png/map.png" width="60" height="60" title="INGRESAR DIRECCIÓN"
-                                        class="icon">
-                                </div>
-                                <div class="row">
-                                    <div class="form-group">
-                                        <label><b>Ingresar Dirección</b></label>
-                                    </div>
-                                </div>
+                                    </select>                                
+                            </div>  
+                             <div class="col-6">
+                                
+                            </div>                           
+                        </div>                  
+                    </div>
+                    <div class="col-lg-3 text-center campoVolNo">
+                        <div class="row ">
+                            <div class="col-12" id="btnMostrarDir" style="cursor:pointer">
+                                <img src="../../img/png/map.png" width="60" height="60" title="INGRESAR DIRECCIÓN"
+                                        class="icon">   
                                 <br>
-                                <div class="row campoFamilia" id="btnInfoUser" style="cursor:pointer">
-                                    <img src="../../img/png/infoUser.png" width="60" height="60"
-                                        title="INFORMACIÓN DEL USUARIO" class="icon">
-                                </div>
-                                <div class="row campoFamilia">
-                                    <div class="form-group">
-                                        <label><b>Información del usuario</b></label>
-                                    </div>
-                                </div>
+                                <label><b>Ingresar Dirección</b></label>                             
                             </div>
-            
-                            <div class="col-sm-3 campoSocial" style="margin-right:10px;">
-                                <div class="row">
-                                    <label for="email" style="display: block;"><b>Email</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="email" id="email"
-                                        placeholder="Email">
-                                </div>
-                                <div class="row">
-                                    <label for="email2" style="display: block;"><b>Email 2</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="email2" id="email2"
-                                        placeholder="Email2">
-                                </div>
+                            <div class="col-12 campoFamilia" id="btnInfoUser" style="cursor:pointer">
+                                <img src="../../img/png/infoUser.png" width="60" height="60" title="INFORMACIÓN DEL USUARIO" class="icon">
+                                <br>      
+                                <label><b>Información del usuario</b></label>                          
                             </div>
-            
-                            <div class="col-sm-3 campoSocial" style="margin-right:10px;">
-                                <div class="row">
-                                    <label for="telefono" style="display: block;"><b>Teléfono 1</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="telefono" id="telefono"
-                                        placeholder="Teléfono ">
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-6 campoSocial">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="email"><b>Email</b></label>
+                                <input class="form-control form-control-sm" type="text" name="email" id="email" placeholder="Email">                                
+                            </div>
+                            <div class="col-6">
+                                <label for="telefono"><b>Teléfono 1</b></label>
+                                <input class="form-control form-control-sm" type="text" name="telefono" id="telefono"
+                                    placeholder="Teléfono ">
+                            </div>
+                            <div class="col-6">
+                                <label for="email2"><b>Email 2</b></label>
+                                <input class="form-control form-control-sm" type="text" name="email2" id="email2"
+                                    placeholder="Email2">
+                            </div>                            
+                            <div class="col-6">
+                                <label for="telefono2"><b>Teléfono 2</b></label>
+                                <input class="form-control form-control-sm" type="text" name="telefono2" id="telefono2"
+                                    placeholder="Teléfono 2">
+                            </div> 
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row" style="margin: 10px; display: flex; justify-content: center;">
+                    <div class="col-sm-12 campoVoluntario">
+                        <div class="mensaje-form-enviado" id="mensaje-form-enviado">
+                            <div class="res-form" id="res-form">                                       
+                                <div class="icon-rform rf-iload">
+                                    <i class="fa fa-circle-o-notch" aria-hidden="true"></i>
                                 </div>
-                                <div class="row">
-                                    <label for="telefono2" style="display: block;"><b>Teléfono 2</b></label>
-                                    <input class="form-control form-control-sm" type="text" name="telefono2" id="telefono2"
-                                        placeholder="Teléfono 2">
-                                </div>
+                                <p class="msg-rform">Enviando Formulario...</p>
                             </div>
                         </div>
-            
-                        <div class="row" style="margin: 10px; display: flex; justify-content: center;">
-                            <div class="col-sm-12 campoVoluntario">
-                                <div class="mensaje-form-enviado" id="mensaje-form-enviado">
-                                    <div class="res-form" id="res-form">
-                                        <!--<div class="icon-rform rf-icheck">
-                                            <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                        </div>
-                                        <p class="msg-rform">Se pudo enviar el formulario con exito</p>-->
-                                        <!--<div class="icon-rform rf-ierr">
-                                            <i class="fa fa-times-circle" aria-hidden="true"></i>
-                                        </div>
-                                        <p class="msg-rform">No se pudo enviar el formulario</p>-->
-                                        <div class="icon-rform rf-iload">
-                                            <i class="fa fa-circle-o-notch" aria-hidden="true"></i>
-                                        </div>
-                                        <p class="msg-rform">Enviando Formulario...</p>
-                                    </div>
+                        <div class="contenedor-cf" id="contenedor-cf">
+                            <div class="cargar-formulario">
+                                <div>
+                                    <div class="icono-cargar"><i class="fa fa-circle-o-notch" aria-hidden="true"></i></div>
                                 </div>
-                                <div class="contenedor-cf" id="contenedor-cf">
-                                    <div class="cargar-formulario">
-                                        <div>
-                                            <div class="icono-cargar"><i class="fa fa-circle-o-notch" aria-hidden="true"></i></div>
-                                        </div>
-                                        <div class="p-cargar">Cargando Formulario...</div>
-                                    </div>
-                                </div>
-                                <div class="form-contenedor" id="form-contenedor">
-            
-                                </div>
+                                <div class="p-cargar">Cargando Formulario...</div>
                             </div>
+                        </div>
+                        <div class="form-contenedor" id="form-contenedor">
+    
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="accordion-item" id="headingTwo">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fw-bold" id="botonInfoAdd" style="background-color:#f3e5ab; color:#000" type="button">
-                        INFORMACION ADICIONAL
-                    </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse">
-                    <div id="mostrarOrgSocialAdd" class="accordion-body" style="background-color:#fffacd;">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <div class="flex-grow-1 mx-2">
-                                <b>Tipo de Entrega</b>
-                                <select class="form-select form-select-sm" name="select_88" id="select_88"
-                                    style="width: 100%;"></select>
-                            </div>
-                            <div class="flex-grow-1 mx-2">
+        </div>
+    </div>
+    <div class="accordion-item" id="headingTwo">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed fw-bold" id="botonInfoAdd" style="background-color:#f3e5ab; color:#000" type="button">
+                INFORMACION ADICIONAL
+            </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse">
+            <div id="mostrarOrgSocialAdd" class="accordion-body" style="background-color:#fffacd;">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <b>Tipo de Entrega</b>
+                        <select class="form-select form-select-sm" name="select_88" id="select_88"></select>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="row">
+                            <div class="col-3">
                                 <img src="../../img/png/calendario2.png" width="60" height="60" id="btnMostrarModal"
-                                    title="CALENDARIO ASIGNACION">
+                                    title="CALENDARIO ASIGNACION">                                
                             </div>
-                            <div class="flex-grow-1 mx-2">
-                                <b>Día de Entrega a BAQ</b>
-                                <select class="form-select form-select-sm" name="diaEntregac" id="diaEntregac"
-                                    style="width: 100%;"></select>
+                            <div class="col-9">
+                                <b>Día Entrega en BAQ</b>
+                                <select class="form-select form-select-sm" name="diaEntregac" id="diaEntregac"></select>
                             </div>
-                            <div class="flex-grow-1 mx-2">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="row">
+                            <div class="col-3">                
                                 <img src="../../img/png/reloj.png" width="55" height="55">
                             </div>
-                            <div class="flex-grow-1 flex-fill mx-2">
-                                <b>Hora de Entrega a BAQ</b>
-                                
-                                <input type="time" name="horaEntregac" id="horaEntregac" class="form-control form-control-sm">
-                            </div>
-                            <div class="flex-grow-1 mx-2">
-                                <b>Frecuencia</b>
-                                
-                                <select class="form-select form-select-sm" name="select_86" id="select_86"
-                                    style="width: 100%;"></select>
-                            </div>
-                            <div id="comentariodiv" class="flex-grow-1 mx-2"
-                                style="display: none;">
-                                <b>Comentario (máximo 85 caracteres)</b>
-                                
-                                <textarea class="form-control form-control-sm" id="comentario" rows="2" style="resize: none"
+                            <div class="col-9">
+                                <b>Hora Entrega en BAQ</b>
+                                <input type="time" name="horaEntregac" id="horaEntregac" class="form-control form-control-sm">                               
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <b>Frecuencia</b>
+                        <select class="form-select form-select-sm" name="select_86" id="select_86"></select>
+                    </div>
+                    <div class="col-lg-3" id="comentariodiv" style="display: none;">
+                        <b>Comentario (máximo 85 caracteres)</b>
+                        <textarea class="form-control form-control-sm" id="comentario" rows="2" style="resize: none"
                                     maxlength="85"></textarea>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-center align-items-center">
-                            <div class="flex-grow-1 mx-2">
+                    </div>
+                     <div class="col-lg-4">
+                        <div class="row">
+                            <div class="col-3">
                                 <img src="../../img/png/grupoEdad.png" width="60" height="60" id="btnMostrarGrupo"
-                                    title="TIPO DE POBLACIÓN">
+                                    title="TIPO DE POBLACIÓN">                                
                             </div>
-                            <div class="flex-grow-1 mx-2">
+                            <div class="col-9">
                                 <b>Total de Personas Atendidas</b>
-                                
-                                <input type="number" name="totalPersonas" id="totalPersonas"
-                                    class="form-control form-control-sm" min="0" max="100" readonly>
-                            </div>
-
-                            <div class="flex-grow-1 mx-2">
-                                <b>Acción Social</b>
-                                <select class="form-select form-select-sm" name="select_92" id="select_92"
-                                    style="width: 100%;"></select>
-                            </div>
-                            <div class="flex-grow-1 mx-2">
-                                <b>Vulnerabilidad</b>
-                                <select class="form-select form-select-sm" name="select_90" id="select_90"
-                                    style="width: 100%;"></select>
-                            </div>
-                            <div class="flex-grow-1 mx-2">
-                                <b>Tipo de Atención</b>
-                                <select class="form-select form-select-sm" name="select_89" id="select_89"
-                                    style="width: 100%;"></select>
+                                <input type="number" name="totalPersonas" id="totalPersonas" class="form-control form-control-sm" min="0" max="100" readonly>                                
                             </div>
                         </div>
+                    </div>
+                     <div class="col-lg-3">
+                        <b>Acción Social</b>
+                        <select class="form-select form-select-sm" name="select_92" id="select_92"></select>                        
+                    </div>
+                     <div class="col-lg-3">
+                        <b>Vulnerabilidad</b>
+                        <select class="form-select form-select-sm" name="select_90" id="select_90"></select>                        
+                    </div>
+                     <div class="col-lg-2">
+                        <b>Tipo de Atención</b>
+                        <select class="form-select form-select-sm" name="select_89" id="select_89"></select>
+                    </div>
+                    <div class="col-lg-12 col-md-6 col-sm-12 text-end">
+                        <div class="row">
+                            <div class="col-3">
+                                <img src="../../img/png/adjuntar-archivo.png" width="60" height="60" title="DESCARGAR ARCHIVO">                                 
+                                <label for="archivoAdd"><b>Archivos Adjuntos</b></label>                               
+                            </div>
+                            <div class="col-9">                                
+                                <textarea placeholder="Informacion nutricional" class="form-control form-control-sm h-100" id="infoNut" rows="4" style="resize: none"></textarea>
+                                
+                            </div>                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                        
+                        
                         <div class="row">
                             <div class="col-sm-6"></div>
                             <div class="col-sm-1 mx-2">
                                 <div class="d-flex justify-content-center">
                                     <a href="#" id="descargarArchivo">
-                                        <img src="../../img/png/adjuntar-archivo.png" width="60" height="60"
-                                            title="DESCARGAR ARCHIVO">
+                                       
                                     </a>
                                 </div>
                                 <div class="row">
-                                    <label for="archivoAdd"><b>Archivos Adjuntos</b></label>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="row">
                                     <div class="form-floating">
-                                        <textarea placeholder="" class="form-control form-control-sm h-100" id="infoNut" rows="4"
-                                            style="resize: none"></textarea>
-                                        <label for="infoNut" style="display: block;">Información Nutricional</label>
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -538,7 +487,8 @@
         </div>
         
     </div>
-    <br><br>
+
+
     <div class="modal" id="mycalendar">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="background-color: white; ">
@@ -1541,7 +1491,5 @@
             </div>
         </div>
     </div>
-
-</body>
 
 <script src="../../dist/js/registro_beneficiario.js"></script>
