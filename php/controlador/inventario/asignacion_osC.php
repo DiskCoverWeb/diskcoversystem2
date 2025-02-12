@@ -1,5 +1,6 @@
 <?php
 require_once(dirname(__DIR__, 2) . "/modelo/inventario/asignacion_osM.php");
+require_once(dirname(__DIR__,2)."/comprobantes/SRI/autorizar_sri.php");
 
 $controlador = new asignacion_osC();
 if (isset($_GET['initPAge'])) {
@@ -10,7 +11,7 @@ if (isset($_GET['Beneficiario'])) {
     $query = '';
     $dia = '';
     if (isset($_GET['query'])) {  $query = $_GET['query'];   }
-    if (isset($_GET['dia'])) {  $dia = $_GET['dia'];   }
+    if (isset($_GET['dia'])) {  $dia =   $_GET['dia'];   }
 
     // print_r($_GET);die();
     echo json_encode($controlador->tipoBeneficiario($query,$dia));
@@ -82,10 +83,11 @@ if(isset($_GET['eliminar_asignacion_beneficiario'])){
 class asignacion_osC
 {
     private $modelo;
+    private $sri;
 
     public function __construct()
     {
-
+        $this->sri = new autorizacion_sri();
         $this->modelo = new asignacion_osM();
 
     }
@@ -101,10 +103,14 @@ class asignacion_osC
     {
         // print_r($parametros);die();
           $this->modelo->cambiar_estado_all();
+          $clientes_dia = $this->modelo->Cliente_datos_Extra($parametros['dia']);
+          foreach ($clientes_dia as $key => $value) {
             SetAdoAddNew("Clientes");             
             SetAdoFields("Estado",'1');
-            SetAdoFieldsWhere('Dia_Ent',$parametros['dia']);
+            SetAdoFieldsWhere('Codigo',$value['Codigo']);
             SetAdoUpdateGeneric();
+          }
+           
     }
     // function tipoBeneficiario($query,$dia)
     // {
@@ -167,7 +173,7 @@ class asignacion_osC
     {
         //encero los que estan con activo a clientes
           
-            $datos = $this->modelo->tipoBeneficiario($query,1,$dia);
+            $datos = $this->modelo->tipoBeneficiario($query,1,$this->sri->quitar_carac($dia));
             // print_r($datos);
             $res = array();
             if (count($datos) == 0) {

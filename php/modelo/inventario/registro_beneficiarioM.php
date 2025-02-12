@@ -148,9 +148,10 @@ class registro_beneficiarioM
                     Envio_No, No_Soc, Area, Acreditacion, Tipo_Dato,
                     Cod_Fam, Evidencias, Observaciones, Item, Etapa_Procesal
                 FROM  Clientes_Datos_Extras
-                WHERE Codigo = '" . $valor . "' " . /*
-                AND Acreditacion = '92.02' 
-                */"ORDER BY Fecha_Registro DESC";
+                WHERE Codigo = '" . $valor . "' 
+                ORDER BY Fecha_Registro DESC";
+                // AND Acreditacion = '92.02'  esto se quito del where ojo 
+                //print_r($sql);die();
         $resultado = $this->db->datos($sql);
         if (!empty($resultado)) {
             return $resultado[0];
@@ -279,7 +280,7 @@ class registro_beneficiarioM
         $sql .= " WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
                 AND Codigo = '" . $parametros['Codigo'] . "'";
     
-        print_r($sql);die();
+        //print_r($sql);die();
         return $this->db->datos($sql);
     }
     
@@ -302,7 +303,7 @@ class registro_beneficiarioM
                 '" . $parametros['NombreArchivo'] . "', 
                 '" . $parametros['Observaciones'] . "',
                 '" . $_SESSION['INGRESO']['item'] . "')";
-                print_r($sql2);die();
+                //print_r($sql2);die();
         return $this->db->datos($sql2);
     }
 

@@ -1941,7 +1941,7 @@ function llenarCarousels(valor, valor2) {
                             option += '<div class="col-md-6 col-sm-6">' +
                                 '<button type="button" class="btn btn-default btn-sm"><img src="../../img/png/' + item.picture + '.png" onclick="itemSelect(\'' + item.picture +
                                 '\',\'' + item.text + '\', \'' + item.color + '\', \'' + item.id +
-                                '\')" style="width: 60px;height: 60px;"></button><br>' +
+                                '\')" style="width: 50px;height: 50px;"></button><br>' +
                                 '<b>' + item.text + '</b>' +
                                 '</div>';
                             opt += '<option value="' + item.id + '">' + item.text + '</option>';
@@ -1959,7 +1959,7 @@ function llenarCarousels(valor, valor2) {
                                 carouselItem.addClass('active');
                             }
                             var imgSrc = '../../img/png/' + item.picture + '.png';
-                            var carouselContent = '<img src="' + imgSrc + '" alt="' + item.text + '" width="60" height="60">' +
+                            var carouselContent = '<img src="' + imgSrc + '" alt="' + item.text + '" width="100%">' +
                                 '<div class="carousel-caption">' +
                                 '</div>';
                             carouselItem.html(carouselContent);
@@ -1977,7 +1977,7 @@ function llenarCarousels(valor, valor2) {
                                     '<button type="button" class="btn btn-light border border-1 btn-sm"><img src="../../img/png/' +
                                     item.picture + '.png" onclick="itemSelect(\'' + item.picture +
                                     '\',\'' + item.text + '\', \'' + item.color + '\', \'' + item.id +
-                                    '\')" style="width: 60px;height: 60px;"></button><br>' +
+                                    '\')" style="width: 50px;height: 50px;"></button><br>' +
                                     '<b class="text-center">' + item.text + '</b>' +
                                     '</div>';
                                 opt += '<option value="' + item.id + '">' + item.text + '</option>';
@@ -1994,7 +1994,7 @@ function llenarCarousels(valor, valor2) {
                                         "itemSelect('" + item.picture + "','" + item.text + "','" + item.color +
                                         "','" + item.id + "');") +
                                     '">' +
-                                    '<img src="../../img/png/' + item.picture + '.png" style="width: 60px;height: 60px;"></button><br>' +
+                                    '<img src="../../img/png/' + item.picture + '.png" style="width: 50px;height: 50px;"></button><br>' +
                                     '<b class="text-center">' + item.text + '</b>' +
                                     '</div>';
                                 opt += '<option value="' + item.id + '">' + item.text + '</option>';
@@ -2008,7 +2008,7 @@ function llenarCarousels(valor, valor2) {
                                     '<button type="button" class="btn btn-light border border-1 btn-sm"><img src="../../img/png/' +
                                     item.picture + '.png" onclick="itemSelect(\'' + item.picture +
                                     '\',\'' + item.text + '\', \'' + item.color + '\', \'' + item.id +
-                                    '\')" style="width: 60px;height: 60px;"></button><br>' +
+                                    '\')" style="width: 50px;height: 50px;"></button><br>' +
                                     '<b class="text-center">' + item.text + '</b>' +
                                     '</div>';
                                 opt += '<option value="' + item.id + '">' + item.text + '</option>';
@@ -2099,7 +2099,7 @@ function itemSelect(picture, text, color, id) {
 
 //btn icono RUC
 function validarRucYValidarSriC() {
-    var ruc = $('#ruc').val();
+    var ruc = $('#lbl_ci').text();
     if (ruc) {
         validar_sriC(ruc);
     } else {
@@ -2117,9 +2117,7 @@ function usar_cliente(nombre, ruc, codigo, email, td = 'N') {
 
     var newOption = new Option(nombre, codigo, true, true);
     $('#cliente').append(newOption).trigger('change');
-
-    var newOption = new Option(ruc, codigo, true, true);
-    $('#ruc').append(newOption).trigger('change');
+    $('#lbl_ci').text(ruc)
 
     miCliente = nombre;
     miRuc = ruc;
@@ -2264,27 +2262,6 @@ function LlenarSelectDiaEntrega() {
 
 //select RUC y Cliente
 function LlenarSelectRucCliente() {
-    $('#ruc').select2({
-        placeholder: 'Seleccione una opción',
-        ajax: {
-            url: '../controlador/inventario/registro_beneficiarioC.php?',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    query: params.term,
-                    LlenarSelectRucCliente: true
-                }
-            },
-            processResults: function (data) {
-                return {
-                    results: data.rucs
-                };
-            },
-            cache: true
-        }
-    });
-
     $('#cliente').select2({
         width: '84%',
         placeholder: 'Seleccione una opción',
@@ -2312,6 +2289,7 @@ function LlenarSelectRucCliente() {
 function LlenarTipoDonacion() {
     $('#select_CxC').select2({
         placeholder: 'Seleccione una opcion',
+        width:'100%',
         ajax: {
             url: '../controlador/inventario/registro_beneficiarioC.php?LlenarTipoDonacion=true',
             dataType: 'json',
@@ -2350,7 +2328,8 @@ function LlenarTipoDonacion() {
 //todos los selects_num
 function LlenarSelects_Val(valor, valor2) {
     $('#select_' + valor).select2({
-        placeholder: 'Seleccione una opción',
+        placeholder: 'Seleccione una opción',        
+        width:'100%',
         ajax: {
             url: '../controlador/inventario/registro_beneficiarioC.php?LlenarSelects_Val=true',
             dataType: 'json',
@@ -2770,12 +2749,13 @@ $('#cliente').on('select2:select', function (e) {
     if (data.id === '.') {
         Swal.fire("", "No se encontró un RUC relacionado.", "error");
     } else {
-        if ($('#ruc').find("option[value='" + data.id + "']").length) {
-            $('#ruc').val(data.id).trigger('change');
-        } else {
-            var newOption = new Option(data.CI_RUC, data.id, true, true);
-            $('#ruc').append(newOption).trigger('change');
-        }
+        // if ($('#ruc').find("option[value='" + data.id + "']").length) {
+        //     $('#ruc').val(data.id).trigger('change');
+        // } else {
+        //     var newOption = new Option(data.CI_RUC, data.id, true, true);
+        //     $('#ruc').append(newOption).trigger('change');
+        // }
+        $('#lbl_ci').text(data.CI_RUC)
         var valorSeleccionado = $('#ruc').val();
         llenarCamposInfo(miCodigo);
     }
@@ -3237,3 +3217,13 @@ $('#divNoFile').on('click', 'span.text-danger', function () {
     var archivoClic = $(this).text();
     DownloadOrDelete(archivoClic, true);
 });
+
+   function addCliente(otherName = 0) {
+      var src = "../vista/modales.php?FCliente=true";
+      $('#FCliente').attr('src', src);
+      if (otherName == 0) {
+        $("#myModal").modal("show");
+      } else {
+        $(".myModalNuevoCliente").modal("show");
+      }
+    }

@@ -226,6 +226,7 @@ function autocoplet_pro2() {
 
     $('#grupProd').select2({
         placeholder: 'Seleccione una producto',
+        width:'100%',
         ajax: {
             url: url_,
             dataType: 'json',

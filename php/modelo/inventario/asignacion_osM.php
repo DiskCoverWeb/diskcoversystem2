@@ -193,6 +193,17 @@ class asignacion_osM
         return $this->db->String_Sql($sql);
     }
 
+    function Cliente_datos_Extra($dia)
+    {
+        $sql= " SELECT CD.* 
+                FROM Clientes_Datos_Extras CD
+                INNER JOIN Clientes C on CD.Codigo = C.Codigo 
+                WHERE CD.Dia_Ent = '".$dia."'";
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+
+    }
+
 
 
 
