@@ -258,6 +258,9 @@ var valTC = 'FA';
 			dataType: 'json',
 			success: function (datos) {
 				$('#myModal_espera').modal('hide');
+				$('.gdet_pendientes').text('0');
+				$('#gavetas_total_pendientes_ver b').text('0');
+				$('#gavetas_pendientes2').val('0');
 				if (datos['res'] == 1) {
 					let valoresGavetas = datos['contenido']
 					let estadovGavs = "";
@@ -1525,7 +1528,7 @@ function tipo_facturacion(valor)
 				let gav_entregadas = gavetas[0].value.trim()=="" ? 0 : parseInt(gavetas[0].value);
 				let gav_devueltas = gavetas[1].value.trim()=="" ? 0 : parseInt(gavetas[1].value);
 				let gav_pendientes = gavetas[2].value.trim()=="" ? 0 : parseInt(gavetas[2].value);
-				if(gav_entregadas != 0 && gav_devueltas != 0){
+				if(gav_entregadas != 0 || gav_devueltas != 0){
 					let p = {
 						'cod_inv': ftgId,
 						'entregadas': gav_entregadas,

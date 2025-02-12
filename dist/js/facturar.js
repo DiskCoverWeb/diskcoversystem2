@@ -82,6 +82,11 @@ $(document).ready(function () {
         $('#Label13').text('C.I./R.U.C. (' + data.TD + ')');
     });
 
+    $('#TxtEmail').on('focus', (e) => {
+        if($('#DCCliente').val()==''){
+            Swal.fire('Por favor, seleccione un cliente', '', 'error');
+        }
+    })
 
     $('#cambiar_nombre').on('hide.bs.modal', function () {
 
@@ -211,6 +216,7 @@ function DCLineas() {
         dataType: 'json',
         success: function (data) {
             llenarComboList(data, 'DCLineas');
+            $('#DCLineas').trigger('change');
             $('#Cod_CxC').val(data[0].nombre);  //FA
             //Lineas_De_CxC();
         }

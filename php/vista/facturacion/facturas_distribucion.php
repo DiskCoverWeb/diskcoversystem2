@@ -201,7 +201,7 @@ if (isset ($_GET['tipo'])) {
 							<b>Gavetas pendientes:</b>
 						</div>
 						<div class="col-2">
-							<input type="text" name="gavetas_pendientes" id="gavetas_pendientes2" class="form-control form-control-sm">
+							<input type="text" name="gavetas_pendientes" id="gavetas_pendientes2" class="form-control form-control-sm" readonly>
 						</div>
 						<div class="col-auto">
 							<button type="button" id="btn_detalle" class="btn btn-primary btn-sm btn-block" onclick="$('#modalGavetasVer').modal('show')"> Ver detalle <i class="fa fa-eye"></i></button>

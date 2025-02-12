@@ -2,47 +2,6 @@
 $servicio = $_SESSION['INGRESO']['Servicio'];
 ?>
 <script src="../../dist/js/facturar.js"></script>
-<style>
-	*{
-		box-sizing: border-box;
-	}
-	body {
-		padding-right: 0px !important;
-	}
-	@media screen and (max-width: 600px) {
-			.table{
-				border: 0px;
-			}
-			.table caption {
-				font-size: 14px;
-			}
-			.table thead{
-				display: none;
-			}
-			.table tr{
-				margin-bottom: 8px;
-				border-bottom: 4px solid #ddd;
-				display: block;
-			}
-			.table th, .table td{
-				font-size: 12px;
-			}
-			.table td{
-				display: block;
-				border-bottom: 1px solid #ddd;
-				text-align: right;
-			}
-			.table td:last-child{
-				border-bottom: 0px;
-			}
-			.table td::before{
-				content: attr(data-label);
-				font-weight: bold;
-				text-transform: uppercase;
-				float: left;
-			}
-		}
-</style>
 <!--<div id="interfaz_facturacion" style="display:flex; flex-direction:column; min-height:inherit;">-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
 	<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
@@ -57,98 +16,85 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 </div>
 <div id="interfaz_facturacion">
 	<div class="interfaz_botones">
-		<!--<div class="row row-no-gutters">-->
-			<?php
-				function createButton($title, $imagePath, $onclickFunction, $id)
-				{
-					echo '
-							<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" id="' . $id . '" title="' . $title . '" onclick="' . $onclickFunction . '">
-								<img src="' . $imagePath . '">
-							</button>
-						';
-				}
-			?>
+		<?php
+			function createButton($title, $imagePath, $onclickFunction, $id)
+			{
+				echo '
+						<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" id="' . $id . '" title="' . $title . '" onclick="' . $onclickFunction . '">
+							<img src="' . $imagePath . '">
+						</button>
+					';
+			}
+		?>
+		
+		<div class="row row-cols-auto gx-3 pb-2 d-flex align-items-center ps-2">
 			
-			<div class="row row-cols-auto gx-3 pb-2 d-flex align-items-center ps-2">
-				
 
-				
-				<div class="row row-cols-auto btn-group">
-					<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
-					print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
-						<img src="../../img/png/salire.png">
-					</a>
-				
-
-                    <?php createButton("Grabar factura", "../../img/png/grabar.png", "boton1()", "btnGrabar"); ?>
-                    <?php createButton("Actualizar Productos, Marcas y Bodegas", "../../img/png/update.png", "boton2()", "btnActualizar"); ?>
-                    <?php createButton("Asignar orden de trabajo", "../../img/png/taskboard.png", "boton3()", "btnOrden"); ?>
-                    <?php createButton("Asignar guía de remisión", "../../img/png/ats.png", "boton4()", "btnGuia"); ?>
-                    <?php createButton("Asignar suscripción/contrato", "../../img/png/file2.png", "boton5()", "btnSuscripcion"); ?>
-                    <?php createButton("Asignar reserva", "../../img/png/archivero2.png", "boton6()", "btnReserva"); ?>
-                    <!-- Example of a commented-out button
-                    <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-                        <button type="button" class="btn btn-default" title="Grabar factura" onclick="boton1()"><img
-                                src="../../img/png/grabar.png"></button>
-                    </div>
-                    <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-                        <button type="button" class="btn btn-default" title="Actualizar Productos, Marcas y Bodegas"
-                            onclick="boton2()"><img src="../../img/png/update.png"></button>
-                    </div>
-                    <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-                        <button type="button" class="btn btn-default" title="Asignar orden de trabajo" onclick="boton3()"><img
-                                src="../../img/png/taskboard.png"></button>
-                    </div>
-                    <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-                        <button type="button" class="btn btn-default" title="Asignar guia de remision" onclick="boton4()"><img
-                                src="../../img/png/ats.png"></button>
-                    </div>
-                    <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-                        <button type="button" class="btn btn-default" title="Asignar suscripcion / contrato" onclick="boton5()"><img
-                                src="../../img/png/file2.png"></button>
-                    </div>
-                    <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-                        <button id="btnReserva" type="button" class="btn btn-default" title="Asignar reserva"
-                            onclick="boton6()"><img src="../../img/png/archivero2.png"></button>
-                    </div>
-                    <div class="col-xs-2 col-md-2 col-sm-2 col-lg-1">
-                        <a href="#" class="btn btn-default" title="Asignar reserva" onclick="Autorizar_Factura_Actual2();" target="_blank" ><img src="../../img/png/archivero2.png"></a>
-                    </div> -->
-                </div>
-                <div class="row row-cols-auto col-7">
-                    <div class="col-6">
-						<div class="input-group input-group-sm">
-							<label for="MBoxFecha" class="input-group-text"><b>Emisión</b></label>
-							<input type="date" aria-label="FechaEmision" name="MBoxFecha" id="MBoxFecha" class="form-control form-control-sm" min="01-01-2000" max="31-12-2050"
-								value="<?php echo date('Y-m-d'); ?>" onblur="DCPorcenIva('MBoxFecha', 'DCPorcenIVA');">
-							<!--<label>Emision</label>
-							<input type="date" name="MBoxFecha" id="MBoxFecha" class="form-control form-control-sm h-25" min="01-01-2000" max="31-12-2050"
-								value="<?php //echo date('Y-m-d'); ?>" onblur="DCPorcenIva('MBoxFecha', 'DCPorcenIVA');">-->
-						</div>
-						<!--<div class="col-lg-8 col-sm-12" style="padding-right: 0px">
-						</div>-->
-					</div>
-					<div class="col-6">
-						<div class="input-group input-group-sm">
-							<label for="MBoxFechaV" class="input-group-text"><b>Vencimiento</b></label>
-							<input type="date" aria-label="FechaVenc" name="MBoxFechaV" id="MBoxFechaV" class="form-control form-control-sm" min="01-01-2000" max="31-12-2050"
-								value="<?php echo date('Y-m-d'); ?>">
-						</div>
-						<!--<b >Vencimiento</b><br>
-                        <input type="date" name="MBoxFechaV" id="MBoxFechaV" class="form-control form-control-sm h-25" min="01-01-2000" max="31-12-2050"
-                            value="<?php //echo date('Y-m-d'); ?>">-->
-						<!--<div class="col-lg-6 col-sm-12" style="padding-right: 0px">
-						</div>-->
-					</div>
-                </div>
-            </div>
-			<!--<div class="col-lg-3 col-sm-10 col-md-6 col-xs-12">-->
-				<?php //createButton("Asignar guía de remisión", "../../img/png/ats.png", "boton4()", "btnGuia",'2','2','1','4'); ?>
-				<?php //createButton("Asignar suscripción/contrato", "../../img/png/file2.png", "boton5()", "btnSuscripcion",'2','2','1','4'); ?>
-				<?php //createButton("Asignar reserva", "../../img/png/archivero2.png", "boton6()", "btnReserva",'2','2','1','4'); ?>
-			<!--</div>-->
 			
-		<!--</div>-->
+			<div class="row row-cols-auto col-5 col-xxl-4 btn-group">
+				<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
+				print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
+					<img src="../../img/png/salire.png">
+				</a>
+			
+
+				<?php createButton("Grabar factura", "../../img/png/grabar.png", "boton1()", "btnGrabar"); ?>
+				<?php createButton("Actualizar Productos, Marcas y Bodegas", "../../img/png/update.png", "boton2()", "btnActualizar"); ?>
+				<?php createButton("Asignar orden de trabajo", "../../img/png/taskboard.png", "boton3()", "btnOrden"); ?>
+				<?php createButton("Asignar guía de remisión", "../../img/png/ats.png", "boton4()", "btnGuia"); ?>
+				<?php createButton("Asignar suscripción/contrato", "../../img/png/file2.png", "boton5()", "btnSuscripcion"); ?>
+				<?php createButton("Asignar reserva", "../../img/png/archivero2.png", "boton6()", "btnReserva"); ?>
+			</div>
+			<div class="row col-xxl-8 col-7">
+				<div class="col-xxl-1 col-sm-2 col-6">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="Check1" id="Check1">
+						<label class="form-check-label" for="Check1">
+							Factura en ME
+						</label>
+					</div>
+				</div>
+				<div class="col-xxl-1 col-sm-2 col-6 p-0" id="CheqSPFrom">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="CheqSP" id="CheqSP">
+						<label class="form-check-label" for="CheqSP">
+							Sector publico
+						</label>
+					</div>
+				</div>
+				<div class="col-xxl-3 offset-sm-0 col-sm-4 offset-1 col-10 p-0">
+					<div class="input-group input-group-sm">
+						<label for="TxtCompra" class="input-group-text"><b>Orden Compra No</b></label>
+						<input type="" aria-label="TxtCompra" name="TxtCompra" id="TxtCompra" class="form-control form-control-sm text-end" value="0">
+					</div>
+				</div>
+				<div class="col-xxl-5 offset-sm-0 col-sm-3 offset-1 col-10 p-0">
+					<select class="form-select form-select-sm" id="DCMod" name="DCMod">
+						<option value="">Seleccione</option>
+					</select>
+				</div>
+				<div class="col-xxl-2 offset-sm-0 col-sm-1 offset-1 col-10 p-0">
+					<input type="text" name="LabelCodigo" id="LabelCodigo" class="form-control form-control-sm" readonly=""
+						value=".">
+				</div>
+			</div>
+			<!-- <div class="row row-cols-auto col-7">
+				<div class="col-6">
+					<div class="input-group input-group-sm">
+						<label for="MBoxFecha" class="input-group-text"><b>Emisión</b></label>
+						<input type="date" aria-label="FechaEmision" name="MBoxFecha" id="MBoxFecha" class="form-control form-control-sm" min="01-01-2000" max="31-12-2050"
+							value="<?php echo date('Y-m-d'); ?>" onblur="DCPorcenIva('MBoxFecha', 'DCPorcenIVA');">
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="input-group input-group-sm">
+						<label for="MBoxFechaV" class="input-group-text"><b>Vencimiento</b></label>
+						<input type="date" aria-label="FechaVenc" name="MBoxFechaV" id="MBoxFechaV" class="form-control form-control-sm" min="01-01-2000" max="31-12-2050"
+							value="<?php echo date('Y-m-d'); ?>">
+					</div>
+				</div>
+			</div> -->
+		</div>
 	</div>
 
 
@@ -217,7 +163,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 
 				<!-- //fin de variables -->
 				<input type="hidden" name="TipoFactura" id="TipoFactura">
-				<div class="row row-cols-auto px-2">
+				<!-- <div class="row row-cols-auto px-2">
 					<div class="col-sm-2 col-6 d-flex align-items-center pe-0">
 						<div class="form-check">
 							<input class="form-check-input" type="checkbox" name="Check1" id="Check1">
@@ -249,19 +195,35 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 						<input type="text" name="LabelCodigo" id="LabelCodigo" class="form-control form-control-sm" readonly=""
 							value=".">
 					</div>
-				</div>
+				</div> -->
 				<div class="row px-2 pb-2 mt-2">
-					
-					<div class="offset-lg-0 col-lg-4 offset-sm-0 col-sm-4 offset-1 col-10">
+					<div class="col-xxl-5 col-sm-5">
+						<div class="input-group input-group-sm">
+							<label for="MBoxFecha" class="input-group-text"><b>Emisión</b></label>
+							<input type="date" aria-label="FechaEmision" name="MBoxFecha" id="MBoxFecha" class="form-control form-control-sm" min="01-01-2000" max="31-12-2050"
+								value="<?php echo date('Y-m-d'); ?>" onblur="DCPorcenIva('MBoxFecha', 'DCPorcenIVA');">
+							<label for="MBoxFechaV" class="input-group-text"><b>Vencimiento</b></label>
+							<input type="date" aria-label="FechaVenc" name="MBoxFechaV" id="MBoxFechaV" class="form-control form-control-sm" min="01-01-2000" max="31-12-2050"
+								value="<?php echo date('Y-m-d'); ?>">
+						</div>
+					</div>
+					<!-- <div class="col-sm-3">
+						<div class="input-group input-group-sm">
+							<label for="MBoxFechaV" class="input-group-text"><b>Vencimiento</b></label>
+							<input type="date" aria-label="FechaVenc" name="MBoxFechaV" id="MBoxFechaV" class="form-control form-control-sm" min="01-01-2000" max="31-12-2050"
+								value="<?php echo date('Y-m-d'); ?>">
+						</div>
+					</div> -->
+					<div class="col-xxl-3 col-sm-3">
 						<div class="input-group input-group-sm">
 							<label for="DCLineas" class="input-group-text"><b>Cuenta x Cobrar</b></label>
-							<select aria-label="DCLineas" name="DCLineas" id="DCLineas" class="form-select form-select-sm" onblur="DCLinea_LostFocus()">
+							<select aria-label="DCLineas" name="DCLineas" id="DCLineas" class="form-select form-select-sm" onchange="DCLinea_LostFocus()">
 								<option value="">Seleccione</option>
 							</select>
 						</div>
 						<input type="hidden" name="DCLineasV" id="DCLineasV">
 					</div>
-					<div class="offset-1 col-lg-7 offset-sm-1 col-sm-7 col-12 d-flex align-items-end">
+					<div class="col-xxl-4 col-sm-4 col-12 d-flex align-items-end">
 						<!--<div class="row row-cols-auto">
 							<div>
 								<b style="color:red" id="label2">0000000000000 NOTA DE VENTA No. 001001-</b>
@@ -310,25 +272,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 					</div>
 				</div>
 				<div class="row row-cols-auto px-2 pb-2">
-					<!--<div class="col-sm-3">
-						<b>Grupo</b>
-						<select class="form-control input-xs" id="DCGrupo_No" name="DCGrupo_No"
-							onchange="autocomplete_cliente()">
-							<option value="">Seleccione</option>
-						</select>
-					</div>
-					<div class="col-sm-9">
-						<b>Cliente</b>
-						<div class="input-group">
-							<select class="form-control input-xs" id="DCCliente" name="DCCliente">
-								<option value="">Seleccione</option>
-							</select>
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-info btn-flat btn-xs" onclick="addCliente();"><i
-										class="fa fa-plus"></i></button>
-							</span>
-						</div>
-					</div>-->
+					
 					<div class="col-sm-3 col-md-3">
 						<label for="DCGrupo_No" class="form-label mb-0"><b>Grupo</b></label>
 						<div class="col-sm-12">
@@ -396,104 +340,6 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 						<input type="text" name="LabelTelefono" id="LabelTelefono" class="form-control form-control-sm">-->
 					</div>
 				</div>
-				<!--<div class="row">
-					<div class="col-sm-4">
-						<b class="col-sm-4 control-label" style="padding: 0px">Cuenta x Cobrar</b>
-						<div class="col-sm-8" style="padding: 0px">
-							<select class="form-control input-xs" id="DCLineas" name="DCLineas"
-								onblur="DCLinea_LostFocus()">
-								<option value="">Seleccione</option>
-							</select>
-
-							<input type="hidden" name="DCLineasV" id="DCLineasV">
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="row">
-							<div class="col-sm-9" style="padding-right: 0px;">
-								<b style="color:red" id="label2">0000000000000 NOTA DE VENTA No. 001001-</b>
-							</div>
-							<div class="col-sm-3" style="padding-left: 0px;">
-								<input type="text" name="TextFacturaNo" id="TextFacturaNo" class="form-control input-xs"
-									value="0">
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<b class="col-sm-4 control-label" style="padding: 0px">Saldo pendiente</b>
-						<div class="col-sm-6">
-							<input type="text" name="LblSaldo" id="LblSaldo" class="form-control input-xs" value="0.00"
-								readonly>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-3">
-						<b class="col-sm-5 control-label" style="padding: 0px">Fecha Emision</b>
-						<div class="col-sm-7" style="padding: 0px">
-							<input type="date" name="MBoxFecha" id="MBoxFecha" class="form-control input-xs"
-								value="<?php //echo date('Y-m-d'); ?>" onblur="DCPorcenIva('MBoxFecha', 'DCPorcenIVA');">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<b class="col-sm-6 control-label" style="padding: 0px">Fecha Vencimiento</b>
-						<div class="col-sm-6" style="padding: 0px">
-							<input type="date" name="MBoxFechaV" id="MBoxFechaV" class="form-control input-xs"
-								value="<?php //echo date('Y-m-d'); ?>">
-						</div>
-					</div>
-					<div class="col-sm-2">
-						<div class="col-sm-4 text-right" style="padding: 0">
-							<label for="DCPorcenIVA">I.V.A:</label>
-						</div>
-						<div class="col-sm-8">
-							<select class="form-control input-xs" name="DCPorcenIVA" id="DCPorcenIVA" onblur="cambiar_iva(this.value)"> </select>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<b class="col-sm-3 control-label" style="padding: 0px">Tipo de pago</b>
-						<div class="col-sm-8">
-							<select class="form-control input-xs" id="DCTipoPago" name="DCTipoPago">
-								<option value="">Seleccione</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-2">
-						<b>Grupo</b>
-						<select class="form-control input-xs" id="DCGrupo_No" name="DCGrupo_No"
-							onchange="autocomplete_cliente()">
-							<option value="">Seleccione</option>
-						</select>
-					</div>
-					<div class="col-sm-3">
-						<b>Cliente</b>
-						<div class="input-group">
-							<select class="form-control input-xs" id="DCCliente" name="DCCliente">
-								<option value="">Seleccione</option>
-							</select>
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-info btn-flat btn-xs" onclick="addCliente();"><i
-										class="fa fa-plus"></i></button>
-							</span>
-						</div>
-					</div>
-					<div class="col-sm-2">
-						<b id="Label13">C.I / R.U.C</b>
-						<input type="text" name="LabelRUC" id="LabelRUC" class="form-control input-xs" readonly=""
-							value=".">
-					</div>
-					<div class="col-sm-2">
-						<b>Telefono</b>
-						<input type="text" name="LabelTelefono" id="LabelTelefono" class="form-control input-xs" readonly=""
-							value=".">
-					</div>
-					<div class="col-sm-3">
-						<b>ACTUALICE SU CORREO ELECTRONICO</b>
-						<input type="text" name="TxtEmail" id="TxtEmail" class="form-control input-xs">
-					</div>
-				</div>-->
 				<div class="row row-cols-auto px-2 pb-2">
 					<div class="col-sm-8 col-12">
 						<div class="input-group input-group-sm">
@@ -503,46 +349,12 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 							<input type="text" name="Label21" id="Label21" class="form-control form-control-sm" value="" readonly="">
 						</div>
 					</div>
-					<!--<div class="col-sm-6 col-12">
-						<div class="input-group input-group-sm">
-							<label for="Label24" class="input-group-text"><b>Direccion</b></label>
-							<input type="text" aria-label="Label24" name="Label24" id="Label24" class="form-control form-control-sm" value="" readonly="">
-						</div>
-						
-						
-					</div>
-					<div class="col-sm-2 col-12">
-						<div class="input-group input-group-sm">
-							<label for="Label21" class="input-group-text"><b>No</b></label>
-							<input type="text" aria-label="Label21" name="Label21" id="Label21" class="form-control form-control-sm" value="" readonly="">
-						</div>
-
-					</div>-->
 					<div class="offset-sm-0 col-sm-4 offset-1 col-11">
 						<select class="form-select form-select-sm" id="DCMedico" name="DCMedico">
 							<option value="">Seleccione</option>
 						</select>
 					</div>
 				</div>
-				<!--<div class="row">
-					<div class="col-sm-6">
-						<b class="col-sm-2 control-label" style="padding:0;">Direccion</b>
-						<div class="col-sm-10" style="padding-right:0px">
-							<input type="text" name="Label24" id="Label24" class="form-control input-xs" value="QUINTO AÑO DE EDUCACIÓN GENERAL BASICA B">
-						</div>
-					</div>
-					<div class="col-sm-2">
-						<b class="col-sm-2 control-label" style="padding:0;">No</b>
-						<div class="col-sm-10" style="padding:0px">
-							<input type="text" name="Label21" id="Label21" class="form-control input-xs" value="" readonly="">
-						</div>
-					</div>
-					<div class="col-sm-4"> 
-						<select class="form-control input-xs" id="DCMedico" name="DCMedico">
-							
-						<option value="1801096718001-R-BI01096718">POZO AVALOS LUIS FERNANDO</option></select>
-					</div>
-				</div>-->
 				<div class="row row-cols-auto px-2 pb-2">
 					<div class="col-sm-6">
 						<div id="DCEjecutivoFrom">
@@ -559,13 +371,6 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 									<option value="">Seleccione</option>
 								</select>
 							</div>
-
-							<!--<b class="control-label"><input type="checkbox" name=""> Ejecutivo
-								de
-								venta</b>
-							<select class="form-select form-select-sm" name="DCEjecutivo" id="DCEjecutivo">
-								<option value="">Seleccione</option>
-							</select>-->
 							
 						</div>
 					</div>
@@ -585,32 +390,14 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 								<option value="">Seleccione</option>
 							</select>
 						</div>
-						<!--<b class="control-label">Bodega</b>
-						<select class="form-select form-select-sm" name="DCBodega" id="DCBodega">
-							<option value="">Seleccione</option>
-						</select>-->
 					</div>
 				</div>
-				<!--<div class="row">
-					<div class="col-sm-6">
-						<b>Observacion</b>
-						<input type="text" name="TextObs" id="TextObs" class="form-control input-xs">
-					</div>
-					<div class="col-sm-6">
-						<b>Nota</b>
-						<input type="text" name="TextNota" id="TextNota" class="form-control input-xs">
-					</div>
-				</div>-->
 				<div class="row mt-2">
 					<div class="col-sm-12">
 						<div class="input-group input-group-sm">
 							<label for="TextObs" class="input-group-text"><b>Observacion</b></label>
 							<input aria-label="TextObs" class="form-control form-control-sm" name="TextObs" id="TextObs">
 						</div>
-						<!--<b class="col-sm-1 control-label" style="padding:0;">Observacion</b>
-						<div class="col-sm-11" style="padding-right:0px">
-							<input type="text" name="TextObs" id="TextObs" class="form-control input-xs">
-						</div>-->
 					</div>
 				</div>
 				<div class="row" style="margin-top:5px;">
@@ -619,10 +406,6 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 							<label for="TextNota" class="input-group-text"><b>Nota</b></label>
 							<input aria-label="TextNota" class="form-control form-control-sm" name="TextNota" id="TextNota">
 						</div>
-						<!--<b class="col-sm-1 control-label" style="padding:0;">Nota</b>
-						<div class="col-sm-11" style="padding-right:0px">
-							<input type="text" name="TextNota" id="TextNota" class="form-control input-xs">
-						</div>-->
 					</div>
 				</div>
 				<div class="row bg-body-secondary mx-1 mt-2 p-2 border-top border-2 border-primary rounded">
