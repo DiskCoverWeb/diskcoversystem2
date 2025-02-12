@@ -738,21 +738,22 @@ var valTC = 'FA';
 			<div class="input-group input-group-sm" style="min-width: 176px;">
 				<input type="text" class="form-control form-control-sm" placeholder="Coloque un comentario">
 				<button class="btn btn-sm btn-success" style="font-size:8pt;" onclick="aceptarModificarLF(this)"><i class="fa fa-check" aria-hidden="true" style="font-size:8pt;"></i></button>
-				<button class="btn btn-sm btn-success" style="font-size:8pt;" onclick="cancelarModificarLF(this, ${valAnt})"><i class="fa fa-times" aria-hidden="true" style="font-size:8pt;"></i></button>
+				<button class="btn btn-sm btn-danger" style="font-size:8pt;" onclick="cancelarModificarLF(this, ${valAnt})"><i class="fa fa-times" aria-hidden="true" style="font-size:8pt;"></i></button>
 			</div>
 		`;
 	}
 
+	var elementoGlob;
 	function aceptarModificarLF(campo){
-		let fila = campo.parentElement.parentElement;
+		let fila = campo.parentElement.parentElement.parentElement;
 		let nuevoValor = fila.childNodes[3].children[0].value; //corregir aqui
-		let comentario = fila.childNodes[9].children[0].value; //corregir aqui
+		let comentario = fila.childNodes[9].childNodes[1].childNodes[1].value;
 		let costoTotal = parseInt(nuevoValor) * parseFloat(fila.childNodes[4].innerText);
 		console.log(nuevoValor);
 		fila.childNodes[3].innerText = nuevoValor;
 		fila.childNodes[5].innerText = costoTotal.toFixed(2);
 		fila.childNodes[9].innerHTML = `
-			<button style="width:50px" onclick="modificarLineaFac(this)"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+			<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil" aria-hidden="true"></i></button>
 		`;
 
 		let filas = $('.asignTablaDistri');
@@ -769,9 +770,11 @@ var valTC = 'FA';
 		$('#ADTotal').html(`<b>${ADTotal.toFixed(2)}</b>`);
 
 		let tc = datosFact;
+		console.log(comentario);
 		let parametros =
 		{
 			//'opc': $('input[name="radio_conve"]:checked').val(),
+			'comentario': comentario,
 			'TextVUnit': fila.childNodes[4].textContent,
 			'TextCant': fila.childNodes[3].textContent,
 			'TC': tc,
@@ -788,7 +791,6 @@ var valTC = 'FA';
 			'TextVDescto': 0,
 			'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
 			'cheking': fila.childNodes[8].children[0].checked==true?1:0,
-			'comentario': comentario
 		}
 		console.log(parametros);
 		$('#myModal_espera').modal('show');
@@ -812,10 +814,11 @@ var valTC = 'FA';
 	}
 
 	function cancelarModificarLF(campo, valor){
-		let fila = campo.parentElement.parentElement;
+		let fila = campo.parentElement.parentElement.parentElement;
+		console.log(fila);
 		fila.childNodes[3].innerText = valor;
 		fila.childNodes[9].innerHTML = `
-			<button style="width:50px" onclick="modificarLineaFac(this)"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+			<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil" aria-hidden="true"></i></button>
 		`;
 	}
 

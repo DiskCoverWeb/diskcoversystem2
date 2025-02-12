@@ -21,15 +21,15 @@ class facturas_distribucionM
 
   function ConsultarProductos($params){
     
-    $sql = "SELECT DISTINCT TK.CodBodega AS CodBodega2, TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU
+    $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU
             FROM Trans_Comision TC 
             INNER JOIN Accesos A ON TC.CodigoU = A.Codigo 
-            INNER JOIN Trans_Kardex TK ON TK.Codigo_Barra = TC.CodBodega
             WHERE CodigoC = '".$params['beneficiario']."' 
             AND TC.Item = '".$_SESSION['INGRESO']['item']."' 
             AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
             AND TC.Fecha = '".$params['fecha']."' 
             AND TC.T='F'";
+    //print_r($sql);die();
     return $this->db->datos($sql);
   }
 
