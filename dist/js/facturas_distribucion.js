@@ -555,7 +555,7 @@ var valTC = 'FA';
 			success: function (data) {
 				if (data.mensaje.length > 0) {
 					Swal.fire({
-						type: 'warning',
+						icon: 'warning',
 						title: data.mensaje,
 						text: '',
 						allowOutsideClick: false,
@@ -929,7 +929,7 @@ var valTC = 'FA';
 			success: function (data) {
 				if (data != 1) {
 					Swal.fire({
-						type: 'info',
+						icon: 'info',
 						title: data,
 						text: '',
 						allowOutsideClick: false,
@@ -998,7 +998,7 @@ function tipo_facturacion(valor)
 
 	function autocomplete_cliente() {
 		$('#DCCliente').select2({
-			width: '63%',
+			width: '62%',
 			placeholder: 'Seleccione un cliente',
 			ajax: {
 				url: '../controlador/facturacion/facturas_distribucionC.php?DCCliente=true',
@@ -1034,7 +1034,7 @@ function tipo_facturacion(valor)
 			success: function (data) {
 				if (data.length <= 0) {
 					Swal.fire({
-						type: 'info',
+						icon: 'info',
 						title: "Formulario de Grabación",
 						text: `Esta dirección no está registrada: ${parametros['DireccionAux']}, desea registrarla?`,
 						showCancelButton: true,
@@ -1063,14 +1063,14 @@ function tipo_facturacion(valor)
 			success: function (data) {
 				if (data == 1) {
 					Swal.fire({
-						type: 'success',
+						icon: 'success',
 						title: 'Dirección ingresada correctamente',
 						text: '',
 						allowOutsideClick: false,
 					});
 				} else {
 					Swal.fire({
-						type: 'error',
+						icon: 'error',
 						title: 'Error al ingresar la dirección',
 						text: '',
 						allowOutsideClick: false,
@@ -1268,7 +1268,7 @@ function tipo_facturacion(valor)
 		Swal.fire({
 			title: 'Esta seguro?',
 			text: "Esta usted seguro de eliminar este registro!",
-			type: 'warning',
+			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
@@ -1379,7 +1379,7 @@ function tipo_facturacion(valor)
 			allowOutsideClick: false,
 			title: 'Esta Seguro que desea grabar: \n Comprobante  No. ' + $('#TextFacturaNo').val(),
 			text: '',
-			type: 'warning',
+			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
@@ -1667,7 +1667,7 @@ function tipo_facturacion(valor)
 				if(data.length == 1){
 					if (data.respuesta == 1) {
 						Swal.fire({
-							type: 'success',
+							icon: 'success',
 							title: 'Factura Creada',
 							confirmButtonText: 'Ok!',
 							allowOutsideClick: false,
@@ -1696,7 +1696,7 @@ function tipo_facturacion(valor)
 						if(data.text=='' || data.text == null)
 						{
 							Swal.fire({
-								type: 'error',
+								icon: 'error',
 								title: 'XML devuelto',
 								text:'Error al generar XML o al firmar',
 								confirmButtonText: 'Ok!',
@@ -1708,7 +1708,7 @@ function tipo_facturacion(valor)
 							tipo_error_sri(data.clave);
 						}else{
 						Swal.fire({
-								type: 'error',
+								icon: 'error',
 								title: data.text,
 								confirmButtonText: 'Ok!',
 								allowOutsideClick: false,
@@ -1719,7 +1719,7 @@ function tipo_facturacion(valor)
 					} else if (data.respuesta == 2) {
 						// Swal.fire('XML devuelto', '', 'error');
 						Swal.fire({
-							type: 'error',
+							icon: 'error',
 							title: 'XML devuelto',
 							text:'Error al generar XML o al firmar',
 							confirmButtonText: 'Ok!',
@@ -1738,7 +1738,7 @@ function tipo_facturacion(valor)
 				}else{
 					if (data[1].respuesta == 1) {
 						Swal.fire({
-							type: 'success',
+							icon: 'success',
 							title: 'Nota de Venta y Factura Creadas',
 							confirmButtonText: 'Ok!',
 							allowOutsideClick: false,
@@ -1771,7 +1771,7 @@ function tipo_facturacion(valor)
 						if(data[1].text=='' || data[1].text == null)
 						{
 							Swal.fire({
-								type: 'error',
+								icon: 'error',
 								title: 'XML devuelto',
 								text:'Error al generar XML o al firmar',
 								confirmButtonText: 'Ok!',
@@ -1783,7 +1783,7 @@ function tipo_facturacion(valor)
 							tipo_error_sri(data[1].clave);
 						}else{
 						Swal.fire({
-								type: 'error',
+								icon: 'error',
 								title: data[1].text,
 								confirmButtonText: 'Ok!',
 								allowOutsideClick: false,
@@ -1794,7 +1794,7 @@ function tipo_facturacion(valor)
 					} else if (data[1].respuesta == 2) {
 						// Swal.fire('XML devuelto', '', 'error');
 						Swal.fire({
-							type: 'error',
+							icon: 'error',
 							title: 'XML devuelto',
 							text:'Error al generar XML o al firmar',
 							confirmButtonText: 'Ok!',
