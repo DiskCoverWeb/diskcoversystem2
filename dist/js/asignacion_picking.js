@@ -39,10 +39,10 @@ $(document).ready(function () {
 
 })
 
-    function beneficiario() {
+function beneficiario() {
     $('#beneficiario').select2({
     placeholder: 'Seleccione una beneficiario',
-    // width:'90%',
+    width: 'resolve',
     ajax: {
         url: '../controlador/inventario/asignacion_pickingC.php?Beneficiario=true',
         dataType: 'json',
