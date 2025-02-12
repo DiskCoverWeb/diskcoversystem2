@@ -68,7 +68,7 @@
 			      }else{
 			      	$('#modal_producto_2').modal('show');
 			      }
-	    	}, 1000);     	
+	    	}, 7000);     	
 	      
       }else{
       	$('#txt_TipoSubMod').val('.')

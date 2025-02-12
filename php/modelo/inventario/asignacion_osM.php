@@ -97,7 +97,7 @@ class asignacion_osM
                 if($tipo)
                 {
                     $sql.=" AND No_Hab = '".$tipo."'";
-                }
+                }                
         try{
             return $this->db->datos($sql);
         }catch(Exception $e){

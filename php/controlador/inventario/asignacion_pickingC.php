@@ -194,7 +194,7 @@ class asignacion_pickingC
         $datos = $this->modelo->lista_stock_ubicado(false,$codigo,$parametros['grupo']);
         $tr = array();
         foreach ($datos as $key => $value) {
-           $tr[] = array('id'=>$value['Codigo_Barra'],'text'=>$value['Codigo_Barra']);
+           $tr[] = array('id'=>$value['ID'],'text'=>$value['Codigo_Barra']);
         }
         return $tr;
         // print_r($datos);die();
@@ -203,7 +203,7 @@ class asignacion_pickingC
 
     function buscar_producto($parametros)
     {
-        $datos = $this->egresos->buscar_producto($parametros['codigo']);
+        $datos = $this->egresos->buscar_producto(false,$parametros['codigo']);
         // print_r($parametros);
         $validado_grupo =1;
         $lista_producto = array();
@@ -250,10 +250,11 @@ class asignacion_pickingC
         $Beneficiario = explode('-',$parametros['beneficiario']);
         $stock = 0; 
         
-        // print_r($parametros);die();
-
+        // cantidad ingresada
         $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1]);
         $cant_ing = $cant_ing[0]['Total'];
+
+        // cantida que se pide
         $stock = $this->modelo->listaAsignacion($Beneficiario[0],$T=false,$parametros['CodigoInv'],$Beneficiario[1]);
         if(isset($stock[0]['Cantidad']))
         {
@@ -265,9 +266,11 @@ class asignacion_pickingC
         $cant_ing = $cant_ing+$parametros['Cantidad'];
 
 
-        // print_r($cant_ing);die();
+        // print_r($cant_ing);
+        // print_r('-'.$stock);
         
-        // print_r($parametros);die();
+        // print_r($parametros);
+        // die();
         if($cant_ing<=$stock)
         {
 
