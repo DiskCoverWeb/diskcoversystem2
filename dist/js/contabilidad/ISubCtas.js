@@ -9,7 +9,6 @@ $(document).ready(function () {
     OpcI_Click();
     CheqBloquear_Click();
     $('#DLCtas').tooltip('disable');
-    var tooltipEliminar  =  new bootstrap.Tooltip($('#btnEliminar')[0]);
     deshabilitarbtnEliminar();
 
     $('#btnSiguiente').click(function () {
@@ -71,14 +70,14 @@ $(document).ready(function () {
 
     });
 
-    $('#btnEliminar').hover(function () {
+    $('#eliminarMsj').hover(function () {
         // Verifica si el botón está deshabilitado
-        if ($(this).is(':disabled')) {
+        if ($('#btnEliminar').is(':disabled')) {
             // Muestra el tooltip
-            $(this).tooltip('show');
+            $(this).tooltip();
         } else {
             // Oculta el tooltip
-            $(this).tooltip('hide');
+            $(this).tooltip('dispose');
         }
     });
     

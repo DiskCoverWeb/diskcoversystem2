@@ -225,7 +225,7 @@ class db
            $stmt = sqlsrv_query($conn, $sql);
 		   if(!$stmt)
 		   {
-			   die( print_r( sqlsrv_errors(), true));
+			   //die( print_r( sqlsrv_errors(), true));
 			   sqlsrv_close($conn);
 			return -1;
 		   }
@@ -355,7 +355,6 @@ class db
 			//devuelve -1 cuando la conexion a sql server o la base de dato no estan bien 
 			return -1;
 			// echo 'no se pudo conectar a la base de datos';
-			// die( print_r( sqlsrv_errors(), true));
 		}
 		$stmt = sqlsrv_query($cid,$sql);
 		// print_r($sql);die();
@@ -385,8 +384,8 @@ class db
 		if( $cid === false )
 		{
 			return -1;
-			echo 'no se pudo conectar a la base de datos';
-			die( print_r( sqlsrv_errors(), true));
+			//echo 'no se pudo conectar a la base de datos';
+			//die( print_r( sqlsrv_errors(), true));
 		}
 		// print_r($sql);die();
 	    $stmt = sqlsrv_query($cid, $sql);

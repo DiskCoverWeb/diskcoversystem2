@@ -515,6 +515,7 @@ ORDER BY Acceso_Sucursales.Item,Empresa";
    $pos=0;
    $debe = 0;
    $haber = 0;
+   $tablaHTML=array();
 
     foreach ($result as $key => $value) {
 

@@ -842,7 +842,7 @@ function notificaciones()
                 $('#icono_campana').html('')
                 $('#icono_campana').append('<i class="bx bx-bell" id="icono_bell"></i>')
               }
-              console.log(data);
+              //console.log(data);
           }
       });  	
 

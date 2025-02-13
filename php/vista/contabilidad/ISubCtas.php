@@ -71,10 +71,12 @@ date_default_timezone_set('America/Guayaquil');
             onclick="">
             <img src="../../img/png/nuevo.png">
         </button>
-        <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom"
-            title="Seleccione una SubCuenta" id="btnEliminar" onclick="Eliminar();">
-            <img src="../../img/png/eliminar.png">
-        </button>
+        <div data-bs-toggle="tooltip" title="Seleccione una Subcuenta" id="eliminarMsj">
+            <button class="btn btn-outline-secondary btn-sm rounded-0 rounded-end" data-bs-toggle="tooltip" title="Eliminar SubCuenta" data-bs-placement="bottom"
+                id="btnEliminar" onclick="Eliminar();">
+                <img src="../../img/png/eliminar.png">
+            </button>
+        </div>
     </div>
 </div>
 <div class="card">

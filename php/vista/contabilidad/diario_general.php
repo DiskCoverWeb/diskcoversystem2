@@ -62,23 +62,27 @@
   <div class="row">
     <div class="col-sm-6">
       <div class="btn-group">
-         <a  href="./contabilidad.php?mod=contabilidad#"   data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary">
-              <img src="../../img/png/salire.png">
-            </a>          
-          <button type="button" class="btn btn-outline-secondary btn-sm"  data-bs-toggle="dropdown" title="Descargar PDF">
-            <img src="../../img/png/pdf.png">
-          </button>
+          <a  href="./contabilidad.php?mod=contabilidad#"   data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
+            <img src="../../img/png/salire.png">
+          </a>
+          <div data-bs-toggle="tooltip" title="Descargar PDF">        
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-0"  data-bs-toggle="dropdown">
+              <img src="../../img/png/pdf.png">
+            </button>
             <ul class="dropdown-menu">
               <li><a href="#" class="dropdown-item" id="imprimir_pdf">Diario General</a></li>
               <li><a href="#" class="dropdown-item" id="imprimir_pdf_2">Libro Diario</a></li>
             </ul>
-          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="dropdown" title="Descargar Excel">
-            <img src="../../img/png/table_excel.png">
-          </button>
-          <ul class="dropdown-menu">
-            <li><a href="#" class="dropdown-item" id="imprimir_excel">Diario General</a></li>
-            <li><a href="#" class="dropdown-item" id="imprimir_excel_2">Libro Diario</a></li>
-          </ul>
+          </div>
+          <div data-bs-toggle="tooltip" title="Descargar Excel">
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-0" data-bs-toggle="dropdown">
+              <img src="../../img/png/table_excel.png">
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#" class="dropdown-item" id="imprimir_excel">Diario General</a></li>
+              <li><a href="#" class="dropdown-item" id="imprimir_excel_2">Libro Diario</a></li>
+            </ul>
+          </div>
           <button title="Consultar Catalogo de cuentas"  class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" onclick="cargar_libro_general();">
             <img src="../../img/png/consultar.png" >
           </button>

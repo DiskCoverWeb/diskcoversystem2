@@ -57,7 +57,7 @@ class cambioeM
 		  WHERE ID = '".$ID."';";
 		return $this->db->datos($sql,'MYSQL');
 	}
-	function datos_empresa_sqlserver()
+	function datos_empresa_sqlserver($ID)
 	{		
 		$sql = "SELECT *
 		  FROM lista_empresas
@@ -111,7 +111,7 @@ class cambioeM
 	    	if($em[0]['IP_VPN_RUTA']!='.' && $em[0]['IP_VPN_RUTA']!='')
 	    	{
 	            $conn = $this->db->modulos_sql_server($em[0]['IP_VPN_RUTA'],$em[0]['Usuario_DB'],$em[0]['Contrasena_DB'],$em[0]['Base_Datos'],$em[0]['Puerto']);
-	            // print_r($conn);die();
+	            //print_r($conn);die();
 	            // validamos si se conecto 
 	            if($conn!=-1)
 	            {

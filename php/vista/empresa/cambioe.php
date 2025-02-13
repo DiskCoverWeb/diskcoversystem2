@@ -1,4 +1,5 @@
-<?php  date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//print_r($_SESSION['INGRESO']);die();?>
+<?php
+date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//print_r($_SESSION['INGRESO']);die();?>
 <link rel="stylesheet" href="../../dist/css/arbol.css">
 <script type="text/javascript" src="../../dist/js/empresa/cambioe.js" ></script>
 <div class="pb-4">
@@ -1115,11 +1116,11 @@
 	</form>	
 
 	<div id="myModalCorreo" class="modal fade" role="dialog">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-					<h4 class="modal-title">Enviar Comunicado</h4>
+					<h4 class="modal-title text-start">Enviar Comunicado</h4>
+					<button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
 					<form id="form_email">
@@ -1134,22 +1135,22 @@
 							</div> 
 							<div class="col-sm-3">
 								<br>
-								<b>contenido HTML</b>
-								<input type="checkbox" name="rbl_html" id="rbl_html">
+								<b>Contenido HTML</b>
+								<input type="checkbox" class="form-check-input" name="rbl_html" id="rbl_html">
 							</div>              			
 							<div class="col-sm-12">
-								<b>cuerpo de correo</b>
-								<textarea class="form-control text-end" rows="15" id="simpleHtml" name="simpleHtml"></textarea>
+								<b>Cuerpo de correo</b>
+								<textarea class="form-control" rows="15" id="simpleHtml" name="simpleHtml"></textarea>
 							</div>
 							<div class="col-sm-12">
 								<b>Archivo</b>
 								<input type="file" id="file_archivo" name="file_archivo" class="form-control">
 							</div>
 							<div class="col-sm-6">	
-								<button type="button" class="btn btn-primary btn-block" onclick="renderhtml()">Vista Previa</button>
+								<button type="button" class="btn btn-primary w-100" onclick="renderhtml()">Vista Previa</button>
 							</div>
 							<div class="col-sm-6">	
-								<button type="button" class="btn btn-primary btn-block" onclick="enviar_email()">Enviar Correo</button>
+								<button type="button" class="btn btn-primary w-100" onclick="enviar_email()">Enviar Correo</button>
 							</div>
 							<div class="col-sm-12">
 								<div class="" id="htmlrender">
