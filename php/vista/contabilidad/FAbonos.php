@@ -168,9 +168,9 @@
 					<input type="hidden" name="CodigoC" id="CodigoC" placeholder="Cliente">
 					<input type="hidden" name="CI_RUC" id="CI_RUC" style="padding:5px 0px 0px 0px">
 					<span class="input-group-text">Cliente</span>
-					<input type="text" aria-label="First name" class="form-control form-control-sm w-50" name="LblCliente" id="LblCliente" disabled>
+					<input type="text" aria-label="First name" class="form-control form-control-sm w-50" name="LblCliente" id="LblCliente" readonly>
 					<span class="input-group-text">Grupo No</span>
-					<input type="text" aria-label="Last name" class="form-control form-control-sm" name="LblGrupo" id="LblGrupo" disabled>
+					<input type="text" aria-label="Last name" class="form-control form-control-sm" name="LblGrupo" id="LblGrupo" readonly>
 				</div>
 				<!--<div class="col-sm-9 col-xs-8">
 					<input type="text" name="LblCliente" id="LblCliente" class="form-control input-xs"

@@ -452,22 +452,46 @@ function lineas_factura() {
             { data: 'CODIGO'},
             { data: 'CANT',  
                 render: function(data, type, item) {
-                    return data ? parseInt(data) : 0;
+                    return data ? parseInt(parseFloat(data)) : 0;
                 }
             },
             { data: 'CANT_BONIF',  
                 render: function(data, type, item) {
-                    return data ? parseInt(data) : 0;
+                    return data ? parseInt(parseFloat(data)) : 0;
                 }
             },
             { data: 'PRODUCTO' },
             { data: 'PRECIO' },
-            { data: 'Total_Desc' },
-            { data: 'Total_Desc2' },
-            { data: 'Total_IVA' },
-            { data: 'SERVICIO' },
-            { data: 'TOTAL' },
-            { data: 'VALOR_TOTAL' },
+            { data: 'Total_Desc',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : 0;
+                }
+            },
+            { data: 'Total_Desc2',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : 0;
+                }
+            },
+            { data: 'Total_IVA',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : 0;
+                }
+            },
+            { data: 'SERVICIO',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : 0;
+                }
+            },
+            { data: 'TOTAL',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : 0;
+                }
+            },
+            { data: 'VALOR_TOTAL',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : 0;
+                }
+            },
             { data: 'COSTO' },
             { data: 'Fecha_IN.date',  
                 render: function(data, type, item) {
@@ -485,7 +509,11 @@ function lineas_factura() {
             { data: 'Mes' },
             { data: 'Cod_Ejec' },
             { data: 'Porc_C' },
-            { data: 'REP' },
+            { data: 'REP',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : 0;
+                }
+            },
             { data: 'FECHA.date',  
                 render: function(data, type, item) {
                     return data ? new Date(data).toLocaleDateString() : '';
@@ -509,7 +537,11 @@ function lineas_factura() {
             { data: 'Serie' },
             { data: 'Autorizacion' },
             { data: 'Codigo_B' },
-            { data: 'PRECIO2' },
+            { data: 'PRECIO2',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : 0;
+                }
+            },
             { data: 'COD_BAR' },
             { data: 'Fecha_V.date',  
                 render: function(data, type, item) {
@@ -892,7 +924,7 @@ function boton1() {
     Swal.fire({
         title: 'Esta Seguro que desea grabar?',
         text: Mensajes,
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -950,7 +982,7 @@ function Grabar_Factura_Actual() {
                 Swal.fire({
                     title: 'Algo salió mal',
                     text: data.men,
-                    type: 'error',
+                    icon: 'error',
                     confirmButtonText: 'Ok!',
                 })
             }
@@ -1133,7 +1165,7 @@ function Abonos(FA) {
         Swal.fire({
             title: 'Formulario de Grabación',
             text: 'Anticipo de Abono',
-            type: 'info',
+            icon: 'info',
             confirmButtonText: 'Sí!',
             showCancelButton: true,
             allowOutsideClick: false,
@@ -1156,7 +1188,7 @@ function Abonos(FA) {
         Swal.fire({
             title: 'Formulario de Grabación',
             text: 'Pago al Contado',
-            type: 'info',
+            icon: 'info',
             confirmButtonText: 'Sí!',
             showCancelButton: true,
             allowOutsideClick: false,
@@ -1182,7 +1214,7 @@ function alerta_reprocesar(tit, mensaje) {
     Swal.fire({
         title: tit,
         text: mensaje,
-        type: 'warning',
+        icon: 'warning',
         confirmButtonText: 'Sí!',
         showCancelButton: true,
         allowOutsideClick: false,
@@ -1202,7 +1234,7 @@ function alerta_abonos(tit, mensaje) {
     Swal.fire({
         title: tit,
         text: mensaje,
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -1904,7 +1936,7 @@ function DCFactura1() {
                 Swal.fire({
                     title: 'Error',
                     text: 'No se puede grabar abonos con fecha inferior a la emision de la factura',
-                    type: 'error',
+                    icon: 'error',
                 });
             }
             var dia = FechaCorte.getDate();
@@ -2024,7 +2056,7 @@ function guardar_abonos() {
         Swal.fire({
             title: 'Error',
             text: 'No se puede grabar abonos con fecha inferior a la emision de la factura',
-            type: 'error',
+            icon: 'error',
         });
         return;
     
@@ -2033,7 +2065,7 @@ function guardar_abonos() {
     Swal.fire({
         title: 'Esta Seguro que desea grabar estos pagos.',
         text: '',
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -2129,7 +2161,7 @@ function inicioAbonoAnticipado(){
         Swal.fire({
             title: 'Formulario de Grabación',
             text: 'Está Seguro que desea grabar Abono.',
-            type: 'warning',
+            icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
@@ -2425,7 +2457,7 @@ function EnviarEmail(parametros) {
                 Swal.fire({
                     title: data.Titulo,
                     text: data.Mensaje,
-                    type: 'info',
+                    icon: 'info',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
