@@ -74,7 +74,7 @@
                   <div class="input-group-addon form-control-sm p-2 text-box">
                     <b>Inicio Resumen</b>
                  </div>
-                 <input type="date" class="form-control form-control-sm" id="MBHistorico" name="MBHistorico">
+                 <input type="date" tabindex="1" class="form-control form-control-sm" id="MBHistorico" name="MBHistorico">
               </div>
           </div>
           <div class="col-lg-5">
@@ -82,7 +82,7 @@
                <div class="input-group-addon form-control-sm p-2 text-box">
                  <b>Factura No. <span id="numeroSerie" class="red"></span></b>
                </div>
-                <input style="  max-width: 110px;" type="input" class="form-control form-control-sm" tabindex="1" name="factura" id="factura">
+                <input style="max-width: 110px;" type="input" class="form-control form-control-sm" name="factura" id="factura" tabindex="33">
             </div>          
           </div>        
         </div>
@@ -126,7 +126,7 @@
                 <b>Cliente/Alumno (<span class="spanNIC"></span>)</b>
               </div>
               <div class="col-xs-12  <?php echo ($mostrar_medidor)?'col-md-6':'col-md-9' ?> colCliente">
-                <select class="form-select form-select-sm" id="cliente" name="cliente" tabindex="6">
+                <select class="form-select form-select-sm" id="cliente" name="cliente" tabindex="7">
                   <option value="">Seleccione un cliente</option>
                 </select>
                 <input type="hidden" name="codigoCliente" id="codigoCliente">
@@ -142,12 +142,12 @@
 
             <div class="row mb-1">
               <div class="col-xs-12 col-md-3   ">
-                <select class="form-select form-select-sm" id="DCGrupo_No" name="grupo" tabindex="8">
+                <select class="form-select form-select-sm" id="DCGrupo_No" name="grupo" tabindex="9">
                   <option value=".">Grupo</option>
                 </select>
               </div>
               <div class="col-xs-12 col-md-9  ">
-                <input tabindex="9" type="input" class="form-control form-control-sm" name="direccion" id="direccion">
+                <input tabindex="10" type="input" class="form-control form-control-sm" name="direccion" id="direccion">
               </div>
             </div>
 
@@ -156,14 +156,14 @@
                 <b>Razón social</b>
               </div>
               <div class="col-xs-12 col-md-5 bg-amarillo-suave p-1">
-                <input tabindex="10" type="input" class="form-control form-control-sm bg-amarillo-suave" name="persona" id="persona">
+                <input tabindex="11" type="input" class="form-control form-control-sm bg-amarillo-suave" name="persona" id="persona">
               </div>
               <div class="col-xs-12 col-md-2 text-end  bg-amarillo">
                 <b>CI/RUC(<span class="spanNIC"></span>) </b>
               </div>
               <div class="col-xs-12 col-md-3 text-end  bg-amarillo-suave  p-1">
                 <input  type="hidden" class="form-control form-control-sm" name="tdCliente" id="tdCliente" readonly>
-                <input type="text" tabindex="11" name="TextCI" id="TextCI" class="form-control form-control-sm red text-end bg-amarillo-suave" onblur="codigo()">
+                <input type="text" tabindex="12" name="TextCI" id="TextCI" class="form-control form-control-sm red text-end bg-amarillo-suave" onblur="codigo()">
               </div>
             </div>
 
@@ -172,7 +172,7 @@
                 <b>Dirección</b>
               </div>
               <div class="col-xs-12 col-md-10  bg-amarillo-suave  p-1">
-                <input tabindex="12" type="input" class="form-control form-control-sm  bg-amarillo-suave" style="text-transform: uppercase;" name="direccion1" id="direccion1">
+                <input tabindex="13" type="input" class="form-control form-control-sm  bg-amarillo-suave" style="text-transform: uppercase;" name="direccion1" id="direccion1">
               </div>  
             </div>
 
@@ -181,18 +181,18 @@
                 <b>Email</b>
               </div>
               <div class="col-xs-12 col-md-5  bg-amarillo-suave  p-1">
-                <input tabindex="13" type="input" class="form-control form-control-sm bg-amarillo-suave" name="email" id="email">
+                <input tabindex="14" type="input" class="form-control form-control-sm bg-amarillo-suave" name="email" id="email">
               </div>
               <div class="col-xs-12 col-md-2 text-end  bg-amarillo">
                 <b>Telefono </b>
               </div>
               <div class="col-xs-12 col-md-3 text-end  bg-amarillo-suave  p-1">
-                <input type="text" tabindex="14" name="telefono" id="telefono" class="form-control form-control-sm red text-end bg-amarillo-suave">
+                <input type="text" tabindex="15" name="telefono" id="telefono" class="form-control form-control-sm red text-end bg-amarillo-suave">
               </div>
             </div>
             <div class="row m-2">
               <div class="col-xs-12 text-center">
-                <button tabindex="15" style="width:100%;" class="btn btn-block btn btn-outline-info px-5 btn-sm btnDepositoAutomatico">Ingrese sus datos para el Debito Automatico</button>
+                <button tabindex="16" style="width:100%;" class="btn btn-block btn btn-outline-info px-5 btn-sm btnDepositoAutomatico">Ingrese sus datos para el Debito Automatico</button>
               </div>
             </div>
             <div class="row bg-info contenidoDepositoAutomatico p-2" style="display: none;">
@@ -200,7 +200,7 @@
                 <b for="debito_automatica">Debito Automatico</b>
               </div>
               <div class="col-xs-12 col-sm-6">
-                <select tabindex="16"  class="form-select form-select-sm" name="debito_automatica" id="debito_automatica">
+                <select tabindex="17"  class="form-select form-select-sm" name="debito_automatica" id="debito_automatica">
                   <option value="">Seleccione un Banco</option>
                 </select>
               </div>
@@ -209,7 +209,7 @@
                 <b>Tipo</b>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <select  tabindex="17" type="input" class="form-select form-select-sm" name="tipo_debito_automatico" id="tipo_debito_automatico">
+                <select  tabindex="18" type="input" class="form-select form-select-sm" name="tipo_debito_automatico" id="tipo_debito_automatico">
                   <option value=".">Seleccionar Tipo</option>
                   <option value="CORRIENTE">CORRIENTE</option>
                   <option value="AHORROS">AHORROS</option>
@@ -222,20 +222,20 @@
                 <b>Numero de Cuenta</b>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <input  tabindex="18" type="input" class="form-control form-control-sm" name="numero_cuenta_debito_automatico" id="numero_cuenta_debito_automatico">
+                <input  tabindex="19" type="input" class="form-control form-control-sm" name="numero_cuenta_debito_automatico" id="numero_cuenta_debito_automatico">
               </div>
 
               <div class="col-xs-12 col-sm-1 text-end p-0">
                 <b>Caducidad</b>
               </div>
               <div class="col-xs-12 col-sm-2 contenedor_fecha_caducidad">
-                <input  tabindex="19" type="text" maxlength="7"  class="form-control form-control-sm fecha_caducidad" name="caducidad_debito_automatico" id="caducidad_debito_automatico" placeholder="MM/YYYY">
+                <input  tabindex="20" type="text" maxlength="7"  class="form-control form-control-sm fecha_caducidad" name="caducidad_debito_automatico" id="caducidad_debito_automatico" placeholder="MM/YYYY">
               </div>
               <div class="col-xs-6 col-sm-3 text-end">
                 <b class="text-end" for="rbl_no">Depositar al Banco</b>
               </div>
               <div class="col-xs-6 col-sm-1 ">
-                <input tabindex="20" style="margin-top: 0px;margin-right: 2px;" type="checkbox" name="por_deposito_debito_automatico" id="por_deposito_debito_automatico" onblur="$('#checkbox1').focus()">
+                <input tabindex="21" style="margin-top: 0px;margin-right: 2px;" type="checkbox" name="por_deposito_debito_automatico" id="por_deposito_debito_automatico" onblur="$('#checkbox1').focus()">
               </div>
             </div>
 
@@ -244,7 +244,7 @@
             
             <div class="row">
               <div class="col-xs-12">
-                <input tabindex="" type="checkbox" name="rbl_radio" id="rbl_no" checked=""> Con mes </div>
+                <input type="checkbox" name="rbl_radio" id="rbl_no" checked="" tabindex="6"> Con mes </div>
             </div>
 
             <div class="row mb-1">
@@ -253,7 +253,7 @@
                   <span class="input-group-addon strong form-control-sm ps-0 px-1">
                     NIC (<span class="spanNIC"></span>)
                   </span>
-                  <input type="text" tabindex="7" name="ci" id="ci_ruc" class="form-control form-control-sm red text-end p-1" readonly>
+                  <input type="text" tabindex="8" name="ci" id="ci_ruc" class="form-control form-control-sm red text-end p-1" readonly>
                 </div>
               </div>
             </div>
@@ -296,7 +296,7 @@
                   <div class="input-group-addon form-control-sm p-1 text-box col-6">
                     <b>Desc x P P</b>
                  </div> 
-                    <button tabindex="41" style="border: 1px #b1b1b1 solid;border-right: 2px #b1b1b1 solid;padding: 2px;"  type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#myModalDescuentoP">%</button>
+                    <button style="border: 1px #b1b1b1 solid;border-right: 2px #b1b1b1 solid;padding: 2px;"  type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#myModalDescuentoP">%</button>
                     <input type="text" style="color: coral;"  name="descuentop" id="descuentop" class="form-control form-control-sm red text-end" readonly value="0.00">
               </div>
             </div>
@@ -356,7 +356,7 @@
         <b>Detalle del pago</b>
       </div>
       <div class="col-sm-6 ">
-        <input type="text" name="TextBanco" id="TextBanco" class="form-control form-control-sm" value="." tabindex="21">
+        <input type="text" name="TextBanco" id="TextBanco" class="form-control form-control-sm" value="." tabindex="22">
       </div>
 
       <div class="col-sm-2 text-end  bg-amarillo">
@@ -372,7 +372,7 @@
         <b>Bancos/Tarjetas</b>
       </div>
       <div class="col-sm-4 ">
-        <select class="form-select form-select-sm" name="cuentaBanco" id="cuentaBanco" tabindex="29" onchange="verificarTJ();" onblur="$('#chequeNo').focus()">
+        <select class="form-select form-select-sm" name="cuentaBanco" id="cuentaBanco" tabindex="23" onchange="verificarTJ();" onblur="$('#chequeNo').focus()">
          
         </select>
       </div>
@@ -381,13 +381,13 @@
         <b>Cheque No.</b>
       </div>
       <div class="col-sm-2 ">
-        <input type="text" name="chequeNo" id="chequeNo" class="form-control form-control-sm text-end" tabindex="30"  >
+        <input type="text" name="chequeNo" id="chequeNo" class="form-control form-control-sm text-end" tabindex="24"  >
       </div>
       <div class="col-sm-1 text-end ">
         <b>USD</b>
       </div>
       <div class="col-sm-2 ">
-        <input  type="text" name="valorBanco" id="valorBanco" tabindex="31" onkeyup="calcularSaldo();" class="form-control form-control-sm red text-end " value="0.00">
+        <input  type="text" name="valorBanco" id="valorBanco" tabindex="25" onkeyup="calcularSaldo();" class="form-control form-control-sm red text-end " value="0.00">
       </div>
     </div>
     <div class="row">
@@ -395,14 +395,14 @@
         <b>Anticipos</b>
       </div>
       <div class="col-sm-7 ">
-        <select class="form-select form-select-sm" name="DCAnticipo" id="DCAnticipo" tabindex="32">         
+        <select class="form-select form-select-sm" name="DCAnticipo" id="DCAnticipo" tabindex="26">         
         </select>
       </div>
       <div class="col-sm-1 text-end ">
         <b>USD</b>
       </div>
       <div class="col-sm-2">
-        <input title="Saldo a Favor" type="input" id="saldoFavor" class="form-control form-control-sm red text-end " name="saldoFavor" tabindex="33" onkeyup="calcularSaldo();" value="0.00" style="color:yellowgreen;">
+        <input title="Saldo a Favor" type="input" id="saldoFavor" class="form-control form-control-sm red text-end " name="saldoFavor" tabindex="27" onkeyup="calcularSaldo();" value="0.00" style="color:yellowgreen;">
       </div>
     </div>
     <div class="row">
@@ -410,14 +410,14 @@
         <b>Notas de crédito</b>
       </div>
       <div class="col-sm-7 ">
-        <select class="form-select form-select-sm" name="cuentaNC" id="cuentaNC" tabindex="34">            
+        <select class="form-select form-select-sm" name="cuentaNC" id="cuentaNC" tabindex="28">            
         </select>
       </div>
       <div class="col-sm-1 text-end ">
         <b>USD</b>
       </div>
       <div class="col-sm-2">
-        <input tabindex="35" type="text" name="abono" id="abono" onkeyup="calcularSaldo();" class="form-control form-control-sm red text-end " value="0.00">
+        <input tabindex="29" type="text" name="abono" id="abono" onkeyup="calcularSaldo();" class="form-control form-control-sm red text-end " value="0.00">
       </div>
     </div>
     <div class="row">
@@ -428,7 +428,7 @@
         <b>Efectivo USD</b>
       </div>
       <div class="col-sm-2">
-        <input tabindex="36" type="text" name="efectivo" id="efectivo" onkeyup="calcularSaldo();" class="form-control form-control-sm red text-end " value="0.00"  onblur="$('#saldo').focus()">
+        <input tabindex="30" type="text" name="efectivo" id="efectivo" onkeyup="calcularSaldo();" class="form-control form-control-sm red text-end " value="0.00"  onblur="$('#saldo').focus()">
       </div>
     </div>
     <div class="row" id="divInteres">
@@ -436,7 +436,7 @@
         <b>Interés Tarjeta USD</b>
       </div>
       <div class="col-sm-2">
-        <input tabindex="37" type="text" name="interesTarjeta" id="interesTarjeta" class="form-control form-control-sm red text-end " >
+        <input tabindex="31" type="text" name="interesTarjeta" id="interesTarjeta" class="form-control form-control-sm red text-end " >
       </div>
     </div>
      <div class="row">
@@ -446,17 +446,17 @@
       </div>
       <div class="col-xs-12 col-sm-4 col-lg-4">          
         <div class="col-xs-6 ">
-          <input type="input" class="form-control form-control-sm" name="codigo" id="codigo" tabindex="41">
+          <input type="input" class="form-control form-control-sm" name="codigo" id="codigo" tabindex="34">
         </div>
       </div>
       <div class="col-sm-1 text-center justify-content-center align-items-center d-none">
         <input style="width: 50px" type="text" id="registros" class="form-control form-control-sm text-center justify-content-center align-items-center" readonly>
       </div>
       <div class=" col-sm-2 ">
-          <a title="Guardar" class="btn btn-outline-secondary" tabindex="39" id="guardar">
+          <a title="Guardar" class="btn btn-outline-secondary" tabindex="31" id="guardar">
             <img src="../../img/png/grabar.png" width="25" height="30" onclick="guardarPension();">
           </a>
-          <a title="Salir del panel" class="btn btn-outline-secondary" tabindex="40" href="inicio.php?mod=02">
+          <a title="Salir del panel" class="btn btn-outline-secondary" tabindex="32" href="inicio.php?mod=02">
             <img src="../../img/png/salire.png" width="25" height="30" >
           </a>
       </div>
@@ -464,7 +464,7 @@
         <b>Saldo USD</b>
       </div>
       <div class="col-sm-2 ">
-        <input type="text" name="saldoTotal" id="saldoTotal" class="form-control form-control-sm red text-end" value="0.00" style="color:coral;" onblur="$('#guardar').focus()" tabindex="38" >
+        <input type="text" name="saldoTotal" id="saldoTotal" class="form-control form-control-sm red text-end" value="0.00" style="color:coral;" onblur="$('#guardar').focus()">
       </div>
     </div>
 
@@ -517,7 +517,7 @@
               <div id="home" class="tab-pane fade in active">
                 <div class="table-responsive" id="tabla_" style="overflow-y: scroll; height:450px; width: auto;">
                   <!-- <div class="sombra" style> -->
-                    <table border class="table table-striped table-hover" id="tbl_style" tabindex="14" >
+                    <table border class="table table-striped table-hover" id="tbl_style" >
                       <thead>
                         <tr>
                           <th>TD</th>

@@ -23,6 +23,29 @@
   var tempDocumento = "";
   var tempCaducidad = "";
   $(document).ready(function () {
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === "Tab" && !e.shiftKey) { // Solo cuando se presiona Tab (sin Shift)
+        // Obtiene solo los elementos con tabindex explícito en el HTML
+        var focusableElements = Array.from(document.querySelectorAll('*')).filter(function(el) {
+            // Verifica que el atributo tabindex esté presente en el HTML
+            return el.hasAttribute('tabindex') && 
+                   !isNaN(el.getAttribute('tabindex')) && 
+                   parseInt(el.getAttribute('tabindex')) > 0;
+        }).sort(function(a, b) {
+            return a.tabIndex - b.tabIndex;
+        });
+        
+        console.log(focusableElements)
+        var currentIndex = focusableElements.indexOf(document.activeElement);
+        
+        if (currentIndex === focusableElements.length - 1) {
+            e.preventDefault(); // Evita el enfoque natural
+            focusableElements[0].focus(); // Va al primer elemento
+        }
+    }
+});
+
     autocomplete_cliente();
     catalogoLineas();
     totalRegistros();
@@ -1260,9 +1283,11 @@ console.log(Serie)
   }
 
   function codigo() {
-  $("#myModal_espera").modal('show');
   var ci = $('#TextCI').val();
-  if (ci != '') {
+  console.log(ci)
+  if (ci != '' && ci != '.') {
+    
+  $("#myModal_espera").modal('show');
     $.ajax({
       url: '../controlador/modalesC.php?codigo=true',
       type: 'post',
@@ -1278,7 +1303,8 @@ console.log(Serie)
       }
     });
   } else {
-   
+
+        $("#myModal_espera").modal('hide');   
   }
 
 }
