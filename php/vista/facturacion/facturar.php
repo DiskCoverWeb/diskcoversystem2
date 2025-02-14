@@ -659,7 +659,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 <div class="row">
 	<br><br>
 </div>
-<div class="modal fade" id="cambiar_nombre" role="dialog" data-keyboard="false" data-backdrop="static" tabindex="-1">
+<div class="modal fade" id="cambiar_nombre" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1">
 	<div class="modal-dialog modal-dialog modal-sm"
 		style="margin-left: 25%; margin-top: 30%;">
 		<div class="modal-content">
@@ -688,7 +688,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 							</div>
 							<div class="col-sm-6 px-0">
 								<input type="date" name="MBoxFechaGRE" id="MBoxFechaGRE" class="form-control form-control-sm"
-									value="<?php echo date('Y-m-d'); ?>" onblur="MBoxFechaGRE_LostFocus()">
+									value="<?php echo date('Y-m-d'); ?>">
 							</div>
 						</div>
 						<div class="row align-items-center col-sm-12 pe-0 pb-1">
@@ -698,7 +698,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 							<div class="col-sm-6 px-0">
 								<div class="input-group input-group-sm">
 									<select class="form-select form-select-sm" id="DCSerieGR" name="DCSerieGR"
-										onblur="DCSerieGR_LostFocus()">
+										onchange="DCSerieGR_LostFocus()">
 										<option value="">No Existe</option>
 									</select>
 									<input type="text" name="LblGuiaR" id="LblGuiaR" class="form-control form-control-sm"
@@ -1115,7 +1115,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 </div>
 
 <!-- Modal reserva -->
-<div id="myModal_reserva" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="myModal_reserva" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -1159,7 +1159,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 	</div>
 </div>
 
-<div class="modal fade" id="divTxtDetalleReserva" role="dialog" data-keyboard="false" data-backdrop="static"
+<div class="modal fade" id="divTxtDetalleReserva" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static"
 	tabindex="-1">
 	<div class="modal-dialog modal-dialog modal-dialog-centered modal-sm"
 		style="margin-left: 300px; margin-top: 345px;">
@@ -1196,7 +1196,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 </script>
 
 <!-- Modal ordenes produccion -->
-<div id="myModal_ordenesProd" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="myModal_ordenesProd" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
 	<div class="modal-dialog modal-md" style="width: 30%;min-width:350px;">
 		<div class="modal-content">.
 			<div class="modal-header">
@@ -1301,7 +1301,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 	}
 </script>
 
-<div id="my_modal_abonos" class="modal" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="my_modal_abonos" class="modal" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
 	<div class="modal-dialog modal-xl">
 		<div class="modal-content">
 			<div class="modal-header" style="padding: 6px 0px 6px 15px;">
@@ -1792,7 +1792,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 	</div>
 </div>
 
-<div id="my_modal_abono_anticipado" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+<div id="my_modal_abono_anticipado" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
