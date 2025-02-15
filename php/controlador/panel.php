@@ -31,6 +31,12 @@ if (isset($_GET['IngClaves'])) {
     echo json_encode(IngClaves($parametros));
 }
 
+if (isset($_GET['actualizar_datos'])){
+    $nombre = $_POST['Nombre_Completo'];
+    $imagen = $_FILES;
+    echo json_encode(actualizar_datos_usuario($nombre, $imagen));
+}
+
 if(isset($_GET['IngClaveCredenciales'])) {
     $usuario = $_POST['usuario'];
     echo json_encode(IngClaveCredenciales($usuario));
@@ -83,7 +89,7 @@ if(isset($_GET['cargar_imagen']))
 function guardar_img($file)
 {
 
-    $modelo = new usuario_model();
+    $modelo = new loginM();
     $ruta= dirname(__DIR__,2).'/img/usuarios/';//ruta carpeta donde queremos copiar las imágenes
     if (!file_exists($ruta)) {
        mkdir($ruta, 0777, true);
@@ -117,21 +123,6 @@ function guardar_img($file)
      }
 }
 
- function validar_formato_img($file)
-  {
-    switch ($file['file_img']['type']) {
-      case 'image/jpeg':
-      case 'image/pjpeg':
-      case 'image/gif':
-      case 'image/png':
-         return 1;
-        break;      
-      default:
-        return -1;
-        break;
-    }
-
-  }
 
 
 function IngClaves($parametros)
@@ -1441,5 +1432,49 @@ function control_errores($parametros)
     // print_r($parametros);die();
     control_procesos('E',$parametros['Proceso'],$parametros['Tarea']);
 }
+
+
+function actualizar_datos_usuario($name, $img_file){
+    $modelo = new loginM();
+    //echo print_r($parametros); die();
+    $ruta=dirname(__DIR__, 2).'/img/usuarios/';
+    if(!file_exists($ruta)){
+        mkdir($ruta, 0777, true);
+    }
+    if(validar_formato_img($img_file)==1){
+        $uploadfile_temporal = $img_file['Foto']['tmp_name'];
+        $tipo = explode ('/', $img_file['Foto']['type']);
+        $nombreU = $_SESSION['INGRESO']['CodigoU'].'.'.$tipo[1];
+        $nuevo_nom = $ruta.$nombreU;
+        if(is_uploaded_file($uploadfile_temporal)){
+            move_uploaded_file($uploadfile_temporal, $nuevo_nom);
+            $base = $modelo->actualizar_datos($nombreU, $name);
+            if($base == 1){
+                return $base;
+            } else {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+    } else { 
+        return -2;
+    }
+}
+
+function validar_formato_img($file)
+{
+    switch ($file['Foto']['type']) {
+        case 'image/jpeg':
+        case 'image/pjpeg':
+        case 'image/gif':
+        case 'image/png':
+        return 1;
+        default:
+        return -1;
+    }
+
+}
+
 
 ?>
