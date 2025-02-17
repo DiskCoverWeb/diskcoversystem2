@@ -503,6 +503,11 @@ class loginM
 	    return $datos;
 	}
 
+	function actualizar_datos($img, $nombre){
+		$_SESSION['INGRESO']['Foto'] = $img;
+		$sql = "UPDATE acceso_usuarios SET Foto='".$img."', Nombre_Usuario='".$nombre."' WHERE CI_NIC='".$_SESSION['INGRESO']['CodigoU']."'";
+		return $this->db->String_Sql($sql, 'MY SQL');
+	}
 }
 
 ?>

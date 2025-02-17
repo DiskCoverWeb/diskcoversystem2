@@ -4433,13 +4433,29 @@ input::placeholder {
 .user-img {
 
 	width: 42px;
+
     height: 42px;
-    border-radius: 50%;
-    border: 0 solid #e5e5e5;
-    padding: 0;
+    
+	border-radius: 50%;
+    
+	border: 0 solid #e5e5e5;
+    
+	padding: 0;
 
 }
 
+.user-img-lg {
+
+	width: 96px;
+    
+	height: 96px;
+    
+	border-radius: 50%;
+    
+	border: 0 solid #e5e5e5;
+    
+	padding: 0;
+}
 
 .user-info .user-name {
 

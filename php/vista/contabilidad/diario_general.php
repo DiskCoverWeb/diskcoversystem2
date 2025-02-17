@@ -197,7 +197,7 @@
          <div class="tab-content">          
             <div class="tab-pane fade active show" id="Primary-DG">
               <div class="col-sm-12">
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 400px;">
                   <table class="table text-sm" id="tbl_DiarioGeneral">
                     <thead>
                       <tr>

@@ -679,20 +679,20 @@ function estado_licencia($f3)
 							</div>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end">
-							<li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-user fs-5"></i><span>Profile</span></a>
+							<li><a class="dropdown-item d-flex align-items-center" href="profile.php"><i class="bx bx-user fs-5"></i><span>Perfil</span></a>
 							</li>
-							<li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-cog fs-5"></i><span>Settings</span></a>
+							<li><a class="dropdown-item d-flex align-items-center d-none" href="javascript:;"><i class="bx bx-cog fs-5"></i><span>Settings</span></a>
 							</li>
-							<li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-home-circle fs-5"></i><span>Dashboard</span></a>
+							<li><a class="dropdown-item d-flex align-items-center d-none" href="javascript:;"><i class="bx bx-home-circle fs-5"></i><span>Dashboard</span></a>
 							</li>
-							<li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-dollar-circle fs-5"></i><span>Earnings</span></a>
+							<li><a class="dropdown-item d-flex align-items-center d-none" href="javascript:;"><i class="bx bx-dollar-circle fs-5"></i><span>Earnings</span></a>
 							</li>
-							<li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-download fs-5"></i><span>Downloads</span></a>
+							<li><a class="dropdown-item d-flex align-items-center d-none" href="javascript:;"><i class="bx bx-download fs-5"></i><span>Downloads</span></a>
 							</li>
 							<li>
 								<div class="dropdown-divider mb-0"></div>
 							</li>
-							<li><a class="dropdown-item d-flex align-items-center" href="javascript:;" onclick="logout()"><i class="bx bx-log-out-circle"></i><span>Logout</span></a>
+							<li><a class="dropdown-item d-flex align-items-center" href="javascript:;" onclick="logout()"><i class="bx bx-log-out-circle"></i><span>Cerrar Sesión</span></a>
 							</li>
 						</ul>
 					</div>

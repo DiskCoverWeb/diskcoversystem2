@@ -1148,8 +1148,9 @@ class facturarC
       // 'Autorizamos la factura y/o Guia de Remision
       if (strlen($FA['Autorizacion']) == 13) {
          $respuesta = $this->sri->Autorizar_factura_o_liquidacion($FA);
-         if($respuesta == 1){
+         if($respuesta[0] == 1){
             $clave = $this->sri->Clave_acceso($FA['Fecha'], '01', $FA['Serie'], $FA['Factura']);
+            //print_r("\nClave: " . $clave);
             $FA['Autorizacion'] = $clave;
             $FA['Clave_Acceso'] = $clave;
          }
@@ -1178,6 +1179,7 @@ class facturarC
       $TA['Serie'] = $FA['Serie'];
       $TA['Factura'] = $FA['Factura'];
       $TA['Autorizacion'] = $FA['Autorizacion'];
+      //print_r("\nTA Autorizacion: ". $TA['Autorizacion']);
       $TA['CodigoC'] = $FA['CodigoC'];
       $TA['Fecha'] = $FA['Fecha'];
       //print_r($FA);die();
@@ -1222,13 +1224,13 @@ class facturarC
 
       if ($FA['TC'] <> "OP") {
          if ($FA['Remision'] > 0) {
-            if (strlen($FA['Autorizacion']) < 13) {
+            if (strlen($FA['Autorizacion_GR']) < 13) { //Falta por programar
                $AdoFactura = $this->modelo->DCFactura($FA['TC'], $FA['Serie'], $FA['Factura']);
                $AdoAsientoF = $this->modelo->lineas_factura();
-               //Imprimir_Guia_Remision($AdoFactura, $AdoAsientoF, $FA);
+               Imprimir_Guia_Remision($AdoFactura, $AdoAsientoF, $FA);
                //$this->modelo->pdf_guia_remision_elec($FA, $FA['Autorizacion_GR'], $periodo=false, 0, 1);
                $data = '';
-            } else if (strlen($FA['Autorizacion']) >= 13) {
+            } else if (strlen($FA['Autorizacion_GR']) >= 13) {
                //$rep1 = $this->sri->SRI_Crear_Clave_Acceso_Guia_Remision($FA);
                $this->modelo->pdf_guia_remision_elec($FA, $FA['Autorizacion_GR'], $periodo=false, 0, 1);
                $clave_guia = $this->sri->Clave_acceso($FA['FechaGRE'], '06', $FA['Serie_GR'], $FA['Remision']);

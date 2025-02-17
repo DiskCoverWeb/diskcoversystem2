@@ -108,6 +108,7 @@ $(document).ready(function () {
         $('#label36').text("Servicio");
     }
 
+    MBoxFechaGRE_LostFocus()
     /*let lienzoElem = $('#interfaz_facturacion').parent();
 
     let tamanoLienzo = lienzoElem[0].parentElement.style.minHeight;
@@ -1060,33 +1061,37 @@ function Autorizar_Factura_Actual(FAc) {
         success: function (data) {
 
             $('#myModal_espera').modal('hide');
-            if (data.AU == 1) {
-                /*var url = '../../TEMP/' + data.pdf + '.pdf';
-                window.open(url, '_blank');*/
-                Swal.fire('Factura Creada y Autorizada', '', 'success')
-                .then((result)=>{
-                    var url_fa = '../../TEMP/' + data.pdf + '.pdf';
-                    window.open(url_fa, '_blank');
-                    if(data.GR != '') abrirPDFGuiaDeRemision(data);
-                });
-                Eliminar_linea('', '');
-            } else {
-                Swal.fire('Factura creada pero no autorizada', '' , 'warning')
-                .then((result) => {
-                    var url_fa = '../../TEMP/' + data.pdf + '.pdf';
-                    window.open(url_fa, '_blank');
-                    if(data.GR != '') abrirPDFGuiaDeRemision(data);
-                });
-                /*var url = '../../TEMP/' + data.pdf + '.pdf';
-                window.open(url, '_blank');*/
-                Eliminar_linea('', '');
+            if(data.AU){
+                if (data.AU[0] == 1) {
+                    /*var url = '../../TEMP/' + data.pdf + '.pdf';
+                    window.open(url, '_blank');*/
+                    Swal.fire('Factura Creada y Autorizada', '', 'success')
+                    .then((result)=>{
+                        var url_fa = '../../TEMP/' + data.pdf + '.pdf';
+                        window.open(url_fa, '_blank');
+                        if(data.GR != '') abrirPDFGuiaDeRemision(data);
+                    });
+                    Eliminar_linea('', '');
+                } else {
+                    Swal.fire('Factura creada pero no autorizada', '' , 'warning')
+                    .then((result) => {
+                        var url_fa = '../../TEMP/' + data.pdf + '.pdf';
+                        window.open(url_fa, '_blank');
+                        if(data.GR != '') abrirPDFGuiaDeRemision(data);
+                    });
+                    /*var url = '../../TEMP/' + data.pdf + '.pdf';
+                    window.open(url, '_blank');*/
+                    Eliminar_linea('', '');
+                }
+            }else{
+                Swal.fire('Ocurrio un error al autorizar la factura', '' , 'error');
             }
         }
     })
 }
 
 function abrirPDFGuiaDeRemision(data){
-    if (data.GR == 1) {
+    if (data.GR[0] == 1) {
         /*var url = '../../TEMP/' + data.pdf + '.pdf';
         window.open(url, '_blank');*/
         Swal.fire('Guia de Remision Creada y Autorizada', '', 'success')
@@ -1520,6 +1525,7 @@ function MBoxFechaGRE_LostFocus() {
                     data[i]['nombre'] = data[i]['codigo'].split('_')[1];
                 }
                 llenarComboList(data, 'DCSerieGR');
+                $('#DCSerieGR').trigger('change');
             }
 
         }

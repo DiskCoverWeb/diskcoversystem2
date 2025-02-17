@@ -66,7 +66,120 @@ class facturarM
 
   }
 
-
+  function Imprimir_Guia_Remision($DtaFactura, $DtaDetalle, $TFA){
+    // $CadenaMoneda = "";
+    // $Numero_Letras = "";
+    // $CxC_Clientes = "";
+  
+    // //Establecemos Espacios y seteos de impresion
+    // //MsgBox TipoFact
+    // $CEConLineas = ProcesarSeteos("GR");
+    // $CantFils = 0;
+    // $Mensajes = "IMPRIMIR GUIA DE REMISION DE LA FACTURA No. " . str_pad($TFA['Factura'], 7, '0', STR_PAD_LEFT);
+    // $Titulo = "IMPRESION";
+    // $Bandera = false;
+    // $FontName = "TipoCourier";
+    // $FontBold = True;
+    // $CxC_Clientes = G_NINGUNO;
+  
+    $sSQL = "SELECT F.*,C.Cliente,C.CI_RUC,C.Telefono,C.Direccion,C.DirNumero,C.Ciudad,C.Grupo,C.Email 
+      FROM Facturas As F,Clientes As C 
+      WHERE F.Factura = " . $TFA['Factura'] . " 
+      AND F.Serie = '" . $TFA['Serie'] . "' 
+      AND F.Autorizacion = '" . $TFA['Autorizacion'] . "' 
+      AND F.TC = '" . $TFA['TC'] . "' 
+      AND F.Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' 
+      AND F.Item = '" . $_SESSION['INGRESO']['item'] . "' 
+      AND C.Codigo = F.CodigoC ";
+    
+    $DtaFactura = $this->db->datos($sSQL);
+    if(count($DtaFactura) > 0){
+      //Encabezado de la factura
+      $Cta_Cobrar = $DtaFactura[0]["Cta_CxP"];
+      $CodigoL = $DtaFactura[0]["Cod_CxC"];
+      $SQL2 = "SELECT * 
+        FROM Catalogo_Lineas 
+        WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+        AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' 
+        AND TL <> 0 
+        AND CxC = '" . $Cta_Cobrar . "' 
+        AND Codigo = '" . $CodigoL . "' 
+        ORDER BY Codigo,CxC ";
+  
+      $DtaDetalle = $this->db->datos($SQL2);
+      
+  /*    If TFA.LogoFactura <> "NINGUNO" And TFA.AnchoFactura > 0 And TFA.AltoFactura > 0 Then
+             If SetD(1).PosX > 0 And SetD(1).PosY > 0 Then
+  '''              Codigo4 = Format$(.Fields("Factura"), "0000000")
+  '''              Cadena = RutaSistema & "\FORMATOS\" & LogoFactura & ".GIF"
+  '''              PrinterPaint Cadena, SetD(1).PosX, SetD(1).PosY, AnchoFactura, AltoFactura
+  '''              PrinterPaint LogoTipo, SetD(34).PosX, SetD(34).PosY, 2.5, 1.25
+             End If
+          End If
+    }*/
+      // $DireccionCli = $DtaFactura["Direccion"];
+      // $DireccionGuia = $DtaFactura["Comercial"];
+  
+      //imprimirGuiaRemision($DtaFactura, $DtaDetalle, $TFA);
+      //TODO: Adaptar a los metodos de PDF de PHP
+      /*
+      $Printer.FontSize = SetD(2).Tamaño;
+      $PrinterTexto SetD(2).PosX, SetD(2).PosY, Format$(.fields("Remision"), "0000000");
+      $Printer.FontSize = SetD(8).Tamaño;
+      $PrinterFields SetD(8).PosX, SetD(8).PosY, .fields("Cliente");
+      $Printer.FontSize = SetD(11).Tamaño;
+      $PrinterTexto SetD(11).PosX, SetD(11).PosY, DireccionGuia;
+      $Printer.FontSize = SetD(10).Tamaño;
+      $PrinterFields SetD(10).PosX, SetD(10).PosY, .fields("Grupo");
+      $Cadena = "Elab.[" & .fields("CodigoU") & "]";
+      $Printer.FontSize = SetD(18).Tamaño;
+      $PrinterTexto SetD(18).PosX, SetD(18).PosY, Cadena;
+      $Printer.FontSize = SetD(3).Tamaño;
+      $PrinterTexto SetD(3).PosX, SetD(3).PosY, FechaStrgCorta(.fields("Fecha"));
+      $Cadena = FechaDia(.fields("Fecha")) & Space(10) & FechaMes(.fields("Fecha")) & Space(10) & FechaAnio(.fields("Fecha"));
+      $Printer.FontSize = SetD(4).Tamaño;
+      $PrinterTexto SetD(4).PosX, SetD(4).PosY, Cadena;
+      $Printer.FontSize = SetD(7).Tamaño;
+      $PrinterTexto SetD(7).PosX, SetD(7).PosY, FechaStrgCiudad(.fields("Fecha"));
+      $Printer.FontSize = SetD(5).Tamaño;
+      $PrinterTexto SetD(5).PosX, SetD(5).PosY, FechaStrgCorta(.fields("Fecha_V"));
+      $Cadena = FechaDia(.fields("Fecha_V")) & Space(10) & FechaMes(.fields("Fecha_V")) & Space(10) & FechaAnio(.fields("Fecha_V"));
+      $Printer.FontSize = SetD(6).Tamaño;
+      $PrinterTexto SetD(6).PosX, SetD(6).PosY, Cadena;
+      $Printer.FontSize = SetD(14).Tamaño;
+      $PrinterFields SetD(14).PosX, SetD(14).PosY, .fields("Telefono");
+      $Printer.FontSize = SetD(12).Tamaño;
+      $PrinterFields SetD(12).PosX, SetD(12).PosY, .fields("Ciudad");
+      $Printer.FontSize = SetD(13).Tamaño;
+      $PrinterFields SetD(13).PosX, SetD(13).PosY, .fields("CI_RUC");
+      $Printer.FontSize = SetD(15).Tamaño;
+      $PrinterFields SetD(15).PosX, SetD(15).PosY, .fields("Email");
+      $Printer.FontSize = SetD(51).Tamaño;
+      $PrinterFields SetD(51).PosX, SetD(51).PosY, .fields("DAU");
+      $Printer.FontSize = SetD(52).Tamaño;
+      $PrinterFields SetD(52).PosX, SetD(52).PosY, .fields("FUE");
+      $Printer.FontSize = SetD(53).Tamaño;
+      $PrinterFields SetD(53).PosX, SetD(53).PosY, .fields("Declaracion");
+      $Printer.FontSize = SetD(56).Tamaño;
+      $PrinterFields SetD(56).PosX, SetD(56).PosY, .fields("Solicitud");
+      $Printer.FontSize = SetD(57).Tamaño;
+      $PrinterFields SetD(57).PosX, SetD(57).PosY, .fields("Cantidad");
+      $Printer.FontSize = SetD(58).Tamaño;
+      $PrinterFields SetD(58).PosX, SetD(58).PosY, .fields("Kilos");
+      $Printer.FontSize = SetD(60).Tamaño;
+      $PrinterTexto SetD(60).PosX, SetD(60).PosY, Format$(Day(.fields("Fecha")), "00");
+      $Cadena = UCaseStrg(MidStrg(MesesLetras(CInt(Month(.fields("Fecha")))), 1, 3));
+      $Printer.FontSize = SetD(61).Tamaño;
+      $PrinterTexto SetD(61).PosX, SetD(61).PosY, Cadena;
+      $Printer.FontSize = SetD(62).Tamaño;
+      $PrinterTexto SetD(62).PosX, SetD(62).PosY, Format$(Year(.fields("Fecha")), "0000");
+      $Printer.FontSize = SetD(16).Tamaño;
+      $NumeroLineas = PrinterLineasMayor(SetD(16).PosX, SetD(16).PosY, .fields("Observacion"), SetD(26).PosX);
+      $Printer.FontSize = SetD(17).Tamaño;
+      $NumeroLineas = PrinterLineasMayor(SetD(17).PosX, SetD(17).PosY, .fields("Nota"), SetD(26).PosX);
+      */
+    }
+  }
 
   function lineas_factura($tabla = false, $altoTabla=0)
   {
@@ -348,7 +461,7 @@ class facturarM
         AND F.Periodo = GR.Periodo 
         AND F.Serie = GR.Serie 
         AND F.Factura = GR.Factura ";
-    // print_r($sql2);die();
+    //print_r($sql2);
     $AdoDBFA = $this->db->datos($sql2);
     // print_r($AdoDBFA);die();
 
@@ -356,6 +469,8 @@ class facturarM
 
     $datos_cli_edu = array();
     $datos_trans = array();
+    //print_r($AdoDBFA );
+    //print_r($tipo_con );
     if (count($AdoDBFA) > 0 && count($tipo_con) > 0) {
       $AdoDBFA['Tipo_contribuyente'] = $tipo_con;
     
@@ -364,6 +479,8 @@ class facturarM
       $datos_cli_edu = $this->Cliente($TFA['CodigoC']);
       $datos_trans = $this->Cliente(false, false, false, false, $AdoDBFA[0]['CIRUC_Comercial']);
     }
+    //print_r($datos_cli_edu);
+    //print_r($datos_trans);die();
 
     // print_r($datos_trans);die();
     $datos_cli_edu[0]['Direccion_tras'] = '.';
