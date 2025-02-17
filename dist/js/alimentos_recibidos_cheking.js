@@ -70,7 +70,11 @@ $(document).ready(function () {
                   }
               },
               { data: 'Producto' },
-              { data: 'Unidad' },
+              { data: null,
+                render: function(data, type, item) {
+                    return `${data.Entrada} - ${data.Unidad}`;
+                }      
+              },
               { data: null,
                 render: function(data, type, item) {
                     return `<input class="form-control"  id="txt_pvp_linea_${data.ID}" name="txt_pvp_linea_${data.ID}" onblur="recalcular('${data.ID}')" input-sm" value="${data.Valor_Unitario}">`;
