@@ -8,7 +8,11 @@ $menuC = new menuC();
 
 $pagina =  isset($_GET['acc']) ? $_GET['acc'] : "";
 $modulo =  isset($_GET['mod']) ? $_GET['mod'] : "";
-$listaMenu = $menuC->generar_menu($modulo);
+if ($modulo !== ""){
+	$listaMenu = $menuC->generar_menu($modulo);
+} else {
+	$listaMenu = "";
+}
 $_SESSION['INGRESO']['modulo_'] = $modulo;
 
 // print_r($listaMenu);die();
@@ -172,7 +176,7 @@ function estado_licencia($f3)
 			 </div>
 			<!--navigation-->
 			<ul class="metismenu" id="menu">				
-				<li class="menu-label">MENU <?php echo $NombreModulo; ?></li>
+				<li class="menu-label" id="sub_menu">MENU <?php echo $NombreModulo; ?></li>
 				<?php echo $listaMenu; ?>
 				<li>
 					<a href="../vista/modulos.php">

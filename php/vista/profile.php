@@ -1,159 +1,169 @@
-<?php require_once(dirname(__Dir__,2).'/headers/header2.php');?>
+<?php require_once(dirname(__Dir__,2).'/headers/header.php');
+
+?>
 <script>
-    var nombreNuevaFoto = '<?php echo $_SESSION['INGRESO']['Foto']?>';
-    $(document).ready(function(){
-        $('#file_img').on("change", function(){
-            var input = this;
-            if(input.files && input.files[0]){
-                var reader = new FileReader();
-                nombreNuevaFoto = input.files[0].name; 
-                reader.onload = function(e){
-                    $('#img_foto1').attr("src", e.target.result);
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        });
-    });
-
-    var foto_o = '<?php echo $_SESSION['INGRESO']['Foto']?>';
     var nombre_o = '<?php echo $_SESSION['INGRESO']['Nombre_Completo']?>';
-   
     
-    function cancelar(){
-        let nombre = $('#nombre_prof').val();  
-        let foto = nombreNuevaFoto;
-        if (foto == foto_o && nombre == nombre_o){
-            window.location.href = 'modulos.php';
-        } else {
-            Swal.fire({
-                title: 'Datos sin guardar, ¿Continuar?',
-                text: '',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si!'
-            }).then((result) => {
-                if(result.isConfirmed){
-                    window.location.href = 'modulos.php';
-                }
-            })
+    $(window).on("beforeunload", function (event){
+        cancelar();
+    });
+    
+    function guardar_imagen(){
+        var form = new FormData(document.getElementById("form_img"));
+        // Aseguramos que el formulario existe y tiene un archivo seleccionado
+        if (!form) {
+            console.error("Formulario no encontrado.");
+            return;
         }
-    }
-
-    function confirmar(){
-        let nombre = $('#nombre_prof').val();
-        let foto = nombreNuevaFoto;
-        var formData = new FormData();
-        formData.append('Foto', $('#file_img')[0].files[0]);
-        formData.append('Nombre_Completo', nombre);
-        if (foto == foto_o && nombre == nombre_o){
-            Swal.fire({
-                title: 'Error',
-                text: 'Información no modificada, modifica para actualizar',
-                icon: 'error',
-                confirmButtonText: 'Aceptar',
-            })
-        } else {
-            Swal.fire({
-                title: '¿Estás seguro de actualizar la información?',
-                text: '',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si!'
-            }).then((result) => {
-                if(result.isConfirmed){
-                    actualizar_datos(formData);
-                }
-            })
+        var inputFile = document.getElementById("file_img");
+        if (inputFile.files.length === 0) {
+            console.log("No se ha seleccionado ningún archivo.");
+            return;
         }
-        
-    }
-
-    function actualizar_datos(formData){
         $.ajax({
-            type: 'POST',
-            url: '../controlador/panel.php?actualizar_datos=true',
-            data: formData,
+            url: '../controlador/panel.php?cargar_imagen=true',
+            type: 'post',
+            data: form,
             contentType: false,
             processData: false,
-            success: function (response){
-                if (response==1){
-                    Swal.fire({
+            dataType:'json',
+         // beforeSend: function () {
+         //        $("#foto_alumno").attr('src',"../img/gif/proce.gif");
+         //     },
+            success: function(response) {
+                if(response==-1){
+                    
+                }else if(response ==-2){
+                    Swal.fire(
+                    '',
+                    'Asegurese que el archivo subido sea una imagen.',
+                    'error')
+                }else{
+                    swal.fire({
                         title: '¡Éxito!',
-                        text: 'Datos actualizados',
+                        text: 'Imagen actualizada',
                         icon: 'success',
-                        confirmButtonText: 'Aceptar',
-                    }).then((result)=>{
-                        if (result.isConfirmed){
-                            window.location.href = 'modulos.php';
-                        }
+                        confirmButtonText: 'OK',
                     });
-                } else if (response == -1){
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Ocurrio un problema, por favor intente nuevamente',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar',
-                    })
-                } else if (response == -2) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Formato no admitido, por favor insertar una imagen',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar',
-                    })
-                }
+                    $('#img_foto').prop('src','../../img/usuarios/'+response+'?'+Math.random());
+                    $('#img_foto1').prop('src','../../img/usuarios/'+response+'?'+Math.random());
+                    $('#file_img').val('');  
+                } 
             }
-        })
+        });
     }
-
 </script>
-<div class="text-center">
-    <h3>Perfil de usuario</h3>
-    <image id="img_foto1" src="../../img/usuarios/<?php echo $_SESSION['INGRESO']['Foto']?>" class="user-img-lg"></image>
-    <div>
-        <input type="file" class="d-none" id="file_img" name="file_img">
-        <label class="btn btn-primary btn-sm" for="file_img">Cambiar imagen</label>
+<h4 class="border-bottom">Perfil de usuario</h4>
+<br>
+<div class="row">
+    <div class="col-4 text-center">
+        <image id="img_foto1" src="../../img/usuarios/<?php echo $_SESSION['INGRESO']['Foto']?>" class="img-fluid border rounded-circle"></image>
+        <div class="pt-2">
+            <form enctype="multipart/form-data" id="form_img" method="post">
+                <input type="file" class="d-none" id="file_img" name="file_img" onchange="guardar_imagen()">
+                <label class="btn btn-primary btn-sm" for="file_img">Actualizar imagen</label>
+            </form>
+        </div>
     </div>
-    <div class="d-flex justify-content-center mt-4">
-        <div class="col-12 col-lg-4">
-            <div class="text-start">
-                <h6><b>Datos Personales:</b></h6>
-            </div>
-            <div class="row row-cols-auto">
-                <div class="col-12">
-                    <div class="row row-cols-auto">
-                        <div>
-                            <i class="bx bx-user fs-4"></i>
+    <div class="col-8">
+        <div>
+            <div class="col-12">
+                <ul class="nav nav-tabs justify-content-start" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a data-bs-toggle="pill" href="#Primary-US" id="Titulo_usuario" class="nav-link active">
+                            <div class="tab-title">DATOS DE USUARIO</div>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a data-bs-toggle="pill" href="#Primary-EP" id="Titulo_empresa" class="nav-link">
+                            <div class="tab-title">DATOS DE EMPRESA</div>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="Primary-US">
+                        <div class="col-12 border rounded-bottom p-2">
+                            <div class="row g-2 row-cols-auto">
+                                <div>
+                                    <i class="bx bx-user fs-4"></i>
+                                </div>
+                                <div class="col-2 d-flex align-items-center">
+                                    <b>Nombre:</b>
+                                </div>
+                                <div class="d-flex flex-grow-1">
+                                    <input id="nombre_prof" type="input" disabled class="form-control form-control-sm" value='<?php echo $_SESSION['INGRESO']['Nombre_Completo']?>'>  
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row g-2 row-cols-auto">
+                                <div>
+                                    <i class="bx bx-id-card fs-4"></i>
+                                </div>
+                                <div class="col-2 d-flex align-items-center">
+                                    <b class="">ID:</b>
+                                </div>
+                                <div class="d-flex flex-grow-1"> 
+                                    <input type="input" class="form-control form-control-sm" disabled value='<?php echo $_SESSION['INGRESO']['Id']?>'>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row g-2 row-cols-auto">
+                                <div>
+                                    <i class="bx bx-user fs-4"></i>
+                                </div>
+                                <div class="col-2 d-flex align-items-center">
+                                    <b class="">Usuario :</b>
+                                </div>
+                                <div class="d-flex flex-grow-1"> 
+                                    <input type="input" class="form-control form-control-sm" disabled value='<?php echo $_SESSION['INGRESO']['usuario']?>'>
+                                </div>
+                            </div>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <b class="text-start">Nombre: </b>
-                        </div>
-                        <div class="d-flex align-items-center flex-grow-1">
-                            <input id="nombre_prof" type="input" class="form-control form-control-sm" value='<?php echo $_SESSION['INGRESO']['Nombre_Completo']?>'>  
+
+                    </div>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade" id="Primary-EP">
+                        <div class="col-12 border rounded-bottom p-2">
+                            <div class="row g-2 row-cols-auto">
+                                <div>
+                                    <i class="bx bxs-building fs-4"></i>
+                                </div>
+                                <div class="d-flex col-2 align-items-center">
+                                    <b>Razon Social:</b>
+                                </div>
+                                <div class="d-flex flex-grow-1">
+                                    <input type="input" class="form-control form-control-sm" disabled value='<?php echo $_SESSION['INGRESO']['Razon_Social']?>'>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row g-2 row-cols-auto">
+                                <div>
+                                    <i class="bx bxs-institution fs-4"></i>
+                                </div>
+                                <div class="d-flex col-2 align-items-center">
+                                    <b>Entidad:</b>
+                                </div>
+                                <div class="d-flex flex-grow-1">
+                                    <input type="input" class="form-control form-control-sm" disabled value='<?php echo $_SESSION['INGRESO']['Entidad']?>'>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row g-2 row-cols-auto">
+                                <div>
+                                    <i class="bx bxs-building fs-4"></i>
+                                </div>
+                                <div class="d-flex col-2 align-items-center">
+                                    <b>Empresa:</b>
+                                </div>
+                                <div class="d-flex flex-grow-1">
+                                    <input type="input" class="form-control form-control-sm" disabled value='<?php echo $_SESSION['INGRESO']['noempr']?>'>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <br>
-            <div class="row row-cols-auto">
-                <div>
-                    <i class="bx bx-id-card fs-4"></i>
-                </div>
-                <div class="d-flex align-items-center">
-                    <b class="text-start">ID: </b>
-                </div>
-                <div class="d-flex align-items-center flex-grow-1">
-                    <input type="input" class="form-control form-control-sm" disabled value='<?php echo $_SESSION['INGRESO']['Id']?>'>
-                </div>
-            </div>
-            <br>
-            <button class="btn btn-sm btn-danger" onclick="cancelar()">Cancelar</button>
-            <button class="btn btn-sm btn-primary" onclick="confirmar()">Cambiar Datos</button>
         </div>
     </div>
 </div>
-<?php require_once(dirname(__DIR__, 2).'/headers/footer2.php');?>
+<?php require_once(dirname(__DIR__, 2).'/headers/footer.php');?>
