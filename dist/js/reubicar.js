@@ -51,7 +51,7 @@ $('#txt_cod_barras').keydown( function(e) {
              
               { data: 'Codigo_Barra' },
               { data: 'Producto' },
-              { data: 'Stock',},
+              { data: 'Entrada',},
               { data: 'CodBodega' },
               { data: 'Ruta'        },
              
