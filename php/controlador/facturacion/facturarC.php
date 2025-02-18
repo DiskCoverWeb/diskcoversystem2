@@ -32,6 +32,11 @@ if (isset($_GET['DCBodega'])) {
    //$parametros = $_POST['parametros'];
    echo json_encode($controlador->DCBodega());
 }
+if (isset($_GET['FechaValida'])) {
+   //$parametros = $_POST['parametros'];
+   $FechaFin1 = $_POST['fecha'];
+   echo json_encode($controlador->FechaValida($FechaFin1));
+}
 if (isset($_GET['DCMarca'])) {
    //$parametros = $_POST['parametros'];
    $query = '';
@@ -409,6 +414,12 @@ class facturarC
          $lis[] = array('codigo' => $value['CodBod'], 'nombre' => $value['Bodega']);
       }
       return $lis;
+   }
+   
+   function FechaValida($FechaFin1){
+      $AdoCierre = FechaValida($FechaFin1);
+
+      return $AdoCierre;
    }
    function DCMarca($q)
    {
@@ -922,12 +933,19 @@ class facturarC
    }
    function MBoxFechaGRE_LostFocus($parametros)
    {
-      $datos = $this->modelo->MBoxFechaGRE_LostFocus($parametros['MBoxFechaGRE']);
-      $lis = array();
-      foreach ($datos as $key => $value) {
-         $lis[] = array('codigo' => $value['Codigo'] . '_' . $value['Serie'], 'nombre' => $value['Concepto']);
+      $fechaValida = FechaValida($parametros['MBoxFechaGRE'], true);
+
+      if($fechaValida['ErrorFecha'] == 1){
+         return array('error' => $fechaValida['MsgBox']);
+      }else{
+         //print_r($fechaValida);die();
+         $datos = $this->modelo->MBoxFechaGRE_LostFocus($parametros['MBoxFechaGRE']);
+         $lis = array();
+         foreach ($datos as $key => $value) {
+            $lis[] = array('codigo' => $value['Codigo'] . '_' . $value['Serie'], 'nombre' => $value['Concepto']);
+         }
+         return $lis;
       }
-      return $lis;
    }
 
    function DCSerieGR_LostFocus($parametros)

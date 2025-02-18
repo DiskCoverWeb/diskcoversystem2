@@ -253,7 +253,7 @@ function area_egreso_modal(){
 			 img = 'simple';
 				 if(item.data.Picture!='.'){	 		img = item.data.Picture; 	 	}
 		  option+= '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">'+
-					  '<button type="button" class="btn btn-default btn-sm"><img src="../../img/png/'+img+'.png" onclick="cambiar_area(\''+item.id+'\',\''+item.text+'\')"  style="width: 60px;height: 60px;"></button><br>'+
+					  '<button type="button" class="btn btn-light btn-sm"><img src="../../img/png/'+img+'.png" onclick="cambiar_area(\''+item.id+'\',\''+item.text+'\')"  style="width: 60px;height: 60px;"></button><br>'+
 					  '<b style="white-space: nowrap;">'+item.text+'</b>'+
 					'</div>';
 		})
@@ -302,7 +302,7 @@ function motivo_egreso_modal(){
 			 img = 'simple';
 				 if(item.data.Picture!='.'){	 		img = item.data.Picture; 	 	}
 		  option+= '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">'+
-					  '<button type="button" class="btn btn-default btn-sm"><img src="../../img/png/'+img+'.png" onclick="cambiar_motivo(\''+item.id+'\',\''+item.text+'\')"  style="width: 60px;height: 60px;"></button><br>'+
+					  '<button type="button" class="btn btn-light btn-sm"><img src="../../img/png/'+img+'.png" onclick="cambiar_motivo(\''+item.id+'\',\''+item.text+'\')"  style="width: 60px;height: 60px;"></button><br>'+
 					  '<b>'+item.text+'</b>'+
 					'</div>';
 		})

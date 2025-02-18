@@ -331,7 +331,7 @@ function cargar_paquetes()
         data.forEach(function(item,i){
 
           option+= '<div class="col-md-6 col-sm-6">'+
-                      '<button type="button" class="btn btn-default btn-sm"><img src="../../img/png/'+item.Picture+'.png" onclick="cambiar_empaque(\''+item.ID+'\')"  style="width: 60px;height: 60px;"></button><br>'+
+                      '<button type="button" class="btn btn-light btn-sm"><img src="../../img/png/'+item.Picture+'.png" onclick="cambiar_empaque(\''+item.ID+'\')"  style="width: 60px;height: 60px;"></button><br>'+
                       '<b>'+item.Proceso+'</b>'+
                     '</div>';
 
@@ -1260,6 +1260,7 @@ function autocoplet_ingreso()
   function autocoplet_pro(){
     $('#ddl_producto').select2({
       placeholder: 'Seleccione una producto',
+      dropdownParent: $('#modal_producto'),
       ajax: {
         url:   '../controlador/inventario/alimentos_recibidosC.php?autocom_pro=true',
         dataType: 'json',

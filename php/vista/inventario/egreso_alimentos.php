@@ -109,7 +109,7 @@
 					<div class="col-lg-3 col-md-6 col-sm-12">
 						<div class="row">
 							<div class="col-lg-4 col-md-3 col-sm-3 d-flex align-items-center justify-content-center">
-								<button type="button" class="btn btn-light" onclick="abrir_modal('M')">
+								<button type="button" class="btn btn-light">
 									<img src="../../img/png/detalle_egreso.png" class="w-100" />
 								</button>
 							</div>
@@ -121,7 +121,7 @@
 					</div>
 					<div class="col-lg-3 col-md-6 col-sm-12">
 						<div class="row">
-							<div class="col-12">
+							<div class="col-6">
 								<form enctype="multipart/form-data" id="form_img" method="post" style="width: inherit;">
 									<div class="fileupload fileupload-new" data-provides="fileupload">
 										<span class="btn btn-light btn-file">
@@ -134,6 +134,12 @@
 										<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
 									</div>
 								</form>
+							</div>
+							<div class="col-6">
+								<button type="button" class="btn btn-light" onclick="">
+									<img src="../../img/png/camara.png" style="width:20%">
+									Adjuntar por cámara
+								</button>
 							</div>
 						</div>						
 					</div>

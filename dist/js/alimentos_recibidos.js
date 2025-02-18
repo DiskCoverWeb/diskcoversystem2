@@ -374,6 +374,7 @@ function autocoplet_alimento()
 function autocoplet_ingreso(){
 $('#ddl_ingreso').select2({
   placeholder: 'Seleccione',
+  dropdownParent: $('#modal_proveedor'),
   width:'100%',
   ajax: {
    url:   '../controlador/inventario/alimentos_recibidosC.php?detalle_ingreso2=true',
@@ -393,6 +394,7 @@ $('#ddl_ingreso').select2({
 function autocoplet_ingreso2(){
 $('#ddl_ingreso_edi').select2({
   placeholder: 'Seleccione',
+  dropdownParent: $('#modal_editar_pedido'),
   width:'100%',
   ajax: {
    url:   '../controlador/inventario/alimentos_recibidosC.php?detalle_ingreso2=true',

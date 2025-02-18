@@ -883,6 +883,32 @@ function TextVUnit_LostFocus() {
     })
 }
 
+function diferenciaEnDias(fecha1, fecha2) {
+    const fechaInicio = new Date(fecha1);
+    const fechaFin = new Date(fecha2);
+    const diferenciaMilisegundos = fechaFin - fechaInicio;
+    return diferenciaMilisegundos / (1000 * 60 * 60 * 24);
+}
+
+function MBoxFechaV_LostFocus(){
+    $.ajax({
+        type: "POST",
+        url: '../controlador/facturacion/facturarC.php?FechaValida=true',
+        data: { fecha: $('#MBoxFechaV').val() },
+        dataType: 'json',
+        success: function (data) {
+            if (data.error) {
+                Swal.fire(data.error.replaceAll('\r\n\r', ' '), '', 'error')
+            }else{
+                if(diferenciaEnDias($('#MBoxFecha').val(), $('#MBoxFechaV').val()) > 0 ){
+                    $('#TextObs').val("CREDITO A " + diferenciaEnDias($('#MBoxFecha').val(), $('#MBoxFechaV').val()) + " DIA(S).");
+                }else{
+                    $('#TextObs').val("CONTADO.");
+                }
+            }
+        }
+    })
+}
 
 function Eliminar_linea(ln_No, Cod) {
     var parametros = {
@@ -1520,14 +1546,20 @@ function MBoxFechaGRE_LostFocus() {
         data: { parametros: parametros },
         dataType: 'json',
         success: function (data) {
-            if (data.length > 0) {
-                for(let i=0; i < data.length; i++){
-                    data[i]['nombre'] = data[i]['codigo'].split('_')[1];
+            if(data.error){
+                console.log(data.error);
+                llenarComboList([{codigo: '', nombre: 'No Existe'}], 'DCSerieGR');
+                Swal.fire(data.error.replaceAll('\r\n\r', ' '), '', 'error')
+                .then(()=>document.querySelector('#form_guia').reset());
+            }else{
+                if (data.length > 0) {
+                    for(let i=0; i < data.length; i++){
+                        data[i]['nombre'] = data[i]['codigo'].split('_')[1];
+                    }
+                    llenarComboList(data, 'DCSerieGR');
+                    $('#DCSerieGR').trigger('change');
                 }
-                llenarComboList(data, 'DCSerieGR');
-                $('#DCSerieGR').trigger('change');
             }
-
         }
     })
 }
@@ -1601,10 +1633,22 @@ function DGSuscripcion() {
                     return data ? new Date(data).toLocaleDateString() : '';
                 }
             },
-            { data: 'Entregado' },
+            { data: 'Entregado',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : '0.00';
+                }
+            },
             { data: 'Sector' },
-            { data: 'Comision' },
-            { data: 'Capital' },
+            { data: 'Comision', 
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : '0.00';
+                }
+            },
+            { data: 'Capital', 
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(2) : '0.00';
+                }
+            },
             { data: 'T_No' },
             { data: 'Item' },
             { data: 'CodigoU' }
@@ -1640,6 +1684,7 @@ function DCCtaVenta() {
 function DCEjecutivoModal() {
     $('#DCEjecutivoModal').select2({
         placeholder: 'Seleccione un cliente',
+        width: '100%',
         dropdownParent: $('#myModal_suscripcion'),
         ajax: {
             url: '../controlador/facturacion/facturarC.php?DCEjecutivoModal=true',
@@ -1745,6 +1790,7 @@ function DCVendedor() {
 function DCBanco() {
     $('#form_abonos #DCBanco').select2({
         placeholder: 'Cuenta Banco',
+        width: '100%',
         dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCBanco=true',
@@ -1763,6 +1809,7 @@ function DCBanco() {
 function DCTarjeta() {
     $('#DCTarjeta').select2({
         placeholder: 'Cuenta Banco',
+        width: '100%',
         dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCTarjeta=true',
@@ -1781,6 +1828,7 @@ function DCTarjeta() {
 function DCRetFuente() {
     $('#DCRetFuente').select2({
         placeholder: 'Cuenta Banco',
+        width: '100%',
         dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCRetFuente=true',
@@ -1799,6 +1847,7 @@ function DCRetFuente() {
 function DCRetISer() {
     $('#DCRetISer').select2({
         placeholder: 'Cuenta Banco',
+        width: '100%',
         dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCRetISer=true',
@@ -1817,6 +1866,7 @@ function DCRetISer() {
 function DCRetIBienes() {
     $('#DCRetIBienes').select2({
         placeholder: 'Cuenta Banco',
+        width: '100%',
         dropdownParent: $('#form_abonos'),
         ajax: {
             url: '../controlador/contabilidad/FAbonosC.php?DCRetIBienes=true',

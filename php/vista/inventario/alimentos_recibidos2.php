@@ -24,9 +24,9 @@
       <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()" id="btn_guardar">
         <img src="../../img/png/grabar.png">
       </button>
-      <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Generar PDF" onclick="reporte_pdf()">
+      <!-- <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Generar PDF" onclick="reporte_pdf()">
         <img src="../../img/png/pdf.png" height="32px">
-      </button>
+      </button> -->
       
      <!--  <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir etiquetas" onclick="imprimir_etiquetas()">
         <img src="../../img/png/impresora.png" height="32px">
@@ -334,8 +334,8 @@
 <div id="modal_producto" class="modal fade myModalNuevoCliente" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog">
       <div class="modal-content" style="background: antiquewhite;">
-          <div class="modal-header">
-            <h4 class="modal-title">Producto</h4>
+          <div class="modal-header bg-primary">
+            <h4 class="modal-title text-white">Producto</h4>
             <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -346,7 +346,7 @@
 		           </div>
 		           <div class="col-sm-9">
 		              <b>Producto:</b><br>
-		              <select class="form-control" id="ddl_producto" name="ddl_producto"style="width: 100%;">
+		              <select class="form-select form-select-sm" id="ddl_producto" name="ddl_producto"style="width: 100%;">
 		                <option value="">Seleccione una producto</option>
 		              </select>
 		           </div>        
@@ -365,8 +365,8 @@
 <div id="modal_producto_2" class="modal fade myModalNuevoCliente" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog">
       <div class="modal-content" style="background: antiquewhite;">
-          <div class="modal-header">
-            <h4 class="modal-title" id="txt_titulo_mod"></h4>
+          <div class="modal-header bg-primary">
+            <h4 class="modal-title text-white" id="txt_titulo_mod"></h4>
             <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -377,7 +377,7 @@
 		           </div> -->
 		           <div class="col-sm-9">
 		              <b>Producto:</b><br>
-		              <select class="form-control" id="ddl_producto2" name="ddl_producto2"style="width: 100%;">
+		              <select class="form-select form-select-sm" id="ddl_producto2" name="ddl_producto2"style="width: 100%;">
 		                <option value="">Seleccione una producto</option>
 		              </select>
 		           </div>
@@ -430,8 +430,8 @@
 <div id="modal_cantidad" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-sm">
       <div class="modal-content" style="background: antiquewhite;">
-          <div class="modal-header">
-            <h4 class="modal-title">Cantidad</h4>
+          <div class="modal-header bg-primary">
+            <h4 class="modal-title text-white">Cantidad</h4>
             <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -449,13 +449,13 @@
 <div id="modal_sucursal" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-sm">
       <div class="modal-content" style="background: antiquewhite;">
-          <div class="modal-header">
-            <h4 class="modal-title">Sucursal</h4>
+          <div class="modal-header bg-primary">
+            <h4 class="modal-title text-white">Sucursal</h4>
             <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
           <b>Sucursal</b>
-	         <select class="form-control input-sm" id="ddl_sucursales2" name="ddl_sucursales2" onchange="cambiar_sucursal()">
+	         <select class="form-select form-select-sm" id="ddl_sucursales2" name="ddl_sucursales2" onchange="cambiar_sucursal()">
 	         		<option value="">Seleccione Sucursal</option>
 	         </select>        					
           </div>
@@ -489,8 +489,8 @@
 <div id="modal_calendar" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content" style="background: antiquewhite;">
-            <div class="modal-header">
-              <h4 class="modal-title">Fecha de vencimiento</h4>
+            <div class="modal-header bg-primary">
+              <h4 class="modal-title text-white">Fecha de vencimiento</h4>
               <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -499,9 +499,9 @@
             	<div id="app">
 							  <div class="container">
 							    <div class="controls">
-							      <button @click="date = prevMonth">{{ prevMonth.toLocaleString({ month: 'long' }) }}</button>
-							      <input type="date" v-model="dateString">
-							      <button @click="date = nextMonth">{{ nextMonth.toLocaleString({ month: 'long' }) }}</button>
+							      <button class="btn btn-sm btn-light" @click="date = prevMonth">{{ prevMonth.toLocaleString({ month: 'long' }) }}</button>
+							      <input class="form-control form-control-sm" type="date" v-model="dateString">
+							      <button class="btn btn-sm btn-light" @click="date = nextMonth">{{ nextMonth.toLocaleString({ month: 'long' }) }}</button>
 							    </div>
 							    <calendar v-model="date"></calendar>
 							  </div>

@@ -59,12 +59,12 @@ $(document).ready(function () {
                         return meta.row + 1; // meta.row es el índice de la fila
                     }
               },
-              { data: 'Fecha_Exp.date',  
+              { data: 'Fecha_Fab.date',  
                   render: function(data, type, item) {
                       return data ? new Date(data).toLocaleDateString() : '';
                   }
               },
-              {data: 'Fecha_Fab.date',  
+              {data: 'Fecha_Exp.date',  
                   render: function(data, type, item) {
                       return data ? new Date(data).toLocaleDateString() : '';
                   }
@@ -77,10 +77,14 @@ $(document).ready(function () {
               },
               { data: null,
                 render: function(data, type, item) {
-                    return `<input class="form-control"  id="txt_pvp_linea_${data.ID}" name="txt_pvp_linea_${data.ID}" onblur="recalcular('${data.ID}')" input-sm" value="${data.Valor_Unitario}">`;
+                    return `<input class="form-control form-control-sm"  id="txt_pvp_linea_${data.ID}" name="txt_pvp_linea_${data.ID}" onchange="recalcular('${data.ID}')" value="${data.Valor_Unitario}">`;
                 }      
               },
-              { data: 'Valor_Total' },
+              { data: 'Valor_Total',
+                render: function(data, type, item) {
+                    return data ? parseFloat(data).toFixed(4) : '0.0000';
+                }      
+              },
               { data: null,
                  render: function(data, type, item) {
                     return`${data.Nombre_Completo} <span class="badge bg-danger rounded-pill" onclick="abrir_modal_notificar('${data.CodigoU}')" title="Notificar"><i class="bx bx-message-square-detail"></i></span>`
@@ -90,10 +94,10 @@ $(document).ready(function () {
                  render: function(data, type, item) {
                     if(data.T == 'C')
                     {
-                        return `<input type="checkbox" class="rbl_conta" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}" checked  />`;
+                        return `<input type="checkbox" class="rbl_conta form-check-input" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}" checked  />`;
                     }else
                     {
-                       return `<input type="checkbox" class="rbl_conta" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}"  />`;
+                       return `<input type="checkbox" class="rbl_conta form-check-input" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}"  />`;
                     }                    
                   }
               },
@@ -384,22 +388,37 @@ function ocultar_comentario()
    console.log(cbx);
 }
 
+function getFilaDT(tabla, id){
+  return indiceFila = tabla.rows().indexes().filter((ind) => {
+    let datosFila = tabla.row(ind).data();
+    return datosFila.ID == parseInt(id);
+  });
+}
+
 function recalcular(id)
 {
-  var cant =  $('#txt_cant_ped_'+id).text();
+  const indiceFila = getFilaDT(tbl_pedidos_all, id);
+
   var pvp =  $('#txt_pvp_linea_'+id).val();
+  var cant =  tbl_pedidos_all.row(indiceFila).data().Entrada;
   var total = parseFloat(cant)* parseFloat(pvp);
-  $('#txt_total_linea_'+id).val(total.toFixed(4));
   console.log(total);
+  console.log(cant);
+  console.log(pvp);
+  tbl_pedidos_all.cell(indiceFila,6).data(total.toFixed(4)).draw()
+  //$('#txt_total_linea_'+id).val(total.toFixed(4));
 }
 
 function editar_precio(id)
 {
+      const indiceFila = getFilaDT(tbl_pedidos_all, id);
+
+
       parametros = 
       {
           'id':id,
           'pvp':$('#txt_pvp_linea_'+id).val(),
-          'total':$('#txt_total_linea_'+id).val(),
+          'total':parseFloat(tbl_pedidos_all.cell(indiceFila,6).data()),
       }
       $.ajax({
         type: "POST",

@@ -338,6 +338,18 @@ class facturarM
 
   }
 
+  function FechaValida($FechaFin1){
+    $sSQL1 = "SELECT Fecha_Inicial 
+          FROM Fechas_Balance 
+          WHERE Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' 
+          AND Item = '" . $_SESSION['INGRESO']['item'] . "' 
+          AND Cerrado = 0 
+          AND CONVERT(DATE, Fecha_Inicial) <= '" . $FechaFin1 . "' 
+          AND CONVERT(DATE, Fecha_Final) >= '" . $FechaFin1 . "' ";
+          
+    return $this->db->datos($sSQL1);
+  }
+
   function pdf_factura_elec($cod, $ser, $ci, $nombre, $clave_acceso, $periodo = false, $aprobado = false, $descargar = false)
   {
     $res = 1;

@@ -204,7 +204,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 								value="<?php echo date('Y-m-d'); ?>" onblur="DCPorcenIva('MBoxFecha', 'DCPorcenIVA');">
 							<label for="MBoxFechaV" class="input-group-text"><b>Vencimiento</b></label>
 							<input type="date" aria-label="FechaVenc" name="MBoxFechaV" id="MBoxFechaV" class="form-control form-control-sm" min="01-01-2000" max="31-12-2050"
-								value="<?php echo date('Y-m-d'); ?>">
+								value="<?php echo date('Y-m-d'); ?>" onblur="MBoxFechaV_LostFocus()">
 						</div>
 					</div>
 					<!-- <div class="col-sm-3">
@@ -688,7 +688,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 							</div>
 							<div class="col-sm-6 px-0">
 								<input type="date" name="MBoxFechaGRE" id="MBoxFechaGRE" class="form-control form-control-sm"
-									value="<?php echo date('Y-m-d'); ?>">
+									value="<?php echo date('Y-m-d'); ?>" onblur="MBoxFechaGRE_LostFocus();">
 							</div>
 						</div>
 						<div class="row align-items-center col-sm-12 pe-0 pb-1">
@@ -1304,7 +1304,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 <div id="my_modal_abonos" class="modal" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
 	<div class="modal-dialog modal-xl">
 		<div class="modal-content">
-			<div class="modal-header" style="padding: 6px 0px 6px 15px;">
+			<div class="modal-header">
 				<h4 class="modal-title">INGRESO DE CAJA</h4>
 				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
 			</div>
@@ -1784,9 +1784,6 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 				</div>
 				<!--<iframe src="" id="frame" width="100%" height="560px" marginheight="0" frameborder="0"></iframe>-->
 			</div>
-			<div class="modal-footer">
-				<!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button> -->
-			</div>
 		</div>
 
 	</div>
@@ -1804,135 +1801,136 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 					frameborder="0"></iframe>-->
 				<div class="row">
 					<div class="col-sm-10">
-						<form id="form_abonos_anti" class="row">
-
-							<div class="form-inline col-sm-12">
-								<div class="checkbox col-sm-4">
-									<input type="checkbox" id="CheqRecibo" checked>
-									<label for="CheqRecibo">RECIBO CAJA No.</label>
-								</div>
-								<div class="form-group col-sm-4">
-									<input type="" class="form-control" id="TxtRecibo" value="0">
-								</div>
-								<div class="form-group col-sm-4">
-									<label for="MBFecha">FECHA</label>
-									<input type="date" class="form-control" id="MBFecha" name="MBFecha"
-										value="<?php echo date('Y-m-d'); ?>">
-								</div>
-							</div>
-
-							<div class="col-sm-12" style="padding-top: 5px;" id="Frame1">
-								<div class="panel panel-default">
-									<div class="panel-heading">
+						<form id="form_abonos_anti">
+							<div class="row align-items-center mb-2">
+								<div class="col-sm-auto">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="CheqRecibo" checked>
+										<label class="form-check-label" for="CheqRecibo">RECIBO CAJA No.</label>
 									</div>
-									<div class="panel-body">
-
-										<div class="row">
-											<div class="col-sm-6">
-												<div class="input-group">
-													<label class="input-group-addon" for="DCTipo" style="color: red;">TIPO</label>
-													<select class="form-control" id="DCTipo" name="DCTipo" style="width: 100%;" onchange="Listar_Facturas_Pendientes()">
-														<option value="">Seleccione</option>
-													</select>
-												</div>
-											</div>
-											<div class="col-sm-6">
-												<div class="input-group">
-													<label class="input-group-addon" for="DCFactura">Factura No.</label>
-													<select class="form-control" id="DCFactura" name="DCFactura" style="width: 100%;">
-														<option value="">Factura</option>
-													</select>
-												</div>
-											</div>
-										</div>
-										<div style="padding: 5px;"></div>
-										<div class="row">
-											<div class="col-sm-5">
-												<div class="form-control">
-													<label  id="Label4">FECHA DE EMISION</label>
-												</div>
-											</div>
-											<div class="col-sm-3">                               
-												<div class="form-control">
-													<label  id="Label8"></label>
-												</div>                              
-											</div>
-											<div class="col-sm-4">
-												<div class="form-control" style="background-color: red;">
-													<label id="Label1" ></label>
-												</div>
-											</div>
-										</div>
-										<div style="padding: 5px;"></div>
-										<div class="row">
-											<div class="col-sm-12">
-												<div class="form-control">
-													<label id="Label3"></label>
-												</div>
-											</div>
-										</div>
-										<div style="padding: 5px;"></div>
-										<div class="row">
-											<div class="col-sm-6">
-												<div class="form-control">
-													<label id="Label6">Saldo Pendiente</label>
-												</div>
-											</div>
-											<div class="col-sm-6">
-												<div class="form-control">
-													<label id="LabelSaldo"></label>
-												</div>
-											</div>
-										</div>
-										<div style="padding: 5px;"></div>
-										<div class="row">
-											<div class="col-sm-12" >
-												<div class="form-control " style="padding-bottom: 50px;">
-													<label id="LblObs" style="color: violet;">Observacion</label>
-												</div>
-											</div>
-										</div>
-										<div style="padding: 5px;"></div>
-										<div class="row">
-											<div class="col-sm-12">
-												<div class="form-control " style="padding-bottom: 50px;">
-													<label id="LblNota" style="color: violet;">Nota</label>
-												</div>
-											</div>
-										</div>
+								</div>
+								<div class="col-sm-2 ps-0">
+									<input type="" class="form-control form-control-sm" id="TxtRecibo" value="0">
+									
+								</div>
+								<div class="col-sm-4">
+									<div class="input-group input-group-sm">
+										<label class="input-group-text" for="MBFecha">FECHA</label>
+										<input class="form-control form-control-sm" type="date" class="form-control" id="MBFecha" name="MBFecha"
+											value="<?php echo date('Y-m-d'); ?>">
 									</div>
 								</div>
 							</div>
 
-							<div class="col-sm-12" style="padding-top: 5px;" id="Frame2">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h3 class="panel-title">Abono Anticipado</h3>
-									</div>
-									<div class="panel-body">
-
-										<div class="row">
-											<div class="col-sm-12">
-												<div class="form-group">
-													<label for="DCCliente">Cliente</label>
-													<select class="form-select form-select-sm" id="DCClientes" name="DCCliente"
-														style="width: 100%;">
-														<option value="">Seleccione</option>
-													</select>
+							<div class="row">
+								<div class="col-sm-12" style="display: none;" id="Frame1">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+										</div>
+										<div class="panel-body">
+	
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="input-group">
+														<label class="input-group-addon" for="DCTipo" style="color: red;">TIPO</label>
+														<select class="form-control" id="DCTipo" name="DCTipo" style="width: 100%;" onchange="Listar_Facturas_Pendientes()">
+															<option value="">Seleccione</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="input-group">
+														<label class="input-group-addon" for="DCFactura">Factura No.</label>
+														<select class="form-control" id="DCFactura" name="DCFactura" style="width: 100%;">
+															<option value="">Factura</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div style="padding: 5px;"></div>
+											<div class="row">
+												<div class="col-sm-5">
+													<div class="form-control">
+														<label  id="Label4">FECHA DE EMISION</label>
+													</div>
+												</div>
+												<div class="col-sm-3">                               
+													<div class="form-control">
+														<label  id="Label8"></label>
+													</div>                              
+												</div>
+												<div class="col-sm-4">
+													<div class="form-control" style="background-color: red;">
+														<label id="Label1" ></label>
+													</div>
+												</div>
+											</div>
+											<div style="padding: 5px;"></div>
+											<div class="row">
+												<div class="col-sm-12">
+													<div class="form-control">
+														<label id="Label3"></label>
+													</div>
+												</div>
+											</div>
+											<div style="padding: 5px;"></div>
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="form-control">
+														<label id="Label6">Saldo Pendiente</label>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="form-control">
+														<label id="LabelSaldo"></label>
+													</div>
+												</div>
+											</div>
+											<div style="padding: 5px;"></div>
+											<div class="row">
+												<div class="col-sm-12" >
+													<div class="form-control " style="padding-bottom: 50px;">
+														<label id="LblObs" style="color: violet;">Observacion</label>
+													</div>
+												</div>
+											</div>
+											<div style="padding: 5px;"></div>
+											<div class="row">
+												<div class="col-sm-12">
+													<div class="form-control " style="padding-bottom: 50px;">
+														<label id="LblNota" style="color: violet;">Nota</label>
+													</div>
 												</div>
 											</div>
 										</div>
-										<div class="row">
-											<div class="col-sm-12">
-												<div class="form-group">
-													<label for="TxtConcepto">Observación</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-12" id="Frame2">
+									<div class="card">
+										<div class="card-body">
+											<h3 class="card-title">Abono Anticipado</h3>
+											<div class="row mb-2">
+												<div class="col-sm-12">
+													<div class="input-group input-group-sm">
+														<label class="input-group-text" for="DCCliente">Cliente</label>
+														<select class="form-select form-select-sm" id="DCClientes" name="DCCliente">
+															<option value="">Seleccione</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="row mb-2">
+												<div class="col-sm-12">
+													<label for="TxtConcepto" class="text-primary">USTED ESTA INGRESANDO ABONOS ANTICIPADOS, SE EMITIRA UN COMPROBANTE DE INGRESO DE RESPALDO A SU ABONO</label>
 													<textarea class="form-control" id="TxtConcepto" rows="3"></textarea>
+													
 												</div>
 											</div>
-										</div>
-										<div class="row">
-											<div class="col-sm-12">
-												<div class="form-group">
+											<div class="row mb-2">
+												<div class="col-sm-12">
 													<label for="DCBanco">Cuenta Contable del Ingreso</label>
 													<select class="form-select form-select-sm" id="DCBanco" name="DCBanco"
 														style="width: 100%;">
@@ -1940,36 +1938,39 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 													</select>
 												</div>
 											</div>
-										</div>
-										<div class="row">
-											<div class="col-sm-12">
-												<div class="form-group">
+											<div class="row">
+												<div class="col-sm-12">
 													<label for="DCCtaAnt">Cuenta Contable de Anticipo</label>
 													<select class="form-select form-select-sm" id="DCCtaAnt" name="DCCtaAnt"
 														style="width: 100%;">
 														<option value="">Banco</option>
 													</select>
+													
 												</div>
 											</div>
 										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-6">
-							</div>
 
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label for="TextCajaMN" class="col-sm-5 control-label">Caja MN.</label>
-									<div class="col-sm-7">
-										<input type="text" class="form-control" id="TextCajaMN" placeholder="00000000" value="0.00">
 									</div>
+									<!-- <div class="panel panel-default">
+										<div class="panel-heading">
+										</div>
+										<div class="panel-body">
+	
+										</div>
+									</div> -->
 								</div>
-								<div class="form-group">
-									<label for="LabelPend" class="col-sm-5 control-label" id="Label10">Saldo Actual</label>
-									<div class="col-sm-7">
-										<input type="text" class="form-control" id="LabelPend" placeholder="00000000" value="0.00">
-									</div>
+							</div>
+							
+							<div class="offset-sm-6 col-sm-6">
+								<div class="input-group input-group-sm">
+									<label for="TextCajaMN"  class="input-group-text" style="width:50%">Caja MN.</label>
+									<input type="text" class="form-control form-control-sm" id="TextCajaMN" placeholder="00000000" value="0.00">
+									
+								</div>
+								<div class="input-group input-group-sm">
+									<label for="LabelPend"  class="input-group-text" id="Label10" style="width:50%">Saldo Actual</label>
+									<input type="text" class="form-control form-control-sm" id="LabelPend" placeholder="00000000" value="0.00">
+									
 								</div>
 							</div>
 						</form>

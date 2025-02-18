@@ -26,7 +26,7 @@
 				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar checks temporalmente" onclick="guardar_check()">
 					<img src="../../img/png/check.png">
 				</button>
-				 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir etiquetas PDF" onclick="imprimir_etiquetas_pdf()">
+				 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir etiquetas seleccionadas" onclick="imprimir_etiquetas_pdf()">
 			        <img src="../../img/png/paper.png" height="32px">
 			      </button>
 			</div>
@@ -502,12 +502,12 @@
 
 
 <div id="myModal_notificar_usuario" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
-    <div class="modal-dialog modal-sm" style="background: antiquewhite;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Notificacion</h4>
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="background: antiquewhite;">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title text-white">Notificacion</h4>
             </div>
-            <div class="modal-body" style="background: antiquewhite;">
+            <div class="modal-body">
               <input type="hidden" name="txt_codigo_usu" id="txt_codigo_usu">
                 <textarea class="form-control form-control-sm" rows="3" id="txt_texto" name="txt_texto" placeholder="Detalle de notificacion"></textarea>
             </div>
@@ -522,10 +522,10 @@
 
 
 <div id="modal_notificar" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
-  <div class="modal-dialog modal-sm" style="background: antiquewhite;">
-      <div class="modal-content">
-          <div class="modal-header">
-			  <h4 class="modal-title">Notificar</h4>
+  <div class="modal-dialog modal-sm">
+      <div class="modal-content" style="background: antiquewhite;">
+          <div class="modal-header bg-primary">
+			  <h4 class="modal-title text-white">Notificar</h4>
               <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -541,12 +541,12 @@
 
 <div id="modal_estado_transporte" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog">
-      <div class="modal-content">
+      <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header bg-primary">
-              <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Estado de trasporte</h4>
+			  <h4 class="modal-title text-white">Estado de trasporte</h4>
+              <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
           </div>
-          <div class="modal-body" style="background: antiquewhite;">
+          <div class="modal-body">
           	<div class="row">
           		<form id="form_estado_transporte">
           			<div class="col-sm-12">
@@ -561,7 +561,7 @@
           					
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
-              <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
           </div>
       </div>
   </div>
@@ -571,8 +571,8 @@
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header bg-primary">
-              <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Favetas</h4>
+			  <h4 class="modal-title text-white">Gavetas</h4>
+			  <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body" style="background: antiquewhite;">
           	<div class="row">
@@ -589,7 +589,7 @@
           					
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
-              <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
           </div>
       </div>
   </div>
