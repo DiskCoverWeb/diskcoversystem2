@@ -395,10 +395,14 @@ function validar_asignacion_bodega(linea='')
 		var pedido = $('#cant_pedido').text();
 		var parametros = []
 		$("input[name='dividido']").each(function(i,item) {
+
+			linea = item.id.split('_');
+			li = linea[linea.length-1];
+
 			var linea = parseInt(i)+parseInt(1);
 			valor = $(this).val();
 			total = parseInt(total)+parseInt(valor);
-			cod_bodega = $('#txt_cod_lugar_div_'+linea).val();
+			cod_bodega = $('#txt_cod_lugar_div_'+li).val();
 
 			if(valor=='' || valor==0 || cod_bodega=='' || cod_bodega=='.')
 			{
@@ -406,6 +410,10 @@ function validar_asignacion_bodega(linea='')
 			}
 			parametros.push({'cantidad':valor,'codigoBod':cod_bodega})
 		});
+
+		console.log(parametros);
+
+		// return false;
 
 		if(parseInt(total)!=parseInt(pedido))
 		{
@@ -433,6 +441,7 @@ function validar_asignacion_bodega(linea='')
 
 function asignar_bodega(id,bodega)
 {
+	$('#myModal_espera').modal('show');
 	var parametros = {
 		'id':id,
 		'bodegas':bodega,
@@ -459,6 +468,7 @@ function asignar_bodega(id,bodega)
 
 function asignar_bodega_partes(id,parametros)
 {
+	$('#myModal_espera').modal('show');
 	var parametros = {
 		'id':id,
 		'parametros':parametros,
