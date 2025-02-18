@@ -211,7 +211,7 @@ class alimentos_recibidosM
 	}
 	//------------------viene de trasnkardex--------------------
 
-	function cargar_pedidos_trans($orden,$fecha=false,$nombre=false)
+	function cargar_pedidos_trans($orden,$fecha=false,$nombre=false,$id=false)
 	{
     // 'LISTA DE CODIGO DE ANEXOS
      $sql = "SELECT T.*,P.Producto,P.Unidad,P.TDP,A.Nombre_Completo 
@@ -227,10 +227,14 @@ class alimentos_recibidosM
      AND T.Periodo = P.Periodo
 	 AND T.Codigo_Inv = P.Codigo_Inv
 	 AND T.CodigoU = A.Codigo ";
+	 if($id)
+	 {
+		$sql.=" AND T.ID = ".$id." ";
+	 }
      if($fecha)
      {
      	$sql.=" AND T.Fecha = '".$fecha."'";
-     }   
+     }
      if($nombre)
      {
      	$sql.=" AND P.Producto = '".$nombre."'";

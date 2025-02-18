@@ -333,7 +333,7 @@
         		
 						<div class="col-sm-12">
 							<div class="table-responsive">
-								<table class="table-sm table-hover table bg-light">
+								<table class="table-sm table-hover table bg-light" id="tbl_asignados_check">
 									<thead class="text-center bg-primary text-white">
 										<th><b>Item</b></th>
 										<th><b>Fecha de Egreso</b></th>
@@ -344,7 +344,7 @@
 										<th><b>Observacion</b></th>
 										<th></th>
 									</thead>
-									<tbody id="tbl_asignados_check">
+									<tbody>
 										
 									</tbody>
 								</table>

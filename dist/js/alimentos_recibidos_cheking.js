@@ -94,10 +94,10 @@ $(document).ready(function () {
                  render: function(data, type, item) {
                     if(data.T == 'C')
                     {
-                        return `<input type="checkbox" class="rbl_conta form-check-input" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}" checked  />`;
+                        return `<input type="checkbox" class="rbl_conta form-check-input" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}" checked onchange="toggleBtnImpresoraInd('${data.ID}')" />`;
                     }else
                     {
-                       return `<input type="checkbox" class="rbl_conta form-check-input" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}"  />`;
+                       return `<input type="checkbox" class="rbl_conta form-check-input" name="rbl_conta" id="rbl_conta_${data.ID}" value="${data.ID}" onchange="toggleBtnImpresoraInd('${data.ID}')" />`;
                     }                    
                   }
               },
@@ -108,6 +108,7 @@ $(document).ready(function () {
                     {
                         botons+=`<button class="btn btn-sm btn-warning" onclick="cargar_tras_pedidos('${data.Producto}','${data.Orden_No}')"><i class="fa fa-list"></i></button>`;
                     }
+                    botons += `<button id="btn_impr_${data.ID}" class="btn btn-sm btn-info" onclick="imprimirIndividual('${data.ID}');" ${data.T == 'C' ? '' : 'style="display:none;"'} ><i class="bx bx-printer"></i></button>`;
 
                     return botons;                    
                   }
@@ -118,6 +119,16 @@ $(document).ready(function () {
 
 
 })
+
+function toggleBtnImpresoraInd(id){
+  let isCboxChecked = $('#rbl_conta_'+id).prop('checked');
+
+  if(isCboxChecked){
+    $('#btn_impr_'+id).show();
+  }else{
+    $('#btn_impr_'+id).hide();
+  }
+}
 
 function setearCamposPedidos(data){
 console.log(data);
@@ -1023,6 +1034,17 @@ Swal.fire({
      }
 
     var  url = '../controlador/inventario/alimentos_recibidosC.php?imprimir_etiquetas=true&num_ped='+num_ped;
+    window.open(url, '_blank');
+  }
+  function imprimirIndividual(id)
+  {  
+     var num_ped = $('#txt_codigo').val();
+     if(num_ped.trim()==''){
+      Swal.fire('Seleccione codigo de Ingreso', '', 'warning');
+      return;
+     }
+
+    var  url = '../controlador/inventario/alimentos_recibidosC.php?imprimir_etiqueta_ind=true&num_ped='+num_ped+'&id='+id;
     window.open(url, '_blank');
   }
 

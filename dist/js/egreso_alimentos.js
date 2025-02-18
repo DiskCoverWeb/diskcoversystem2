@@ -53,7 +53,17 @@ $(document).ready(function () {
 		[1, 'asc']
 	]
 });
+tbl_check = $('#tbl_asignados_check').DataTable({
+	// responsive: true,
+	language: {
+		url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+	},
+	paging:false,
+	searching:false,
+	info:false,
+});
 })
+
 
 // function notificaciones()
 // {
@@ -166,24 +176,24 @@ function validar_ingreso()
 		success: function(data)
 		{
 
-			$('#tbl_asignados').html(data);	 
-			if(!data=='')
+			lista_egreso();	 
+			if(data.length > 0)
 			{ 
-			Swal.fire({
-				 title: 'Datos encontrados?',
-				 text: "Se encontraron datos sin guardar desea cargarlos?",
-				 icon: 'warning',
-				 showCancelButton: true,
-				 confirmButtonColor: '#3085d6',
-				 cancelButtonColor: '#d33',
-				 confirmButtonText: 'Si!'
-			   }).then((result) => {
-				 if (result.value!=true) {
+				Swal.fire({
+					title: 'Datos encontrados?',
+					text: "Se encontraron datos sin guardar desea cargarlos?",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Si!'
+				}).then((result) => {
+					if (result.value!=true) {
 
-					  
-					 eliminar_egreso_all();
-				 }
-			   })
+						
+						eliminar_egreso_all();
+					}
+				})
 			} 	
 		}
 	});
@@ -485,21 +495,97 @@ function abrir_modal(op)
 }
 
 function lista_egreso_checking()
-{		
-	var parametros = {
-		'desde':$('#txt_desde').val(),
-		'hasta':$('#txt_hasta').val()
-	}
-	 $.ajax({
-		type: "POST",
-		   url:   '../controlador/inventario/egreso_alimentosC.php?lista_egreso_checking_reportados=true',
-		data:{parametros:parametros},
-	   dataType:'json',
-		success: function(data)
-		{
-			$('#tbl_asignados_check').html(data);	
-		}
-	});
+{	
+	tbl_check.destroy();
+
+	tbl_check = $('#tbl_asignados_check').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        /*columnDefs: [
+            { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
+        ],*/
+        ajax: {
+            url: '../controlador/inventario/egreso_alimentosC.php?lista_egreso_checking_reportados=true',
+            type: 'POST',  // Cambia el método a POST    
+            data: function(d) {
+				var parametros = {
+					'desde':$('#txt_desde').val(),
+					'hasta':$('#txt_hasta').val()
+				}
+                return { parametros: parametros };
+            },
+            dataSrc: '',             
+        },
+          scrollX: true,  // Habilitar desplazamiento horizontal
+            paging:false,
+            searching:false,
+            info:false,
+            scrollY: 330,
+            scrollCollapse: true,
+			columns: [
+				{ data: null, // Columna autoincremental
+					  render: function (data, type, row, meta) {
+						  return meta.row + 1; // meta.row es el índice de la fila
+					  }
+				},
+				{ data: 'Fecha.date',  
+					render: function(data, type, item) {
+						return data ? new Date(data).toLocaleDateString() : '';
+					}
+				},
+				{ data: null,
+					render: function(data, type, item) {
+					   return `
+					   	<div class="input-group input-group-sm">
+							${data.usuario}							
+						</div>`;                    
+					}
+				},
+				{ data: null,
+					render: function(data, type, item) {
+					   return `
+					   	<div class="input-group input-group-sm">
+							${data.area}							
+						</div>`;                    
+					}
+				},
+				{ data: 'Detalle' },
+				{ data: null,
+					render: function(data, type, item) {
+					   return `
+					   	<div class="input-group input-group-sm">
+							${data.Motivo}							
+						</div>`;                    
+					}
+				},
+				{ data:  null },
+				{ data: null,
+				   render: function(data, type, item) {
+					  return `
+					  <button type="button" title="Guardar" class="btn-sm btn-success btn"><i class="bx bx-save m-0"></i></button>
+					  <button type="button" title="Eliminar" class="btn-sm btn-danger btn"><i class="bx bx-trash m-0"></i></button>
+					  <button type="button" title="Modificar" class="btn-sm btn-primary btn"><i class="bx bx-pencil m-0"></i></button>`;                    
+					}
+				},
+				
+			],
+    });
+	// var parametros = {
+	// 	'desde':$('#txt_desde').val(),
+	// 	'hasta':$('#txt_hasta').val()
+	// }
+	//  $.ajax({
+	// 	type: "POST",
+	// 	   url:   '../controlador/inventario/egreso_alimentosC.php?lista_egreso_checking_reportados=true',
+	// 	data:{parametros:parametros},
+	//    dataType:'json',
+	// 	success: function(data)
+	// 	{
+	// 		$('#tbl_asignados_check').html(data);	
+	// 	}
+	// });
 }  	
 
 function myModal_historial()

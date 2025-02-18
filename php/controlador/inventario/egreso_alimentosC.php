@@ -332,7 +332,7 @@ class egreso_alimentosC
 			// <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminar_egreso('.$value['ID'].')"><i class="fa fa-trash"></i></button></td>
 			// </tr>';
 		}
-		return $tr;
+		return $datos;
 	}
 
 

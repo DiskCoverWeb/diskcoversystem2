@@ -301,6 +301,10 @@ if (isset($_GET['imprimir_etiquetas'])) {
 	$parametros = $_GET;
 	echo json_encode($controlador->imprimir_etiquetas($parametros));
 }
+if (isset($_GET['imprimir_etiqueta_ind'])) {
+	$parametros = $_GET;
+	echo json_encode($controlador->imprimir_etiqueta_ind($parametros));
+}
 if(isset($_GET['estado_gaveta']))
 {
 	$parametros = $_POST['parametros'];
@@ -1530,6 +1534,12 @@ class alimentos_recibidosC
 	function imprimir_etiquetas($parametros)//cambiar
 	{
 		$tbl = $this->modelo->cargar_pedidos_trans($parametros['num_ped'],false);
+		$this->reportes->etiqueta_clasificacion_BAQ($tbl);
+	}
+
+	function imprimir_etiqueta_ind($parametros)//cambiar
+	{
+		$tbl = $this->modelo->cargar_pedidos_trans($parametros['num_ped'],false, false, $parametros['id']);
 		$this->reportes->etiqueta_clasificacion_BAQ($tbl);
 	}
 
