@@ -128,18 +128,23 @@
 										<img src="../../img/png/clip.png" style="width:20%">
 										<span class="fileupload-new">Archivo Adjunto</span>
 										<span class="fileupload-exists">Archivo Adjunto</span> 
-											<input type="file" id="file_doc" name="file_doc" />
+											<input type="file" id="file_doc" name="file_doc" onchange="revisarAdjuntos('archivo')"/>
 										</span> <br>
 										<span class="fileupload-preview"></span>
-										<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+										<a href="#" class="close fileupload-exists" data-dismiss="fileupload" onclick="revisarAdjuntos('archivo')" style="float: none">×</a>
 									</div>
 								</form>
 							</div>
 							<div class="col-6">
-								<button type="button" class="btn btn-light" onclick="">
+								<button type="button" id="btn_photoupload" class="btn btn-light" onclick="$('#modal_camara').modal('show')">
 									<img src="../../img/png/camara.png" style="width:20%">
 									Adjuntar por cámara
 								</button>
+								<br>
+								<div id="photoupload_span" style="display: none;">
+									<span><a href="#" class="text-secondary-emphasis" onclick="$('#modal_foto').modal('show');" style="text-decoration: underline;">Ver foto</a></span>
+									<a href="#" class="close" onclick="quitarFotoAdjunta()" style="float: none">×</a>
+								</div>
 							</div>
 						</div>						
 					</div>
@@ -359,6 +364,46 @@
     </div>
 
   </div>
+</div>
+
+<div id="modal_camara" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content" style="background-color:antiquewhite;">
+			<div class="modal-header bg-primary">
+				<h4 class="modal-title text-white">Tomar Foto</h4>
+				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<div id="carga_camara">
+					<div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;">
+						<img src="../../img/gif/loader4.1.gif" width="20%">
+					</div>
+				</div>
+				<div class="row justify-content-center" id="contenedor_camera" style="display: none; position: relative;">
+					<video id="video">La camara no está funcional actualmente.</video>
+					<button id="btnTomarFoto" class="btn btn-light" style="position:absolute; width: fit-content; bottom: 20px; margin: 0 auto;">Tomar foto</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="modal_foto" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content" style="background-color:antiquewhite;">
+			<div class="modal-body">
+				<canvas id="canvas" style="display: none;"> </canvas>
+				<div class="row justify-content-center">
+					<img id="photo" alt="La foto tomada aparecerá aquí." style="width: 60%;"/>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-secondary" onclick="$('#modal_foto').modal('hide');$('#modal_camara').modal('show');">Volver a tomar</button>
+				<button type="button" class="btn btn-success" onclick="adjuntarFoto()">Adjuntar</button>
+			</div>
+		</div>
+	</div>
 </div>
 
  <script src="../../dist/js/arbol_bodegas/arbol_bodega.js"></script>

@@ -200,10 +200,12 @@ class egreso_alimentosC
 
 	function guardar_egreso($file,$post)
 	{
-		if($this->validar_formato_img($file)!=1)
-	    {
-	    	return -2;
-	    }
+		
+		if(isset($file['archivo']) && $this->validar_formato_img($file)!=1)
+		{
+			return -2;
+		}
+		
 		// para el cheing de egreso se colocara la G
 		$num = $this->modelo->numero_Registro(date('Y-m-d'));
 
@@ -219,15 +221,37 @@ class egreso_alimentosC
 			mkdir($ruta1,0777);
 			mkdir($ruta,0777);
 		}
-		 $uploadfile_temporal=$file['archivo']['tmp_name'];
-   	     $tipo = explode('/', $file['archivo']['type']);
-         $nombre = $orden.'.'.$tipo[1];
-        
-   	     $nuevo_nom=$ruta.$nombre;
-   	     if (is_uploaded_file($uploadfile_temporal))
-   	     {
-   		     move_uploaded_file($uploadfile_temporal,$nuevo_nom);
-   	     }
+
+		$nombre = "";
+		$nuevo_nom = "";
+		if(isset($post['foto'])){
+			// Extraer la imagen Base64
+			$base64Image = $post["foto"];
+
+			// Decodificar la imagen (eliminar el encabezado "data:image/png;base64,")
+			$image_parts = explode(";base64,", $base64Image);
+			$image_type = explode("image/", $image_parts[0])[1]; // Obtener el tipo (png, jpg, etc.)
+			$image_base64 = base64_decode($image_parts[1]);
+		
+			// Crear un nombre único para la imagen
+			$nombre = $orden . '.' . $image_type;
+		
+			// Especificar la carpeta donde se guardará
+			$nuevo_nom = $ruta . $nombre;
+		
+			file_put_contents($nuevo_nom, $image_base64);
+
+		}else if(isset($file['archivo'])){
+			$uploadfile_temporal=$file['archivo']['tmp_name'];
+			$tipo = explode('/', $file['archivo']['type']);
+			$nombre = $orden.'.'.$tipo[1];
+		   
+			$nuevo_nom=$ruta.$nombre;
+			if (is_uploaded_file($uploadfile_temporal))
+			{
+				move_uploaded_file($uploadfile_temporal,$nuevo_nom);
+			}
+		}
 
 		SetAdoAddNew('Trans_Kardex');
 	    SetAdoFields('T','G');	    	    	    

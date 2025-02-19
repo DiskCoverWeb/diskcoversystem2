@@ -1,67 +1,80 @@
 
 var scanning = false;
 var tbl_asignados_all;
+var width = 0;
+var height = 0;
+
+var video = null;
+var canvas = null;
+var photo = null;
+var btnTomarFoto = null;
+var streaming = false;
+var foto_data = "";
 $(document).ready(function () {
   validar_ingreso();
   areas();  
   motivo_egreso()	
   notificaciones();
 
-
   tbl_asignados_all = $('#tbl_asignados_all').DataTable({
 		searching: false,
-  responsive: true,
-  paging: false,   
-  info: false,   
-  autoWidth: false,   
-	language: {
-		url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-	},
-	ajax: {
-		url:   '../controlador/inventario/egreso_alimentosC.php?listar_egresos=true',
-		type: 'POST',  // Cambia el método a POST    
-		dataSrc: '',             
-	},
-	 scrollX: true,  // Habilitar desplazamiento horizontal
-
-	columns: [
-		{ data: null, // Columna autoincremental
-			  render: function (data, type, row, meta) {
-				  return meta.row + 1; // meta.row es el índice de la fila
-			  }
+	responsive: true,
+	paging: false,   
+	info: false,   
+	autoWidth: false,   
+		language: {
+			url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
 		},
-		{ data: 'Fecha.date',  
+		ajax: {
+			url:   '../controlador/inventario/egreso_alimentosC.php?listar_egresos=true',
+			type: 'POST',  // Cambia el método a POST    
+			dataSrc: '',             
+		},
+		scrollX: true,  // Habilitar desplazamiento horizontal
+
+		columns: [
+			{ data: null, // Columna autoincremental
+				render: function (data, type, row, meta) {
+					return meta.row + 1; // meta.row es el índice de la fila
+				}
+			},
+			{ data: 'Fecha.date',  
+				render: function(data, type, item) {
+					return data ? new Date(data).toLocaleDateString() : '';
+				}
+			},
+			{ data: 'Producto' },
+			{ data:  null,
 			render: function(data, type, item) {
-				return data ? new Date(data).toLocaleDateString() : '';
-			}
-		},
-		{ data: 'Producto' },
-		{ data:  null,
-		  render: function(data, type, item) {
-			  return `${data.Salida} ${data.Unidad}`;                    
-			}
+				return `${data.Salida} ${data.Unidad}`;                    
+				}
 
+			},
+			{ data: null,
+			render: function(data, type, item) {
+				return `<button type="button" class="btn-sm btn-danger btn" onclick="eliminar_egreso('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;                    
+				}
+			},
+			
+		],
+		order: [
+			[1, 'asc']
+		]
+	});
+
+	tbl_check = $('#tbl_asignados_check').DataTable({
+		// responsive: true,
+		language: {
+			url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
 		},
-		{ data: null,
-		   render: function(data, type, item) {
-			  return `<button type="button" class="btn-sm btn-danger btn" onclick="eliminar_egreso('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;                    
-			}
-		},
-		
-	],
-	order: [
-		[1, 'asc']
-	]
-});
-tbl_check = $('#tbl_asignados_check').DataTable({
-	// responsive: true,
-	language: {
-		url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-	},
-	paging:false,
-	searching:false,
-	info:false,
-});
+		paging:false,
+		searching:false,
+		info:false,
+	});
+
+	$('#modal_camara').on('shown.bs.modal', function () {
+		activarCamara();
+	})
 })
 
 
@@ -429,7 +442,7 @@ function lista_egreso()
 	var archivo = $('#file_doc')[0].files[0];
 
 	// Verificar si se seleccionó un archivo
-	if (!archivo) {
+	if (!archivo && foto_data == '') {
 
 		Swal.fire("Seleccione un archivo","","info");
 	  // alert('Por favor, seleccione un archivo.');
@@ -453,7 +466,12 @@ function lista_egreso()
 
 	// Crear un objeto FormData
 	var formData = new FormData();
-	formData.append('archivo', archivo);
+
+	if(archivo){
+		formData.append('archivo', archivo);
+	}else if(foto_data != ''){
+		formData.append('foto', foto_data);
+	}
 	
 	console.log(formData);
 	 $.ajax({
@@ -652,4 +670,114 @@ if (scanner) {
 		console.error("Error al detener el escáner:", err);
 	});
 }
+}
+
+function activarCamara(){
+	video = document.getElementById("video");
+    canvas = document.getElementById("canvas");
+    photo = document.getElementById("photo");
+    btnTomarFoto = document.getElementById("btnTomarFoto");
+
+    navigator.mediaDevices
+	.getUserMedia({ video: true, audio: false })
+	.then((stream) => {
+		$('#carga_camara').hide();
+		$('#contenedor_camera').show();
+		video.srcObject = stream;
+		video.play();
+	})
+	.catch((err) => {
+		Swal.fire('Ocurrio un error al activar la camara', '', 'error');
+		console.error(`An error occurred: ${err}`);
+	});
+
+    video.addEventListener(
+		"canplay",
+		(ev) => {
+			if (!streaming) {
+				console.log("Hola");
+				height = window.innerHeight - 20;
+				width = height + (video.videoWidth - video.videoHeight);
+
+				//height = video.videoHeight / (video.videoWidth / width);
+
+				// Firefox currently has a bug where the height can't be read from
+				// the video, so we will make assumptions if this happens.
+
+				if (isNaN(height)) {
+					height = width / (4 / 3);
+				}
+
+				video.setAttribute("width", width);
+				video.setAttribute("height", height);
+				canvas.setAttribute("width", width);
+				canvas.setAttribute("height", height);
+				streaming = true;
+			}
+		},
+		false,
+    );
+
+    btnTomarFoto.addEventListener("click", (ev) => {
+		takePicture();
+		ev.preventDefault();
+    }, false);
+
+	clearPhoto();
+}
+
+function clearPhoto() {
+    const context = canvas.getContext("2d");
+    context.fillStyle = "#AAA";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    const data = canvas.toDataURL("image/png");
+    photo.setAttribute("src", data);
+}
+
+function takePicture() {
+	quitarFotoAdjunta();
+    const context = canvas.getContext("2d");
+    if (width && height) {
+      canvas.width = width;
+      canvas.height = height;
+      context.drawImage(video, 0, 0, width, height);
+
+      const data = canvas.toDataURL("image/png");
+      photo.setAttribute("src", data);
+	  $('#modal_camara').modal('hide');
+	  $('#modal_foto').modal('show');
+    } else {
+      clearPhoto();
+    }
+  }
+
+function adjuntarFoto(){
+	$('#photoupload_span').show();
+	$('#modal_foto').modal('hide');
+	foto_data = photo.getAttribute("src");
+	revisarAdjuntos('foto');
+}
+
+function quitarFotoAdjunta(){
+	$('#photoupload_span').hide();
+	foto_data = "";
+	revisarAdjuntos('foto');
+}
+
+function revisarAdjuntos(tipo){
+	if(tipo == 'archivo'){
+		if($('#file_doc').val() != ''){
+			$('#btn_photoupload').prop('disabled', true);
+		}else{
+			$('#btn_photoupload').prop('disabled', false);
+		}
+	}else{
+		if(foto_data != ''){
+			$('#file_doc').prop('disabled', true);
+		}else{
+			$('#file_doc').prop('disabled', false);
+		}
+	}
+	
 }
