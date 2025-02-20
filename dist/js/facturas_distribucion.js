@@ -660,7 +660,6 @@ var valTC = 'FA';
 		});
 
 		cargarRegistrosProductos();
-		buscarValoresGavetas();
 	}
 
 	function formatearUnidadesProductos(unidad){
@@ -724,7 +723,7 @@ var valTC = 'FA';
 					let unidadProd = formatearUnidadesProductos(datos['contenido'][0]['Productos']['Unidad']);
 					$('#tablaProdCU').text(unidadProd);
 					$('#unidad_dist').val(unidadProd);
-
+					buscarValoresGavetas();
 					ingresarAsientoF();
 				}
 			}

@@ -35,9 +35,9 @@ class CatalogoC
     public function ListarCatalogoInventario() {
 		$sSQL = $this->getSqlListarCatalogoInventario($_POST);
 		$medida = $_POST["heightDisponible"]-36;
-		$DGQuery = grilla_generica_new($sSQL,'Catalogo_Productos','ProductoCatalogo',"PRODUCTOS DE INVENTARIO",$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,$medida,$num_decimales=2,false,$paginacion_view= false,$estilo=1, $class_titulo='text-left');
-
-		return compact('DGQuery');
+		$DGQuery = grilla_generica_new($sSQL);
+		//print_r($DGQuery);
+		return $DGQuery['data'];
 	}
 
 	public function generarExcelListarCatalogoInventario(){
