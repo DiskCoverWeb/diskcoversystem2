@@ -284,7 +284,7 @@ var valTC = 'FA';
 	}
 
 	function construirTablaGavetas(){
-		$('#myModal_espera').modal('show');
+		//$('#myModal_espera').modal('show');
 		/*let codigoC = $('#codigoCliente').val();
 		let parametros = {
 			'beneficiario': codigoC
@@ -294,7 +294,7 @@ var valTC = 'FA';
 			url: '../controlador/facturacion/facturas_distribucionC.php?ConsultarGavetas=true',
 			dataType: 'json',
 			success: function (datos) {
-				$('#myModal_espera').modal('hide');
+				//$('#myModal_espera').modal('hide');
 				if (datos['res'] == 1) {
 					tablaGavetas("Visualizar", datos['contenido']);
 					tablaGavetas("Editar", datos['contenido']);
@@ -305,13 +305,13 @@ var valTC = 'FA';
 	}
 
 	function construirTablaEvalFundaciones(){
-		$('#myModal_espera').modal('show');
+		//$('#myModal_espera').modal('show');
 		$.ajax({
 			type: "GET",
 			url: '../controlador/facturacion/facturas_distribucionC.php?consultarEvaluacionFundaciones=true',
 			dataType: 'json',
 			success: function (datos) {
-				$('#myModal_espera').modal('hide');
+				//$('#myModal_espera').modal('hide');
 				$('#cuerpoTablaEFund').remove();
 				if (datos['res'] == 1) {
 					let tBody = $('<tbody id="cuerpoTablaEFund" class="text-center"></tbody>');
