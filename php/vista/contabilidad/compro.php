@@ -41,7 +41,7 @@
        })
 	 }
 </script>
-<div class="overflow-y-auto">
+<div>
 	<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-2">
 		<div class="breadcrumb-title pe-3">
 			<?php echo $NombreModulo; ?>

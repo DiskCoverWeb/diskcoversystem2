@@ -280,8 +280,8 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
     $sumcr = 0; 
     $sumdb = 0;
     if(count($stmt2)>0){
-        $parc=''; $debe=''; $haber='';
         foreach($stmt2 as $key => $value){
+            $parc=''; $debe=''; $haber='';
             if($value['Parcial_ME']!=0 and $value['Parcial_ME']!='0.00'){
                 $parc = number_format($value['Parcial_ME'], 2, '.', '');
             }
@@ -469,8 +469,8 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
     $sumcr = 0; 
     $sumdb = 0;
     if(count($stmt2)>0){
-        $parc=''; $debe=''; $haber='';
         foreach($stmt2 as $key => $value){
+            $parc=''; $debe=''; $haber='';
             if($value['Parcial_ME']!=0 and $value['Parcial_ME']!='0.00'){
                 $parc = number_format($value['Parcial_ME'], 2, '.', '');
             }
@@ -651,8 +651,8 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
     $sumcr = 0; 
     $sumdb = 0;
     if(count($stmt2)>0){
-        $parc=''; $debe=''; $haber='';
         foreach($stmt2 as $key => $value){
+            $parc=''; $debe=''; $haber='';
             if($value['Parcial_ME']!=0 and $value['Parcial_ME']!='0.00'){
                 $parc = number_format($value['Parcial_ME'], 2, '.', '');
             }
@@ -765,8 +765,8 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
     $sumcr = 0; 
     $sumdb = 0;
     if(count($stmt2)>0){
-        $parc=''; $debe=''; $haber='';
         foreach($stmt2 as $key => $value){
+            $parc=''; $debe=''; $haber='';
             if($value['Parcial_ME']!=0 and $value['Parcial_ME']!='0.00'){
                 $parc = number_format($value['Parcial_ME'], 2, '.', '');
             }

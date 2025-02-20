@@ -431,7 +431,8 @@ function listar_comprobante()
             $('#MBFecha').val(response.Co.fecha);
             $('#LabelConcepto').val(response.Co.Concepto);
             $('#LabelCantidad').val(response.Debe);
-            $('#LabelFormaPago').val(response.Co.Efectivo);
+            let Efectivo = (response.Co.Efectivo);
+            $('#LabelFormaPago').val(Number(Efectivo).toFixed(2));
             $('#LabelUsuario').val(response.Nombre_Completo);
             if(response.Co.T=='A')
             {
