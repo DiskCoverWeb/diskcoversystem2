@@ -21,9 +21,22 @@ if(isset($_GET['generarPDF']))
 }
 elseif(isset($_GET['cambiarProducto']))
 {
-	$codigoProducto = $_POST['codigoProducto'];
-  	$datos = $controlador->ListarProductos('P',$codigoProducto);
-  	echo json_encode($datos);
+	$codigoProducto = $_GET['codigoProducto'];
+	$tipo = $_GET['tipo'];
+  $query = '';
+  if (isset($_GET['q'])) {
+    $query = $_GET['q'];
+  }
+  echo json_encode($controlador->ListarProductos($tipo,$codigoProducto,$query));
+}
+
+if(isset($_GET['bodegas']))
+{
+  $query = '';
+  if (isset($_GET['q'])) {
+    $query = $_GET['q'];
+  }
+  echo json_encode($controlador->bodegas($query));
 }
 
 if(isset($_GET['Consultar_Tipo_Kardex']))
@@ -78,28 +91,54 @@ class kardexC
     $this->Periodo_Contable = $_SESSION['INGRESO']['periodo'];
 	}
 
-	public function ListarProductos($tipo,$codigoProducto){
-		$datos = $this->modelo->ListarProductos($tipo,$codigoProducto);
-        $productos = [];
-		foreach ($datos as $key => $value) {
-			$productos[] = array('LabelCodigo'=>$value['Codigo_Inv']."/".$value['Minimo']."/".$value['Maximo']."/".$value['Unidad']."/".$value['Producto'],'nombre'=>mb_convert_encoding($value['NomProd'], 'UTF-8'));
-		}
-		if(count($productos)<=0){
-			$productos[0] = array('LabelCodigo'=>'','nombre'=>'No existen datos.');
-		}
-		return $productos;
+	public function ListarProductos($tipo,$codigoProducto,$query=false){
+		$datos = $this->modelo->ListarProductos($tipo,$codigoProducto,$query);
+    // $productos = [];
+		// foreach ($datos as $key => $value) {
+		// 	$productos[] = array('LabelCodigo'=>$value['Codigo_Inv']."/".$value['Minimo']."/".$value['Maximo']."/".$value['Unidad']."/".$value['Producto'],'nombre'=>mb_convert_encoding($value['NomProd'], 'UTF-8'));
+		// }
+		// if(count($productos)<=0){
+		// 	$productos[0] = array('LabelCodigo'=>'','nombre'=>'No existen datos.');
+		// }
+
+    if($tipo == 'I'){
+      $lis = array();
+      foreach ($datos as $key => $value) {
+        $sep = explode(' ', $value['NomProd']);
+        $lis[] = array('id' => $sep[0], 'text' => $value['NomProd'], 'datos' => $value);
+      }
+      // print_r($lis);die();
+      return $lis;
+    }else if($tipo == 'P'){
+      $productos = [];
+		  foreach ($datos as $key => $value) {
+		  	$productos[] = array('codigo'=>$value['Codigo_Inv']."/".$value['Minimo']."/".$value['Maximo']."/".$value['Unidad']."/".$value['Producto'],'nombre'=>mb_convert_encoding($value['Producto'], 'UTF-8'));
+		  }
+		  if(count($productos)<=0){
+		  	$productos[0] = array('codigo'=>'','nombre'=>'No existen datos.');
+		  }
+      return $productos;
+    }
 	}
 
-	public function bodegas(){
-		$datos = $this->modelo->bodegas();
-		$bodegas = [];
-		foreach ($datos as $key => $value) {
-			$bodegas[] = array('LabelCodigo'=>$value['CodBod'],'nombre'=>mb_convert_encoding($value['CodBod'], 'UTF-8')." - ".mb_convert_encoding($value['Bodega'], 'UTF-8'));
-		}
-		if(count($bodegas)<=0){
-			$bodegas[0] = array('LabelCodigo'=>'','nombre'=>'No existen datos.');
-		}
-		return $bodegas;
+	public function bodegas($query=false){
+		$datos = $this->modelo->bodegas($query);
+		// $bodegas = [];
+		// foreach ($datos as $key => $value) {
+		// 	$bodegas[] = array('LabelCodigo'=>$value['CodBod'],'nombre'=>mb_convert_encoding($value['CodBod'], 'UTF-8')." - ".mb_convert_encoding($value['Bodega'], 'UTF-8'));
+		// }
+		// if(count($bodegas)<=0){
+		// 	$bodegas[0] = array('LabelCodigo'=>'','nombre'=>'No existen datos.');
+		// }
+		// return $bodegas;
+
+    $lis = array();
+    foreach ($datos as $key => $value) {
+      //$sep = explode(' ', $value['NomProd']);
+      $lis[] = array('id' => $value['CodBod'], 'text' => mb_convert_encoding($value['CodBod'], 'UTF-8')." - ".mb_convert_encoding($value['Bodega'], 'UTF-8'), 'datos' => $value);
+    }
+    // print_r($lis);die();
+    return $lis;
 	}
 
 	public function Consultar_Tipo_De_Kardex($EsKardexIndividual,$parametros){
@@ -183,8 +222,9 @@ class kardexC
     if($heightDisponible>135){
         $heightDisponible-=35;
     }
-    $DGKardex = grilla_generica_new($sSQL,'Trans_Kardex','myTable','',$botones,false,false,1,1,1,$heightDisponible, med_b:$med_b);
-		return compact('error','DGKardex','LabelExitencia');;
+    //print_r($sSQL);die();
+    $DGKardex = grilla_generica_new($sSQL);
+		return array('data' => $DGKardex['data'], 'LabelExistencia'=> $LabelExitencia);
 	}
 
 	public function Consultar_Kardex($parametros){
@@ -230,7 +270,7 @@ class kardexC
         if($heightDisponible>135){
             $heightDisponible-=35;
         }
-        $DGKardex = grilla_generica_new($sSQL ,'Trans_Kardex As K, Comprobantes As C','myTable','',false,false,false,1,1,1,$heightDisponible);
+        $DGKardex = grilla_generica_new($sSQL);
 
         $AdoKardex = $this->modelo->SelectDB($sSQL);
         if (count($AdoKardex) > 0) {
@@ -239,7 +279,9 @@ class kardexC
             }
         }
         $LabelExitencia = number_format($Debe - $Haber, 2);
-		return compact('error','DGKardex','LabelExitencia');
+
+        return array('data' => $DGKardex['data'], 'LabelExistencia'=> $LabelExitencia);
+		//return compact('error','DGKardex','LabelExitencia');
 	}
 
 	public function funcionInicio(){

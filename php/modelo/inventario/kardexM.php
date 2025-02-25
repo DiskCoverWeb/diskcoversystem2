@@ -26,8 +26,8 @@ class kardexM
        return $this->db->datos($sSQL);
   }
   
-  public function ListarProductos($tipo,$codigoProducto){
-    $Codigo = trim($codigoProducto);
+  function ListarProductos($tipo,$codigoProducto,$query=false){
+    /*$Codigo = trim($codigoProducto);
     $sSQL = "SELECT Producto, Codigo_Inv, Unidad, Minimo, Maximo, Codigo_Inv + '  ' + Producto AS NomProd "
         . "FROM Catalogo_Productos "
         . "WHERE Item = '" . $this->NumEmpresa. "' "
@@ -48,7 +48,44 @@ class kardexM
 
     $sSQL .= "ORDER BY Codigo_Inv, Producto ";
     $stmt = $this->db->datos($sSQL);
-    return $stmt;
+    return $stmt;*/
+    
+    $sSQL = "";
+    switch ($tipo) {
+      case "I":
+        $sSQL = "SELECT Codigo_Inv + '  ' + Producto As NomProd 
+          FROM Catalogo_Productos 
+          WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+          AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' ";
+
+        if($query){
+          $sSQL .= "AND Codigo_Inv LIKE '%".$query."%' OR Producto LIKE '%".$query."%' ";
+        }
+        $sSQL .= "AND TC = 'I' 
+          AND X = 'M' 
+          ORDER BY Codigo_Inv ";
+        break;
+
+      case "P":
+        $Codigo = trim($codigoProducto);
+        $sSQL = "SELECT Producto,Codigo_Inv,Unidad,Minimo,Maximo 
+          FROM Catalogo_Productos 
+          WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+          AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' ";
+
+        if($Codigo!=""){
+          $sSQL .= "AND SUBSTRING(Codigo_Inv, 1, " . strlen($Codigo) . ") = '" . $Codigo . "' ";
+        }
+
+        $sSQL .= "AND TC = 'P' 
+          AND X = 'M' 
+          AND Cta_Inventario <> '.' 
+          AND Cta_Inventario <> '0' 
+          ORDER BY Producto,Codigo_Inv ";
+        break;  
+    }
+
+    return $this->db->datos($sSQL);
   }
 
   function Listar_Articulos($SoActivos = false, $ejecutar=false) {
@@ -75,12 +112,15 @@ class kardexM
 }
 
 
-  public function bodegas(){
+  public function bodegas($query=false){
     $sql="SELECT Bodega, CodBod
           FROM Catalogo_Bodegas 
           WHERE Item = '".$this->NumEmpresa."'
-          AND Periodo = '".$this->Periodo_Contable."'
-          ORDER BY CodBod";
+          AND Periodo = '".$this->Periodo_Contable."' ";
+    if($query){
+      $sql .= "AND CodBod LIKE '%".$query."%' OR Bodega LIKE '%".$query."%' ";
+    }
+    $sql .= "ORDER BY CodBod";
     return $this->db->datos($sql);
   }
 
