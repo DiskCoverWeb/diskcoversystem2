@@ -1,14 +1,21 @@
 var chekTrue = [];
 var chekFalse = [];
 
+$(document).ready(function()
+{
+IngClave('Gerente');
+})
+
+
 function resp_clave_ingreso(response)
 {
-if(response.respuesta==1)
-{
-    $('#clave_supervisor').modal('hide');
-    llenar_meses();
-    abrir_modal();
-}
+    console.log(response);
+    if(response.respuesta==1)
+    {
+        $('#clave_supervisor').modal('hide');
+        llenar_meses();
+        abrir_modal();
+    }
 }
 
 function abrir_modal()

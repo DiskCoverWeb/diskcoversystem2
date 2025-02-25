@@ -427,7 +427,7 @@
             </div>                       
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
-              <button type="button" class="btn btn-primary" onclick="cambiar_empaque()">OK</button>
+              <!-- <button type="button" class="btn btn-primary" onclick="cambiar_tipo_asig()">OK</button> -->
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
           </div>
       </div>

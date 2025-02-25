@@ -344,7 +344,8 @@ class almacenamiento_bodegaC
 				SetAdoAddNew('Trans_Kardex');
 				SetAdoFields('CodBodega',$value['codigoBod']);
 			    SetAdoFields('Entrada',$value['cantidad']);
-			    SetAdoFields('Valor_Total',number_format($producto[0]['Valor_Unitario']*$value['cantidad'],2,'.',''));
+			    SetAdoFields('Valor_Total',number_format($producto[0]['Valor_Unitario']*$value['cantidad'],2,'.','')); 
+			    SetAdoFields('Fecha_DUI',date('Y-m-d'));	   
 				SetAdoFields('T',"E");		
 				SetAdoFieldsWhere('ID',$id);
 				SetAdoUpdateGeneric();
@@ -358,7 +359,8 @@ class almacenamiento_bodegaC
 			   SetAdoFields('Entrada',$value['cantidad']);
 			   SetAdoFields('Cta_Inv',$producto[0]['Cta_Inv']);
 			   SetAdoFields('Fecha_Fab',$producto[0]['Fecha_Fab']);	
-			   SetAdoFields('Fecha_Exp',$producto[0]['Fecha_Exp']);	   
+			   SetAdoFields('Fecha_Exp',$producto[0]['Fecha_Exp']);	 
+			   SetAdoFields('Fecha_DUI',date('Y-m-d'));	   
 			   SetAdoFields('CodigoU',$producto[0]['CodigoU']);   
 			   SetAdoFields('Item',$producto[0]['Item']);
 			   SetAdoFields('Orden_No',$producto[0]['Orden_No']); 

@@ -88,25 +88,35 @@ function cargarProductosGrupo() {
     grupo = $('#ddlgrupoProducto').val();
     // console.log('ss');
     $('#txt_codigo').select2({
-        placeholder: 'Codigo producto',
-        ajax: {
-            url: '../controlador/inventario/asignacion_pickingC.php?cargarProductosGrupo=true',           
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    query: params.term,
-                    grupo: grupo,
-                }
-            },
-            processResults: function (data) {
-                return {
-                    results: data
-                };
-            },
-            cache: true
+    placeholder: 'Seleccione una beneficiario',
+    width:'100%',
+    ajax: {
+    url: '../controlador/inventario/asignacion_pickingC.php?cargarProductosGrupo=true',   
+    dataType: 'json',
+    delay: 250, 
+    data: function (params) {
+        return {
+            query: params.term,
+            grupo: grupo,
         }
-    });
+    },
+    processResults: function (data) {
+        return {
+          results: data.map(function (item) {
+            return {
+              id: item.id,
+              text: '<div style="background:'+item.fondo+'"><span style="color:'+item.texto+';font-weight: bold;">' + item.text + '</span></div>',
+              data : item.data,
+            };
+          })
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function (markup) {
+      return markup;
+    }
+  });
 }
 
 function productosPorQR(codigo){
@@ -182,6 +192,36 @@ function validar_codigo()
                     // $('#txt_grupo').val(data.Producto)
                     $('#txt_stock').val(data.Entrada)
                     $('#txt_unidad').val(data.Unidad)
+                    $('#txt_fecha_exp').val(formatoDate(data.Fecha.date));
+
+                    var fecha1 = new Date();
+                    var fecha2 = new Date(formatoDate(data.Fecha_Exp.date));
+                    var diferenciaEnMilisegundos = fecha2 - fecha1;
+                    var diferenciaEnDias = ((diferenciaEnMilisegundos/ 1000)/86400);
+                    diferenciaEnDias = parseInt(diferenciaEnDias);
+
+                    if(diferenciaEnDias<0)
+                    {
+                         $('#btn_expired').css('display','initial');
+                         $('#txt_fecha_exp').css('color','red');
+                         $('#img_por_expirar').attr('src','../../img/gif/expired_titi2.gif');
+                         $('#btn_titulo').text('Expirado')
+                         $('#txt_fecha_exp').css('background','#ffff');
+                    }else if(diferenciaEnDias<=10 && diferenciaEnDias>0){
+                         $('#btn_expired').css('display','initial');
+                         $('#txt_fecha_exp').css('color','#e9bd11');
+                         $('#img_por_expirar').attr('src','../../img/gif/expired_titi.gif');
+                         $('#btn_titulo').text('Por Expirar')
+                         $('#txt_fecha_exp').css('background','#a6a5a5');
+                    }else
+                    {
+                        $('#btn_expired').css('display','none');
+                        $('#txt_fecha_exp').css('color','#000000');
+                        $('#img_por_expirar').attr('src','../../img/png/expired.png');
+                        $('#txt_fecha_exp').css('background','#ffff');
+                    }
+
+
                 }else
                 {
                     Swal.fire("Codigo de producto no encontrado","","info");

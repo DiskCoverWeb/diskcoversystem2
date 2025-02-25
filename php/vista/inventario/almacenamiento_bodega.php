@@ -68,7 +68,7 @@
 							<option value="">Seleccione Empaque</option>
 						</select>
 					</div>
-					<div class="col-sm-7 text-end" id="pnl_alertas">
+					<div class="col-lg-5 col-md-6 col-sm-6" id="pnl_alertas">
 						<button class="btn btn-light align-items-center justify-content-center" type="button" id="btn_alto_stock" style="display:none;">
 							<img id="img_alto_stock"  src="../../img/gif/alto_stock_titi.gif" style="width:32px">
 							Alto Stock

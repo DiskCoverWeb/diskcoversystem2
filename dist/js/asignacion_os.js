@@ -354,7 +354,7 @@ function tipoCompra(benefi)
         data.forEach(function(item,i){
         // console.log(item);
             option+= '<div class="col-md-6 col-sm-6">'+
-                        '<button type="button" class="btn btn-light btn-sm"><img src="../../img/png/'+item.Picture+'.png" onclick="cambiar_empaque(\''+item.ID+'\')"  style="width: 60px;height: 60px;"></button><br>'+
+                        '<button type="button" class="btn btn-light btn-sm"><img src="../../img/png/'+item.Picture+'.png" onclick="cambiar_tipo_asig(\''+item.ID+'\')"  style="width: 60px;height: 60px;"></button><br>'+
                         '<b>'+item.Proceso+'</b>'+
                     '</div>';
 
@@ -774,4 +774,10 @@ function eliminar_asignacion_beneficiario()
 
     
                     
+}
+
+function cambiar_tipo_asig(id)
+{
+    $('#tipoCompra').val(id)
+    $('#modal_tipoCompra').modal("hide")
 }

@@ -192,13 +192,31 @@ class asignacion_pickingC
             $codigo = $parametros['query'];
         }
         $datos = $this->modelo->lista_stock_ubicado(false,$codigo,$parametros['grupo']);
-        $tr = array();
+
+
+        $tr = array();  
+        $color2 = '#000000';
+        $color = '';
+        $fecha_now = new DateTime();
         foreach ($datos as $key => $value) {
-           $tr[] = array('id'=>$value['ID'],'text'=>$value['Codigo_Barra']);
+            $fecha1 = new DateTime();
+            $fecha2 = new DateTime($value['Fecha_Exp']->format('Y-m-d'));
+            $diferenciaEnSegundos = $fecha2->getTimestamp() - $fecha1->getTimestamp();
+
+            $dias = intval($diferenciaEnSegundos / 86400);
+            // print_r($value);die();
+            // if($value['Cod_C']=='AR01')
+            // {
+            //     $color2 = '#0070C0';
+            // }
+            if($dias<=0){$color = '#ffff00';}else if ($dias<=8 && $dias>0) { $color = '#ff0000';}
+
+           $tr[] = array('id'=>$value['ID'],'text'=>$value['Codigo_Barra'],'data'=>$value,'fondo'=>$color,'texto'=>$color2);
+            $color2 = '#000000';
+         $color = '';
         }
         return $tr;
-        // print_r($datos);die();
-    
+        // print_r($datos);die();    
     }
 
     function buscar_producto($parametros)
