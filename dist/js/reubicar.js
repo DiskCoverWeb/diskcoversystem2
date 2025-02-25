@@ -52,6 +52,12 @@ $('#txt_cod_barras').keydown( function(e) {
               { data: 'Codigo_Barra' },
               { data: 'Producto' },
               { data: 'Entrada',},
+              { data: null,
+                 render: function(data, type, item) {
+                    botons =  formatoDate(data.Fecha_DUI.date);                  
+                    return botons;                    
+                  }
+              },
               { data: 'CodBodega' },
               { data: 'Ruta'        },
              

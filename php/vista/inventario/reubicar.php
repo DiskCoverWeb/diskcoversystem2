@@ -79,6 +79,7 @@
 							<th>Codigo</th>
 							<th><b>Producto</b></th>
 							<th><b>Stock</b></th>
+							<th><b>Fecha Almacenamiento</b></th>
 							<th>Codigo bodega</th>
 							<th><b>Ruta</b></th>
 							<th></th>

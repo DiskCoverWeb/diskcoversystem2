@@ -212,12 +212,26 @@
 						</div>
 						<div class="col-lg-3 col-md-4 col-sm-12">
 							<b>Fecha expiracion</b>
-							<input type="date" name="stock" id="stock" class="form-control form-control-sm" readonly>
+							<input type="date" name="txt_fecha_exp" id="txt_fecha_exp" class="form-control form-control-sm" readonly>
 						</div>
-						<div class="col-lg-12 col-md-8 col-sm-12">
+						<div class="col-lg-9 col-md-8 col-sm-12">
 							<b>Ubicacion</b>
 							<input type="" name="txt_ubicacion" id="txt_ubicacion" class="form-control form-control-sm" placeholder="Proveedor / Donante" readonly>		     							
 						</div>
+						<div class="col-lg-3 col-md-6 col-sm-6 p-0">
+							<br> 
+							<button class="btn btn-light align-items-center justify-content-center" type="button" id="btn_alto_stock" style="display:none;">
+							<img id="img_alto_stock"  src="../../img/gif/alto_stock_titi.gif" style="width:32px">
+							Alto Stock
+						</button>
+						<button class="btn btn-light align-items-center justify-content-center" type="button" id="btn_expired" style="display:none;">
+							<img id="img_por_expirar" src="../../img/gif/expired_titi.gif" style="width:32px">
+							<b id="btn_titulo">Por Expirar</b>
+						
+							
+						</button>
+
+						</div>  
 					</div>
 				</div>
 			

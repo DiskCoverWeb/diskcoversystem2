@@ -50,8 +50,8 @@
       	 $('#img_alto_stock').attr('src','../../img/png/alto_stock.png');
       }
 
-		var fecha1 = new Date();
-      	var fecha2 = new Date(formatoDate(data.Fecha_Exp.date));
+		  var fecha1 = new Date();
+      var fecha2 = new Date(formatoDate(data.Fecha_Exp.date));
 			var diferenciaEnMilisegundos = fecha2 - fecha1;
 			var diferenciaEnDias = ((diferenciaEnMilisegundos/ 1000)/86400);
 			diferenciaEnDias = parseInt(diferenciaEnDias);
