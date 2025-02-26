@@ -3285,12 +3285,12 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
 					$botonesHtml = '';
 					foreach($botones as $boton){ 
 						$ids = explode (',', $boton['id']);
-						$parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+						$parametros = array_map(fn($id) => $fila[$id] ??  $id,
 						$ids,
 						array_keys($ids)
 						);
 						$botonesHtml .= '<button type="button" class="btn btn-sm py-0 px-0 btn-'.$boton['tipo'].'" '.
-						'onclick="'.$boton['boton'].'(\''.implode("', '", $parametros).'\')" '.
+						'onclick="'.$boton['boton'].'(\''.implode("','", $parametros).'\')" '.
 						'title="'.$boton['boton'].'">'.
 						$boton['icono'].
 						'</button> ';

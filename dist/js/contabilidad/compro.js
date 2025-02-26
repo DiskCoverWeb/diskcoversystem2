@@ -99,16 +99,6 @@ function comprobante()
 
 function listar_comprobante()
 {
-  if($.fn.dataTable.isDataTable('#tbl_contabilidad') && $.fn.dataTable.isDataTable('#tbl_retenciones')
-    && $.fn.dataTable.isDataTable('#tbl_retenciones_co') && $.fn.dataTable.isDataTable('#tbl_retenciones_co')
-    && $.fn.dataTable.isDataTable('#tbl_subcuentas') && $.fn.dataTable.isDataTable('#tbl_kardex')){
-      $('#tbl_contabilidad').DataTable().clear().destroy();
-      $('#tbl_retenciones').DataTable().clear().destroy();
-      $('#tbl_retenciones_co').DataTable().clear().destroy();
-      $('#tbl_retenciones_ve').DataTable().clear().destroy();
-      $('#tbl_subcuentas').DataTable().clear().destroy();
-      $('#tbl_kardex').DataTable().clear().destroy(); 
-  }
   $('#myModal_espera').modal('show');
     reporte_comprobante();
     var parametros = 
@@ -133,8 +123,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl1.data),
-              paging: false,
               searching: false,
+              destroy: true,
               columns: [
                 { 
                   data : null,
@@ -182,8 +172,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl2.data),
-              paging: false, 
               searching: false, 
+              destroy: true,
               columns: [
                 { data : "T" },
                 { data : "CodRet" },
@@ -230,8 +220,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl2_1.data),
-              paging: false, 
               searching: false,
+              destroy: true,
               columns: [
                 { data: "Linea_SRI" },
                 { data: "Cliente" },
@@ -293,8 +283,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl2_2.data),
-              paging: false, 
               searching: false, 
+              destroy: true,
               columns: [
                 { data: "Linea_SRI" }, 
                 { data: "Cliente" }, 
@@ -344,8 +334,8 @@ function listar_comprobante()
                 url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
               },
               data: ProcesarDatos(response.tbl3.data),
-              paging: false,
               searching: false, 
+              destroy: true,
               columns: [
                 { data: "TC" },
                 { data: "Detalles" },
@@ -377,6 +367,7 @@ function listar_comprobante()
               data: ProcesarDatos(response.tbl4.data),
               paging: false, 
               searching: false,
+              destroy: true,
               columns: [
                 { data: "Codigo_Inv" },
                 { data: "Producto" },

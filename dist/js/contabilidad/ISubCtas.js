@@ -112,7 +112,6 @@ function actualizarIndiceYLLenarCta(nuevoIndice) {
         nombreCta = nombreCta.split(' ');
         cadenaEliminar = nombreCta[0];
         habilitarbtnEliminar();
-
     }
 }
 
@@ -120,12 +119,9 @@ function actualizarIndiceYPintar(nuevoIndice) {//Lo mismo que el de arriba, pero
     var listaItems = $('#DLCtas').children('button');
     if (nuevoIndice >= 0 && nuevoIndice < listaItems.length) {
         listaItems.removeClass('boton-enfocado');
-
         indiceActual = nuevoIndice;
-
         var botonActual = $(listaItems[indiceActual]);
         botonActual.addClass('boton-enfocado');
-
     }
 }
 

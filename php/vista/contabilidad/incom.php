@@ -1396,7 +1396,7 @@ function validar_comprobante()
 
 <!-- TODO: Modal CC-->
 
-<div class="modal fade" id="modal_CC" data-backdrop="static" tabindex="-1" role="dialog" style="display: none;">
+<div class="modal fade" id="modal_CC" data-bs-backdrop="static" tabindex="-1" role="dialog" style="display: none;">
   <div class="modal-dialog modal-lg" role="document" style="max-width: 475px">
     <div class="modal-content">
       <div class="modal-header">
@@ -1421,7 +1421,7 @@ function validar_comprobante()
               <b>TOTAL</b>
             </div>
             <div class="col-sm-6" style="padding: 10px;">
-              <input type="text" name="total_cc" id="total_cc" class="form-control input-xs text-right" readonly="" value="0.00" wfd-id="id35">
+              <input type="text" name="total_cc" id="total_cc" class="form-control form-control-sm text-right" readonly="" value="0.00" wfd-id="id35">
             </div>
           </div>
 

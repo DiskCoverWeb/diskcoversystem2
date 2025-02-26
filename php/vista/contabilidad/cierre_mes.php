@@ -24,7 +24,7 @@
            </div>
            <div class="col-sm-4 text-end">
               <button class="btn btn-outline-secondary btn-sm" title="Grabar" data-bs-toggle="tooltip" onclick="guardar()"> <img src="../../img/png/grabar.png" ><br>&nbsp;&nbsp;Grabar&nbsp;&nbsp;</button>     
-              <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal" onclick="limpiar_IngresoClave_MYSQL();"> <img src="../../img/png/bloqueo.png" ><br> Cancelar</button>     
+              <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal" onclick="limpiar_IngresoClave_MYSQL();"> <img src="../../img/png/bloqueo.png" ><br>Cerrar</button>     
            </div>
          </div>
       </div>

@@ -1071,7 +1071,7 @@ function listar_comprobantes($parametros)
 		$tr = $modelo->transacciones_comprobante($parametros['TP'],$parametros['numero'],$parametros['item']);
         $SumaDebe = 0;
         $SumaHaber = 0;
-        // print_r($tr);die();
+        //print_r($tr);die();
 
 		foreach ($tr['datos'] as $key => $value) {
              $SumaDebe = $SumaDebe + round($value["Debe"],2);

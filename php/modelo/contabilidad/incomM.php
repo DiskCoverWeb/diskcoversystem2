@@ -217,9 +217,10 @@ class incomM
           $ids = explode(',', $botones[0]['id']); // Extrae las claves de $fila que se usarán
 
           // Mapeamos cada ID correctamente con su valor en $fila
-          $parametros = array_map(function($id) use ($fila) {
-              return $fila[$id] ?? ''; // Asigna el valor correspondiente o una cadena vacía si no existe
-          }, $ids);
+          $parametros = array_map(fn($id) => $fila[$id] ??  $id,
+						$ids,
+						array_keys($ids)
+					);
           $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
                       onclick="'.$botones[0]['boton']. '(\''.implode("', '", $parametros). '\')" 
                       title="'.$botones[0]['boton'].'">'.
@@ -271,7 +272,7 @@ class incomM
        if(!empty($tbl['data'])){ 
         foreach ($tbl['data'] as &$fila){ 
           $ids = explode(',', $botones[0]['id']);
-          $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+          $parametros = array_map(fn($id) => $fila[$id] ??  $id,
           $ids, 
           array_keys($ids));
           $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
@@ -351,7 +352,7 @@ class incomM
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $parametros = array_map(fn($id) => $fila[$id] ??  $id,
         $ids, 
         array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
@@ -391,7 +392,7 @@ class incomM
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $parametros = array_map(fn($id) => $fila[$id] ??  $id,
         $ids, 
         array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
@@ -419,7 +420,7 @@ class incomM
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $parametros = array_map(fn($id) => $fila[$id] ??  $id,
         $ids, 
         array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
@@ -459,7 +460,7 @@ class incomM
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $parametros = array_map(fn($id) => $fila[$id] ??  $id,
         $ids, 
         array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
@@ -500,7 +501,7 @@ class incomM
      if(!empty($tbl['data'])){ 
       foreach ($tbl['data'] as &$fila){ 
         $ids = explode(',', $botones[0]['id']);
-        $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+        $parametros = array_map(fn($id) => $fila[$id] ??  $id,
         $ids, 
         array_keys($ids));
         $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
@@ -1330,13 +1331,13 @@ class incomM
         return $result;
      }
 
-     function insertar_aseinto($codigo,$cuenta,$parcial,$debe,$haber,$chq_as,$dconcepto1,$efectivo_as,$t_no,$A_No,$bene)
+     function insertar_aseinto($codigo,$cuenta,$parcial,$debe,$haber,$chq_as,$dconcepto1,$efectivo_as,$t_no,$A_No,$bene, $tc)
      {
      	$sql="INSERT INTO Asiento
-			(CODIGO,CUENTA,PARCIAL_ME,DEBE,HABER,CHEQ_DEP,DETALLE,EFECTIVIZAR,CODIGO_C,CODIGO_CC,ME,T_No,Item,CodigoU,A_No,BENEFICIARIO)
+			(CODIGO,CUENTA,PARCIAL_ME,DEBE,HABER,CHEQ_DEP,DETALLE,EFECTIVIZAR,CODIGO_C,CODIGO_CC,ME,T_No,Item,CodigoU,A_No,BENEFICIARIO, TC)
 				VALUES
 			('".$codigo."','".$cuenta."',".$parcial.",".$debe.",".$haber.",'".$chq_as."','".$dconcepto1."',
-				'".$efectivo_as."','.','.',0,".$t_no.",'".$_SESSION['INGRESO']['item']."','".$_SESSION['INGRESO']['CodigoU']."',".$A_No.",'".$bene."')";
+				'".$efectivo_as."','.','.',0,".$t_no.",'".$_SESSION['INGRESO']['item']."','".$_SESSION['INGRESO']['CodigoU']."',".$A_No.",'".$bene."','".$tc."')";
 		return $this->conn->String_Sql($sql);
 
      }
@@ -1519,6 +1520,7 @@ class incomM
   }
 
   function activate_cc($parametros){
+    if(!isset($parametros['serie'])){$parametros['serie'] = '001001';}
     $sql = "UPDATE Catalogo_SubCtas
             SET X = '.' 
             WHERE Item = '".$_SESSION['INGRESO']['item']."'
@@ -1553,9 +1555,10 @@ class incomM
     Ejecutar_SQL_SP($sql);
 
     //TODO: En el BuscarFecha va un Co.Fecha, de donde se obtiene?
-    $sql = "INSERT INTO Asiento_SC (Codigo, Beneficiario, FECHA_V, TC, TM, DH, Cta, T_No, Item, CodigoU, Detalle_SubCta, Factura, Prima, Valor, Valor_ME, SC_No, Fecha_D, Fecha_H, Bloquear)
+
+    $sql = "INSERT INTO Asiento_SC (Codigo, Beneficiario, FECHA_V, TC, TM, DH, Cta, T_No, Item, CodigoU, Detalle_SubCta, Factura, Prima, Valor, Valor_ME, SC_No, Fecha_D, Fecha_H, Bloquear, Serie)
             SELECT Codigo, Detalle, '" . BuscarFecha(date('Y-m-d')) . "', 'CC' , '" . $parametros['OpcTM']. "', '" . $parametros['OpcDH'] . "', 
-            '" . $parametros['SubCtaGen'] . "', " . $_SESSION['INGRESO']['modulo_'] . ", '".$_SESSION['INGRESO']['item']."', '".$_SESSION['INGRESO']['CodigoU']."', '.', 0, 0, 0, 0, 0, Fecha_D, Fecha_H, Bloquear
+            '" . $parametros['SubCtaGen'] . "', " . $_SESSION['INGRESO']['modulo_'] . ", '".$_SESSION['INGRESO']['item']."', '".$_SESSION['INGRESO']['CodigoU']."', '.', 0, 0, 0, 0, 0, Fecha_D, Fecha_H, Bloquear,'".$parametros['serie']."'
             FROM Catalogo_SubCtas
             WHERE Item = '".$_SESSION['INGRESO']['item']."'
             AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
@@ -1582,8 +1585,23 @@ class incomM
     
   }
 
-  function commandl_click($parametros){
-
+  function commandl_click($parametros, $parametros2){
+    $sql = '';
+    foreach ($parametros2 as $item){
+      $beneficiario = $item['Beneficiario'];
+      $valor = $item['Valor'];
+      $sql .="UPDATE Asiento_SC
+              SET Valor = ROUND(".$valor.",2, 0)
+              WHERE Beneficiario ='".$beneficiario."'
+              AND Cta = '".$parametros['SubCtaGen']."' 
+              AND DH = '".$parametros['OpcDH']."' 
+              AND TM = '".$parametros['OpcTM']."' 
+              AND T_No = ".$_SESSION['INGRESO']['modulo_']." 
+              AND Item = '".$_SESSION['INGRESO']['item']."' 
+              AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."';
+              ";
+    }
+    Ejecutar_SQL_SP($sql);
     $sql = "DELETE * 
             FROM Asiento_SC 
             WHERE TC = '".$parametros['SubCta']."' 
@@ -1594,16 +1612,6 @@ class incomM
             AND Item = '".$_SESSION['INGRESO']['item']."' 
             AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
             AND Valor = 0";
-    Ejecutar_SQL_SP($sql);
-    $sql = "UPDATE Asiento_SC 
-            SET Valor = ROUND(Valor,2,0) 
-            WHERE TC = '".$parametros['SubCta']."' 
-            AND Cta = '".$parametros['SubCtaGen']."' 
-            AND DH = '".$parametros['OpcDH']."' 
-            AND TM = '".$parametros['OpcTM']."' 
-            AND T_No = ".$_SESSION['INGRESO']['modulo_']." 
-            AND Item = '".$_SESSION['INGRESO']['item']."' 
-            AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'";
     Ejecutar_SQL_SP($sql);
   }
 

@@ -9727,6 +9727,7 @@ function Generar_File_SQL($nombreFile, $sqlQuery) {
     $NumFile = fopen(dirname(__DIR__,2)."/TEMP/" . $nombreFile . ".sql", "w");
     fwrite($NumFile, $datosFile);
     fclose($NumFile);
+    echo 'archivo '.$nombreFile.'.sql guardaado';
   }
 }
 
@@ -9791,7 +9792,7 @@ function Ejecutar_SQL_SP($SQL, $NoCompilar = false, $NombreFile ="")
 {
   // print_r($SQL);die();
   $conn = new db();
-  if (!$NoCompilar) {  $SQL = CompilarSQL($SQL);}
+  if (!$NoCompilar) { $SQL = CompilarSQL($SQL);}// hasta este punto, ejecuta la consulta.
   Generar_File_SQL($NombreFile, $SQL);
   $parametros = array(
     array(&$SQL, SQLSRV_PARAM_IN),
@@ -10032,7 +10033,7 @@ function Reporte_Cartera_Clientes_SP($MBFechaInicial, $MBFechaFinal, $CodigoClie
     array(&$MBFechaFinal, SQLSRV_PARAM_IN)
   );
   $sql = "EXEC sp_Reporte_Cartera_Clientes @Item= ?,@Periodo=?,@CodigoUsuario=?,@CodigoCliente=?,@FechaInicio=?,@FechaCorte=?";
-  return $conn->ejecutar_procesos_almacenados($sql,$parametros);
+  return $conn->ejecutar_procesos_almacenados($sql,$parametros, true, 'MYSQL');
 }
 
 function Insertar_Mail($ListaMails, $InsertarMail) {

@@ -11,6 +11,9 @@ date_default_timezone_set('America/Guayaquil');
         background-color: #f5f5f5;
         color: black;
     }
+    .rotate-180 {
+        transform: rotate(180deg);
+    }
 </style>
 <script src="../../dist/js/contabilidad/ISubCtas.js"></script>
 
@@ -138,22 +141,21 @@ date_default_timezone_set('America/Guayaquil');
                  <div id="encabezadosSubCtas"></div>
             </div>
             <div class="col-sm-3 text-end">
-                <button class="btn btn-outline-secondary btn-sm" data-toggle="tooltip" title="Primero"
+                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Primero"
                     id="btnPrimero">
                     <img src="../../img/png/primero.png">
                 </button>
-                <button class="btn btn-outline-secondary rotar-180 btn-sm" data-toggle="tooltip"
+                <button class="btn btn-outline-secondary rotate-180 btn-sm" data-bs-toggle="tooltip"
                     title="Anterior" id="btnAnterior">
                     <img src="../../img/png/siguiente.png">
                 </button>
-                <button class="btn btn-outline-secondary btn-sm" data-toggle="tooltip"
+                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip"
                     title="Siguiente" id="btnSiguiente">
                     <img src="../../img/png/siguiente.png">
                 </button>
-                <button class="btn btn-outline-secondary btn-sm" data-toggle="tooltip"
+                <button class="btn btn-outline-secondary rotate-180 btn-sm" data-bs-toggle="tooltip"
                     title="Ultimo" id="btnUltimo">
-                    <img src="../../img/png/primero.png" style="width: 20px; height: 20px; transform: rotate(180deg);
-        transform-origin: center;">
+                    <img src="../../img/png/primero.png">
                 </button>
             </div>
         </div>

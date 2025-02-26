@@ -561,14 +561,12 @@ function cambia_foco()
 
 function cargar_tablas_contabilidad()
 {
-  if($.fn.DataTable.isDataTable('#tbl_contabilidad')){
-    $('#tbl_contabilidad').DataTable().clear().destroy();
-  }
   tbl_contabilidad = $('#tbl_contabilidad').DataTable({
       searching: false,
       paging: false,   
       info: false,   
       autoWidth: false,
+      destroy: true,
     language: {
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
     },
@@ -584,9 +582,6 @@ function cargar_tablas_contabilidad()
         console.error("Error en la solicitud: ", xhr, status, error);
       }
     }, 
-    scrollX: true, 
-    scrollY: '300px',
-    scrollCollapse: true,
     columns: [
       { data: null,
         render: function(data, type, row){
@@ -631,14 +626,12 @@ function cargar_tablas_contabilidad()
 }
 function cargar_tablas_sc()
 {
-  if($.fn.DataTable.isDataTable('#tbl_subcuentas')){
-    $('#tbl_subcuentas').DataTable().clear().destroy();
-  }
   tbl_subcuentas = $('#tbl_subcuentas').DataTable({
     searching: false,
     paging: false,   
     info: false,   
     autoWidth: false,
+    destroy: true,
     language: {
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
     },
@@ -651,9 +644,6 @@ function cargar_tablas_sc()
       error: function(xhr, status, error){ 
         console.error("Error en la consulta: ", xhr, status, error);      }
     }, 
-    scrollX: true, 
-    scrollCollapse: true, 
-    scrollY: '300px',
     columns: [
       { data: null,
         render: function(data, type, row){
@@ -714,12 +704,7 @@ function cargar_tablas_sc()
 }
 
 function cargar_tablas_retenciones()
-{
-  if($.fn.dataTable.isDataTable('#tbl_ac') && $.fn.dataTable.isDataTable('#tbl_asientoR')){
-    $('#tbl_ac').DataTable().clear().destroy();
-    $('#tbl_asientoR').DataTable().clear().destroy();    
-  }
-  
+{ 
   $.ajax({
       // data:  {parametros:parametros},
       url:   '../controlador/contabilidad/incomC.php?tabs_retencion=true',
@@ -732,6 +717,7 @@ function cargar_tablas_retenciones()
             paging: false,   
             info: false,   
             autoWidth: false,
+            destroy: true,
             language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             },
@@ -876,15 +862,6 @@ function cargar_tablas_retenciones()
 
 function cargar_tablas_tab4()
 {
-  if ($.fn.dataTable.isDataTable('#tbl_av')) {
-      $('#tbl_av').DataTable().clear().destroy();
-  }
-  if ($.fn.dataTable.isDataTable('#tbl_ae')) {
-      $('#tbl_ae').DataTable().clear().destroy();
-  }
-  if ($.fn.dataTable.isDataTable('#tbl_ai')) {
-      $('#tbl_ai').DataTable().clear().destroy();
-  }
   $.ajax({
       // data:  {parametros:parametros},
       url:   '../controlador/contabilidad/incomC.php?tabs_tab4=true',
@@ -1099,7 +1076,7 @@ function cargar_totales_aseintos()
 
 }
 
-function ingresar_asiento()
+function ingresar_asiento(tc="")
 {
   var partes = '';
   if($('#cuentar option:selected').text().length > 0){
@@ -1137,6 +1114,7 @@ function ingresar_asiento()
       "con" : con,
       "t_no" : '1',
       "bene":bene,
+      "tc": tc,
       "ajax_page": 'ing1',                        
     };
   $.ajax({
@@ -1300,6 +1278,18 @@ function get_cell_focus(){
 }
 
 function Commandl_Click(){
+  let parametros2 = [];
+  $('#myTable tbody tr').each(function(index){
+    let columnas = $(this).find("td");
+    let beneficiario = $(columnas[0]).text().trim();
+    let valor = parseFloat($(columnas[1]).text().trim());
+    if (valor !=0){
+      parametros2.push ({
+        'Beneficiario': beneficiario,
+        'Valor': valor,
+      });
+    }
+  })
   parametros = {
     'SubCtaGen':$('#codigo').val(),
     'SubCta':"CC",
@@ -1307,7 +1297,9 @@ function Commandl_Click(){
     'OpcDH':$('#txt_tipo').val()
   }
   $.ajax({
-    data:  {parametros:parametros},
+    data:  {parametros:parametros,
+            parametros2:parametros2
+    },
     url:   '../controlador/contabilidad/incomC.php?Commandl_Click=true',
     type:  'post',
     dataType: 'json',
@@ -1318,7 +1310,7 @@ function Commandl_Click(){
       // $('#va').focus();
       // $('#cuentar').empty();        
       // $('#codigo').val('');
-      ingresar_asiento();
+      ingresar_asiento('CC');
     }
   });
 }
@@ -1604,10 +1596,8 @@ function eliminar_ac()
             {
               Swal.fire( 'No se pudo Eliminar','','error');
             }
-
-        }
+          }
       });
-
 }
 
 function borrar_asientos()
@@ -1629,10 +1619,8 @@ function borrar_asientos()
             {
               Swal.fire( 'No se pudo Eliminar','','error');
             }
-
         }
       });
-
 }
 
 
@@ -1680,9 +1668,6 @@ function eliminar(codigo,tabla,ID)
 
 function ListarAsientoB()
 {
-  if($.fn.dataTable.isDataTable('#div_tabla')){
-    $('#div_tabla').DataTable().destroy(); 
-  }
   tbl_div_table = $('#div_tabla').DataTable({
     language:{
       url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'    
@@ -1697,6 +1682,7 @@ function ListarAsientoB()
     }, 
     searching: false,
     info: false,
+    destroy: true,
     paging: false,
     columns: [
       { data: null,

@@ -283,7 +283,8 @@ if(isset($_GET['load_subcuentas'])){
 
 if(isset($_GET['Commandl_Click'])){
     $parametros = $_POST['parametros'];
-    echo json_encode($controlador->commandl_click($parametros));
+    $parametros2 = $_POST['parametros2'];
+    echo json_encode($controlador->commandl_click($parametros, $parametros2));
 }
 
 if(isset($_GET['Command2_Click'])){
@@ -2014,7 +2015,7 @@ function Llenar_Encabezado_Comprobante($parametros)
 
 function ingresar_asiento($parametros)
 {
-	// print_r($parametros);die();
+	//echo print_r($parametros);die();
 	//ingresar asiento 
 		$va = $parametros['va'];
 		$dconcepto1 = $parametros['dconcepto1'];
@@ -2022,6 +2023,7 @@ function ingresar_asiento($parametros)
 		$cuenta = $parametros['cuenta'];
 		$bene = explode('-', $parametros['bene']);
 		$bene = $bene[0];
+        $tc = $parametros['tc'];
 
 		if(!is_numeric($va) || $va<=0){
 			return array('resp'=>-3,'tbl'=>'','totales'=>'','obs'=>'Valor debe ser mayor a cero');
@@ -2133,7 +2135,7 @@ function ingresar_asiento($parametros)
 		if($i==0)
 		{
 			
-			$res = $this->modelo->insertar_aseinto($codigo,$cuenta,$parcial,$debe,$haber,$chq_as,$dconcepto1,$efectivo_as,$t_no,$A_No,$bene);
+			$res = $this->modelo->insertar_aseinto($codigo,$cuenta,$parcial,$debe,$haber,$chq_as,$dconcepto1,$efectivo_as,$t_no,$A_No,$bene, $tc);
 			if($res==-1)  
 			{  
 				 return array('resp'=>-1,'tbl'=>'','totales'=>'','obs'=>'no se pudo insertar en asiento');  
@@ -2300,9 +2302,8 @@ function load_subcuentas($parametros){//TODO: Sumatoria_CC
     return $tablaHtml;
 }
 
-function commandl_click($parametros){
-    $this->modelo->commandl_click($parametros);
-    
+function commandl_click($parametros, $parametros2){
+    $this->modelo->commandl_click($parametros, $parametros2);
 }
 
 function command2_click($parametros){

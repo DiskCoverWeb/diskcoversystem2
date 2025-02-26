@@ -129,8 +129,8 @@ class cabecera_pdf
  function cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$fechaini="",$fechafin="",$sizetable="",$mostrar=false,$sal_hea_body=15,$orientacion='P',$download = true, $repetirCabecera=null, $mostrar_cero=false,$nuevaPagina=false)
 	{	
 
-	    $this->pdftable->fechaini = $fechaini; 
-	    $this->pdftable->fechafin = $fechafin; 
+	    $this->pdftable->fechaini = (new DateTime($fechaini))->format('Y-m-d'); 
+	    $this->pdftable->fechafin = (new DateTime($fechafin))->format('Y-m-d');
 	    $this->pdftable->titulo = $titulo;
 	    $this->pdftable->salto_header_cuerpo = $sal_hea_body;
 	    $this->pdftable->orientacion = $orientacion;
