@@ -67,34 +67,23 @@ function cargar_tabla(){
         //     searching:false,
         //     info:false,
         fixedHeader: true,
-        responsive: true,
+        //responsive: true,
         scrollY: '330px',
         scrollCollapse: true,
         columns: [
-            // { data: 'TC' , width:'40px'},
-            // { data: 'Codigo_Inv' , width:'200px'},
-            // { data: 'Producto' , width:'300px'},
-            // { data: 'Unidad' , width:'136px'},
-            // { data: 'Stock_Anterior' , width:'64px', className: 'text-end'},
-            // { data: 'Entradas' , width:'64px', className: 'text-end'},
-            // { data: 'Salidas' , width:'64px', className: 'text-end'},
-            // { data: 'Stock_Actual' , width:'64px', className: 'text-end'},
-            // { data: 'Promedio' , width:'64px', className: 'text-end'},
-            // { data: 'PVP' , width:'64px', className: 'text-end'},
-            // { data: 'Valor_Total' , width:'64px', className: 'text-end'}
-            { data: 'TC' , },
-            { data: 'Codigo_Inv' , },
-            { data: 'Producto' , },
-            { data: 'Unidad' , },
-            { data: 'Stock_Anterior' , },
-            { data: 'Entradas' , },
-            { data: 'Salidas' , },
-            { data: 'Stock_Actual' , },
-            { data: 'Promedio' , },
-            { data: 'PVP' , },
+            { data: 'TC' , width:'40px'},
+            { data: 'Codigo_Inv' , width:'200px'},
+            { data: 'Producto' , width:'300px'},
+            { data: 'Unidad' , width:'136px'},
+            { data: 'Stock_Anterior' , width:'64px', className: 'text-end'},
+            { data: 'Entradas' , width:'64px', className: 'text-end'},
+            { data: 'Salidas' , width:'64px', className: 'text-end'},
+            { data: 'Stock_Actual' , width:'64px', className: 'text-end'},
+            { data: 'Promedio' , width:'64px', className: 'text-end'},
+            { data: 'PVP' , width:'64px', className: 'text-end'},
             { data: 'Valor_Total',  
                 render: function(data, type, item) {
-                    return data ? data : 0;
+                    return data ? parseFloat(data).toFixed(2) : 0;
                 }
             }
         ]
@@ -184,7 +173,7 @@ function ConsultarStock(StockSuperior) {
         //     searching:false,
         //     info:false,
         fixedHeader: true,
-        responsive: true,
+        //responsive: true,
         scrollY: '330px',
         scrollCollapse: true,
         columns: [
@@ -192,11 +181,11 @@ function ConsultarStock(StockSuperior) {
             { data: 'Codigo_Inv' , width:'200px'},
             { data: 'Producto' , width:'300px'},
             { data: 'Unidad' , width:'136px'},
-            { data: 'Stock_Anterior' , width:'64px'},
-            { data: 'Entradas' , width:'64px'},
-            { data: 'Salidas' , width:'64px'},
-            { data: 'Stock_Actual' , width:'64px'},
-            { data: 'Costo_Unit' , width:'64px'},
+            { data: 'Stock_Anterior' , width:'64px', className: 'text-end'},
+            { data: 'Entradas' , width:'64px', className: 'text-end'},
+            { data: 'Salidas' , width:'64px', className: 'text-end'},
+            { data: 'Stock_Actual' , width:'64px', className: 'text-end'},
+            { data: 'Costo_Unit' , width:'64px', className: 'text-end'},
             { data: 'Total' , width:'112px', className: 'text-end'},
             { data: 'Diferencias' , width:'136px', className: 'text-end'},
             { data: 'Bodega' , width:'0px'},
@@ -398,7 +387,7 @@ function ConsultarResumen(tipo) {
         //     searching:false,
         //     info:false,
         fixedHeader: true,
-        responsive: true,
+        //responsive: true,
         scrollY: '330px',
         scrollCollapse: true,
         columns: [
@@ -444,7 +433,7 @@ function ConsultarResumen_Barras() {
             { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
         ],*/
         ajax: {
-            url: '../controlador/inventario/ResumenKC.php?Resumen_Lote=true',
+            url: '../controlador/inventario/ResumenKC.php?Resumen_Barras=true',
             type: 'POST',  // Cambia el método a POST    
             data: function(d) {
                 return $("#FormResumenK").serialize();
@@ -459,7 +448,7 @@ function ConsultarResumen_Barras() {
         //     searching:false,
         //     info:false,
         fixedHeader: true,
-        responsive: true,
+        //responsive: true,
         scrollY: '330px',
         scrollCollapse: true,
         columns: [

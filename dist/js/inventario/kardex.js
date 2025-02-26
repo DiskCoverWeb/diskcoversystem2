@@ -111,7 +111,8 @@ function productoFinal(){
 }
 
 function Consultar_Tipo_Kardex(EsKardexIndividual){//revisada
-  //$('#myModal_espera').modal('show');
+  $('#myModal_espera').modal('show');
+
   $('#DGKardex').show();
   $('#DGKardexRes').hide();
   tbl_DGKardex.destroy();
@@ -129,6 +130,7 @@ function Consultar_Tipo_Kardex(EsKardexIndividual){//revisada
         data: function(d) {
             return $("#FormKardex").serialize();
         }, dataSrc: function(json) {
+          $('#myModal_espera').modal('hide');
           $('#LabelExitencia').val(json.LabelExistencia); 
           return json.data;
         }                     
@@ -138,10 +140,19 @@ function Consultar_Tipo_Kardex(EsKardexIndividual){//revisada
     //     searching:false,
     //     info:false,
     fixedHeader: true,
-    responsive: true,
+    //responsive: true,
     scrollY: '330px',
     scrollCollapse: true,
     columns: [
+        { data: null,
+          render: function(data, type, item) {
+            botons = `<button type="button" class="btn btn-sm btn-warning" onclick="Cambiar_Articulo('${data.Producto}', '${data.ID}', '${data.TC}', '${data.Serie}', '${data.Factura}', '${data.Codigo_Inv}');"><i class="bx bx-refresh" style="font-size:11pt"></i></button>
+                      <button type="button" class="btn btn-sm btn-info" onclick="Cambia_Codigo_de_Barra('${data.Producto}', '${data.ID}', '${data.TC}', '${data.Serie}', '${data.Factura}', '${data.Codigo_Inv}');"><i class="fa fa-barcode" style="font-size:11pt"></i></button>
+                      <button type="button" class="btn btn-sm btn-success" onclick="Cambia_la_Serie('${data.Producto}', '${data.ID}', '${data.TC}', '${data.Serie}', '${data.Factura}', '${data.Codigo_Inv}');"><i class="fa fa-retweet" style="font-size:11pt"></i></button>`;
+
+            return botons;                    
+          },
+        width:'160px'},
         { data: 'Codigo_Inv' , width:'100px'},
         { data: 'Producto' , width:'400px'},
         { data: 'Unidad' , width:'100px'},
@@ -152,28 +163,36 @@ function Consultar_Tipo_Kardex(EsKardexIndividual){//revisada
           }
         , width:'100px'},
         { data: 'TP' , width:'50px'},
-        { data: 'Numero' , width:'100px', className: 'text-end'},
-        { data: 'Entrada' , width:'100px', className: 'text-end'},
-        { data: 'Salida' , width:'100px', className: 'text-end'},
-        { data: 'Stock' , width:'100px', className: 'text-end'},
-        { data: 'Costo' , width:'100px', className: 'text-end'},
-        { data: 'Saldo' , width:'100px', className: 'text-end'},
+        { data: 'Numero' , width:'60px', className: 'text-end'},
+        { data: 'Entrada' , width:'60px', className: 'text-end'},
+        { data: 'Salida' , width:'60px', className: 'text-end'},
+        { data: 'Stock' , width:'60px', className: 'text-end'},
+        { data: 'Costo' , width:'60px', className: 'text-end'},
+        { data: 'Saldo' , width:'60px', className: 'text-end',  
+          render: function(data, type, item) {
+              return data ? parseFloat(data).toFixed(2) : '';
+          }
+        },
         { data: 'Valor_Unitario' , width:'100px', className: 'text-end'},
-        { data: 'Valor_Total' , width:'100px', className: 'text-end'},
-        { data: 'TC' , width:'100px'},
-        { data: 'Serie' , width:'100px'},
-        { data: 'Factura' , width:'100px', className: 'text-end'},
+        { data: 'Valor_Total' , width:'100px', className: 'text-end',  
+          render: function(data, type, item) {
+              return data ? parseFloat(data).toFixed(2) : '';
+          }
+        },
+        { data: 'TC' , width:'60px'},
+        { data: 'Serie' , width:'80px'},
+        { data: 'Factura' , width:'70px', className: 'text-end'},
         { data: 'Cta_Inv' , width:'100px'},
         { data: 'Contra_Cta' , width:'100px'},
-        { data: 'Serie_No' , width:'100px'},
+        { data: 'Serie_No' , width:'70px'},
         { data: 'Codigo_Barra' , width:'100px'},
         { data: 'Lote_No' , width:'100px'},
         { data: 'CI_RUC_CC' , width:'100px'},
-        { data: 'Marca_Tipo_Proceso' , width:'100px'},
+        //{ data: 'Marca_Tipo_Proceso' , width:'100px'},
         { data: 'Detalle' , width:'100px'},
-        { data: 'Beneficiario_Centro_Costo' , width:'100px'},
-        { data: 'Orden_No' , width:'100px'},
-        { data: 'ID' , width:'100px'},
+        { data: 'Beneficiario_Centro_Costo' , width:'250px'},
+        { data: 'Orden_No' , width:'150px'},
+        { data: 'ID' , width:'80px'},
     ]
   });
 
@@ -230,7 +249,7 @@ function consulta_kardex(){ //revisado
     //     searching:false,
     //     info:false,
     fixedHeader: true,
-    responsive: true,
+    //responsive: true,
     scrollY: '330px',
     scrollCollapse: true,
     columns: [
@@ -313,12 +332,15 @@ function Cambia_la_Serie(Producto, ID_Reg, TC, Serie, Factura, CodigoInv) {//rev
           },    
           success: function(response)
           { 
-            if(response.rps){
-              Swal.fire('¡Bien!', response.mensaje, 'success')
-            }else{
-              Swal.fire('¡Oops!', response.mensaje, 'warning')
-            }
-            $('#myModal_espera').modal('hide');        
+            setTimeout(()=>{
+              $('#myModal_espera').modal('hide');        
+              if(response.rps){
+                Swal.fire('¡Bien!', response.mensaje, 'success')
+              }else{
+                Swal.fire('¡Oops!', response.mensaje, 'warning')
+              }
+
+            }, 500);
           },
           error: function () {
             $('#myModal_espera').modal('hide');
@@ -364,12 +386,14 @@ function Cambia_Codigo_de_Barra(Producto, ID_Reg, TC, Serie, Factura, CodigoInv)
           },    
           success: function(response)
           { 
-            if(response.rps){
-              Swal.fire('¡Bien!', response.mensaje, 'success')
-            }else{
-              Swal.fire('¡Oops!', response.mensaje, 'warning')
-            }
-            $('#myModal_espera').modal('hide');        
+            setTimeout(()=>{
+              $('#myModal_espera').modal('hide');        
+              if(response.rps){
+                Swal.fire('¡Bien!', response.mensaje, 'success')
+              }else{
+                Swal.fire('¡Oops!', response.mensaje, 'warning')
+              }
+            }, 500);
           },
           error: function () {
             $('#myModal_espera').modal('hide');
@@ -382,7 +406,33 @@ function Cambia_Codigo_de_Barra(Producto, ID_Reg, TC, Serie, Factura, CodigoInv)
 }
 
 function Cambiar_Articulo(Producto, ID_Reg, TC, Serie, Factura, CodigoInv) {
-  $.ajax({
+  $('#FrmProductos').modal('show');
+
+  $("#LblProducto").val(Producto) 
+  $("#ID_Reg").val(ID_Reg) 
+  $("#TC").val(TC) 
+  $("#Serie").val(Serie) 
+  $("#Factura").val(Factura) 
+  $("#CodigoInv").val(CodigoInv) 
+
+  $('#DCArt').select2({
+    placeholder: '** Seleccionar Nuevo**',
+    dropdownParent: $('#FrmProductos'),
+    width:'100%',
+    ajax: {
+        url: '../controlador/inventario/kardexC.php?ListarArticulos=true',
+        dataType: 'json',
+        delay: 250,
+        processResults: function (data) {
+            return {
+                results: data
+            };
+        },
+        cache: true
+    }
+  });
+  
+  /*$.ajax({
     type: 'POST',
     dataType: 'json',
     url: '../controlador/inventario/kardexC.php?ListarArticulos=true',
@@ -411,7 +461,7 @@ function Cambiar_Articulo(Producto, ID_Reg, TC, Serie, Factura, CodigoInv) {
       $('#myModal_espera').modal('hide');
       alert("Ocurrio un error inesperado, por favor contacte a soporte.");
     }
-  });
+  });*/
 }
 function AceptarCambio() {
   Swal.fire({
@@ -435,13 +485,16 @@ function AceptarCambio() {
         },    
         success: function(response)
         { 
-          $('#myModal_espera').modal('hide'); 
-          if(response.rps){
-            $('#FrmProductos').modal('hide');
-            Swal.fire('¡Bien!', response.mensaje, 'success')
-          }else{
-            Swal.fire('¡Oops!', response.mensaje, 'warning')
-          }       
+          setTimeout(()=>{
+            $('#myModal_espera').modal('hide'); 
+            if(response.rps){
+              $('#FrmProductos').modal('hide');
+              Swal.fire('¡Bien!', response.mensaje, 'success')
+            }else{
+              Swal.fire('¡Oops!', response.mensaje, 'warning')
+            } 
+          }, 500);
+                
         },
         error: function () {
           $('#myModal_espera').modal('hide');

@@ -1,10 +1,3 @@
-<?php
-include "../controlador/inventario/kardexC.php";
-include "../controlador/inventario/ResumenKC.php";
-$kardex = new kardexC();
-$ResumenKC = new ResumenKC();
-?>
-
 
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
@@ -157,31 +150,12 @@ $ResumenKC = new ResumenKC();
             <div class="col-8" id="DCTInv_cont"  style="visibility: hidden;">
               <select class="form-select form-select-sm" tabindex="3" id="DCTInv" name="DCTInv" onchange="Listar_X_Producto()">
                 <option value=''>** Seleccionar Grupo**</option>
-                <?php
-                  $dcinv = $ResumenKC->ListarProductosResumenK();
-                foreach ($dcinv as $value) {
-                  echo "<option value='".$value['Codigo_Inv']."'>".$value['Codigo_Inv']." ".$value['Producto']."</option>";
-                }
-                ?>
+                
               </select>
             </div>
           </div>
         </div>
 
-        <!-- <div class="col padding-all" style="max-width: 160px;">
-          <label><input id="CheqGrupo" name="CheqGrupo" tabindex="2" value="1" type="checkbox"  onchange="var selectElement = document.getElementById('DCTInv'); selectElement.style.visibility = (this.checked) ? 'visible' : 'hidden';(this.checked) ? selectElement.focus() : '';"><b>TIPO GRUPO</b></label>   
-        </div>
-        <div class="col padding-all" >
-          <select class="form-control input-sm" tabindex="3" id="DCTInv" name="DCTInv" onchange="Listar_X_Producto()"  style="visibility: hidden;">
-            <option value=''>** Seleccionar Grupo**</option>
-            <?php
-              $dcinv = $ResumenKC->ListarProductosResumenK();
-            foreach ($dcinv as $value) {
-              echo "<option value='".$value['Codigo_Inv']."'>".$value['Codigo_Inv']." ".$value['Producto']."</option>";
-            }
-            ?>
-          </select>
-        </div> -->
       
       </div>
       
@@ -221,30 +195,10 @@ $ResumenKC = new ResumenKC();
         <div class="col-5 FrmProducto" style="visibility: hidden;">
           <select class="form-select form-select-sm" tabindex="" id="DCTipoBusqueda" name="DCTipoBusqueda">
             <option value=''>** Seleccionar**</option>
-            <?php
             
-            ?>
           </select>
         </div>
-        <!-- <div class="col-sm-3 padding-all" style="max-width: 140px;">
-          <label><input id="CheqProducto" name="CheqProducto" tabindex="2" value="1" type="checkbox"
-            onchange="let selectElement = $('.FrmProducto'); selectElement.css('visibility',(this.checked) ? 'visible' : 'hidden');(this.checked) ? $('#OpcProducto').focus() : '';"
-            ><b>PRODUCTO</b></label>   
-        </div>
-        <div class="col padding-all FrmProducto"  style="visibility: hidden;">
-          <label><input id="OpcProducto" name="ProductoPor" checked tabindex="" value="OpcProducto" type="radio"><b>Producto</b></label>   
-          <label><input id="OpcBarra" name="ProductoPor" tabindex="" value="OpcBarra" type="radio"><b>Codigo Barra</b></label>   
-          <label><input id="OpcMarca" name="ProductoPor" tabindex="" value="OpcMarca" type="radio"><b>Marca</b></label>   
-          <label><input id="OpcLote" name="ProductoPor" tabindex="" value="OpcLote" type="radio"><b>Lote</b></label>   
-        </div>
-        <div class="col padding-all FrmProducto"  style="visibility: hidden;">
-          <select class="form-control input-sm" tabindex="" id="DCTipoBusqueda" name="DCTipoBusqueda">
-            <option value=''>** Seleccionar**</option>
-            <?php
-            
-            ?>
-          </select>
-        </div> -->
+        
       </div>
 
       
@@ -271,28 +225,10 @@ $ResumenKC = new ResumenKC();
         <div class="col-5 FrmCuenta" style="visibility: hidden;">
           <select class="form-select form-select-sm" tabindex="" id="DCCtaInv" name="DCCtaInv">
             <option value=''>** Seleccionar Cuenta**</option>
-            <?php
             
-            ?>
           </select>
         </div>
-        <!-- <div class="col-sm-3 padding-all" style="max-width: 140px;">
-          <label><input id="CheqCtaInv" name="CheqCtaInv" tabindex="2" value="1" type="checkbox"
-            onchange="let selectElement = $('.FrmCuenta'); selectElement.css('visibility',(this.checked) ? 'visible' : 'hidden');(this.checked) ? $('#OpcInv').focus() : '';"
-            ><b>TIPO DE CTA.</b></label>   
-        </div>
-        <div class="col padding-all FrmCuenta" style="visibility: hidden;">
-          <label><input id="OpcInv" name="TipoCuentaDe" checked tabindex="" value="OpcInv" type="radio"><b>Inventario</b></label>   
-          <label><input id="OpcCosto" name="TipoCuentaDe" tabindex="" value="OpcCosto" type="radio"><b>Costo</b></label>   
-        </div>
-        <div class="col padding-all FrmCuenta" style="visibility: hidden;">
-          <select class="form-control input-sm" tabindex="" id="DCCtaInv" name="DCCtaInv">
-            <option value=''>** Seleccionar Cuenta**</option>
-            <?php
-            
-            ?>
-          </select>
-        </div> -->
+        
       </div>
       
       
@@ -319,29 +255,11 @@ $ResumenKC = new ResumenKC();
         <div class="col-5 FrmSubModulo" style="visibility: hidden;">
           <select class="form-select form-select-sm" tabindex="" id="DCSubModulo" name="DCSubModulo">
             <option value=''>** Seleccionar Modulo**</option>
-            <?php
             
-            ?>
           </select>
         </div>
 
-        <!-- <div class="col-sm-3 padding-all" style="max-width: 140px;">
-          <label><input id="CheqSubMod" name="CheqSubMod" tabindex="2" value="1" type="checkbox"
-            onchange="let selectElement = $('.FrmSubModulo'); selectElement.css('visibility',(this.checked) ? 'visible' : 'hidden');(this.checked) ? $('#OpcGasto').focus() : '';"
-            ><b>POR SUBMODULO</b></label>   
-        </div>
-        <div class="col padding-all FrmSubModulo" style="visibility: hidden;">
-          <label><input id="OpcGasto" name="SuModeloDe" checked tabindex="" value="OpcGasto" type="radio"><b>Centro de Costo</b></label>   
-          <label><input id="OpcCxP" name="SuModeloDe" tabindex="" value="OpcCxP" type="radio"><b>CxP/Proveedores</b></label>   
-        </div>
-        <div class="col padding-all FrmSubModulo" style="visibility: hidden;">
-          <select class="form-control input-sm" tabindex="" id="DCSubModulo" name="DCSubModulo">
-            <option value=''>** Seleccionar Modulo**</option>
-            <?php
-            
-            ?>
-          </select>
-        </div> -->
+        
       </div>
 
       
@@ -355,18 +273,7 @@ $ResumenKC = new ResumenKC();
       <table class="table table-hover table-striped" id="tbl_DGQuery">
         <thead>
           <tr>
-            <th >TC</th>
-            <th >Codigo_Inv</th>
-            <th >Producto</th>
-            <th >Unidad</th>
-            <th >Stock_Anterior</th>
-            <th >Entradas</th>
-            <th >Salidas</th>
-            <th >Stock_Actual</th>
-            <th >Promedio</th>
-            <th >PVP</th>
-            <th >Valor_Total</th>
-            <!-- <th class="text-start" style="width:40px">TC</th>
+            <th class="text-start" style="width:40px">TC</th>
             <th class="text-start" style="width:200px">Codigo_Inv</th>
             <th class="text-start" style="width:300px">Producto</th>
             <th class="text-start" style="width:136px">Unidad</th>
@@ -376,7 +283,7 @@ $ResumenKC = new ResumenKC();
             <th class="text-end" style="width:64px">Stock_Actual</th>
             <th class="text-end" style="width:64px">Promedio</th>
             <th class="text-end" style="width:64px">PVP</th>
-            <th class="text-end" style="width:64px">Valor_Total</th> -->
+            <th class="text-end" style="width:64px">Valor_Total</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -425,7 +332,7 @@ $ResumenKC = new ResumenKC();
       </table>
     </div>
   </div>
-  <div class="row" id="DGQuery4" style="display: none;">
+  <!-- <div class="row" id="DGQuery4" style="display: none;">
     <div class="col-md-12"  tabindex="15">
       <table class="table table-hover table-striped" id="tbl_DGQuery4">
         <thead>
@@ -442,7 +349,7 @@ $ResumenKC = new ResumenKC();
         <tbody></tbody>
       </table>
     </div>
-  </div>
+  </div> -->
   <div class="row">
     <div class="col-auto">
       <div class="input-group input-group-sm">
@@ -467,6 +374,6 @@ $ResumenKC = new ResumenKC();
 </div>
 <br>
 
-<script type="text/javascript" src="../../dist/js/ResumenK.js">
+<script type="text/javascript" src="../../dist/js/inventario/ResumenK.js">
 
 </script>

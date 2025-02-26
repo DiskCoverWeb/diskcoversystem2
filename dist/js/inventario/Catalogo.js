@@ -41,7 +41,7 @@ $(document).ready(function()
 });
 
 function ListarCatalogoInventarioJS(){
-    //$('#myModal_espera').modal('show');
+    $('#myModal_espera').modal('show');
 
     tbl_catalogo.destroy();
 
@@ -50,51 +50,22 @@ function ListarCatalogoInventarioJS(){
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },
-        /*columnDefs: [
-            { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
-        ],*/
         ajax: {
             url: '../controlador/inventario/CatalogoC.php?ListarCatalogoInventario=true',
             type: 'POST',  // Cambia el método a POST    
             data: function(d) {
-                // var parametros = {
-                //   'codigoCliente': '',
-                //     'tamanioTblBody': altoContTbl <= 25 ? 0 : altoContTbl - 12,
-                // };
                 return $("#FormCatalogoCtas").serialize();
-            }, dataSrc: ''
-            // dataSrc: function(json) {
-
-            //     $('#myModal_espera').modal('hide');
-                
-            //     return json;
-            //     var diff = parseFloat(json.cant_total)-parseFloat(json.reciclaje);
-            //     if(diff < 0)
-            //     {
-            //       diff = diff*(-1);
-            //     }
-            //     $('#txt_primera_vez').val(json.primera_vez);
-
-            //     var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
-            //     var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
-            //     var total_pedido = $('#txt_cant').val();
-            //     var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
-
-
-            //     $('#txt_faltante').val(faltantes.toFixed(2));
-
-            //     // console.log(json);
-
-            //     // Devolver solo la parte de la tabla para DataTables
-            //     return json.tabla;
-            // }                     
+            }, dataSrc: (json) => {
+                $('#myModal_espera').modal('hide');
+                return json;
+            }
         },
         scrollX: true,  // Habilitar desplazamiento horizontal
         //     paging:false,
         //     searching:false,
         //     info:false,
         fixedHeader: true,
-        responsive: true,
+        //responsive: true,
         scrollY: '330px',
         scrollCollapse: true,
         columns: [

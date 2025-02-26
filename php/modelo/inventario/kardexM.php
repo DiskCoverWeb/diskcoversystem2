@@ -4,17 +4,11 @@ require_once(dirname(__DIR__,2)."/funciones/funciones.php");
 
 class kardexM
 {
-   	private $db ;
-    public $NumEmpresa;
-    public $Periodo_Contable;
-    function __construct()
-    {
-       $this->db = new db();
-       $this->NumEmpresa = $_SESSION['INGRESO']['item'];
-        $this->Periodo_Contable = $_SESSION['INGRESO']['periodo'];
-    }
-
-
+  private $db ;
+  function __construct()
+  {
+      $this->db = new db();
+  }
 
   function ExecuteDB($sSQL)
   {
@@ -27,29 +21,6 @@ class kardexM
   }
   
   function ListarProductos($tipo,$codigoProducto,$query=false){
-    /*$Codigo = trim($codigoProducto);
-    $sSQL = "SELECT Producto, Codigo_Inv, Unidad, Minimo, Maximo, Codigo_Inv + '  ' + Producto AS NomProd "
-        . "FROM Catalogo_Productos "
-        . "WHERE Item = '" . $this->NumEmpresa. "' "
-        . "AND Periodo = '" . $this->Periodo_Contable . "' "
-        . (($Codigo!="")?"AND SUBSTRING(Codigo_Inv, 1, " . strlen($Codigo) . ") = '" . $Codigo . "' ":"")
-        . "AND X = 'M' "
-        . "AND TC = '$tipo' ";
-
-    switch ($tipo) {
-      case "I":
-          break;
-
-      case "P":
-          $sSQL .= " AND Cta_Inventario <> '.' "
-              . "AND Cta_Inventario <> '0' ";
-          break;  
-    }
-
-    $sSQL .= "ORDER BY Codigo_Inv, Producto ";
-    $stmt = $this->db->datos($sSQL);
-    return $stmt;*/
-    
     $sSQL = "";
     switch ($tipo) {
       case "I":
@@ -88,14 +59,18 @@ class kardexM
     return $this->db->datos($sSQL);
   }
 
-  function Listar_Articulos($SoActivos = false, $ejecutar=false) {
+  function Listar_Articulos($SoActivos = false, $ejecutar=false, $query=false) {
     $sSQL = "SELECT Codigo_Inv as codigo, Producto as nombre "
         . "FROM Catalogo_Productos "
-        . "WHERE Item = '" . $this->NumEmpresa . "' "
-        . "AND Periodo = '" . $this->Periodo_Contable . "' ";
+        . "WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' "
+        . "AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' ";
     
     if ($SoActivos) {
         $sSQL .= "AND T = 'N' ";
+    }
+
+    if($query){
+      $sSQL .= "AND Producto LIKE '%".$query."%' ";
     }
     
     $sSQL .= "AND TC = 'P' "
@@ -111,12 +86,34 @@ class kardexM
     }
 }
 
+  function Consultar_Kardex($Codigo, $Codigo1, $FechaIni, $FechaFin){
+    $sSQL  =  "SELECT K.Codigo_Inv, K.Codigo_Barra, SUM(Entrada) As Entradas, SUM(Salida) As Salidas, SUM(Entrada-Salida) As Stock_Kardex 
+              FROM Trans_Kardex As K, Comprobantes As C 
+              WHERE K.Fecha BETWEEN '".$FechaIni."' AND '".$FechaFin."' 
+              AND K.Codigo_Inv = '".$Codigo."'
+              AND K.T = '".G_NORMAL."' 
+              AND K.Item = '".$_SESSION['INGRESO']['item']."' 
+              AND K.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+    if (isset($CheqBod) && $CheqBod=='1') {
+      $sSQL  .= "AND K.CodBodega = '".$Codigo1."' ";
+    }
+    $sSQL  .= "AND K.TP = C.TP 
+            AND K.Fecha = C.Fecha 
+            AND K.Numero = C.Numero 
+            AND K.Item = C.Item 
+            AND K.Periodo = C.Periodo 
+            GROUP BY K.Codigo_Inv, K.Codigo_Barra
+            HAVING SUM(Entrada-Salida) >=1 
+            ORDER BY K.Codigo_Inv, K.Codigo_Barra ";
+    return grilla_generica_new($sSQL);
+  }
 
-  public function bodegas($query=false){
+
+  function bodegas($query=false){
     $sql="SELECT Bodega, CodBod
           FROM Catalogo_Bodegas 
-          WHERE Item = '".$this->NumEmpresa."'
-          AND Periodo = '".$this->Periodo_Contable."' ";
+          WHERE Item = '".$_SESSION['INGRESO']['item']."'
+          AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
     if($query){
       $sql .= "AND CodBod LIKE '%".$query."%' OR Bodega LIKE '%".$query."%' ";
     }
@@ -124,7 +121,7 @@ class kardexM
     return $this->db->datos($sql);
   }
 
-  public function funcionInicio(){
+  function funcionInicio(){
     $sql = "UPDATE Catalogo_Productos 
             SET X = '.' 
             WHERE Item = '".$_SESSION['INGRESO']['item']."' 
@@ -172,7 +169,102 @@ class kardexM
 
   }
 
-  public function kardex_total($desde,$hasta,$codigo,$CheqBod,$bodega){
+  function ActualizarSerieTK($CodigoP, $ID_Reg){
+    $sSQL = "UPDATE Trans_Kardex " .
+            "SET Serie_No = '" . $CodigoP . "' " .
+            "WHERE ID = " . $ID_Reg . " " .
+            "AND Item = '" . $_SESSION['INGRESO']['item'] . "' " .
+            "AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "'";
+    return $this->db->String_Sql($sSQL);
+  }
+
+  function ActualizarSerieDF($CodigoP, $TC, $Serie, $Factura, $CodigoInv){
+    $sSQL = "UPDATE Detalle_Factura " .
+            "SET Serie_No = '" . $CodigoP . "' " .
+            "WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' " .
+            "AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' " .
+            "AND TC = '" . $TC . "' " .
+            "AND Serie = '" . $Serie . "' " .
+            "AND Factura = " . $Factura . " " .
+            "AND Codigo = '" . $CodigoInv . "'";
+    return $this->db->String_Sql($sSQL);
+  }
+  
+  function CambiaCodigodeBarraTK($CodigoB, $ID_Reg){
+    $sSQL = "UPDATE Trans_Kardex " .
+    "SET Codigo_Barra = '" . $CodigoB . "' " .
+    "WHERE ID = " . $ID_Reg . " " .
+    "AND Item = '" . $_SESSION['INGRESO']['item'] . "' " .
+    "AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' ";
+    
+    return $this->db->String_Sql($sSQL);
+  }
+  function CambiaCodigodeBarraDF($CodigoB, $TC, $Serie, $Factura, $CodigoInv){
+    $sSQL = "UPDATE Detalle_Factura " .
+            "SET Codigo_Barra = '" . $CodigoB . "' " .
+            "WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' " .
+            "AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' " .
+            "AND TC = '" . $TC . "' " .
+            "AND Serie = '" . $Serie . "' " .
+            "AND Factura = " . $Factura . " " .
+            "AND Codigo = '" . $CodigoInv . "' ";
+    return $this->db->String_Sql($sSQL);
+  }
+
+  function ConfirmarCambiar_ArticuloTK($DCArt, $ID_Reg){
+    $sSQL = "UPDATE Trans_Kardex 
+            SET Codigo_Inv = '" . $DCArt . "'
+            WHERE ID = " . $ID_Reg . "
+            AND Item = '" . $_SESSION['INGRESO']['item'] . "'
+            AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "'";
+    
+    return $this->db->String_Sql($sSQL);
+  }
+  function ConfirmarCambiar_ArticuloDF($DCArt, $TC, $Serie, $Factura, $CodigoInv){
+    $sSQL = "UPDATE Detalle_Factura 
+            SET Codigo = '" . $DCArt. "'
+            WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+            AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "'
+            AND TC = '" . $TC . "'
+            AND Serie = '" . $Serie . "'
+            AND Factura = " . $Factura . "
+            AND Codigo = '" . $CodigoInv . "'";
+    return $this->db->String_Sql($sSQL);
+  }
+
+  function Consultar_Tipo_De_Kardex($Codigo, $Codigo1, $FechaIni, $FechaFin, $EsKardexIndividual, $GrupoInv){
+    $sSQL = "SELECT TK.Codigo_Inv, CP.Producto, CP.Unidad, TK.CodBodega AS Bodega, TK.Fecha, TK.TP, TK.Numero, TK.Entrada, TK.Salida, TK.Existencia AS Stock, TK.Costo, " .
+            "TK.Total AS Saldo, TK.Valor_Unitario, TK.Valor_Total, TK.TC, TK.Serie, TK.Factura, TK.Cta_Inv, TK.Contra_Cta, TK.Serie_No, TK.Codigo_Barra, TK.Lote_No, " .
+            "TK.Codigo_Tra AS CI_RUC_CC, TK.Detalle, TK.Centro_Costo AS Beneficiario_Centro_Costo, TK.Orden_No, TK.ID " .
+            "FROM Trans_Kardex AS TK, Catalogo_Productos AS CP " .
+            "WHERE TK.Item = '" . $_SESSION['INGRESO']['item'] . "' " .
+            "AND TK.Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' " .
+            "AND TK.Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "' " .
+            "AND TK.T = '" . G_NORMAL . "' ";
+    if ($EsKardexIndividual=="true" || (is_bool($EsKardexIndividual) && $EsKardexIndividual)) {
+        $sSQL = $sSQL . "AND TK.Codigo_Inv = '" . $Codigo . "' ";
+    } else {
+        if ($GrupoInv != "*") {
+            $sSQL = $sSQL . "AND TK.Codigo_Inv LIKE '" . $GrupoInv . "%' ";
+        }
+    }
+    if (isset($CheqBod) && $CheqBod == 1) {
+        $sSQL = $sSQL . "AND TK.CodBodega = '" . $Codigo1 . "' ";
+    }
+    $sSQL = $sSQL .
+            "AND TK.Item = CP.Item " .
+            //"AND TK.Item = CM.Item " .
+            "AND TK.Periodo = CP.Periodo " .
+            //"AND TK.Periodo = CM.Periodo " .
+            "AND TK.Codigo_Inv = CP.Codigo_Inv " .
+            //"AND TK.CodMarca = CM.CodMar " .
+            "ORDER BY TK.Codigo_Inv, TK.Fecha,TK.Entrada DESC,TK.Salida,TK.TP,TK.Numero,TK.ID ";
+    $_SESSION['DGKardex']['sSQL'] = $sSQL ;
+    return grilla_generica_new($sSQL);
+    //$SQLDec = "TK.Costo " . strval($Dec_Costo) . "| TK.Valor_Unitario " . strval($Dec_Costo) . "|,TK.Valor_Total 2|.";
+  }
+
+  function kardex_total($desde,$hasta,$codigo,$CheqBod,$bodega){
     $sql =  "UPDATE Trans_Kardex 
             SET Centro_Costo = SUBSTRING(C.Cliente,1,50) 
             FROM Trans_Kardex As TK, Clientes As C 
@@ -233,6 +325,54 @@ class kardexM
     $stmt = $this->db->datos($sql);
     $tabla = grilla_generica_new($sql,'Trans_Kardex','myTable','',false,false,false,1,1,1,100);
     return $tabla;
+  }
+
+  function CargaInicial($FechaIni, $FechaFin){
+    $sSQL = "UPDATE Trans_Kardex " .
+        "SET Codigo_Tra = '.' " .
+        "WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' " .
+        "AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' " .
+        "AND Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "'";
+    Ejecutar_SQL_SP($sSQL);
+
+    $sSQL = "UPDATE Trans_Kardex " .
+        "SET Centro_Costo = SUBSTRING(C.Cliente,1,50), Codigo_Tra = C.CI_RUC " .
+        "FROM Trans_Kardex AS TK, Clientes AS C " .
+        "WHERE TK.Item = '" . $_SESSION['INGRESO']['item'] . "' " .
+        "AND TK.Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' " .
+        "AND TK.Codigo_P <> '.' " .
+        "AND TK.Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "' " .
+        "AND TK.Codigo_P = C.Codigo";
+    Ejecutar_SQL_SP($sSQL);
+
+    $sSQL = "UPDATE Trans_Kardex " .
+        "SET Centro_Costo = SUBSTRING(CS.Detalle,1,50), Codigo_Tra = CS.Codigo " .
+        "FROM Trans_Kardex AS TK, Catalogo_SubCtas AS CS " .
+        "WHERE TK.Item = '" . $_SESSION['INGRESO']['item'] . "' " .
+        "AND TK.Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' " .
+        "AND TK.Codigo_P <> '.' " .
+        "AND TK.Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "' " .
+        "AND TK.Item = CS.Item " .
+        "AND TK.Periodo = CS.Periodo " .
+        "AND TK.Codigo_P = CS.Codigo";
+    Ejecutar_SQL_SP($sSQL);
+
+    $sSQL = "UPDATE Trans_Kardex " .
+        "SET Centro_Costo = SUBSTRING(CS.Detalle,1,50), Codigo_Tra = CS.Codigo " .
+        "FROM Trans_Kardex AS TK, Catalogo_SubCtas AS CS " .
+        "WHERE TK.Item = '" . $_SESSION['INGRESO']['item'] . "' " .
+        "AND TK.Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' " .
+        "AND TK.CodigoL <> '.' " .
+        "AND TK.Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "' " .
+        "AND TK.Item = CS.Item " .
+        "AND TK.Periodo = CS.Periodo " .
+        "AND TK.CodigoL = CS.Codigo";
+    Ejecutar_SQL_SP($sSQL);
+
+    $sSQL = "UPDATE Trans_Kardex " .
+        "SET Centro_Costo = '.' " .
+        "WHERE Centro_Costo IS NULL";
+    Ejecutar_SQL_SP($sSQL);
   }
 } 
 ?>

@@ -1,12 +1,3 @@
-<?php
-include "../controlador/inventario/kardexC.php";
-$kardex = new kardexC();
-?>
-
-<style type="text/css">
-
-</style>
-
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
     <div class="ps-3">
@@ -45,38 +36,6 @@ $kardex = new kardexC();
 	</div>  
 </div>	
 <div class="container-fluid">
-<!-- <div class="row mb-3">
-  <div class="col">
-    <a href="./inventario.php?mod=<?php echo @$_GET['mod']; ?>" title="Salir de modulo" class="btn btn-default">
-      <img src="../../img/png/salire.png">
-    </a>
-  </div>  
-  <div class="col">
-    <a href="#" id="Consultar" class="btn btn-default"  onclick="Consultar_Tipo_Kardex(true);" title="Consulta el kardex de un producto">
-      <img src="../../img/png/archivo1.png">
-    </a>
-  </div>
-  <div class="col">
-    <a href="#" id="Kardex_Total"  class="btn btn-default" onclick="Consultar_Tipo_Kardex(false);" title="Presenta el kardex de todos los productos">
-      <img src="../../img/png/archivo2.png">
-    </a>
-  </div>
-  <div class="col">
-    <a href="#" id="Kardex" title="Presenta el Resumen de Codigos de Barra" onclick="consulta_kardex();" class="btn btn-default" >
-      <img src="../../img/png/archivo3.png" >
-    </a>
-  </div>
-  <div class="col">
-    <a href="#" id="Imprimir_Kardex"  class="btn btn-default" title="Descargar PDF Kardex de un Producto" onclick="generarPDF();">
-      <img src="../../img/png/pdf.png">
-    </a>                           
-  </div>
-  <div class="col">
-    <a href="#" id="Excel"  class="btn btn-default" title="Descargar Excel" onclick="generarExcelKardex();">
-      <img src="../../img/png/table_excel.png">
-    </a>                           
-  </div>
-</div> -->
 
   <div class="row div_filtro">
     <form id="FormKardex">
@@ -91,12 +50,6 @@ $kardex = new kardexC();
           <div class="row mb-2">
             <select class="form-select form-select-sm" multiple size="10" id="DCInv" name="DCInv" onchange="productoFinal();">
               <option value=''>** Seleccionar **</option>
-              <?php
-              // $productosI = $kardex->ListarProductos('P','');
-              // foreach ($productosI as $value) {
-              //   echo "<option value='".$value['LabelCodigo']."'>".$value['nombre']."</option>";
-              // }
-              ?>
             </select>
           </div>
         </div>
@@ -114,12 +67,6 @@ $kardex = new kardexC();
               </div>
               <select class="form-select form-select-sm" id="DCBodega" name="DCBodega" style="padding: 0;">
                 <option value=''>** Seleccionar Bodega**</option>
-                <?php
-                // $bodegas = $kardex->bodegas();
-                // foreach ($bodegas as $value) {
-                //   echo "<option value='".$value['LabelCodigo']."'>".$value['nombre']."</option>";
-                // }
-                ?>
               </select>
             </div>
             <!-- <div class="col-sm-3 padding-all" style="max-width:   80px;">
@@ -128,12 +75,6 @@ $kardex = new kardexC();
             <div class="col-sm-9 padding-all" style="max-width: 330px;">
               <select class="form-control input-sm" tabindex="3" id="DCBodega" name="DCBodega">
                 <option value=''>** Seleccionar Bodega**</option>
-                <?php
-                // $bodegas = $kardex->bodegas();
-                // foreach ($bodegas as $value) {
-                //   echo "<option value='".$value['LabelCodigo']."'>".$value['nombre']."</option>";
-                // }
-                ?>
               </select>
             </div> -->
           </div>
@@ -192,63 +133,7 @@ $kardex = new kardexC();
                   <input type="hidden" id="NombreProducto" name="NombreProducto">    
                 </div>
             </div>
-            <!-- <div class="col-sm-2 padding-all" style="max-width:   80px;">
-              <b>Desde:</b>
-            </div>
-            <div class="col-sm-4 padding-all" style="max-width:   125px;">
-              
-            </div>
-            <div class="col-sm-2 padding-all" style="max-width:   80px;">
-              <b>Hasta:</b>
-            </div>
-            <div class="col-sm-4 padding-all" style="max-width:   125px;">
-              <input type="date" name="MBoxFechaF" id="MBoxFechaF" tabindex="7" class="form-control input-sm"  value="<?php echo date("Y-m-d");?>" onblur="validar_year_menor(this.id);" onkeyup="validar_year_mayor(this.id)">
-            </div> -->
           </div>
-          <!-- <div class="row">
-            <div class="col-sm-2 padding-all" style="max-width:   80px;">
-              <b>Código:</b>
-            </div>
-            <div class="col-sm-4 padding-all" style="max-width:   125px;">
-              <input type="text" class="form-control input-sm" tabindex="14" id="LabelCodigo" name="LabelCodigo" readonly>
-            </div>
-            <div class="col-sm-2 padding-all" style="max-width:   80px;">
-              <b>Mínimo:</b>
-            </div>
-            <div class="col-sm-4 padding-all" style="max-width:   125px;">
-              <input type="text" class="form-control input-sm" tabindex="11" id="LabelMinimo" name="LabelMinimo" readonly>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-2 padding-all" style="max-width:   80px;">
-              <b>Unidad:</b>
-            </div>
-            <div class="col-sm-4 padding-all" style="max-width:   125px;">
-              <input type="text" class="form-control input-sm" tabindex="13" id="LabelUnidad" name="LabelUnidad" readonly>
-            </div>
-            <div class="col-sm-2 padding-all" style="max-width:   80px;">
-              <b>Existe:</b>
-            </div>
-            <div class="col-sm-4 padding-all" style="max-width:   125px;">
-              <input type="text" class="form-control input-sm" tabindex="10" id="LabelExitencia" name="LabelExitencia" readonly style="color:red">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-2 padding-all" style="max-width:   80px;">
-              <b>Bodega:</b>
-            </div>
-            <div class="col-sm-4 padding-all" style="max-width:   125px;">
-              <input type="text" class="form-control input-sm" tabindex="12" id="LabelBodega" name="LabelBodega" value="0" readonly>
-            </div>
-            <div class="col-sm-2 padding-all" style="max-width:   80px;">
-              <b>Máximo:</b>
-            </div>
-            <div class="col-sm-4 padding-all" style="max-width:   125px;">
-              <input type="text" class="form-control input-sm" tabindex="9" id="LabelMaximo" name="LabelMaximo" readonly>
-              <input type="hidden" id="heightDisponible" name="heightDisponible" value="100">    
-              <input type="hidden" id="NombreProducto" name="NombreProducto">    
-            </div>
-          </div> -->
         </div>
       </div>
     </form>
@@ -259,6 +144,7 @@ $kardex = new kardexC();
       <table class="table table-hover table-sm table-striped" id="tbl_DGKardex">
         <thead>
           <tr>
+            <th></th>
             <th>Codigo_Inv</th>
             <th>Producto</th>
             <th>Unidad</th>
@@ -282,7 +168,7 @@ $kardex = new kardexC();
             <th>Codigo_Barra</th>
             <th>Lote_No</th>
             <th>CI_RUC_CC</th>
-            <th>Marca_Tipo_Proceso</th>
+            <!-- <th>Marca_Tipo_Proceso</th> -->
             <th>Detalle</th>
             <th>Beneficiario_Centro_Costo</th>
             <th>Orden_No</th>
@@ -333,7 +219,7 @@ $kardex = new kardexC();
           </div>
           <div class="row">
             <div class="col-sm-12">
-              <select class="form-control input-sm" tabindex="26" id="DCArt" name="DCArt">
+              <select class="form-select form-select-sm" tabindex="26" id="DCArt" name="DCArt">
                 <option value=''>** Seleccionar Nuevo**</option>
               </select>
             </div>
@@ -353,6 +239,6 @@ $kardex = new kardexC();
   </div>
 </div>
 
-<script type="text/javascript" src="../../dist/js/kardex.js">
+<script type="text/javascript" src="../../dist/js/inventario/kardex.js">
 
 </script>

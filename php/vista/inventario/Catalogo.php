@@ -102,6 +102,6 @@
 </div>
 <br><br>
 
-<script type="text/javascript" src="../../dist/js/Catalogo.js">
+<script type="text/javascript" src="../../dist/js/inventario/Catalogo.js">
 	
 </script>

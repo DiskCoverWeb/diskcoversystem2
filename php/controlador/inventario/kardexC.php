@@ -70,7 +70,11 @@ if(isset($_GET['CambiaCodigodeBarra']))
 }
 if(isset($_GET['ListarArticulos']))
 {
-  echo json_encode($controlador->ListarArticulos(true));
+  $query = '';
+  if (isset($_GET['q'])) {
+    $query = $_GET['q'];
+  }
+  echo json_encode($controlador->ListarArticulos(true, $query));
 }
 if(isset($_GET['ConfirmarCambiar_Articulo']))
 {
@@ -81,25 +85,14 @@ class kardexC
 {
 	private $modelo;
 	private $pdf;
-  public $NumEmpresa;
-  public $Periodo_Contable;
 	function __construct()
 	{
 		$this->modelo = new kardexM();
 		$this->pdf = new cabecera_pdf();
-    $this->NumEmpresa = $_SESSION['INGRESO']['item'];
-    $this->Periodo_Contable = $_SESSION['INGRESO']['periodo'];
 	}
 
-	public function ListarProductos($tipo,$codigoProducto,$query=false){
+	function ListarProductos($tipo,$codigoProducto,$query=false){
 		$datos = $this->modelo->ListarProductos($tipo,$codigoProducto,$query);
-    // $productos = [];
-		// foreach ($datos as $key => $value) {
-		// 	$productos[] = array('LabelCodigo'=>$value['Codigo_Inv']."/".$value['Minimo']."/".$value['Maximo']."/".$value['Unidad']."/".$value['Producto'],'nombre'=>mb_convert_encoding($value['NomProd'], 'UTF-8'));
-		// }
-		// if(count($productos)<=0){
-		// 	$productos[0] = array('LabelCodigo'=>'','nombre'=>'No existen datos.');
-		// }
 
     if($tipo == 'I'){
       $lis = array();
@@ -121,17 +114,9 @@ class kardexC
     }
 	}
 
-	public function bodegas($query=false){
+	function bodegas($query=false){
 		$datos = $this->modelo->bodegas($query);
-		// $bodegas = [];
-		// foreach ($datos as $key => $value) {
-		// 	$bodegas[] = array('LabelCodigo'=>$value['CodBod'],'nombre'=>mb_convert_encoding($value['CodBod'], 'UTF-8')." - ".mb_convert_encoding($value['Bodega'], 'UTF-8'));
-		// }
-		// if(count($bodegas)<=0){
-		// 	$bodegas[0] = array('LabelCodigo'=>'','nombre'=>'No existen datos.');
-		// }
-		// return $bodegas;
-
+		
     $lis = array();
     foreach ($datos as $key => $value) {
       //$sep = explode(' ', $value['NomProd']);
@@ -141,7 +126,7 @@ class kardexC
     return $lis;
 	}
 
-	public function Consultar_Tipo_De_Kardex($EsKardexIndividual,$parametros){
+	function Consultar_Tipo_De_Kardex($EsKardexIndividual,$parametros){
 		extract($parametros);
 		$error = false;
 		$FechaValida = FechaValida($MBoxFechaI);
@@ -155,7 +140,7 @@ class kardexC
     $FechaIni = BuscarFecha($MBoxFechaI);
     $FechaFin = BuscarFecha($MBoxFechaF);
 
-	$GrupoInv = "";
+	  $GrupoInv = "";
     $Debe = 0;
     $Haber = 0;
     if(@$DCTInv!=""){
@@ -172,35 +157,10 @@ class kardexC
         $GrupoInv = "*";
     }
   
-    $sSQL = "SELECT TK.Codigo_Inv, CP.Producto, CP.Unidad, TK.CodBodega AS Bodega, TK.Fecha, TK.TP, TK.Numero, TK.Entrada, TK.Salida, TK.Existencia AS Stock, TK.Costo, " .
-            "TK.Total AS Saldo, TK.Valor_Unitario, TK.Valor_Total, TK.TC, TK.Serie, TK.Factura, TK.Cta_Inv, TK.Contra_Cta, TK.Serie_No, TK.Codigo_Barra, TK.Lote_No, " .
-            "TK.Codigo_Tra AS CI_RUC_CC, CM.Marca AS 'Marca_Tipo_Proceso', TK.Detalle, TK.Centro_Costo AS Beneficiario_Centro_Costo, TK.Orden_No, TK.ID " .
-            "FROM Trans_Kardex AS TK, Catalogo_Productos AS CP, Catalogo_Marcas AS CM " .
-            "WHERE TK.Item = '" . $this->NumEmpresa . "' " .
-            "AND TK.Periodo = '" . $this->Periodo_Contable . "' " .
-            "AND TK.Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "' " .
-            "AND TK.T = '" . G_NORMAL . "' ";
-    if ($EsKardexIndividual=="true" || (is_bool($EsKardexIndividual) && $EsKardexIndividual)) {
-        $sSQL = $sSQL . "AND TK.Codigo_Inv = '" . $Codigo . "' ";
-    } else {
-        if ($GrupoInv != "*") {
-            $sSQL = $sSQL . "AND TK.Codigo_Inv LIKE '" . $GrupoInv . "%' ";
-        }
-    }
-    if (isset($CheqBod) && $CheqBod == 1) {
-        $sSQL = $sSQL . "AND TK.CodBodega = '" . $Codigo1 . "' ";
-    }
-    $sSQL = $sSQL .
-            "AND TK.Item = CP.Item " .
-            "AND TK.Item = CM.Item " .
-            "AND TK.Periodo = CP.Periodo " .
-            "AND TK.Periodo = CM.Periodo " .
-            "AND TK.Codigo_Inv = CP.Codigo_Inv " .
-            "AND TK.CodMarca = CM.CodMar " .
-            "ORDER BY TK.Codigo_Inv, TK.Fecha,TK.Entrada DESC,TK.Salida,TK.TP,TK.Numero,TK.ID ";
-    //$SQLDec = "TK.Costo " . strval($Dec_Costo) . "| TK.Valor_Unitario " . strval($Dec_Costo) . "|,TK.Valor_Total 2|.";
-    $AdoKardex = $this->modelo->SelectDB($sSQL);
     
+    $datos = $this->modelo->Consultar_Tipo_De_Kardex($Codigo, $Codigo1, $FechaIni, $FechaFin, $EsKardexIndividual, $GrupoInv);
+    $AdoKardex = $datos['data'];
+
     if ($EsKardexIndividual) {
       if (count($AdoKardex) > 0) {
         foreach ($AdoKardex as $key => $Fields) {
@@ -217,17 +177,16 @@ class kardexC
     $botones[2] = array('boton'=>'Cambia Codigo de Barra', 'icono'=>'<i class="fa fa-barcode"></i>', 'tipo'=>'info mr-1', 'id'=>'Producto,ID,TC,Serie,Factura,Codigo_Inv' );
     $botones[3] = array('boton'=>'Cambia la Serie', 'icono'=>'<i class="fa fa-retweet"></i>', 'tipo'=>'success', 'id'=>'Producto,ID,TC,Serie,Factura,Codigo_Inv' );
     $med_b = "110";
-    $_SESSION['DGKardex']['sSQL'] = $sSQL ;
 
     if($heightDisponible>135){
         $heightDisponible-=35;
     }
     //print_r($sSQL);die();
-    $DGKardex = grilla_generica_new($sSQL);
+    $DGKardex = $datos;
 		return array('data' => $DGKardex['data'], 'LabelExistencia'=> $LabelExitencia);
 	}
 
-	public function Consultar_Kardex($parametros){
+	function Consultar_Kardex($parametros){
 		extract($parametros);
         $error = false;
     		$FechaValida = FechaValida($MBoxFechaI);
@@ -248,31 +207,16 @@ class kardexC
             $Codigo = ".";
         }
 
-		$sSQL  =  "SELECT K.Codigo_Inv, K.Codigo_Barra, SUM(Entrada) As Entradas, SUM(Salida) As Salidas, SUM(Entrada-Salida) As Stock_Kardex 
-            FROM Trans_Kardex As K, Comprobantes As C 
-            WHERE K.Fecha BETWEEN '".$FechaIni."' AND '".$FechaFin."' 
-            AND K.Codigo_Inv = '".$Codigo."'
-            AND K.T = '".G_NORMAL."' 
-            AND K.Item = '".$_SESSION['INGRESO']['item']."' 
-            AND K.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
-        if (isset($CheqBod) && $CheqBod=='1') {
-          $sSQL  .= "AND K.CodBodega = '".$Codigo1."' ";
-        }
-        $sSQL  .= "AND K.TP = C.TP 
-                AND K.Fecha = C.Fecha 
-                AND K.Numero = C.Numero 
-                AND K.Item = C.Item 
-                AND K.Periodo = C.Periodo 
-                GROUP BY K.Codigo_Inv, K.Codigo_Barra
-                HAVING SUM(Entrada-Salida) >=1 
-                ORDER BY K.Codigo_Inv, K.Codigo_Barra ";
+        $DGKardex = $this->modelo->Consultar_Kardex($Codigo, $Codigo1, $FechaIni,$FechaFin);
+        
+		
         //$_SESSION['DGKardex']['sSQL'] = $sSQL ;
         if($heightDisponible>135){
             $heightDisponible-=35;
         }
-        $DGKardex = grilla_generica_new($sSQL);
+        //$DGKardex = grilla_generica_new($sSQL);
 
-        $AdoKardex = $this->modelo->SelectDB($sSQL);
+        $AdoKardex = $DGKardex['data'];
         if (count($AdoKardex) > 0) {
             foreach ($AdoKardex as $key => $Fields) {
               $Debe += $Fields["Stock_Kardex"];
@@ -284,30 +228,17 @@ class kardexC
 		//return compact('error','DGKardex','LabelExitencia');
 	}
 
-	public function funcionInicio(){
+	function funcionInicio(){
 		$this->modelo->funcionInicio();
 	}
 
-    public function ActualizarSerie($parametros){
+    function ActualizarSerie($parametros){
         extract($parametros);
         if (strlen($CodigoP) > 1) {
-          $sSQL = "UPDATE Trans_Kardex " .
-            "SET Serie_No = '" . $CodigoP . "' " .
-            "WHERE ID = " . $ID_Reg . " " .
-            "AND Item = '" . $this->NumEmpresa . "' " .
-            "AND Periodo = '" . $this->Periodo_Contable . "'";
-            $rps=$this->modelo->ExecuteDB($sSQL);
+          $rps = $this->modelo->ActualizarSerieTK($CodigoP, $ID_Reg);
 
           if (strlen($TC) == 2 && strlen($Serie) == 6 && $Factura > 0) {
-            $sSQL = "UPDATE Detalle_Factura " .
-              "SET Serie_No = '" . $CodigoP . "' " .
-              "WHERE Item = '" . $this->NumEmpresa . "' " .
-              "AND Periodo = '" . $this->Periodo_Contable . "' " .
-              "AND TC = '" . $TC . "' " .
-              "AND Serie = '" . $Serie . "' " .
-              "AND Factura = " . $Factura . " " .
-              "AND Codigo = '" . $CodigoInv . "'";
-            $rps=$this->modelo->ExecuteDB($sSQL);
+            $rps = $this->modelo->ActualizarSerieDF($CodigoP, $TC, $Serie, $Factura, $CodigoInv);
             if($rps!=1){
                 return ['rps'=>false, 'mensaje'=>'No fue posible actualizar las facturas.'];
             }
@@ -319,27 +250,15 @@ class kardexC
             }
         }
     }
-    public function CambiaCodigodeBarra($parametros)
+    function CambiaCodigodeBarra($parametros)
     {
         extract($parametros);
         if (strlen($CodigoB) > 1) {
-          $sSQL = "UPDATE Trans_Kardex " .
-            "SET Codigo_Barra = '" . $CodigoB . "' " .
-            "WHERE ID = " . $ID_Reg . " " .
-            "AND Item = '" . $this->NumEmpresa . "' " .
-            "AND Periodo = '" . $this->Periodo_Contable . "' ";
-            $rps=$this->modelo->ExecuteDB($sSQL);
+            $rps = $this->modelo->CambiaCodigodeBarraTK($CodigoB, $ID_Reg);
 
           if (strlen($TC) == 2 && strlen($Serie) == 6 && $Factura > 0) {
-            $sSQL = "UPDATE Detalle_Factura " .
-            "SET Codigo_Barra = '" . $CodigoB . "' " .
-            "WHERE Item = '" . $this->NumEmpresa . "' " .
-            "AND Periodo = '" . $this->Periodo_Contable . "' " .
-            "AND TC = '" . $TC . "' " .
-            "AND Serie = '" . $Serie . "' " .
-            "AND Factura = " . $Factura . " " .
-            "AND Codigo = '" . $CodigoInv . "' ";
-            $rps=$this->modelo->ExecuteDB($sSQL);
+            
+            $rps = $this->modelo->CambiaCodigodeBarraDF($CodigoP, $TC, $Serie, $Factura, $CodigoInv);
             if($rps!=1){
                 return ['rps'=>false, 'mensaje'=>'No fue posible actualizar las facturas.'];
             }
@@ -352,34 +271,31 @@ class kardexC
         }
     }
 
-    public function ListarArticulos($SoActivos)
+    function ListarArticulos($SoActivos, $query=false)
     {
-        $DCArt = $this->modelo->Listar_Articulos($SoActivos, true);
+        $datos = $this->modelo->Listar_Articulos($SoActivos, true, $query);
         $rps = true;
-        return compact('rps','DCArt');
+
+        $lis = array();
+        foreach ($datos as $key => $value) {
+          //$sep = explode(' ', $value['NomProd']);
+          $lis[] = array('id' => $value['codigo'], 'text' => $value['nombre'], 'datos' => $value);
+        }
+        // print_r($lis);die();
+        return $lis;
+        //return compact('rps','DCArt');
     }
 
-    public function ConfirmarCambiar_Articulo($parametros)
+    function ConfirmarCambiar_Articulo($parametros)
     {
         extract($parametros);
         if (strlen($DCArt) > 1) {
-          $sSQL = "UPDATE Trans_Kardex 
-                SET Codigo_Inv = '" . $DCArt . "'
-                WHERE ID = " . $ID_Reg . "
-                AND Item = '" . $this->NumEmpresa . "'
-                AND Periodo = '" . $this->Periodo_Contable . "'";
-            $rps=$this->modelo->ExecuteDB($sSQL);
+          
+            $rps = $this->modelo->ConfirmarCambiar_ArticuloTK($DCArt, $ID_Reg);
 
           if (strlen($TC) == 2 && strlen($Serie) == 6 && $Factura > 0) {
-            $sSQL = "UPDATE Detalle_Factura 
-            SET Codigo = '" . $DCArt. "'
-            WHERE Item = '" . $this->NumEmpresa . "'
-            AND Periodo = '" . $this->Periodo_Contable . "'
-            AND TC = '" . $TC . "'
-            AND Serie = '" . $Serie . "'
-            AND Factura = " . $Factura . "
-            AND Codigo = '" . $CodigoInv . "'";
-            $rps=$this->modelo->ExecuteDB($sSQL);
+            
+            $rps=$this->modelo->ConfirmarCambiar_ArticuloDF($DCArt, $TC, $Serie, $Factura, $CodigoInv);
             if($rps!=1){
                 return ['rps'=>false, 'mensaje'=>'No fue posible actualizar las facturas.'];
             }
@@ -391,11 +307,16 @@ class kardexC
             }
         }
     }
-    public function generarExcelKardex($parametros){
+    function generarExcelKardex($parametros){
         if(isset($_SESSION['DGKardex']['sSQL'])){
             extract($parametros);
             $titulo = 'Kardex del '.BuscarFecha($MBoxFechaI).' al '. BuscarFecha($MBoxFechaF);
             $sSQL   = $_SESSION['DGKardex']['sSQL'];
+            $result = $this->modelo->SelectDB($sSQL);
+            //print_r($replacedQuery);die();
+            if(count($result) <= 0){
+              die("Regrese a la pantalla anterior y cargue la informacion antes de imprimir el pdf");
+            }
             $medidas = array(12,30,15,12,18,9,12,12,12,12,12,15,15,15,10,20,20,15,15,20,25,15,15,20,25,25,15,15,9);
             return exportar_excel_generico_SQl($titulo,$sSQL, $medidas, fecha_sin_hora:true);
         }else{
@@ -403,7 +324,7 @@ class kardexC
         }
     }
 
-	public function generarPDF($parametros){
+	function generarPDF($parametros){
         if(!isset($_SESSION['DGKardex']['sSQL'])){
             die("Primero debe cargar la informacion");
         }
@@ -420,6 +341,10 @@ class kardexC
         $newSection = " TK.CodBodega AS Bod, TK.Fecha, TK.TP, TK.Numero, TK.Detalle, TK.Entrada, TK.Salida, TK.Valor_Unitario, TK.Valor_Total, TK.Existencia AS Cantidad, TK.Costo as Costo_Prom, TK.Total AS Saldo_Total ";
         $replacedQuery = str_replace($sectionToReplace, $newSection, $query);
         $result = $this->modelo->SelectDB($replacedQuery);
+        //print_r($replacedQuery);die();
+        if(count($result) <= 0){
+          die("Regrese a la pantalla anterior y cargue la informacion antes de imprimir el pdf");
+        }
         $campos = array();
         foreach ($result[0] as $key => $value) {
             array_push($campos,$key);
@@ -494,7 +419,7 @@ class kardexC
         $pdf->cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$MBoxFechaI,$MBoxFechaF,$sizetable,$mostrar, orientacion: 'L', mostrar_cero:true);
 	}
 
-    public function CargaInicial($parametros)
+    function CargaInicial($parametros)
     {
         extract($parametros);
         $FechaIni = BuscarFecha($MBoxFechaI);
@@ -504,52 +429,7 @@ class kardexC
             $Codigo1 = ".";
         }
 
-        $sSQL = "UPDATE Trans_Kardex " .
-            "SET Codigo_Tra = '.' " .
-            "WHERE Item = '" . $this->NumEmpresa . "' " .
-            "AND Periodo = '" . $this->Periodo_Contable . "' " .
-            "AND Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "'";
-        Ejecutar_SQL_SP($sSQL);
-
-        $sSQL = "UPDATE Trans_Kardex " .
-            "SET Centro_Costo = SUBSTRING(C.Cliente,1,50), Codigo_Tra = C.CI_RUC " .
-            "FROM Trans_Kardex AS TK, Clientes AS C " .
-            "WHERE TK.Item = '" . $this->NumEmpresa . "' " .
-            "AND TK.Periodo = '" . $this->Periodo_Contable . "' " .
-            "AND TK.Codigo_P <> '.' " .
-            "AND TK.Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "' " .
-            "AND TK.Codigo_P = C.Codigo";
-        Ejecutar_SQL_SP($sSQL);
-
-        $sSQL = "UPDATE Trans_Kardex " .
-            "SET Centro_Costo = SUBSTRING(CS.Detalle,1,50), Codigo_Tra = CS.Codigo " .
-            "FROM Trans_Kardex AS TK, Catalogo_SubCtas AS CS " .
-            "WHERE TK.Item = '" . $this->NumEmpresa . "' " .
-            "AND TK.Periodo = '" . $this->Periodo_Contable . "' " .
-            "AND TK.Codigo_P <> '.' " .
-            "AND TK.Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "' " .
-            "AND TK.Item = CS.Item " .
-            "AND TK.Periodo = CS.Periodo " .
-            "AND TK.Codigo_P = CS.Codigo";
-        Ejecutar_SQL_SP($sSQL);
-
-        $sSQL = "UPDATE Trans_Kardex " .
-            "SET Centro_Costo = SUBSTRING(CS.Detalle,1,50), Codigo_Tra = CS.Codigo " .
-            "FROM Trans_Kardex AS TK, Catalogo_SubCtas AS CS " .
-            "WHERE TK.Item = '" . $this->NumEmpresa . "' " .
-            "AND TK.Periodo = '" . $this->Periodo_Contable . "' " .
-            "AND TK.CodigoL <> '.' " .
-            "AND TK.Fecha BETWEEN '" . $FechaIni . "' AND '" . $FechaFin . "' " .
-            "AND TK.Item = CS.Item " .
-            "AND TK.Periodo = CS.Periodo " .
-            "AND TK.CodigoL = CS.Codigo";
-        Ejecutar_SQL_SP($sSQL);
-
-        $sSQL = "UPDATE Trans_Kardex " .
-            "SET Centro_Costo = '.' " .
-            "WHERE Centro_Costo IS NULL";
-        Ejecutar_SQL_SP($sSQL);
-
+        $this->modelo->CargaInicial($FechaIni, $FechaFin);
     }
 
 }
