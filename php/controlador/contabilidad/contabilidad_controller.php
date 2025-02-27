@@ -1074,12 +1074,12 @@ function listar_comprobantes($parametros)
         //print_r($tr);die();
 
 		foreach ($tr['datos'] as $key => $value) {
-             $SumaDebe = $SumaDebe + round($value["Debe"],2);
-             $SumaHaber =$SumaHaber + round($value["Haber"],2);	
-              if(is_numeric($value["Cheq_Dep"]) &&  $value["Haber"] > 0){
-                $Cheque = $value["Cheq_Dep"];
-                $Cta_Banco = $value["Cta"];
-             }		
+            $SumaDebe = $SumaDebe + round($value["Debe"],2);
+            $SumaHaber =$SumaHaber + round($value["Haber"],2);	
+            if(is_numeric($value["Cheq_Dep"]) &&  $value["Haber"] > 0){
+				$Cheque = $value["Cheq_Dep"];
+				$Cta_Banco = $value["Cta"];
+            }		
 		}
 	    // 'Llenar Inventario
 	    $Total = 0;

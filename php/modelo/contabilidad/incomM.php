@@ -295,13 +295,13 @@ class incomM
        AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
        AND T_No = ".$_SESSION['INGRESO']['modulo_']." ";
 
-        $botones[0] = array('boton'=>'eliminar','icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'Codigo,asientoSC' );
+        $botones[0] = array('boton'=>'eliminar','icono'=>'<i class="bx bx-trash bx-xs p-0 m-0"></i>', 'tipo'=>'danger', 'id'=>'Codigo,asientoSC,ID' );
 
         $tbl = grilla_generica_new($sql);
         if(!empty($tbl['data'])){ 
           foreach ($tbl['data'] as &$fila){ 
             $ids = explode(',', $botones[0]['id']);
-            $parametros = array_map(fn($id, $index) => $index === 0 ? ($fila[$id] ?? ''): $id,
+            $parametros = array_map(fn($id) => $fila[$id] ??  $id,
             $ids, 
             array_keys($ids));
             $fila[] = '<button type="button" class="btn btn-sm py-0 px-1 btn-'.$botones[0]['tipo'].'"
@@ -744,8 +744,32 @@ class incomM
          //print_r($sql);die();
           $result = $this->conn->String_Sql($sql);
 	     return $result;
-
     }
+
+    function eliminar_registros_conjuntos($tabla, $codigo){
+      $sql = "DELETE
+              FROM ".$tabla."
+              WHERE ".$codigo."
+              AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
+              AND Item = '".$_SESSION['INGRESO']['item']."'
+              AND T_No =".intval($_SESSION['INGRESO']['modulo_']).";";
+      //echo $sql; die();
+      $result = $this->conn->String_Sql($sql);
+      return $result;
+    }
+
+    function check_tipo ($tabla, $codigo){
+      $cid = $this->conn;
+      $sql = "SELECT TC, DEBE, HABER
+              FROM ".$tabla."
+              WHERE Item ='".$_SESSION['INGRESO']['item']."'
+              AND ".$codigo."
+              AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
+              AND T_No = ".intval($_SESSION['INGRESO']['modulo_']).";";
+      $result = $this->conn->datos($sql);
+      return $result;
+    }
+
     function retencion_compras($numero,$tipoCom)
     {
     	$cid = $this->conn;

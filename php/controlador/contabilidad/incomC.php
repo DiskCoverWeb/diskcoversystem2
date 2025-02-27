@@ -1487,52 +1487,80 @@ class incomC
      {
         $Codigo = '';
         $tabla = '';
-       switch ($parametros['tabla']) {
-           case 'asiento':
-             $Codigo = "CODIGO = '".$parametros['Codigo']."' ";
-            $tabla = 'Asiento';
-               break;
+        $result = '';
+        switch ($parametros['tabla']) {
+            case 'asiento':
+                $Codigo = "CODIGO = '".$parametros['Codigo']."' ";
+                $tabla = 'Asiento';
+                break;
             case 'asientoSC':
-             $Codigo = "Codigo = '".$parametros['Codigo']."' ";
-             $tabla = 'Asiento_SC';
-               # code...
-               break;
+                $Codigo = "Codigo = '".$parametros['Codigo']."' ";
+                $tabla = 'Asiento_SC';
+                # code...
+                break;
             case 'asientoB':
-             $Codigo = "CTA_BANCO = '".$parametros['Codigo']."' ";
-             $tabla = 'Asiento_B';
-               # code...
-               break;
+                $Codigo = "CTA_BANCO = '".$parametros['Codigo']."' ";
+                $tabla = 'Asiento_B';
+                # code...
+                break;
             case 'inpor':
-             $Codigo = "Cod_Sustento = '".$parametros['Codigo']."' ";
-             $tabla = 'Asiento_Importaciones';
-               # code...
-               break;
+                $Codigo = "Cod_Sustento = '".$parametros['Codigo']."' ";
+                $tabla = 'Asiento_Importaciones';
+                # code...
+                break;
             case 'expo':
-             $Codigo = "Codigo = '".$parametros['Codigo']."' ";
-            $tabla = 'Asiento_Exportaciones';
-               # code...
-               break;
+                $Codigo = "Codigo = '".$parametros['Codigo']."' ";
+                $tabla = 'Asiento_Exportaciones';
+                # code...
+                break;
             case 'ventas':
-             $Codigo = "IdProv = '".$parametros['Codigo']."' ";
-            $tabla = 'Asiento_Ventas';
-               # code...
-               break;
+                $Codigo = "IdProv = '".$parametros['Codigo']."' ";
+                $tabla = 'Asiento_Ventas';
+                # code...
+                break;
             case 'compras':
-             $Codigo = "IdProv = '".$parametros['Codigo']."' ";
-            $tabla = 'Asiento_Compras';
-               # code...
-               break;
+                $Codigo = "IdProv = '".$parametros['Codigo']."' ";
+                $tabla = 'Asiento_Compras';
+                # code...
+                break;
             case 'air':             
-             $Codigo = "CodRet = '".$parametros['Codigo']."' ";
-             $tabla = 'Asiento_Air';
-               # code...
-               break;
-       }
-
-       if(isset($parametros['ID'])){
-       	$Codigo .= ' AND ID='.$parametros['ID'].' ';
-       }
-       return $this->modelo->eliminar_registros($tabla,$Codigo);
+                $Codigo = "CodRet = '".$parametros['Codigo']."' ";
+                $tabla = 'Asiento_Air';
+                # code...
+                break;
+        }
+        if(isset($parametros['ID'])){
+            $Codigo .= ' AND ID='.$parametros['ID'].' ';
+        }
+       //echo print_r($result); die();
+        if ($parametros['tabla'] == 'asiento') {
+            $result = $this->modelo->check_tipo($tabla, $Codigo);
+            if ($result[0]['TC'] == 'CC'){
+                $CodigoSC = "Cta='".$parametros['Codigo']."'";
+                $tablaSC = 'Asiento_SC';
+                if (floatval($result[0]['DEBE'])!=0){
+                    $CodigoSC .= " AND DH='1'";
+                }
+                else { $CodigoSC .= " AND DH='2'"; }
+                $result = $this->modelo->eliminar_registros_conjuntos($tablaSC, $CodigoSC);
+                if ($result == 1) { return $this->modelo->eliminar_registros($tabla,$Codigo); }
+            } else if ($result[0]['TC'] == 'C'){
+                $CodigoSC = "Cta='".$parametros['Codigo']."'";
+                $tablaSC = 'Asiento_SC';
+                if (floatval($result[0]['DEBE'])!=0){
+                    $CodigoSC .= " AND DH='1'";
+                }
+                else { $CodigoSC .= " AND DH='2'"; }
+                $result = $this->modelo->eliminar_registros_conjuntos($tablaSC, $CodigoSC);
+                if ($result == 1) { return $this->modelo->eliminar_registros($tabla,$Codigo); }
+            } else {
+                return $this->modelo->eliminar_registros($tabla,$Codigo);
+            }
+            
+        }
+        else {
+            return $this->modelo->eliminar_registros($tabla,$Codigo);
+        }
      }
 
     
