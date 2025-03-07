@@ -62,14 +62,19 @@ $("#btnGuardar").click(function () {
         tipoProducto = $("input[name='cbxProdc']:checked").val();
     }*/
 
-    var nivel = parseInt($('#selectNivel').val());//nivel
-    var tipoDoc = nivel == 0 ? '--' : '.';
+    //var nivel = parseInt($('#selectNivel').val());//nivel
+    
+    
+    var codigoP = $("#codigoP").val();
+    
+    let nivel = codigoP.substring(0,codigoP.lastIndexOf('.'));
+    nivel = nivel == '' ? '0' : nivel;
+    
+    var tipoDoc = nivel == '0' ? '--' : '.';
     if($('#habilitarDC').prop('checked') && tipoDoc != '--'){
         tipoDoc = $('#selectTipoDoc').val();
     }
 
-
-    var codigoP = $("#codigoP").val();
     var txtConcepto = $("#txtConcepto").val();
     //var tipoProducto = $("input[name='cbxProdc']:checked").val() ? $("input[name='cbxProdc']:checked").val() : '--';
     var tp = $('#txtTP').val();//tipo de proceso
@@ -735,7 +740,10 @@ function clickProducto(dato, e=null) {
     $('#txtDebe').val(dato.Cta_Debe);
     $('#txtHaber').val(dato.Cta_Haber);
     $('#txtConcepto').val(dato.Proceso);
-    $(`#selectNivel`).val(dato.Nivel);
+    /*let codigo = $('#codigoP').val();
+    let nivel = codigo.substring(0,codigo.lastIndexOf('.'));
+    nivel = nivel == '' ? 0 : nivel;*/
+    //$(`#selectNivel`).val(dato.Nivel);
     /*if(dato.Nivel == 0){
         $('input[name="cbxProdc"]').prop('disabled', true);
         $('input[name="cbxReqFA"]').prop('disabled', true);
@@ -750,7 +758,10 @@ $("#btnEliminar").on('click', function () {
     marcarCampos('normal');
     if (idSeleccionada != null) {
         var codigoP = $('#codigoP').val();
-        var nivel = $('#selectNivel').val();//nivel
+        let nivel = codigoP.substring(0,codigoP.lastIndexOf('.'));
+        nivel = nivel == '' ? '0' : nivel;
+
+        
         var tp = $('#txtTP').val();//tipo de proceso
 
         /*if(tp == '' || tp.split(',') > 1){
@@ -963,16 +974,18 @@ function tipoProceso2() {
         },
         success: function (data) {
             arr_procesos = data.slice();
-            let html = crearArbolHTML(data);
+            let html = crearArbol(data);
+            //console.log(html);
             $('#tree1').html(html);
+            //return;
 
-            let listaNiveles = arr_procesos.filter(p => p['Nivel'] == 0);
+            /*let listaNiveles = arr_procesos.filter(p => p['Nivel'] == 0);
             var select = $('#selectNivel');
             select.empty();
             listaNiveles.forEach(function (dato) {
                 let nivel = dato.TP == '00' ? 0 : dato.TP;
                 select.append('<option value="' + nivel + '">' + dato.TP + ' ' + dato.Proceso + '</option>');
-            });
+            });*/
         },
         error: function (error) {
             console.error('Error en la solicitud AJAX:', error);
@@ -982,8 +995,52 @@ function tipoProceso2() {
 
 }
 
-function crearArbolHTML(datos){
+function crearArbol(datos){
+    let root = {};
+
+    datos.forEach(code => {
+        let levels = code['Cmds'].split('.'); // Divide el código en niveles
+        let current = root;
+
+        levels.forEach((level, index) => {
+            if (!current[level]) {
+                current[level] = code // Creamos el nodo con un objeto 'children'
+                current[level]['children'] = {}; // Creamos el nodo con un objeto 'children'
+            }
+            current = current[level].children;
+        });
+    });
+
+    let html = getHTMLArbol(root);
+    console.log(html);
+
+    /*let root = {};
+    
     let html = "";
+
+    datos.forEach(code => {
+        let levels = code['Cmds'].split('.'); // Divide el código en niveles
+        let current = root;
+
+        levels.forEach((level, index) => {
+            if (!current[level]) {
+                current[level] = code // Creamos el nodo con un objeto 'children'
+                html += `<li>
+                        <label id="label_${code['Cmds'].replaceAll('.', '_')}_${code['ID']}" for="${code['Cmds'].replaceAll('.', '_')}">
+                            ${code['Proceso']}
+                        </label>
+                        <input type="checkbox" id="${code['Cmds'].replaceAll('.', '_')}" onclick="detalleProceso(${code['ID']}, '${code['Cmds']}')">
+                        <ol id="hijos_${code['Cmds'].replaceAll('.', '_')}">`;
+                current[level]['children'] = {}; // Creamos el nodo con un objeto 'children'
+            }
+            current = current[level].children;
+            html += `</ol></li>`;
+        });
+    });*/
+
+    return html;
+
+    //let html = "";
 
     let raiz = datos.shift();
 
@@ -1022,6 +1079,37 @@ function crearArbolHTML(datos){
     return html;
     //arbol.push(raiz);
     //console.log(arbol);
+}
+
+function getHTMLArbol(hijos){
+    let html = "";
+    let elementos = Object.values(hijos);
+    //console.log(elementos);
+
+    if(elementos.length>0){
+        for(let elem of elementos){
+            if(Object.values(elem.children).length>0){
+                html += `<li>
+                        <label id="label_${elem['Cmds'].replaceAll('.', '_')}_${elem['ID']}" for="${elem['Cmds'].replaceAll('.', '_')}">
+                            ${elem['Cmds']} ${elem['Proceso']}
+                        </label>
+                        <input type="checkbox" id="${elem['Cmds'].replaceAll('.', '_')}" onclick="detalleProceso(${elem['ID']}, '${elem['Cmds']}')">
+                        <ol id="hijos_${elem['Cmds'].replaceAll('.', '_')}">`;
+                html += getHTMLArbol(elem.children);
+                html += `</ol></li>`;
+            }else{
+                html += `<li class="file" id="label_${elem['Cmds'].replaceAll('.', '_')}_${elem['ID']}">
+                                <a href="#" onclick="detalleProceso(${elem['ID']}, '${elem['Cmds']}')">${elem['Nivel'] == 99 ? elem['TP'] : elem['Cmds']} ${elem['Proceso']}</a>
+                            </li>`;
+                            getHTMLArbol(elem.children);
+            }
+        }
+        //console.log(html);
+        return html;
+    }else{
+        //console.log(html);
+        return html;
+    }
 }
 
 function detalleProceso(id, cod){

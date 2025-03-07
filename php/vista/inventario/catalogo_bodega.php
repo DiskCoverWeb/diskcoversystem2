@@ -93,22 +93,22 @@
                         <input type="text" class="form-control" maxlength="5" id="codigoP"
                             placeholder="<?php echo $_SESSION['INGRESO']['Formato_Inventario']; ?>">
                         -->
-                        <input type="text" class="form-control form-control-sm" maxlength="5" id="codigoP" placeholder="CC.CC"
+                        <input type="text" class="form-control form-control-sm" maxlength="8" id="codigoP" placeholder="CC.CC"
                             maxlength="5">
                     </div>
                     <div class="col-sm-6">
                         <label for="txtConcepto"><b>Concepto o detalle del producto</b></label>
-                        <input type="text" class="form-control form-control-sm" id="txtConcepto">
+                        <input type="text" class="form-control form-control-sm" maxlength="80" id="txtConcepto">
                     </div>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-sm-6">
+                    <!-- <div class="col-sm-6">
                         <label for="selectNivel"><b>Nivel:</b></label>
                         <select class="form-select form-select-sm" name="selectNivel" id="selectNivel"></select>
-                    </div>
-                    <div class="col-sm-6">
+                    </div> -->
+                    <div class="col-sm-12">
                         <label for="txtTP"><b>Tipo de Proceso:</b></label>
-                        <input type="text" class="form-control form-control-sm" id="txtTP">
+                        <input type="text" class="form-control form-control-sm" maxlength="8" id="txtTP">
                     </div>
                 </div>
                 <div id="cuentasContainer">
@@ -127,7 +127,7 @@
                             <div class="col-sm-6">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text">Cta. Debe</span>
-                                    <input type="text" class="form-control form-control-sm" id="txtDebe" placeholder="C.C.CC.CC.CC">
+                                    <input type="text" class="form-control form-control-sm" maxlength="18" id="txtDebe" placeholder="C.C.CC.CC.CC">
                                     
                                 </div>
                             </div>
@@ -135,7 +135,7 @@
                                 <div class="input-group input-group-sm">
                                     
                                     <span class="input-group-text">Cta. Haber</span>
-                                    <input type="text" class="form-control form-control-sm" id="txtHaber" placeholder="C.C.CC.CC.CC">
+                                    <input type="text" class="form-control form-control-sm" maxlength="18" id="txtHaber" placeholder="C.C.CC.CC.CC">
                                 </div>
                             </div>
                             <!-- <div class="col-sm-6">
@@ -303,7 +303,7 @@
                         <div class="col-sm-6 d-flex flex-column justify-content-start">
                             <!-- <label for="picture"><b>Imagen:</b></label> -->
                             <input type="hidden" value="" id="input_existeimg">
-                            <input type="text" class="form-control form-control-sm" id="picture" placeholder="." onchange="validarExisteImg()" aria-describedby="pictureFeedback">
+                            <input type="text" class="form-control form-control-sm" id="picture" placeholder="."  maxlength="20" onchange="validarExisteImg()" aria-describedby="pictureFeedback">
                             <div id="pictureFeedback" class="invalid-feedback">
                                 Este nombre ya esta en uso
                             </div>

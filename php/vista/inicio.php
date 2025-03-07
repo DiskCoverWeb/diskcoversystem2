@@ -183,6 +183,11 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'factura_distribucion':
 				require_once("facturacion/facturas_distribucion.php");
 				break;
+
+				//Facturacion -> Archivo -> Facturacion de Distribucion Familias
+				case 'factura_distribucion_fam':
+				require_once("facturacion/facturas_distribucion_fam.php");
+				break;
 					
 				//Facturacion -> Archivo -> Punto de venta
 				case 'punto_venta':

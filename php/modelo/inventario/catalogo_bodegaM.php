@@ -86,11 +86,13 @@ class catalogo_bodegaM
     function ListaEliminar($parametros)
     {
         $sql = "";
+        
         if($parametros['nivel'] == '0'){
+            //if($parametros['tp'] == '00')$parametros['tp'] = '99';
             $sql = "SELECT ID, Cmds, Proceso, TP, Nivel 
                     FROM Catalogo_Proceso
-                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
-                    AND Nivel = '".$parametros['tp']."'";
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+                    AND Cmds LIKE '" . $parametros['codigo'] . "%'";
         }else{
             $sql = "SELECT ID, Cmds, Proceso, TP, Nivel 
                 FROM Catalogo_Proceso
