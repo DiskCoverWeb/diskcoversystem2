@@ -319,7 +319,7 @@ class alimentos_recibidosM
 		{
 			$sql.=" AND Codigo_Inv+' '+Producto LIKE '%".$query."%'";
 		}
-		$sql.=" ORDER BY ID OFFSET ".$pag." ROWS FETCH NEXT 25 ROWS ONLY;";
+		$sql.=" ORDER BY Codigo_Inv OFFSET ".$pag." ROWS FETCH NEXT 25 ROWS ONLY;";
 		
 		// print_r($sql);die();
 		$datos = $this->db->datos($sql);
