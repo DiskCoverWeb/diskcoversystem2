@@ -832,13 +832,20 @@ class alimentos_recibidosC
 		foreach ($datos as $key => $value) 
 		{
 			// print_r($datos);die();
-
+			$costos = Leer_Codigo_Inv($value['Codigo_Inv'],date('Y-m-d'));
+			$costo_val = 0;
+			if($costos['respueta']==1)
+			{
+				$costo_val = number_format($costos['datos']['Costo'],2,'.','');
+			}
+			$datos[$key]['Costo'] = $costo_val;
 
       		$canti = $canti+$value['Entrada'];	
       		$PVP = $PVP+$value['Valor_Unitario'];	
       		$total = $total+$value['Valor_Total'];	
 		}
 		
+		// print_r($datos);die();
 		$tabla = array('num_lin'=>$num,'tabla'=>$datos,'item'=>$num,'cant_total'=>$canti,'total'=>$total,'pvp'=>$PVP);	
 			return $tabla;		
 	
