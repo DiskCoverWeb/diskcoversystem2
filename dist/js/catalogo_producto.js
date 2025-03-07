@@ -145,7 +145,12 @@ var nivel = nl;
      data:{nivel,nivel,cod:cod},
    dataType:'json',
    beforeSend: function () {
-       $('#hijos_'+che).html("<img src='../../img/gif/loader4.1.gif' style='width:20%' />");
+        if(nivel=='')
+        {
+            $('#tree1').html("<img src='../../img/gif/loader4.1.gif' style='width:60%' />");
+        }else{
+            $('#hijos_'+che).html("<img src='../../img/gif/loader4.1.gif' style='width:20%' />");
+        }
    },
      success: function(data)
      {

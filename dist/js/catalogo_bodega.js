@@ -1,10 +1,13 @@
 var tp = "";
 var arr_archivos = [];
+var arr_procesos = [];
 $(document).ready(function () {
     $("input[name='cbxProdc']").prop("checked", false);
     ocultarMsjError();
     llenarListaTipoProcesosGenerales();
     llenarNombreArchivos();
+    tipoProceso2();
+    ListaCatalogoLineas();
     $('#selectTipo').on('change', tipoProceso);
 });
 
@@ -53,17 +56,22 @@ $("#btnGuardar").click(function () {
         }
     }
 
-    var tipoProducto = $("input[name='cbxReqFA']:checked").val();
+    /*var tipoProducto = $("input[name='cbxReqFA']:checked").val();
 
     if(tipoProducto == '.' && $('#habilitarDC').prop('checked')){
         tipoProducto = $("input[name='cbxProdc']:checked").val();
+    }*/
+
+    var nivel = parseInt($('#selectNivel').val());//nivel
+    var tipoDoc = nivel == 0 ? '--' : '.';
+    if($('#habilitarDC').prop('checked') && tipoDoc != '--'){
+        tipoDoc = $('#selectTipoDoc').val();
     }
 
 
     var codigoP = $("#codigoP").val();
     var txtConcepto = $("#txtConcepto").val();
     //var tipoProducto = $("input[name='cbxProdc']:checked").val() ? $("input[name='cbxProdc']:checked").val() : '--';
-    var nivel = $('#selectTipo').val();//nivel
     var tp = $('#txtTP').val();//tipo de proceso
     var wtp = $('#tp').val();//tipo de proceso
     var color = $('#pordefault').prop('checked')?'.':$('#colorPick').val();
@@ -85,9 +93,6 @@ $("#btnGuardar").click(function () {
         mensaje = "Ingrese un código de producto válido";
     } else if (!txtConcepto.trim()) {
         mensaje = "Ingrese un concepto válido";
-    } else if (!tipoProducto) {
-        tipoProducto = ".";
-        //mensaje = "Seleccione un tipo de producto";
     }
 
     if (mensaje) {
@@ -97,19 +102,23 @@ $("#btnGuardar").click(function () {
 
     let cta_debe = '.';
     let cta_haber = '.';
-
-    if($('#habilitarDebe').prop('checked')){
+    
+    if($('#habilitarCuentas').prop('checked')){
+        cta_debe = $('#txtDebe').val() == '' ? '.' : $('#txtDebe').val();
+        cta_haber = $('#txtHaber').val() == '' ? '.' : $('#txtHaber').val()
+    }
+    /*if($('#habilitarDebe').prop('checked')){
         cta_debe = $('#txtDebe').val() == '' ? '.' : $('#txtDebe').val()
     }
     if($('#habilitarHaber').prop('checked')){
         cta_haber = $('#txtHaber').val() == '' ? '.' : $('#txtHaber').val()
-    }
+    }*/
     
     ocultarMsjError();
     var parametros = {
         "codigo": codigoP,
         "concepto": txtConcepto,
-        "tipo": tipoProducto,
+        "tipo": tipoDoc,
         "nivel": nivel,
         "tp": tp,
         "wtp": wtp,
@@ -309,8 +318,10 @@ function toggleBloqFA(){
 }
 
 function toggleInput(elem, parametro){
+    console.log(elem);
     let dic_params = {
         color: 'colorPick',
+        containerC: 'contsCuentas',
         inpDebe: 'txtDebe',
         inpHaber: 'txtHaber',
         containerDC: 'containerDC',
@@ -337,24 +348,26 @@ function verificarExistenciaCodigo(codigoP) {
     var txtConcepto = $("#txtConcepto").val();
     var tipoProducto = $("input[name='cbxProdc']:checked").val();
     var nivel = $('#selectTipo').val();//nivel
-    var tp = $('#tp').val();//tipo de proceso
+    var tp = $('#txtTP').val();//tipo de proceso
     return new Promise(function (resolve, reject) {
         var parametros = {
             "codigo": codigoP,
-            "concepto": txtConcepto,
+            /*"concepto": txtConcepto,
             "tipo": tipoProducto,
-            "nivel": nivel,
+            "nivel": nivel,*/
             "tp": tp
         };
         console.log(parametros);
         $.ajax({
             type: 'POST',
-            url: '../controlador/inventario/catalogo_bodegaC.php?ListaProductos=true',
+            url: '../controlador/inventario/catalogo_bodegaC.php?verificarProductos=true',
             data: { parametros: parametros },
             success: function (data) {
                 var responseData = JSON.parse(data);
+                console.log(responseData['status']);
+                console.log(responseData['datos'].length);
                 if (responseData['status'] == 200 && responseData['datos'].length > 0) {
-                    for (var i = 0; i < responseData['datos'].length; i++) {
+                    /*for (var i = 0; i < responseData['datos'].length; i++) {
                         if (responseData['datos'][i].Nivel === 99 && responseData['datos'][i].TP === codigoP) {
                             resolve({ existe: true, id: responseData['datos'][i].ID });
                             return;
@@ -363,8 +376,10 @@ function verificarExistenciaCodigo(codigoP) {
                             resolve({ existe: true, id: responseData['datos'][i].ID });
                             return;
                         }
-                    }
-                    resolve({ existe: false, id: null });
+                    }*/
+                   console.log("resuelto");
+                    resolve({ existe: true, id: responseData['datos'][0].ID });
+                    return;
                 } else {
                     resolve({ existe: false, id: null });
                 }
@@ -413,18 +428,27 @@ function actualizarProducto(parametros) {
                         $('#txtDebe').val('');
                         $('#txtHaber').val('');
                         $('#txtTP').val('');
-                        $("input[name='cbxProdc']").prop("checked", false);
+                        //$("input[name='cbxProdc']").prop("checked", false);
+                        $('#habilitarCuentas').prop("checked", false);
+                        $('#habilitarCuentas').trigger("change");
+                        $('#divImage').prop("checked", false);
+                        $('#divImage').trigger("change");
+                        $('#habilitarDC').prop("checked", false);
+                        $('#habilitarDC').trigger("change");
+                        $('#selectTipoDoc').val('C');
                         $('#picture').val('');
                         $('#imagenPicker').val('');
                         $('#imageElement').prop('src', '');
                         $('#pordefault').prop('checked', true);
                         $('#colorPick').hide();
-                        $('#picture').val('');
-                        if (parametros.nivel === '99') {
-                            $('#siFA').prop('checked', false);
-                            $('#noFA').prop('checked', false);
-                        }
-                        tipoProceso();
+                        //$('#picture').val('');
+                        // if (parametros.nivel === '99') {
+                        //     $('#siFA').prop('checked', false);
+                        //     $('#noFA').prop('checked', false);
+                        // }
+                        // tipoProceso();
+                        tipoProceso2();
+
                     } else {
                         Swal.fire({
                             title: 'Error, no se actualizó.',
@@ -479,18 +503,27 @@ function guardarNuevoProducto(parametros) {
                         $('#txtDebe').val('');
                         $('#txtHaber').val('');
                         $('#txtTP').val('');
-                        $("input[name='cbxProdc']").prop("checked", false);
+                        //$("input[name='cbxProdc']").prop("checked", false);
+                        $('#habilitarCuentas').prop("checked", false);
+                        $('#habilitarCuentas').trigger("change");
+                        $('#divImage').prop("checked", false);
+                        $('#divImage').trigger("change");
+                        $('#habilitarDC').prop("checked", false);
+                        $('#habilitarDC').trigger("change");
+                        $('#selectTipoDoc').val('C');
                         $('#picture').val('');
                         $('#imagenPicker').val('');
                         $('#imageElement').prop('src', '');
                         $('#pordefault').prop('checked', true);
                         $('#colorPick').hide();
-                        $('#picture').val('');
-                        if (parametros.nivel === '99') {
+                        //$('#picture').val('');
+                        /*if (parametros.nivel === '99') {
                             $('#siFA').prop('checked', false);
                             $('#noFA').prop('checked', false);
-                        }
-                        tipoProceso();
+                        }*/
+                        //tipoProceso();
+                        tipoProceso2();
+
                         
                     } else {
                         Swal.fire({
@@ -601,10 +634,11 @@ function llenarAcordeon(datos) {
 }
 
 function clickProducto(dato, e=null) {
-    $('input[name="cbxProdc"]').prop('disabled', false);
-    $('input[name="cbxReqFA"]').prop('disabled', false);
-    // $(`#select_archivos option`).removeClass('bg-danger text-white');
+    //$('input[name="cbxProdc"]').prop('disabled', false);
+    //$('input[name="cbxReqFA"]').prop('disabled', false);
     // $('#picture').removeClass('is-invalid');
+    
+    //$(`#selectNivel`).val('00');
     marcarCampos('normal');
     // Cambio del color segun la seleccion
     if(e){
@@ -632,39 +666,55 @@ function clickProducto(dato, e=null) {
         $('#imageElement').prop('src',`../../img/png/${dato.Picture}.png`);
     }
 
-    $("input[name='cbxProdc']").prop('checked', false);
-    if(dato.DC != '.' && dato.DC != 'FA'){
-        console.log(dato.DC);
-        $("input[name='cbxProdc'][value='" + dato.DC + "']").prop("checked", true);
-        $("#habilitarDC").prop("checked", true);
-    }else{
-        $("input[name='cbxProdc']").prop("checked", false);
+    //$("input[name='cbxProdc']").prop('checked', false);
+
+    if(dato.DC == '.' || dato.DC == '--'){
+        //$("input[name='cbxProdc'][value='" + dato.DC + "']").prop("checked", true);
         $("#habilitarDC").prop("checked", false);
-        
+    }else{
+        $("#habilitarDC").prop("checked", true);
+        $('#selectTipoDoc').val(dato.DC);
     }
+
+    // if(dato.DC != '.' && dato.DC != 'FA'){
+    //     console.log(dato.DC);
+    //     $("input[name='cbxProdc'][value='" + dato.DC + "']").prop("checked", true);
+    //     $("#habilitarDC").prop("checked", true);
+    // }else{
+    //     $("input[name='cbxProdc']").prop("checked", false);
+    //     $("#habilitarDC").prop("checked", false);
+        
+    // }
 
     // if(dato.DC == '.' || dato.DC == 'FA'){
     //     $("input[name='cbxProdc']").prop("checked", false);
     //     $("#habilitarDC").prop("checked", false);
     // }
-    
-    if(dato.Cta_Debe == '.'){
-        $("#habilitarDebe").prop("checked", false);
-    }else{
-        $("#habilitarDebe").prop("checked", true);
-    }
 
-    if(dato.Cta_Haber == '.'){
-        $("#habilitarHaber").prop("checked", false);
+    if(dato.Cta_Debe == '.' && dato.Cta_Haber == '.'){
+        $("#habilitarCuentas").prop("checked", false);
     }else{
-        $("#habilitarHaber").prop("checked", true);
+        $("#habilitarCuentas").prop("checked", true);
     }
+    
+    // if(dato.Cta_Debe == '.'){
+    //     $("#habilitarDebe").prop("checked", false);
+    // }else{
+    //     $("#habilitarDebe").prop("checked", true);
+    // }
+
+    // if(dato.Cta_Haber == '.'){
+    //     $("#habilitarHaber").prop("checked", false);
+    // }else{
+    //     $("#habilitarHaber").prop("checked", true);
+    // }
     
     //Activacion de funciones por triggers
     $('#divImage').trigger('change');
     $('#habilitarDC').trigger('change');
-    $('#habilitarDebe').trigger('change');
-    $('#habilitarHaber').trigger('change');
+    $('#habilitarCuentas').trigger('change');
+    // $('#habilitarDebe').trigger('change');
+    // $('#habilitarHaber').trigger('change');
 
     $('#picture').val(dato.Picture);
     if(dato.Color != '.'){
@@ -676,21 +726,22 @@ function clickProducto(dato, e=null) {
         $('#pordefault').prop('checked', true);
         $('#colorPick').hide();
     }
-    var reqFact = dato.DC;
+    /*var reqFact = dato.DC;
     if (reqFact === 'FA') {
         $('#siFA').prop('checked', true);
     } else {
         $('#noFA').prop('checked', true);
-    }
+    }*/
     $('#txtDebe').val(dato.Cta_Debe);
     $('#txtHaber').val(dato.Cta_Haber);
     $('#txtConcepto').val(dato.Proceso);
-    if(dato.Nivel == 0){
+    $(`#selectNivel`).val(dato.Nivel);
+    /*if(dato.Nivel == 0){
         $('input[name="cbxProdc"]').prop('disabled', true);
         $('input[name="cbxReqFA"]').prop('disabled', true);
         $('input[name="cbxProdc"]').prop('checked', false);
         $('input[name="cbxReqFA"]').prop('checked', false);
-    }
+    }*/
 }
 
 $("#btnEliminar").on('click', function () {
@@ -699,13 +750,13 @@ $("#btnEliminar").on('click', function () {
     marcarCampos('normal');
     if (idSeleccionada != null) {
         var codigoP = $('#codigoP').val();
-        var nivel = $('#selectTipo').val();//nivel
-        var tp = $('#tp').val();//tipo de proceso
+        var nivel = $('#selectNivel').val();//nivel
+        var tp = $('#txtTP').val();//tipo de proceso
 
-        if(tp == '' || tp.split(',') > 1){
+        /*if(tp == '' || tp.split(',') > 1){
             Swal.fire('Seleccionar un tipo de proceso para eliminar', '', 'error');
             return;
-        }
+        }*/
         
         var parametros = {
             "codigo": codigoP,
@@ -723,7 +774,7 @@ $("#btnEliminar").on('click', function () {
                     var listaEliminar = responseData['datos'];
                     if (listaEliminar.length > 0) {
                         var textAreaContent;
-                        if (nivel === '99') {
+                        if (nivel === '99' || tp == '99') {
                             var textAreaContent = listaEliminar.map(function (registro) {
                                 return registro['TP'] + ' - ' + registro['Proceso'];
                             }).join('\n');
@@ -763,16 +814,24 @@ $("#btnEliminar").on('click', function () {
                                             $('#txtDebe').val('');
                                             $('#txtHaber').val('');
                                             $('#txtTP').val('');
-                                            $("input[name='cbxProdc']").prop("checked", false);
+                                            //$("input[name='cbxProdc']").prop("checked", false);
+                                            $('#habilitarCuentas').prop("checked", false);
+                                            $('#habilitarCuentas').trigger("change");
+                                            $('#divImage').prop("checked", false);
+                                            $('#divImage').trigger("change");
+                                            $('#habilitarDC').prop("checked", false);
+                                            $('#habilitarDC').trigger("change");
+                                            $('#selectTipoDoc').val('C');
                                             $('#picture').val('');
                                             $('#imagenPicker').val('');
                                             $('#pordefault').prop('checked', true);
                                             $('#colorPick').hide();
-                                            if (parametros.nivel === '99') {
-                                                $('#siFA').prop('checked', false);
-                                                $('#noFA').prop('checked', false);
-                                            }
-                                            tipoProceso();
+                                            // if (parametros.nivel === '99') {
+                                            //     $('#siFA').prop('checked', false);
+                                            //     $('#noFA').prop('checked', false);
+                                            // }
+                                            // tipoProceso();
+                                            tipoProceso2();
                                         } else {
                                             Swal.fire({
                                                 title: 'Error, no se pudieron eliminar los datos.',
@@ -836,6 +895,27 @@ function llenarListaTipoProcesosGenerales() {
     });
 }
 
+function ListaCatalogoLineas() {
+    $.ajax({
+        type: 'GET',
+        url: '../controlador/inventario/catalogo_bodegaC.php?ListaCatalogoLineas=true',
+        dataType: 'json',
+        success: function (data) {
+            if(data.length > 0){
+                //console.log(data);
+                var select = $('#selectTipoDoc');
+                select.empty();
+                data.forEach(function (dato) {
+                    select.append('<option value="' + dato.Fact + '">' + dato.Fact + '</option>');
+                });
+            }
+        },
+        error: function (error) {
+            console.error('Error en la solicitud AJAX:', error);
+        }
+    });
+}
+
 function llenarNombreArchivos() {
     arr_archivos = [];
     $.ajax({
@@ -852,6 +932,138 @@ function llenarNombreArchivos() {
     });
 
     
+}
+
+/*function construirLista(datos){
+    let html = ``;
+    if(datos.length > 0){
+        for(let d of datos){
+            html += `<li>${d['Proceso']}</li>` + construirLista(d['children']);
+        }
+        return `<ul>${html}</ul>`;
+    }else{
+        return html;
+    }
+}*/
+
+
+function tipoProceso2() {
+    //var tipoProceso = $('#selectTipo').val();
+    $('#txt_anterior').val('');
+    /*var parametros = {
+        'tp': tipoProceso
+    };*/
+    $.ajax({
+        type: 'POST',
+        url: '../controlador/inventario/catalogo_bodegaC.php?ListaTipoProcesosGeneralesCompleto=true',
+        //data: { parametros: parametros },
+        dataType:'json',
+        beforeSend: function () {
+            $('#tree1').html("<img src='../../img/gif/loader4.1.gif' style='width:60%' />");
+        },
+        success: function (data) {
+            arr_procesos = data.slice();
+            let html = crearArbolHTML(data);
+            $('#tree1').html(html);
+
+            let listaNiveles = arr_procesos.filter(p => p['Nivel'] == 0);
+            var select = $('#selectNivel');
+            select.empty();
+            listaNiveles.forEach(function (dato) {
+                let nivel = dato.TP == '00' ? 0 : dato.TP;
+                select.append('<option value="' + nivel + '">' + dato.TP + ' ' + dato.Proceso + '</option>');
+            });
+        },
+        error: function (error) {
+            console.error('Error en la solicitud AJAX:', error);
+        }
+    });
+
+
+}
+
+function crearArbolHTML(datos){
+    let html = "";
+
+    let raiz = datos.shift();
+
+    html += `<li>
+                <label id="label_${raiz['Cmds'].replaceAll('.', '_')}_${raiz['ID']}" for="${raiz['Cmds'].replaceAll('.', '_')}">
+                    ${raiz['Proceso']}
+                </label>
+                <input type="checkbox" id="${raiz['Cmds'].replaceAll('.', '_')}" onclick="detalleProceso(${raiz['ID']}, '${raiz['Cmds']}')">
+                <ol id="hijos_${raiz['Cmds'].replaceAll('.', '_')}">`;
+    //raiz['children'] = [];
+
+    for(let item of datos){
+        if(item['Nivel'] == 0){
+            let hijos = `<li>
+                            <label id="label_${item['Cmds'].replaceAll('.', '_')}_${item['ID']}" for="${item['Cmds'].replaceAll('.', '_')}">
+                                ${item['Cmds']} ${item['Proceso']}
+                            </label>
+                            <input type="checkbox" id="${item['Cmds'].replaceAll('.', '_')}" onclick="detalleProceso(${item['ID']}, '${item['Cmds']}')">
+                            <ol id="hijos_${item['Cmds'].replaceAll('.', '_')}">`;
+            //let  = `<ol id="hijos_${item['Cmds'].replaceAll('.', '_')}">`;
+            for(let d of datos){
+                if(d['Nivel'] == item['Cmds']){
+                    //hijos.push(d);
+                    hijos += `<li class="file" id="label_${d['Cmds'].replaceAll('.', '_')}_${d['ID']}">
+                                <a href="#" onclick="detalleProceso(${d['ID']}, '${d['Cmds']}')">${d['Nivel'] == 99 ? d['TP'] : d['Cmds']} ${d['Proceso']}</a>
+                            </li>`;
+                }
+            }
+            hijos += "</ol></li>";
+            html += hijos;
+            /*item['children'] = hijos;
+            raiz['children'].push(item)*/
+        }
+    }
+    html += "</ol></li>";
+    return html;
+    //arbol.push(raiz);
+    //console.log(arbol);
+}
+
+function detalleProceso(id, cod){
+    let proceso = arr_procesos.find(p => p['ID'] == id);
+
+    var ant = $('#txt_anterior').val();
+    var che = cod.split('.').join('_');
+    if(ant==''){	$('#txt_anterior').val(che+'_'+id); }else{	$('#label_'+ant).css('border','0px');}
+    $('#label_'+che+'_'+id).css('border','1px solid');
+    $('#txt_anterior').val(che+'_'+id); 
+
+    /*switch (proceso.TP) {
+        case '99':
+            $('#txtConcepto').attr('placeholder', '');
+            $('#pictureContainer').css('display', 'flex');
+            $('#nombresContainer').css('display', 'flex');
+            $('#reqFacturaContainer').css('display', 'block');
+            $('#checkboxContainer').css('display', 'block');
+            $('#cuentasContainer').css('display', 'block');
+            $('#colorContainer').css('display', 'block');
+            break;
+        case '00':
+            $('#txtConcepto').attr('placeholder', '');
+            //$('#tp').val('CATEGORI');
+            $('#pictureContainer').css('display', 'flex');
+            $('#nombresContainer').css('display', 'flex');
+            $('#reqFacturaContainer').css('display', 'block');
+            $('#checkboxContainer').css('display', 'block');
+            $('#cuentasContainer').css('display', 'block');
+            $('#colorContainer').css('display', 'block');
+            break;
+        default:
+            $('#pictureContainer').css('display', 'flex'); //none
+            $('#nombresContainer').css('display', 'flex'); //none
+            $('#reqFacturaContainer').css('display', 'block'); //none
+            $('#checkboxContainer').css('display', 'block'); //none
+            $('#cuentasContainer').css('display', 'block'); //none
+            $('#colorContainer').css('display', 'block');
+            break;
+    }*/
+
+    clickProducto(proceso);
 }
 
 function tipoProceso() {

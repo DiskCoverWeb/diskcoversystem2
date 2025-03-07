@@ -349,41 +349,6 @@ class ResumenKC
         //return $this->modelo->SelectDB($sSQL);
     }
 
-    function Listar_Por_ProductoSQL($OpcMarca, $OpcBarra, $OpcLote, $DCTInv) {
-        if ($OpcMarca) {
-            $sSQL = "SELECT CodMar As codigo, Marca As nombre " .
-                    "FROM Catalogo_Marcas " .
-                    "WHERE Item = '".$this->NumEmpresa."' " .
-                    "AND Periodo = '".$this->Periodo_Contable."' " .
-                    "AND CodMar <> '.' " .
-                    "ORDER BY Marca";
-        } elseif ($OpcBarra) {
-            $sSQL = "SELECT Codigo_Barra As codigo, Codigo_Barra As nombre " .
-                    "FROM Trans_Kardex " .
-                    "WHERE Item = '".$this->NumEmpresa."' " .
-                    "AND Periodo = '".$this->Periodo_Contable."' " .
-                    "GROUP BY Codigo_Barra " .
-                    "ORDER BY Codigo_Barra";
-        } elseif ($OpcLote) {
-            $sSQL = "SELECT Lote_No As codigo, Lote_No As nombre " .
-                    "FROM Trans_Kardex " .
-                    "WHERE Item = '".$this->NumEmpresa."' " .
-                    "AND Periodo = '".$this->Periodo_Contable."' " .
-                    "GROUP BY Lote_No " .
-                    "ORDER BY Lote_No";
-        } else {
-            $sSQL = "SELECT Codigo_Inv As codigo, Producto As nombre " .
-                    "FROM Catalogo_Productos " .
-                    "WHERE Item = '".$this->NumEmpresa."' " .
-                    "AND Periodo = '".$this->Periodo_Contable."' " .
-                    "AND LEN(Cta_Inventario) > 2 " .
-                    "AND Codigo_Inv LIKE '$DCTInv%' " .
-                    "AND TC = 'P' " .
-                    "ORDER BY Codigo_Inv";
-        }
-        
-        return $sSQL;
-    }
 
     function Listar_Por_Tipo_SubModulo($SuModeloDe, $query=false) {
         $datos = $this->modelo->Listar_Por_Tipo_SubModulo($SuModeloDe, $query);
@@ -427,16 +392,8 @@ class ResumenKC
         extract($parametros);
         mayorizar_inventario_sp(false, modulo_reemplazar:false);
 
-        $sSQL = "SELECT TC, Codigo_Inv, Producto,Unidad,Stock_Anterior,Entradas,Salidas,Stock_Actual,Promedio,PVP,Valor_Total " .
-            "FROM Catalogo_Productos " .
-            "WHERE Item = '" . $this->NumEmpresa . "' " .
-            "AND Periodo = '" . $this->Periodo_Contable . "' " .
-            "AND TC = 'I' " .
-            "AND INV <> 0 " .
-            "ORDER BY Codigo_Inv";
-        
         $heightDispo = ($heightDisponible>150)?$heightDisponible-45:$heightDisponible;
-        $DGQuery = grilla_generica_new($sSQL);
+        $DGQuery = $this->modelo->Form_Activate();
         return $DGQuery['data'];
     }
 

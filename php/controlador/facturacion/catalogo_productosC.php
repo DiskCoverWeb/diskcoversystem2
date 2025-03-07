@@ -105,14 +105,14 @@ class catalogo_productosC
 				 if(count($hijo)>0)
 				 {
 				 		$h.='<li  title="Presione Suprimir para eliminar">
-							    <label id="label_'.str_replace('.','_',$value['Codigo_Inv']).'" for="'.$value['Codigo_Inv'].'">'.$value['Codigo_Inv'].' '.$value['Producto'].'</label>
+							    <label style="height: fit-content;" id="label_'.str_replace('.','_',$value['Codigo_Inv']).'" for="'.$value['Codigo_Inv'].'">'.$value['Codigo_Inv'].' '.$value['Producto'].'</label>
 							    <input type="checkbox" id="'.$value['Codigo_Inv'].'" onclick="TVcatalogo('.$nnl.',\''.$value['Codigo_Inv'].'\')" />
 							   <ol id="hijos_'.str_replace('.','_',$value['Codigo_Inv']).'"></ol></li>';
 				 }else
 				 {
 
 				 	$h.='<li  title="Presione Suprimir para eliminar">
-							    <label id="label_'.str_replace('.','_',$value['Codigo_Inv']).'" for="'.$value['Codigo_Inv'].'">'.$value['Codigo_Inv'].' '.$value['Producto'].'</label>
+							    <label style="height: fit-content;" id="label_'.str_replace('.','_',$value['Codigo_Inv']).'" for="'.$value['Codigo_Inv'].'">'.$value['Codigo_Inv'].' '.$value['Producto'].'</label>
 							    <input type="checkbox" id="'.$value['Codigo_Inv'].'" onclick="TVcatalogo('.$nnl.',\''.$value['Codigo_Inv'].'\')" />
 							   <ol id="hijos_'.str_replace('.','_',$value['Codigo_Inv']).'"></ol></li>';
 

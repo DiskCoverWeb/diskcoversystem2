@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -27,7 +27,8 @@
     </style>
 </head>
 
-<body>
+<body> -->
+<link rel="stylesheet" href="../../dist/css/arbol.css">
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
         <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
         <div class="ps-3">
@@ -40,22 +41,32 @@
         </div>          
     </div>
     <div class="row" style="margin:10px">
-        <div class="col-sm-6 border border-1 border-primary-subtle rounded">
-            <div style="padding-top:10px">
-                <h4>Tipos de Procesos</h4>
-            </div>
-            <div style="padding-top:10px">
-                <select class="form-select form-select-sm" id="selectTipo" name="selectTipo">
-                    <option value="">Tipo de Informacion</option>
-                </select>
-                <input type="text" style="display:none" value="" id="tp">
-            </div>
-            <div class="accordion" id="accordion" style="margin-top:20px">>
-                <!-- Los paneles del acordeón se llenarán aquí dinámicamente -->
-            </div>
-
-            <div class="alert alert-warning" id="alertNoData" style="display: none; margin-top:10px">
-                No se encontraron datos que mostrar.
+        <div class="col-sm-6">
+            <div class="card border" style="height: 68vh;">
+                <div style="display: none;">
+                    <div style="padding-top:10px">
+                        <h4>Tipos de Procesos</h4>
+                    </div>
+                    <div style="padding-top:10px">
+                        <select class="form-select form-select-sm" id="selectTipo" name="selectTipo">
+                            <option value="">Tipo de Informacion</option>
+                        </select>
+                        <input type="text" style="display:none" value="" id="tp">
+                    </div>
+                    <div class="accordion" id="accordion" style="margin-top:20px">>
+                        
+                    </div>
+                </div>
+                <input type="hidden" id="txt_anterior" val="">
+                <div class="card-header">
+                    TIPOS DE PROCESOS
+                </div>
+                <div class="card-body" id="tree1" style="overflow-y: auto;">
+    
+                </div>
+                <div class="alert alert-warning" id="alertNoData" style="display: none; margin-top:10px">
+                    No se encontraron datos que mostrar.
+                </div>
             </div>
         </div>
         <div class="col-sm-6">
@@ -90,45 +101,111 @@
                         <input type="text" class="form-control form-control-sm" id="txtConcepto">
                     </div>
                 </div>
-                <div id="cuentasContainer" style="display: none; margin-top:5px;">
-                    <div class="row">
-                        <div class="col-sm-6">
+                <div class="row mt-2">
+                    <div class="col-sm-6">
+                        <label for="selectNivel"><b>Nivel:</b></label>
+                        <select class="form-select form-select-sm" name="selectNivel" id="selectNivel"></select>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="txtTP"><b>Tipo de Proceso:</b></label>
+                        <input type="text" class="form-control form-control-sm" id="txtTP">
+                    </div>
+                </div>
+                <div id="cuentasContainer">
+                    <div class="row mt-2">
+                        <div class="col-sm-12">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="habilitarDebe" id="habilitarDebe" checked onchange="toggleInput(this, 'inpDebe')">
-                                <label class="form-check-label" for="habilitarDebe">
-                                    <b>Cta. Debe</b>
+                                <input class="form-check-input" type="checkbox" name="habilitarCuentas" id="habilitarCuentas" checked onchange="toggleInput(this, 'containerC')">
+                                <label class="form-check-label" for="habilitarCuentas">
+                                    <b>Cuentas Contables</b>
                                 </label>
                             </div>
-                            <!-- <label for="txtDebe"><b>Cta. Debe</b></label> -->
-                            <input type="text" class="form-control form-control-sm" id="txtDebe" placeholder="C.C.CC.CC.CC">
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="habilitarHaber" id="habilitarHaber" checked onchange="toggleInput(this, 'inpHaber')">
-                                <label class="form-check-label" for="habilitarHaber">
-                                    <b>Cta. Haber</b>
-                                </label>
+                    </div>
+                    <div id="contsCuentas">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">Cta. Debe</span>
+                                    <input type="text" class="form-control form-control-sm" id="txtDebe" placeholder="C.C.CC.CC.CC">
+                                    
+                                </div>
                             </div>
-                            <!-- <label for="txtHaber"><b>Cta. Haber</b></label> -->
-                            <input type="text" class="form-control form-control-sm" id="txtHaber" placeholder="C.C.CC.CC.CC">
+                            <div class="col-sm-6">
+                                <div class="input-group input-group-sm">
+                                    
+                                    <span class="input-group-text">Cta. Haber</span>
+                                    <input type="text" class="form-control form-control-sm" id="txtHaber" placeholder="C.C.CC.CC.CC">
+                                </div>
+                            </div>
+                            <!-- <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="habilitarDebe" id="habilitarDebe" checked onchange="toggleInput(this, 'inpDebe')">
+                                    <label class="form-check-label" for="habilitarDebe">
+                                        <b>Cta. Debe</b>
+                                    </label>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="txtDebe" placeholder="C.C.CC.CC.CC">
+                                
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="habilitarHaber" id="habilitarHaber" checked onchange="toggleInput(this, 'inpHaber')">
+                                    <label class="form-check-label" for="habilitarHaber">
+                                        <b>Cta. Haber</b>
+                                    </label>
+                                </div>
+                                
+                                <input type="text" class="form-control form-control-sm" id="txtHaber" placeholder="C.C.CC.CC.CC">
+                            </div> -->
                         </div>
                     </div>
                 </div>
                 <span style="margin-top:5px; display:none">Tipo de producto</span>
-                <div class="row mt-2">
-                    <div class="col-sm-6" id="checkboxContainer" style="display: none">
+                <div class="row mt-2" id="checkboxContainer">
+                    
+                    <div class="col-sm-6"  id="colorContainer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <b>Color</b>
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="pordefault" id="pordefault" checked onchange="toggleInputColor(this)">
+                                    <label class="form-check-label" for="pordefault">
+                                        Por defecto
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="color" class="form-control form-control-sm form-control-color" style="display:none;" id="colorPick" value="#000000" title="Elegir color">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="habilitarDC" id="habilitarDC" checked onchange="toggleInput(this, 'containerDC');">
                                     <label class="form-check-label" for="habilitarDC">
-                                        <b>Debito/Credito</b>
+                                        <b>Tipo Documento</b>
                                     </label>
                                 </div>
                                 
                             </div>
                         </div>
                         <div class="row" id="containerDC">
+                            <div class="col-sm-12">
+                                <select name="selectTipoDoc" id="selectTipoDoc" class="form-select form-select-sm">
+                                    <option value="">Seleccionar</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="cbxProdc" id="cbxCat" value="C" onchange="">
@@ -145,17 +222,17 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
-                    <div class="col-sm-6">
+                    <!-- <div class="col-sm-6">
                         <label for="txtTP"><b>Tipo de Proceso:</b></label>
                         <input type="text" class="form-control form-control-sm" id="txtTP">
-                    </div>
+                    </div> -->
                     <!-- <div class="row col-sm-12">
                     </div> -->
                 </div>
 
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-sm-6" style="display: none; margin-top:10px;" id="colorContainer">
                         <div class="row">
                             <div class="col-sm-12">
@@ -177,7 +254,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6" style="display:none; margin-top:10px;" id="reqFacturaContainer">
+                    <div class="col-sm-6">
+                        <label for="txtTP"><b>Tipo de Proceso:</b></label>
+                        <input type="text" class="form-control form-control-sm" id="txtTP">
+                    </div> -->
+                    <!-- <div class="col-sm-6" style="display:none; margin-top:10px;" id="reqFacturaContainer">
                         <label for="picture"><b>Requiere Factura?</b></label>
                         <div class="row">
                             <div class="form-check col-sm-6">
@@ -194,9 +275,9 @@
                                 </label>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row" style="display:none;margin-top:10px;" id="pictureContainer">
+                    </div> -->
+                <!-- </div> -->
+                <div class="row mt-2" id="pictureContainer">
                     <!--<div class="row">
                         <label>Color</label><br>
                     </div>
@@ -235,7 +316,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-2" style="display:none" id="nombresContainer">
+                <div class="row mt-2" id="nombresContainer">
                     <div class="card">
                         <div class="card-body bg-primary-subtle rounded" id="archivosContainer">
                             <div class="row">
@@ -275,12 +356,36 @@
         </div>
     </div>
     <br><br>
-
+    <div class="modal fade" id="InfoCatalogo" tabindex="-1" role="dialog" aria-labelledby="FrmProductosLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="FrmProductosLabel">Catalogo Prueba</h5>
+                    <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="lista_catalogo_real">
+                        
+                    </div>
+                    <ul>
+                        <li>hola</li>
+                        <li>hola</li>
+                        <ul>
+                            <li>hola 2</li>
+                            <li>hola 2</li>
+                        </ul>
+                        <li>hola</li>
+                    </ul>
+                </div>
+            
+            </div>
+        </div>
+    </div>
     <!-- Script JavaScript para manipular la página -->
     <script src="../../dist/js/catalogo_bodega.js"></script>
-</body>
+<!-- </body>
 
 
 
 
-</html>
+</html> -->

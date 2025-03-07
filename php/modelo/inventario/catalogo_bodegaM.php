@@ -46,6 +46,18 @@ class catalogo_bodegaM
         return $this->db->datos($sql);
     }
 
+    function verificarProductos($codigo)
+    {
+        $sql = "SELECT * 
+                FROM Catalogo_Proceso
+                WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+                AND Cmds = '".$codigo."' 
+                ORDER BY Cmds";
+        
+        //print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
     function EliminarProducto($parametros)
     {
         //$registrosAEliminar = $this->ListaIDsEliminar($parametros);
@@ -55,15 +67,15 @@ class catalogo_bodegaM
             if($registro['Nivel'] == '99'){
                 $sqlEliminar = "DELETE FROM Catalogo_Proceso 
                         WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
-                        AND ID = '$id'
-                        AND TP = '".$registro['TP']."'
-                        AND Nivel = '".$registro['Nivel']."'";
+                        AND ID = $id";
+                        //AND TP = '".$registro['TP']."'
+                        //AND Nivel = '".$registro['Nivel']."'";
             }else{
                 $sqlEliminar = "DELETE FROM Catalogo_Proceso 
                         WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
-                        AND ID = '$id'
-                        AND TP = '".$registro['TP']."'
-                        AND Nivel = '".$registro['Nivel']."'";
+                        AND ID = $id";
+                        //AND TP = '".$registro['TP']."'
+                        //AND Nivel = '".$registro['Nivel']."'";
             }
             //print_r($sqlEliminar);die();
             $this->db->datos($sqlEliminar);
@@ -74,7 +86,21 @@ class catalogo_bodegaM
     function ListaEliminar($parametros)
     {
         $sql = "";
-        if($parametros['nivel'] == '99'){
+        if($parametros['nivel'] == '0'){
+            $sql = "SELECT ID, Cmds, Proceso, TP, Nivel 
+                    FROM Catalogo_Proceso
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                    AND Nivel = '".$parametros['tp']."'";
+        }else{
+            $sql = "SELECT ID, Cmds, Proceso, TP, Nivel 
+                FROM Catalogo_Proceso
+                WHERE Cmds = '" . $parametros['codigo'] . "' 
+                AND Item = '" . $_SESSION['INGRESO']['item'] . "' 
+                AND TP = '".$parametros['tp']."' 
+                AND Nivel = '".$parametros['nivel']."'";
+        }
+
+        /*if($parametros['nivel'] == '99'){
             $sql = "SELECT ID, Cmds, Proceso, TP, Nivel 
                 FROM Catalogo_Proceso
                 WHERE Cmds LIKE '" . $parametros['codigo'] . "%'
@@ -85,9 +111,9 @@ class catalogo_bodegaM
                 FROM Catalogo_Proceso
                 WHERE Cmds LIKE '" . $parametros['codigo'] . "%'
                 AND Item = '" . $_SESSION['INGRESO']['item'] . "'
-                AND TP IN ('".implode("', '", $parametros['tp'])."') 
+                AND TP = '".$parametros['tp']."' 
                 AND Nivel = '".$parametros['nivel']."'";
-        }
+        }*/
         //print_r($this->db->datos($sql));die();
         return $this->db->datos($sql);
     }
@@ -146,6 +172,27 @@ class catalogo_bodegaM
                 AND TP LIKE ('%')
                 ORDER BY Proceso";
         //print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+    function ListaTipoProcesosGeneralesCompleto(){
+        //$sql = "SELECT DC, Cmds, Proceso, TP, Nivel, Item, ID, Picture, Cta_Debe, Cta_Haber, Color
+        $sql = "SELECT * 
+                FROM Catalogo_Proceso
+                WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+                AND TP LIKE ('%') 
+                ORDER BY Cmds";
+        //print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+    function ListaCatalogoLineas(){
+        $sql = "SELECT Fact
+                FROM Catalogo_Lineas
+                WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+                AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "'
+                GROUP BY Fact
+                ORDER BY Fact";
         return $this->db->datos($sql);
     }
 }

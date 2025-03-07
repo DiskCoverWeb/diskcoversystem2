@@ -82,6 +82,17 @@ class ResumenKM
         return $this->db->datos($sSQL);
     }
 
+    function Form_Activate(){
+        $sSQL = "SELECT TC, Codigo_Inv, Producto,Unidad,Stock_Anterior,Entradas,Salidas,Stock_Actual,Promedio,PVP,Valor_Total " .
+            "FROM Catalogo_Productos " .
+            "WHERE Item = '" . $this->NumEmpresa . "' " .
+            "AND Periodo = '" . $this->Periodo_Contable . "' " .
+            "AND TC = 'I' " .
+            "AND INV <> 0 " .
+            "ORDER BY Codigo_Inv";
+        return grilla_generica_new($sSQL);
+    }
+
     function Listar_Por_Tipo_Cta($TipoCuentaDe, $query=false) {
         if ($TipoCuentaDe == "OpcInv") {
             $sSQL = "SELECT CC.Cuenta as nombre, TK.Cta_Inv as codigo " .

@@ -5,6 +5,9 @@ $controlador = new catalogo_bodegaC();
 
 if (isset($_GET['GuardarProducto'])) {
     $parametros = $_POST;
+    /*print_r($_POST);
+    print_r($_FILES);
+    die();*/
     
     // Verifica si se ha subido un archivo
     if (isset($_FILES['imagen'])) {
@@ -34,6 +37,11 @@ if (isset($_GET['GuardarProducto'])) {
     }
 }
 
+if (isset($_GET['verificarProductos'])) {
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->verificarProductos($parametros));
+}
+
 if (isset($_GET['ListaProductos'])) {
     $parametros = $_POST['parametros'];
     echo json_encode($controlador->ListaProductos($parametros));
@@ -49,9 +57,17 @@ if (isset($_GET['EliminarProducto'])) {
     echo json_encode($controlador->EliminarProducto($parametros));
 }
 
+if (isset($_GET['ListaCatalogoLineas'])) {
+    //$parametros = $_POST['parametros'];
+    echo json_encode($controlador->ListaCatalogoLineas());
+}
+
 if (isset($_GET['EditarProducto'])) {
     //print_r($_POST);die();
     $parametros = $_POST;
+    // print_r($_POST);
+    // print_r($_FILES);
+    // die();
     
     // Verifica si se ha subido un archivo
     if (isset($_FILES['imagen'])) {
@@ -99,6 +115,12 @@ if (isset($_GET['ListaTipo'])) {
 if(isset($_GET['ListaTipoProcesosGeneralesAux'])){
     $parametros = $_POST['parametros'];
     echo json_encode($controlador->ListaTipoProcesosGeneralesAux($parametros));
+
+}
+
+if(isset($_GET['ListaTipoProcesosGeneralesCompleto'])){
+    //$parametros = $_POST['parametros'];
+    echo json_encode($controlador->ListaTipoProcesosGeneralesCompleto());
 
 }
 
@@ -172,6 +194,31 @@ class catalogo_bodegaC
 		return $opciones;             
 	}
 
+    function verificarProductos($parametros)
+    {    
+        //$parametros['tp'] = explode(',', $parametros['tp']);
+        //print_r($parametros['tp']); die();
+        try {
+            //if($parametros['nivel'] == '00') $parametros['nivel'] = '0';
+            $datos = $this->modelo->verificarProductos($parametros['codigo']);
+            
+            $res = [];
+            if(count($datos) > 0){
+                if(count($datos)>1){
+                    $res = array_filter($datos, function($x) use($parametros) {
+                        return $x['TP'] == $parametros['tp'];
+                    });
+                }else{
+                    $res = $datos;
+                }
+            }
+
+            return array('status' => '200', 'datos' => $res);
+        } catch (Exception $e) {
+            return array('status' => '400', 'error' => 'No se pudieron listar los datos.');
+        }                     
+    }
+
     function ListaProductos($parametros)
     {    
         $parametros['tp'] = explode(',', $parametros['tp']);
@@ -209,9 +256,10 @@ class catalogo_bodegaC
 
     function ListaEliminar($parametros)
     {    
-        $parametros['tp'] = explode(',', $parametros['tp']);
+        //$parametros['tp'] = explode(',', $parametros['tp']);
+
         try {
-            if($parametros['nivel'] == '00') $parametros['nivel'] = '0';
+            //if($parametros['nivel'] == '00') $parametros['nivel'] = '0';
             $datos = $this->modelo->ListaEliminar($parametros);             
             return array('status' => '200', 'datos' => $datos);
         } catch (Exception $e) {
@@ -232,6 +280,68 @@ class catalogo_bodegaC
 
     function ListaTipoProcesosGeneralesAux($parametros){
         $datos = $this->modelo->ListaTipoProcesosGeneralesAux($parametros);
+        return $datos;
+    }
+
+    function ListaTipoProcesosGeneralesCompleto(){
+        $data = $this->modelo->ListaTipoProcesosGeneralesCompleto();
+        /*$datos = $data;
+        //$json = '...'; // Tu JSON aquí
+        //$data = json_decode($datos, true);
+
+        $tree = [];
+        //$lookup = [];
+        
+        $raiz = array_shift($data);
+        $raiz['children'] = [];
+        
+        // Primero, organizamos los elementos en un mapa de búsqueda por Cmds
+        foreach ($data as $item) {
+            if($item['Nivel'] == 0){
+                //= [];
+                $item['children'] = $this->buscarHijos($data, $item['Cmds']);
+                array_push($raiz['children'], $item);
+            }
+            //$lookup[$item['Cmds']] = $item;
+        }
+        array_push($tree, $raiz);*/
+        
+        //print_r($tree);die();
+        // Luego, construimos la estructura del árbol
+        /*foreach ($lookup as $cmds => &$node) {
+            if ($node['Nivel'] == 0) {
+                $tree[$cmds] = &$node;
+            } else {
+                $parentCmds = (string) $node['Nivel'];
+                if (isset($lookup[$parentCmds])) {
+                    $lookup[$parentCmds]['children'][] = &$node;
+                }
+            }
+        }*/
+        //return array('arbol'=>$tree, 'datos'=>$datos);
+        return $data;
+    }
+
+    function buscarHijos($data, $codigo){
+        $arreglo = [];
+        
+        foreach($data as $item){
+            if($item['Nivel'] == $codigo){
+                array_push($arreglo, $item);
+            }
+        }
+
+        return $arreglo;
+    }
+
+    function ListaCatalogoLineas(){
+        $datos = $this->modelo->ListaCatalogoLineas();
+        $lineas = array('D', 'C');
+
+        foreach($lineas as $item){
+            array_push($datos, array('Fact' => $item));
+        }
+
         return $datos;
     }
 }
