@@ -489,6 +489,12 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'asignacion_os':
 					require_once("inventario/asignacion_os.php");
 					break;
+				case 'asignacion_familia':
+					require_once("gestion_social/asignacion_familia.php");
+					break;
+				case 'picking_familia':
+					require_once("gestion_social/picking_familia.php");
+					break;
 				case 'picking_org':
 					require_once("inventario/asignacion_picking.php");
 					break;
