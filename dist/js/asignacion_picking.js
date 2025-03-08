@@ -276,7 +276,7 @@ function agregar_picking()
     'CodigoInv':$('#txt_id').val(),
     'Cantidad':$('#cant').val(),
     'FechaAte':$('#fechAten').val(),
-    'codigoProducto':$('#txt_codigo option:selected').text(),
+    'codigoProducto':$('#txt_codigo').val(),
     'id':$('#txt_codigo').val(),
     }
     $.ajax({

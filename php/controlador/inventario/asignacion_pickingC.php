@@ -267,7 +267,9 @@ class asignacion_pickingC
 
         $Beneficiario = explode('-',$parametros['beneficiario']);
         $stock = 0; 
-        
+        // buscar producto bodega
+         $bode = $this->egresos->buscar_producto(false,$parametros['codigoProducto']);
+
         // cantidad ingresada
         $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1]);
         $cant_ing = $cant_ing[0]['Total'];
@@ -287,7 +289,7 @@ class asignacion_pickingC
         // print_r($cant_ing);
         // print_r('-'.$stock);
         
-        // print_r($parametros);
+        // print_r($bode);
         // die();
         if($cant_ing<=$stock)
         {
@@ -300,7 +302,7 @@ class asignacion_pickingC
             SetAdoFields("Total",$parametros['Cantidad']);
             SetAdoFields("Fecha",$parametros['FechaAte']);
             SetAdoFields("Fecha_C",date('Y-m-d'));      
-            SetAdoFields("CodBodega",$parametros['codigoProducto']);        
+            SetAdoFields("CodBodega",$bode[0]['Codigo_Barra']);        
             SetAdoFields("Item",$_SESSION['INGRESO']['item']);
             SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
             SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
@@ -323,7 +325,9 @@ class asignacion_pickingC
         $tbl = '';
         $total = 0;
         foreach ($datos as $key => $value) {
-            $producto = $this->modelo->lineasKArdex($value['CodBodega']);           
+
+            $producto = $this->modelo->lineasKArdex($value['CodBodega']);   
+            // print_r($producto);die();        
             $datos[$key]['Producto'] = $producto[0]['Producto'];
             $datos[$key]['Codigo_Barra'] = $producto[0]['Codigo_Barra'];
             // print_r($producto);die();
