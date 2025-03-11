@@ -1,9 +1,10 @@
 var columnasNumber = ['Saldo_Anterior', 'Debitos', 'Creditos', 'Saldo_Total', 'Total_N6', 'Total_N5', 'Total_N4', 'Total_N3', 'Total_N2', 'Total_N1'];
 $(document).ready(function()
 {
+    $('[data-bs-toggle="tooltip"]').tooltip();
     tipo_balance();
     cargar_datos('1','Balance de comprobacion');
-
+    checkSucursal();
     $('#imprimir_excel').click(function(){
 
     var bal_ext = '00';
@@ -40,6 +41,9 @@ $(document).ready(function()
 
     });
 
+    $('#BC_BC').click(function(){
+
+    })
 
 });
 
@@ -88,11 +92,54 @@ function DataTableColums(firstRow){
     });
 }
 
+function cargar_balance_consolidado(type){
+    if ($.fn.DataTable.isDataTable('#tbl_datos')) {
+        $('#tbl_datos').DataTable().destroy();
+        $('#tbl_datos').empty();
+    }
+    var hasta = $('#hasta').val();
+    var parametros = {
+        'tipo_bal': type,
+        'hasta': hasta,
+    };
+    $.ajax({
+        data: {parametros:parametros},
+        url: '../controlador/contabilidad/contabilidad_controller.php?datos_balance_consolidado=true',
+        type: 'post',
+        dataType: 'json',
+        beforeSend: function(){
+            $('#myModal_espera').modal('show');
+        },
+        success: function(response){
+            if (response.length === 0) {
+                console.warn("Datos vacios");
+            } else {
+                $('#tbl_datos').DataTable({
+                    language:{
+                        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json',
+                    },
+                    data: ProcesarDatos(response),
+                    columns: Object.keys(response[0]).map(key => ({
+                        data: key,
+                        title: key,
+                    })),
+                    scrollX: true,
+                    scrollY: '400px',
+                    scrollCollapse: true,
+                    drawCallback: function (){
+                        Formato_datos_numericos();
+                    }
+                })
+            }
+            $('#myModal_espera').modal('hide');
+        }
+    });
+}
+
 function cargar_datos(item,nombre,imprimir=false)
 {
-    if($.fn.dataTable.isDataTable('#tbl_datos')){
-        console.log("Destruyendo la tabla...")
-        $('#tbl_datos').DataTable().clear().destroy(); 
+    if ($.fn.DataTable.isDataTable('#tbl_datos')) {
+        $('#tbl_datos').DataTable().destroy();
         $('#tbl_datos').empty();
     }
     $('#txt_item').val(item);
@@ -129,37 +176,26 @@ function cargar_datos(item,nombre,imprimir=false)
                 $('#myModal_espera').modal('show');
             },		
             success:  function (response) {
-                $('#tbl_datos').DataTable({
-                    paging: false,     // Desactiva la paginación
-                    info: false,       // Opcional: Desactiva la información (ej. "Mostrando 1 a 10 de 100 registros")        
-                    language:{
-                        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-                    },
-                    data: response.data, 
-                    columns: Object.keys(response.data[0]).map(key => ({
-                        data: key,
-                        title: key
-                    })), 
-                    scrollY: '300px',
-                });
-                $('#tbl_datos').on('init.dt', function() {
-                    $('#tbl_datos th').each(function(index) {
-                        var columnName = $(this).attr('aria-label')?.split(':')[0] || $(this).text().trim();
-                        if(columnasNumber.includes(columnName)){
-                            $('#tbl_datos tbody tr').each(function(){
-                                var cell = $(this).find('td').eq(index);
-                                var numericValue = parseFloat($(cell).text());
-                                if (isFinite(numericValue)){
-                                    var formattedValue = numericValue.toFixed(2);
-                                    $(cell).text(formattedValue);
-                                    if(numericValue < 0 ){ 
-                                        $(cell).css('color', 'red');
-                                    }
-                                }
-                            })
+                if (response.data.length === 0) {
+                    console.warn("Datos vacios");
+                } else {
+                    $('#tbl_datos').DataTable({
+                        language:{
+                            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json',
+                        },
+                        data: ProcesarDatos(response.data),
+                        columns: Object.keys(response.data[0]).map(key => ({
+                            data: key,
+                            title: key,
+                        })),
+                        scrollX: true,
+                        scrollY: '400px',
+                        scrollCollapse: true,
+                        drawCallback: function (){
+                            Formato_datos_numericos();
                         }
-                    });
-                });
+                    })
+                }
                 $('#myModal_espera').modal('hide');
         }
     });
@@ -178,33 +214,64 @@ function cargar_tabla()
             beforeSend: function () {   
                 $('#myModal_espera').modal('show');
             },		
-            success:  function (response) {
-                if ($.fn.dataTable.isDataTable('#tbl_datos')){ 
-                    $('#tbl_datos').DataTable().clear().destroy(true);
-                    $('$tbl_datos').html('');
+            success:  function (response) { 
+                if (response = '') {
                 }
-                var columnas = Object.keys(response.data[0]).map(function(key){
-                    return { data: key, title: key };
-                });
-
-
-                console.log("Columnas: ", columnas);
-                console.log("Datos muestra: ", response.data[0]);
-                var table = $('#tbl_datos').DataTable({
-                    language: { 
-                        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-                    },
-                    data: response.data, 
-                    scrollX: true, 
-                    scrollY: '300px',
-                    scrollCollapse: true,
-                    columns: columnas
-                });
-                /**/
+                else{
+                    var table = $('#tbl_datos').DataTable({
+                        language: { 
+                            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+                        },
+                        data: ProcesarDatos(response.data), 
+                        columns: Object.keys(response.data[0]).map(key => ({
+                            data: key,
+                            title: key,
+                        })),
+                        destroy: true,
+                        drawCallback: function (){
+                            Formato_datos_numericos();
+                        },
+                        scrollX: true,
+                        scrollY: '400px',
+                        scrollCollapse: true,
+                    });
+                }
+                
                 $('#myModal_espera').modal('hide');
-            
         }
     });
+}
 
+function checkSucursal(){
+    $.ajax({
+        url: '../controlador/contabilidad/contabilidad_controller.php?check_sucursal=true',
+        type: 'post',
+        dataType: 'json',
+        success: function(response){
+            if(response.length > 0){
+                $('#bc_btn').prop('disabled', false);
+            } else {
+                $('#bc_btn').prop('disabled', true);
+            }
+        }
+    })
+}
 
+function Formato_datos_numericos(){
+    $('#tbl_datos th').each(function(index) {
+        var columnName = $(this).attr('aria-label')?.split(':')[0] || $(this).text().trim();
+        if(columnasNumber.includes(columnName)){
+            $('#tbl_datos tbody tr').each(function(){
+                var cell = $(this).find('td').eq(index);
+                var numericValue = parseFloat($(cell).text());
+                if (isFinite(numericValue)){
+                    var formattedValue = numericValue.toFixed(2);
+                    $(cell).text(formattedValue);
+                    if(numericValue < 0 ){ 
+                        $(cell).css('color', 'red');
+                    }
+                }
+            })
+        }
+    });
 }

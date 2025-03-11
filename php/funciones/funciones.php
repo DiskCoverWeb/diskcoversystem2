@@ -310,6 +310,29 @@ function Actualizar_Datos_ATS_SP($Items,$MBFechaI,$MBFechaF,$Numero) //---------
     return $res;
 }
 
+function Procesar_Balance_Consolidado_SP($hasta, $type){
+  $hasta = str_replace('-', '', $hasta);
+  $conn = new db();
+  $ListaSucursales = G_NINGUNO;
+  $parametros = array(
+    array(&$type, SQLSRV_PARAM_IN),
+    array(&$_SESSION['INGRESO']['item'], SQLSRV_PARAM_IN),
+    array(&$_SESSION['INGRESO']['periodo'], SQLSRV_PARAM_IN),
+    array(&$hasta, SQLSRV_PARAM_IN),
+    array(&$ListaSucursales, SQLSRV_PARAM_OUT),
+  );
+
+  //print_r($parametros);die();
+  $sql = "EXEC sp_Procesar_Balance_Consolidado @TipoBalance=?,@Item=?,@Periodo =?,@FechaHasta=?,@ListaSucursales=?";
+  /*print_r($parametros);
+  echo '<br>'.$sql; die();*/
+  $resultado = $conn->ejecutar_procesos_almacenados($sql,$parametros);
+  if ($resultado == 1){
+    return $ListaSucursales;
+  }
+  //return $conn->ejecutar_procesos_almacenados($sql, $parametros, $tipo=false);
+}
+
 function sp_Reporte_Cartera_Clientes($CodigoCliente,$desde,$hasta)
 {
     $desde = str_replace('-','',$desde);

@@ -3447,6 +3447,23 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
           return $this->db_->datos($sql);
      }
 
+	 function Listar_Balance_Consolidado($ListaSucursales){
+		$sql = "SELECT TC, DG, Codigo, Cuenta, ".$ListaSucursales."
+				FROM Balance_Consolidado
+				WHERE Item='".$_SESSION['INGRESO']['item']."'
+				AND Periodo='".$_SESSION['INGRESO']['periodo']."'
+				ORDER BY Codigo";
+		return $this->db_->datos($sql);
+	 }
+
+	 function listar_sucursales(){
+		$sql = "SELECT Sucursal
+				FROM Acceso_Sucursales
+				WHERE Sucursal <> '.'
+				AND Item ='".$_SESSION['INGRESO']['item']."'";
+		return $this->db_->datos($sql);
+	 }
+
 }
 
 ?>

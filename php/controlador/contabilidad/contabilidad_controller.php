@@ -52,6 +52,16 @@ if(isset($_GET['datos_balance']))
 	// echo json_decode($l='ss');
 }
 
+if(isset($_GET['datos_balance_consolidado']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode(sp_balance_consolidado($parametros));
+}
+
+if(isset($_GET['check_sucursal'])){
+	echo json_encode(check_sucursal());
+}
+
 if(isset($_GET['datos_balance_excel']))
 {
 	$parametros = array(
@@ -102,8 +112,6 @@ if(isset($_GET['datos_tabla']))
 	$modelo = new contabilidad_model();
 	$tabla = $modelo->listar_tipo_balanceSQl(false,1,'BALANCE DE COMPROBACION');	
 	echo json_encode($tabla);
-   
-	
 }
 
 if(isset($_GET['consultar']))
@@ -1141,4 +1149,18 @@ function comprobantes_procesados_lista($parametros)
 	$datos = $modelo->comprobantes_procesados($parametros);
 	return $datos;
 }
+
+function sp_balance_consolidado($parametros){
+	$modelo = new contabilidad_model();
+	$ListaSucursal = Procesar_Balance_Consolidado_SP($parametros['hasta'], $parametros['tipo_bal']);
+	$datos = $modelo->Listar_Balance_Consolidado($ListaSucursal);
+	return $datos;
+}
+
+function check_sucursal(){
+	$modelo = new contabilidad_model();
+	$Sucursales = $modelo->listar_sucursales();
+	return $Sucursales;
+}
+
 ?>

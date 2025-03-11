@@ -33,26 +33,27 @@
 	</div>          
 </div>
 
+
  <div class="row" id='submenu'>
 		 <div class="col-xs-12">
 			 <div class="box mb-1">
 			  <div class="box-header btn-group p-2">
-						<a class="btn btn-outline-secondary btn-sm" title="Salir del modulo" href="./contabilidad.php?mod=contabilidad#">
+						<a class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Salir del modulo" href="./contabilidad.php?mod=contabilidad#">
 							<i ><img src="../../img/png/salire.png" class="user-image" alt="User Image"
 							></i> 
 						</a>
-						<a class="btn btn-outline-secondary btn-sm" title="Imprimir resultados" id='imprimir_pdf'>
+						<a class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Imprimir resultados" id='imprimir_pdf'>
 							<i ><img src="../../img/png/pdf.png" class="user-image" alt="User Image"
 							></i> 
 						</a>
 						
-						<a id='imprimir_excel' class="btn btn-outline-secondary btn-sm" title="Exportar Excel" href="#">
+						<a id='imprimir_excel' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Exportar Excel" href="#">
 							<i ><img src="../../img/png/table_excel.png" class="user-image" alt="User Image"
 							></i> 
 						</a>
 
 
-						<button class="btn btn-outline-secondary btn-sm" title="Procesar balance de Comprobación" onclick=" cargar_datos('1','BALANCE DE COMPROBACION')">
+						<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Procesar balance de Comprobación" onclick=" cargar_datos('1','BALANCE DE COMPROBACION')">
 							<img src="../../img/png/pbc.png" class="user-image" alt="User Image"
 							>
 						</button>
@@ -66,7 +67,7 @@
 							style='font-size:20px; display:block; height:100%; width:100%;'></i> 
 						</a> -->
 
-						<button class="btn btn-outline-secondary btn-sm"  title="Procesar balance mensual" onclick=" cargar_datos('2','BALANCE DE COMPROBACION MENSUAL')">
+						<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Procesar balance mensual" onclick=" cargar_datos('2','BALANCE DE COMPROBACION MENSUAL')">
 							<img src="../../img/png/pbm.png" class="user-image" alt="User Image"
 							>
 						</button>
@@ -79,11 +80,16 @@
 							<i ><img src="../../img/png/pbm.png" class="user-image" alt="User Image"
 							style='font-size:20px; display:block; height:100%; width:100%;'></i> 
 						</a> -->
-
-						<button class="btn btn-outline-secondary btn-sm" title="Procesar balance consolidado de varias sucursales" disabled >
-							<img src="../../img/png/pbcs.png" class="user-image" alt="User Image"
-							>
-						</button>
+						<div title="Procesar balance consolidado de varias sucursales" data-bs-toggle="tooltip" class="btn-sm">
+							<button class="btn btn-outline-secondary rounded-0" id="bc_btn" data-bs-toggle="dropdown">
+								<img src="../../img/png/pbcs.png" class="user-image" alt="User Image">
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="#" class="dropdown-item" id="BC_BC" onclick='cargar_balance_consolidado("BC")'>Balance de comprobación</a></li>
+								<li><a href="#" class="dropdown-item" id="BC_ES" onclick='cargar_balance_consolidado("ES")'>Estado de Situación</a></li>
+								<li><a href="#" class="dropdown-item" id="BC_ER" onclick='cargar_balance_consolidado("ER")'>Estado de Resultado</a></li>
+							</ul>
+						</div>
 
 
 						<!-- <a id='l3' class="btn btn-outline-secondary btn-sm"  data-toggle="tooltip" title="Procesar balance consolidado de varias sucursales">
@@ -91,7 +97,7 @@
 							style='font-size:20px; display:block; height:100%; width:100%;'></i> 
 						</a> -->
 
-						<button class="btn btn-outline-secondary btn-sm" title="Presenta balance de Comprobación" onclick=" cargar_datos('4','BALANCE DE COMPROBACION')">
+						<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Presenta balance de Comprobación" onclick=" cargar_datos('4','BALANCE DE COMPROBACION')">
 							<img src="../../img/png/vbc.png" class="user-image" alt="User Image"
 							>
 						</button>
@@ -104,7 +110,7 @@
 						</a> -->
 
 
-						<button class="btn btn-outline-secondary btn-sm" title="Presenta estado de situación (general)" onclick=" cargar_datos('5','ESTADO DE SITUACION')">
+						<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Presenta estado de situación (general)" onclick=" cargar_datos('5','ESTADO DE SITUACION')">
 							<img src="../../img/png/bc.png" class="user-image" alt="User Image"
 							>
 						</button>
@@ -132,11 +138,11 @@
 
 
 
-						<button class="btn btn-outline-secondary btn-sm" title="Presenta balance mensual por semana" disabled>
+						<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Presenta balance mensual por semana" disabled>
 							<i ><img src="../../img/png/pbms.png" class="user-image" alt="User Image"
 							></i> 
 						</button>
-						<button class="btn btn-outline-secondary btn-sm" title="SBS B11" disabled>
+						<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="SBS B11" disabled>
 							<i ><img src="../../img/png/books.png" class="user-image" alt="User Image"
 							></i> 
 						</button>
@@ -172,11 +178,9 @@
 		 </div>
 	  </div>
 	  <div class="row">
-	  	<div class="table-responsive">
+	  	<div>
 	  		<div class="col-sm-12">
-			<!--Generamos una tabla dinamicamente sin definir thead predefinidos, para un carga eficiente en estos casos-->
 				<table class="table text-sm w-100" id="tbl_datos">
-					
 				</table>
 	  		</div>
 	  		

@@ -286,8 +286,9 @@ class db
            if ($res === false) 
            {
             echo "Error en consulta PA.\n";  
-					  die( print_r( sqlsrv_errors().'-'.$sql, true));  
-           	return -1;
+				$error = print_r( sqlsrv_errors(), true);
+				echo $error.'-'.$sql; die();
+           		return -1;
            	// die( print_r("<script type='text/javascript'>alert('Estructura procesco almacenado')</script>", true));  
            }else{
 				   if($retorna)
