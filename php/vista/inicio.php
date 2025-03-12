@@ -442,6 +442,11 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'catalogo_bodega':
 					require_once("inventario/catalogo_bodega.php");
 					break;
+
+				//Inventario -> Archivo -> Referenciales SRI
+				case 'referenciales_sri':
+					require_once("seteos/referenciales_sri.php");
+					break;
 	
 				//Inventario -> Archivo -> Registro de Categorias
 				case 'articulos_inventario':
