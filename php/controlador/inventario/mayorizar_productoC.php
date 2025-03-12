@@ -16,7 +16,8 @@ class mayorizar_productoC
 
     function mayorizar_productos(){
         $result = $this->modelo->Mayorizar_Inventario();
-        $result1 = $this->modelo->Mayorizar_Inventario_SP();
+        $fecha = BuscarFecha(date('Y-m-d'));
+        $result1 = $this->modelo->Mayorizar_Inventario_SP($fecha);
         return $result1;
     }
 

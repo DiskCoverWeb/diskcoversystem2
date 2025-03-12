@@ -22,14 +22,8 @@ class mayorizar_productoM
         //print_r($result); die( );
         return $result;
     }
-    public function Mayorizar_Inventario_SP($FechaCorte = ''){
-        $FechaCorteKardex = '';
+    public function Mayorizar_Inventario_SP($FechaCorteKardex){
         $TipoKardex = '';
-        if (strlen($FechaCorte) >= 8){
-            $FechaCorteKardex = BuscarFecha($FechaCorte);
-        } else {
-            $FechaCorteKardex = BuscarFecha(date('Y-m-d'));
-        } 
         $parametros = array(
             array(&$_SESSION['INGRESO']['item'], SQLSRV_PARAM_IN),
             array(&$_SESSION['INGRESO']['periodo'], SQLSRV_PARAM_IN),
