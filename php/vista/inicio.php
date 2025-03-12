@@ -127,6 +127,10 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'Proveedores':
 					include("contabilidad/FProveedores.php");
 					break;
+
+				case 'mapro':
+					require_once("inventario/mapro.php");
+					break;
 	
 				case 'reportes':
 					require_once("contabilidad/resumen_retenciones.php");

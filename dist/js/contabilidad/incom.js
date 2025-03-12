@@ -1245,7 +1245,7 @@ function table_lost_focus(){
 }
 
 function get_cell_focus(){
-  $('#myTable').on('focus', 'td[contenteditable="true"]', function() {
+  $(document).on('focus', 'td[contenteditable="true"]', function() {
       var $this = $(this);
       setTimeout(function() {
           var range = document.createRange();

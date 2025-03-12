@@ -97,6 +97,7 @@ function cargar_balance_consolidado(type){
         $('#tbl_datos').DataTable().destroy();
         $('#tbl_datos').empty();
     }
+    $('#txt_item').val() == type;
     var hasta = $('#hasta').val();
     var parametros = {
         'tipo_bal': type,
@@ -112,7 +113,12 @@ function cargar_balance_consolidado(type){
         },
         success: function(response){
             if (response.length === 0) {
-                console.warn("Datos vacios");
+                swal.fire({
+                    icon: 'warning',
+                    text: 'Advertencia!',
+                    text: 'Datos Vacíos, no hay nada que mostrar.',
+                    confirmButtonText: 'OK',
+                })
             } else {
                 $('#tbl_datos').DataTable({
                     language:{
@@ -126,9 +132,9 @@ function cargar_balance_consolidado(type){
                     scrollX: true,
                     scrollY: '400px',
                     scrollCollapse: true,
-                    drawCallback: function (){
-                        Formato_datos_numericos();
-                    }
+                    createdRow: function(row, data){
+                        alignEnd(row, data);
+                    },
                 })
             }
             $('#myModal_espera').modal('hide');
@@ -177,7 +183,12 @@ function cargar_datos(item,nombre,imprimir=false)
             },		
             success:  function (response) {
                 if (response.data.length === 0) {
-                    console.warn("Datos vacios");
+                    swal.fire({
+                        icon: 'warning',
+                        title: 'Advertencia!',
+                        text: 'Datos Vacíos, no hay nada que mostrar.',
+                        confirmButtonText: 'OK',
+                    })
                 } else {
                     $('#tbl_datos').DataTable({
                         language:{
@@ -193,7 +204,10 @@ function cargar_datos(item,nombre,imprimir=false)
                         scrollCollapse: true,
                         drawCallback: function (){
                             Formato_datos_numericos();
-                        }
+                        },
+                        createdRow: function(row, data){
+                            alignEnd(row, data);
+                        },
                     })
                 }
                 $('#myModal_espera').modal('hide');
