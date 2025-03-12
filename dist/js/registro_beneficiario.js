@@ -1,7 +1,7 @@
 var voluntario;
 $(document).ready(function () {
     Form_Activate();
-    Form_ActivateFamilias();
+    // Form_ActivateFamilias();
     Form_ActivateVoluntarios();
     $('.campoSocial').hide();
     $('.campoFamilia').hide();
@@ -481,79 +481,6 @@ function enviarFormInsc(){
     //Creacion de reporte del formulario
 }
 
-function Form_ActivateFamilias() {
-    /*$('#estadoCivil').select2({
-        placeholder: 'Seleccione una opción',
-        ajax: {
-            url: '../controlador/inventario/registro_beneficiarioC.php?LlenarEstadoCivil=true',
-            dataType: 'json',
-            delay: 250,
-            processResults: function (data) {
-                var options = [];
-                if(data.res == 1){
-                    var option = {
-                        id: opcion.id,
-                        text: opcion.text,
-                        color: opcion.color
-                    };
-                    options.push(option);
-                }else{
-
-                }
-                if (data.respuesta === "No se encontraron datos para mostrar") {
-                    options.push({
-                        id: '',
-                        text: data.respuesta
-                    });
-                } else {
-                    $.each(data.respuesta, function (index, opcion) {
-                        var option = {
-                            id: opcion.id,
-                            text: opcion.text,
-                            color: opcion.color
-                        };
-                        options.push(option);
-                    });
-                }
-                return {
-                    results: options
-                };
-            },
-            cache: true
-        }
-    });
-    $.ajax({
-        url: '../controlador/inventario/registro_beneficiarioC.php?estadoCivil=true',
-        type: 'get',
-        dataType: 'json',
-        success: function (data) {
-            var $selectEstadoCivil = $('#estadoCivil');
-            $.each(opcionesEstadoCivil, function (index, opcion) {
-                var $option = $('<option></option>')
-                    .val(opcion.valor)
-                    .text(opcion.texto);
-                $selectEstadoCivil.append($option);
-            });
-        }
-    });*/
-    var opcionesEstadoCivil = [
-        { valor: 'soltero', texto: 'Soltero/a' },
-        { valor: 'unionL', texto: 'Unión Libre' },
-        { valor: 'unionH', texto: 'Unión de hecho' },
-        { valor: 'casado', texto: 'Casado/a' },
-        { valor: 'viudo', texto: 'Viudo/a' },
-        { valor: 'divorciado', texto: 'Divorciado/a' },
-        { valor: 'separado', texto: 'Separado/a' }
-    ];
-
-    var $selectEstadoCivil = $('#estadoCivil');
-    $.each(opcionesEstadoCivil, function (index, opcion) {
-        var $option = $('<option></option>')
-            .val(opcion.valor)
-            .text(opcion.texto);
-        $selectEstadoCivil.append($option);
-    });
-}
 
 /**
  * SITUACION ECONOMICA INGRESOS
@@ -581,7 +508,7 @@ function calcularTotalIngresos() {
 }
 
 function validarNinguno(selectElem, ...valores){
-    if(selectElem.value == "ninguno" || selectElem.value == "no"){
+    if(selectElem.value == "ninguno" || selectElem.value == "no" || selectElem.value == "01"){
         for(let valor of valores){
             $(`#${valor}`).attr('disabled', 'true');
             $(`#${valor}`).val("");
@@ -734,158 +661,9 @@ $("#tablaSituacion").on("click", ".btn-editar", function () {
  * ESTRUCTURA FAMILIAR
 */
 
-$('#iconEstructuraFam').click(function () {
-    $('#modalEstructuraFam').modal('show');
-});
 
-$("#btnAceptarIntegrante").click(function () {
-    $('#modalEstructuraFam').modal('hide');
-});
 
-var integrantes = [];
-var integrantesDisc = [];
-var integrantesEnfe = [];
-var totalVulnerables = null;
-$("#agregarIntegrante").click(function () {
-    var integrante = {
-        nombre: $("#nuevoNombre").val()==null?"":$("#nuevoNombre").val(),
-        genero: $("#nuevoGenero").val()==null?"":$("#nuevoGenero").val(),
-        parentesco: $("#nuevoParentesco").val()==null?"":$("#nuevoParentesco").val(),
-        rangoEdad: $("#nuevoRangoEdad").val()==null?"":$("#nuevoRangoEdad").val(),
-        ocupacion: $("#nuevaOcupacion").val()==null?"":$("#nuevaOcupacion").val(),
-        estadoCivil: $("#nuevoEstadoCivil").val()==null?"":$("#nuevoEstadoCivil").val(),
-        nivelEscolaridad: $("#nuevoNivelEscolaridad").val()==null?"":$("#nuevoNivelEscolaridad").val(),
-        nombreInstitucion: $("#nuevoNombreInstitucion").val()==null?"":$("#nuevoNombreInstitucion").val(),
-        tipoInstitucion: $("#nuevoTipoInstitucion").val()==null?"":$("#nuevoTipoInstitucion").val(),
-        vulnerabilidad: $("#nuevaVulnerabilidad").val()==null?"":$("#nuevaVulnerabilidad").val()
-    };
 
-    let integVacios = [];
-    if(integrante['nombre'].trim() == "") integVacios.push("Nombres y Apellidos");
-    if(integrante['genero'] == "") integVacios.push("Genero");
-    if(integrante['parentesco'].trim() == "") integVacios.push("Parentesco");
-    if(integrante['rangoEdad'] == "") integVacios.push("Rango de edad");
-    if(integrante['ocupacion'].trim() == "") integVacios.push("Ocupacion");
-    if(integrante['estadoCivil'] == "") integVacios.push("Estado civil");
-    if(integrante['nivelEscolaridad'] == "") integVacios.push("Nivel de Escolaridad");
-    if(integrante['nivelEscolaridad'] != "ninguno" && integrante['nombreInstitucion'] == "") integVacios.push("Nombre de la Institución");
-    if(integrante['nivelEscolaridad'] != "ninguno" && integrante['tipoInstitucion'] == "") integVacios.push("Tipo de Institución");
-    if(integrante['vulnerabilidad'] == "") integVacios.push("Vulnerabilidad");
-
-    if(integVacios.length > 0){
-        swal.fire('Campos Vacíos', `Rellene los campos: ${integVacios.join(', ')}`, 'error');
-    }else{
-        integrantes.push(integrante);
-
-        if (integrante.vulnerabilidad === "discapacidad") {
-            var integranteDiscapacidad = {
-                nombre: integrante.nombre,
-                nombreDiscapacidad: "",
-                tipoDiscapacidad: "",
-                porDiscapacidad: ""
-            };
-            integrantesDisc.push(integranteDiscapacidad);
-            totalVulnerables++;
-        }
-        if (integrante.vulnerabilidad === "enfermedad") {
-            var integranteEnfermedad = {
-                nombre: integrante.nombre,
-                nombreEnfermedad: "",
-                tipoEnfermedad: ""
-            };
-            integrantesEnfe.push(integranteEnfermedad);
-            totalVulnerables++;
-        }
-        actualizarTabla();
-        limpiarCampos();
-    }
-});
-
-function actualizarTabla() {
-    var tablaBody = $("#tablaIntegrantes tbody");
-    tablaBody.children(':not(:first)').remove();
-
-    for (var i = 0; i < integrantes.length; i++) {
-        var integrante = integrantes[i];
-        var fila = $("<tr></tr>");
-        fila.append($("<td></td>").text(integrante.nombre));
-        fila.append($("<td></td>").text(integrante.genero));
-        fila.append($("<td></td>").text(integrante.parentesco));
-        fila.append($("<td></td>").text(integrante.rangoEdad));
-        fila.append($("<td></td>").text(integrante.ocupacion));
-        fila.append($("<td></td>").text(integrante.estadoCivil));
-        fila.append($("<td></td>").text(integrante.nivelEscolaridad));
-        fila.append($("<td></td>").text(integrante.nombreInstitucion));
-        fila.append($("<td></td>").text(integrante.tipoInstitucion));
-        fila.append($("<td></td>").text(integrante.vulnerabilidad));
-        fila.append($("<td><button type='button' class='btn btn-danger btn-eliminar'>Eliminar</button> <button type='button' class='btn btn-warning btn-editar'>Editar</button></td>"));
-        tablaBody.append(fila);
-    }
-}
-
-function limpiarCampos() {
-    $("#nuevoNombre").val("");
-    $("#nuevoGenero").val("");
-    $("#nuevoParentesco").val("");
-    $("#nuevoRangoEdad").val("");
-    $("#nuevaOcupacion").val("");
-    $("#nuevoEstadoCivil").val("");
-    $("#nuevoNivelEscolaridad").val("");
-    $("#nuevoNombreInstitucion").val("");
-    $("#nuevoNombreInstitucion").attr("disabled", "true");
-    $("#nuevoTipoInstitucion").val("");
-    $("#nuevoTipoInstitucion").attr("disabled", "true");
-    $("#nuevaVulnerabilidad").val("");
-}
-
-$("#tablaIntegrantes").on("click", ".btn-eliminar", function () {
-    var fila = $(this).closest("tr");
-    var index = fila.index() - 1;
-    var integrante = integrantes[index];
-
-    if (integrante.vulnerabilidad === "discapacidad") {
-        totalVulnerables--;
-        integrantesDisc = integrantesDisc.filter(d => d.nombre !== integrante.nombre);
-    }
-
-    if (integrante.vulnerabilidad === "enfermedad") {
-        totalVulnerables--;
-        integrantesEnfe = integrantesEnfe.filter(e => e.nombre !== integrante.nombre);
-    }
-
-    integrantes.splice(index, 1);
-    actualizarTabla();
-});
-
-$("#tablaIntegrantes").on("click", ".btn-editar", function () {
-    var fila = $(this).closest("tr");
-    var index = fila.index() - 1;
-    var integrante = integrantes[index];
-
-    $("#nuevoNombre").val(integrante.nombre);
-    $("#nuevoGenero").val(integrante.genero);
-    $("#nuevoParentesco").val(integrante.parentesco);
-    $("#nuevoRangoEdad").val(integrante.rangoEdad);
-    $("#nuevaOcupacion").val(integrante.ocupacion);
-    $("#nuevoEstadoCivil").val(integrante.estadoCivil);
-    $("#nuevoNivelEscolaridad").val(integrante.nivelEscolaridad);
-    $("#nuevoNombreInstitucion").val(integrante.nombreInstitucion);
-    $("#nuevoTipoInstitucion").val(integrante.tipoInstitucion);
-    $("#nuevaVulnerabilidad").val(integrante.vulnerabilidad);
-
-    if (integrante.vulnerabilidad === "discapacidad") {
-        totalVulnerables--;
-        integrantesDisc = integrantesDisc.filter(d => d.nombre !== integrante.nombre);
-    }
-
-    if (integrante.vulnerabilidad === "enfermedad") {
-        totalVulnerables--;
-        integrantesEnfe = integrantesEnfe.filter(e => e.nombre !== integrante.nombre);
-    }
-
-    integrantes.splice(index, 1);
-    actualizarTabla();
-});
 
 /**
  * PROGRAMA
@@ -906,27 +684,27 @@ $('#btnPrograma').click(function () {
 /**
  * INFORMACION USUARIO
 */
-$('#btnAceptarUser').click(function () {
-    const trabaja = $("#trabajaSelect").val();
-    const cometntarioAc = $("#comentarioAct").val();
-    const modalidad = $("#modalidadSelect").val();
-    const conyugeTrabaja = $("#conyugeSelect").val();
-    const comentarioConyugeAct = $("#comentarioConyugeAct").val();
-    const modalidadConyuge = $("#modalidadConyugeSelect").val();
-    const numHijos = $("#numHijos").val();
-    const numPersonas = $("#numPersonas").val();
+// $('#btnAceptarUser').click(function () {
+//     const trabaja = $("#trabajaSelect").val();
+//     const cometntarioAc = $("#comentarioAct").val();
+//     const modalidad = $("#modalidadSelect").val();
+//     const conyugeTrabaja = $("#conyugeSelect").val();
+//     const comentarioConyugeAct = $("#comentarioConyugeAct").val();
+//     const modalidadConyuge = $("#modalidadConyugeSelect").val();
+//     const numHijos = $("#numHijos").val();
+//     const numPersonas = $("#numPersonas").val();
 
-    /*console.log("Trabaja:", trabaja);
-    console.log("Actividad (Trabaja):", comentarioAct);
-    console.log("Modalidad (Trabaja):", modalidad);
-    console.log("Cónyuge Trabaja:", conyugeTrabaja);
-    console.log("Actividad (Cónyuge):", comentarioConyugeAct);
-    console.log("Modalidad (Cónyuge):", modalidadConyuge);
-    console.log("Número de Hijos:", numHijos);
-    console.log("Número de Personas en la Casa:", numPersonas);*/
+//     /*console.log("Trabaja:", trabaja);
+//     console.log("Actividad (Trabaja):", comentarioAct);
+//     console.log("Modalidad (Trabaja):", modalidad);
+//     console.log("Cónyuge Trabaja:", conyugeTrabaja);
+//     console.log("Actividad (Cónyuge):", comentarioConyugeAct);
+//     console.log("Modalidad (Cónyuge):", modalidadConyuge);
+//     console.log("Número de Hijos:", numHijos);
+//     console.log("Número de Personas en la Casa:", numPersonas);*/
 
-    $('#modalInfoUserFam').modal('hide');
-});
+//     $('#modalInfoUserFam').modal('hide');
+// });
 
 $('#btnInfoUser').click(function () {
     $('#modalInfoUserFam').modal('show');
@@ -986,73 +764,8 @@ $('#conyugeSelect').change(function () {
 /**
 * VULNERABILIDADES
 */
-$("#btnAceptarVulnerable").click(function () {
-    if ($("#tablaFamDisc tbody tr").length > 0) {
-        $("#tablaFamDisc tbody tr").each(function () {
-            const nombre = $(this).find("td:eq(0)").text();
-            const nombreDiscapacidad = $(this).find("td:eq(1) input").val();
-            const tipoDiscapacidad = $(this).find("td:eq(2) select").val();
-            const porDiscapacidad = $(this).find("td:eq(3) input").val();
-            console.log(nombre, nombreDiscapacidad, tipoDiscapacidad, porDiscapacidad);
-        });
-    } else {
-        console.log("No hay datos en la tabla de familia con discapacidad.");
-    }
-    $('#modalVulnerabilidadFam').modal('hide');
-});
 
-$('#iconVulnerabilidadFam').click(function () {
-    if (integrantes.length > 0) {
-        if (integrantesDisc.length > 0) {
-            $("#tablaFamDisc tbody").empty();
-            var tablaBody = $("#tablaFamDisc tbody");
-            for (var i = 0; i < integrantesDisc.length; i++) {
-                console.log(integrantesDisc[i]);
-                var integrantedisc = integrantesDisc[i];
-                var fila = $("<tr></tr>");
-                fila.append($("<td></td>").text(integrantedisc.nombre));
-                fila.append($("<td><input type='text' class='form-control imput-xs' id='nombreDiscapacidad'></td>"));
-                fila.append($("<td><select class='form-control imput-xs'id='tipoDiscapacidad'> " +
-                    "<option value=''>Seleccione</option>" +
-                    "<option value='fisica'>Física</option>" +
-                    "<option value='mental'>Mental</option>" +
-                    "<option value='social'>Social</option></select></td>"));
-                fila.append($("<td><input type='text' class='form-control imput-xs' id='porDiscapacidad'></td>"));
-                tablaBody.append(fila);
-            }
-        } else if (integrantesDisc.length == 0) {
-            $("#tablaFamDisc").hide();
-            $("#mensajeNoIntegrantes").show();
-        }
 
-        if (integrantesEnfe.length > 0) {
-            $("#tablaFamEnfe tbody").empty();
-            var tablaBody = $("#tablaFamEnfe tbody");
-            for (var i = 0; i < integrantesEnfe.length; i++) {
-                console.log(integrantesEnfe[i]);
-                var integranteenf = integrantesEnfe[i];
-                var fila = $("<tr></tr>");
-                fila.append($("<td></td>").text(integranteenf.nombre));
-                fila.append($("<td><input type='text' class='form-control imput-xs' id='nombreEnfermedad'></td>"));
-                fila.append($("<td><select class='form-control imput-xs' id='tipoEnfermedad'> " +
-                    "<option value=''>Seleccione</option>" +
-                    "<option value='cronica'>Crónica</option>" +
-                    "<option value='catastrofica'>Catastrófica</option>" +
-                    "<option value='otra'>Otra</option></select></td>"));
-                tablaBody.append(fila);
-            }
-        } else if (integrantesEnfe.length == 0) {
-            $("#tablaFamEnfe").hide();
-            $("#mensajeNoIntegrantesE").show();
-        }
-
-        $('#totalFamVuln').val(totalVulnerables);
-        $('#modalVulnerabilidadFam').modal('show');
-    } else {
-        var nombreSol = $('#nombres').val();
-        swal.fire('', 'No hay integrantes para el Sr.(a) ' + nombreSol, 'info');
-    }
-});
 
 /**
 * SITUACION ECONOMICA EGRESOS
@@ -1899,6 +1612,7 @@ $('#btnGuardarGrupo').click(function () {
     $('#modalBtnGrupo').modal('hide');
 });
 
+
 var datosArray = [];
 function llenarCarousels(valor, valor2) {
     $.ajax({
@@ -2030,22 +1744,22 @@ function handleSelectEvent(e, valor) {
         if (item.id == id) {
             var imagen = "../../img/png/" + item.picture + ".png";
             if (valor == 93) {
-                var val = id.substring(0, 2);
-                $("#carouselBtnIma_" + val + " .item.active img").attr("src", imagen);
-                $("#carouselBtnIma_" + val).carousel("pause");
-                actualizarEstilo(item.color);
-                if (id == "93.04") abrirModal('pAliado');
+                // var val = id.substring(0, 2);
+                // $("#carouselBtnIma_" + val + " .item.active img").attr("src", imagen);
+                // $("#carouselBtnIma_" + val).carousel("pause");
+                // actualizarEstilo(item.color);
+                // if (id == "93.04") abrirModal('pAliado');
             }
             if (valor == 85) {
                 var val = id.substring(0, 2);
                 $("#carouselBtnIma_" + val + " .item.active img").attr("src", imagen);
                 $("#carouselBtnIma_" + val).carousel("pause");
             }
-            if (valor == 87) {
-                var val = id.substring(0, 2);
-                $("#carouselBtnIma_" + val + " .item.active img").attr("src", imagen);
-                $("#carouselBtnIma_" + val).carousel("pause");
-            }
+            // if (valor == 87) {
+            //     var val = id.substring(0, 2);
+            //     $("#carouselBtnIma_" + val + " .item.active img").attr("src", imagen);
+            //     $("#carouselBtnIma_" + val).carousel("pause");
+            // }
             if (valor == 0) {
                 $("#carouselBtnImaDon .item.active img").attr("src", imagen);
                 $("#carouselBtnImaDon").carousel("pause");
@@ -2054,52 +1768,52 @@ function handleSelectEvent(e, valor) {
     });
 }
 
-$('#select_93').on('select2:select', function (e) {
-    handleSelectEvent(e, 93);
-});
-$('#select_85').on('select2:select', function (e) {
-    handleSelectEvent(e, 85);
-});
-$('#select_87').on('select2:select', function (e) {
-    handleSelectEvent(e, 87);
-});
-$('#select_CxC').on('select2:select', function (e) {
-    handleSelectEvent(e, 0);
-});
+// $('#select_93').on('select2:select', function (e) {
+//     handleSelectEvent(e, 93);
+// });
+// $('#select_85').on('select2:select', function (e) {
+//     handleSelectEvent(e, 85);
+// });
+// $('#select_87').on('select2:select', function (e) {
+//     handleSelectEvent(e, 87);
+// });
+// $('#select_CxC').on('select2:select', function (e) {
+//     handleSelectEvent(e, 0);
+// });
 
 function abrirModal(valor) {
     $('#modalsBtn' + valor).modal('show');
 };
 
-function itemSelect(picture, text, color, id) {
-    if (id.length == 3) {
-        var imagen = "../../img/png/" + picture + ".png";
+// function itemSelect(picture, text, color, id) {
+//     if (id.length == 3) {
+//         var imagen = "../../img/png/" + picture + ".png";
 
-        $("#carouselBtnImaDon .carousel-item.active img").attr("src", imagen);
-        $("#carouselBtnImaDon").carousel("pause");
-        $("#modalsBtnDon").modal("hide");
-        var newOption = new Option(text, id, true, true);
-        $('#select_CxC').append(newOption).trigger('change');
-    } else {
-        var valor = id.substring(0, 2);
-        var imagen = "../../img/png/" + picture + ".png";
+//         $("#carouselBtnImaDon .carousel-item.active img").attr("src", imagen);
+//         $("#carouselBtnImaDon").carousel("pause");
+//         $("#modalsBtnDon").modal("hide");
+//         var newOption = new Option(text, id, true, true);
+//         $('#select_CxC').append(newOption).trigger('change');
+//     } else {
+//         var valor = id.substring(0, 2);
+//         var imagen = "../../img/png/" + picture + ".png";
 
-        $("#carouselBtnIma_" + valor + " .carousel-item.active img").attr("src", imagen);
-        $("#carouselBtnIma_" + valor).carousel("pause");
-        $("#modalsBtn" + valor).modal("hide");
+//         $("#carouselBtnIma_" + valor + " .carousel-item.active img").attr("src", imagen);
+//         $("#carouselBtnIma_" + valor).carousel("pause");
+//         $("#modalsBtn" + valor).modal("hide");
 
-        if (valor == 93) {
-            actualizarEstilo(color);
-        }
+//         if (valor == 93) {
+//             actualizarEstilo(color);
+//         }
 
-        var newOption = new Option(text, id, true, true);
-        $('#select_' + valor).append(newOption).trigger('change');
-    }
-}
+//         var newOption = new Option(text, id, true, true);
+//         $('#select_' + valor).append(newOption).trigger('change');
+//     }
+// }
 
 //btn icono RUC
 function validarRucYValidarSriC() {
-    var ruc = $('#lbl_ci').text();
+    var ruc = $('#txt_ci').text();
     if (ruc) {
         validar_sriC(ruc);
     } else {
@@ -2130,26 +1844,22 @@ function usar_cliente(nombre, ruc, codigo, email, td = 'N') {
 var horaActual;
 function Form_Activate() {
     $('#comentariodiv').hide();
-    LlenarSelectDiaEntrega();
     LlenarSelectSexo();
-    LlenarSelectRucCliente();
-    llenarCarousels(85);
-    llenarCarousels(87);
-    llenarCarousels(93);
+    // LlenarSelectRucCliente();
+    // llenarCarousels(85);
+    // llenarCarousels(87);
     llenarCarousels(91);
-    llenarCarousels("CxC", true);
+    // llenarCarousels("CxC", true);
     // LlenarSelects_Val("CxC", true);
-    LlenarTipoDonacion();
-    LlenarSelects_Val(85);
-    LlenarSelects_Val("estadoCivil");
-    LlenarSelects_Val(86);
-    LlenarSelects_Val(87);
-    LlenarSelects_Val(88);
+    // LlenarSelects_Val(85);
+    // LlenarSelects_Val("estadoCivil");
+    // LlenarSelects_Val(86);
+    // LlenarSelects_Val(87);
+    // LlenarSelects_Val(88);
     LlenarSelects_Val(89);
-    LlenarSelects_Val(90);
+    // LlenarSelects_Val(90);
     LlenarSelects_Val(91);
-    LlenarSelects_Val(92);
-    LlenarSelects_Val(93);
+    // LlenarSelects_Val(92);
     //[86, 87, 88, 89, 90, 91, 92, 93].forEach(LlenarSelects_Val);
 
     horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -2242,88 +1952,33 @@ function LlenarSelectSexo() {
     });
 }
 
-//selects Dia de Entrega
-function LlenarSelectDiaEntrega() {
-    $.ajax({
-        url: '../controlador/inventario/registro_beneficiarioC.php?LlenarSelectDiaEntrega=true',
-        type: 'post',
-        dataType: 'json',
-        success: function (datos) {
-            $('#diaEntregac').append('<option value="" disabled selected>Seleccione una opción</option>');
-            $('#diaEntrega').append('<option value="" disabled selected>Seleccione una opción</option>');
-
-            $.each(datos, function (index, opcion) {
-                $('#diaEntregac').append('<option value="' + opcion['Dia_Mes_C'] + '">' + opcion['Dia_Mes'] + '</option>');
-                $('#diaEntrega').append('<option value="' + opcion['Dia_Mes_C'] + '">' + opcion['Dia_Mes'] + '</option>');
-            });
-        }
-    });
-}
 
 //select RUC y Cliente
-function LlenarSelectRucCliente() {
-    $('#cliente').select2({
-        width: '84%',
-        placeholder: 'Seleccione una opción',
-        ajax: {
-            url: '../controlador/inventario/registro_beneficiarioC.php?',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    query: params.term,
-                    LlenarSelectRucCliente: true
-                }
-            },
-            processResults: function (data) {
-                return {
-                    results: data.clientes
-                };
-            },
-            cache: true
-        }
-    });
-}
+// function LlenarSelectRucCliente() {
+//     $('#cliente').select2({
+//         width: '84%',
+//         placeholder: 'Seleccione una opción',
+//         ajax: {
+//             url: '../controlador/inventario/registro_beneficiarioC.php?',
+//             dataType: 'json',
+//             delay: 250,
+//             data: function (params) {
+//                 return {
+//                     query: params.term,
+//                     LlenarSelectRucCliente: true
+//                 }
+//             },
+//             processResults: function (data) {
+//                 return {
+//                     results: data.clientes
+//                 };
+//             },
+//             cache: true
+//         }
+//     });
+// }
 
-//llenar select Donacion
-function LlenarTipoDonacion() {
-    $('#select_CxC').select2({
-        placeholder: 'Seleccione una opcion',
-        width:'100%',
-        ajax: {
-            url: '../controlador/inventario/registro_beneficiarioC.php?LlenarTipoDonacion=true',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    query: params.term,
-                    LlenarTipoDonacion: true
-                }
-            },
-            processResults: function (data) {
-                var options = [];
-                if (data.respuesta === "No se encontraron datos para mostrar") {
-                    options.push({
-                        id: '',
-                        text: data.respuesta
-                    });
-                } else {
-                    $.each(data.respuesta, function (index, item) {
-                        var idDigits = item.id.slice(-3);
-                        options.push({
-                            id: idDigits,
-                            text: item.text
-                        });
-                    });
-                }
-                return {
-                    results: options
-                };
-            },
-            cache: true
-        }
-    });
-}
+
 
 //todos los selects_num
 function LlenarSelects_Val(valor, valor2) {
@@ -2524,7 +2179,11 @@ function mostrarArchivoVoluntario(nombreArch){
 }
 
 //registro 
+
 $('#btnGuardarAsignacion').click(function () {
+
+
+
     switch($('#select_93').val()){
         case '93.01':
         {
@@ -2706,60 +2365,7 @@ $('#btnGuardarAsignacion').click(function () {
     }
 });
 
-//limpieza
-function LimpiarPanelOrgSocialAdd() {
-    eventosEliminados = [];
-    eventosEditados = [];
-    eventosCreados = [];
-    userAuth = false;
-    userNew = false;
-    $('#collapseTwo').collapse('hide');
-    $('#select_92').val(null).trigger('change');
-    $('#select_86').val(null).trigger('change');
-    $('#select_88').val(null).trigger('change');
-    $('#select_89').val(null).trigger('change');
-    $('#select_90').val(null).trigger('change');
-    //$('#select_91').val(null).trigger('change');
-    $('#archivoAdd').val('');
-    $('#diaEntregac').val('');
-    $('#horaEntregac').val('');
-    $('#totalPersonas').val('');
-    $('#infoNut').val('');
-    $('#comentario').val('');
-    comen = '';
-    nombreArchivo = '';
-    ruta = '';
-    nombre = '';
-    valoresFilas = [];
-    $('#modalDescarga .modal-footer').hide();
-}
 
-//llenar campos del cliente segun nombre seleccionado
-var miRuc;
-var miCodigo = '';
-var miCliente;
-var nombreArchivo;
-$('#cliente').on('select2:select', function (e) {
-    LimpiarPanelOrgSocialAdd();
-    var data = e.params.data;
-    console.log(data);
-    miCodigo = data.id;
-    miRuc = data.CI_RUC;
-    miCliente = data.text;
-    if (data.id === '.') {
-        Swal.fire("", "No se encontró un RUC relacionado.", "error");
-    } else {
-        // if ($('#ruc').find("option[value='" + data.id + "']").length) {
-        //     $('#ruc').val(data.id).trigger('change');
-        // } else {
-        //     var newOption = new Option(data.CI_RUC, data.id, true, true);
-        //     $('#ruc').append(newOption).trigger('change');
-        // }
-        $('#lbl_ci').text(data.CI_RUC)
-        var valorSeleccionado = $('#ruc').val();
-        llenarCamposInfo(miCodigo);
-    }
-});
 
 //llenar campos del cliente segun ruc seleccionado
 $('#ruc').on('select2:select', function (e) {
@@ -2782,173 +2388,7 @@ $('#ruc').on('select2:select', function (e) {
     }
 });
 
-//llenar campos del panel informacion
-var prov;
-var ciud;
-function llenarCamposInfo(Codigo) {
-    $.ajax({
-        url: '../controlador/inventario/registro_beneficiarioC.php?llenarCamposInfo=true',
-        type: 'post',
-        dataType: 'json',
-        data: { valor: Codigo },
-        success: function (datos) {
-            console.log(datos);
-            if (datos != 0) {
-                actualizarEstilo();
 
-                $('#nombreRepre').val(datos.Representante);
-                $('#ciRepre').val(datos.CI_RUC_R);
-                $('#telfRepre').val(datos.Telefono_R);
-                $('#contacto').val(datos.Contacto);
-                $('#cargo').val(datos.Profesion);
-                $('#email').val(datos.Email);
-                $('#email2').val(datos.Email2);
-                $('#telefono').val(datos.Telefono);
-                $('#telefono2').val(datos.TelefonoT);
-                if (datos.Sexo == '.') {
-                    $('#sexo').val($('#sexo option:first').val());
-                } else {
-                    $('#sexo').val(datos.Sexo);
-                }
-
-                prov = (datos.Prov !== '.') ? datos.Prov : null;
-                ciud = (datos.Ciudad !== '.') ? datos.Ciudad : null;
-
-                $('#Canton').val(datos.Canton);
-                $('#Parroquia').val(datos.Parroquia);
-                $('#Barrio').val(datos.Barrio);
-                $('#CalleP').val(datos.Direccion);
-                $('#CalleS').val(datos.DireccionT);
-                $('#Referencia').val(datos.Referencia);
-
-                datosArray.forEach(function (item) {
-                    if (item.id === datos.TB || item.id === datos.CodigoA || item.id === datos.Calificacion) {
-                        itemSelect(item.picture, item.text, item.color, item.id);
-                    }
-                });
-
-                if (datos.CodigoA == '.') {
-                    $('#select_87').val(null).trigger('change');
-                    $('#carouselBtnIma_87').carousel("cycle");
-                }
-                // if (datos.TB == '.') {
-                //     $('#select_93').val(null).trigger('change');
-                //     $('#carouselBtnIma_93').carousel("cycle");
-                // }
-                // if (datos.Calificacion == '.') {
-                //     $('#select_CxC').val(null).trigger('change');
-                //     $('#carouselBtnImaDon').carousel("cycle");
-                // }
-
-
-                if (datos.Dia_Ent == '.') {
-                    $('#diaEntrega').val($('#diaEntrega option:first').val());
-                } else {
-                    $('#diaEntrega').val(datos.Dia_Ent);
-                }
-                if (/^\d{2}:\d{2}$/.test(datos.Hora_Ent)) {
-                    $('#horaEntrega').val(datos.Hora_Ent);
-                } else {
-                    $('#horaEntrega').val(datos);
-                }
-            }
-        }
-    });
-}
-
-$('#select_93').change(function () {
-    LimpiarPanelOrgSocialAdd();
-});
-
-$('#select_93').change(function () {
-    var valorSeleccionado = $('#select_93').val();
-    switch (valorSeleccionado) {
-        case '93.01':
-            $('.campoSocial').show();
-            $('.campoFamilia').hide();
-            $('.campoVoluntario').hide();
-            $('.campoVolNo').show();
-            break;
-        case '93.02':
-            $('.campoSocial').hide();
-            $('.campoVoluntario').hide();
-            $('.campoFamilia').show();
-            $('.campoVolNo').show();
-            break;
-        case '93.03':
-            $('.campoSocial').hide();
-            $('.campoFamilia').hide();
-            $('.campoVolNo').hide();
-            $('.campoVoluntario').show();
-            break;
-        case '93.04':
-            $('.campoSocial').hide();
-            $('.campoFamilia').hide();
-            $('.campoVolNo').hide();
-            $('.campoVoluntario').hide();
-            break;
-    }
-});
-
-
-//llenar campos panel org.social
-function CamposPanelOrgSocial() {
-    $("#mostrarFamiliasAdd").css("display", "none");
-    $("#mostrarVoluntariosAdd").css("display", "none");
-    if (miCodigo) {
-        $("#mostrarOrgSocialAdd").css("display", "block");
-        $.ajax({
-            url: '../controlador/inventario/registro_beneficiarioC.php?llenarCamposInfoAdd=true',
-            type: 'post',
-            dataType: 'json',
-            data: { valor: miCodigo },
-            success: function (datos) {
-                if (datos != 0) {
-                    $('#diaEntregac').val(datos.Dia_Ent2);
-                    $('#horaEntregac').val(datos.Hora_Ent2);
-                    $('#totalPersonas').val(datos.No_Soc);
-                    $('#comentario').val(datos.Etapa_Procesal);
-                    comen = datos.Etapa_Procesal;
-                    $('#infoNut').val(datos.Observaciones);
-                    nombreArchivo = datos.Evidencias;
-                    llenarPreSelects(datos.CodigoA2);
-                    llenarPreSelects(datos.Envio_No);
-                    llenarPreSelects(datos.Area);
-                    llenarPreSelects(datos.Acreditacion);
-                    llenarPreSelects(datos.Tipo_Dato);
-                    llenarPreSelects(datos.Cod_Fam);
-                    if (userNew == false && userAuth == false) {
-                        autorizarCambios();
-                    }
-                } else {
-                    userNew = true;
-                    Swal.fire({
-                        title: 'No se encontraron datos adicionales',
-                        text: '',
-                        icon: 'info'
-                    });
-                }
-            }
-        });
-        llenarCamposPoblacion(miCodigo);
-    }
-    else {
-        $('#collapseTwo').collapse('hide');
-        Swal.fire({
-            title: 'No se seleccionó un Beneficiario/Usuario',
-            text: '',
-            icon: 'warning',
-        });
-    }
-}
-
-//llenar campos panel familias
-function CamposPanelFamilias() {
-    $("#mostrarFamiliasAdd").css("display", "block");
-    $("#mostrarVoluntariosAdd").css("display", "none");
-    $("#mostrarOrgSocialAdd").css("display", "none");
-
-}
 
 //llenar campos panel voluntarios
 function CamposPanelVoluntarios() {
@@ -2962,56 +2402,38 @@ function CamposPanelVoluntarios() {
 var comen;
 var userNew = false;
 var userAuth = false;
-$('#botonInfoAdd').click(function (e) {
-    e.preventDefault();
-    
-    let acordion = document.querySelector('#collapseTwo');
-    const collapseInstance = new bootstrap.Collapse(acordion, {
-        toggle: false // No se expande automáticamente
-    });
-    //collapseInstance.toggle();
-
+ $('#botonInfoAdd').click(function () {
     var valorSeleccionado = $('#select_93').val();
+    if ($('#contenidoColapsado').hasClass('show')) {
+         $('#collapseTwo').collapse('hide');
+    } else {
+         $('#collapseTwo').collapse('show');
+    }
+    
     switch (valorSeleccionado) {
         case '93.01':
-            collapseInstance.toggle();
-            CamposPanelOrgSocial();
+            $("#mostrarFamiliasAdd").css("display", "none");
+            $("#mostrarVoluntariosAdd").css("display", "none");
+            $("#mostrarOrgSocialAdd").css("display", "block");                
             break;
         case '93.02':
-            collapseInstance.toggle();
-            CamposPanelFamilias();
+            $("#mostrarFamiliasAdd").css("display", "block");
+            $("#mostrarVoluntariosAdd").css("display", "none");
+            $("#mostrarOrgSocialAdd").css("display", "none");
             break;
         case '93.03':
-            collapseInstance.toggle();
             break;
         case '93.04':
-            collapseInstance.toggle();
             break;
         default:
-            swal.fire("Error", "Tipo de Beneficiario no ha sido seleccionado.", "error");
+            Swal.fire("Error", "Tipo de Beneficiario no ha sido seleccionado.", "error").then(function(){
+                $('#collapseTwo').collapse('hide');
+            })
             break;
     }
 });
 
-function llenarCamposPoblacion(Codigo) {
-    $.ajax({
-        url: '../controlador/inventario/registro_beneficiarioC.php?llenarCamposPoblacion=true',
-        type: 'post',
-        dataType: 'json',
-        data: { valor: Codigo },
-        success: function (datos) {
-            if (datos != 0) {
-                datos.forEach(function (registro) {
-                    var hombres = registro.Hombres;
-                    var mujeres = registro.Mujeres;
-                    var total = registro.Total;
-                    var valueData = registro.Cmds;
-                    valoresFilas.push({ hombres, mujeres, total, valueData });
-                });
-            }
-        }
-    });
-}
+
 
 //llenar selects preseleccionados
 function llenarPreSelects(valor) {
@@ -3041,17 +2463,7 @@ function llenarPreSelects(valor) {
 }
 
 //estilos de panel
-function actualizarEstilo(colorValor) {
-    if (colorValor) {
-        var hexColor = colorValor.substring(4);
-        var darkerColor = darkenColor(hexColor, 20);
-        $('.accordion-body').css('background-color', '#' + hexColor);
-        $('.accordion-header button, .modal-header, .table thead').css('background-color', darkerColor);
-    } else {
-        $('.accordion-body').css('background-color', '#fffacd');
-        $('.accordion-header button, .modal-header, .table thead').css('background-color', '#f3e5ab');
-    }
-}
+
 
 //conversion color y tono mas oscuro para encabezado del panel
 function darkenColor(color, percent) {
@@ -3227,3 +2639,1231 @@ $('#divNoFile').on('click', 'span.text-danger', function () {
         $(".myModalNuevoCliente").modal("show");
       }
     }
+  //===============================================================================================================================//
+var valoresFilas = [];
+
+$(document).ready(function () {
+    LlenarSelectDiaEntrega();
+    Tipo_Beneficiario();
+    // LlenarTipoDonacion();
+    ddl_estados();
+    Tipo_Entrega();
+    Frecuencia()
+    Accion_Social()
+    Vulnerabilidad()
+    Tipo_Atencion()
+    Programa()
+    estado_civilPrincipal()
+
+     $('#select_93').on('select2:select', function (e) {
+        var data = e.params.data.data;        
+        $('#select_CxClabel').text(data.DC)        
+        $('#select_CxC').val(data.DC)        
+        $("#img_Tipo_Donacion").attr("src", "../../img/png/"+data.DC.toLowerCase()+'.png');
+        actualizarEstilo(data.Color);   
+        CargarEstilo();     
+        $("#img_Tipo_Beneficiario").attr("src", "../../img/png/"+data.Picture+'.png');
+        LimpiarPanelOrgSocialAdd();
+        // if (id == "93.04") abrirModal('pAliado');
+        $('#cedula').val($('#txt_ci').val());
+
+         nombre = $('#cliente').val().split(" ");
+        //para familias
+        if(nombre.length>1)
+        {
+            switch(nombre.length)
+            {
+                case 2:
+                    $('#nombres').val(nombre[0]);
+                    $('#apellidos').val(nombre[1]);
+                    break;
+                case 3:
+                    $('#nombres').val(nombre[0]);
+                    $('#apellidos').val(nombre[1]+" "+nombre[2]);
+                    break;
+                case 4:
+                    $('#nombres').val(nombre[0]+" "+nombre[1]);
+                    $('#apellidos').val(nombre[2]+" "+nombre[3]);
+                    break;
+                default:            
+                    $('#nombres').val(datos.cliente.label);
+                    break;
+            }
+        }
+    });
+
+    $('#select_87').on('select2:select', function (e) {
+        var data = e.params.data.data;
+        console.log(data)
+        $("#img_estado_beneficiario").attr("src", "../../img/png/"+data.Picture+'.png');
+        // if (id == "93.04") abrirModal('pAliado');
+    });
+
+
+     $("#cliente").autocomplete({
+      source: function( request, response ) {
+                
+            $.ajax({
+                url: '../controlador/inventario/registro_beneficiarioC.php?LlenarSelectRucCliente=true',
+                type: 'get',
+                dataType: "json",
+                data: {
+                    query: request.term,
+                },
+                success: function( data ) {
+                  // console.log(data);
+                    response( data );
+                }
+            });
+        },
+        select: function (event, ui) {
+
+            LimpiarPanelOrgSocialAdd();
+            $('#txt_ci').val(ui.item.value); // display the selected text
+            $('#cliente').val(ui.item.label); // save selected id to input
+            $('#txt_id').val(ui.item.ID)
+            ClienteAllData(ui.item.Codigo);
+
+            return false;
+        },
+        focus: function(event, ui){
+            $("#txt_ci").val(ui.item.value);
+            $('#cliente').val(ui.item.label); // save selected id to input
+            return false;
+        },
+    });
+
+});
+
+
+function actualizarEstilo(colorValor) {
+    if (colorValor) {
+        var hexColor = colorValor.substring(4);
+        var darkerColor = darkenColor(hexColor, 20);
+        $('.accordion-body').css('background-color', '#' + hexColor);
+        $('.accordion-header button, .modal-header, .table thead').css('background-color', darkerColor);
+    } else {
+        $('.accordion-body').css('background-color', '#fffacd');
+        $('.accordion-header button, .modal-header, .table thead').css('background-color', '#f3e5ab');
+    }
+}
+
+function CargarEstilo()
+{
+    var valorSeleccionado = $('#select_93').val();
+    switch (valorSeleccionado) {
+        case '93.01':
+            $('.campoSocial').show();
+            $('.campoFamilia').hide();
+            $('.campoVoluntario').hide();
+            // $('.campoVolNo').show();
+            break;
+        case '93.02':
+            $('.campoSocial').hide();
+            $('.campoVoluntario').hide();
+            $('.campoFamilia').show();
+            // $('.campoVolNo').show();
+            break;
+        case '93.03':
+            $('.campoSocial').hide();
+            $('.campoFamilia').hide();
+            // $('.campoVolNo').hide();
+            $('.campoVoluntario').show();
+            break;
+        case '93.04':
+            $('.campoSocial').hide();
+            $('.campoFamilia').hide();
+            $('.campoVoluntario').hide();
+            break;
+        default:
+            $('.campoSocial').hide();
+            $('.campoFamilia').hide();
+            $('.campoVoluntario').hide();
+            break;
+    }
+}
+
+//limpieza
+function LimpiarPanelOrgSocialAdd() {
+    eventosEliminados = [];
+    eventosEditados = [];
+    eventosCreados = [];
+    userAuth = false;
+    userNew = false;
+    $('#collapseTwo').collapse('hide');
+    $('#select_92').val(null).trigger('change');
+    $('#select_86').val(null).trigger('change');
+    $('#select_88').val(null).trigger('change');
+    $('#select_89').val(null).trigger('change');
+    $('#select_90').val(null).trigger('change');
+    //$('#select_91').val(null).trigger('change');
+    $('#archivoAdd').val('');
+    $('#diaEntregac').val('');
+    $('#horaEntregac').val('');
+    $('#totalPersonas').val('');
+    $('#infoNut').val('');
+    $('#comentario').val('');
+    comen = '';
+    nombreArchivo = '';
+    ruta = '';
+    nombre = '';
+    valoresFilas = [];
+    $('#modalDescarga .modal-footer').hide();
+    CargarEstilo()
+}
+
+
+
+
+
+function Tipo_Beneficiario()
+{
+  $('#select_93').select2({
+        placeholder: 'Seleccione Tipo Beneficiario',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?Tipo_Beneficiario=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+function ClienteAllData(codigo)
+{
+    $('#myModal_espera').modal('show');
+      $.ajax({
+        url:   '../controlador/inventario/registro_beneficiarioC.php?datosClienteaAll=true',
+        type: 'post',
+        dataType: 'json',
+        data: { valor: codigo },
+        success: function (datos) {
+           console.log(datos);
+          
+            llenarCamposInfo(datos);
+        }
+    })
+}
+
+function LlenarTipoDonacion() {
+    $('#select_CxC').select2({
+        placeholder: 'Seleccione Tipo donacion',
+        width:'100%',
+        ajax: {
+            url: '../controlador/inventario/registro_beneficiarioC.php?LlenarTipoDonacion=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        }
+    });
+}
+
+function ddl_estados()
+{
+    $('#select_87').select2({
+        placeholder: 'Seleccione estado',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?ddl_estados=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+function Tipo_Entrega()
+{
+    $('#select_88').select2({
+        placeholder: 'Seleccione Tipo entrega',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?Tipo_Entrega=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+function Frecuencia()
+{
+    $('#select_86').select2({
+        placeholder: 'Seleccione Frecuencia',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?Frecuencia=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+function Accion_Social()
+{
+    $('#select_92').select2({
+        placeholder: 'Seleccione Accion social',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?Accion_Social=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+
+function Vulnerabilidad()
+{
+    $('#select_90').select2({
+        placeholder: 'Seleccione vulnerabilidad',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?Vulnerabilidad=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+function Tipo_Atencion()
+{
+    $('#select_89').select2({
+        placeholder: 'Seleccione tipo atencion',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?Tipo_Atencion=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+function Programa()
+{
+    $('#select_85').select2({
+        placeholder: 'Seleccione programa',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?programas=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+function grupos()
+{
+    programa = $('#select_85').val();
+    $('#grupo').select2({
+        placeholder: 'Seleccione una beneficiario',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?ddl_grupos=true&programa='+programa,
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+// ============================================ para familias ==========================================
+
+function parentesco()
+{
+    $('#nuevoParentesco').select2({
+        placeholder: 'Seleccione parentesco',
+        width:'100%',
+        dropdownParent: $('#modalEstructuraFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?parentesco=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+
+}
+function sexo()
+{
+    $('#nuevoGenero').select2({
+        placeholder: 'Seleccione genero',
+        width:'100%',
+        dropdownParent: $('#modalEstructuraFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?sexo=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+
+}
+function rango_edades()
+{
+    $('#nuevoRangoEdad').select2({
+        placeholder: 'Seleccione rango edad',
+        width:'100%',
+        dropdownParent: $('#modalEstructuraFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?rango_edades=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+
+}
+function estado_civilPrincipal()
+{
+    $('#estadoCivil').select2({
+        placeholder: 'Seleccione estado civil',
+        width:'100%',
+        // dropdownParent: $('#modalEstructuraFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?estado_civil=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+function estado_civil()
+{
+    $('#nuevoEstadoCivil').select2({
+        placeholder: 'Seleccione estado civil',
+        width:'100%',
+        dropdownParent: $('#modalEstructuraFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?estado_civil=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+function nivel_escolaridad()
+{
+    $('#nuevoNivelEscolaridad').select2({
+        placeholder: 'nivel escilaridad',
+        width:'100%',
+        dropdownParent: $('#modalEstructuraFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?nivel_escolaridad=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+
+}
+function tipo_institucion()
+{
+    $('#nuevoTipoInstitucion').select2({
+        placeholder: 'Tipo Institucion',
+        width:'100%',
+        dropdownParent: $('#modalEstructuraFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?tipo_institucion=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+
+}
+function vulnerabilidad()
+{
+    $('#nuevaVulnerabilidad').select2({
+        placeholder: 'Seleccione vulnerabilidad',
+        width:'100%',
+        dropdownParent: $('#modalEstructuraFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?vulnerabilidadFam=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+
+}
+function  tipo_enfermedad()
+ {
+    $('.tipoEnfermedad').select2({
+        placeholder: 'Seleccione tipo enfermedad',
+        width:'100%',
+        dropdownParent: $('#modalVulnerabilidadFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?tipo_enfermedad=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+
+ }
+function tipo_discapacidad()
+{
+    $('.tipoDiscapacidad').select2({
+        placeholder: 'Seleccione tipo discapacidad',
+        width:'100%',
+        dropdownParent: $('#modalVulnerabilidadFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?tipo_discapacidad=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+
+}
+// ================================================= fin para familias =================================
+
+function llenarCamposInfo(datos) {
+
+    //console.log(datos);
+    actualizarEstilo(datos.Tipo_Beneficiario.Color)
+    nombre = datos.cliente.label.split(" ");
+    //para familias
+    if(nombre.length>1)
+    {
+        switch(nombre.length)
+        {
+            case 2:
+                $('#nombres').val(nombre[0]);
+                $('#apellidos').val(nombre[1]);
+                break;
+            case 3:
+                $('#nombres').val(nombre[0]);
+                $('#apellidos').val(nombre[1]+" "+nombre[2]);
+                break;
+            case 4:
+                $('#nombres').val(nombre[0]+" "+nombre[1]);
+                $('#apellidos').val(nombre[2]+" "+nombre[3]);
+                break;
+            default:            
+                $('#nombres').val(datos.cliente.label);
+                break;
+        }
+    }
+
+    if(datos.Tipo_Beneficiario)
+    {
+        $('#select_93').append($('<option>',{value: datos.Tipo_Beneficiario.Cmds, text: datos.Tipo_Beneficiario.Proceso,selected: true }));
+        if(datos.Tipo_Beneficiario.Picture!='' && datos.Tipo_Beneficiario.Picture !='.'  && datos.Tipo_Beneficiario.Picture !=undefined )
+        {
+            $('#img_Tipo_Beneficiario').attr("src",'../../img/png/'+datos.Tipo_Beneficiario.Picture+'.png')
+        }
+        
+        if(datos.Tipo_Beneficiario.DC!='' && datos.Tipo_Beneficiario.DC !='.'  && datos.Tipo_Beneficiario.DC !=undefined )
+        {
+
+            $('#select_CxClabel').text(datos.Tipo_Beneficiario.DC);        
+            $('#select_CxC').val(datos.Tipo_Beneficiario.DC);
+            $("#img_Tipo_Donacion").attr("src", "../../img/png/"+datos.Tipo_Beneficiario.DC.toLowerCase()+'.png');
+        }
+
+
+    }    
+    // if(datos.tipoDonacion){
+    //     if(datos.tipoDonacion.Picture!='' && datos.tipoDonacion.Picture !='.' && datos.tipoDonacion.Picture !=undefined)
+    //     {
+    //         $('#img_Tipo_Donacion').attr("src",'../../img/png/'+datos.tipoDonacion.Picture+'.png')
+    //     }
+    // }
+    if(datos.Estado_Beneficiario)
+    {
+        $('#select_87').append($('<option>',{value: datos.Estado_Beneficiario.Cmds, text: datos.Estado_Beneficiario.Proceso,selected: true }));
+        if(datos.Estado_Beneficiario.Picture!='' && datos.Estado_Beneficiario.Picture !='.'  && datos.Estado_Beneficiario.Picture !=undefined)
+        {
+            $('#img_estado_beneficiario').attr("src",'../../img/png/'+datos.Estado_Beneficiario.Picture+'.png')
+        }
+    }
+
+    CargarEstilo();
+
+    prov = (datos.cliente.Prov !== '.') ? datos.cliente.Prov : null;
+    ciud = (datos.cliente.Ciudad !== '.') ? datos.cliente.Ciudad : null;
+
+    $('#Canton').val(datos.cliente.Canton);
+    $('#Parroquia').val(datos.cliente.Parroquia);
+    $('#Barrio').val(datos.cliente.Barrio);
+    $('#CalleP').val(datos.cliente.Direccion);
+    $('#CalleS').val(datos.cliente.DireccionT);
+    $('#Referencia').val(datos.cliente.Referencia);
+
+    switch(datos['Tipo_Beneficiario']['Cmds'])
+    {
+        case "93.01":
+            if(datos.Tipo_Entrega){
+                $('#select_88').append($('<option>',{value: datos.Tipo_Entrega.Cmds, text: datos.Tipo_Entrega.Proceso,selected: true }));
+            }    
+            if(datos.Frecuencia){
+                $('#select_86').append($('<option>',{value: datos.Frecuencia.Cmds, text: datos.Frecuencia.Proceso,selected: true }));
+            }
+            if(datos.Accion_Social){
+                $('#select_92').append($('<option>',{value: datos.Accion_Social.Cmds, text: datos.Accion_Social.Proceso,selected: true }));
+            }
+            if(datos.Vulnerabilidad){
+                $('#select_90').append($('<option>',{value: datos.Vulnerabilidad.Cmds, text: datos.Vulnerabilidad.Proceso,selected: true }));
+            }
+            if(datos.Tipo_Atencion){
+                $('#select_89').append($('<option>',{value: datos.Tipo_Atencion.Cmds, text: datos.Tipo_Atencion.Proceso,selected: true }));
+            }
+
+            $('#nombreRepre').val(datos.cliente.Representante);
+            $('#ciRepre').val(datos.cliente.CI_RUC_R);
+            $('#telfRepre').val(datos.cliente.Telefono_R);
+            $('#contacto').val(datos.cliente.Contacto);
+            $('#cargo').val(datos.cliente.Profesion);
+            $('#email').val(datos.cliente.Email);
+            $('#email2').val(datos.cliente.Email2);
+            $('#telefono').val(datos.cliente.Telefono);
+            $('#telefono2').val(datos.cliente.TelefonoT);
+
+            if (datos.Sexo == '.') {
+                $('#sexo').val($('#sexo option:first').val());
+            } else {
+                $('#sexo').val(datos.cliente.Sexo);
+            }
+           
+            if (datos.cliente.Dia_Ent == '.') {
+                $('#diaEntrega').val($('#diaEntrega option:first').val());
+            } else {
+                $('#diaEntrega').val(datos.cliente.Dia_Ent);
+            }
+            if (/^\d{2}:\d{2}$/.test(datos.cliente.Hora_Ent)) {
+                $('#horaEntrega').val(datos.cliente.Hora_Ent);
+            }
+            
+            $('#diaEntregac').val(datos.cliente_datos_extra.Dia_Ent2);
+            $('#horaEntregac').val(datos.cliente_datos_extra.Hora_Ent2);
+            $('#totalPersonas').val(datos.cliente_datos_extra.No_Soc);
+            $('#comentario').val(datos.cliente_datos_extra.Etapa_Procesal);
+            comen = datos.cliente_datos_extra.Etapa_Procesal;
+            $('#infoNut').val(datos.cliente_datos_extra.Observaciones);
+            nombreArchivo = datos.cliente_datos_extra.Evidencias;
+            llenarCamposPoblacion(datos.cliente.Codigo);
+
+
+            break;
+        case "93.02":
+
+            if(datos.Programas){
+                $('#select_85').append($('<option>',{value: datos.Programas.Cmds, text: datos.Programas.Proceso,selected: true }));
+            }
+            if(datos.Grupo){
+                $('#grupo').append($('<option>',{value: datos.Grupo.Cmds, text: datos.Grupo.Proceso,selected: true }));
+            }
+            if(datos.EstadoCivil){
+                $('#estadoCivil').append($('<option>',{value: datos.EstadoCivil.Codigo, text: datos.EstadoCivil.Descripcion,selected: true }));
+            }
+            //----------- datos de familias --------------//
+
+            $('#cedula').val(datos.cliente.CI_RUC);
+            $('#edad').val(datos.cliente.Dosis);
+            $('#telefonoFam').val(datos.cliente.Telefono);
+            $('#ocupacion').val(datos.cliente.Profesion);
+            $('#nivelEscolar').val(datos.cliente.Casilla);
+            $('#estadoCivil').val(datos.cliente.Est_Civil);
+            $('#pregunta').val(datos.cliente.Contacto);
+            //----------- datos de familia --------------//
+             //--------------- Datos extra familias ----------------------------//
+            $('#numHijosI').val(datos.cliente_datos_extra.Num);
+            if(datos.cliente_datos_extra.Num>0)
+            {
+                const hijosAct = $('.hijosAct');
+                hijosAct.show();
+            }
+            $('#pregunta').val(datos.cliente_datos_extra.Observaciones);
+            $('#numHijosMayores').val(datos.cliente_datos_extra.Credito_No);
+            $('#numHijosMenores').val(datos.cliente_datos_extra.Cuenta_No);
+            $('#numPersonas').val(datos.cliente_datos_extra.Etapa_Procesal);
+            $('#comentarioAct').val(datos.cliente_datos_extra.No_Juicio);
+            $('#comentarioConyugeAct').val(datos.cliente_datos_extra.Causa);
+            $('#modalidadSelect').val(datos.cliente_datos_extra.Sujeto_Procesal);
+            $('#modalidadConyugeSelect').val(datos.cliente_datos_extra.Agente_Fiscal);
+            $('#modalidadConyugeSelect').val(datos.cliente_datos_extra.Instruccion_Fiscal);
+
+            //--------------- Datos extra familias ----------------------------//
+            llenarCamposExtructuraFami(datos.cliente.Codigo);
+
+            break;
+        default:
+            break;
+    }
+
+       
+     setTimeout(() => { $('#myModal_espera').modal('hide');  }, 1000);
+ }
+   
+
+//selects Dia de Entrega
+function LlenarSelectDiaEntrega() {
+    $.ajax({
+        url: '../controlador/inventario/registro_beneficiarioC.php?LlenarSelectDiaEntrega=true',
+        type: 'post',
+        dataType: 'json',
+        success: function (datos) {
+            $('#diaEntregac').append('<option value="" disabled selected>Seleccione una opción</option>');
+            $('#diaEntrega').append('<option value="" disabled selected>Seleccione una opción</option>');
+
+            $.each(datos, function (index, opcion) {
+                $('#diaEntregac').append('<option value="' + opcion['Dia_Mes_C'] + '">' + opcion['Dia_Mes'] + '</option>');
+                $('#diaEntrega').append('<option value="' + opcion['Dia_Mes_C'] + '">' + opcion['Dia_Mes'] + '</option>');
+            });
+        }
+    });
+}
+
+function llenarCamposPoblacion(Codigo) {
+    $.ajax({
+        url: '../controlador/inventario/registro_beneficiarioC.php?llenarCamposPoblacion=true',
+        type: 'post',
+        dataType: 'json',
+        data: { valor: Codigo },
+        success: function (datos) {
+            if (datos != 0) {
+                datos.forEach(function (registro) {
+                    var hombres = registro.Hombres;
+                    var mujeres = registro.Mujeres;
+                    var total = registro.Total;
+                    var valueData = registro.Cmds;
+                    valoresFilas.push({ hombres, mujeres, total, valueData });
+                });
+            }
+        }
+    });
+}
+
+function llenarCamposExtructuraFami(Codigo)
+{
+     $.ajax({
+        url: '../controlador/inventario/registro_beneficiarioC.php?llenarCamposExtructuraFami=true',
+        type: 'post',
+        dataType: 'json',
+        data: { valor: Codigo },
+        success: function (datos) {
+            if (datos != 0) {
+                integrantes = datos;
+                actualizarTabla();
+            }
+        }
+    });
+
+}
+
+function validar_registro()
+{
+  var ci_ruc = $('#txt_ci').val();
+  if (ci_ruc == '' || ci_ruc == '.') {
+    return false;
+  }
+  $.ajax({
+    url: '../controlador/modalesC.php?buscar_cliente=true',
+    type: 'post',
+    dataType: 'json',
+    data: { search: ci_ruc },
+    beforeSend: function () {
+      $("#myModal_espera").modal('show');
+    },
+    success: function (response) {
+        console.log(response)
+      if (response.length > 0) {
+
+            $('#txt_id').val(response[0].value);
+            $('#txt_codigo').val(response[0].codigo);
+            $('#txt_td').val(response[0].TD);
+            $('#cliente').val(response[0].nombre);
+            ClienteAllData(response[0].codigo);
+            $("#myModal_espera").modal('hide');
+
+      } else {
+        codigo();
+      }
+
+      $("#myModal_espera").modal('hide');
+
+    }
+  });
+}
+
+function codigo() {
+  // $("#myModal_espera").modal('show');
+  var ci = $('#txt_ci').val();
+        $.ajax({
+          url: '../controlador/modalesC.php?codigo=true',
+          type: 'post',
+          dataType: 'json',
+          data: { ci: ci },
+          beforeSend: function () {
+            // $("#myModal_espera").modal('show');
+          },
+          success: function (response) {
+            $('#txt_codigo').val(response.Codigo_RUC_CI);
+            $('#txt_td').val(response.Tipo_Beneficiario);
+            $("#myModal_espera").modal('hide');
+
+          }
+        });
+}
+
+function guardar_registros()
+{
+    tipoBeneficiario = $('#select_93').val();
+    var parametros;
+    data = $('#form_data').serialize();
+    dataD = $('#form_direccion').serialize();
+    switch(tipoBeneficiario){
+        case '93.01':            
+            poblacion = JSON.stringify(valoresFilas);
+            parametros = 
+            {
+                'data':data,
+                'dataD':dataD,
+                'poblacion':poblacion,
+            }
+            break;
+        case '93.02':
+            data_info_user = $('#form_info_usuario').serialize();
+            parametros = 
+            {
+                'data':data,
+                'dataD':dataD,
+                'data_info':data_info_user,
+                'estru_fam':integrantes
+            }
+            break;
+        default:
+            Swal.fire({
+                title: 'ERROR',
+                text: 'Porfavor seleccione un Tipo de Beneficiario',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        break;
+    }
+
+      $.ajax({
+        url: '../controlador/inventario/registro_beneficiarioC.php?guardarAsignacion1=true',
+        type: 'post',
+        dataType: 'json',
+        data: { parametros: parametros },
+        success: function (datos) {
+            if(datos==1)
+            {
+                Swal.fire("Datos Guardados Correctamente","","success")
+            }
+        }
+    })
+}
+
+function modal_estructura_fami()
+{
+    parentesco()
+    sexo()
+    rango_edades()
+    estado_civil()
+    nivel_escolaridad()
+    tipo_institucion()
+    vulnerabilidad()
+     tipo_enfermedad()
+    tipo_discapacidad()
+    $('#modalEstructuraFam').modal('show');
+}
+
+
+function iconVulnerabilidadFam() {
+
+    // console.log(integrantes)
+    if (integrantes.length > 0) {
+  
+        listaDiscapacidad = []
+        listaEnfermedad = [];
+        integrantes.forEach(function(item,i){
+            console.log(item)
+            console.log(i)
+            if(item.vulnerabilidad.toUpperCase()=='DISCAPACIDAD')
+            {
+                listaDiscapacidad.push(item);
+            }
+            if(item.vulnerabilidad.toUpperCase()=='ENFERMEDAD')
+            {
+                listaEnfermedad.push(item);
+            }
+        })
+
+        //crea tabla discapacidad
+        trd = '';
+        listaDiscapacidad.forEach(function(item,i){
+            nomdiscapacidad = '';
+            porcediscapacidad = '';
+            op = '';
+
+            if (item.hasOwnProperty('nomdiscapacidad')) {
+                nomdiscapacidad = item.nomdiscapacidad;
+            }
+            if (item.hasOwnProperty('porcediscapacidad')) {
+                porcediscapacidad = item.porcediscapacidad;
+            }
+            if(item.hasOwnProperty('tipodiscapacidadid')) {
+                op = '<option value="'+item.tipodiscapacidadid+'">'+item.tipodiscapacidad+'</option>';
+            }
+
+             trd+=`<tr><td>`+item.nombre+`</td>
+                        <td><input type='text' class='form-control  form-control-sm' id='nombreDiscapacidad_`+item.id+`' value='`+nomdiscapacidad+`'></td>
+                        <td><select class="form-select tipoDiscapacidad" id='tipoDiscapacidad_`+item.id+`'>`+op+`</select></td>
+                        <td><input type='text' class='form-control  form-control-sm' id='porDiscapacidad_`+item.id+`' value = '`+porcediscapacidad+`'></td>
+                        <td><button class="btn-sm btn btn-primary" onclick="add_datoDis(`+item.id+`)"><i class="bx bx-save m-0"></i></button></td>
+                    </tr>`
+           
+            $("#mensajeNoIntegrantes").hide();
+        })
+        $('#tablaFamDisc').html(trd);
+
+
+        // crea tablas efermerdades
+        trf = '';
+        listaEnfermedad.forEach(function(item,i){
+            nomEnfermedad = '';
+            op = '';
+            if (item.hasOwnProperty('nomEnfermedad')) {
+                nomEnfermedad = item.nomEnfermedad;
+            }
+            if (item.hasOwnProperty('tipoEnfermedadid')) {                
+                op = '<option value="'+item.tipoEnfermedadid+'">'+item.tipoEnfermedad+'</option>';
+            }
+            trf+=`<tr><td>`+item.nombre+`</td>
+                        <td><input type='text' class='form-control form-control-sm' id='nombreEnfermedad_`+item.id+`' value='`+nomEnfermedad+`' ></td>
+                        <td><select class="form-select tipoEnfermedad" id='tipoEnfermedad_`+item.id+`'>`+op+`</select></td>
+                        <td><button class="btn-sm btn btn-primary" onclick="add_datoEnf(`+item.id+`)"><i class="bx bx-save m-0"></i></button></td>
+                    </tr>`
+           
+            $("#mensajeNoIntegrantesE").hide();
+        })
+
+
+        $('#totalFamVuln').val(listaEnfermedad.length+listaDiscapacidad.length);
+        $('#tablaFamEnfe').html(trf);
+        tipo_enfermedad();  //inicializa los select2
+        tipo_discapacidad();  //inicializa los select2
+        $('#modalVulnerabilidadFam').modal('show');
+      } else {
+        var nombreSol = $('#nombres').val();
+        swal.fire('', 'No hay integrantes para el Sr.(a) ' + nombreSol, 'info');
+    }
+}
+
+function add_datoDis(id)
+{
+    if($('#nombreDiscapacidad_'+id).val()=='' || $('#tipoDiscapacidad_'+id).val()=='' || $('#porDiscapacidad_'+id).val()=='')
+    {
+        Swal.fire("Ingrese todos los datos","","info");
+    }else
+    {
+        integrantes.forEach(function(item,i){
+            if(item.id==id)
+            {
+                item['nomdiscapacidad'] = $('#nombreDiscapacidad_'+id).val();
+                item['tipodiscapacidadid'] = $('#tipoDiscapacidad_'+id).val();
+                item['tipodiscapacidad'] = $('#tipoDiscapacidad_'+id+' option:selected').text();
+                item['porcediscapacidad'] = $('#porDiscapacidad_'+id).val();
+            }
+        })
+
+    }
+
+}
+function add_datoEnf(id)
+{
+    if( $('#nombreEnfermedad_'+id).val() =='' || $('#tipoEnfermedad_'+id).val()=='')
+    {
+        Swal.fire("Ingrese todos los datos","","info");
+    }else
+    {
+        integrantes.forEach(function(item,i){
+            if(item.id==id)
+            {
+                item['nomEnfermedad'] = $('#nombreEnfermedad_'+id).val();
+                item['tipoEnfermedadid'] = $('#tipoEnfermedad_'+id).val();
+                item['tipoEnfermedad'] = $('#tipoEnfermedad_'+id+' option:selected').text();
+            }
+        })
+    }
+}
+$("#btnAceptarVulnerable").click(function () {
+    
+    console.log(integrantes);
+    $('#modalVulnerabilidadFam').modal('hide');
+});
+
+$("#btnAceptarIntegrante").click(function () {
+    $('#modalEstructuraFam').modal('hide');
+});
+
+var integrantes = [];
+var totalVulnerables = 0;
+$("#agregarIntegrante").click(function () {
+
+    let integVacios = [];
+    if($("#nuevoNombre").val() == "") integVacios.push("Nombres y Apellidos");
+    if($("#nuevoGenero").val() == "") integVacios.push("Genero");
+    if($("#nuevoParentesco").val() == "") integVacios.push("Parentesco");
+    if($("#nuevoRangoEdad").val() == "") integVacios.push("Rango de edad");
+    if($("#nuevaOcupacion").val() == "") integVacios.push("Ocupacion");
+    if($("#nuevoEstadoCivil").val() == "") integVacios.push("Estado civil");
+    if($("#nuevoNivelEscolaridad").val() == "") integVacios.push("Nivel de Escolaridad");
+    if($("#nuevoNivelEscolaridad").val() != "01" && $("#nuevoNombreInstitucion").val() == "") integVacios.push("Nombre de la Institución");
+    if($("#nuevoNivelEscolaridad").val() != "01" && $("#nuevoTipoInstitucion").val() == "") integVacios.push("Tipo de Institución");
+    if($("#nuevaVulnerabilidad").val() == "") integVacios.push("Vulnerabilidad");
+
+    if(integVacios.length > 0){
+        Swal.fire('Campos Vacíos', `Rellene los campos: ${integVacios.join(', ')}`, 'error');
+        return false;
+    }else{
+            key = 0;
+         i = integrantes.length
+         if(i>0)
+         {
+            key = (integrantes[(i-1)].id+1);
+         }
+
+        integrantes[i] = 
+        {
+
+            id: key,
+            nombre: $("#nuevoNombre").val() || "",
+            generoid: $("#nuevoGenero").val() || "",
+            genero: $("#nuevoGenero option:selected").text() || "",
+            parentescoid: $("#nuevoParentesco").val() || "",
+            parentesco: $("#nuevoParentesco option:selected").text() || "",
+            rangoEdadid: $("#nuevoRangoEdad").val() || "",
+            rangoEdad: $("#nuevoRangoEdad option:selected").text() || "",
+            ocupacion: $("#nuevaOcupacion").val() || "",
+            estadoCivilid: $("#nuevoEstadoCivil").val() || "",
+            estadoCivil: $("#nuevoEstadoCivil option:selected").text() || "",
+            nivelEscolaridadid: $("#nuevoNivelEscolaridad").val() || "",
+            nivelEscolaridad: $("#nuevoNivelEscolaridad option:selected").text() || "",
+            nombreInstitucion: $("#nuevoNombreInstitucion").val() || "",
+            tipoInstitucionid: $("#nuevoTipoInstitucion").val() || "", 
+            tipoInstitucion: $("#nuevoTipoInstitucion option:selected").text() || "",
+            vulnerabilidadid: $("#nuevaVulnerabilidad").val() || "",
+            vulnerabilidad: $("#nuevaVulnerabilidad option:selected").text() || "",
+        }
+        actualizarTabla();
+        limpiarCampos();
+    }
+});
+
+
+function actualizarTabla() {
+    var tablaBody = $("#tablaIntegrantes tbody");
+    tablaBody.children(':not(:first)').remove();
+
+    for (var i = 0; i < integrantes.length; i++) {
+        var integrante = integrantes[i];
+        var fila = $("<tr></tr>");
+        fila.append($("<td></td>").text(integrante.nombre));
+        fila.append($("<td></td>").text(integrante.genero));
+        fila.append($("<td></td>").text(integrante.parentesco));
+        fila.append($("<td></td>").text(integrante.rangoEdad));
+        fila.append($("<td></td>").text(integrante.ocupacion));
+        fila.append($("<td></td>").text(integrante.estadoCivil));
+        fila.append($("<td></td>").text(integrante.nivelEscolaridad));
+        fila.append($("<td></td>").text(integrante.nombreInstitucion));
+        fila.append($("<td></td>").text(integrante.tipoInstitucion));
+        fila.append($("<td></td>").text(integrante.vulnerabilidad));
+        fila.append($("<td><button type='button' class='btn btn-danger btn-eliminar btn-sm p-0' title='Elimnar registro'><i class='bx bx-trash m-0'></i></button> <button type='button' title='editar registro' class='btn btn-warning btn-editar btn-sm p-0'><i class='bx bx-pen m-0'></i></button></td>"));
+        tablaBody.append(fila);
+    }
+}
+
+function limpiarCampos() {
+    $("#nuevoNombre").val("");
+    $("#nuevoGenero").empty();
+    $("#nuevoParentesco").empty();
+    $("#nuevoRangoEdad").empty();
+    $("#nuevaOcupacion").val("");
+    $("#nuevoEstadoCivil").empty();
+    $("#nuevoNivelEscolaridad").empty();
+    $("#nuevoNombreInstitucion").val("");
+    $("#nuevoNombreInstitucion").attr("disabled", "true");
+    $("#nuevoTipoInstitucion").empty();
+    $("#nuevoTipoInstitucion").attr("disabled", "true");
+    $("#nuevaVulnerabilidad").empty();
+}
+
+$("#tablaIntegrantes").on("click", ".btn-eliminar", function () {
+    var fila = $(this).closest("tr");
+    var index = fila.index() - 1;
+    var integrante = integrantes[index];
+
+    if (integrante.vulnerabilidad === "discapacidad") {
+        totalVulnerables--;
+        integrantesDisc = integrantesDisc.filter(d => d.nombre !== integrante.nombre);
+    }
+
+    if (integrante.vulnerabilidad === "enfermedad") {
+        totalVulnerables--;
+        integrantesEnfe = integrantesEnfe.filter(e => e.nombre !== integrante.nombre);
+    }
+
+    integrantes.splice(index, 1);
+    actualizarTabla();
+});
+
+$("#tablaIntegrantes").on("click", ".btn-editar", function () {
+    var fila = $(this).closest("tr");
+    var index = fila.index() - 1;
+    var integrante = integrantes[index];
+
+    $("#nuevoNombre").val(integrante.nombre);
+    $('#nuevoGenero').append($('<option>',{value:integrante.generoid, text:integrante.genero,selected: true }));
+    $('#nuevoParentesco').append($('<option>',{value:integrante.parentescoid, text:integrante.parentesco,selected: true }));
+    $('#nuevoRangoEdad').append($('<option>',{value:integrante.rangoEdadid, text:integrante.rangoEdad,selected: true }));
+    $("#nuevaOcupacion").val(integrante.ocupacion);    
+    $('#nuevoEstadoCivil').append($('<option>',{value:integrante.estadoCivilid, text:integrante.estadoCivil,selected: true }));
+    $('#nuevoNivelEscolaridad').append($('<option>',{value:integrante.nivelEscolaridadid, text:integrante.nivelEscolaridad,selected: true }));
+    $("#nuevoNombreInstitucion").val(integrante.nombreInstitucion);
+    $('#nuevoTipoInstitucion').append($('<option>',{value:integrante.tipoInstitucionid, text:integrante.tipoInstitucion,selected: true }));
+    $('#nuevaVulnerabilidad').append($('<option>',{value:integrante.vulnerabilidadid, text:integrante.vulnerabilidad,selected: true }));
+
+
+    if (integrante.vulnerabilidad === "discapacidad") {
+        totalVulnerables--;
+        integrantesDisc = integrantesDisc.filter(d => d.nombre !== integrante.nombre);
+    }
+
+    if (integrante.vulnerabilidad === "enfermedad") {
+        totalVulnerables--;
+        integrantesEnfe = integrantesEnfe.filter(e => e.nombre !== integrante.nombre);
+    }
+
+    integrantes.splice(index, 1);
+    actualizarTabla();
+});

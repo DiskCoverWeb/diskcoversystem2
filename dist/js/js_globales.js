@@ -847,3 +847,9 @@ function notificaciones()
       });  	
 
 }
+
+function addCliente() {
+    $("#myModal").modal("show");
+    var src = "../vista/modales.php?FCliente=true";
+    $('#FCliente').attr('src', src).show();
+}

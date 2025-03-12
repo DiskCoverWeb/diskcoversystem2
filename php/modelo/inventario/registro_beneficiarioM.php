@@ -111,17 +111,28 @@ class registro_beneficiarioM
     }
 
 
-    function LlenarSelectRucCliente($query)
+    function LlenarSelectRucCliente($query=false,$codigo=false,$ci=false)
     {
-        $sql = "SELECT TOP 100 Cliente, CI_RUC, Codigo
+        $sql = "SELECT TOP 100 Cliente as label, CI_RUC as value, ".Full_Fields("Clientes")."
                 FROM Clientes
                 WHERE Cliente <> '.'";
-
-        if (!is_numeric($query)) {
-            $sql .= " AND Cliente LIKE '%" . $query . "%'";
-        } else {
-            $sql .= " AND CI_RUC LIKE '%" . $query . "%'";
-        }
+                if($query)
+                {
+                    if (!is_numeric($query)) {
+                        $sql .= " AND Cliente LIKE '%" . $query . "%'";
+                    } else {
+                        $sql .= " AND CI_RUC LIKE '%" . $query . "%'";
+                    }
+                }
+                if($codigo)
+                {
+                    $sql.=" AND Codigo = '".$codigo."'";
+                }
+                if($ci)
+                {
+                    $sql.=" AND CI_RUC = '".$ci."'";
+                }
+                // print_r($sql);die();
         return $this->db->datos($sql);
     }
 
@@ -146,7 +157,7 @@ class registro_beneficiarioM
     {
         $sql = "SELECT TOP 1 CodigoA AS CodigoA2, Dia_Ent AS Dia_Ent2, Hora_Ent AS Hora_Ent2,
                     Envio_No, No_Soc, Area, Acreditacion, Tipo_Dato,
-                    Cod_Fam, Evidencias, Observaciones, Item, Etapa_Procesal
+                    Cod_Fam, Evidencias, Observaciones, Item, Etapa_Procesal,CodigoB,Num,Credito_No,Cuenta_No,Etapa_Procesal,No_Juicio,Causa,Sujeto_Procesal,Agente_Fiscal,Instruccion_Fiscal
                 FROM  Clientes_Datos_Extras
                 WHERE Codigo = '" . $valor . "' 
                 ORDER BY Fecha_Registro DESC";
@@ -160,25 +171,25 @@ class registro_beneficiarioM
         }
     }
 
-    function sqlComunDonacion()
+
+    function LlenarTipoDonacion($query=false,$fact=false)
     {
-        return "SELECT Codigo, Concepto, Picture
+        $sql = "SELECT Codigo, Concepto, Picture,Fact
                 FROM Catalogo_Lineas
                 WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
                 AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "'
                 AND TL <> 0
                 AND LEN(Fact) = 3";
-    }
-
-    function LlenarTipoDonacion($valor)
-    {
-        $sql = $this->sqlComunDonacion();
-
-        if (!is_numeric($valor) && $valor !='') {
-            $sql .= " AND Concepto LIKE '%" . $valor . "%'";
-        }
-
+                if($query)
+                {
+                    $sql .= " AND (Concepto LIKE '%" . $query . "%')";
+                }
+                if($fact)
+                {
+                    $sql.=" AND Fact = '".$fact."'";
+                }
         $sql .= " ORDER BY Fact";
+        // print_r($sql);die();
         return $this->db->datos($sql);
     }
 
@@ -191,6 +202,120 @@ class registro_beneficiarioM
             return $this->db->datos($sql);
         }
     }
+
+    function Tipo_Beneficiario($query=false)
+    {
+         $sql = "SELECT " . Full_Fields('Catalogo_Proceso') . "
+                    FROM Catalogo_Proceso
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                    AND Nivel like '93'";      
+        if($query)
+        {
+            $sql.=" AND (Proceso LIKE '%" . $query . "%' or Cmds like '%".$query."%')";
+        }
+        // print_r($sql);die();
+         return $this->db->datos($sql);
+    }
+
+    function Estado_Beneficiario($query=false)
+    {
+         $sql = "SELECT " . Full_Fields('Catalogo_Proceso') . "
+                    FROM Catalogo_Proceso
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                    AND Nivel like '87'";      
+        if($query)
+        {
+            $sql.=" AND (Proceso LIKE '%" . $query . "%' or Cmds like '%".$query."%')";
+        }
+        // print_r($sql);die();
+         return $this->db->datos($sql);
+    }
+
+    function Tipo_Entrega($query=false)
+    {
+         $sql = "SELECT " . Full_Fields('Catalogo_Proceso') . "
+                    FROM Catalogo_Proceso
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                    AND Nivel like '88'";      
+        if($query)
+        {
+            $sql.=" AND (Proceso LIKE '%" . $query . "%' or Cmds like '%".$query."%')";
+        }
+        // print_r($sql);die();
+         return $this->db->datos($sql);
+    }
+
+    function Frecuencia($query=false)
+    {
+         $sql = "SELECT " . Full_Fields('Catalogo_Proceso') . "
+                    FROM Catalogo_Proceso
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                    AND Nivel like '86'";      
+        if($query)
+        {
+            $sql.=" AND (Proceso LIKE '%" . $query . "%' or Cmds like '%".$query."%')";
+        }
+        // print_r($sql);die();
+         return $this->db->datos($sql);
+    }
+
+    function Programas($query=false)
+    {
+         $sql = "SELECT " . Full_Fields('Catalogo_Proceso') . "
+                    FROM Catalogo_Proceso
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                    AND Nivel like '85'
+                    AND TP = 'PROGRAMA'";      
+        if($query)
+        {
+            $sql.=" AND (Proceso LIKE '%" . $query . "%' or Cmds like '%".$query."%')";
+        }
+        // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+    function Accion_Social($query=false)
+    {
+         $sql = "SELECT " . Full_Fields('Catalogo_Proceso') . "
+                    FROM Catalogo_Proceso
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                    AND Nivel like '92'";      
+        if($query)
+        {
+            $sql.=" AND (Proceso LIKE '%" . $query . "%' or Cmds like '%".$query."%')";
+        }
+        // print_r($sql);die();
+         return $this->db->datos($sql);
+    }
+
+    function Vulnerabilidad($query=false)
+    {
+         $sql = "SELECT " . Full_Fields('Catalogo_Proceso') . "
+                    FROM Catalogo_Proceso
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                    AND Nivel like '90'";      
+        if($query)
+        {
+            $sql.=" AND (Proceso LIKE '%" . $query . "%' or Cmds like '%".$query."%')";
+        }
+        // print_r($sql);die();
+         return $this->db->datos($sql);
+    }
+
+    function Tipo_Atencion($query=false)
+    {
+         $sql = "SELECT " . Full_Fields('Catalogo_Proceso') . "
+                    FROM Catalogo_Proceso
+                    WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                    AND Nivel like '89'";      
+        if($query)
+        {
+            $sql.=" AND (Proceso LIKE '%" . $query . "%' or Cmds like '%".$query."%')";
+        }
+        // print_r($sql);die();
+         return $this->db->datos($sql);
+    }
+
+
 
     function LlenarSelects_Val($query, $valor, $valor2)
     {
@@ -205,155 +330,165 @@ class registro_beneficiarioM
         } else {
             $sql .= " AND Cmds LIKE '" . $valor . ".%'";
         }
-        if(!is_numeric($query))
+        
+        if($query!='')
         {
-            $sql.=" AND Cmds LIKE '%" . $query . "%' ";
-        }else
-        {
-            if($query!='')
-            {
-                $sql.=" AND Proceso LIKE '%" . $query . "%'";
-            }
+            $sql.=" AND Proceso LIKE '%" . $query . "%'";
         }
+    
 
         $sql .= " ORDER BY Cmds";
-        //print_r($sql);die();
+        // print_r($sql);die();
         if ($valor2) {
             return $this->actualizarSelectDonacion($valor);
         }
         return $this->db->datos($sql);
     }
 
-    function ActualizarClientes($parametros)
+    function ddl_grupos($programas=false,$query=false)
     {
-        $sql = "UPDATE Clientes SET
-                Actividad = '".$parametros['TB']."',
-                TB = '" . $parametros['TB'] . "',
-                Calificacion = '" . $parametros['Calificacion'] . "',
-                CodigoA = '" . $parametros['CodigoA'] . "', 
-                Representante = '" . $parametros['Representante'] . "', 
-                CI_RUC_R = '" . $parametros['CI_RUC_R'] . "', 
-                Telefono_R = '" . $parametros['Telefono_R'] . "', 
-                Contacto = '" . $parametros['Contacto'] . "',   
-                Profesion = '" . $parametros['Profesion'] . "', 
-                Hora_Ent = '" . $parametros['Hora_Ent'] . "', 
-                Dia_Ent = '" . $parametros['Dia_Ent'] . "', 
-                Sexo = '" . $parametros['Sexo'] . "', 
-                Email = '" . $parametros['Email'] . "', 
-                Email2 = '" . $parametros['Email2'] . "',                 
-                Telefono = '" . $parametros['Telefono'] . "', 
-                TelefonoT = '" . $parametros['TelefonoT'] . "', 
-                Prov = '" . $parametros['Provincia'] . "', 
-                Ciudad = '" . $parametros['Ciudad'] . "', 
-                Canton = '" . $parametros['Canton'] . "', 
-                Parroquia = '" . $parametros['Parroquia'] . "', 
-                Barrio = '" . $parametros['Barrio'] . "', 
-                Direccion = '" . $parametros['CalleP'] . "', 
-                DireccionT = '" . $parametros['CalleS'] . "', 
-                Referencia = '" . $parametros['Referencia'] . "'
-                WHERE CI_RUC = '" . $parametros['CI_RUC'] . "'";
+        $sql = "SELECT " . Full_Fields('Catalogo_Proceso') . "
+                FROM Catalogo_Proceso
+                WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'";
+            if($programas)
+            {
+                $sql.=" AND Cmds like '".$programas.".%'";
+            }
+            if($query)
+            {
+                $sql.=" AND (Proceso LIKE '%" . $query . "%' OR Cmds like '%".$query."%')";
+            }
+        $sql .= " ORDER BY Cmds";
 
-                // print_r($sql);
+        // print_r($sql);die();
         return $this->db->datos($sql);
     }
 
-    function ActualizarClientesDatosExtra($parametros)
-    {
-        //print_r($parametros);
-        $sql = "UPDATE Clientes_Datos_Extras SET
-                CodigoA = '" . $parametros['CodigoA2'] . "', 
-                Dia_Ent = '" . $parametros['Dia_Ent2'] . "', 
-                Hora_Ent = '" . $parametros['Hora_Registro'] . "', 
-                Envio_No = '" . $parametros['Envio_No'] . "',
-                Etapa_Procesal = '" . $parametros['Comentario'] . "',
-                No_Soc = '" . $parametros['No_Soc'] . "', 
-                Acreditacion = '" . $parametros['Acreditacion'] . "', 
-                Tipo_Dato = '" . $parametros['Tipo_Dato'] . "', 
-                Cod_Fam = '" . $parametros['Cod_Fam'] . "', 
-                Observaciones = '" . $parametros['Observaciones'] . "'";
-        if ($parametros['NombreArchivo']!='') {
-            $sql .= ", Evidencias = CONCAT(Evidencias, '" . $parametros['NombreArchivo'] . "')";
-        }else
-        {
-             // $sql .= ", Evidencias = '.' ";
-        }
-        $sql .= " WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
-                AND Codigo = '" . $parametros['Codigo'] . "'";
+    // function ActualizarClientes($parametros)
+    // {
+    //     $sql = "UPDATE Clientes SET
+    //             Actividad = '".$parametros['TB']."',
+    //             TB = '" . $parametros['TB'] . "',
+    //             Calificacion = '" . $parametros['Calificacion'] . "',
+    //             CodigoA = '" . $parametros['CodigoA'] . "', 
+    //             Representante = '" . $parametros['Representante'] . "', 
+    //             CI_RUC_R = '" . $parametros['CI_RUC_R'] . "', 
+    //             Telefono_R = '" . $parametros['Telefono_R'] . "', 
+    //             Contacto = '" . $parametros['Contacto'] . "',   
+    //             Profesion = '" . $parametros['Profesion'] . "', 
+    //             Hora_Ent = '" . $parametros['Hora_Ent'] . "', 
+    //             Dia_Ent = '" . $parametros['Dia_Ent'] . "', 
+    //             Sexo = '" . $parametros['Sexo'] . "', 
+    //             Email = '" . $parametros['Email'] . "', 
+    //             Email2 = '" . $parametros['Email2'] . "',                 
+    //             Telefono = '" . $parametros['Telefono'] . "', 
+    //             TelefonoT = '" . $parametros['TelefonoT'] . "', 
+    //             Prov = '" . $parametros['Provincia'] . "', 
+    //             Ciudad = '" . $parametros['Ciudad'] . "', 
+    //             Canton = '" . $parametros['Canton'] . "', 
+    //             Parroquia = '" . $parametros['Parroquia'] . "', 
+    //             Barrio = '" . $parametros['Barrio'] . "', 
+    //             Direccion = '" . $parametros['CalleP'] . "', 
+    //             DireccionT = '" . $parametros['CalleS'] . "', 
+    //             Referencia = '" . $parametros['Referencia'] . "'
+    //             WHERE CI_RUC = '" . $parametros['CI_RUC'] . "'";
+
+    //             // print_r($sql);
+    //     return $this->db->datos($sql);
+    // }
+
+    // function ActualizarClientesDatosExtra($parametros)
+    // {
+    //     //print_r($parametros);
+    //     $sql = "UPDATE Clientes_Datos_Extras SET
+    //             CodigoA = '" . $parametros['CodigoA2'] . "', 
+    //             Dia_Ent = '" . $parametros['Dia_Ent2'] . "', 
+    //             Hora_Ent = '" . $parametros['Hora_Registro'] . "', 
+    //             Envio_No = '" . $parametros['Envio_No'] . "',
+    //             Etapa_Procesal = '" . $parametros['Comentario'] . "',
+    //             No_Soc = '" . $parametros['No_Soc'] . "', 
+    //             Acreditacion = '" . $parametros['Acreditacion'] . "', 
+    //             Tipo_Dato = '" . $parametros['Tipo_Dato'] . "', 
+    //             Cod_Fam = '" . $parametros['Cod_Fam'] . "', 
+    //             Observaciones = '" . $parametros['Observaciones'] . "'";
+    //     if ($parametros['NombreArchivo']!='') {
+    //         $sql .= ", Evidencias = CONCAT(Evidencias, '" . $parametros['NombreArchivo'] . "')";
+    //     }else
+    //     {
+    //          // $sql .= ", Evidencias = '.' ";
+    //     }
+    //     $sql .= " WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+    //             AND Codigo = '" . $parametros['Codigo'] . "'";
     
-        //print_r($sql);die();
-        return $this->db->datos($sql);
-    }
+    //     //print_r($sql);die();
+    //     return $this->db->datos($sql);
+    // }
     
 
-    function CrearClienteDatosExtra($parametros)
-    {
-        $sql2 = "INSERT INTO Clientes_Datos_Extras (Codigo, CodigoA, Dia_Ent, Hora_Ent, 
-        Envio_No, Etapa_Procesal, No_Soc, Acreditacion, Tipo_Dato, 
-        Cod_Fam, Evidencias, Observaciones, Item) 
-        VALUES ('" . $parametros['Codigo'] . "', 
-                '" . $parametros['CodigoA2'] . "', 
-                '" . $parametros['Dia_Ent2'] . "', 
-                '" . $parametros['Hora_Registro'] . "', 
-                '" . $parametros['Envio_No'] . "', 
-                '" . $parametros['Comentario'] . "', 
-                '" . $parametros['No_Soc'] . "',                  
-                '" . $parametros['Acreditacion'] . "', 
-                '" . $parametros['Tipo_Dato'] . "', 
-                '" . $parametros['Cod_Fam'] . "', 
-                '" . $parametros['NombreArchivo'] . "', 
-                '" . $parametros['Observaciones'] . "',
-                '" . $_SESSION['INGRESO']['item'] . "')";
-                //print_r($sql2);die();
-        return $this->db->datos($sql2);
-    }
+    // function CrearClienteDatosExtra($parametros)
+    // {
+    //     $sql2 = "INSERT INTO Clientes_Datos_Extras (Codigo, CodigoA, Dia_Ent, Hora_Ent, 
+    //     Envio_No, Etapa_Procesal, No_Soc, Acreditacion, Tipo_Dato, 
+    //     Cod_Fam, Evidencias, Observaciones, Item) 
+    //     VALUES ('" . $parametros['Codigo'] . "', 
+    //             '" . $parametros['CodigoA2'] . "', 
+    //             '" . $parametros['Dia_Ent2'] . "', 
+    //             '" . $parametros['Hora_Registro'] . "', 
+    //             '" . $parametros['Envio_No'] . "', 
+    //             '" . $parametros['Comentario'] . "', 
+    //             '" . $parametros['No_Soc'] . "',                  
+    //             '" . $parametros['Acreditacion'] . "', 
+    //             '" . $parametros['Tipo_Dato'] . "', 
+    //             '" . $parametros['Cod_Fam'] . "', 
+    //             '" . $parametros['NombreArchivo'] . "', 
+    //             '" . $parametros['Observaciones'] . "',
+    //             '" . $_SESSION['INGRESO']['item'] . "')";
+    //             //print_r($sql2);die();
+    //     return $this->db->datos($sql2);
+    // }
 
     function llenarCamposPoblacion($codigo)
     {
-        $sqlFecha = "SELECT MAX(FechaM) AS UltimaFecha FROM Trans_Tipo_Poblacion 
-                     WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
-                     AND CodigoC = '" . $codigo . "'";
-
-        $resultadoFecha = $this->db->datos($sqlFecha);
-
-        // print_r($resultadoFecha);die();
-
-        $ultimaFecha = $resultadoFecha[0]['UltimaFecha']->format('Y-m-d H:i:s.v');
-        //print_r($ultimaFecha);die();
-
-        $sqlRegistros = "SELECT * FROM Trans_Tipo_Poblacion 
-                         WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
-                         AND CodigoC = '" . $codigo . "' 
-                         AND FechaM = '" . $ultimaFecha . "'";
-        /*
-            SELECT Hombres, Mujeres, Total, Cmds, FechaM
-            FROM Trans_Tipo_Poblacion
-            WHERE Item='003' AND CodigoC = '0010000002' AND FechaM = (SELECT TOP 1 MAX(FechaM) FROM Trans_Tipo_Poblacion WHERE Item='003' AND CodigoC = '0010000002' GROUP BY FechaM)
-            ORDER BY FechaM DESC, Cmds ASC;
-        */
-
-        return $this->db->datos($sqlRegistros);
+        $sql = "SELECT * FROM Trans_Tipo_Poblacion 
+                             WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+                             AND CodigoC = '" . $codigo . "' 
+                             AND FechaM = (SELECT MAX(FechaM) AS UltimaFecha 
+                                            FROM Trans_Tipo_Poblacion 
+                                            WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'  
+                                            AND CodigoC = '".$codigo."')";
+        // print_r($sql);die();
+        $data = $this->db->datos($sql);
+        return $data;
     }
 
-
-    function CrearTipoPoblacion($parametros)
+    function deletePoblacion($codigo)
     {
-        $tipoPoblacion = json_decode($parametros['TipoPoblacion'], true);
-
-        $sql = "INSERT INTO Trans_Tipo_Poblacion (Item, Periodo, Fecha, FechaM, CodigoC, Cmds, Hombres, Mujeres, Total, CodigoU, X) VALUES ";
-        $values = array();
-
-        foreach ($tipoPoblacion as $poblacion) {
-            $values[] = "('" . $_SESSION['INGRESO']['item'] . "', '" . $_SESSION['INGRESO']['periodo'] . "',
-                        '" . date('Y-m-d H:i:s') . "', '" . date('Y-m-d H:i:s') . "',
-                        '" . $parametros['Codigo'] . "', '" . $poblacion['valueData'] . "',
-                        '" . $poblacion['hombres'] . "', '" . $poblacion['mujeres'] . "',
-                        '" . $poblacion['total'] . "', '" . $_SESSION['INGRESO']['CodigoU'] . "', '.')";
-        }
-
-        $sql .= implode(', ', $values);
-        return $this->db->datos($sql);
+        $sql = "DELETE FROM Trans_Tipo_Poblacion
+                WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+                AND CodigoC = '" . $codigo . "' 
+                AND Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+        return $this->db->String_Sql($sql);
     }
 
+
+    // function CrearTipoPoblacion($parametros)
+    // {
+    //     $tipoPoblacion = json_decode($parametros['TipoPoblacion'], true);
+
+    //     $sql = "INSERT INTO Trans_Tipo_Poblacion (Item, Periodo, Fecha, FechaM, CodigoC, Cmds, Hombres, Mujeres, Total, CodigoU, X) VALUES ";
+    //     $values = array();
+
+    //     foreach ($tipoPoblacion as $poblacion) {
+    //         $values[] = "('" . $_SESSION['INGRESO']['item'] . "', '" . $_SESSION['INGRESO']['periodo'] . "',
+    //                     '" . date('Y-m-d H:i:s') . "', '" . date('Y-m-d H:i:s') . "',
+    //                     '" . $parametros['Codigo'] . "', '" . $poblacion['valueData'] . "',
+    //                     '" . $poblacion['hombres'] . "', '" . $poblacion['mujeres'] . "',
+    //                     '" . $poblacion['total'] . "', '" . $_SESSION['INGRESO']['CodigoU'] . "', '.')";
+    //     }
+
+    //     $sql .= implode(', ', $values);
+    //     return $this->db->datos($sql);
+    // }
 
 
     function guardarAsignacion($parametros)
@@ -432,6 +567,180 @@ class registro_beneficiarioM
         SetAdoFieldsWhere("CI_RUC", $cedula);
         SetAdoUpdateGeneric();
         return 1;
+    }
+
+    //--------------------------------------para familias----------------------------------------------------------------------------
+    function parentesco($cod=false)
+    {
+        $sql="SELECT        Tipo_Referencia, Codigo, Descripcion, Abreviado, TFA, TPFA, ID
+            FROM            Tabla_Referenciales_SRI
+            WHERE        (Tipo_Referencia = 'PARENTESCO')";
+            if($cod)
+            {
+                $sql.=" AND Codigo = '".$cod."' ";
+            }
+
+            $sql.="  ORDER BY Tipo_Referencia";
+            $data = $this->db->datos($sql);
+        return $data;
+    }
+
+    function sexo($cod=false)
+    {
+        $sql="SELECT        Tipo_Referencia, Codigo, Descripcion, Abreviado, TFA, TPFA, ID
+            FROM            Tabla_Referenciales_SRI
+            WHERE        (Tipo_Referencia = 'SEXO')";
+            if($cod)
+            {
+                $sql.=" AND Codigo = '".$cod."' ";
+            }
+
+            $sql.=" ORDER BY Tipo_Referencia";
+            $data = $this->db->datos($sql);
+        return $data;
+    }
+
+    function rango_edades($cod=false)
+    {
+        $sql="SELECT        Tipo_Referencia, Codigo, Descripcion, Abreviado, TFA, TPFA, ID
+            FROM            Tabla_Referenciales_SRI
+            WHERE        (Tipo_Referencia = 'EDADES')";
+            if($cod)
+            {
+                $sql.=" AND Codigo = '".$cod."' ";
+            }
+
+            $sql.="  ORDER BY Tipo_Referencia";
+            $data = $this->db->datos($sql);
+        return $data;
+    }
+
+    function estado_civil($cod=false)
+    {
+        $sql="SELECT        Tipo_Referencia, Codigo, Descripcion, Abreviado, TFA, TPFA, ID
+        FROM            Tabla_Referenciales_SRI
+        WHERE        (Tipo_Referencia = 'ESTADO CIVIL')";
+        if($cod)
+        {
+            $sql.=" AND Codigo = '".$cod."'";
+        }
+        $sql.=" ORDER BY Tipo_Referencia";
+        $data = $this->db->datos($sql);
+        return $data;
+    }
+
+    function nivel_escolaridad($cod=false)
+    {
+        $sql="SELECT        Tipo_Referencia, Codigo, Descripcion, Abreviado, TFA, TPFA, ID
+            FROM            Tabla_Referenciales_SRI
+            WHERE        (Tipo_Referencia = 'ESCOLARIDAD')";
+            if($cod)
+            {
+                $sql.=" AND Codigo = '".$cod."' ";
+            }
+
+            $sql.=" ORDER BY Tipo_Referencia";
+            $data = $this->db->datos($sql);
+        return $data;
+    }
+
+
+    function tipo_institucion($cod=false)
+    {
+        $sql ="SELECT        Tipo_Referencia, Codigo, Descripcion, Abreviado, TFA, TPFA, ID
+            FROM            Tabla_Referenciales_SRI
+            WHERE        (Tipo_Referencia = 'INSTITUCION')";
+            if($cod)
+            {
+                $sql.=" AND Codigo = '".$cod."' ";
+            }
+
+            $sql.=" ORDER BY Tipo_Referencia";
+            $data = $this->db->datos($sql);
+        return $data;
+    }
+
+
+    function vulnerabilidadFam($cod=false)
+    {
+        $sql="SELECT        Tipo_Referencia, Codigo, Descripcion, Abreviado, TFA, TPFA, ID
+            FROM            Tabla_Referenciales_SRI
+            WHERE        (Tipo_Referencia = 'VULNERABILIDAD')";
+            if($cod)
+            {
+                $sql.=" AND Codigo = '".$cod."' ";
+            }
+
+            $sql.=" ORDER BY Tipo_Referencia";
+            $data = $this->db->datos($sql);
+        return $data;
+    }
+    function tipo_enfermedad($cod=false)
+    {
+        $sql= "SELECT        Tipo_Referencia, Codigo, Descripcion, Abreviado, TFA, TPFA, ID
+            FROM            Tabla_Referenciales_SRI
+            WHERE        (Tipo_Referencia = 'TIPO ENFERMEDAD')";
+            if($cod)
+            {
+                $sql.=" AND Codigo = '".$cod."' ";
+            }
+
+            $sql.=" ORDER BY Tipo_Referencia";
+            $data = $this->db->datos($sql);
+            return $data;
+    }
+
+    function tipo_discapacidad($cod=false)
+    {
+        $sql="SELECT        Tipo_Referencia, Codigo, Descripcion, Abreviado, TFA, TPFA, ID
+                FROM            Tabla_Referenciales_SRI
+                WHERE        (Tipo_Referencia = 'TIPO DISCAPACID')";
+            if($cod)
+            {
+                $sql.=" AND Codigo = '".$cod."' ";
+            }
+
+            $sql.=" ORDER BY Tipo_Referencia";
+        $data = $this->db->datos($sql);
+        return $data;
+    }
+
+    function Trans_Parroquias($codigo = false, $id = false)
+    {
+        $sql="SELECT ".Full_Fields('Trans_Parroquias')."
+                FROM            Trans_Parroquias
+                WHERE        Item = '".$_SESSION['INGRESO']['item']."'
+                AND  Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+                if($id)
+                {
+                    $sql.=" AND ID = '".$id."' ";
+                }
+
+                if($codigo)
+                {
+                    $sql.=" AND cedula = '".$codigo."'";
+                }
+                // print_r($sql);die();
+        $data = $this->db->datos($sql);
+        return $data;
+    }
+
+    function DeleteEstructuraFamiliares($codigo = false, $id = false)
+    {
+        $sql="DELETE  FROM Trans_Parroquias
+                WHERE        Item = '".$_SESSION['INGRESO']['item']."'
+                AND  Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+                if($id)
+                {
+                    $sql.=" AND ID = '".$id."' ";
+                }
+
+                if($codigo)
+                {
+                    $sql.=" AND cedula = '".$codigo."'";
+                }
+        $data = $this->db->datos($sql);
+        return $data;
     }
 }
 

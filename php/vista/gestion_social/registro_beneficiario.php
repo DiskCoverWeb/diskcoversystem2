@@ -30,7 +30,7 @@
                             print_r($ruta[0] . '#'); ?>" title="Salir" class="btn btn-outline-secondary">
                 <img src="../../img/png/salire.png" alt="Salir">
             </a>
-            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" id="btnGuardarAsignacion">
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" id="btnGuardarAsignacionn" onclick="guardar_registros()">
                 <img src="../../img/png/grabar.png" alt="Guardar">
             </button>
             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Autorizar" id="btnAutorizarCambios">
@@ -40,6 +40,7 @@
     </div>
 </div>
 
+<form id="form_data" method="post" enctype="multipart/form-data">
 <div class="accordion" id="accordionExample">
     <div class="accordion-item mb-2" id="headingOne">
         <h2 class="accordion-header">
@@ -49,78 +50,68 @@
         </h2>
         <div id="collapseOne" class="accordion-collapse collapse show">
             <div class="accordion-body" style="background-color:#fffacd;">
+                <input type="hidden" name="txt_id" id="txt_id">
                 <div class="row">
-                    <div class="col-lg-4">
-                        <div class="input input-group">
-                            <div id="carouselBtnIma_93" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
-                                <div class="carousel-inner">
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 me-2">
-                                <label for="select_93" style="display: block;"><b>Tipo de Beneficiario</b></label>
-                                <select class="form-control form-control-sm" name="select_93" id="select_93"
-                                    style="width: 100%;"></select>
-                            </div>                            
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="row">
-                            <div class="col-2">
-                                <div id="carouselBtnImaDon" class="carousel slide" data-bs-ride="carousel" style="max-width:60px;cursor:pointer">
-                                    <div class="carousel-inner">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-10">
-                                <label for="select_CxC"><b>Tipo de Donación</b></label>
-                                <select class="form-control form-control-sm" name="select_CxC" id="select_CxC"></select>
-                            </div>
+                    <div class="col-lg-3">
+                        <b>CI / RUC </b>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-success btn-sm p-0" id="btn_nuevo_cli" onclick="validarRucYValidarSriC()" title="Nuevo cliente">
+                                <img src="../../img/png/SRIlogo.png" style="width: 45px;"  id="validarSRI" title="VALIDAR RUC">
+                            </button>
+                            <input type="text" name="txt_ci" id="txt_ci" class="form-control form-control-sm" onblur="validar_registro()">
+
+                            <input type="text" name="txt_td" id="txt_td" class="" style="color:red; width:35px" readonly>
+                            <input type="hidden" name="txt_codigo" id="txt_codigo" class="form-control form-control-sm">
+
                             
                         </div>
                     </div>
-                   
-                    <div class="col-lg-4 campoSocial">
-                        <div class="row">
-                            <div class="col-2 p-0">
-                                 <div class="campoSocial justify-content-center align-items-center">
-                                    <img src="../../img/png/SRIlogo.png" width="52" height="52"
-                                        onclick="validarRucYValidarSriC()" id="validarSRI" title="VALIDAR RUC">
-                                </div> 
-                            </div>
-                            <div class="col-10 ">
-                                 <label for="cliente"><b>Nombre del Beneficiario/Usuario</b></label>
-                                    <div class="input-group input-group-sm">
-                                        <select class="form-control form-control-sm" name="cliente" id="cliente"></select>
-                                        <button type="button" class="btn btn-success btn-sm"
-                                            id="btn_nuevo_cli" onclick="addCliente()" title="Nuevo cliente" style="font-size: 8pt;">
-                                            <span class="fa fa-user-plus" style="font-size: 8pt;"></span>
-                                        </button>
-                                        
-                                    </div>
-                                    <label for="ruc"><b>CI/RUC:</b><span id="lbl_ci"></span></label>
-                            </div>
+                     <div class="col-lg-5">
+                        <b>Nombre del Beneficiario/Usuario </b>
+                        <div class="input-group">
+                            <input type="text" name="cliente" id="cliente" class="form-control form-control-sm">
+                            <!-- <button class="btn-sm btn btn-primary"><i class="bx bx-search"></i></button> -->
                         </div>
-                    </div>
-                    <div class="col-lg-4 campoFamilia">
-                        <div class="flex-grow-1">
-                            <label for="fechaIngreso"><b>Fecha de ingreso</b></label>
-                            <input type="date" id="fechaIngreso" class="form-control form-control-sm">
-                        </div>
-                       
                     </div>
                     <div class="col-lg-4">
                         <div class="row">
-                            <div class="col-2 p-0">
-                                <div id="carouselBtnIma_87" class="carousel slide" data-bs-ride="carousel" style="cursor:pointer">
-                                    <div class="carousel-inner">
-                                    </div>
-                                </div>
+                            <div class="col-lg-3">
+                                 <img id="img_Tipo_Beneficiario" src="../../img/png/previnculacion.png"alt="user avatar" width="55" height="55">                                
                             </div>
-                            <div class="col-10">
+                            <div class="col-sm-9">
+                                <label for="select_93"><b>Tipo de Beneficiario</b></label>
+                                <select class="form-select" name="select_93" id="select_93"></select>                                
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                         <div class="row">
+                            <div class="col-lg-3">
+                                  <img id="img_Tipo_Donacion" src="../../img/png/ndo.png"alt="user avatar" width="55" height="55">                      
+                            </div>
+                            <div class="col-sm-9">
+                                <label for="select_CxC"><b>Tipo de Donación</b></label>
+                                <br>
+                                <h3  name="select_CxClabel" id="select_CxClabel"></h3>
+                                <input type="hidden" id="select_CxC" name="select_CxC" value="">
+                                <!-- <select class="form-select" name="select_CxC" id="select_CxC" ></select> -->
+                            </div>                            
+                        </div>
+                    </div>  
+                    <div class="col-lg-3">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                  <img id="img_estado_beneficiario" src="../../img/png/previnculacion.png"alt="user avatar" width="55" height="55">                      
+                            </div>
+                            <div class="col-lg-9">
                                 <label for="select_87"><b>Estado</b></label>
                                 <select class="form-select form-select-sm" name="select_87" id="select_87"></select>                                
                             </div>                            
                         </div> 
+                    </div>
+                     <div class="col-lg-2">
+                        <label for="fechaIngreso"><b>Fecha de ingreso</b></label>
+                        <input type="date" id="fechaIngreso" class="form-control form-control-sm" readonly>                       
                     </div>
                 </div> 
                 <div class="row campoSocial">
@@ -168,23 +159,30 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4 campoFamilia">
+                     <div class="col-lg-9 campoFamilia">
                         <div class="row">
-                            <div class="col-3"  id="btnPrograma" style="cursor:pointer">
-                                <img src="../../img/png/programa.png" width="60" height="60" title="TIPO DE PROGRAMA" class="icon">
+                            <div class="col-lg-5">
+                                <div class="row">
+                                    <div class="col-3"  id="btnPrograma" style="cursor:pointer">
+                                        <img src="../../img/png/programa.png" width="60" height="60" title="TIPO DE PROGRAMA" class="icon">
+                                    </div>
+                                    <div class="col-9">
+                                        <label for="select_85" style="display: block;"><b>Programa</b></label>
+                                        <select class="form-select form-select-sm" name="select_85" id="select_85" onchange="grupos()"></select>
+                                    </div>                            
+                                </div> 
+                            </div> 
+                            <div class="col-lg-3">
+                                <label for="grupo"><b>Grupo</b></label>
+                                <select class="form-select form-select-sm" name="grupo" id="grupo"></select>
                             </div>
-                            <div class="col-9">
-                                <label for="select_85" style="display: block;"><b>Programa</b></label>
-                                <select class="form-select form-select-sm" name="select_85" id="select_85"></select>
-                                
+                            <div class="col-lg-4">
+                                <label for="estadoCivil"><b>Estado civil</b></label>
+                                <select class="form-select form-select-sm" name="estadoCivil" id="estadoCivil">
+                                        <option value='' disabled selected>Seleccione</option>
+                                    </select>                                
                             </div>                            
-                        </div>
-                        <div class="row">
-                            <label for="grupo"><b>Grupo</b></label>
-                            <select class="form-select form-select-sm" name="grupo" id="grupo"></select>
-                        </div>                        
-                    </div>
-                    <div class="col-lg-5 campoFamilia">
+                        </div>                                         
                         <div class="row">
                             <div class="col-6">
                                 <label for="nombres"><b>Nombres</b></label>
@@ -221,7 +219,7 @@
                             <div class="col-6">
                                 <label for="nivelEscolar"><b>Nivel escolar</b></label>
                                 <input class="form-control form-control-sm" type="text" name="nivelEscolar"
-                                        id="nivelEscolar" placeholder="Cédula de identidad">
+                                        id="nivelEscolar" placeholder="Nivel de escolaridad">
                                 
                             </div>  
                              <div class="col-6">
@@ -229,35 +227,26 @@
                                 <input class="form-control form-control-sm" type="text" name="pregunta" id="pregunta"
                                         placeholder="¿Cómo se enteró del BAQ?">                                
                             </div>                           
-                        </div>
-                         <div class="row">
-                            <div class="col-6">
-                                <label for="estadoCivil" style="display: block;"><b>Estado civil</b></label>
-                                <select class="form-select form-select-sm" name="estadoCivil" id="estadoCivil">
-                                        <option value='' disabled selected>Seleccione</option>
-                                    </select>                                
-                            </div>  
-                             <div class="col-6">
-                                
-                            </div>                           
-                        </div>                  
+                        </div>         
                     </div>
-                    <div class="col-lg-3 text-center campoVolNo">
+                     <div class="col-lg-3 text-center">
                         <div class="row ">
-                            <div class="col-12" id="btnMostrarDir" style="cursor:pointer">
+                            <div class="col-lg-12 mb-3" id="btnMostrarDir" style="cursor:pointer">
                                 <img src="../../img/png/map.png" width="60" height="60" title="INGRESAR DIRECCIÓN"
                                         class="icon">   
                                 <br>
                                 <label><b>Ingresar Dirección</b></label>                             
                             </div>
-                            <div class="col-12 campoFamilia" id="btnInfoUser" style="cursor:pointer">
+                            <div class="col-lg-12 mb-3 campoFamilia" id="btnInfoUser" style="cursor:pointer">
                                 <img src="../../img/png/infoUser.png" width="60" height="60" title="INFORMACIÓN DEL USUARIO" class="icon">
                                 <br>      
                                 <label><b>Información del usuario</b></label>                          
                             </div>
                             
                         </div>
-                    </div>
+                    </div>           
+                   
+                   
                     <div class="col-lg-6 campoSocial">
                         <div class="row">
                             <div class="col-6">
@@ -294,7 +283,7 @@
             </div>
         </div>
     </div>
-    <div class="accordion-item" id="headingTwo">
+    <div class="accordion-item mb-3" id="headingTwo">
         <h2 class="accordion-header">
             <button class="accordion-button collapsed fw-bold" id="botonInfoAdd" style="background-color:#f3e5ab; color:#000" type="button">
                 INFORMACION ADICIONAL
@@ -336,30 +325,30 @@
                     </div>
                     <div class="col-lg-3" id="comentariodiv" style="display: none;">
                         <b>Comentario (máximo 85 caracteres)</b>
-                        <textarea class="form-control form-control-sm" id="comentario" rows="2" style="resize: none"
+                        <textarea class="form-control form-control-sm" id="comentario" name="comentario" rows="2" style="resize: none"
                                     maxlength="85"></textarea>
                     </div>
-                     <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <div class="row">
                             <div class="col-3">
                                 <img src="../../img/png/grupoEdad.png" width="60" height="60" id="btnMostrarGrupo"
                                     title="TIPO DE POBLACIÓN">                                
                             </div>
                             <div class="col-9">
-                                <b>Total de Personas Atendidas</b>
+                                <b class="small">Total Personas Atendidas</b>
                                 <input type="number" name="totalPersonas" id="totalPersonas" class="form-control form-control-sm" min="0" max="100" readonly>                                
                             </div>
                         </div>
                     </div>
-                     <div class="col-lg-3">
+                    <div class="col-lg-3">
                         <b>Acción Social</b>
                         <select class="form-select form-select-sm" name="select_92" id="select_92"></select>                        
                     </div>
-                     <div class="col-lg-3">
+                    <div class="col-lg-3">
                         <b>Vulnerabilidad</b>
                         <select class="form-select form-select-sm" name="select_90" id="select_90"></select>                        
                     </div>
-                     <div class="col-lg-2">
+                    <div class="col-lg-3">
                         <b>Tipo de Atención</b>
                         <select class="form-select form-select-sm" name="select_89" id="select_89"></select>
                     </div>
@@ -370,108 +359,92 @@
                                 <label for="archivoAdd"><b>Archivos Adjuntos</b></label>                               
                             </div>
                             <div class="col-9">                                
-                                <textarea placeholder="Informacion nutricional" class="form-control form-control-sm h-100" id="infoNut" rows="4" style="resize: none"></textarea>
-                                
+                                <textarea placeholder="Informacion nutricional" class="form-control form-control-sm h-100" id="infoNut" name="infoNut" rows="4" style="resize: none"></textarea>
                             </div>                            
                         </div>
-                        
                     </div>
-                    
-                </div>
-                        
-                        
+                </div>  
+                <div class="row">
+                    <div class="col-sm-6"></div>
+                    <div class="col-sm-1 mx-2">
+                        <div class="d-flex justify-content-center">
+                            <a href="#" id="descargarArchivo">
+                               
+                            </a>
+                        </div>
                         <div class="row">
-                            <div class="col-sm-6"></div>
-                            <div class="col-sm-1 mx-2">
-                                <div class="d-flex justify-content-center">
-                                    <a href="#" id="descargarArchivo">
-                                       
-                                    </a>
-                                </div>
-                                <div class="row">
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="row">
-                                    <div class="form-floating">
-                                       
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                    
-                    <div id="mostrarFamiliasAdd" class="accordion-body pt-1 pb-4"  style="display: none;background-color:#fffacd;">
-                        <div class="d-flex m-2 justify-content-center align-items-center">
-                            <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconEstructuraFam">
-                                <div class="row">
-                                    <img src="../../img/png/estructura_familiar.png" width="80" height="80"
-                                        title="ESTRUCTURA FAMILIAR" class="icon">
-                                </div>
-                                <div class="row">
-                                    <div class="form-group">
-                                        <label for=""><b>Estructura familiar</b></label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconVulnerabilidadFam">
-                                <div class="row">
-                                    <img src="../../img/png/vulnerabilidades.png" width="80" height="80"
-                                        title="VULNERABILIDADES" class="icon">
-                                </div>
-                                <div class="row">
-                                    <div class="form-group">
-                                        <label for=""><b>Vulnerabilidades</b></label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconSituacionFam">
-                                <div class="row">
-                                    <img src="../../img/png/situacion_economica.png" width="80" height="80"
-                                        title="SITUACIÓN ECONÓMICA" class="icon">
-                                </div>
-                                <div class="row">
-                                    <div class="form-group">
-                                        <label for=""><b>Situación Económica</b></label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconViviendaServicios">
-                                <div class="row">
-                                    <img src="../../img/png/vivienda_servicios.png" width="80" height="80"
-                                        title="VIVIENDA Y SERVICIOS BÁSICOS" class="icon">
-                                </div>
-                                <div class="row">
-                                    <div class="form-group">
-                                        <label for=""><b>Vivienda y Servicios Básicos</b></label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconEvaluacionFam">
-                                <div class="row">
-                                    <img src="../../img/png/evaluacion.png" width="80" height="80" title="EVALUACIÓN"
-                                        class="icon">
-                                </div>
-                                <div class="row">
-                                    <div class="form-group">
-                                        <label for=""><b>Evaluación</b></label>
-                                    </div>
-                                </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="form-floating">
+                               
                             </div>
                         </div>
-                    </div>
-                    <div id="mostrarVoluntariosAdd" class="accordion-body"  style="background-color:#fffacd;">
-
                     </div>
                 </div>
             </div>
+                    
+            <div id="mostrarFamiliasAdd" class="accordion-body pt-1 pb-4"  style="display: none;background-color:#fffacd;">
+                <div class="d-flex m-2 justify-content-center align-items-center">
+                    <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconEstructuraFam" onclick="modal_estructura_fami()">
+                        <div class="row">
+                            <img src="../../img/png/estructura_familiar.png" width="80" height="80" title="ESTRUCTURA FAMILIAR" class="icon">
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label for=""><b>Estructura familiar</b></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconVulnerabilidadFam" onclick="iconVulnerabilidadFam()">
+                        <div class="row">
+                            <img src="../../img/png/vulnerabilidades.png" width="80" height="80" title="VULNERABILIDADES" class="icon">
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label for=""><b>Vulnerabilidades</b></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconSituacionFam">
+                        <div class="row">
+                            <img src="../../img/png/situacion_economica.png" width="80" height="80" title="SITUACIÓN ECONÓMICA" class="icon">
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label for=""><b>Situación Económica</b></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconViviendaServicios">
+                        <div class="row">
+                            <img src="../../img/png/vivienda_servicios.png" width="80" height="80" title="VIVIENDA Y SERVICIOS BÁSICOS" class="icon">
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label for=""><b>Vivienda y Servicios Básicos</b></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-2 me-2 d-flex flex-column justify-content-center align-items-center text-center p-2" id="iconEvaluacionFam">
+                        <div class="row">
+                            <img src="../../img/png/evaluacion.png" width="80" height="80" title="EVALUACIÓN" class="icon">
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label for=""><b>Evaluación</b></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="mostrarVoluntariosAdd" class="accordion-body"  style="background-color:#fffacd;"></div>
         </div>
-        
     </div>
+</div>
+</form>
+        
 
 
     <div class="modal" id="mycalendar">
@@ -501,67 +474,69 @@
                     <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" style="overflow-y: auto;">
-                    <div class="form-group row">
-                        <label for="Provincia" class="col-sm-3 col-form-label">Provincia</label>
-                        <div class="col-sm-9">
-                            <select class="form-select" id="select_prov" onchange="ciudad(this.value)">
-                                <option value="">Seleccione provincia</option>
-                            </select>
+                    <form id="form_direccion">
+                        <div class="form-group row">
+                            <label for="Provincia" class="col-sm-3 col-form-label">Provincia</label>
+                            <div class="col-sm-9">
+                                <select class="form-select" id="select_prov"  name="select_prov" onchange="ciudad(this.value)">
+                                    <option value="">Seleccione provincia</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="Ciudad" class="col-sm-3 col-form-label">Ciudad</label>
-                        <div class="col-sm-9">
-                            <select class="form-select" id="select_ciud">
-                                <option value="">Seleccione ciudad</option>
-                            </select>
+                        <div class="form-group row">
+                            <label for="Ciudad" class="col-sm-3 col-form-label">Ciudad</label>
+                            <div class="col-sm-9">
+                                <select class="form-select" id="select_ciud"  name="select_ciud">
+                                    <option value="">Seleccione ciudad</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="Canton" class="col-sm-3 col-form-label">Cantón</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" name="Canton" id="Canton"
-                                placeholder="Ingrese un cantón">
+                        <div class="form-group row">
+                            <label for="Canton" class="col-sm-3 col-form-label">Cantón</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="Canton" id="Canton"
+                                    placeholder="Ingrese un cantón">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="Parroquia" class="col-sm-3 col-form-label">Parroquia</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" name="Parroquia" id="Parroquia"
-                                placeholder="Ingrese una parroquia">
+                        <div class="form-group row">
+                            <label for="Parroquia" class="col-sm-3 col-form-label">Parroquia</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="Parroquia" id="Parroquia"
+                                    placeholder="Ingrese una parroquia">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="Barrio" class="col-sm-3 col-form-label">Barrio</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" name="Barrio" id="Barrio"
-                                placeholder="Ingrese un barrio">
+                        <div class="form-group row">
+                            <label for="Barrio" class="col-sm-3 col-form-label">Barrio</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="Barrio" id="Barrio"
+                                    placeholder="Ingrese un barrio">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="CalleP" class="col-sm-3 col-form-label">Calle principal</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" name="CalleP" id="CalleP"
-                                placeholder="Ingrese calle principal">
+                        <div class="form-group row">
+                            <label for="CalleP" class="col-sm-3 col-form-label">Calle principal</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="CalleP" id="CalleP"
+                                    placeholder="Ingrese calle principal">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="CalleS" class="col-sm-3 col-form-label">Calle secundaria</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" name="CalleS" id="CalleS"
-                                placeholder="Ingrese calle secundaria">
+                        <div class="form-group row">
+                            <label for="CalleS" class="col-sm-3 col-form-label">Calle secundaria</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="CalleS" id="CalleS"
+                                    placeholder="Ingrese calle secundaria">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="Referencia" class="col-sm-3 col-form-label">Referencia</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" name="Referencia" id="Referencia"
-                                placeholder="Ingrese una referencia">
+                        <div class="form-group row">
+                            <label for="Referencia" class="col-sm-3 col-form-label">Referencia</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="Referencia" id="Referencia"
+                                    placeholder="Ingrese una referencia">
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="btnGuardarDir">Aceptar</button>
+                    <button type="button" class="btn btn-success"  id="btnGuardarDir">Aceptar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -732,14 +707,14 @@
     </div>
 
     <div id="modalEstructuraFam" class="modal">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Estructura familiar</h4>
                     <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" style="overflow-y: auto; max-height: 300px;">
-                    <div style="margin: 10px; overflow-x: auto;">
+                <div class="modal-body">
+                    <div style="overflow-x: scroll;">
                         <table class="table table-sm table-hover campos-d" id="tablaIntegrantes">
                             <thead>
                                 <tr>
@@ -753,72 +728,37 @@
                                     <th>Nombre de la Institución</th>
                                     <th>Tipo de Institución</th>
                                     <th>Vulnerabilidad</th>
-                                    <th>Acciones</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr id="filaAgregar">
-                                    <td><input type="text" class="form-control" id="nuevoNombre"></td>
+                                    <td><input type="text" class="form-control form-control-sm" id="nuevoNombre" style="width:300px"></td>
                                     <td>
-                                        <select class="form-select" id="nuevoGenero">
-                                            <option value="" selected disabled>Seleccione</option>
-                                            <option value="masculino">Masculino</option>
-                                            <option value="femenino">Femenino</option>
-                                        </select>
-                                    </td>
-                                    <td><input type="text" class="form-control" id="nuevoParentesco"></td>
-                                    <td>
-                                        <select class="form-select" id="nuevoRangoEdad">
-                                            <option value="" selected disabled>Seleccione</option>
-                                            <option value="0-5">0-5 años</option>
-                                            <option value="6-12">6-12 años</option>
-                                            <option value="13-18">13-18 años</option>
-                                            <option value="19-64">19-64 años</option>
-                                            <option value="65+">65 años o más</option>
-                                        </select>
-                                    </td>
-                                    <td><input type="text" class="form-control" id="nuevaOcupacion"></td>
-                                    <td>
-                                        <select class="form-select" id="nuevoEstadoCivil">
-                                            <option value="" selected disabled>Seleccione</option>
-                                            <option value="soltero">Soltero/a</option>
-                                            <option value="casado">Casado/a</option>
-                                            <option value="divorciado">Divorciado/a</option>
-                                            <option value="viudo">Viudo/a</option>
-                                        </select>
+                                        <select class="form-select" id="nuevoGenero" name="nuevoGenero"></select>
                                     </td>
                                     <td>
-                                        <select class="form-control" id="nuevoNivelEscolaridad" onchange="validarNinguno(this, 'nuevoNombreInstitucion', 'nuevoTipoInstitucion')">
-                                            <option value="" selected disabled>Seleccione</option>
-                                            <option value="ninguno">Ninguna</option>
-                                            <option value="primaria">Primaria</option>
-                                            <option value="secundaria">Secundaria</option>
-                                            <option value="bachillerato">Bachillerato</option>
-                                            <option value="tecnico">Técnico</option>
-                                            <option value="universidad">Universidad</option>
-                                            <option value="posgrado">Posgrado</option>
-                                        </select>
-                                    </td>
-                                    <td><input type="text" class="form-control" id="nuevoNombreInstitucion" disabled>
+                                        <select class="form-select" id="nuevoParentesco" name="nuevoParentesco"></select>
                                     </td>
                                     <td>
-                                        <select class="form-select" id="nuevoTipoInstitucion" disabled>
-                                            <option value="" selected disabled>Seleccione</option>
-                                            <option value="fiscal">Fiscal</option>
-                                            <option value="fiscomisional">Fiscomisional</option>
-                                            <option value="particular">Particular</option>
-                                        </select>
+                                        <select class="form-select" id="nuevoRangoEdad" name="nuevoRangoEdad"></select>
+                                    </td>
+                                    <td><input type="text" class="form-control form-control-sm" id="nuevaOcupacion" style="width:200px"></td>
+                                    <td>
+                                        <select class="form-select" id="nuevoEstadoCivil" name="nuevoEstadoCivil"></select>
                                     </td>
                                     <td>
-                                        <select class="form-select" id="nuevaVulnerabilidad">
-                                            <option value="" selected disabled>Seleccione</option>
-                                            <option value="discapacidad">Discapacidad</option>
-                                            <option value="enfermedad">Enfermedad</option>
-                                            <option value="ninguna">Ninguna</option>
-                                        </select>
+                                        <select class="form-control" id="nuevoNivelEscolaridad" name="nuevoNivelEscolaridad" onchange="validarNinguno(this, 'nuevoNombreInstitucion', 'nuevoTipoInstitucion')"></select>
                                     </td>
-                                    <td><button type="button" class="btn btn-primary"
-                                            id="agregarIntegrante">Agregar</button></td>
+                                    <td><input type="text" class="form-control form-control-sm" id="nuevoNombreInstitucion" style="width:300px" disabled>
+                                    </td>
+                                    <td>
+                                        <select class="form-select" id="nuevoTipoInstitucion" name="nuevoTipoInstitucion" disabled></select>
+                                    </td>
+                                    <td>
+                                        <select class="form-select" id="nuevaVulnerabilidad" name="nuevaVulnerabilidad"></select>
+                                    </td>
+                                    <td><button type="button" class="btn btn-primary btn-sm" id="agregarIntegrante">Agregar</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -833,7 +773,7 @@
     </div>
 
     <div id="modalVulnerabilidadFam" class="modal">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Vulnerabilidades</h4>
@@ -842,16 +782,17 @@
                 <div class="modal-body" style="overflow-y: auto; max-height: 300px; margin:5px">
                     <p>Integrantes discapacitados</p>
                     <div style="overflow-x: auto;">
-                        <table class="table" id="tablaFamDisc">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>Nombre persona</th>
                                     <th>Nombre de la discapacidad</th>
                                     <th>Tipo de discapacidad</th>
                                     <th>% discapacidad</th>
+                                    <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody  id="tablaFamDisc">
                             </tbody>
                         </table>
                     </div>
@@ -862,15 +803,16 @@
 
                     <p>Integrantes con Enfermedad</p>
                     <div style="overflow-x: auto; margin-top: 10px">
-                        <table class="table" id="tablaFamEnfe">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>Nombre persona</th>
                                     <th>Nombre de la enfermedad</th>
                                     <th>Tipo de enfermedad</th>
+                                    <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody  id="tablaFamEnfe">
                             </tbody>
                         </table>
                     </div>
@@ -1089,7 +1031,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="btnAceptarEgreso">Aceptar</button>
+                    <button type="button" class="btn btn-success" id="btnAceptarEgreso" data-bs-dismiss="modal">Aceptar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -1336,92 +1278,94 @@
                     <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" style="overflow-y: auto; max-height: 300px;">
-                    <div class="campoFamilia" style="margin-right: 10px;">
-                        <div class="row form-group form-group-xs">
-                            <div class="col-sm-6">
-                                <div>
-                                    <label for="trabajaSelect"><b>¿Trabaja?</b></label>
-                                    <div class="d-flex">
-                                        <select class="form-select form-select-sm" id="trabajaSelect">
-                                            <option value="0" selected>Sí</option>
-                                            <option value="1">No</option>
+                    <form id="form_info_usuario">                        
+                        <div class="campoFamilia" style="margin-right: 10px;">
+                            <div class="row form-group form-group-xs">
+                                <div class="col-sm-6">
+                                    <div>
+                                        <label for="trabajaSelect"><b>¿Trabaja?</b></label>
+                                        <div class="d-flex">
+                                            <select class="form-select form-select-sm" id="trabajaSelect" name="trabajaSelect">
+                                                <option value="0" selected>Sí</option>
+                                                <option value="1">No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="trabajaAct" style="display: none;">
+                                        <label for="comentarioAct"><b>Actividad:</b></label>
+                                        <textarea class="form-control form-control-sm" id="comentarioAct" name="comentarioAct" rows="2"
+                                            style="resize: none"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="trabajaAct">
+                                        <label for="modalidadSelect"><b>Modalidad</b></label>
+                                        <select class="form-select form-select-sm" id="modalidadSelect" name="modalidadSelect">
+                                            <option value="" selected disabled>Seleccione una opción</option>
+                                            <option value="1">Dependiente</option>
+                                            <option value="2">Independiente</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="trabajaAct" style="display: none;">
-                                    <label for="comentarioAct"><b>Actividad:</b></label>
-                                    <textarea class="form-control form-control-sm" id="comentarioAct" rows="2"
-                                        style="resize: none"></textarea>
-                                </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="trabajaAct">
-                                    <label for="modalidadSelect"><b>Modalidad</b></label>
-                                    <select class="form-select form-select-sm" id="modalidadSelect">
-                                        <option value="" selected disabled>Seleccione una opción</option>
-                                        <option value="0">Dependiente</option>
-                                        <option value="1">Independiente</option>
-                                    </select>
+                            <div class="row form-group form-group-xs">
+                                <div class="col-sm-6">
+                                    <div>
+                                        <label for="conyugeSelect"><b>¿Cónyuge trabaja?</b></label>
+                                        <div class="d-flex">
+                                            <select class="form-select form-select-sm" id="conyugeSelect" name="conyugeSelect">
+                                                <option value="0" selected>Sí</option>
+                                                <option value="1">No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="conyugeAct" style="display: none;">
+                                        <label for="comentarioConyugeAct"><b>Actividad:</b></label>
+                                        <textarea class="form-control form-control-sm" id="comentarioConyugeAct" name="comentarioConyugeAct" rows="2"
+                                            style="resize: none"></textarea>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row form-group form-group-xs">
-                            <div class="col-sm-6">
-                                <div>
-                                    <label for="conyugeSelect"><b>¿Cónyuge trabaja?</b></label>
-                                    <div class="d-flex">
-                                        <select class="form-select form-select-sm" id="conyugeSelect">
-                                            <option value="0" selected>Sí</option>
-                                            <option value="1">No</option>
+                                <div class="col-sm-6">
+                                    <div class="conyugeAct">
+                                        <label for="modalidadConyugeSelect"><b>Modalidad</b></label>
+                                        <select class="form-select form-select-sm" id="modalidadConyugeSelect" name="modalidadConyugeSelect">
+                                            <option value="" disabled selected>Seleccione una opción</option>
+                                            <option value="1">Dependiente</option>
+                                            <option value="2">Independiente</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="conyugeAct" style="display: none;">
-                                    <label for="comentarioConyugeAct"><b>Actividad:</b></label>
-                                    <textarea class="form-control form-control-sm" id="comentarioConyugeAct" rows="2"
-                                        style="resize: none"></textarea>
-                                </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="conyugeAct">
-                                    <label for="modalidadConyugeSelect"><b>Modalidad</b></label>
-                                    <select class="form-select form-select-sm" id="modalidadConyugeSelect">
-                                        <option value="" disabled selected>Seleccione una opción</option>
-                                        <option value="0">Dependiente</option>
-                                        <option value="1">Independiente</option>
-                                    </select>
+                            <div class="row form-group form-group-xs">
+                                <div class="col-sm-6">
+                                    <label for="numHijosI"><b>Número de hijos</b></label>
+                                    <input class="form-control form-control-sm" type="number" id="numHijosI" name="numHijosI"
+                                        min="0">
                                 </div>
+                                <div class="col-sm-6 hijosAct" style="display: none;">
+                                    <div>
+                                        <label for="numHijosMayores"><b>Mayores de edad</b></label>
+                                        <input class="form-control form-control-sm" type="number" id="numHijosMayores"
+                                            name="numHijosMayores" min="0" value="">
+                                    </div>
+                                    <div>
+                                        <label for="numHijosMenores"><b>Menores de edad</b></label>
+                                        <input class="form-control form-control-sm" type="number" id="numHijosMenores"
+                                            name="numHijosMenores" min="0" value="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="numPersonas"><b>Número de personas que viven en la casa</b></label>
+                                    <input class="form-control form-control-sm" type="number" id="numPersonas"
+                                        name="numPersonas" min="0">
+                                </div>
+                                
                             </div>
                         </div>
-                        <div class="row form-group form-group-xs">
-                            <div class="col-sm-6">
-                                <label for="numHijosI"><b>Número de hijos</b></label>
-                                <input class="form-control form-control-sm" type="number" id="numHijosI" name="numHijosI"
-                                    min="0">
-                            </div>
-                            <div class="col-sm-6 hijosAct" style="display: none;">
-                                <div>
-                                    <label for="numHijosMayores"><b>Mayores de edad</b></label>
-                                    <input class="form-control form-control-sm" type="number" id="numHijosMayores"
-                                        name="numHijosMayores" min="0" value="">
-                                </div>
-                                <div>
-                                    <label for="numHijosMenores"><b>Menores de edad</b></label>
-                                    <input class="form-control form-control-sm" type="number" id="numHijosMenores"
-                                        name="numHijosMenores" min="0" value="">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <label for="numPersonas"><b>Número de personas que viven en la casa</b></label>
-                                <input class="form-control form-control-sm" type="number" id="numPersonas"
-                                    name="numPersonas" min="0">
-                            </div>
-                            
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="btnAceptarUser">Aceptar</button>
+                    <button type="button" class="btn btn-success"  data-bs-dismiss="modal" id="btnAceptarUser">Aceptar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
