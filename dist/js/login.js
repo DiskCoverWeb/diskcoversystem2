@@ -35,11 +35,17 @@ function validar_entidad()
         	$('#txt_item').val(response[0].Item);
         	if(response[0].Nombre == response[0].Razon_Social)
 					{
+
+        	$('#lbl_razon').text(response[0].Nombre);
         		$('#alerta').html(response[0].Nombre);
         	}else
         	{
+
+        		$('#lbl_razon').text(response[0].Razon_Social);
+        		$('#lbl_nombre').text(response[0].Nombre)
         		$('#alerta').html(response[0].Razon_Social+'<br>'+response[0].Nombre);   
-        		$('#alerta').css('font-size','10px');        		
+        		$('#alerta').css('font-size','10px');    
+        		$('#lbl_nombre').css('display','block');    		
         	}
 			var newImgSrc = response[0].Logo + "?timestamp=" + new Date().getTime();
         	$('#img_logo').attr('src',newImgSrc);
