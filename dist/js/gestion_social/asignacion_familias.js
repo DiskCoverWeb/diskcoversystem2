@@ -1,5 +1,6 @@
 $(document).ready(function () {
      programas();
+     tipoCompra();
 
 })
 function programas()
@@ -9,13 +10,13 @@ function programas()
         // dropdownAutoWidth: true,
       //  selectionCssClass: 'form-control form-control-sm h-100',  // Para el contenedor de Select2
         ajax: {
-            url:   '../controlador/inventario/registro_beneficiarioC.php?LlenarSelects_Val=true&valor=85',
+            url:   '../controlador/inventario/registro_beneficiarioC.php?programas=true',
             dataType: 'json',
             delay: 250,
             processResults: function (data) {
             // console.log(data);
             return {
-              results: data.respuesta
+              results: data
             };
           },
           cache: true
@@ -35,13 +36,52 @@ function grupos()
             processResults: function (data) {
             // console.log(data);
             return {
-              results: data.respuesta
+              results: data
             };
           },
           cache: true
         }
     });
 }
+
+
+function tipoCompra()
+{
+    $.ajax({
+        url: '../controlador/inventario/asignacion_osC.php?tipo_asignacion=true',
+        type: 'POST',
+        dataType: 'json',
+        // data: { param: datos },
+    success: function (data) {
+        console.log(data);
+
+        var op = '';
+        var option = '';
+        data.forEach(function(item,i){
+        // console.log(item);
+            option+= '<div class="col-md-6 col-sm-6">'+
+                        '<button type="button" class="btn btn-light btn-sm"><img src="../../img/png/'+item.Picture+'.png" onclick="cambiar_tipo_asig(\''+item.ID+'\')"  style="width: 60px;height: 60px;"></button><br>'+
+                        '<b>'+item.Proceso+'</b>'+
+                    '</div>';
+
+            op+='<option value="'+item.ID+'">'+item.Proceso+'</option>';
+        })
+
+        $('#tipoCompra').html(op); 
+        $('#pnl_tipo_empaque').html(option);   
+
+        // llenarDatos(benefi);
+
+
+            // llenarComboList(data,'tipoCompra');
+            // console.log(data);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
 
 
  function guardar()
