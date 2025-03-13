@@ -88,12 +88,12 @@ if (isset ($_GET['tipo'])) {
 						<!-- <select class="form-select form-select-sm" name="DCTipoFact2" id="DCTipoFact2">
 
 						</select> -->
-						<input type="text" class="form-control form-control-sm" name="DCTipoFact2" id="DCTipoFact2" value="NDO" readonly>
+						<input type="text" class="form-control form-control-sm" name="DCTipoFact2" id="DCTipoFact2" value="NDU" readonly>
 					</div>
 				</div>
 				<div class="col-sm-6 pb-2">
 					<div class="input-group input-group-sm">
-						<label for="TextFacturaNo" class="input-group-text"><b id="Label1">NOTA DE DONACIÓN ORGANIZACIONES</b></label>
+						<label for="TextFacturaNo" class="input-group-text"><b id="Label1">NOTA DE DONACIÓN DE USUARIOS</b></label>
 						<span class="input-group-text" id="LblSerie"><b></b></span>
 						<input type="" class="form-control form-control-sm" id="TextFacturaNo" name="TextFacturaNo" readonly>
 					</div>
