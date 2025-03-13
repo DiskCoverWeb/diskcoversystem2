@@ -272,24 +272,89 @@ class facturas_distribucion_famM
 
     return $this->db->datos($sql);
   }
+  function ddl_programas($valor, $query='')
+  {
+    /*$sql = "SELECT Cmds, Proceso 
+            FROM Catalogo_Proceso TC 
+            INNER JOIN Clientes C ON TC.CodigoC = C.Codigo 
+            WHERE TC.T = 'F' 
+            
+            AND Cliente <> '.' 
+            AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+            AND Item = '".$_SESSION['INGRESO']['item']."'";
+    if ($query) {
+      $sql .= "AND Grupo LIKE '%" . $query . "%' ";
+    }
+    // print_r($sql);die();
+      
+    if($parametros['donacion']!=''){
+      $sql .= "AND Calificacion = '".$parametros['donacion']."'";
+    }
+
+    $sql .= "GROUP BY Grupo";*/
+
+    $sql = "SELECT Cmds, Proceso
+        FROM Catalogo_Proceso
+        WHERE Item = '". $_SESSION['INGRESO']['item'] ."' 
+        AND Cmds LIKE '". $valor ."%' 
+        AND TP ='PROGRAMA' ";
+
+    if ($query) {
+      $sql .= "AND Proceso LIKE '%" . $query . "%' ";
+    }
+    $sql .= "ORDER BY Cmds";
+
+    // $sql.=" UNION 
+    // SELECT Cliente,Codigo,CI_RUC,TD,Grupo,Email,T 
+    // FROM Clientes 
+    // WHERE Codigo = '9999999999' 
+    // ORDER BY Cliente ";
+    //print_r($sql);die();
+
+    return $this->db->datos($sql);
+  }
+
+  function ddl_grupos($valor, $query='')
+  {
+    $sql = "SELECT Cmds, Proceso
+        FROM Catalogo_Proceso
+        WHERE Item = '". $_SESSION['INGRESO']['item'] ."' 
+        AND Cmds LIKE '". $valor ."%' 
+        AND TP ='GRUPO' ";
+
+    if ($query) {
+      $sql .= "AND Proceso LIKE '%" . $query . "%' ";
+    }
+    $sql .= "ORDER BY Cmds";
+
+    // $sql.=" UNION 
+    // SELECT Cliente,Codigo,CI_RUC,TD,Grupo,Email,T 
+    // FROM Clientes 
+    // WHERE Codigo = '9999999999' 
+    // ORDER BY Cliente ";
+    //print_r($sql);die();
+
+    return $this->db->datos($sql);
+  }
   function tablaClientes($parametros)
 	{
-    $sql = "SELECT Item, Cliente,CI_RUC
+    $sql = "SELECT Item, Cliente,CI_RUC,C.ID
                 FROM Trans_Comision TC 
                 INNER JOIN Clientes C ON TC.CodigoC = C.Codigo 
                 WHERE TC.T = 'F' 
-                
+                AND C.TB = '93.02' 
+                AND Grupo = '".$parametros['grupo']."' 
                 AND Cliente <> '.' 
                 AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-                AND Item = '".$_SESSION['INGRESO']['item']."' 
-                AND Grupo = '" . $parametros['grupo'] . "' ";
+                AND Item = '".$_SESSION['INGRESO']['item']."' ";
+                //AND Grupo = '" . $parametros['grupo'] . "' ";
     // print_r($sql);die();
       
     if($parametros['donacion']!=''){
       $sql .= "AND Calificacion = '".$parametros['donacion']."' ";
     }
 
-    $sql .= "GROUP BY Cliente, CI_RUC,Item";
+    $sql .= "GROUP BY Cliente, CI_RUC,Item,C.ID";
 		/*$sql = "SELECT TOP 50 Cliente,CI_RUC,Codigo,Cta_CxP,Grupo,Cod_Ejec
 			FROM Clientes
 			WHERE FA <> 0
@@ -299,6 +364,41 @@ class facturas_distribucion_famM
 		  $sql .= " AND Grupo = '" . $grupo . "' ";
 		}
 		$sql .= " ORDER BY Cliente ";*/
+    //print_r($sql);die();
+    $res = grilla_generica_new($sql);
+    //print_r($res);die();
+    return $res['data'];
+		//print_r($sql);die();
+		//return $this->db->datos($sql);
+	}
+
+  function tablaClientesQuemado($parametros)
+	{
+    $sql = "SELECT Item, Cliente,CI_RUC,C.ID
+                FROM Trans_Comision TC 
+                INNER JOIN Clientes C ON TC.CodigoC = C.Codigo 
+                WHERE TC.T = 'F' 
+                AND Cliente <> '.' 
+                AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+                AND Item = '".$_SESSION['INGRESO']['item']."' ";
+                //AND Grupo = '" . $parametros['grupo'] . "' ";
+    // print_r($sql);die();
+      
+    if($parametros['donacion']!=''){
+      $sql .= "AND Calificacion = '".$parametros['donacion']."' ";
+    }
+
+    $sql .= "GROUP BY Cliente, CI_RUC,Item,C.ID";
+		/*$sql = "SELECT TOP 50 Cliente,CI_RUC,Codigo,Cta_CxP,Grupo,Cod_Ejec
+			FROM Clientes
+			WHERE FA <> 0
+			AND T = 'N' ";
+		
+		if ($grupo <> G_NINGUNO) {
+		  $sql .= " AND Grupo = '" . $grupo . "' ";
+		}
+		$sql .= " ORDER BY Cliente ";*/
+    //print_r($sql);die();
     $res = grilla_generica_new($sql);
     //print_r($res);die();
     return $res['data'];
