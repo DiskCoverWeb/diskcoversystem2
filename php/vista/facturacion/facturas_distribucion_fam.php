@@ -85,29 +85,34 @@ if (isset ($_GET['tipo'])) {
 				<div class="col-sm-6 pb-2">
 					<div class="input-group input-group-sm">
 						<label for="DCTipoFact2" class="input-group-text"><b>Tipo de Facturacion</b></label>
-						<select class="form-select form-select-sm" name="DCTipoFact2" id="DCTipoFact2" onblur="tipo_facturacion(this.value)">
+						<!-- <select class="form-select form-select-sm" name="DCTipoFact2" id="DCTipoFact2">
 
-						</select>
+						</select> -->
+						<input type="text" class="form-control form-control-sm" name="DCTipoFact2" id="DCTipoFact2" value="NDO" readonly>
 					</div>
 				</div>
 				<div class="col-sm-6 pb-2">
 					<div class="input-group input-group-sm">
-						<label for="TextFacturaNo" class="input-group-text"><b id="Label1">FACTURA No.</b></label>
+						<label for="TextFacturaNo" class="input-group-text"><b id="Label1">NOTA DE DONACIÓN ORGANIZACIONES</b></label>
 						<span class="input-group-text" id="LblSerie"><b></b></span>
 						<input type="" class="form-control form-control-sm" id="TextFacturaNo" name="TextFacturaNo" readonly>
 					</div>
 				</div>
 				<div class="col-sm-12 pb-2">
 					<div class="input-group input-group-sm">
-						<label for="DCCliente" class="input-group-text"><b>Usuario</b></label>
+						<span class="input-group-text"><b>Programa</b></span>
 						<!-- <select class="form-select form-select-sm" id="DCCliente" name="DCCliente" onchange="select()">
 							<option value="">Seleccione Cliente</option>
 						</select> -->
-						<select class="form-select form-select-sm" id="DCGrupo" name="DCGrupo" onchange="selectG()">
+						<select class="form-select form-select-sm" id="ddl_programas" name="ddl_programas">
+							<option value="">Seleccione Programa</option>
+						</select>
+						<span class="input-group-text"><b>Grupo</b></span>
+						<select class="form-select form-select-sm" id="ddl_grupos" name="ddl_grupos">
 							<option value="">Seleccione Grupo</option>
 						</select>
 						<button type="button" class="btn btn-success btn-sm" style="font-size: 8pt;" onclick="mostrarClientes();"
-							title="Nuevo cliente"><span class="fa fa-user-plus" style="font-size: 8pt;"></span></button>
+							title="Usuarios del grupo"><span class="fa fa-user-plus" style="font-size: 8pt;"></span></button>
 					</div>
 					<!-- <div class="input-group" id="ddl" style="width:100%">
 						<select class="form-control" id="DCCliente" name="DCCliente" onchange="select()">
@@ -296,7 +301,7 @@ if (isset ($_GET['tipo'])) {
                                 <th>ITEM</th>
                                 <th>USUARIO</th>
                                 <th>CEDULA</th>
-                                <th>ASISTENCIA</th>
+                                <!-- <th>ASISTENCIA</th> -->
                                 <th>PARA FACTURAR</th>
                             </tr>
                         </thead>

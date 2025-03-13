@@ -81,6 +81,22 @@ if(isset($_GET['GuardarBouche'])){
 	 echo json_encode($r);
 }
 
+if (isset($_GET['ddl_programas'])) {
+	$query = '';
+	if (isset($_GET['query'])) {
+		$query = $_GET['query'];
+	}
+	echo json_encode($controlador->ddl_programas($_GET['valor'], $query));
+}
+
+if (isset($_GET['ddl_grupos'])) {
+	$query = '';
+	if (isset($_GET['query'])) {
+		$query = $_GET['query'];
+	}
+	echo json_encode($controlador->ddl_grupos($_GET['valor'], $query));
+}
+
 if (isset($_GET['DCLineas'])) {
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->DCLinea($parametros));
@@ -284,6 +300,64 @@ class facturas_distribucion
 	}
 
 	function ConsultarProductos($params){
+
+		//Datos quemados por el momento
+		$datos = array(
+			"res"=> 1,
+			"contenido"=> array(
+				0 => array(
+					"Detalles"=> array(
+						"ID"=> 162,
+						"Fecha"=> array(
+							"date"=> "2025-03-12 00:00:00.000000",
+							"timezone_type"=> 3,
+							"timezone"=> "America/Guayaquil"
+						),
+						"Fecha_C"=> array(
+							"date"=> "2025-03-12 00:00:00.000000",
+							"timezone_type"=> 3,
+							"timezone"=> "America/Guayaquil"
+						),
+						"Nombre_Completo"=> "Washigton Alexander Chamba Chamba",
+						"Total"=> "1000.0000",
+						"CodBodega"=> "DIBEA-250312-003-PROVE-001",
+						"CodigoC"=> "0010000008",
+						"Codigo_Inv"=> "02.05",
+						"CodigoU"=> "1722487719"
+					),
+					"Productos"=> array(
+						"Stock"=> 0,
+						"Costo"=> "0.374000",
+						"Codigo_Barra"=> "0205",
+						"Tipo_SubMod"=> "N",
+						"Cta_Inventario"=> "1.1.04.01.12",
+						"Cta_Costo_Venta"=> "5.2.03.01.02",
+						"Codigo_Inv"=> "02.05",
+						"Fecha_Stock"=> "2025-03-13",
+						"TC"=> "FA",
+						"Con_Kardex"=> 1,
+						"Producto"=> "PROTEINA VEGETAL",
+						"Detalle"=> ".",
+						"Unidad"=> "Kilos",
+						"Minimo"=> 0,
+						"Maximo"=> 0,
+						"Cta_Ventas"=> "4.1.01.01.02",
+						"Cta_Ventas_0"=> "4.1.01.01.02",
+						"Cta_Venta_Anticipada"=> "0",
+						"Utilidad"=> 0,
+						"Div"=> 0,
+						"PVP2"=> 0.25,
+						"Por_Reservas"=> 0,
+						"Reg_Sanitario"=> ".",
+						"Valor_Unit"=> "0.400000",
+						"PVP"=> 0.4,
+						"IVA"=> 0
+					)
+				)
+			)
+		);
+
+		return $datos;
 		$datos = $this->modelo->ConsultarProductos($params);
 		$res = array();
 		if(count($datos) > 0){
@@ -444,10 +518,12 @@ class facturas_distribucion
 	function tablaClientes($parametros)
 	{
 		$datos = $this->modelo->tablaClientes($parametros);
-		// $res = array();
-		// foreach ($datos as $key => $value) {
-		// 	$res[] = array('id' => $value['Codigo'], 'text' => $value['CI_RUC'] . ' - ' . $value['Cliente'], 'data' => array($value));
-		// }
+
+		// Datos quemados por el momento
+		if(count($datos) <= 0){
+			$datos = $this->modelo->tablaClientesQuemado($parametros);
+		}
+		
 		return $datos;
 		// print_r($datos);die();
 	}
@@ -1095,6 +1171,26 @@ class facturas_distribucion
 		}
 		return $res;
 
+	}
+	function ddl_programas($valor, $query='')
+	{
+		$datos = $this->modelo->ddl_programas($valor, $query);
+		$res = array();
+		foreach ($datos as $key => $value) {
+			$res[] = array('id' => $value['Cmds'], 'text' => $value['Proceso'], 'data' => $value);
+		}
+		return $res;
+		// print_r($datos);die();
+	}
+	function ddl_grupos($valor, $query='')
+	{
+		$datos = $this->modelo->ddl_grupos($valor, $query);
+		$res = array();
+		foreach ($datos as $key => $value) {
+			$res[] = array('id' => $value['Cmds'], 'text' => $value['Proceso'], 'data' => $value);
+		}
+		return $res;
+		// print_r($datos);die();
 	}
 	function DCArticulos($Grupo_Inv, $TipoFactura, $query)
 	{

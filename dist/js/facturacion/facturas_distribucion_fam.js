@@ -22,8 +22,9 @@ var valTC = 'FA';
 		//toggleInfoEfectivo();
 		DCLineas();
 		preseleccionar_opciones();
-		eventos_select();
+		//eventos_select();
 		//autocomplete_cliente();
+		autocomplete_programa();
 		autocomplete_grupo();
 		autocomplete_producto();
 		//serie();
@@ -34,11 +35,17 @@ var valTC = 'FA';
 		AdoAuxCatalogoProductos();
 		construirTablaGavetas();
 		construirTablaEvalFundaciones();
+
+		$('#ddl_grupos').on('select2:select', () => {
+			cargarRegistrosProductos();
+		})
 		//DCDireccion();
 		$('#DCDireccion').on('blur', function () {
 			var DireccionAux = $('#DCDireccion').val();
 			DCDireccion(DireccionAux);
 		});
+
+		//$('#DCDireccion').on('select2:select', autocomplete_grupo());
 
 
 		DCBanco();
@@ -62,11 +69,19 @@ var valTC = 'FA';
 		//     console.log(data);
 		//   });
 
-		DCTipoFact2();
+		//DCTipoFact2();
 		//DCPorcenIvaFD();
 	});
 
 	function mostrarClientes(){
+		if($('#ddl_programas').val() == '' && $('#ddl_grupos').val() == ''){
+			Swal.fire(
+				'Por favor, seleccionar programa y grupo',
+				'',
+				'error'
+			);
+			return;
+		}
 		$('#modalClientes').modal('show')
 
 		tbl_clientes.destroy();
@@ -84,7 +99,8 @@ var valTC = 'FA';
 				type: 'POST',  // Cambia el método a POST    
 				data: function(d) {
 					var parametros = {
-					  	'grupo': $('#DCGrupo').val(),
+					  	'programa': $('#ddl_programas').val(),
+					  	'grupo': $('#ddl_grupos').val(),
 						'donacion': datosFact,
 						'fecha': $("#MBFecha").val()
 					};
@@ -102,22 +118,22 @@ var valTC = 'FA';
 				{ data: 'Item'},
 				{ data: 'Cliente', width: '350px'},
 				{ data: 'CI_RUC'},
-				{ data: null,
-					render: function(data, type, item) {
-						return `<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="1" id="cbxAsistencia"  name="cbxAsistencia">
-									<label class="form-check-label" for="cbxAsistencia">
+				// { data: null,
+				// 	render: function(data, type, item) {
+				// 		return `<div class="form-check">
+				// 					<input class="form-check-input" type="checkbox" value="1" id="cbxAsistencia"  name="cbxAsistencia">
+				// 					<label class="form-check-label" for="cbxAsistencia">
 										
-									</label>
-								</div>`;
-					} 
-				},
+				// 					</label>
+				// 				</div>`;
+				// 	} 
+				// },
 				{ data: null,
 					render: function(data, type, item) {
 						return `<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="1" id="cbxAsistencia"  name="cbxAsistencia">
-									<label class="form-check-label" for="cbxAsistencia">
-										<button class="btn btn-sm btn-primary" onclick="facturarCliente('${data.CI_RUC}')" id="btnFactIndiv"><i class="bx bxs-save"></i></button>
+									<input class="form-check-input" type="checkbox" value="1" id="cbxFacturarInd_${data.ID}"  name="cbxFacturarInd" onchange="$('#btnFactInd_${data.ID}').prop('disabled',!$('#cbxFacturarInd_${data.ID}').prop('checked'));">
+									<label class="form-check-label" for="cbxFacturarInd">
+										<button class="btn btn-sm btn-primary" onclick="facturarCliente('${data.CI_RUC}')" id="btnFactInd_${data.ID}" disabled><i class="bx bxs-save"></i></button>
 									</label>
 								</div>`;
 					} 
@@ -510,11 +526,11 @@ var valTC = 'FA';
 				let valor = DCPorcenIVA.selectedOptions[0].text;
 				console.log(valor);
 				$('#Label3').text('I.V.A. '+parseFloat(valor).toFixed(2)+'%');
-				tipo_documento();
+				//tipo_documento();
 			}
 		});
 		
-		$.ajax({
+		/*$.ajax({
 			type: "GET",
 			url: '../controlador/facturacion/facturas_distribucion_famC.php?LlenarSelectTipoFactura=true',
 			dataType: 'json',
@@ -539,7 +555,7 @@ var valTC = 'FA';
 				}
 				//$("#Label1").text(`FACTURA (${masDetalles[0]['Fact']}) NO.`);
 			}
-		});
+		});*/
 	}
 
 	//Agrega eventos a selects
@@ -754,10 +770,12 @@ var valTC = 'FA';
 	}
 
 	function cargarRegistrosProductos(){
-		$('#myModal_espera').modal('show');
-		let codigoC = $('#codigoCliente').val();
+		
+		let codigoPrograma = $('#ddl_programas').val();
+		let codigoGrupo = $('#ddl_grupos').val();
 		let parametros = {
-			'beneficiario': codigoC,
+			'programa': codigoPrograma,
+			'grupo': codigoGrupo,
 			'fecha': $('#MBFecha').val()
 		}
 		$.ajax({
@@ -765,9 +783,15 @@ var valTC = 'FA';
 			url: '../controlador/facturacion/facturas_distribucion_famC.php?ConsultarProductos=true',
 			data: { parametros },
 			dataType: 'json',
+			beforeSend: () => {
+				$('#myModal_espera').modal('show');
+			},
 			success: function (datos) {
+				setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000);
+
 				$('#cuerpoTablaDistri').remove();
-				$('#myModal_espera').modal('hide');
 				if (datos['res'] == 1) {
 					let cTotalProds = 0;
 					let tTotalProds = 0;
@@ -779,6 +803,7 @@ var valTC = 'FA';
 						tr.append($('<td></td>').text(fila['Detalles']['Nombre_Completo']));
 						tr.append($('<td></td>').text(fila['Productos']['Producto']));
 						tr.append($('<td></td>').text(parseInt(fila['Detalles']['Total'])));
+						tr.append($('<td></td>').text(parseInt(0)));
 						tr.append($('<td></td>').text(parseFloat(fila['Productos']['PVP']).toFixed(2)));
 						let totalProducto = fila['Detalles']['Total'] * fila['Productos']['PVP'];
 						tr.append($('<td></td>').text(parseFloat(totalProducto).toFixed(2)));
@@ -796,7 +821,8 @@ var valTC = 'FA';
 					let tr = $('<tr class="bg-primary-subtle"></tr>');
 					tr.append($('<td colspan="3"></td>').html('<b>Total</b>'));
 					tr.append($('<td id="ADCantTotal"></td>').html(`<b>${cTotalProds}</b>`));
-					tr.append($('<td></td>'));
+					tr.append($('<td colspan="2"></td>'));
+					//tr.append($('<td></td>'));
 					tr.append($('<td id="ADTotal"></td>').html(`<b>${tTotalProds.toFixed(2)}</b>`));
 					tr.append($('<td colspan="2"></td>'));
 					tBody.append(tr);
@@ -805,9 +831,10 @@ var valTC = 'FA';
 					let unidadProd = formatearUnidadesProductos(datos['contenido'][0]['Productos']['Unidad']);
 					$('#tablaProdCU').text(unidadProd);
 					$('#unidad_dist').val(unidadProd);
-					buscarValoresGavetas();
-					ingresarAsientoF();
+					//buscarValoresGavetas();
+					//ingresarAsientoF();
 				}
+				$('#myModal_espera').modal('hide');
 			}
 		})
 	}
@@ -1078,10 +1105,10 @@ var valTC = 'FA';
     $('#Label3').text('I.V.A. '+parseFloat(valor).toFixed(2)+'%');
 }
 
-function tipo_facturacion(valor)
+/*function tipo_facturacion(valor)
 {
     $('#Label3').text('I.V.A. '+parseFloat(valor).toFixed(2)+'%');
-}
+}*/
 
 	function autocomplete_cliente() {
 		$('#DCCliente').select2({
@@ -1108,19 +1135,44 @@ function tipo_facturacion(valor)
 		});
 	}
 
-	function autocomplete_grupo() {
-		$('#DCGrupo').select2({
-			width: '62%',
+	function autocomplete_programa() {
+		$('#ddl_programas').select2({
+			width: '25%',
+			placeholder: 'Seleccione programa',
+			ajax: {
+				url: '../controlador/facturacion/facturas_distribucion_famC.php?ddl_programas=true&valor=85',
+				dataType: 'json',
+				delay: 250,
+				/*data: function (params) {
+                    return {
+                        query: params.term,
+						v_donacion: datosFact,
+						fecha: $("#MBFecha").val()
+                    }
+                },*/
+				processResults: function (data) {
+					return {
+						results: data
+					};
+				},
+				cache: true
+			}
+		});
+	}
+
+	function autocomplete_grupo()
+	{
+		$('#ddl_grupos').select2({
+			width: '25%',
 			placeholder: 'Seleccione grupo',
 			ajax: {
-				url: '../controlador/facturacion/facturas_distribucion_famC.php?DCGrupo=true',
+				url: '../controlador/facturacion/facturas_distribucion_famC.php?ddl_grupos=true',
 				dataType: 'json',
 				delay: 250,
 				data: function (params) {
                     return {
                         query: params.term,
-						v_donacion: datosFact,
-						fecha: $("#MBFecha").val()
+						valor: $('#ddl_programas').val(),
                     }
                 },
 				processResults: function (data) {
@@ -1131,6 +1183,29 @@ function tipo_facturacion(valor)
 				cache: true
 			}
 		});
+		//programa = 
+		/*$('#ddl_grupos').select2({
+			width: '25%',
+			placeholder: 'Seleccione grupo',
+			ajax: {
+				url:   '../controlador/inventario/registro_beneficiarioC.php?ddl_grupos=true',
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+                    return {
+                        query: params.term,
+						programa: $('#ddl_programas').val(),
+                    }
+                },
+				processResults: function (data) {
+				// console.log(data);
+				return {
+				results: data.respuesta
+				};
+			},
+			cache: true
+			}
+		});*/
 	}
 
 	function DCDireccion(dirAux) {
@@ -2006,7 +2081,7 @@ function tipo_facturacion(valor)
 					console.log("No tiene datos");
 				}
 
-				tipo_documento();
+				//tipo_documento();
 				//numeroFactura();
 			}
 		});
