@@ -1,8 +1,62 @@
 $(document).ready(function () {
      programas();
      tipoCompra();
+     autocoplet_pro2();
 
 })
+function autocoplet_pro2() {
+    tipo = $('#tipoCompra').val();
+    var url_ = '';
+    if(tipo=='84.02')
+    {
+        console.log('sss');
+        url_ = '../controlador/inventario/asignacion_osC.php?autocom_pro=true';
+        console.log(url_);
+    }else
+    {
+        url_ = '../controlador/inventario/alimentos_recibidosC.php?autocom_pro=true';
+        console.log(url_);
+        
+    }
+
+    $('#grupProd').select2({
+        placeholder: 'Seleccione una producto',
+        width:'100%',
+        ajax: {
+            url: url_,
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                // console.log(data);
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        }
+    });
+}
+
+function buscar_producto(codigo)
+{
+    var parametros = {
+        'codigo':codigo,
+    }
+    $.ajax({
+        type: "POST",
+        url:   '../controlador/inventario/asignacion_osC.php?Codigo_Inv_stock=true',
+        data:{parametros:parametros},
+        dataType:'json',
+        success: function(data)
+        {
+            if(data.respueta)
+            {
+                $('#stock').val(data.datos.Stock);
+            }
+            console.log(data);
+        }
+    });
+}
 function programas()
 {
     $('#ddl_programas').select2({
