@@ -119,7 +119,7 @@ class asignacion_pickingM
         return $this->db->datos($sql);    
     }
 
-    function total_ingresados($bene,$tipo,$tipoventa)
+    function total_ingresados($bene,$tipo,$tipoventa,$fecha)
     {
         $sql = "SELECT SUM(TC.Total) as Total
                 FROM Trans_Comision TC
@@ -127,7 +127,8 @@ class asignacion_pickingM
                 WHERE CodigoC = '".$bene."'
                 AND Codigo_Inv = '".$tipo."'
                 AND Cta = '".$tipoventa."'
-                AND T = 'P'";
+                AND T = 'P'
+                AND Fecha = '".$fecha."' ";
 
                 // print_r($sql);die();
         return $this->db->datos($sql);   

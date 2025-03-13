@@ -127,10 +127,10 @@ class asignacion_pickingC
         $detalle = '';
         $ddlGrupoPro = '';
         $total = 0;
-        // print_r($parametros);die();
+        // print_r($datos);die();
         foreach ($datos as $key => $value) {
             $cant = 0; 
-            $cant_ing = $this->modelo->total_ingresados($parametros['beneficiario'],$value['Codigo'],$value['No_Hab']);
+            $cant_ing = $this->modelo->total_ingresados($parametros['beneficiario'],$value['Codigo'],$value['No_Hab'],$value['Fecha']->format('Y-m-d'));
             if($cant_ing[0]['Total']!=''){ $cant = $cant_ing[0]['Total'];}
             // print_r($cant_ing);die();
             $detalle.='<div class="row">                                    
@@ -179,6 +179,8 @@ class asignacion_pickingC
                 </div>';
 
         $res = array('detalle'=>$detalle,'ddl'=>$ddlGrupoPro,'total'=>$total);
+
+        // print_r($res);die();
 
         return $res;
     }
@@ -271,7 +273,7 @@ class asignacion_pickingC
          $bode = $this->egresos->buscar_producto(false,$parametros['codigoProducto']);
 
         // cantidad ingresada
-        $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1]);
+        $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],date('Y-m-d'));
         $cant_ing = $cant_ing[0]['Total'];
 
         // cantida que se pide

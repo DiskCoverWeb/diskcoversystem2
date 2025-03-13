@@ -138,33 +138,91 @@ function tipoCompra()
 
 
 
- function guardar()
-    {
-        ben = $('#beneficiario').val();
-        distribuir = $('#CantGlobDist').val();
-        if(ben=='' || ben==null){Swal.fire("","Seleccione un Beneficiario","info");return false;}
-        if(distribuir==0 || distribuir==''){ Swal.fire("","No se a agregado nigun grupo de producto","info");return false;}
-        var parametros = {
-            'beneficiario':ben,
-            'fecha':$('#fechAten').val(),
-        }
-         $.ajax({
-            url: '../controlador/inventario/asignacion_osC.php?GuardarAsignacion=true',
-            type: 'post',
-            dataType: 'json',
-            data: { parametros: parametros },
-            success: function (datos) {
-                if(datos==1)
-                {
-                    Swal.fire("Asignacion Guardada","","success").then(function(){
-                        location.reload();
-                    });
-                }
-
+function guardar()
+{
+    ben = $('#beneficiario').val();
+    distribuir = $('#CantGlobDist').val();
+    if(ben=='' || ben==null){Swal.fire("","Seleccione un Beneficiario","info");return false;}
+    if(distribuir==0 || distribuir==''){ Swal.fire("","No se a agregado nigun grupo de producto","info");return false;}
+    var parametros = {
+        'beneficiario':ben,
+        'fecha':$('#fechAten').val(),
+    }
+     $.ajax({
+        url: '../controlador/inventario/asignacion_osC.php?GuardarAsignacion=true',
+        type: 'post',
+        dataType: 'json',
+        data: { parametros: parametros },
+        success: function (datos) {
+            if(datos==1)
+            {
+                Swal.fire("Asignacion Guardada","","success").then(function(){
+                    location.reload();
+                });
             }
-        });
+
+        }
+    });
+}
+
+function add_beneficiario(){
+    $('#modal_addBeneficiario').modal('show');
+}
+
+function agregar() {
+    if($('#ddl_grupos').val()=='' || $('#ddl_grupos').val()==null)
+    {
+        Swal.fire("","Seleccione Grupo","info").then(function(){
+            return false;
+        })
     }
 
-    function add_beneficiario(){
-        $('#modal_addBeneficiario').modal('show');
+    var stock = $('#stock').val();
+    var cant =  $('#cant').val();
+    console.log(cant)
+    console.log(stock);
+    if(cant=='' || cant==null || cant <= 0)
+    { 
+        Swal.fire("Cantidad no valida","","info");
+        return false;
     }
+    if(parseFloat(cant)> parseFloat(stock))
+    { 
+        Swal.fire("Cantidad supera al stock","","info")
+        return false;
+    }
+    var datos = {
+        'Codigo': $('#grupProd').val(),
+        'Producto': $('#grupProd option:selected').text(),
+        'Cantidad': $('#cant').val(),
+        'Comentario': $('#comeAsig').val(),
+        'beneficiarioCodigo':$('#beneficiario').val(), 
+        'beneficiarioN':$('#beneficiario option:selected').text(),   
+        'FechaAte':$('#fechAten').val(),   
+        'asignacion':$('#tipoCompra').val(),
+    };       
+
+    if($('#tipoCompra').val()=='' || $('#tipoCompra').val()==null)
+    {
+        Swal.fire("Seleccione Tipo de asignacion","","info")
+            return false;
+    }
+
+
+    $.ajax({
+        url: '../controlador/inventario/asignacion_osC.php?addAsignacionFamilias=true',
+        type: 'POST',
+        dataType: 'json',
+        data: { param: datos },
+        success: function (data) {
+            if(data==1)
+            {
+                listaAsignacion();
+                limpiar();
+            }
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}

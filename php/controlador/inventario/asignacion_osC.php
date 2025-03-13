@@ -39,6 +39,10 @@ if(isset($_GET['addAsignacion'])){
     $parametros = $_POST['param'];
     echo json_encode($controlador->addAsignacion($parametros));
 }
+if(isset($_GET['addAsignacionFamilias'])){
+    $parametros = $_POST['param'];
+    echo json_encode($controlador->addAsignacionFamilias($parametros));
+}
 if(isset($_GET['eliminarLinea'])){
     $parametros = $_POST['parametros'];
     echo json_encode($controlador->eliminarLinea($parametros));
@@ -319,6 +323,30 @@ class asignacion_osC
         $producto = Leer_Codigo_Inv($parametros['Codigo'],$parametros['FechaAte']);
 
         // print_r($parametros);die();
+        SetAdoAddNew("Detalle_Factura");
+        SetAdoFields("TC","OP");
+        SetAdoFields("CodigoC",$parametros['beneficiarioCodigo']);
+        SetAdoFields("Procedencia",$parametros['Comentario']);
+        SetAdoFields("Codigo",$parametros['Codigo']);
+        SetAdoFields("Producto",$parametros['Producto']);
+        SetAdoFields("Cantidad",$parametros['Cantidad']);
+        SetAdoFields("Precio",number_format($producto['datos']['PVP'],2,'','.'));
+        SetAdoFields("Total",number_format($producto['datos']['PVP']*$parametros['Cantidad'],2,'','.'));
+        SetAdoFields("Fecha",$parametros['FechaAte']);
+        SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+        SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+        SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+        SetAdoFields("No_Hab",$parametros['asignacion']);
+        
+        return SetAdoUpdate();
+    }
+
+    function addAsignacionFamilias($parametros)
+    {
+
+        $producto = Leer_Codigo_Inv($parametros['Codigo'],$parametros['FechaAte']);
+
+        print_r($parametros);die();
         SetAdoAddNew("Detalle_Factura");
         SetAdoFields("TC","OP");
         SetAdoFields("CodigoC",$parametros['beneficiarioCodigo']);

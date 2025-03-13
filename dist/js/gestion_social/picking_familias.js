@@ -9,13 +9,13 @@ function programas()
         // dropdownAutoWidth: true,
       //  selectionCssClass: 'form-control form-control-sm h-100',  // Para el contenedor de Select2
         ajax: {
-            url:   '../controlador/inventario/registro_beneficiarioC.php?LlenarSelects_Val=true&valor=85',
+            url:   '../controlador/inventario/registro_beneficiarioC.php?programas=true',
             dataType: 'json',
             delay: 250,
             processResults: function (data) {
             // console.log(data);
             return {
-              results: data.respuesta
+              results: data
             };
           },
           cache: true
@@ -35,10 +35,11 @@ function grupos()
             processResults: function (data) {
             // console.log(data);
             return {
-              results: data.respuesta
+              results: data
             };
           },
           cache: true
         }
     });
 }
+
