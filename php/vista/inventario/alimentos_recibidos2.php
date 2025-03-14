@@ -157,8 +157,7 @@
             <div class="col-sm-12" id="pnl_comentario">
               <b style="font-size: 10pt;">COMENTARIO DE CLASIFICACION</b>
               <div class="input-group">
-                <textarea class="form-control form-control-sm" id="txt_comentario2" name="txt_comentario2" style="font-size:16px" readonly rows="3" placeholder="comentario general de clasificacion...">
-                </textarea>
+                <textarea class="form-control form-control-sm" id="txt_comentario2" name="txt_comentario2" style="font-size:16px" rows="3"></textarea>
                 <button type="button" class="btn btn-primary btn-sm" onclick="comentar()"><i class="fa fa-save" style="font-size:8pt;"></i></button>   
               </div>
             </div>
