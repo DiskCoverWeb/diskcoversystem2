@@ -75,7 +75,7 @@ enumerateCameras();
 
 	$('#modal_camara').on('shown.bs.modal', function () {
 		// enumerateCameras();
-		cam = $('#ddl_camaras').val();
+		cam = $('#ddl_camaras_f').val();
 		console.log(cam);
 		activarCamara(cam);
 	})
@@ -745,7 +745,9 @@ function enumerateCameras() {
 
             // console.log(op);
 
-            $('#ddl_camaras').html(op)
+             // Swal.fire('cámaras',"", 'error');
+
+            $('#ddl_camaras_f').html(op)
 
             // if (cameras.length > 0) {
             //     // Seleccionar la primera cámara por defecto
