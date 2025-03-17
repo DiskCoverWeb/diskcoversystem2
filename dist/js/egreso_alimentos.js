@@ -801,6 +801,7 @@ function takePicture() {
   }
 
 function adjuntarFoto(){
+	cerrarCamara();
 	$('#photoupload_span').show();
 	$('#modal_foto').modal('hide');
 	foto_data = photo.getAttribute("src");
