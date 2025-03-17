@@ -686,10 +686,12 @@ scanner = new Html5Qrcode("reader");
 $('#qrescaner_carga').hide();
 Html5Qrcode.getCameras().then(devices => {
 	  op = '';
-       devices.forEach((devices, index) => {
+       devices.forEach((camera, index) => {
          op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
        });
-       
+      
+       $('#ddl_camaras').html(op)
+
 	if (devices.length > 0) {
 		let cameraId = devices[NumCamara].id; // Usa la primera cámara disponible
 		scanner.start(
