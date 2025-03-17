@@ -544,7 +544,7 @@
     </div>
 
     <div id="modalBtnGrupo" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Tipo de población</h4>
