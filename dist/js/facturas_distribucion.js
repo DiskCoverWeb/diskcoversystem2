@@ -257,7 +257,9 @@ var valTC = 'FA';
 			data: {'parametros': parametros},
 			dataType: 'json',
 			success: function (datos) {
-				$('#myModal_espera').modal('hide');
+				setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
 				$('.gdet_pendientes').text('0');
 				$('#gavetas_total_pendientes_ver b').text('0');
 				$('#gavetas_pendientes2').val('0');
@@ -685,7 +687,10 @@ var valTC = 'FA';
 			dataType: 'json',
 			success: function (datos) {
 				$('#cuerpoTablaDistri').remove();
-				$('#myModal_espera').modal('hide');
+				setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
+				
 				if (datos['res'] == 1) {
 					let cTotalProds = 0;
 					let tTotalProds = 0;
@@ -737,7 +742,18 @@ var valTC = 'FA';
 	function modificarLineaFac(campo){
 		let fila = campo.parentElement.parentElement.parentElement;
 		let nuevoValor = fila.childNodes[3].children[0].children[0].value;
-		let costoTotal = parseInt(nuevoValor) * parseFloat(fila.childNodes[4].children[0].children[0].value);
+		let nuevoPVP = fila.childNodes[4].children[0].children[0].value;
+		if(nuevoValor.trim() == ""){
+			fila.childNodes[3].children[0].children[0].value = "0";
+			nuevoValor = 0;
+		}
+
+		if(nuevoPVP.trim() == ""){
+			fila.childNodes[4].children[0].children[0].value = "0";
+			nuevoPVP = 0;
+		}
+
+		let costoTotal = parseInt(nuevoValor) * parseFloat(nuevoPVP);
 		console.log(costoTotal);
 		fila.childNodes[5].innerText = costoTotal.toFixed(2);
 
@@ -779,14 +795,16 @@ var valTC = 'FA';
 			'cheking': fila.childNodes[8].children[0].checked==true?1:0,
 		}
 		console.log(parametros);
-		$('#myModal_espera').modal('show');
+		/*$('#myModal_espera').modal('show');
 		$.ajax({
 			type: "POST",
 			url: '../controlador/facturacion/facturas_distribucionC.php?ActualizarAsientoF=true',
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
-				$('#myModal_espera').modal('hide');
+				setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
 				if (data == 2) {
 					Swal.fire('Ya no puede ingresar mas productos', '', 'info');
 				} else if (data == 1) {
@@ -796,7 +814,7 @@ var valTC = 'FA';
 					Swal.fire('Intente mas tarde', '', 'info');
 				}
 			}
-		});
+		});*/
 		/*fila.childNodes[3].innerHTML = `
 			<input type="text" class="form-control form-control-sm text-center" style="max-width:136px;" placeholder="Cambie la cantidad">
 		`; //name = cod_prod + usuario_q_agg
@@ -866,7 +884,9 @@ var valTC = 'FA';
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
-				$('#myModal_espera').modal('hide');
+				setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
 				if (data == 2) {
 					Swal.fire('Ya no puede ingresar mas productos', '', 'info');
 				} else if (data == 1) {
@@ -1512,7 +1532,9 @@ function tipo_facturacion(valor)
 					docbouche = respuesta['documento'];
 					generar_factura();
 				}else{
-					$('#myModal_espera').modal('hide');
+					setTimeout(()=>{
+						$('#myModal_espera').modal('hide');
+					}, 1000)
 					/*$('#picture').val(".");
 					$('#imageElement').prop('src','');
 					Swal.fire("Error", "Hubo un problema al mostrar la imagen", "error");*/
@@ -1565,7 +1587,9 @@ function tipo_facturacion(valor)
 				if(data['res'] == 1){
 					grabar_gavetas();
 				}else{
-					$('#myModal_espera').modal('hide');
+					setTimeout(()=>{
+						$('#myModal_espera').modal('hide');
+					}, 1000)
 					Swal.fire('Error', 'Hubo un error al guardar la evaluacion');
 				}
 			}
@@ -1620,7 +1644,9 @@ function tipo_facturacion(valor)
 						generar_factura();
 					}
 				}else{
-					$('#myModal_espera').modal('hide');
+					setTimeout(()=>{
+						$('#myModal_espera').modal('hide');
+					}, 1000)
 					Swal.fire('Error', 'Hubo un problema al subir la actualizacion de gavetas.');
 				}
 			},
@@ -1732,7 +1758,9 @@ function tipo_facturacion(valor)
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
-				$('#myModal_espera').modal('hide');
+				setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
 				// console.log(data);
 				if(data.length == 1){
 					if (data.respuesta == 1) {
@@ -1968,7 +1996,9 @@ function tipo_facturacion(valor)
 				//numeroFactura();
 			}
 		});
-		$('#myModal_espera').modal('hide');
+		setTimeout(()=>{
+			$('#myModal_espera').modal('hide');
+		}, 1000)
 	}
 	function validar_bodega() {
 		var ddl = $('DCBodega').val();
