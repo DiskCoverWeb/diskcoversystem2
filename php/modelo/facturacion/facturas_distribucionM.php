@@ -32,6 +32,19 @@ class facturas_distribucionM
     //print_r($sql);die();
     return $this->db->datos($sql);
   }
+  function ConsultarAF($inv, $codl, $prod, $codcl, $serie){
+    
+    $sql = "SELECT *
+            FROM Asiento_F  
+            WHERE CODIGO = '".$inv."' 
+            AND CODIGO_L = '".$codl."' 
+            AND PRODUCTO = '".$prod."' 
+            AND Codigo_Cliente = '".$codcl."' 
+            AND Serie = '".$serie."' 
+            AND Item = '".$_SESSION['INGRESO']['item']."' ";
+    //print_r($sql);die();
+    return $this->db->datos($sql);
+  }
 
   function Facturas_Impresas($TFA)
   {

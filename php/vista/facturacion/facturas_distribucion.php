@@ -230,7 +230,7 @@ if (isset ($_GET['tipo'])) {
 							<th style="display:none">CodBodega</th>
 							<th style="display:none">Cod_Inv</th>
 							<th>Cheking</th>
-							<th>Modificar</th>
+							<!-- <th>Modificar</th> -->
 							<th style="display:none">CodigoU</th>
 						</tr>
 					</thead>

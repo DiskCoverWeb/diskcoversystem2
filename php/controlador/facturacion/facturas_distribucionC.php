@@ -1095,7 +1095,7 @@ class facturas_distribucion
 		$TxtRifaH = '.';
 		$TextServicios = $parametros['TextServicios'];
 		$CodigoL = '.';
-		$Serie = '.';
+		$Serie = $parametros['Serie'];
 		$producto = Leer_Codigo_Inv($parametros['Codigo'], $parametros['fecha'], $parametros['CodBod']);
 		$CodigoL2 = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $parametros['fecha'], $parametros['fecha'], $electronico);
 		if (count($CodigoL2) > 0) {
@@ -1205,7 +1205,7 @@ class facturas_distribucion
 					SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
 					SetAdoFields('Codigo_Cliente', $parametros['CodigoCliente']);
 					SetAdoFields('A_No', $A_No + 1);
-					SetAdoFields('CodBod', $parametros['CodBod']);
+					SetAdoFields('CodBod', $parametros['CodBod2']);
 					SetAdoFields('COSTO', $articulo['Costo']);
 					SetAdoFields('Total_Desc', $Dscto);
 					if(isset($parametros['cheking'])){
@@ -1341,7 +1341,9 @@ class facturas_distribucion
 						// esto se usa en facturacion_elec al cambiar el nombre
 						$articulo['Producto'] = $parametros['Producto'];
 					}
-					//print_r('funciona hasta aqui');die();
+					/*print_r($TextCant);
+					print_r($TextVUnit);
+					die();*/
 
 					SetAdoAddNew('Asiento_F');
 					//SetAdoFields('CODIGO', $articulo['Codigo_Inv']);
@@ -1356,24 +1358,30 @@ class facturas_distribucion
 					//SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
 					//SetAdoFields('Codigo_Cliente', $parametros['CodigoCliente']);
 					//SetAdoFields('A_No', $A_No + 1);
-					//SetAdoFields('CodBod', $parametros['CodBod']);
 					SetAdoFields('COSTO', $articulo['Costo']);
 					SetAdoFields('Total_Desc', $Dscto);
 					SetAdoFields('Cheking', $parametros['cheking']);
 					SetAdoFields('SERVICIO', $TextServicios);
-					SetAdoFields('RUTA', $parametros['comentario']);
+					//SetAdoFields('RUTA', $parametros['comentario']);
 					if ($articulo['Costo'] > 0) {
 						SetAdoFields('Cta_Inv', $articulo['Cta_Inventario']);
 						SetAdoFields('Cta_Costo', $articulo['Cta_Costo_Venta']);
 					}
+					SetAdoFieldsWhere('CodBod', $parametros['CodBod2']);
 					SetAdoFieldsWhere('CODIGO', $articulo['Codigo_Inv']);
 					SetAdoFieldsWhere('CODIGO_L', $CodigoL);
 					SetAdoFieldsWhere('Item', $_SESSION['INGRESO']['item']);
 					SetAdoFieldsWhere('PRODUCTO', $articulo['Producto']);
 					SetAdoFieldsWhere('Codigo_Cliente', $parametros['CodigoCliente']);
+					//SetAdoFieldsWhere('CodBod', $parametros['CodigoCliente']);
 					SetAdoFieldsWhere('Serie', $parametros['Serie']);
 					
 					return SetAdoUpdateGeneric();
+
+					/*if($nresult == 1){
+						$nres2 = $this->modelo->ConsultarAF( $articulo['Codigo_Inv'], $CodigoL, $articulo['Producto'], $parametros['CodigoCliente'], $parametros['Serie']);
+						print_r($nres2);die();
+					}*/
 
 				}
 			}
