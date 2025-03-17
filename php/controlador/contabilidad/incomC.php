@@ -548,7 +548,7 @@ class incomC
      	{
      		// if($parametros['nivel']!='false')
      		// {
-     		// 	 $agrupacion = 1;
+     			 $agrupacion = '0';
      		// }
      		
      	    $datos = $this->modelo->catalogo_subcta($parametros['tc'],$agrupacion,$parametros['nivel']);

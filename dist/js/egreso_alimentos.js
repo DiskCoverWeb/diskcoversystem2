@@ -686,7 +686,7 @@ scanner = new Html5Qrcode("reader");
 $('#qrescaner_carga').hide();
 Html5Qrcode.getCameras().then(devices => {
 	  op = '';
-       devices.forEach((camera, index) => {
+       devices.forEach((devices, index) => {
          op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
        });
        
