@@ -571,7 +571,7 @@ class incomM
         }
         $sql.=" AND Codigo <> '.' 
         ORDER BY Nivel,Detalle ";
-         // print_r($sql);die();
+//print_r($sql);die();
          $result = $this->conn->datos($sql);
 		  return $result;
     }

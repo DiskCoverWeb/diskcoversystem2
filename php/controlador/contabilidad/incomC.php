@@ -535,6 +535,7 @@ class incomC
 
      	//print_r($parametros);die();
         $ddl = array();
+        $agrupacion = 0;
      	if($parametros['tc']=='C' ||  $parametros['tc']== "P" || $parametros['tc']=="CP" )
      	{
      		// $datos = $this->modelo->Catalogo_CxCxP($parametros['tc'],$parametros['cta'],$parametros['query']);
@@ -545,8 +546,12 @@ class incomC
      		// return $ddl;
      	}else
      	{
+     		if($parametros['nivel']!='false')
+     		{
+     			 $agrupacion = 1;
+     		}
      		
-     	    $datos = $this->modelo->catalogo_subcta($parametros['tc'],false,$parametros['nivel']);
+     	    $datos = $this->modelo->catalogo_subcta($parametros['tc'],$agrupacion,$parametros['nivel']);
      	    foreach ($datos as $key => $value) {
      			$ddl[]=array('id'=>$value['Codigo'],'text'=>$value['Detalle']);
      		}
