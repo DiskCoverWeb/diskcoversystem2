@@ -206,6 +206,12 @@ if (isset ($_GET['tipo'])) {
 						<div class="col-auto">
 							<button type="button" id="btn_detalle" class="btn btn-primary btn-sm btn-block" onclick="$('#modalGavetasVer').modal('show')"> Ver detalle <i class="fa fa-eye"></i></button>
 						</div>
+						<div class="col-auto">
+							<div class="input-group input-group-sm">
+								<label for="txtRecalcular" class="input-group-text"><b>Valor a Recalcular</b></label>
+								<input type="text" class="form-control form-control-sm" name="txtRecalcular" id="txtRecalcular" value="">
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -229,6 +235,7 @@ if (isset ($_GET['tipo'])) {
 							<th>Costo total</th>
 							<th style="display:none">CodBodega</th>
 							<th style="display:none">Cod_Inv</th>
+							<th>Recalcular</th>
 							<th>Cheking</th>
 							<!-- <th>Modificar</th> -->
 							<th style="display:none">CodigoU</th>
