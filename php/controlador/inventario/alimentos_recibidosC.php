@@ -89,8 +89,10 @@ if(isset($_GET['datos_ingreso']))
 if(isset($_GET['autoincrementable']))
 {
 	$parametros = $_POST['parametros'];
-	$num = $controlador->autoincrementable($parametros);
-	$num = generaCeros($num,3);
+	// $num = $controlador->autoincrementable($parametros);
+	$dia = date('Ymd');
+	$numero_secuencial = numero_comprobante1("Ingreso_".$dia,$_SESSION['INGRESO']['item'],$incrementa=false,date('Y-m-d'));
+	$num = generaCeros(intval($numero_secuencial),3);
 	echo json_encode($num);
 }
 
@@ -337,9 +339,13 @@ class alimentos_recibidosC
 		// print_r($gavetas);
 		// die();
 
-
+		$dia = date('Ymd');
+		$numero_secuencial = numero_comprobante1("Ingreso_".$dia,$_SESSION['INGRESO']['item'],$incrementa=true,date('Y-m-d'));
 		$parametros['fecha'] = $parametros['txt_fecha'];
-		$codigo = substr($parametros['txt_codigo'],0,-3).generaCeros($this->autoincrementable($parametros),3);
+		$codigo = substr($parametros['txt_codigo'],0,-3).generaCeros(intval($numero_secuencial),3);
+
+
+		// print_r($codigo);die();
 		// print_r($parametros);die();
 		SetAdoAddNew('Trans_Correos');
 		SetAdoFields('T','I');
