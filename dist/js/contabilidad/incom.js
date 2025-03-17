@@ -1245,7 +1245,7 @@ function table_lost_focus(){
 }
 
 function get_cell_focus(){
-  $(document).on('focus', 'td[contenteditable="true"]', function() {
+  $('#myTable').on('focus', 'td[contenteditable="true"]', function() {
       var $this = $(this);
       setTimeout(function() {
           var range = document.createRange();
@@ -1254,7 +1254,15 @@ function get_cell_focus(){
           selection.removeAllRanges();
           selection.addRange(range);
       }, 1);
+
+      //Seleccionar el 1er elemento al aparecer el modal
+      
   });
+
+  let firstEditableCell = $('#myTable td[contenteditable="true"]').first();
+      if(firstEditableCell.length){
+        firstEditableCell.focus();
+      }
 
   // Mover el foco a la siguiente celda editable cuando se presiona Tab
   $('#myTable').on('keydown', 'td[contenteditable="true"]', function(e) {

@@ -506,7 +506,7 @@ class incomC
 
      function catalogo_subcta($parametros)
      {
-     	// print_r($parametros);die();
+     	//print_r($parametros);die();
      	if($parametros['tc']=='C' ||  $parametros['tc']== "P" || $parametros['tc']=="CP" )
      	{
      		$datos = $this->modelo->Catalogo_CxCxP($parametros['tc'],$parametros['cta'],$parametros['query']);
@@ -518,7 +518,9 @@ class incomC
      	}else
      	{
      		$datos_tabla = $this->modelo->catalogo_subcta_grid($parametros['tc'],$parametros['cta'],$parametros['OpcDH'],$parametros['OpcTM']);
-     	    $datos = $this->modelo->catalogo_subcta($parametros['tc']);
+            $datos = $this->modelo->catalogo_subcta($parametros['tc'],1);
+            //print_r(($datos_tabla));die();
+     	    
      	    foreach ($datos as $key => $value) {
      			$ddl[]=array('id'=>$value['Codigo'],'text'=>$value['Detalle'],'data'=>$value);
      		}
@@ -531,7 +533,8 @@ class incomC
      function catalogo_subcta2($parametros)
      {
 
-     	// print_r($parametros);die();
+     	//print_r($parametros);die();
+        $ddl = array();
      	if($parametros['tc']=='C' ||  $parametros['tc']== "P" || $parametros['tc']=="CP" )
      	{
      		// $datos = $this->modelo->Catalogo_CxCxP($parametros['tc'],$parametros['cta'],$parametros['query']);
@@ -543,7 +546,7 @@ class incomC
      	}else
      	{
      		
-     	    $datos = $this->modelo->catalogo_subcta($parametros['tc'],1,$parametros['nivel']);
+     	    $datos = $this->modelo->catalogo_subcta($parametros['tc'],false,$parametros['nivel']);
      	    foreach ($datos as $key => $value) {
      			$ddl[]=array('id'=>$value['Codigo'],'text'=>$value['Detalle']);
      		}

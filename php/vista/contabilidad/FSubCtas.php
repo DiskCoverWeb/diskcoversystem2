@@ -20,6 +20,7 @@ $(document).ready(function () {
     titulos(tc);
 //     cargar_tablas_sc();
     carga_ddl();
+    cargar_submodulos()
 
     $("#ddl_aux").on("focus", function() {
       $(this).autocomplete("search",'%'); 
@@ -455,7 +456,7 @@ $(document).ready(function () {
     }
   }
 
-  function cargar_submodulos(nivel)
+  function cargar_submodulos(nivel=false)
   {
       var tc = '<?php echo $tc; ?>';
       $('#DLSubCta').select2({

@@ -545,9 +545,11 @@ class incomM
          AND T_No = '".$_SESSION['INGRESO']['modulo_']."'
          AND Item = '".$_SESSION['INGRESO']['item']."'
          AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'";
+
+         
           $result = $this->conn->datos($sql);
 
-			 // print_r($tbl);die();
+			 //print_r($sql);die();
 		     return $result;
     }
 
@@ -559,15 +561,17 @@ class incomM
         FROM Catalogo_SubCtas
         WHERE TC = '".$SubCta."'
         AND Item = '".$_SESSION['INGRESO']['item']."'
-        AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
-        AND Agrupacion <>  ".intval($agrupado);
-        if($nivel)
+        AND Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+        if ($agrupado){
+          $sql.=" AND Agrupacion =".$agrupado."";
+        }
+        if($nivel && $nivel!='false')
         {
         	 $sql.=" AND Nivel ='".$nivel."'";
         }
         $sql.=" AND Codigo <> '.' 
         ORDER BY Nivel,Detalle ";
-// print_r($sql);die();
+         // print_r($sql);die();
          $result = $this->conn->datos($sql);
 		  return $result;
     }

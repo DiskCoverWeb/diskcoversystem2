@@ -3279,6 +3279,7 @@ function sp_Reporte_Analitico_Mensual($tipo,$desde,$hasta)
 
 
 			$_SESSION['FListComprobante']['Contabilizacion'] = $sql;
+			//print_r($sql); die();
 			$tbl = grilla_generica_new($sql);
 			if(!empty($tbl['data'])){
 				foreach($tbl['data'] as &$fila){
