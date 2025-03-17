@@ -546,10 +546,10 @@ class incomC
      		// return $ddl;
      	}else
      	{
-     		if($parametros['nivel']!='false')
-     		{
-     			 $agrupacion = 1;
-     		}
+     		// if($parametros['nivel']!='false')
+     		// {
+     		// 	 $agrupacion = 1;
+     		// }
      		
      	    $datos = $this->modelo->catalogo_subcta($parametros['tc'],$agrupacion,$parametros['nivel']);
      	    foreach ($datos as $key => $value) {
