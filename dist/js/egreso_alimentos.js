@@ -15,7 +15,7 @@ $(document).ready(function () {
   areas();  
   motivo_egreso()	
   notificaciones();
-
+enumerateCameras();
 
   tbl_asignados_all = $('#tbl_asignados_all').DataTable({
 		searching: false,
@@ -74,7 +74,10 @@ $(document).ready(function () {
 	});
 
 	$('#modal_camara').on('shown.bs.modal', function () {
-		activarCamara(1);
+		// enumerateCameras();
+		cam = $('#ddl_camaras').val();
+		console.log(cam);
+		activarCamara(cam);
 	})
 })
 
@@ -735,8 +738,12 @@ function enumerateCameras() {
             const cameras = devices.filter(device => device.kind === 'videoinput');
            
             cameras.forEach((camera, index) => {
-                op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
+            	// console.log(camera.deviceId);
+                op+='<option value="'+camera.deviceId+'">Camara '+(index+1)+'</option>'
             });
+            // console.log(cameras);
+
+            // console.log(op);
 
             $('#ddl_camaras').html(op)
 
@@ -752,13 +759,13 @@ function enumerateCameras() {
 }
 
 function activarCamara(cameraId){
+
 		video = document.getElementById("video");
     canvas = document.getElementById("canvas");
     photo = document.getElementById("photo");
     btnTomarFoto = document.getElementById("btnTomarFoto");
-
     navigator.mediaDevices
-	.getUserMedia({ video: { deviceId: { exact: cameraId } }, audio: false })
+	.getUserMedia({ video: {deviceId:{exact:cameraId } }, audio: false })
 	.then((stream) => {
 		$('#carga_camara').hide();
 		$('#contenedor_camera').show();
