@@ -1100,8 +1100,6 @@ class registro_beneficiarioC
                 SetAdoUpdate();                
             }else
             {
-
-                print_r($cliente[0]['Codigo']);die();
                 SetAdoFieldsWhere('Item', $_SESSION['INGRESO']['item']);
                 SetAdoFieldsWhere('Codigo', $cliente[0]['Codigo']);
                 SetAdoUpdateGeneric();
