@@ -431,6 +431,7 @@ class alimentos_recibidosM
 		$sql = "SELECT count(*) as cant 
 		FROM Trans_Correos 
 		WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'
+		AND Item = '".$_SESSION['INGRESO']['item']."'
 		AND Fecha_P =  '".$fecha."'";
 
 		// print_r($sql);die();
