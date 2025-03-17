@@ -3450,15 +3450,16 @@ function llenarCamposPoblacion(Codigo) {
         data: { valor: Codigo },
         success: function (datos) {
             if (datos != 0) {
+                total_global = 0;
                 datos.forEach(function (registro) {
                     var hombres = registro.Hombres;
                     var mujeres = registro.Mujeres;
                     var total = registro.Total;
+                    total_global = total+total_global;
                     var valueData = registro.Cmds;
                     valoresFilas.push({ hombres, mujeres, total, valueData });
                 });
-
-                $('#totalPersonas').val(total);
+                $('#totalPersonas').val(total_global);
             }
         }
     });
