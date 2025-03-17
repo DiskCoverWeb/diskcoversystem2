@@ -3457,6 +3457,8 @@ function llenarCamposPoblacion(Codigo) {
                     var valueData = registro.Cmds;
                     valoresFilas.push({ hombres, mujeres, total, valueData });
                 });
+
+                $('#totalPersonas').val(total);
             }
         }
     });
