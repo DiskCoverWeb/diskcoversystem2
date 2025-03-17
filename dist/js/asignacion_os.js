@@ -82,9 +82,10 @@ $(document).ready(function () {
     // tipoCompra();
     $('#beneficiario').on('select2:select', function (e) {
         var data = e.params.data;//Datos beneficiario seleccionado
-        // console.log(data.data);
+        console.log(data.data);
         tipoCompra(data.data)
         listaAsignacion();
+        llenarCamposPoblacion(data.data.Codigo);
 
     });
 
@@ -476,7 +477,7 @@ function listaAsignacion() {
 
                 let cantidad = parseFloat(json.cantidad);
 
-                $('#CantGlobDist').val(parseInt(cantidad));
+                $('#CantGlobDist').val(parseFloat(cantidad).toFixed(2));
 
                 // console.log(json);
 
@@ -505,7 +506,7 @@ function listaAsignacion() {
             { data: 'Producto'},
             { data: 'Cantidad',  
                 render: function(data, type, item) {
-                    return data ? parseInt(data) : '';
+                    return data ? parseFloat(data) : '';
                 }
             },
             { data: 'Procedencia' },
@@ -616,100 +617,153 @@ function buscar_producto(codigo)
     });
 }
 
-function llenarCamposPoblacion() {
-    var Codigo = $('#beneficiario').val();
-    if(Codigo=='' || Codigo==null)
-    {
-        Swal.fire("Seleccione un beneficiario","","info")
-        return false;
-    }
+valoresFilas = [];
+function llenarCamposPoblacion(Codigo) {
+    $('#modalBtnGrupo').modal('show');
+    $.ajax({
+        url: '../controlador/inventario/registro_beneficiarioC.php?llenarCamposPoblacion=true',
+        type: 'post',
+        dataType: 'json',
+        data: { valor: Codigo },
+        success: function (datos) {
+            if (datos != 0) {
+                total_global = 0;
+                datos.forEach(function (registro) {
+                    var hombres = registro.Hombres;
+                    var mujeres = registro.Mujeres;
+                    var total = registro.Total;
+                    total_global = total+total_global;
+                    var valueData = registro.Cmds;
+                    valoresFilas.push({ hombres, mujeres, total, valueData });
+                });
 
-    tablaPoblacion.destroy();
+                dibujar();
 
-    tablaPoblacion = $('#tablaPoblacion').DataTable({
-        // responsive: true,
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-        },
-        /*columnDefs: [
-            { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
-        ],*/
-        ajax: {
-            url: '../controlador/inventario/asignacion_osC.php?llenarCamposPoblacion=true',
-            type: 'POST',  // Cambia el método a POST    
-            data: function(d) {
-                return { valor: Codigo };
-            },              
-            dataSrc: function(json) {
-                $('#modalBtnGrupo').modal('show');
-                // var diff = parseFloat(json.cantidad);
-                // if(diff < 0)
-                // {
-                //   diff = diff*(-1);
-                // }
-                // $('#txt_primera_vez').val(json.primera_vez);
-
-                // var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
-                // var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
-                // var total_pedido = $('#txt_cant').val();
-                // var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
-
-                let tabla = [];
-                if(json.datos.length > 0){
-                    for(let p of json.poblacion){
-                        let clave = json.datos.map(obj => obj.Cmds).indexOf(p.Cmds);
-                        
-                        let item = {};
-                        if(!clave){
-                            item['Hombres']=0; item['Mujeres']=0; item['Total']=0;
-                        }else{
-                            item = json.datos[clave];
-                        }
-                        let objeto = {
-                            'Poblacion': p.Proceso,
-                            'Hombres': item.Hombres,
-                            'Mujeres': item.Mujeres,
-                            'Total': item.Total
-                        }
-                        tabla.push(objeto);
-                    }
-                }
-                // let cantidad = parseFloat(json.cantidad);
-
-                // $('#CantGlobDist').val(parseInt(cantidad));
-
-                // console.log(json);
-
-                // Devolver solo la parte de la tabla para DataTables
-                return tabla;
-            }        
-        },
-        //scrollX: true,  // Habilitar desplazamiento horizontal
-        paging:false,
-        searching:false,
-        info:false,
-        scrollY: 330,
-        scrollCollapse: true,
-        columns: [
-            { data: 'Poblacion'},
-            { data: 'Hombres'},
-            { data: 'Mujeres' },
-            { data: 'Total' },
-        ]
+                $('#totalPersonas').val(total_global);
+            }
+        }
     });
-
-    // $.ajax({
-    //     url: '../controlador/inventario/asignacion_osC.php?llenarCamposPoblacion=true',
-    //     type: 'post',
-    //     dataType: 'json',
-    //     data: { valor: Codigo },
-    //     success: function (datos) {
-    //         $('#modalBtnGrupo').modal('show');
-    //         $('#tbl_body_poblacion').html(datos);
-    //         console.log(datos);
-    //     }
-    // });
 }
+
+function dibujar(){
+    var filas = $('#tablaPoblacion tbody tr');
+    var totalSum = 0;
+    filas.each(function () {
+        var hombres = parseInt($(this).find('.hombres').val()) || 0;
+        var mujeres = parseInt($(this).find('.mujeres').val()) || 0;
+        var total = parseInt($(this).find('.total').val()) || 0;
+        var textoFila = $(this).find('td:first-child').text();
+        var valueData = $(this).attr('valueData');
+
+        if (hombres > 0 || mujeres > 0 || total > 0) {
+            totalSum += total;
+            valoresFilas.push({ hombres, mujeres, total, valueData });
+        }
+    });
+    $('#totalPersonas').val(totalSum);
+    $('#modalBtnGrupo').modal('hide');
+}
+
+
+// function llenarCamposPoblacion() {
+//     var Codigo = $('#beneficiario').val();
+//     if(Codigo=='' || Codigo==null)
+//     {
+//         Swal.fire("Seleccione un beneficiario","","info")
+//         return false;
+//     }
+
+//     tablaPoblacion.destroy();
+
+//     tablaPoblacion = $('#tablaPoblacion').DataTable({
+//         // responsive: true,
+//         language: {
+//             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+//         },
+//         /*columnDefs: [
+//             { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
+//         ],*/
+//         ajax: {
+//             url: '../controlador/inventario/asignacion_osC.php?llenarCamposPoblacion=true',
+//             type: 'POST',  // Cambia el método a POST    
+//             data: function(d) {
+//                 return { valor: Codigo };
+//             },              
+//             dataSrc: function(json) {
+//                 $('#modalBtnGrupo').modal('show');
+//                 // var diff = parseFloat(json.cantidad);
+//                 // if(diff < 0)
+//                 // {
+//                 //   diff = diff*(-1);
+//                 // }
+//                 // $('#txt_primera_vez').val(json.primera_vez);
+
+//                 // var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
+//                 // var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
+//                 // var total_pedido = $('#txt_cant').val();
+//                 // var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
+
+//                 let tabla = [];
+//                 total_global = 0;
+//                 if(json.datos.length > 0){
+//                     for(let p of json.poblacion){
+//                         let clave = json.datos.map(obj => obj.Cmds).indexOf(p.Cmds);
+                        
+//                         let item = {};
+//                         if(!clave){
+//                             item['Hombres']=0; item['Mujeres']=0; item['Total']=0;
+//                         }else{
+//                             item = json.datos[clave];
+//                         }
+//                         let objeto = {
+//                             'Poblacion': p.Proceso,
+//                             'Hombres': item.Hombres,
+//                             'Mujeres': item.Mujeres,
+//                             'Total': item.Total
+//                         }
+
+//                         tabla.push(objeto);
+//                     }
+//                 }
+//                 total_global= item.Total+total_global
+
+//                 $('#totalPersAten').val(total_global);
+//                 // let cantidad = parseFloat(json.cantidad);
+
+//                 // $('#CantGlobDist').val(parseInt(cantidad));
+
+//                 // console.log(json);
+
+//                 // Devolver solo la parte de la tabla para DataTables
+//                 return tabla;
+//             }        
+//         },
+//         //scrollX: true,  // Habilitar desplazamiento horizontal
+//         paging:false,
+//         searching:false,
+//         info:false,
+//         scrollY: 330,
+//         scrollCollapse: true,
+//         columns: [
+//             { data: 'Poblacion'},
+//             { data: 'Hombres'},
+//             { data: 'Mujeres' },
+//             { data: 'Total' },
+//         ]
+//     });
+
+//     // $.ajax({
+//     //     url: '../controlador/inventario/asignacion_osC.php?llenarCamposPoblacion=true',
+//     //     type: 'post',
+//     //     dataType: 'json',
+//     //     data: { valor: Codigo },
+//     //     success: function (datos) {
+//     //         $('#modalBtnGrupo').modal('show');
+//     //         $('#tbl_body_poblacion').html(datos);
+//     //         console.log(datos);
+//     //     }
+//     // });
+// }
 
 function asignar_beneficiario()
 {
