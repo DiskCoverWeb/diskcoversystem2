@@ -16,6 +16,8 @@ $(document).ready(function () {
   motivo_egreso()	
   notificaciones();
 
+  enumerateCameras();
+
   tbl_asignados_all = $('#tbl_asignados_all').DataTable({
 		searching: false,
 		responsive: true,
@@ -685,6 +687,13 @@ NumCamara = $('#ddl_camaras').val();
 scanner = new Html5Qrcode("reader");
 $('#qrescaner_carga').hide();
 Html5Qrcode.getCameras().then(devices => {
+	  op = '';
+       devices.forEach((camera, index) => {
+         op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
+       });
+
+       $('#ddl_camaras').html(op)
+console.log(devices)
 	if (devices.length > 0) {
 		let cameraId = devices[NumCamara].id; // Usa la primera cámara disponible
 		scanner.start(
@@ -720,14 +729,37 @@ if (scanner) {
 }
 }
 
-function activarCamara(){
-	video = document.getElementById("video");
+function enumerateCameras() {
+	var op ='';
+    navigator.mediaDevices.enumerateDevices()
+        .then(devices => {
+            const cameras = devices.filter(device => device.kind === 'videoinput');
+           
+            cameras.forEach((camera, index) => {
+                op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
+            });
+
+            $('#ddl_camaras').html(op)
+
+            // if (cameras.length > 0) {
+            //     // Seleccionar la primera cámara por defecto
+            //     activarCamara(cameras[0].deviceId);
+            // }
+        })
+        .catch(err => {
+            console.error(`Error enumerando dispositivos: ${err}`);
+            Swal.fire('Error al enumerar cámaras', '', 'error');
+        });
+}
+
+function activarCamara(cameraId){
+		video = document.getElementById("video");
     canvas = document.getElementById("canvas");
     photo = document.getElementById("photo");
     btnTomarFoto = document.getElementById("btnTomarFoto");
 
     navigator.mediaDevices
-	.getUserMedia({ video: true, audio: false })
+	.getUserMedia({ video: { deviceId: { exact: cameraId } }, audio: false })
 	.then((stream) => {
 		$('#carga_camara').hide();
 		$('#contenedor_camera').show();
@@ -801,6 +833,7 @@ function takePicture() {
   }
 
 function adjuntarFoto(){
+	cerrarCamara();
 	$('#photoupload_span').show();
 	$('#modal_foto').modal('hide');
 	foto_data = photo.getAttribute("src");
