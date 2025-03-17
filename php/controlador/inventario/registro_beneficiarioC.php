@@ -463,10 +463,12 @@ if(isset($_GET['EnviarInscripcion']) && isset($_GET['ModoEnviar'])){
 class registro_beneficiarioC
 {
     private $modelo;
+    private $sri;
 
     function __construct()
     {
         $this->modelo = new registro_beneficiarioM();
+        $this->sri = new autorizacion_sri();
     }
 
     function LlenarTblPoblacion()
@@ -958,10 +960,15 @@ class registro_beneficiarioC
 
         // print_r($dato);
         // print_r($datosdir);die();
+
+        $CI_RUC = $this->sri->quitar_carac($dato['txt_ci']);
+        $codigos = Digito_verificador($CI_RUC);
+
+        // print_r($codigos);die();
         SetAdoAddNew("Clientes");
         SetAdoFields('CI_RUC', $dato['txt_ci']);        
         SetAdoFields('TD', $dato['txt_td']);      
-        SetAdoFields('Codigo', $dato['txt_codigo']);
+        SetAdoFields('Codigo',$codigos['Codigo_RUC_CI']);
 
         SetAdoFields('Actividad', $dato['select_93']);
         SetAdoFields('TB', $dato['select_93']);
@@ -987,7 +994,10 @@ class registro_beneficiarioC
             SetAdoFields('TelefonoT', $dato['telefono2']);
             SetAdoFields('Email2', $dato['email2']);
             SetAdoFields('Hora_Ent',$dato['horaEntrega']);
-            SetAdoFields('Dia_Ent',  $dato['diaEntrega']);
+            if(isset($dato['diaEntrega']))
+            {
+                SetAdoFields('Dia_Ent',  $dato['diaEntrega']);
+            }
             SetAdoFields('Representante', $dato['nombreRepre']);
             SetAdoFields('CI_RUC_R', $dato['ciRepre']);
             SetAdoFields('Telefono_R', $dato['telfRepre']);
@@ -1020,7 +1030,9 @@ class registro_beneficiarioC
     {
         $cliente = $this->modelo->LlenarSelectRucCliente($query=false,$codigo=false,$datos['txt_ci']);
         $datosExtra = $this->modelo->llenarCamposInfoAdd($cliente[0]['Codigo']);
-        // print_r($datosExtra);die();
+        // print_r($datos);
+        // print_r($datosExtra);
+        // print_r($cliente);die();
 
         if(count($cliente)>0){
             SetAdoAddNew("Clientes_Datos_Extras");
@@ -1028,14 +1040,26 @@ class registro_beneficiarioC
             
             if($datos['select_93']=='93.01')
             {
-                SetAdoFields('CodigoA', $datos['select_88']);
+                if(isset($datos['select_88']))
+                {
+                    SetAdoFields('CodigoA', $datos['select_88']);
+                }
                 SetAdoFields('Dia_Ent', $datos['diaEntregac']);
                 SetAdoFields('Hora_Ent', $datos['horaEntregac']);
-                SetAdoFields('Envio_No', $datos['select_86']);
+                if(isset($datos['select_86']))
+                {
+                    SetAdoFields('Envio_No', $datos['select_86']);
+                }
                 SetAdoFields('Etapa_Procesal', $datos['comentario']);
                 SetAdoFields('No_Soc', $datos['totalPersonas']);
-                SetAdoFields('Acreditacion', $datos['select_92']);
-                SetAdoFields('Tipo_Dato', $datos['select_90']);
+                if(isset($datos['select_92']))
+                {
+                    SetAdoFields('Acreditacion', $datos['select_92']);
+                }
+                if(isset($datos['select_90']))
+                {
+                    SetAdoFields('Tipo_Dato', $datos['select_90']);
+                }
                 SetAdoFields('Cod_Fam', $datos['select_89']);
                 SetAdoFields('Observaciones', $datos['infoNut']);
                 if(isset($datos['NombreArchivo'])  && $datos['NombreArchivo']!='') {
@@ -1076,6 +1100,8 @@ class registro_beneficiarioC
                 SetAdoUpdate();                
             }else
             {
+
+                print_r($cliente[0]['Codigo']);die();
                 SetAdoFieldsWhere('Item', $_SESSION['INGRESO']['item']);
                 SetAdoFieldsWhere('Codigo', $cliente[0]['Codigo']);
                 SetAdoUpdateGeneric();
