@@ -121,7 +121,7 @@
 					</div>
 					<div class="col-lg-3 col-md-6 col-sm-12">
 						<div class="row">
-							<div class="col-6">
+							<div class="col-lg-6 col-md-6 col-sm-12">
 								<form enctype="multipart/form-data" id="form_img" method="post" style="width: inherit;">
 									<div class="fileupload fileupload-new" data-provides="fileupload">
 										<span class="btn btn-light btn-file">
@@ -129,13 +129,13 @@
 										<span class="fileupload-new">Archivo Adjunto</span>
 										<span class="fileupload-exists">Archivo Adjunto</span> 
 											<input type="file" id="file_doc" name="file_doc" onchange="revisarAdjuntos('archivo')"/>
-										</span> <br>
+										</span>
 										<span class="fileupload-preview"></span>
 										<a href="#" class="close fileupload-exists" data-dismiss="fileupload" onclick="revisarAdjuntos('archivo')" style="float: none">×</a>
 									</div>
 								</form>
 							</div>
-							<div class="col-6">
+							<div class="col-lg-6 col-md-6 col-sm-12">
 								<button type="button" id="btn_photoupload" class="btn btn-light" onclick="$('#modal_camara').modal('show')">
 									<img src="../../img/png/camara.png" style="width:20%">
 									Adjuntar por cámara
@@ -161,7 +161,7 @@
 							
 						</div>
 						
-						<input type="hidden" id="txt_id" name="">								
+						<input type="hidden" id="txt_id" name="txt_id">								
 					</div>	
 					<div class="col-lg-3 col-md-4 col-sm-12">
 						<b>Proveedor / Donante</b>
@@ -202,7 +202,7 @@
 		<div class="card-body">
 			<div class="row">
 				<div class="col-sm-12">
-					<table class="table" id="tbl_asignados_all">
+					<table class="table table-hover w-100" id="tbl_asignados_all">
 						<thead>
 							<th>Item</th>
 							<th>Fecha de Egreso</th>
@@ -374,6 +374,11 @@
 				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
+				<div class="col-sm-12">
+          <select class="form-select" id="ddl_camaras" name="ddl_camaras" onchange="cambiarCamara()">
+            <option value="0">Camara 1</option>                
+          </select>               
+        </div> 
 				<div id="carga_camara">
 					<div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;">
 						<img src="../../img/gif/loader4.1.gif" width="20%">
