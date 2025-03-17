@@ -77,7 +77,7 @@ $(document).ready(function () {
               },
               { data: null,
                 render: function(data, type, item) {
-                    return `<input class="form-control form-control-sm"  id="txt_pvp_linea_${data.ID}" name="txt_pvp_linea_${data.ID}" onchange="recalcular('${data.ID}')" value="${data.Costo}">`;
+                    return `<input class="form-control form-control-sm"  id="txt_pvp_linea_${data.ID}" name="txt_pvp_linea_${data.ID}" onchange="recalcular('${data.ID}')" value="${data.Valor_Unitario}">`;
                 }      
               },
               { data: 'Valor_Total',
