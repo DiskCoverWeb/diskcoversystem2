@@ -3316,6 +3316,7 @@ function llenarCamposInfo(datos) {
     $('#CalleP').val(datos.cliente.Direccion);
     $('#CalleS').val(datos.cliente.DireccionT);
     $('#Referencia').val(datos.cliente.Referencia);
+    $('#txt_codigo').val(datos.cliente.Codigo);
 
     switch(datos['Tipo_Beneficiario']['Cmds'])
     {
@@ -3577,7 +3578,9 @@ function guardar_registros()
         success: function (datos) {
             if(datos==1)
             {
-                Swal.fire("Datos Guardados Correctamente","","success")
+                Swal.fire("Datos Guardados Correctamente","","success").then(function(){
+                    location.reload();
+                })
             }
         }
     })
