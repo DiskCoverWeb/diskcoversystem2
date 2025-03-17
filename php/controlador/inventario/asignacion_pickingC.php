@@ -131,7 +131,10 @@ class asignacion_pickingC
         foreach ($datos as $key => $value) {
             $cant = 0; 
             $cant_ing = $this->modelo->total_ingresados($parametros['beneficiario'],$value['Codigo'],$value['No_Hab'],$value['Fecha']->format('Y-m-d'));
-            if($cant_ing[0]['Total']!=''){ $cant = $cant_ing[0]['Total'];}
+            if($cant_ing[0]['Total']!=''){ 
+                $c = ($value['Cantidad']-$cant_ing[0]['Total']);
+                $cant = $c;
+            }
             // print_r($cant_ing);die();
             $detalle.='<div class="row">                                    
                     <div class="col-sm-4">   
