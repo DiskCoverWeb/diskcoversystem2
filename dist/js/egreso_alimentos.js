@@ -18,10 +18,10 @@ $(document).ready(function () {
 
   tbl_asignados_all = $('#tbl_asignados_all').DataTable({
 		searching: false,
-	responsive: true,
-	paging: false,   
-	info: false,   
-	autoWidth: false,   
+		responsive: true,
+		paging: false,   
+		info: false,   
+		autoWidth: false,   
 		language: {
 			url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
 		},
@@ -357,14 +357,26 @@ function buscar_producto(codigo)
 	   dataType:'json',
 		success: function(data)
 		{
-			data = data[0];
+			if(data.length>0)
+			{
+				data = data[0];
 
-			$('#txt_id').val(data.ID)
-			$('#txt_cod_producto').val(data.Codigo_Barra)
-			$('#txt_donante').val(data.Cliente)
-			$('#txt_grupo').val(data.Producto)
-			$('#txt_stock').val(data.Entrada)
-			$('#txt_unidad').val(data.Unidad)
+				$('#txt_id').val(data.ID)
+				$('#txt_cod_producto').val(data.Codigo_Barra)
+				$('#txt_donante').val(data.Cliente)
+				$('#txt_grupo').val(data.Producto)
+				$('#txt_stock').val(data.Entrada)
+				$('#txt_unidad').val(data.Unidad)
+			}else
+			{
+				$('#txt_id').val("")
+				$('#txt_cod_producto').val("")
+				$('#txt_donante').val("")
+				$('#txt_grupo').val("")
+				$('#txt_stock').val("")
+				$('#txt_unidad').val("")
+				Swal.fire("Asegurese que el producto este asignado a una bodega","","error");
+			}
 		}
 	});
 }
@@ -383,11 +395,35 @@ function add_egreso()
 	{
 		Swal.fire("La catidad supera al Stock","","info")
 		return false;
-	}else if(parseFloat(cant)<=0  || cant=='' )
+	}else if(parseFloat(cant)<=0  || cant=='' || cant==0 )
 	{
 		Swal.fire("La catidad invalida","","info")
 		return false;
 	}
+
+	if($('#ddl_areas').val()=='' || $('#ddl_motivo').val()=='')
+	{
+		Swal.fire("Seleccione Area y motivo","","info")
+		return false;
+	}
+	if($('#txt_cod_producto').val()=='' && $('#txt_id').val()=='')
+	{
+		Swal.fire("Seleccione un producto","Coloque un codigo valido","info")
+		return false;
+	}
+
+	if($('#txt_id').val()=='')
+	{
+		Swal.fire("Seleccione un producto","Coloque un codigo valido","info")
+		return false;
+	}
+
+	if($('#txt_detalle').val()=='')
+	{
+		Swal.fire("Ingrese un detalle","","info")
+		return false;
+	}
+
 	var parametros = 
 	{
 		'codigo':$('#txt_cod_producto').val(),
@@ -413,6 +449,7 @@ function add_egreso()
 			{
 				Swal.fire("Ingresado","","success");
 				lista_egreso();
+				limpiar();
 			}		    	
 		}
 	});
@@ -435,6 +472,17 @@ function lista_egreso2()
 function lista_egreso()
 {		
 	tbl_asignados_all.ajax.reload(null, false);
+}
+
+function limpiar()
+{
+	$('#txt_cod_producto').val('')
+	$('#txt_donante').val('')
+	$('#txt_grupo').val('')
+	$('#txt_stock').val('')
+	$('#txt_unidad').val('')
+	$('#txt_cantidad').val('')
+	$('#txt_id').val('')
 }
 
   function guardar()
