@@ -16,7 +16,6 @@ $(document).ready(function () {
   motivo_egreso()	
   notificaciones();
 
-  enumerateCameras();
 
   tbl_asignados_all = $('#tbl_asignados_all').DataTable({
 		searching: false,
@@ -75,7 +74,7 @@ $(document).ready(function () {
 	});
 
 	$('#modal_camara').on('shown.bs.modal', function () {
-		activarCamara();
+		activarCamara(1);
 	})
 })
 
