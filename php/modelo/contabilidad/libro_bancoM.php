@@ -91,7 +91,7 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
       AND C.Codigo_B = Cl.Codigo 
       AND C.Periodo = T.Periodo 
       ORDER BY Cta,T.Fecha,T.TP,T.Numero,Debe DESC,Haber,T.ID ";
-    ob_start();
+      ob_start();
     $DGBanco = grilla_generica_new($sSQL);
     $AdoBanco = $this -> conn -> datos($sSQL);
     if($soloReturnDatos){

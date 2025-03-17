@@ -124,7 +124,12 @@ function ConsultarDatosLibroBanco()
                     searching: false,   
                     'columns': [
                         {data: "Cta"},
-                        {data: "Fecha"},
+                        {data: "Fecha",
+                            render: function(data, type, item) {
+                                const fecha = data?.date;
+                                return fecha ? new Date(fecha).toLocaleDateString() : '';
+                            }
+                        },
                         {data: "TP"},
                         {data: "Numero"},
                         {data: "Cheq_Dep"},
@@ -141,9 +146,7 @@ function ConsultarDatosLibroBanco()
                     order: [
                         [0, 'asc']
                     ],
-                    createdRow: function(row, data){ 
-                        alingEnd(row, data);
-                    },
+                    
                 });
         }, 
         error: function(xhr, status, error){ 
