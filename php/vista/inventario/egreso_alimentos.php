@@ -375,7 +375,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="col-sm-12">
-          <select class="form-select" id="ddl_camaras_f" name="ddl_camaras_f" onchange="cambiarCamara(this.value)">
+          <select class="form-select" id="ddl_camaras_f" name="ddl_camaras_f" onchange="cambiarCamaraF(this.value)">
             <!-- <option value="0">Camara 1</option>                 -->
           </select>               
         </div> 
