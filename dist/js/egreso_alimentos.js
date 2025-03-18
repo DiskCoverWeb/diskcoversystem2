@@ -758,7 +758,6 @@ function enumerateCameras() {
 }
 
 let currentStream = null;
-let streaming = false;
 function activarCamara(cameraId){
 
 	 if (currentStream) {
