@@ -670,7 +670,7 @@ function escanear_qr(){
 }
 
 
-function cambiarCamara()
+function cambiarCamaraF()
 {
 		cam = $('#ddl_camaras_f').val();
 		console.log(cam);
@@ -757,7 +757,13 @@ function enumerateCameras() {
         });
 }
 
+let currentStream = null;
+let streaming = false;
 function activarCamara(cameraId){
+
+	 if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop()); // Detener la cámara actual
+    }
 
 		video = document.getElementById("video");
     canvas = document.getElementById("canvas");
@@ -768,6 +774,7 @@ function activarCamara(cameraId){
 	.then((stream) => {
 		$('#carga_camara').hide();
 		$('#contenedor_camera').show();
+		currentStream = stream;
 		video.srcObject = stream;
 		video.play();
 	})
