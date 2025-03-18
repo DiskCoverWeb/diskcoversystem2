@@ -672,12 +672,9 @@ function escanear_qr(){
 
 function cambiarCamara()
 {
-cerrarCamara();
-setTimeout(() => {
-	iniciarEscanerQR();
-	$('#modal_qr_escaner').modal('show');
-	 $('#qrescaner_carga').hide();
-}, 1000);
+		cam = $('#ddl_camaras_f').val();
+		console.log(cam);
+		activarCamara(cam);
 }
 
 
