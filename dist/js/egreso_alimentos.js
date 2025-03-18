@@ -15,8 +15,7 @@ $(document).ready(function () {
   areas();  
   motivo_egreso()	
   notificaciones();
-
-  enumerateCameras();
+enumerateCameras();
 
   tbl_asignados_all = $('#tbl_asignados_all').DataTable({
 		searching: false,
@@ -75,7 +74,10 @@ $(document).ready(function () {
 	});
 
 	$('#modal_camara').on('shown.bs.modal', function () {
-		activarCamara();
+		// enumerateCameras();
+		cam = $('#ddl_camaras_f').val();
+		console.log(cam);
+		activarCamara(cam);
 	})
 })
 
@@ -668,14 +670,11 @@ function escanear_qr(){
 }
 
 
-function cambiarCamara()
+function cambiarCamaraF()
 {
-cerrarCamara();
-setTimeout(() => {
-	iniciarEscanerQR();
-	$('#modal_qr_escaner').modal('show');
-	 $('#qrescaner_carga').hide();
-}, 1000);
+		cam = $('#ddl_camaras_f').val();
+		console.log(cam);
+		activarCamara(cam);
 }
 
 
@@ -736,10 +735,16 @@ function enumerateCameras() {
             const cameras = devices.filter(device => device.kind === 'videoinput');
            
             cameras.forEach((camera, index) => {
-                op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
+            	// console.log(camera.deviceId);
+                op+='<option value="'+camera.deviceId+'">Camara '+(index+1)+'</option>'
             });
+            // console.log(cameras);
 
-            $('#ddl_camaras').html(op)
+            // console.log(op);
+
+             // Swal.fire('cámaras',"", 'error');
+
+            $('#ddl_camaras_f').html(op)
 
             // if (cameras.length > 0) {
             //     // Seleccionar la primera cámara por defecto
@@ -752,17 +757,23 @@ function enumerateCameras() {
         });
 }
 
+let currentStream = null;
 function activarCamara(cameraId){
+
+	 if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop()); // Detener la cámara actual
+    }
+
 		video = document.getElementById("video");
     canvas = document.getElementById("canvas");
     photo = document.getElementById("photo");
     btnTomarFoto = document.getElementById("btnTomarFoto");
-
     navigator.mediaDevices
-	.getUserMedia({ video: { deviceId: { exact: cameraId } }, audio: false })
+	.getUserMedia({ video: {deviceId:{exact:cameraId } }, audio: false })
 	.then((stream) => {
 		$('#carga_camara').hide();
 		$('#contenedor_camera').show();
+		currentStream = stream;
 		video.srcObject = stream;
 		video.play();
 	})
