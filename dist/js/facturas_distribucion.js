@@ -611,6 +611,7 @@ var valTC = 'FA';
 		$('#LblRUC').val(dataS[0].CI_RUC);
 		$('#codigoCliente').val(dataS[0].Codigo);
 		$('#LblT').val(dataS[0].T);
+		$('#txtRecalcular').val(0);
 
 		var parametros = {
 			'CodigoCliente': dataS[0].Codigo,
@@ -702,15 +703,15 @@ var valTC = 'FA';
 						tr.append($('<td></td>').text(fila['Detalles']['Nombre_Completo']));
 						tr.append($('<td></td>').text(fila['Productos']['Producto']));
 						//tr.append($('<td></td>').text(parseInt(fila['Detalles']['Total'])));
-						tr.append($('<td><div class="row justify-content-center"><input class="form-control form-control-sm" onchange="modificarLineaFac(this)" style="max-width:95px;" value="'+fila['Detalles']['Total']+'"></div></td>'));
+						tr.append($('<td><div class="row justify-content-center"><input class="form-control form-control-sm" onchange="modificarLineaFac(this)" style="max-width:95px;" value="'+fila['Detalles']['Total']+'" disabled></div></td>'));
 						//tr.append($('<td></td>').text(parseFloat(fila['Productos']['PVP']).toFixed(2)));
-						tr.append($('<td><div class="row justify-content-center"><input class="form-control form-control-sm" onchange="modificarLineaFac(this)" style="max-width:85px;" value="'+fila['Productos']['PVP']+'" valAnterior="'+fila['Productos']['PVP']+'"></div></td>'));
+						tr.append($('<td><div class="row justify-content-center"><input class="form-control form-control-sm" onchange="modificarLineaFac(this)" style="max-width:85px;" value="'+fila['Productos']['PVP']+'" valAnterior="'+fila['Productos']['PVP']+'" disabled></div></td>'));
 						let totalProducto = fila['Detalles']['Total'] * fila['Productos']['PVP'];
 						tr.append($('<td valAnterior="'+parseFloat(totalProducto).toFixed(8)+'"></td>').text(parseFloat(totalProducto).toFixed(8)));
 						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodBodega2']));
 						tr.append($('<td style="display:none;"></td>').text(fila['Productos']['Codigo_Inv']));
-						tr.append($('<td></td>').html('<input type="checkbox" id="producto_recalcular" name="producto_recalcular" onchange="recalcularLineaFact(this)" class="form-check-input border-secondary">'));
-						tr.append($('<td></td>').html('<input type="checkbox" id="producto_cheking" name="producto_cheking" class="form-check-input border-secondary">'));
+						tr.append($('<td></td>').html('<input type="checkbox" id="producto_recalcular" name="producto_recalcular" onchange="recalcularLineaFact(this)" class="form-check-input border-secondary" disabled>'));
+						tr.append($('<td></td>').html('<input type="checkbox" id="producto_cheking" name="producto_cheking" class="form-check-input border-secondary" disabled>'));
 						//tr.append($('<td></td>').html('<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil"></i></button>'));
 						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodigoU']));
 						tBody.append(tr);
@@ -741,35 +742,134 @@ var valTC = 'FA';
 	var filaTbl = null;*/
 
 	function recalcularLineaFact(elemento = null){
-		let cbxFila = elemento.parentElement.parentElement;
 		if(elemento && $(elemento).prop('checked') == false){
+			let cbxFila = elemento.parentElement.parentElement;
 			cbxFila.childNodes[5].innerText = cbxFila.childNodes[5].getAttribute('valAnterior');
 			cbxFila.childNodes[4].children[0].children[0].value = cbxFila.childNodes[4].children[0].children[0].getAttribute('valAnterior');
-		}
-		let valorRecalcular = $('#txtRecalcular').val();
-		if(valorRecalcular.trim() == ""){
-			$('#txtRecalcular').val(0);
-			valorRecalcular = 0;
-		}else{
-			valorRecalcular = parseFloat(valorRecalcular);
-		}
-		let cantRecalcular = $("input[name='producto_recalcular']:checked").length;
-		let totalRecal = valorRecalcular / cantRecalcular;
 
-		$("input[name='producto_recalcular']:checked").each((i,x)=>{
-			let fila = $(x)[0].parentElement.parentElement;
-			fila.childNodes[5].innerText = totalRecal.toFixed(8);
-			let nuevoValor = fila.childNodes[3].children[0].children[0].value;
-
-			if(nuevoValor.trim() == ""){
-				fila.childNodes[3].children[0].children[0].value = "0";
-				nuevoValor = 0;
+			let tc = datosFact;
+			let parametros =
+			{
+				//'opc': $('input[name="radio_conve"]:checked').val(),
+				//'comentario': comentario,
+				'TextVUnit': cbxFila.childNodes[4].children[0].children[0].value,
+				'TextCant': cbxFila.childNodes[3].children[0].children[0].value,
+				'TC': tc,
+				'TxtDocumentos': '.',
+				'Codigo': cbxFila.childNodes[7].textContent,
+				'fecha': $('#MBFecha').val(),
+				'CodBod': cbxFila.childNodes[6].textContent,
+				'CodBod2': cbxFila.childNodes[0].textContent,
+				'VTotal': cbxFila.childNodes[5].textContent,
+				/*'TxtRifaD': $('#TxtRifaD').val(),
+				'TxtRifaH': $('#TxtRifaH').val(),*/
+				'Serie': $('#LblSerie').text(),
+				'CodigoCliente': $('#codigoCliente').val(),
+				'TextServicios': '.',
+				'TextVDescto': 0,
+				'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
+				'cheking': cbxFila.childNodes[8].children[0].checked==true?1:0,
 			}
+			console.log(parametros);
+			$('#myModal_espera').modal('show');
+			$.ajax({
+				type: "POST",
+				url: '../controlador/facturacion/facturas_distribucionC.php?ActualizarAsientoF=true',
+				data: { parametros: parametros },
+				dataType: 'json',
+				success: function (data) {
+					setTimeout(()=>{
+						$('#myModal_espera').modal('hide');
+					}, 500);
+
+					if (data == 2) {
+						Swal.fire('Ya no puede ingresar mas productos', '', 'info');
+					} else if (data == 1) {
+						//DGAsientoF();
+						Calculos_Totales_Factura();
+					} else {
+						Swal.fire('Intente mas tarde', '', 'info');
+					}
+				}
+			});
+		}else if(!elemento || (elemento && $(elemento).prop('checked') == true)){
+			let recalculados = 0;
+			let valorRecalcular = $('#txtRecalcular').val();
+			if(valorRecalcular.trim() == ""){
+				$('#txtRecalcular').val(0);
+				valorRecalcular = 0;
+			}else{
+				valorRecalcular = parseFloat(valorRecalcular);
+			}
+			let cantRecalcular = $("input[name='producto_recalcular']:checked").length;
+			let totalRecal = valorRecalcular / cantRecalcular;
+			
+			$('#myModal_espera').modal('show');
+			$("input[name='producto_recalcular']:checked").each((i,x)=>{
+				let fila = $(x)[0].parentElement.parentElement;
+				fila.childNodes[5].innerText = totalRecal.toFixed(8);
+				let nuevoValor = fila.childNodes[3].children[0].children[0].value;
 	
-			let nuevoPVP = totalRecal / parseFloat(nuevoValor);
+				if(nuevoValor.trim() == ""){
+					fila.childNodes[3].children[0].children[0].value = "0";
+					nuevoValor = 0;
+				}
+		
+				let nuevoPVP = totalRecal / parseFloat(nuevoValor);
+		
+				fila.childNodes[4].children[0].children[0].value = nuevoPVP;
 	
-			fila.childNodes[4].children[0].children[0].value = nuevoPVP;
-		});
+				let tc = datosFact;
+				//console.log(comentario);
+				let parametros =
+				{
+					//'opc': $('input[name="radio_conve"]:checked').val(),
+					//'comentario': comentario,
+					'TextVUnit': fila.childNodes[4].children[0].children[0].value,
+					'TextCant': fila.childNodes[3].children[0].children[0].value,
+					'TC': tc,
+					'TxtDocumentos': '.',
+					'Codigo': fila.childNodes[7].textContent,
+					'fecha': $('#MBFecha').val(),
+					'CodBod': fila.childNodes[6].textContent,
+					'CodBod2': fila.childNodes[0].textContent,
+					'VTotal': fila.childNodes[5].textContent,
+					/*'TxtRifaD': $('#TxtRifaD').val(),
+					'TxtRifaH': $('#TxtRifaH').val(),*/
+					'Serie': $('#LblSerie').text(),
+					'CodigoCliente': $('#codigoCliente').val(),
+					'TextServicios': '.',
+					'TextVDescto': 0,
+					'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
+					'cheking': fila.childNodes[8].children[0].checked==true?1:0,
+				}
+				console.log(parametros);
+				
+				$.ajax({
+					type: "POST",
+					url: '../controlador/facturacion/facturas_distribucionC.php?ActualizarAsientoF=true',
+					data: { parametros: parametros },
+					dataType: 'json',
+					success: function (data) {
+						recalculados += 1;
+						if(cantRecalcular == recalculados){
+							setTimeout(()=>{
+								$('#myModal_espera').modal('hide');
+							}, 500);
+						}
+
+						if (data == 2) {
+							Swal.fire('Ya no puede ingresar mas productos', '', 'info');
+						} else if (data == 1) {
+							//DGAsientoF();
+							Calculos_Totales_Factura();
+						} else {
+							Swal.fire('Intente mas tarde', '', 'info');
+						}
+					}
+				});
+			});
+		}
 
 
 
@@ -795,51 +895,7 @@ var valTC = 'FA';
 		$('#ADCantTotal').html(`<b>${totalCant}</b>`);
 		$('#ADTotal').html(`<b>${ADTotal.toFixed(2)}</b>`);
 
-		let tc = datosFact;
-		//console.log(comentario);
-		let parametros =
-		{
-			//'opc': $('input[name="radio_conve"]:checked').val(),
-			//'comentario': comentario,
-			'TextVUnit': cbxFila.childNodes[4].children[0].children[0].value,
-			'TextCant': cbxFila.childNodes[3].children[0].children[0].value,
-			'TC': tc,
-			'TxtDocumentos': '.',
-			'Codigo': cbxFila.childNodes[7].textContent,
-			'fecha': $('#MBFecha').val(),
-			'CodBod': cbxFila.childNodes[6].textContent,
-			'CodBod2': cbxFila.childNodes[0].textContent,
-			'VTotal': cbxFila.childNodes[5].textContent,
-			/*'TxtRifaD': $('#TxtRifaD').val(),
-			'TxtRifaH': $('#TxtRifaH').val(),*/
-			'Serie': $('#LblSerie').text(),
-			'CodigoCliente': $('#codigoCliente').val(),
-			'TextServicios': '.',
-			'TextVDescto': 0,
-			'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
-			'cheking': cbxFila.childNodes[8].children[0].checked==true?1:0,
-		}
-		console.log(parametros);
-		$('#myModal_espera').modal('show');
-		$.ajax({
-			type: "POST",
-			url: '../controlador/facturacion/facturas_distribucionC.php?ActualizarAsientoF=true',
-			data: { parametros: parametros },
-			dataType: 'json',
-			success: function (data) {
-				setTimeout(()=>{
-					$('#myModal_espera').modal('hide');
-				}, 500)
-				if (data == 2) {
-					Swal.fire('Ya no puede ingresar mas productos', '', 'info');
-				} else if (data == 1) {
-					//DGAsientoF();
-					Calculos_Totales_Factura();
-				} else {
-					Swal.fire('Intente mas tarde', '', 'info');
-				}
-			}
-		});
+		
 		/*fila.childNodes[3].innerHTML = `
 			<input type="text" class="form-control form-control-sm text-center" style="max-width:136px;" placeholder="Cambie la cantidad">
 		`; //name = cod_prod + usuario_q_agg
@@ -908,7 +964,7 @@ var valTC = 'FA';
 			'cheking': fila.childNodes[8].children[0].checked==true?1:0,
 		}
 		console.log(parametros);
-		/*$('#myModal_espera').modal('show');
+		$('#myModal_espera').modal('show');
 		$.ajax({
 			type: "POST",
 			url: '../controlador/facturacion/facturas_distribucionC.php?ActualizarAsientoF=true',
@@ -927,7 +983,7 @@ var valTC = 'FA';
 					Swal.fire('Intente mas tarde', '', 'info');
 				}
 			}
-		});*/
+		});
 		/*fila.childNodes[3].innerHTML = `
 			<input type="text" class="form-control form-control-sm text-center" style="max-width:136px;" placeholder="Cambie la cantidad">
 		`; //name = cod_prod + usuario_q_agg
@@ -1023,6 +1079,8 @@ var valTC = 'FA';
 
 	function ingresarAsientoF() {
 		let filas = $('.asignTablaDistri');
+		let subidos = 0;
+		let cantFilas = filas.length;
 
 		for(let fila of filas){
 			fila = fila.children;
@@ -1055,6 +1113,13 @@ var valTC = 'FA';
 				data: { parametros: parametros },
 				dataType: 'json',
 				success: function (data) {
+					subidos += 1;
+
+					if(subidos >= cantFilas){
+						$('#tbl_DGAsientoF .form-control, #tbl_DGAsientoF .form-check-input').attr('disabled', false);
+						$('#txtRecalcular').attr('disabled', false);
+					}
+
 					if (data == 2) {
 						Swal.fire('Ya no puede ingresar mas productos', '', 'info');
 					} else if (data == 1) {
@@ -2026,6 +2091,9 @@ function tipo_facturacion(valor)
 
 			},
 			error: (err) => {
+				setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
 				Swal.fire('Error', 'Hubo un problema al guardar la factura.','info');
 			}
 		});

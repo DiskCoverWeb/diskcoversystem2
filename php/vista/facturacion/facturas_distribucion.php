@@ -188,16 +188,27 @@ if (isset ($_GET['tipo'])) {
 		<div class="card">
 			<div class="card-body">
 					<div class="row p-2 d-flex align-items-center pb-1">
-					<div class="col-sm-3" style="width:fit-content">
-						<b>Evaluación de fundaciones:</b>
+						<div class="col-sm-4">
+							<button class="btn btn-sm btn-outline-secondary" onclick="$('#modalEvaluacionFundaciones').modal('show');">
+								<b>Evaluación de fundaciones</b>
+								<img src="../../img/png/eval_fundaciones.png" width="50px" alt="Evaluacion fundaciones" title="EVALUACIÓN FUNDACIONES">
+							</button>
+						</div>
+					<!-- <div class="col-sm-3" style="width:fit-content">
+						
 					</div>
-					<div class="col-sm-1" style="padding: 0;cursor:pointer;" onclick="$('#modalEvaluacionFundaciones').modal('show');">
+					<div class="col-sm-1" style="padding: 0;cursor:pointer;">
 						<div>
 							<img src="../../img/png/eval_fundaciones.png" width="50px" alt="Evaluacion fundaciones" title="EVALUACIÓN FUNDACIONES">
 						</div>
-					</div>
-					<div class="row row-cols-auto d-flex align-items-center col-sm-8">
-						<div class="col-auto text-end">
+					</div> -->
+					<div class="row row-cols-auto d-flex align-items-center col-sm-5">
+						<div class="input-group input-group-sm">
+							<span class="input-group-text"><b>Gavetas pendientes:</b></span>
+							<input type="text" name="gavetas_pendientes" id="gavetas_pendientes2" class="form-control form-control-sm" readonly>
+							<button type="button" id="btn_detalle" class="btn btn-primary btn-sm btn-block" onclick="$('#modalGavetasVer').modal('show')"> Ver detalle <i class="fa fa-eye"></i></button>
+						</div>
+						<!-- <div class="col-auto text-end">
 							<b>Gavetas pendientes:</b>
 						</div>
 						<div class="col-2">
@@ -205,12 +216,12 @@ if (isset ($_GET['tipo'])) {
 						</div>
 						<div class="col-auto">
 							<button type="button" id="btn_detalle" class="btn btn-primary btn-sm btn-block" onclick="$('#modalGavetasVer').modal('show')"> Ver detalle <i class="fa fa-eye"></i></button>
-						</div>
-						<div class="col-auto">
-							<div class="input-group input-group-sm">
-								<label for="txtRecalcular" class="input-group-text"><b>Valor a Recalcular</b></label>
-								<input type="text" class="form-control form-control-sm" name="txtRecalcular" id="txtRecalcular" value="">
-							</div>
+						</div> -->
+					</div>
+					<div class="col-sm-3">
+						<div class="input-group input-group-sm">
+							<label for="txtRecalcular" class="input-group-text"><b>Valor a Recalcular</b></label>
+							<input type="text" class="form-control form-control-sm" name="txtRecalcular" id="txtRecalcular" value="" onchange="recalcularLineaFact()" disabled>
 						</div>
 					</div>
 				</div>
