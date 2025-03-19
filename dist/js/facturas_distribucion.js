@@ -62,6 +62,57 @@ var valTC = 'FA';
 		}
 	}
 
+	function anular_picking(){
+		Swal.fire({
+			title: "¿Está seguro que desea anular?",
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'SI',
+			cancelButtonText: 'NO'
+		}).then((result) => {
+			if (result.value) {
+				//IngClave('Supervisor');
+				let parametros = {
+					'beneficiario': $('#DCCliente').val(),
+					'fecha': $('#MBFecha').val()
+				};
+				$.ajax({
+					type: "POST",
+					url: '../controlador/facturacion/facturas_distribucionC.php?AnularPicking=true',
+					data: { parametros: parametros },
+					dataType: 'json',
+					success: function (data) {
+						if(data == 1){
+							Swal.fire('Anulado correctamente', '', 'success').then((result)=>{
+								location.reload();
+							});
+						}else{
+							Swal.fire('Ocurrio un problema al anular', '', 'error');
+						}
+						//$('#Cod_CxC').val(data[0].nombre);  //FA
+						//Lineas_De_CxC();
+					}
+				});
+			}
+		});
+		
+		// $.ajax({
+		// 	type: "POST",
+		// 	url: '../controlador/facturacion/facturas_distribucionC.php?AnularPicking=true',
+		// 	data: { parametros: parametros },
+		// 	dataType: 'json',
+		// 	success: function (data) {
+		// 		if(data == 1){
+
+		// 		}
+		// 		//$('#Cod_CxC').val(data[0].nombre);  //FA
+		// 		//Lineas_De_CxC();
+		// 	}
+		// });
+	}
+
 	function DCLineas() {
 		var parametros =
 		{

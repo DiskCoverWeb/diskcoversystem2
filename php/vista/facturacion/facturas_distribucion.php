@@ -104,8 +104,8 @@ if (isset ($_GET['tipo'])) {
 						<select class="form-select form-select-sm" id="DCCliente" name="DCCliente" onchange="select()">
 							<option value="">Seleccione Cliente</option>
 						</select>
-						<button type="button" class="btn btn-success btn-sm" style="font-size: 8pt;" onclick="addCliente()"
-							title="Nuevo cliente"><span class="fa fa-user-plus" style="font-size: 8pt;"></span></button>
+						<button type="button" class="btn btn-danger btn-sm" style="font-size: 8pt;" onclick="anular_picking()"
+							title="Anular picking"><span class="fa fa-times" style="font-size: 8pt;"></span></button>
 					</div>
 					<!-- <div class="input-group" id="ddl" style="width:100%">
 						<select class="form-control" id="DCCliente" name="DCCliente" onchange="select()">

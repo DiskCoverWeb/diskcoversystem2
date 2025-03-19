@@ -11,6 +11,10 @@ if(isset($_GET["LlenarSelectIVA"])){
 	$fecha = str_replace("-", "", $fecha);
 	echo json_encode($controlador->LlenarSelectIVA($fecha));
 }
+if(isset($_GET["AnularPicking"])){
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->AnularPicking($parametros));
+}
 
 if(isset($_GET['GuardarBouche'])){
 	//$parametros = $_POST;
@@ -1209,7 +1213,7 @@ class facturas_distribucion
 					if(isset($parametros['CodBod2'])){
 						SetAdoFields('CodBod', $parametros['CodBod2']);
 					}
-					
+
 					SetAdoFields('COSTO', $articulo['Costo']);
 					SetAdoFields('Total_Desc', $Dscto);
 					if(isset($parametros['cheking'])){
@@ -2292,7 +2296,20 @@ class facturas_distribucion
 		return enviar_email_comprobantes($lista_archivos, $to_correo, $cuerpo_correo, $titulo_correo, $HTML = false);
 	}
 
-
+	function AnularPicking($parametros)
+    {
+        // print_r($parametros);die();
+        SetAdoAddNew('Trans_Comision');
+        SetAdoFields('T','P');      
+       
+        //SetAdoFieldsWhere('CodigoU',$_SESSION['INGRESO']['CodigoU']); //Se elimino la linea porque solo guardaba los productos del picking del ultimo usuario
+        SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
+        SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']); 
+        SetAdoFieldsWhere('CodigoC',$parametros['beneficiario']);  
+        SetAdoFieldsWhere('Fecha',$parametros['fecha']);  
+        //SetAdoFieldsWhere('Cta',$parametros['tipo']);  
+        return SetAdoUpdateGeneric();
+    }
 }
 
 ?>
