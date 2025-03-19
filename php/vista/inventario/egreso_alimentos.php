@@ -386,7 +386,7 @@
 				</div>
 				<div class="row justify-content-center" id="contenedor_camera" style="display: none; position: relative;">
 					<div class="col-sm-12 text-center">
-							<video id="video">La camara no está funcional actualmente.</video>						
+							<video id="video" style="width:100%" >La camara no está funcional actualmente.</video>						
 					</div>
 					<div class="col-sm-6 text-center">
 							<button id="btnTomarFoto" class="btn btn-light">Tomar foto</button>
