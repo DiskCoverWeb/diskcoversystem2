@@ -230,7 +230,7 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-12">
-                        <textarea class="form-control form-control-sm" placeholder="comentario general de asiganción..." id="comeGeneAsig" name="comeGeneAsig" rows="3" style="resize: none;"></textarea>                           
+                        <textarea class="form-control form-control-sm" placeholder="comentario general de asignación..." id="comeGeneAsig" name="comeGeneAsig" rows="3" style="resize: none;"></textarea>                           
                         <button type="button" class="btn btn-success btn-sm btn-block w-100"><i class="fa fa-save"></i>
                         </button>                         
                     </div>

@@ -128,9 +128,10 @@ class asignacion_pickingC
         $detalle = '';
         $ddlGrupoPro = '';
         $total = 0;
+        $ctotal = 0;
         // print_r($datos);die();
         foreach ($datos as $key => $value) {
-            $cant = 0; 
+            $cant = $value['Cantidad']; 
             $cant_ing = $this->modelo->total_ingresados($parametros['beneficiario'],$value['Codigo'],$value['No_Hab'],$value['Fecha']->format('Y-m-d'));
             if($cant_ing[0]['Total']!=''){ 
                 $c = ($value['Cantidad']-$cant_ing[0]['Total']);
@@ -165,6 +166,7 @@ class asignacion_pickingC
                 </div>';
             $ddlGrupoPro.= '<option value="'.$value['Codigo'].'" >'.$value['Producto'].'</option>';
             $total =  $total+number_format($value['Cantidad'],2,'.','');
+            $ctotal =  $ctotal+number_format($cant,2,'.','');
         }
         $detalle.='<div class="row">                                    
                     <div class="col-sm-3 text-end">
@@ -174,7 +176,7 @@ class asignacion_pickingC
                         <div class="input-group input-group-sm">
                             <input type="text" class="form-control form-control-sm" value="'.$total.'" readonly>
                             <span class="input-group-text"><b>Dif:</b></span>
-                            <input type="text" class="form-control form-control-sm" readonly>
+                            <input type="text" class="form-control form-control-sm" value="'.$ctotal.'" readonly>
                             
                         </div>
                     </div>              
@@ -277,7 +279,7 @@ class asignacion_pickingC
          $bode = $this->egresos->buscar_producto(false,$parametros['codigoProducto']);
 
         // cantidad ingresada
-        $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],date('Y-m-d'));
+        $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsign']);
         $cant_ing = $cant_ing[0]['Total'];
 
         // cantida que se pide
