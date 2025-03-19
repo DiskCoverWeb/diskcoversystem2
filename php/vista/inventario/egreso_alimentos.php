@@ -367,7 +367,7 @@
 </div>
 
 <div id="modal_camara" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
-	<div class="modal-dialog modal-xl">
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content" style="background-color:antiquewhite;">
 			<div class="modal-header bg-primary">
 				<h4 class="modal-title text-white">Tomar Foto</h4>
@@ -385,8 +385,15 @@
 					</div>
 				</div>
 				<div class="row justify-content-center" id="contenedor_camera" style="display: none; position: relative;">
-					<video id="video">La camara no está funcional actualmente.</video>
-					<button id="btnTomarFoto" class="btn btn-light" style="position:absolute; width: fit-content; bottom: 20px; margin: 0 auto;">Tomar foto</button>
+					<div class="col-sm-12 text-center">
+							<video id="video" style="width:100%" >La camara no está funcional actualmente.</video>						
+					</div>
+					<div class="col-sm-6 text-center">
+							<button id="btnTomarFoto" class="btn btn-light">Tomar foto</button>
+					</div>
+					<div class="col-sm-6 text-center">
+							<button class="btn btn-danger" onclick="cerrarCamaraFoto()">cancelar</button>						
+					</div>
 				</div>
 			</div>
 		</div>
