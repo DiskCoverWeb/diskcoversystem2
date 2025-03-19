@@ -14,7 +14,7 @@ class asignacion_pickingM
 
     }
 
-    function tipoBeneficiario($codigo = '')
+    function tipoBeneficiario($codigo = '', $fecha = '')
     {
         $sql = "SELECT DISTINCT No_Hab,C.Codigo, C.CodigoA,CP5.Proceso AS 'Estado', C.Cliente, C.CI_RUC, CD.Fecha_Registro, CD.Envio_No,CP3.Proceso as 'Frecuencia',CD.CodigoA as CodigoACD,CP4.Proceso as'TipoEntega' ,CD.Beneficiario, CD.No_Soc, CD.Area, CD.Acreditacion,CP1.Proceso as 'AccionSocial', CD.Tipo, CD.Cod_Fam,CP2.Proceso as 'TipoAtencion', CD.Salario, CD.Descuento, CD.Evidencias, CD.Item,C.Actividad,CP.Proceso as 'TipoBene',CP.Color,CP.Picture,CD.Hora_Ent as 'Hora',CD.Tipo_Dato as 'CodVulnera',CP6.Proceso AS 'vulnerabilidad',CD.Observaciones,CD.Hora_Ent,CD.Dia_Ent,CP7.Proceso as 'Tipo Asignacion' 
         	FROM Detalle_Factura DF
@@ -29,8 +29,13 @@ class asignacion_pickingM
 			LEFT JOIN Catalogo_Proceso CP6 ON CD.Tipo_Dato= CP6.Cmds 
 			LEFT JOIN Catalogo_Proceso CP7 ON DF.No_Hab= CP7.Cmds 
 			WHERE DF.Item = '".$_SESSION['INGRESO']['item']."'
-			AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
-            AND DF.Fecha = '".date('Y-m-d')."'";
+			AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+			if($fecha)
+			{
+				$sql.=" AND DF.Fecha = '".$fecha."'";
+			}else{
+				$sql.=" AND DF.Fecha = '".date('Y-m-d')."'";
+            }
 			if($codigo)
 			{
 				$sql.=" CodigoC+' '+ = like '%".$codigo."%'";
@@ -113,7 +118,7 @@ class asignacion_pickingM
                 AND T = '".$T."'";
                 if($fecha)
                 {
-                    $sql.=" AND Fecha = '".$fecha."'";
+                    $sql.=" AND Fecha >= '".$fecha."'";
                 }
                 // print_r($sql);die();
         return $this->db->datos($sql);    

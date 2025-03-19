@@ -47,6 +47,12 @@ function beneficiario() {
         url: '../controlador/inventario/asignacion_pickingC.php?Beneficiario=true',
         dataType: 'json',
         delay: 250,
+        data: function (params) {
+            return {
+                query: params.term,
+                fecha: $('#txtFechaAsign').val(),
+            }
+        },
         processResults: function (data) {
         // console.log(data);
         return {
@@ -64,6 +70,7 @@ function cargarOrden() {
     var param = {
         'beneficiario':beneficiario[0],
         'tipo':beneficiario[1],
+        'fecha':$('#txtFechaAsign').val(),
     }
     $.ajax({
         url: '../controlador/inventario/asignacion_pickingC.php?cargarOrden=true',
@@ -321,7 +328,7 @@ function cargar_asignacion()
                 };*/
                 var param = {
                     'beneficiario':$('#beneficiario').val(),
-                    'FechaAte':$('#fechAten').val(),
+                    'FechaAte':$('#txtFechaAsign').val(),
                 }
                 return { parametros: param };
             },              

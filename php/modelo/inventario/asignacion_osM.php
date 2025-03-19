@@ -82,14 +82,20 @@ class asignacion_osM
         }
     }
 
-    function listaAsignacion($beneficiario,$T=false,$tipo=false)
+    function listaAsignacion($beneficiario,$T=false,$tipo=false,$fecha=false)
     {
          $sql = "SELECT ".Full_Fields("Detalle_Factura")."
                 FROM Detalle_Factura
                 WHERE Item = '".$_SESSION['INGRESO']['item']."' 
-                AND Periodo='".$_SESSION['INGRESO']['periodo']."'
-                AND CodigoC = '".$beneficiario."'
-                AND Fecha = '".date('Y-m-d')."'";
+                AND Periodo='".$_SESSION['INGRESO']['periodo']."' 
+                AND CodigoC = '".$beneficiario."' ";
+                if($fecha)
+                {
+                    $sql.="AND Fecha = '".$fecha."' ";
+                }else{
+                    $sql.="AND Fecha = '".date('Y-m-d')."' ";
+                }
+
                 if($T)
                 {
                     $sql.="AND T = '".$T."'";
