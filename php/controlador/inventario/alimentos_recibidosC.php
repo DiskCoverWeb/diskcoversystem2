@@ -589,7 +589,6 @@ class alimentos_recibidosC
 	   SetAdoFields('Codigo_Barra',$parametro['txt_codigo'].'-'.$producto[0]['Item_Banco'].'-'.generaCeros($num,3));
 	   SetAdoFields('CodBodega',-1);
 
-	   SetAdoFields('Cta_Inv',$parametro['txt_cta_inv']);
 	   SetAdoFields('Contra_Cta',$parametro['txt_contra_cta']);
 	   SetAdoFields('Codigo_P',$parametro['txt_codigo_p']);
 	   SetAdoFields('Codigo_Dr',$parametro['ddl_sucursales']);

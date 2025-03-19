@@ -850,7 +850,7 @@ function takePicture() {
   }
 
 function adjuntarFoto(){
-	adjuntarFoto();
+	currentStream.getTracks().forEach(track => track.stop()); // Detener la cámara actual
 	$('#photoupload_span').show();
 	$('#modal_foto').modal('hide');
 	foto_data = photo.getAttribute("src");
@@ -877,5 +877,5 @@ function revisarAdjuntos(tipo){
 			$('#file_doc').prop('disabled', false);
 		}
 	}
-	
+	// cerrarCamaraFoto();	
 }
