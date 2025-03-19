@@ -410,7 +410,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="cerrarCamaraFoto();">Cerrar</button>
 				<button type="button" class="btn btn-secondary" onclick="$('#modal_foto').modal('hide');$('#modal_camara').modal('show');">Volver a tomar</button>
 				<button type="button" class="btn btn-success" onclick="adjuntarFoto()">Adjuntar</button>
 			</div>
