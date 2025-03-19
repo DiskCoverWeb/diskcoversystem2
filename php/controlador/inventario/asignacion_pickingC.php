@@ -6,11 +6,12 @@ require_once(dirname(__DIR__, 2) . "/modelo/inventario/egreso_alimentosM.php");
 $controlador = new asignacion_pickingC();
 
 if (isset($_GET['Beneficiario'])) {
+    $fecha = $_GET['fecha'];
     $query = '';
     if (isset($_GET['query'])) {
         $query = $_GET['query'];
     }
-    echo json_encode($controlador->Beneficiario($query));
+    echo json_encode($controlador->Beneficiario($query, $fecha));
 }
 
 if(isset($_GET['datosExtra'])){
@@ -83,10 +84,10 @@ class asignacion_pickingC
 
     }
 
-    function Beneficiario($query)
+    function Beneficiario($query, $fecha)
     {
 
-    	$datos = $this->modelo->tipoBeneficiario($query);
+    	$datos = $this->modelo->tipoBeneficiario($query, $fecha);
 
         // print_r($datos);die();
     	$lista = array();
@@ -104,7 +105,7 @@ class asignacion_pickingC
             // if($diaActual==$dia[1])
             // {
             //     //buscamos si el usuario ya genero en este dia pedidos para facturar
-                $datos1 = $this->modelo->cargar_asignacion($value['Codigo'],$value['No_Hab'],'F',date('Y-m-d'));
+                $datos1 = $this->modelo->cargar_asignacion($value['Codigo'],$value['No_Hab'],'F',$fecha);
                 if(count($datos1)==0)
                 {
             	   $lista[] = array('id'=>$value['Codigo'].'-'.$value['No_Hab'],'text'=>$value['Cliente'].' ('.$value['Tipo Asignacion'].')','data'=>$value); 
@@ -122,7 +123,7 @@ class asignacion_pickingC
         $tr = '';
         $cantidad = 0;
         $res = array();
-        $datos = $this->asignacion->listaAsignacion($parametros['beneficiario'],'K',$parametros['tipo']);
+        $datos = $this->asignacion->listaAsignacion($parametros['beneficiario'],'K',$parametros['tipo'],$parametros['fecha']);
 
         $detalle = '';
         $ddlGrupoPro = '';
@@ -137,28 +138,28 @@ class asignacion_pickingC
             }
             // print_r($cant_ing);die();
             $detalle.='<div class="row">                                    
-                    <div class="col-sm-4">   
+                    <div class="col-sm-3">   
                         <b>Grupo de productos</b>
                     </div>
-                    <div class="col-sm-4" style="padding:0px">                      
+                    <div class="col-sm-3" style="padding:0px">                      
                         <b>Cantidad parcial a distribuir</b>
                     </div>              
-                    <div class="col-sm-4">                      
+                    <div class="col-sm-6">                      
                         <b>Comentario de asignacion</b>
                     </div>                     
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <h6 class="h6 text-end">'.$value['Producto'].'</h6>
                     </div>
-                    <div class="col-sm-4" style="padding:0px">
+                    <div class="col-sm-3" style="padding:0px">
                         <div class="input-group input-group-sm">
                             <input type="text" class="form-control form-control-sm" value="'.number_format($value['Cantidad'],2,'.','').'" readonly="">
                             <span class="input-group-text"><b>Dif:</b></span>
                             <input type="text" class="form-control form-control-sm" value="'.number_format(($cant),2,'.','').'" readonly>                            
                         </div>
                     </div>
-                    <div class="col-sm-4">                      
+                    <div class="col-sm-6">                      
                         <input type="text" class="form-control form-control-sm" value="'.$value['Procedencia'].'">
                     </div>                               
                 </div>';
@@ -166,10 +167,10 @@ class asignacion_pickingC
             $total =  $total+number_format($value['Cantidad'],2,'.','');
         }
         $detalle.='<div class="row">                                    
-                    <div class="col-sm-4 text-end">
+                    <div class="col-sm-3 text-end">
                         <label><b>Total</b></label>
                     </div>
-                    <div class="col-sm-4" style="padding:0px">      
+                    <div class="col-sm-3" style="padding:0px">      
                         <div class="input-group input-group-sm">
                             <input type="text" class="form-control form-control-sm" value="'.$total.'" readonly>
                             <span class="input-group-text"><b>Dif:</b></span>
@@ -177,7 +178,7 @@ class asignacion_pickingC
                             
                         </div>
                     </div>              
-                    <div class="col-sm-4">                      
+                    <div class="col-sm-6">                      
                     </div>                     
                 </div>';
 
@@ -326,7 +327,7 @@ class asignacion_pickingC
     function cargar_asignacion($parametros)
     {        
         $Beneficiario = explode('-',$parametros['beneficiario']);
-        $datos = $this->modelo->cargar_asignacion($Beneficiario[0],$Beneficiario[1],'P',date('Y-m-d'));
+        $datos = $this->modelo->cargar_asignacion($Beneficiario[0],$Beneficiario[1],'P',$parametros["FechaAte"]);
         $tbl = '';
         $total = 0;
         foreach ($datos as $key => $value) {

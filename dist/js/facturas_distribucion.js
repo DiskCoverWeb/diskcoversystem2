@@ -11,7 +11,7 @@ var valTC = 'FA';
 		//toggleInfoEfectivo();
 		DCLineas();
 		preseleccionar_opciones();
-		eventos_select();
+		//eventos_select();
 		autocomplete_cliente();
 		autocomplete_producto();
 		//serie();
@@ -50,7 +50,7 @@ var valTC = 'FA';
 		//     console.log(data);
 		//   });
 
-		DCTipoFact2();
+		//DCTipoFact2();
 		//DCPorcenIvaFD();
 	});
 
@@ -444,7 +444,7 @@ var valTC = 'FA';
 			}
 		});
 		
-		$.ajax({
+		/*$.ajax({
 			type: "GET",
 			url: '../controlador/facturacion/facturas_distribucionC.php?LlenarSelectTipoFactura=true',
 			dataType: 'json',
@@ -464,7 +464,7 @@ var valTC = 'FA';
 				//Muestra Fact de la opcion predefinida en Label1
 				$("#Label1").text(`FACTURA (${masDetalles[0]['Fact']}) NO.`);
 			}
-		});
+		});*/
 	}
 
 	//Agrega eventos a selects
@@ -804,7 +804,7 @@ var valTC = 'FA';
 			let cantRecalcular = $("input[name='producto_recalcular']:checked").length;
 			let totalRecal = valorRecalcular / cantRecalcular;
 			
-			$('#myModal_espera').modal('show');
+			if(cantRecalcular > 0) $('#myModal_espera').modal('show');
 			$("input[name='producto_recalcular']:checked").each((i,x)=>{
 				let fila = $(x)[0].parentElement.parentElement;
 				fila.childNodes[5].innerText = totalRecal.toFixed(8);
@@ -893,7 +893,7 @@ var valTC = 'FA';
 		}
 		console.log(totalCant);
 		$('#ADCantTotal').html(`<b>${totalCant}</b>`);
-		$('#ADTotal').html(`<b>${ADTotal.toFixed(2)}</b>`);
+		$('#ADTotal').html(`<b>${ADTotal.toFixed(8)}</b>`);
 
 		
 		/*fila.childNodes[3].innerHTML = `
@@ -1234,7 +1234,7 @@ var valTC = 'FA';
 			$('#title').text('Nota de Venta');
 		} else if (TipoFactura == "NDO" || TipoFactura == "NDU") {
 			// FacturasPV.Caption = "INGRESAR NOTA DE DONACION"
-			$('#Label1').text(" NOTA DE DONACION No.");
+			$('#Label1').text(" NOTA DE DONACION ORGANIZACION No.");
 			$('#Label3').text(" I.V.A. 0.00%");
 			$('#title').text('Donaciones');
 		} else if (TipoFactura == "LC") {

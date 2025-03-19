@@ -82,15 +82,16 @@ if (isset ($_GET['tipo'])) {
 	<div id="interfaz_campos">
 		<div class="row pb-2">
 			<div class="row col-sm-9">
-				<div class="col-sm-6 pb-2">
+				<div class="col-sm-4 pb-2">
 					<div class="input-group input-group-sm">
 						<label for="DCTipoFact2" class="input-group-text"><b>Tipo de Facturacion</b></label>
-						<select class="form-select form-select-sm" name="DCTipoFact2" id="DCTipoFact2" onblur="tipo_facturacion(this.value)">
+						<!-- <select class="form-select form-select-sm" name="DCTipoFact2" id="DCTipoFact2" onblur="tipo_facturacion(this.value)">
 
-						</select>
+						</select> -->
+						<input type="text" id="DCTipoFact2" class="form-control form-control-sm" value="NDO" disabled>
 					</div>
 				</div>
-				<div class="col-sm-6 pb-2">
+				<div class="col-sm-8 pb-2">
 					<div class="input-group input-group-sm">
 						<label for="TextFacturaNo" class="input-group-text"><b id="Label1">FACTURA No.</b></label>
 						<span class="input-group-text" id="LblSerie"><b></b></span>
