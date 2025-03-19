@@ -1205,7 +1205,11 @@ class facturas_distribucion
 					SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
 					SetAdoFields('Codigo_Cliente', $parametros['CodigoCliente']);
 					SetAdoFields('A_No', $A_No + 1);
-					SetAdoFields('CodBod', $parametros['CodBod2']);
+
+					if(isset($parametros['CodBod2'])){
+						SetAdoFields('CodBod', $parametros['CodBod2']);
+					}
+					
 					SetAdoFields('COSTO', $articulo['Costo']);
 					SetAdoFields('Total_Desc', $Dscto);
 					if(isset($parametros['cheking'])){

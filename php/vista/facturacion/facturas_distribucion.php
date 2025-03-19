@@ -221,7 +221,7 @@ if (isset ($_GET['tipo'])) {
 					<div class="col-sm-3">
 						<div class="input-group input-group-sm">
 							<label for="txtRecalcular" class="input-group-text"><b>Valor a Recalcular</b></label>
-							<input type="text" class="form-control form-control-sm" name="txtRecalcular" id="txtRecalcular" value="" onchange="recalcularLineaFact()">
+							<input type="text" class="form-control form-control-sm" name="txtRecalcular" id="txtRecalcular" value="" onchange="recalcularLineaFact()" disabled>
 						</div>
 					</div>
 				</div>

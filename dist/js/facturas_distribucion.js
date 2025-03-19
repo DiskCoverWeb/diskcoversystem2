@@ -611,6 +611,7 @@ var valTC = 'FA';
 		$('#LblRUC').val(dataS[0].CI_RUC);
 		$('#codigoCliente').val(dataS[0].Codigo);
 		$('#LblT').val(dataS[0].T);
+		$('#txtRecalcular').val(0);
 
 		var parametros = {
 			'CodigoCliente': dataS[0].Codigo,
@@ -1116,6 +1117,7 @@ var valTC = 'FA';
 
 					if(subidos >= cantFilas){
 						$('#tbl_DGAsientoF .form-control, #tbl_DGAsientoF .form-check-input').attr('disabled', false);
+						$('#txtRecalcular').attr('disabled', false);
 					}
 
 					if (data == 2) {
@@ -2089,6 +2091,9 @@ function tipo_facturacion(valor)
 
 			},
 			error: (err) => {
+				setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
 				Swal.fire('Error', 'Hubo un problema al guardar la factura.','info');
 			}
 		});

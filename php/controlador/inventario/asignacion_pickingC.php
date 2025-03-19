@@ -388,7 +388,7 @@ class asignacion_pickingC
         SetAdoAddNew('Trans_Comision');
         SetAdoFields('T','F');      
        
-        SetAdoFieldsWhere('CodigoU',$_SESSION['INGRESO']['CodigoU']);
+        //SetAdoFieldsWhere('CodigoU',$_SESSION['INGRESO']['CodigoU']); //Se elimino la linea porque solo guardaba los productos del picking del ultimo usuario
         SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
         SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']); 
         SetAdoFieldsWhere('CodigoC',$parametros['beneficiario']);  
