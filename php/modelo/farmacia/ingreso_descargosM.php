@@ -117,7 +117,7 @@ class ingreso_descargosM
      	}
      }  
      $sql.=" ORDER BY T.ID DESC";
-     // print_r($sql);die();
+     print_r($sql);die();
 
      return $this->conn1->datos($sql);
        
@@ -513,8 +513,13 @@ class ingreso_descargosM
 		$sql="SELECT CODIGO, CUENTA
 		FROM Asiento
 		WHERE (CODIGO = '".$codigo."') AND (Item = '".$_SESSION['INGRESO']['item']."') 
-		AND (CodigoU = '".$_SESSION['INGRESO']['CodigoU']."') AND (DEBE = '".$va."') 
-		AND T_No=".$_SESSION['INGRESO']['modulo_']." 
+		AND (CodigoU = '".$_SESSION['INGRESO']['CodigoU']."') ";
+		if($tipo_cue==1){
+			$sql.=" AND (DEBE = '".$va."') ";
+		}else{
+			$sql.=" AND (HABER = '".$va."') ";
+		}
+		$sql.="AND T_No=".$_SESSION['INGRESO']['modulo_']." 
 		ORDER BY A_No ASC ";
 		$datos = $this->conn1->datos($sql);
 		//print_r($sql);die();
@@ -1028,7 +1033,12 @@ order by CP.Codigo_Inv,CP.Producto,CP.TC,CP.Valor_Total,CP.Unidad,CP.Cta_Inventa
 
 	function generar_asientos_SC($parametros)
 	{
+		$serie ='001001';
 		// $cid = $this->conn;
+		if(isset($parametros['serie']))
+		{
+				$serie =$parametros['serie'];
+		}
 		if($parametros['t']=='P' OR $parametros['t']=='C')
 		{
 			$sql=" SELECT codigo FROM clientes WHERE Codigo='".$parametros['sub']."' ";
@@ -1084,13 +1094,14 @@ order by CP.Codigo_Inv,CP.Producto,CP.TC,CP.Valor_Total,CP.Unidad,CP.Cta_Inventa
 		}
 		if($parametros['mes']==0)
 		{
-			$sql="INSERT INTO Asiento_SC(Codigo ,Beneficiario,Factura ,Prima,DH,Valor,Valor_ME
+			$sql="INSERT INTO Asiento_SC(Codigo ,Beneficiario,Factura,Serie,Prima,DH,Valor,Valor_ME
            ,Detalle_SubCta,FECHA_V,TC,Cta,TM,T_No,SC_No
            ,Fecha_D ,Fecha_H,Bloquear,Item,CodigoU)
 			VALUES
            ('".$cod."'
            ,'".$parametros['sub2']."'
            ,'".$fact2."'
+           ,'".$serie."'
            ,0
            ,'".$parametros['tic']."'
            ,".$parametros['valorn']."

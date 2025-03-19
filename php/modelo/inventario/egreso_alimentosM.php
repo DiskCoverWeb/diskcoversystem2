@@ -50,7 +50,7 @@ class egreso_alimentosM
 	}
 	function buscar_producto($query=false,$id=false,$grupo=false)
 	{
-		$sql = "SELECT TK.*,C.Cliente,CP.Producto,CP.Unidad 
+		$sql = "SELECT TK.*,C.Cliente,CP.Producto,CP.Unidad,CP.Cta_Inventario 
 			FROM Trans_Kardex TK
 			INNER JOIN Catalogo_Productos CP on TK.Codigo_Inv = CP.Codigo_Inv 
 			INNER JOIN Clientes C on TK.Codigo_P = C.Codigo
@@ -106,13 +106,14 @@ class egreso_alimentosM
 			FROM Trans_Kardex TK
 			INNER JOIN Catalogo_Proceso CPO ON TK.Codigo_Tra = CPO.Cmds
 			WHERE TK.Item = '".$_SESSION['INGRESO']['item']."'
-			AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-			AND TK.CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'";
+			AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
 			if($query)
 			{
 				$sql.=" AND Proceso like '%".$query."%' ";
 			}
 			$sql.="AND TK.T ='G'  GROUP by CPO.Cmds,CPO.Proceso,CPO.Picture";
+
+			// print_r($sql);die();
 			return $this->db->datos($sql);
 	}
 
@@ -139,7 +140,6 @@ class egreso_alimentosM
 			INNER JOIN Catalogo_Proceso CPO1 ON TK.Modelo = CPO1.Cmds
 			WHERE TK.Item = '".$_SESSION['INGRESO']['item']."'
 			AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-			AND TK.CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
 			AND TK.Item = CP.Item
 			AND TK.Periodo = CP.Periodo
 			AND TK.T ='G' ";

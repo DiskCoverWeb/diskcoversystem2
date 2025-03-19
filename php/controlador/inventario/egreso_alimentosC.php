@@ -165,11 +165,12 @@ class egreso_alimentosC
 	    SetAdoFields('Salida',$parametros['cantidad']);
 	    SetAdoFields('CodBodega',$data['CodBodega']);
 	    SetAdoFields('Codigo_Barra',$data['Codigo_Barra']);
+	    SetAdoFields('Cta_Inv',$data['Cta_Inventario']);	
 	    SetAdoFields('Codigo_Inv',$data['Codigo_Inv']);	
 	    SetAdoFields('Fecha',$parametros['fecha']);	
 	    SetAdoFields('Codigo_P',$data['Codigo_P']);	
 	    SetAdoFields('CodigoU',$data['CodigoU']);	
-	    SetAdoFields('Valor_Unitario',$data['Valor_Unitario']);	
+	    SetAdoFields('Valor_Unitario',number_format($data['Valor_Unitario'],2,'.',''));	
 
 	    SetAdoFields('Codigo_Tra',$parametros['area']);	
 	    SetAdoFields('Modelo',$parametros['motivo']);	
@@ -220,12 +221,12 @@ class egreso_alimentosC
 		}
 		
 		// para el cheing de egreso se colocara la G
-		$num = $this->modelo->numero_Registro(date('Y-m-d'));
-
-		// print_r($num);die();
-		$registro = '001';
-		if(isset($num[0]['num']) && $num[0]['num']!=''){$registro = '00'.($num[0]['num']+1);}
+		$dia = date('Ymd');
+		$numero_secuencial = numero_comprobante1("Egreso_".$dia,$_SESSION['INGRESO']['item'],1,date('Y-m-d'));
+		$registro = generaCeros(intval($numero_secuencial),3);
 		$orden = str_replace('-','', date('Y-m-d')).'-'.$registro;
+
+		// print_r($orden);die();
 
 		$ruta = dirname(__DIR__,2).'/comprobantes/sustentos/empresa_'.$_SESSION['INGRESO']['item'].'/';
 		if(!file_exists($ruta))
@@ -473,7 +474,6 @@ class egreso_alimentosC
 
 		SetAdoAddNew("Trans_Kardex"); 		
 	   	SetAdoFields('Contra_Cta',$motivo[0]['Cta_Debe']);
-	   	SetAdoFields('Cta_Inv',$cta_inv);
 	   	SetAdoFields('CodigoL',$CodigoL);
 	   	SetAdoFieldsWhere('Orden_No',$parametros['orden']);
 	   	SetAdoFieldsWhere('T','G');
@@ -490,6 +490,7 @@ class egreso_alimentosC
 		// print_r($tipo);die();
 
 		$asientos_SC = $this->modelo->datos_asiento_SC_trans($parametros['orden']);
+
 		foreach ($asientos_SC as $key => $value) {
 			 $cuenta = $this->modelo->catalogo_cuentas($value['CONTRA_CTA']);
 			 if($tipo=='C' || $tipo=='P')
@@ -497,7 +498,7 @@ class egreso_alimentosC
 			 	$sub = $this->modelo->Catalogo_CxCxP($value['SUBCTA'],$value['CodigoL']);
 			 }else
 			 {			 	
-			 	$sub = $this->modelo->Catalogo_SubCtas($tipo,$value['SUBCTA']);
+			 	$sub = $this->modelo->Catalogo_SubCtas($tipo,$value['CodigoL']);
 			 }
 
 			 // print_r($sub);die();
@@ -551,7 +552,6 @@ class egreso_alimentosC
 		$asiento_haber  = $this->ing_des->datos_asiento_haber_trans($parametros['orden'],$fecha);
 		print_r($asiento_haber);die();
 
-
 		foreach ($asiento_haber as $key => $value) {
 			$cuenta = $this->modelo->catalogo_cuentas($value['cuenta']);		
 			// print_r($cuenta);die();	
@@ -573,7 +573,7 @@ class egreso_alimentosC
 		}
 
 
-		// print_r('expression');die();
+		print_r('expression');die();
 
 		// print_r($fecha.'-'.$nombre.'-'.$ruc);die();
 		// $parametros = array('tip'=> 'CD','fecha'=>$fecha);

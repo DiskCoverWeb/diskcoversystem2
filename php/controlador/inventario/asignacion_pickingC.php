@@ -351,6 +351,10 @@ class asignacion_pickingC
                 </tr>';
                   $total  =   $total +$value['Total'];
         }
+
+        // print_r($datos);die();
+
+
         return array('tabla'=>$datos,'total'=>$total);
     }
 /*

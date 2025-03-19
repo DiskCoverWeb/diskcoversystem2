@@ -397,7 +397,7 @@ function add_egreso()
 	console.log(stock);
 	if(parseFloat(stock) < parseFloat(cant))
 	{
-		Swal.fire("La catidad supera al Stock","","info")
+		Swal.fire("La cantidad supera al Stock","","info")
 		return false;
 	}else if(parseFloat(cant)<=0  || cant=='' || cant==0 )
 	{
