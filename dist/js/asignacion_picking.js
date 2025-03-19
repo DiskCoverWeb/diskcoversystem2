@@ -342,14 +342,7 @@ function cargar_asignacion()
 
                 
                 //$('#txt_total_ing').val(to-ing);
-<<<<<<< Updated upstream
                 $('#txt_total_ing').val(to-ing);
-=======
-                total = $('#txt_total').val();
-
-                total_glo = parseFloat(total)-ing;
-                $('#txt_total_ing').val(total_glo);
->>>>>>> Stashed changes
                 
                 // Devolver solo la parte de la tabla para DataTables
                 return json.tabla;
@@ -445,10 +438,10 @@ function Eliminar(id)
 }
 function guardar() {
     
-    if(parseInt($('#txt_total_ing').val()) < parseInt($('#txt_total').val())){
+    if(parseInt($('#txt_total_ing').val()) > 0){
         Swal.fire('La cantidad total de productos del picking no cubre el total de productos asignados.', '', 'error');
         return;
-    }else if(parseInt($('#txt_total_ing').val()) > parseInt($('#txt_total').val())){
+    }else if(parseInt($('#txt_total_ing').val()) < 0){
         Swal.fire('La cantidad total de productos del picking excede el total de productos asignados.', '', 'error');
         return;
     }
