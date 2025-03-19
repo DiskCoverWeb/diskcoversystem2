@@ -876,5 +876,5 @@ function revisarAdjuntos(tipo){
 			$('#file_doc').prop('disabled', false);
 		}
 	}
-	cerrarCamaraFoto();	
+	// cerrarCamaraFoto();	
 }
