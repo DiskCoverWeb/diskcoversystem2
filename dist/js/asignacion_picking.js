@@ -342,14 +342,7 @@ function cargar_asignacion()
 
                 
                 //$('#txt_total_ing').val(to-ing);
-<<<<<<< Updated upstream
                 $('#txt_total_ing').val(to-ing);
-=======
-                total = $('#txt_total').val();
-
-                total_glo = parseFloat(total)-ing;
-                $('#txt_total_ing').val(total_glo);
->>>>>>> Stashed changes
                 
                 // Devolver solo la parte de la tabla para DataTables
                 return json.tabla;
