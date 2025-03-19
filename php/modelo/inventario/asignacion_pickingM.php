@@ -133,9 +133,9 @@ class asignacion_pickingM
                 AND Codigo_Inv = '".$tipo."'
                 AND Cta = '".$tipoventa."'
                 AND T = 'P'
-                AND Fecha = '".$fecha."' ";
+                AND Fecha >= '".$fecha."' ";
 
-                // print_r($sql);die();
+                //print_r($sql);die();
         return $this->db->datos($sql);   
     }
 

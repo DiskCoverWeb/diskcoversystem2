@@ -283,6 +283,7 @@ function agregar_picking()
     'CodigoInv':$('#txt_id').val(),
     'Cantidad':$('#cant').val(),
     'FechaAte':$('#fechAten').val(),
+    'FechaAsign':$('#txtFechaAsign').val(),
     'codigoProducto':$('#txt_codigo').val(),
     'id':$('#txt_codigo').val(),
     }
@@ -341,7 +342,7 @@ function cargar_asignacion()
 
                 
                 //$('#txt_total_ing').val(to-ing);
-                $('#txt_total_ing').val(ing);
+                $('#txt_total_ing').val(to-ing);
                 
                 // Devolver solo la parte de la tabla para DataTables
                 return json.tabla;
