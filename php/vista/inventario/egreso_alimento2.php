@@ -19,13 +19,13 @@
 				print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
 				<img src="../../img/png/salire.png">
 			</a>
-			<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
+			<!-- <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
 				<img src="../../img/png/grabar.png">
-			</button>
+			</button> -->
 		</div>
 	</div>
 </div>
-<div class="row mb-2">
+<div class="row mb-1">
 	<div class="card"  style="background: antiquewhite;">
 		<div class="card-body">
 			<div class="row row-cols-auto">
@@ -36,60 +36,68 @@
 			</div>
 			<div class="row">
 				<input type="hidden" id="item_empresa" value="<?php echo $_SESSION['INGRESO']['item']; ?>">
-					<div class="col-lg-2 col-md-2 col-sm-2 d-flex align-items-center justify-content-center">
+					<div class="col-lg-2 col-md-12 col-sm-12 d-flex align-items-center justify-content-center">
 						<button type="button" style="width: initial;" class="btn btn-light border border-1 w-100 p-2" onclick="modal_areas()">
 							<img src="../../img/png/area_egreso.png" style="width: 55px;height: 55px;" />
 						</button>
 					</div>
-					<div class="col-lg-9 col-md-10 col-sm-10">
+					<div class="col-lg-6 col-md-12 col-sm-12">
 						 <b>Area de egreso:</b>
-						<div class="input-group input-group-sm">
+						<div class="d-flex align-items-center input-group-sm">
 							<select class="form-select form-select-sm" id="ddl_areas" name="ddl_areas" onchange="lista_egreso_checking()">
 								<option value="">Seleccione</option>
 							</select>
-							<button type="button" class="btn-info btn-xs" onclick="$('#ddl_areas').empty();lista_egreso_checking()"><i class="fa fa-trash"></i></button>
+							<button type="button" class="btn-danger btn-xs" onclick="$('#ddl_areas').empty();lista_egreso_checking()"><i class="fa fa-times"></i></button>
 						</div>
 					</div>
 			</div>			
 		</div>		
 	</div>
 </div>				
-<div class="row">		
-	<div class="col-sm-12">
-		<table class="table-sm table bg-light"  id="tbl_asignados">
-			<thead class="text-center bg-primary text-white">
-				<th><b>Item</b></th>
-				<th style="width:100px;"><b>Fecha de Egreso</b></th>
-				<th style="width:200px;"><b>Usuario</b></th>
-				<th style="width:100px ;"><b>Motivo</b></th>
-				<th style="width:100px;"><b>Detalle Egreso</b></th>
-				<th style="width:100px;"><b>Archivo adjunto</b></th>
-				<th style="width:100px ;"><b>SubModulo gastos</b></th>
-				<th style="width:100px ;"><b>Para Contabilizar</b></th>
-			</thead>
-			<tbody>
-				<tr>
-					<td></td>
-					<td></td>
-					<td>
-						
-					</td>
-					<td>
-						
-					</td>
-					<td></td>
-					<td>
-						
-					</td>
-					<td>
-						
-					</td>
-					<td>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>	
+<div class="row">
+	<div class="card">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-sm-12">
+					<table class="table-sm table bg-light w-100"  id="tbl_asignados">
+						<thead class="text-center bg-primary text-white">
+							<th style="width:30px;"><b>Item</b></th>
+							<th style="width:100px;"><b>Fecha de Egreso</b></th>
+							<th style="width:200px;"><b>Usuario</b></th>
+							<th style="width:200px ;"><b>Motivo</b></th>
+							<th style="width:100px;"><b>Detalle Egreso</b></th>
+							<th style="width:100px;"><b>Archivo adjunto</b></th>
+							<th style="width:100px ;"><b>SubModulo gastos</b></th>
+							<th style="width:100px ;"><b>Para Contabilizar</b></th>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td></td>
+								<td>
+									
+								</td>
+								<td>
+									
+								</td>
+								<td></td>
+								<td>
+									
+								</td>
+								<td>
+									
+								</td>
+								<td>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>	
+				
+			</div>
+		</div>
+		
+	</div>		
 </div>
 	
 
@@ -140,10 +148,9 @@
                 <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-            	<div class="row">
-            		
+            	<div class="row">            		
 	            	<div class="col-sm-12">
-	            		<table class="table-sm table bg-light w-100" id="txt_motivo_lista">
+	            		<table class="table bg-light w-100" id="txt_motivo_lista">
 	            			<thead class="bg-primary text-white">
 	            				<th>Item</th>
 	            				<th>Donante</th>
@@ -152,9 +159,9 @@
 	            				<th>Cant Final(kg)</th>
 	            				<th>Precio / Costo</th>
 	            				<th>Total</th>
-	            				<th>Contabilizar</th>
+	            				<th>Validado</th>
 	            			</thead>
-	            			<tbody >
+	            			<tbody id="tbl_body_motivo" >
 	            				<tr>
 	            					<td></td>
 	            					<td></td>
@@ -171,7 +178,7 @@
             	</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light border border-1" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-light border border-1" data-bs-dismiss="modal">OK</button>
             </div> 
         </div>
     </div>

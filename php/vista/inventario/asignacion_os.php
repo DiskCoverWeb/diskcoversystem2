@@ -382,8 +382,40 @@
     </div>
 </div>
 
+ <div id="modalBtnGrupo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tipo de población</h4>
+                    <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="overflow-y: auto; max-height: 300px;">
+                    <div class="table-responsive">
+                        <table class="table" id="tablaPoblacion">
+                            <thead>
+                                <tr>
+                                    <th scope="col" colspan="2">Tipo de Población</th>
+                                    <th scope="col">Hombres</th>
+                                    <th scope="col">Mujeres</th>
+                                    <th scope="col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-    <div id="modalBtnGrupo" class="modal fade" role="dialog">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="btnGuardarGrupo">Aceptar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+   <!--  <div id="modalBtnGrupo" class="modal fade" role="dialog">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
@@ -413,7 +445,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 <div id="modal_tipoCompra" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog modal-sm">

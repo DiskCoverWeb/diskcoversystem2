@@ -6,10 +6,10 @@ $(document).ready(function () {
 
     tbl_asignados_all = $('#tbl_asignados').DataTable({
           searching: false,
-          // responsive: true,
+          responsive: true,
           // paging: false,   
           info: false,   
-          // autoWidth: false,   
+          autoWidth: true,   
         language: {
           url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },
@@ -41,7 +41,7 @@ $(document).ready(function () {
             render: function(data, type, item) {
 
 
-              return `<div class="input-group input-group-sm">
+              return `<div class="d-flex align-items-center input-group-sm">
                       ${item.usuario}                      
                       <span class="input-group-btn">
                       <button type="button" class="btn btn-default btn-sm" onclick="modal_mensaje('${item.Orden_No}')">
@@ -56,7 +56,7 @@ $(document).ready(function () {
             render: function(data, type, item) {
 
 
-              return `<div class="input-group input-group-sm">
+              return `<div class="d-flex align-items-center input-group-sm">
                         ${item.Motivo}
                         <span class="input-group-btn">
                         <button type="button" class="btn btn-default btn-sm" onclick="modal_motivo('${item.Orden_No}')">
@@ -73,10 +73,12 @@ $(document).ready(function () {
           { data:  null,
             render: function(data, type, item) {
 
+             
               return `<button type="button" class="btn btn-default btn-sm" onclick="mostra_doc('${item.procedencia}')">
                         <img src="../../img/png/clip.png" style="width:20px">
                       </button>
-                      <input type="file" id="file_doc" name="" style="display: none;">`;                    
+                      <input type="file" id="file_doc" name="" style="display: none;">`;   
+                           
             }
 
           },
@@ -85,7 +87,10 @@ $(document).ready(function () {
           },
           { data: null,
              render: function(data, type, item) {
-              return `<input type="checkbox" name="">`;                    
+              if(item.listo==1)
+              {
+                return `<button class="btn btn-primary btn-sm" onclick="guardar('`+item.Orden_No+`')"">Generar Comprobante</button`;  
+              }else{ return ''; }                  
             }
           },
           
@@ -162,65 +167,86 @@ function cambiar_a_reportado()
 }
 function modal_motivo(orden)
 {
-    cargar_motivo_lista(orden);
+   cargar_motivo_lista(orden);
     $('#myModal_motivo').modal('show');
 }
 
 function cargar_motivo_lista(orden)
-  {		
-
-    if ($.fn.DataTable.isDataTable('#txt_motivo_lista')) {
-        $('#txt_motivo_lista').DataTable().destroy();
-    }
-     
-     return $('#txt_motivo_lista').DataTable({
-          searching: false,
-          // responsive: true,
-          paging: false,   
-          info: false,   
-          // autoWidth:true,   
-        language: {
-          url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-        },
-        ajax: {
-          url:   '../controlador/inventario/egreso_alimentosC.php?cargar_motivo_lista=true',
-          type: 'POST',  // Cambia el método a POST   
-          data: function(d) {
-              var parametros = {                    
-               orden:orden
-              };
-              return { parametros: parametros };
-          },   
-          dataSrc: '',             
-        },
-         scrollX: true,  // Habilitar desplazamiento horizontal
-     
-        columns: [
-          { data: null, // Columna autoincremental
-              render: function (data, type, row, meta) {
-                return meta.row + 1; // meta.row es el índice de la fila
-              }
-          },
-          { data: 'Cliente', },
-          { data: 'Producto', },
-          { data: 'Stock', },
-          { data: 'Salida', },
-          { data: 'Valor_Unitario', },
-          { data: null, 
-             render: function (data, type,item) {
-                return data.Valor_Unitario*data.Salida;  
-              }
-          },
-          { data: null,
-             render: function(data, type, item) {
-              return `<input type="radio" name="">`;                    
-            }
-          },
-          
-        ],
-      });
-
+{
+   if ($.fn.DataTable.isDataTable('#txt_motivo_lista')) {
+      $('#txt_motivo_lista').DataTable().destroy();
   }
+  $('#tbl_body_motivo').html('<tr><td colspan="7"></td></tr>');
+  var parametros = {
+      'orden':orden
+  }
+   $.ajax({
+      type: "POST",
+      url:'../controlador/inventario/egreso_alimentosC.php?cargar_motivo_lista=true',
+      data:{parametros:parametros},
+     dataType:'json',
+      success: function(data)
+      {
+        console.log(data);
+        var tr = '';
+        data.forEach(function(item,i){
+
+          total = parseFloat(item.Valor_Unitario)*parseFloat(item.Salida);
+           tr+=`<tr>
+                    <td>`+(i+1)+`</td>
+                    <td>`+item.Cliente+`</td>
+                    <td>`+item.Producto+`</td>
+                    <td>`+item.Stock+`</td>
+                    <td>`+item.Salida+`</td>
+                    <td>`+item.Valor_Unitario+`</td>
+                    <td>`+total.toFixed(2)+`</td>`
+                    if(item.Solicitud==1)
+                    {
+                        tr+=`<td><input type="checkbox" onclick="cambiar_estado('`+item.ID+`')" id="rbl_`+item.ID+`" name="rbl_`+item.ID+`" checked=""></td>`
+                    }else
+                    {                    
+                        tr+=`<td><input type="checkbox" onclick="cambiar_estado('`+item.ID+`')" id="rbl_`+item.ID+`" name="rbl_`+item.ID+`"></td>`
+                    }
+                tr+=`</tr>`;
+        })
+
+
+        $('#tbl_body_motivo').html(tr);
+       
+          $('#txt_motivo_lista').DataTable({
+              paging: false,
+              searching: true,
+              ordering: true,
+              info: false,
+              autoWidth: false,
+              responsive: true,
+              language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            },
+          });
+      }
+    });
+  }
+
+function cambiar_estado(id)
+{
+  var estado = '0';
+  if($('#rbl_'+id).prop('checked'))
+  {
+    estado = '1';
+  }
+  var parametros = {'id':id,'estado':estado}
+   $.ajax({
+      type: "POST",
+      url:'../controlador/inventario/egreso_alimentosC.php?cambiar_estado=true',
+      data:{parametros:parametros},
+     dataType:'json',
+      success: function(data)
+      {
+         lista_egreso_checking()
+      }
+    });
+}
 
 function lista_egreso_checking()
   {		
@@ -245,7 +271,7 @@ function lista_egreso_checking()
    function areas(){
     $('#ddl_areas').select2({
       placeholder: 'Seleccione una Area',
-      width:'100%',
+      // width:'100%',
       ajax: {
         url:   '../controlador/inventario/egreso_alimentosC.php?areas_checking=true',          
         dataType: 'json',
@@ -321,4 +347,38 @@ function lista_egreso_checking()
           $('#pnl_opciones').html(option);      
           }
       });
+  }
+  function guardar(orden)
+  {
+    subcta = $('#ddl_subcta_'+orden).val();
+    if(subcta=='')
+    {
+      Swal.fire("Seleccione una cuenta de sub modulo","","error");
+      return false;
+    }
+    parametros = 
+    {
+      'orden':orden,
+      'submodulo':subcta,
+    }
+
+    // $('#myModal_espera').modal('show');
+    $.ajax({
+      type: "POST",
+      url:   '../controlador/inventario/egreso_alimentosC.php?generar_comprobante=true',
+      data:{parametros:parametros},
+      dataType:'json',
+      success: function(data)
+      {
+
+        $('#myModal_espera').modal('hide');
+        if(data.resp==1)
+        {
+          Swal.fire("Numero de comprobante "+data.com,"","success").then(function(){
+             lista_egreso_checking();
+          })
+        }
+       
+      }
+    });
   }

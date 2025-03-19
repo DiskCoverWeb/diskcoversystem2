@@ -165,6 +165,7 @@ class egreso_alimentosC
 	    SetAdoFields('Salida',$parametros['cantidad']);
 	    SetAdoFields('CodBodega',$data['CodBodega']);
 	    SetAdoFields('Codigo_Barra',$data['Codigo_Barra']);
+	    SetAdoFields('Cta_Inv',$data['Cta_Inventario']);	
 	    SetAdoFields('Codigo_Inv',$data['Codigo_Inv']);	
 	    SetAdoFields('Fecha',$parametros['fecha']);	
 	    SetAdoFields('Codigo_P',$data['Codigo_P']);	
@@ -549,8 +550,7 @@ class egreso_alimentosC
 
         // asiento para el haber
 		$asiento_haber  = $this->ing_des->datos_asiento_haber_trans($parametros['orden'],$fecha);
-		// print_r($asiento_haber);die();
-
+		print_r($asiento_haber);die();
 
 		foreach ($asiento_haber as $key => $value) {
 			$cuenta = $this->modelo->catalogo_cuentas($value['cuenta']);		
@@ -573,7 +573,7 @@ class egreso_alimentosC
 		}
 
 
-		// print_r('expression');die();
+		print_r('expression');die();
 
 		// print_r($fecha.'-'.$nombre.'-'.$ruc);die();
 		// $parametros = array('tip'=> 'CD','fecha'=>$fecha);

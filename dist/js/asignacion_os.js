@@ -637,7 +637,8 @@ function llenarCamposPoblacion(Codigo) {
                     valoresFilas.push({ hombres, mujeres, total, valueData });
                 });
 
-                dibujar();
+                // dibujar();
+                console.log(valoresFilas)
 
                 $('#totalPersonas').val(total_global);
             }
