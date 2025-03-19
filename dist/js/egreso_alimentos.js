@@ -728,6 +728,12 @@ if (scanner) {
 }
 }
 
+function cerrarCamaraFoto()
+{
+	  currentStream.getTracks().forEach(track => track.stop()); // Detener la cámara actual
+	  $('#modal_camara').modal('hide');
+}
+
 function enumerateCameras() {
 	var op ='';
     navigator.mediaDevices.enumerateDevices()
@@ -844,7 +850,7 @@ function takePicture() {
   }
 
 function adjuntarFoto(){
-	cerrarCamara();
+	adjuntarFoto();
 	$('#photoupload_span').show();
 	$('#modal_foto').modal('hide');
 	foto_data = photo.getAttribute("src");

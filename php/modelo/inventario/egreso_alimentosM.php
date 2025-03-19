@@ -71,6 +71,7 @@ class egreso_alimentosM
 			{
 				$sql.=" CP.Codigo_Inv = '".$grupo."'";
 			}
+			// print_r($sql);die();
 		return $this->db->datos($sql);
 	}
 
@@ -115,13 +116,15 @@ class egreso_alimentosM
 			return $this->db->datos($sql);
 	}
 
-	function lista_egreso_checking($query=false,$id=false,$area =false)
+	function lista_egreso_checking($query=false,$id=false,$area =false,$orden=false)
 	{
 		$sql = "SELECT
 				TK.Fecha,
 				TK.Detalle,
 			    TK.Orden_No,
 				procedencia,
+				CPO.Cmds as areaid,
+				CPO1.Cmds as motivoid,
 			    MAX(C.Cliente) AS Cliente,
 			    MAX(CP.Producto) AS Producto,
 			    MAX(CP.Unidad) AS Unidad,
@@ -152,7 +155,11 @@ class egreso_alimentosM
 			{
 				$sql.=" AND TK.Codigo_Tra ='".$area."'";
 			}
-			$sql.=" GROUP by Orden_No,TK.Fecha,TK.Detalle,procedencia";
+			if($orden)
+			{
+				$sql.=" AND TK.Orden_No ='".$orden."'";
+			}
+			$sql.=" GROUP by Orden_No,TK.Fecha,TK.Detalle,procedencia,CPO.Cmds,CPO1.Cmds ";
 			// print_r($sql);die();
 		return $this->db->datos($sql);
 	}
@@ -248,7 +255,8 @@ class egreso_alimentosM
 			AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
 			AND TK.CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
 			AND TK.Item = CP.Item
-			AND TK.Periodo = CP.Periodo ";
+			AND TK.Periodo = CP.Periodo 
+			AND TK.T = 'G'";
 			if($query)
 			{
 				$sql.=" AND TK.Codigo_Barra='".$query."'";
@@ -261,22 +269,109 @@ class egreso_alimentosM
 			{
 				$sql.=" AND TK.Orden_No='".$orden."'";
 			}
+
+			// print_r($sql);die();
 		return $this->db->datos($sql);
 	}
 
 
-	function catalog_cuentas($query=false)
+	function Catalogo_SubCtas($tipo,$cta=false)
 	{
-		$sql = "SELECT Periodo, Clave, TC, ME, DG, Item, TB, Codigo, Cuenta, Presupuesto, Saldo_Anterior, Debitos, Creditos, Saldo_Mes, Saldo_Total, Saldo_Total_ME, Total_N6, Total_N5, Total_N4, Total_N3, Total_N2, Total_N1, Listar,Tipo_Pago, CC, X, ID, TP
-		FROM Catalogo_Cuentas
-		WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'  
-		AND Item = '".$_SESSION['INGRESO']['item']."' ";
-		if($query)
+		$sql="SELECT TC,Codigo, Codigo as 'Cta', Detalle 
+		FROM  Catalogo_SubCtas 
+		WHERE Item = '".$_SESSION['INGRESO']['item']."'
+		AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+		and TC = '".$tipo."'";
+		if($cta)
 		{
-			$sql.=" AND Cuenta like '%".$query."%' ";
+			$sql.=" AND Codigo = '".$cta."'";
 		}
-		$sql.=" AND TC IN ('G', 'CC')";
+
+		// print_r($sql);die();
+			
 		return $this->db->datos($sql);
+	}
+
+	function Catalogo_CxCxP($cuenta,$codigo=false)
+	{
+		$sql="SELECT CC.TC, CC.Codigo, CC.Cta, C.Cliente  as Detalle
+				FROM Catalogo_CxCxP AS CC 
+				INNER JOIN Clientes AS C ON CC.Codigo = C.Codigo
+				WHERE  CC.Cta = '".$cuenta."'
+				AND CC.Item = '".$_SESSION['INGRESO']['item']."'
+				AND CC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+				if($codigo)
+				{
+					$sql.=" AND CC.Codigo = '".$codigo."'";
+				}
+				$sql.="order by c.Cliente;";
+
+
+		// print_r($sql);die();
+			
+		return $this->db->datos($sql);
+	}
+
+	function catalogo_cuentas($cuenta)
+	{
+		$sql = "SELECT ".Full_Fields("Catalogo_Cuentas")." 
+				FROM Catalogo_Cuentas 
+				WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+				AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+				AND Codigo = '".$cuenta."'";
+          // print_r($sql);
+     	return $this->db->datos($sql);
+	}
+
+	function catalogo_procesos($query=false,$cmds = false)
+	{
+		$sql = "SELECT ".Full_Fields('Catalogo_Proceso')."
+				FROM      Catalogo_Proceso
+				WHERE  Item = '".$_SESSION['INGRESO']['item']."' ";
+			if($query)
+			{
+				$sql.=" AND Proceso like '%".$query."%' ";
+			}
+			if($cmds)
+			{
+				$sql.=" AND Cmds ='".$cmds."' ";
+			}
+				$sql.=" ORDER BY Nivel, Proceso";
+		return $this->db->datos($sql);
+	}
+
+	function datos_asiento_SC_trans($orden)
+	{
+	     // $cid = $this->conn;
+	    // 'LISTA DE CODIGO DE ANEXOS
+	     $sql = "SELECT SUM(VALOR_TOTAL) as 'total',Contra_Cta as 'CONTRA_CTA',Cta_Inv AS 'SUBCTA',CodigoL,Fecha AS 'Fecha_Fab',TC 
+	     FROM Trans_Kardex  
+	     WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+	     AND Orden_No = '".$orden."'
+	     GROUP BY Contra_Cta,Fecha,TC,Cta_Inv,CodigoL";
+	          // print_r($sql);die();
+	      return $this->db->datos($sql);
+ 
+	}
+	function eliminar_asiento($t_no)
+	{
+		$sql = "DELETE Asiento 
+		WHERE Item='".$_SESSION['INGRESO']['item']."' 
+		AND CodigoU='".$_SESSION['INGRESO']['Id']."' 
+		AND T_No ='".$t_no."'";
+		
+		return $this->db->String_Sql($sql);
+	}
+	function eliminar_asieto_sc($codigo,$t_no)
+	{
+		$sql = "DELETE Asiento_SC 
+		WHERE Item='".$_SESSION['INGRESO']['item']."' 
+		AND CodigoU='".$_SESSION['INGRESO']['CodigoU']."' 
+		AND T_No ='".$t_no."' 
+		AND Codigo = '".$codigo."'";
+		
+	return $this->db->String_Sql($sql);
+
 	}
 
 }
