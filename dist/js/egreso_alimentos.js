@@ -850,7 +850,6 @@ function takePicture() {
   }
 
 function adjuntarFoto(){
-	adjuntarFoto();
 	$('#photoupload_span').show();
 	$('#modal_foto').modal('hide');
 	foto_data = photo.getAttribute("src");
@@ -877,5 +876,5 @@ function revisarAdjuntos(tipo){
 			$('#file_doc').prop('disabled', false);
 		}
 	}
-	
+	cerrarCamaraFoto();	
 }
