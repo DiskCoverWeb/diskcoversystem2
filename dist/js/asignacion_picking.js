@@ -17,6 +17,7 @@ $(document).ready(function () {
 
         $('#beneficiario').on('select2:select', function (e) {
         var datos = e.params.data.data;//Datos beneficiario seleccionado
+        console.log(datos);
         // $('#fechAten').val(datos.Fecha_Atencion);//Fecha de Atencion
         $('#tipoEstado').val(datos.Estado);//Tipo de Estado
         $('#tipoEntrega').val(datos.TipoEntega);//Tipo de Entrega
@@ -33,6 +34,7 @@ $(document).ready(function () {
         $('#CantGlobDist').val(datos.Descuento);//Cantidad global a distribuir
         $('#infoNutr').val(datos.InfoNutri);
         $('#comeGeneAsign').val(datos.Ruta);
+        $('#txt_responsable').val(datos.Nombre_Completo)
         cargarOrden();
         cargar_asignacion();
 
