@@ -41,7 +41,7 @@ class reportes_varios
 		$pdf->MultiCell(55, 3,$datos[0]['Cliente'],0,'C');
 		$pdf->Text(20, 10,$datos[0]['Codigo_qr']);
 		$pdf->write2DBarcode($datos[0]['Codigo_qr'], 'QRCODE,L', 3, 5, 14, 14, $style, 'N');
-		$pdf->Output('Facturas__' . generaCeros(2, 9).'.pdf', 'I');
+		$pdf->Output($datos[0]['Codigo_qr'].'.pdf', 'I');
 	
 
 	}
@@ -82,7 +82,7 @@ class reportes_varios
 			$pdf->write2DBarcode($value['Codigo_Barra'], 'QRCODE,L', 3, 5, 14, 14, $style, 'N');
 		}
 
-		$pdf->Output('Facturas__' . generaCeros(2, 9).'.pdf', 'I');
+		$pdf->Output($value['Codigo_Barra'].'.pdf', 'I');
 	
 
 	}
