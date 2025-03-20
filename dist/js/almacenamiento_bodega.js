@@ -728,10 +728,10 @@ async function buscar_ruta_linea(item)
                 (decodedText) => {
                 	console.log(campo_qr)
                     if(campo_qr == 'ingreso'){
-						pedidosPorQR(decodedText);
-					}else if(campo_qr == 'lugar'){						
-						lugarPorQr(decodedText,item);
-					}
+											pedidosPorQR(decodedText);
+										}else if(campo_qr == 'lugar'){						
+											lugarPorQr(decodedText,item);
+										}
                     scanner.stop(); // Detiene la cámara después de leer un código
                     $('#modal_qr_escaner').modal('hide');
                 },

@@ -87,22 +87,24 @@
 	<div class="row">
 		<div class="card">
 			<div class="card-body">
-				<div class="row">
-					<div class="col-sm-12">
-						<table class="table table-striped table-bordered dataTable">
-						<thead class="bg-primary text-white">
-							<th></th>
-							<th>Producto</th>
-							<th>Cantidad</th>
-							<th width="40%" class="text-end">
-								<button class="btn btn-secondary btn-sm" type="button" onclick="validar_asignacion_bodega()"><i class="fa fa-map-pin"></i>  Asignar</button>			
-							</th>
-						</thead>							
-							<tbody id="lista_pedido">
-								
-							</tbody>
-						</table>						
-					</div>					
+				<div class="row overflow-x-scroll">
+					<!-- <div class="col-sm-12"> -->
+						<!-- <div class="table-responsive"> -->
+							<table class="table table-striped table-bordered dataTable">
+							<thead class="bg-primary text-white">
+								<th></th>
+								<th>Producto</th>
+								<th>Cantidad</th>
+								<th class="text-end">
+									<button style="width:200px" class="btn btn-secondary btn-sm" type="button" onclick="validar_asignacion_bodega()"><i class="fa fa-map-pin"></i>  Asignar</button>			
+								</th>
+							</thead>							
+								<tbody id="lista_pedido">
+									
+								</tbody>
+							</table>								
+						<!-- </div>		 -->
+					<!-- </div>					 -->
 				</div>
 			<!-- 	<div class="row">
 					<div class="col-lg-5 col-md-5 col-sm-12 border-top border-3 border-primary">
