@@ -104,6 +104,7 @@ var valTC = 'FA';
 				data: { parametros: parametros },
 				dataType: 'json',
 				success: function (data) {
+					$('#clave_supervisor').modal('hide');
 					if(data == 1){
 						Swal.fire('Anulado correctamente', '', 'success').then((result)=>{
 							location.reload();
