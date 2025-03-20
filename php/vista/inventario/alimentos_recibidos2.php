@@ -231,7 +231,7 @@
             </div>
             <div class="col-lg-2 col-sm-3">
               <b>Cantidad</b>
-              <input type="" name="txt_cantidad" id="txt_cantidad" class="form-control form-control-sm" value="0">  
+              <input type="number" name="txt_cantidad" id="txt_cantidad" class="form-control form-control-sm" value="0">  
               <input type="hidden" name="txt_costo" id="txt_costo" readonly class="form-control form-control-sm"> 
               <input type="hidden" name="txt_cta_inv" id="txt_cta_inv" readonly class="form-control form-control-sm"> 
               <input type="hidden" name="txt_contra_cta" id="txt_contra_cta" readonly class="form-control form-control-sm">                   
@@ -383,7 +383,7 @@
 		           <div class="col-sm-4">
                 <b>Cantidad</b>
                 <div class="input-group">
-                    <input type="text" style="width: 100px;" name="txt_cantidad_pedido" id="txt_cantidad_pedido" class="form-control form-control-sm" />
+                    <input type="number" style="width: 100px;" name="txt_cantidad_pedido" id="txt_cantidad_pedido" class="form-control form-control-sm" />
                     <input type="hidden" name="txt_id_linea_pedido" id="txt_id_linea_pedido">
                     <span class="input-group-text" id="lbl_unidad">-</span>
                 </div>

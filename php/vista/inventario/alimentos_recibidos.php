@@ -122,7 +122,7 @@
 						</div>
 						<div class="col-lg-10 col-md-8 col-sm-10">
 							<b>CANTIDAD:</b>
-							<input type="" class="form-control form-control-sm" id="txt_cant" name="txt_cant">	
+							<input type="number" class="form-control form-control-sm" id="txt_cant" name="txt_cant">	
 						</div>
 					</div>
 						<div class="row">
@@ -430,7 +430,7 @@
 	
 					<div class="col-sm-6">
 					<b>Cantidad</b>	
-					<input type="text" id="txt_cant_edi" name="txt_cant_edi" class="form-control form-control-sm" onblur="validar_cantidad()">
+					<input type="number" id="txt_cant_edi" name="txt_cant_edi" class="form-control form-control-sm" onblur="validar_cantidad()">
 					<input type="hidden" id="txt_cant_veri" name="txt_cant_veri" class="form-control form-control-sm">
 						
 					</div>
