@@ -435,10 +435,28 @@
           </div>
           <div class="modal-body">
           <b>Cantidad</b>
-          <input type="" name="txt_cantidad2" id="txt_cantidad2" class="form-control" placeholder="0" onblur="cambiar_cantidad()">        					
+            <!-- <div class="input-group">
+                <input type="" name="txt_cantidad2" id="txt_cantidad2" class="form-control" placeholder="0" onblur="cambiar_cantidad()">
+                <button type="button" class="btn-info btn-sm" onclick="mas_input()"><i class="fa fa-plus"></i></button>
+            </div>  --> 
+            <div class="row">
+              <div class="col-sm-12">
+
+                  <form id="div_cantidad">
+                  <div class="input-group input-group-sm">
+                        <input type="text" class=" form-control input-numero" name="txt_cantidad_add" id="txt_cantidad_add" onblur="cambiar_cantidad()" onKeyPress="return soloNumerosDecimales(event)" placeholder="0" class="form-control">
+
+                        <span class="input-group-btn">
+                        <button type="button" class="btn-info btn-sm" onclick="mas_input()"><i class="fa fa-plus"></i></button>
+                      </span>                 
+                  </div>     
+                    </form>  
+                  <input type="text" name="txt_cantidad2" id="txt_cantidad2" class="form-control" readonly>
+              </div>
+            </div>        					
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
-              <button type="button" class="btn btn-primary" onclick="cambiar_cantidad()">OK</button>
+              <button type="button" class="btn btn-primary" onclick="cerrar_modal_cant()">OK</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
           </div>
       </div>

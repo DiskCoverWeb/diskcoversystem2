@@ -40,7 +40,6 @@
           }
       });
 
-
   	
   	$('#ddl_producto').on('select2:select', function (e) {
       var data = e.params.data.data;
@@ -662,13 +661,13 @@ function autocoplet_ingreso()
     // $('#txt_cantidad2').trigger( "focus");
   }
 
-  function cambiar_cantidad()
-  {
-  	var can = $('#txt_cantidad2').val();
-  	$('#txt_cantidad').val(can);
-  	$('#modal_cantidad').modal('hide');
-    $('#txt_cantidad').focus();
-  }
+  // function cambiar_cantidad()
+  // {
+  // 	var can = $('#txt_cantidad2').val();
+  // 	$('#txt_cantidad').val(can);
+  // 	$('#modal_cantidad').modal('hide');
+  //   $('#txt_cantidad').focus();
+  // }
    function cambiar_sucursal()
   {
   	var can = $('#ddl_sucursales2').val();
@@ -1477,10 +1476,33 @@ function eliminar_all_pedido(pedido)
 
           limpiar();
     }
-
-
-
-
-
-
   }
+
+function mas_input()
+{
+    $('#div_cantidad').append('<input type="text" name="txt_cantidad_add" id="txt_cantidad_add" class="form-control input-numero" placeholder="0" onblur="cambiar_cantidad()" onKeyPress="return soloNumerosDecimales(event)">');
+
+}
+
+function cambiar_cantidad()
+{
+    total = 0;
+    
+    $('.input-numero').each(function() {
+          var valor = parseFloat($(this).val());
+          if (!isNaN(valor)) {
+              total += valor;
+              console.log(valor);
+          }
+  });
+//  var can = $('#txt_cantidad2').val();
+    $('#txt_cantidad2').val(total);
+}
+
+function cerrar_modal_cant()
+{
+    var total = $('#txt_cantidad2').val();
+    $('#txt_cantidad').val(total);
+    $('#modal_cantidad').modal('hide');
+    $('#txt_cantidad').focus();
+}
