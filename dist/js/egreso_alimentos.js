@@ -545,6 +545,9 @@ function limpiar()
 			}else if(data==-2)
 			{
 				Swal.fire('formato de evidencia incorrecto','asegurese de que sea una imagen','error');
+			}else if(data==-3)
+			{
+				Swal.fire('No se ha agregado ninguna linea','','error');
 			}
 		}
 	});

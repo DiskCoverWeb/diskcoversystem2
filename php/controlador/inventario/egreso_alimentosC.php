@@ -219,6 +219,12 @@ class egreso_alimentosC
 		{
 			return -2;
 		}
+
+		$datos  = $this->modelo->buscar_producto_egreso();
+		if(count($datos)==0)
+		{
+			return -3;
+		}
 		
 		// para el cheing de egreso se colocara la G
 		$dia = date('Ymd');
@@ -462,6 +468,10 @@ class egreso_alimentosC
 		$ruc = $CodigoL;
 		$tipo = '';
 		$orden = $this->modelo->lista_egreso_checking(false,false,false,$parametros['orden']);
+
+		$detalle = "Egreso ".$orden[0]['area'].' - '.$orden[0]['Motivo'].' - '.$orden[0]['Detalle'];
+		$detalle_sc = $orden[0]['Detalle'];
+
 		$fecha = $orden[0]['Fecha']->format('Y-m-d');
 		if(count($orden)==0){ return -1; }
 		$motivo = $this->modelo->catalogo_procesos(false,$orden[0]['motivoid']);
@@ -493,9 +503,10 @@ class egreso_alimentosC
 
 		foreach ($asientos_SC as $key => $value) {
 			 $cuenta = $this->modelo->catalogo_cuentas($value['CONTRA_CTA']);
+			 // print_r($tipo);die();
 			 if($tipo=='C' || $tipo=='P')
 			 {
-			 	$sub = $this->modelo->Catalogo_CxCxP($value['SUBCTA'],$value['CodigoL']);
+			 	$sub = $this->modelo->Catalogo_CxCxP($value['CONTRA_CTA'],$value['CodigoL']);
 			 }else
 			 {			 	
 			 	$sub = $this->modelo->Catalogo_SubCtas($tipo,$value['CodigoL']);
@@ -515,7 +526,7 @@ class egreso_alimentosC
                     'mes'=> 0,
                     'valorn'=> round($value['total'],2),//valor de sub cuenta 
                     'moneda'=> 1, /// moneda 1
-                    'Trans'=>$sub[0]['Detalle'],//detalle que se trae del asiento
+                    'Trans'=>$detalle_sc,//detalle que se trae del asiento
                     'T_N'=> '99',
                     't'=> $sub[0]['TC'],                        
                   );
@@ -533,7 +544,7 @@ class egreso_alimentosC
 			$cuenta = $this->modelo->catalogo_cuentas($value['cuenta']);		
 				$parametros_debe = array(
 				 "va" =>round($value['total'],2),//valor que se trae del otal sumado
-                  "dconcepto1" =>$cuenta[0]['Cuenta'],
+                  "dconcepto1" =>$detalle_sc,
                   "codigo" => $value['cuenta'], // cuenta de codigo de 
                   "cuenta" => $cuenta[0]['Cuenta'], // detalle de cuenta;
                   "efectivo_as" =>$value['fecha']->format('Y-m-d'), // observacion si TC de catalogo de cuenta
@@ -550,14 +561,14 @@ class egreso_alimentosC
 
         // asiento para el haber
 		$asiento_haber  = $this->ing_des->datos_asiento_haber_trans($parametros['orden'],$fecha);
-		print_r($asiento_haber);die();
+		// print_r($asiento_haber);die();
 
 		foreach ($asiento_haber as $key => $value) {
 			$cuenta = $this->modelo->catalogo_cuentas($value['cuenta']);		
 			// print_r($cuenta);die();	
 				$parametros_haber = array(
                   "va" =>round($value['total'],2),//valor que se trae del otal sumado
-                  "dconcepto1" =>$cuenta[0]['Cuenta'],
+                  "dconcepto1" =>$detalle_sc,
                   "codigo" => $value['cuenta'], // cuenta de codigo de 
                   "cuenta" => $cuenta[0]['Cuenta'], // detalle de cuenta;
                   "efectivo_as" =>$value['fecha']->format('Y-m-d'), // observacion si TC de catalogo de cuenta
@@ -573,7 +584,7 @@ class egreso_alimentosC
 		}
 
 
-		print_r('expression');die();
+		// print_r('expression');die();
 
 		// print_r($fecha.'-'.$nombre.'-'.$ruc);die();
 		// $parametros = array('tip'=> 'CD','fecha'=>$fecha);
@@ -593,10 +604,10 @@ class egreso_alimentosC
 			if($debe !=0 && $haber!=0)
 			{
 				 $parametro_comprobante = array(
-        	        'ru'=> $ruc, //codigo del cliente que sale co el ruc del beneficiario codigo
+        	        'ru'=> '000000000', //codigo del cliente que sale co el ruc del beneficiario codigo
         	        'tip'=>'CD',//tipo de cuenta contable cd, etc
         	        "fecha1"=> $fecha,// fecha actual 2020-09-21
-        	        'concepto'=>'Salida de inventario BAQ con CI: '.$ruc.' el dia '.$fecha, //detalle de la transaccion realida
+        	        'concepto'=>$detalle, //detalle de la transaccion realida
         	        'totalh'=> round($haber,2), //total del haber
         	        'num_com'=> '.'.date('Y', strtotime($fecha)).'-'.$num_comprobante, // codigo de comprobante de esta forma 2019-9000002
         	        );

@@ -753,45 +753,26 @@ class ingreso_descargosM
 				$fecha_actual = date("Y-m-d"); 
 				
 				foreach ($datos as $key => $value) {
-					$Result[$i]['CODIGO']=$value['CODIGO'];
-					$Result[$i]['CHEQ_DEP']=$value['CHEQ_DEP'];
-					$Result[$i]['DEBE']=$value['DEBE'];
-					$Result[$i]['HABER']=$value['HABER'];
-					$Result[$i]['PARCIAL_ME']=$value['PARCIAL_ME'];
-					$Result[$i]['EFECTIVIZAR']=$value['EFECTIVIZAR']->format('Y-m-d');
-					$Result[$i]['CODIGO_C']=$value['CODIGO_C'];
-					
-					$sql=" INSERT INTO Transacciones
-				    (Periodo ,T,C ,Cta,Fecha,TP ,Numero,Cheq_Dep,Debe ,Haber,Saldo ,Parcial_ME ,Saldo_ME ,Fecha_Efec ,Item ,X ,Detalle
-				    ,Codigo_C,Procesado,Pagar,C_Costo)
-					 VALUES
-				    ('".$_SESSION['INGRESO']['periodo']."'
-				    ,'N'
-				    ,0
-				    ,'".$Result[$i]['CODIGO']."'
-				    ,'".$parametros['fecha1']."'
-				    ,'".$parametros['tip']."'
-				    ,".$num_com[1]."
-				    ,'".$Result[$i]['CHEQ_DEP']."'
-				    ,".$Result[$i]['DEBE']."
-				    ,".$Result[$i]['HABER']."
-				    ,0
-				    ,".$Result[$i]['PARCIAL_ME']."
-				    ,0
-				    ,'".$Result[$i]['EFECTIVIZAR']."'
-				    ,'".$_SESSION['INGRESO']['item']."'
-				    ,'.'
-				    ,'.'
-				    ,'".$Result[$i]['CODIGO_C']."'
-				    ,0
-				    ,0
-				    ,'.');";
-				   // echo $sql.'<br>';
 
-           // print_r($sql);
-					
-					$this->conn1->String_Sql($sql);
-					$i++;
+					SetAdoAddNew("Transacciones"); 	
+				   	SetAdoFields('T','N'); 	
+				   	SetAdoFields('Fecha_Efec',$value['EFECTIVIZAR']->format('Y-m-d')); 
+				   	SetAdoFields('Fecha',$parametros['fecha1']); 
+				   	SetAdoFields('Cta',$value['CODIGO']);					   	
+				   	SetAdoFields('Debe',$value['DEBE']); 		
+				   	SetAdoFields('Haber',$value['HABER']); 							   	
+				   	SetAdoFields('Cheq_Dep',$value['CHEQ_DEP']);
+				   	SetAdoFields('Parcial_ME',$value['PARCIAL_ME']); 
+				   	SetAdoFields('Codigo_C',$value['CODIGO_C']); 
+				   	SetAdoFields('TP',$parametros['tip']); 		
+				   	SetAdoFields('Numero',$num_com[1]);
+				   	SetAdoFields('Detalle',$value['DETALLE']); 
+
+				   	SetAdoFields('CodigoU',$_SESSION['INGRESO']['CodigoU']); 		
+				   	SetAdoFields('Periodo',$_SESSION['INGRESO']['periodo']); 		
+				   	SetAdoFields('Item',$_SESSION['INGRESO']['item']); 	
+
+				   	SetAdoUpdate();
 				}
 					
 				
@@ -813,54 +794,38 @@ class ingreso_descargosM
 					$fecha_actual = date("Y-m-d"); 
 					foreach ($datos as $key => $value) {
 
-					    $Result[$i]['TC']=$value['TC'];
-						$Result[$i]['Cta']=$value['Cta'];
-						$Result[$i]['FECHA_V']=$value['FECHA_V']->format('Y-m-d');
-						$Result[$i]['Codigo']=$value['Codigo'];
-						$Result[$i]['Factura']=$value['Factura'];
-						$Result[$i]['Prima']=$value['Prima'];
-						$Result[$i]['DH']=$value['DH'];
-						if($Result[$i]['DH']==1)
-						{
-							$Result[$i]['DEBITO']=$value['Valor'];
-							$Result[$i]['HABER']=0;
-						}
-						if($Result[$i]['DH']==2)
-						{
-							$Result[$i]['DEBITO']=0;
-							$Result[$i]['HABER']=$value['Valor'];
-						}
-						$sql="INSERT INTO Trans_SubCtas
-							   (Periodo ,T,TC,Cta,Fecha,Fecha_V,Codigo ,TP,Numero ,Factura ,Prima ,Debitos ,Creditos ,Saldo_MN,Parcial_ME
-							   ,Saldo_ME,Item,Saldo ,CodigoU,X,Comp_No,Autorizacion,Serie,Detalle_SubCta,Procesado)
-						 VALUES
-							   ('".$_SESSION['INGRESO']['periodo']."'
-							   ,'N'
-							   ,'".$Result[$i]['TC']."'
-							   ,'".$Result[$i]['Cta']."'
-							   ,'".$parametros['fecha1']."'
-							   ,'".$Result[$i]['FECHA_V']."'
-							   ,'".$Result[$i]['Codigo']."'
-							   ,'".$parametros['tip']."'
-							   ,".$num_com[1]."
-							   ,".$Result[$i]['Factura']."
-							   ,".$Result[$i]['Prima']."
-							   ,".$Result[$i]['DEBITO']."
-							   ,".$Result[$i]['HABER']."
-							   ,0
-							   ,0
-							   ,0
-							   ,'".$_SESSION['INGRESO']['item']."'
-							   ,0
-							   ,'".$_SESSION['INGRESO']['CodigoU']."'
-							   ,'.'
-							   ,0
-							   ,'.'
-							   ,'.'
-							   ,'.'
-							   ,0)";
-						//echo $sql.'<br>';
-							   $this->conn1->String_Sql($sql);
+
+						SetAdoAddNew("Trans_SubCtas"); 		
+					   	SetAdoFields('T','N'); 		
+					   	SetAdoFields('TC',$value['TC']); 		
+					   	SetAdoFields('Cta',$value['Cta']); 		
+					   	SetAdoFields('Fecha',$parametros['fecha1']);		
+					   	SetAdoFields('Fecha_V',$value['FECHA_V']->format('Y-m-d')); 		
+					   	SetAdoFields('Codigo',$value['Codigo']);		
+					   	SetAdoFields('TP',$parametros['tip']); 		
+					   	SetAdoFields('Numero',$num_com[1]);
+					   	SetAdoFields('Factura',$value['Factura']); 		
+					   	SetAdoFields('Prima',$value['Prima']); 	
+					   	SetAdoFields('DH',$value['DH']); 	
+					   	SetAdoFields('Detalle_SubCta',$value['Detalle_SubCta']); 
+					   	if($value['DH']==1)
+					   	{
+					   		SetAdoFields('Debitos',$value['Valor']); 		
+					   		SetAdoFields('Creditos','0'); 		
+
+					   	}
+					   	if($value['DH']==2)
+					   	{
+					   		SetAdoFields('Debitos','0'); 		
+					   		SetAdoFields('Creditos',$value['Valor']); 		
+
+					   	}					   
+					   	SetAdoFields('CodigoU',$_SESSION['INGRESO']['CodigoU']); 		
+					   	SetAdoFields('Periodo',$_SESSION['INGRESO']['periodo']); 		
+					   	SetAdoFields('Item',$_SESSION['INGRESO']['item']); 	
+
+					   	SetAdoUpdate();
+
 					}
 
 				// die();

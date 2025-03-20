@@ -350,6 +350,7 @@ function lista_egreso_checking()
   }
   function guardar(orden)
   {
+
     subcta = $('#ddl_subcta_'+orden).val();
     if(subcta=='')
     {
@@ -362,7 +363,7 @@ function lista_egreso_checking()
       'submodulo':subcta,
     }
 
-    // $('#myModal_espera').modal('show');
+    $('#myModal_espera').modal('show');
     $.ajax({
       type: "POST",
       url:   '../controlador/inventario/egreso_alimentosC.php?generar_comprobante=true',
@@ -376,9 +377,15 @@ function lista_egreso_checking()
         {
           Swal.fire("Numero de comprobante "+data.com,"","success").then(function(){
              lista_egreso_checking();
+              window.open('../controlador/contabilidad/comproC.php?reporte&comprobante='+data.com+'&TP=CD','_blank')
           })
         }
        
-      }
+      },
+          error: function (error) {
+            $('#myModal_espera').modal('hide');
+            // Puedes manejar el error aquí si es necesario
+          }
+
     });
   }
