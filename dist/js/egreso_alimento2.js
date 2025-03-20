@@ -194,7 +194,6 @@ function cargar_motivo_lista(orden)
 
           total = parseFloat(item.Valor_Unitario)*parseFloat(item.Salida);
            tr+=`<tr>
-                    <td><button class="btn btn-sm btn-primary" title="Ver mas detalles"><i class="bx bx-show"></i></button></td>
                     <td>`+(i+1)+`</td>
                     <td>`+item.Cliente+`</td>
                     <td>`+item.Producto+`</td>
@@ -216,19 +215,12 @@ function cargar_motivo_lista(orden)
         $('#tbl_body_motivo').html(tr);
        
           $('#txt_motivo_lista').DataTable({
-            aging: false,
-            searching: true,
-            ordering: true,
-            info: false,
-            responsive: {
-              details: {
-                  type: 'column', // Activa el botón en la primera columna
-                  target: 'td.dtr-control'
-              }
-          },
-          columnDefs: [
-              { className: 'dtr-control', orderable: false, targets: 0 }
-          ],
+              scrollX: true,
+              searching: false,
+              responsive: false,
+          // paging: false,   
+              info: false,   
+              autoWidth: false,  
           order: [[1, 'asc']], // Ordenar por la segunda columna
               /*autoWidth: false,
               responsive: true,*/
