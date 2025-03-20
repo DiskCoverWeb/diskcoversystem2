@@ -74,27 +74,6 @@ var valTC = 'FA';
 		}).then((result) => {
 			if (result.value) {
 				IngClave('Supervisor');
-				let parametros = {
-					'beneficiario': $('#DCCliente').val(),
-					'fecha': $('#MBFecha').val()
-				};
-				$.ajax({
-					type: "POST",
-					url: '../controlador/facturacion/facturas_distribucionC.php?AnularPicking=true',
-					data: { parametros: parametros },
-					dataType: 'json',
-					success: function (data) {
-						if(data == 1){
-							Swal.fire('Anulado correctamente', '', 'success').then((result)=>{
-								location.reload();
-							});
-						}else{
-							Swal.fire('Ocurrio un problema al anular', '', 'error');
-						}
-						//$('#Cod_CxC').val(data[0].nombre);  //FA
-						//Lineas_De_CxC();
-					}
-				});
 			}
 		});
 		
@@ -111,6 +90,32 @@ var valTC = 'FA';
 		// 		//Lineas_De_CxC();
 		// 	}
 		// });
+	}
+
+	function resp_clave_ingreso(response) {
+		if (response.respuesta == 1) {
+			let parametros = {
+				'beneficiario': $('#DCCliente').val(),
+				'fecha': $('#MBFecha').val()
+			};
+			$.ajax({
+				type: "POST",
+				url: '../controlador/facturacion/facturas_distribucionC.php?AnularPicking=true',
+				data: { parametros: parametros },
+				dataType: 'json',
+				success: function (data) {
+					if(data == 1){
+						Swal.fire('Anulado correctamente', '', 'success').then((result)=>{
+							location.reload();
+						});
+					}else{
+						Swal.fire('Ocurrio un problema al anular', '', 'error');
+					}
+					//$('#Cod_CxC').val(data[0].nombre);  //FA
+					//Lineas_De_CxC();
+				}
+			});
+        }
 	}
 
 	function DCLineas() {
