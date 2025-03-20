@@ -193,6 +193,7 @@ function cargar_motivo_lista(orden)
 
           total = parseFloat(item.Valor_Unitario)*parseFloat(item.Salida);
            tr+=`<tr>
+                    <td><button class="btn btn-sm btn-primary" title="Ver mas detalles"><i class="bx bx-show"></i></button></td>
                     <td>`+(i+1)+`</td>
                     <td>`+item.Cliente+`</td>
                     <td>`+item.Producto+`</td>
@@ -205,7 +206,7 @@ function cargar_motivo_lista(orden)
                         tr+=`<td><input type="checkbox" onclick="cambiar_estado('`+item.ID+`')" id="rbl_`+item.ID+`" name="rbl_`+item.ID+`" checked=""></td>`
                     }else
                     {                    
-                        tr+=`<td><input type="checkbox" onclick="cambiar_estado('`+item.ID+`')" id="rbl_`+item.ID+`" name="rbl_`+item.ID+`"></td>`
+                        tr+=`<td><input class="form-check-input" type="checkbox" onclick="cambiar_estado('`+item.ID+`')" id="rbl_`+item.ID+`" name="rbl_`+item.ID+`"></td>`
                     }
                 tr+=`</tr>`;
         })
@@ -214,19 +215,63 @@ function cargar_motivo_lista(orden)
         $('#tbl_body_motivo').html(tr);
        
           $('#txt_motivo_lista').DataTable({
-              paging: false,
-              searching: true,
-              ordering: true,
-              info: false,
-              autoWidth: false,
-              responsive: true,
+            aging: false,
+            searching: true,
+            ordering: true,
+            info: false,
+            responsive: {
+              details: {
+                  type: 'column', // Activa el botón en la primera columna
+                  target: 'td.dtr-control'
+              }
+          },
+          columnDefs: [
+              { className: 'dtr-control', orderable: false, targets: 0 }
+          ],
+          order: [[1, 'asc']], // Ordenar por la segunda columna
+              /*autoWidth: false,
+              responsive: true,*/
               language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             },
           });
+          // Ejecutar en carga y cuando cambia el tamaño de pantalla
+          /*dividirTabla();
+          $(window).resize(dividirTabla);*/
       }
     });
   }
+
+  function dividirTabla() {
+    let anchoPantalla = $(window).width();
+    let columnasFijas = 2; // Número de columnas que permanecen en la tabla principal
+    let tablaBase = $('#tablaDatos');
+
+    // Elimina cualquier tabla secundaria existente
+    $('.tablaSecundaria').remove();
+
+    if (anchoPantalla < 768) {
+        tablaBase.find('tbody tr').each(function() {
+            let fila = $(this);
+            let columnasExtras = fila.find('td:gt(' + (columnasFijas - 1) + ')'); // Obtiene columnas después de la fija
+            if (columnasExtras.length > 0) {
+                let nuevaTabla = $('<table class="tablaSecundaria"><thead><tr></tr></thead><tbody><tr></tr></tbody></table>');
+                
+                columnasExtras.each(function(index) {
+                    let thText = $('#tablaDatos thead th').eq(index + columnasFijas).text();
+                    let tdText = $(this).html();
+
+                    nuevaTabla.find('thead tr').append('<th>' + thText + '</th>');
+                    nuevaTabla.find('tbody tr').append('<td>' + tdText + '</td>');
+                });
+
+                fila.after(nuevaTabla);
+            }
+        });
+    }
+}
+
+
 
 function cambiar_estado(id)
 {
