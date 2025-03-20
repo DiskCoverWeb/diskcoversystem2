@@ -152,7 +152,6 @@
 	            	<div class="col-sm-12">
 	            		<table class="table bg-light w-100" id="txt_motivo_lista">
 	            			<thead class="bg-primary text-white">
-								<th></th>
 	            				<th>Item</th>
 	            				<th>Donante</th>
 	            				<th>Producto</th>
