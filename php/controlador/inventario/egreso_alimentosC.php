@@ -221,7 +221,7 @@ class egreso_alimentosC
 		}
 
 		$datos  = $this->modelo->buscar_producto_egreso();
-		if(count($datos)>0)
+		if(count($datos)==0)
 		{
 			return -3;
 		}
