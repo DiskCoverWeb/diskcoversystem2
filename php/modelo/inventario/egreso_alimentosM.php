@@ -253,7 +253,6 @@ class egreso_alimentosM
 			INNER JOIN Clientes C on TK.Codigo_P = C.Codigo
 			WHERE TK.Item = '".$_SESSION['INGRESO']['item']."'
 			AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-			AND TK.CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
 			AND TK.Item = CP.Item
 			AND TK.Periodo = CP.Periodo 
 			AND TK.T = 'G'";

@@ -5,11 +5,12 @@ $(document).ready(function () {
     motivo_egreso()	
 
     tbl_asignados_all = $('#tbl_asignados').DataTable({
+          scrollX: true,
           searching: false,
-          responsive: true,
+          responsive: false,
           // paging: false,   
           info: false,   
-          autoWidth: true,   
+          autoWidth: false,   
         language: {
           url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },
