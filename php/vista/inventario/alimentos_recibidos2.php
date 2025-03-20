@@ -374,16 +374,16 @@
 		              <b>Referencia:</b>
 		              <input type="text" name="txt_referencia2" id="txt_referencia2" class="form-control input-sm" readonly="">
 		           </div> -->
-		           <div class="col-sm-9">
+		           <div class="col-sm-8">
 		              <b>Producto:</b><br>
 		              <select class="form-select form-select-sm" id="ddl_producto2" name="ddl_producto2"style="width: 100%;">
 		                <option value="">Seleccione una producto</option>
 		              </select>
 		           </div>
-		           <div class="col-sm-3">
+		           <div class="col-sm-4">
                 <b>Cantidad</b>
                 <div class="input-group">
-                    <input type="text" name="txt_cantidad_pedido" id="txt_cantidad_pedido" class="form-control form-control-sm" />
+                    <input type="text" style="width: 100px;" name="txt_cantidad_pedido" id="txt_cantidad_pedido" class="form-control form-control-sm" />
                     <input type="hidden" name="txt_id_linea_pedido" id="txt_id_linea_pedido">
                     <span class="input-group-text" id="lbl_unidad">-</span>
                 </div>
