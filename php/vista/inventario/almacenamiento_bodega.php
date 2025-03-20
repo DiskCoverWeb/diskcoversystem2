@@ -186,11 +186,13 @@
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header">
             <h4 class="modal-title">Escanear QR</h4>
-            <button type="button" class="btn-close" aria-label="Close" onclick="cerrarCamara()"></button>
+            <button type="button" class="btn-close" aria-label="Close" onclick="cerrarCamaraAlma()"></button>
           </div>
           <div class="modal-body">
             <div class="row">
               <div class="col-sm-12">
+              	<input type="hidden" name="txt_lectura" id="txt_lectura">
+              	<input type="hidden" name="txt_lectura_item" id="txt_lectura_item">
                 <select class="form-select" id="ddl_camaras_alma" name="ddl_camaras_alma" onchange="cambiarCamaraAlm()">
                   <option value="0">Camara 1</option>                
                 </select>               
@@ -205,7 +207,7 @@
 
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
-              <button type="button" class="btn btn-danger" onclick="cerrarCamara()">Cerrar</button>
+              <button type="button" class="btn btn-danger" onclick="cerrarCamaraAlma()">Cerrar</button>
           </div>
       </div>
   </div>

@@ -698,7 +698,8 @@ async function buscar_ruta_linea(item)
 
 
  function escanear_qr(campo,item){
- 	console.log(campo);
+ 	$('#txt_lectura_item').val(item);
+ 	$('#txt_lectura').val(campo);
     	iniciarEscanerQR(campo,item);
         $('#modal_qr_escaner_alma').modal('show');
     }
@@ -734,7 +735,7 @@ async function buscar_ruta_linea(item)
 											lugarPorQr(decodedText,item);
 										}
                     scanner.stop(); // Detiene la cámara después de leer un código
-                    $('#modal_qr_escaner').modal('hide');
+                    $('#modal_qr_escaner_alma').modal('hide');
                 },
                 (errorMessage) => {
                     console.log("Error de escaneo:", errorMessage);
@@ -749,10 +750,24 @@ async function buscar_ruta_linea(item)
 
 function cambiarCamaraAlm()
 {
-    cerrarCamara();
+    cerrarCamaraAlma();
+    tipo = $('#txt_lectura').val();
+    item = $('#txt_lectura_item').val();
     setTimeout(() => {
-        iniciarEscanerQR();
+        iniciarEscanerQR(tipo,item);
         $('#modal_qr_escaner_alma').modal('show');
          $('#qrescaner_carga_alma').hide();
     }, 1000);
+}
+
+function cerrarCamaraAlma() {
+  	$('#modal_qr_escaner').modal('hide');
+    if (scanner) {
+        scanner.stop().then(() => {            
+          $('#qrescaner_carga_alma').show();
+          $('#modal_qr_escaner_alma').modal('hide');
+        }).catch(err => {
+            console.error("Error al detener el escáner:", err);
+        });
+    }
 }

@@ -107,7 +107,7 @@ class almacenamiento_bodegaM
 		}
 		if($cod)
 		{
-			$sql.= " AND Codigo_Barra  like  '%".$cod."%'";
+			$sql.= " AND TK.Codigo_Barra  like  '%".$cod."%'";
 		}
 		$sql.=" ORDER BY Fecha_Exp ASC";
 
