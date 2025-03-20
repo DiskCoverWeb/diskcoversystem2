@@ -223,7 +223,7 @@ class egreso_alimentosC
 		$datos  = $this->modelo->buscar_producto_egreso();
 		if(count($datos)>0)
 		{
-			return -3
+			return -3;
 		}
 		
 		// para el cheing de egreso se colocara la G
