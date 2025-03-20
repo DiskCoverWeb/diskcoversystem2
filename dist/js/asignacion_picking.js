@@ -32,6 +32,7 @@ $(document).ready(function () {
         $('#CantGlobSugDist').val(datos.Salario);//Cantidad global sugerida a distribuir
         $('#CantGlobDist').val(datos.Descuento);//Cantidad global a distribuir
         $('#infoNutr').val(datos.InfoNutri);
+        $('#comeGeneAsign').val(datos.Ruta);
         cargarOrden();
         cargar_asignacion();
 

@@ -415,6 +415,7 @@ class asignacion_osC
         // print_r($parametros);die();
         SetAdoAddNew('Detalle_Factura');
         SetAdoFields('T','K');      
+        SetAdoFields('Ruta',$parametros['comentario']);  
        
         SetAdoFieldsWhere('CodigoU',$_SESSION['INGRESO']['CodigoU']);
         SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);

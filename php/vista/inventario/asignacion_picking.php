@@ -135,7 +135,7 @@
 					<div class="row">
 						<div class="input-group input-group-sm">
 							<span class="input-group-text"><b>Comentario de asignacion</b></span>
-							<textarea name="infoNutr" id="infoNutr" rows="1" class="form-control form-control-sm">
+							<textarea name="comeGeneAsign" id="comeGeneAsign" rows="1" class="form-control form-control-sm">
 							</textarea>
 						</div>
 					</div>

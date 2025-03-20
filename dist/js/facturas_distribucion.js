@@ -73,7 +73,7 @@ var valTC = 'FA';
 			cancelButtonText: 'NO'
 		}).then((result) => {
 			if (result.value) {
-				//IngClave('Supervisor');
+				IngClave('Supervisor');
 				let parametros = {
 					'beneficiario': $('#DCCliente').val(),
 					'fecha': $('#MBFecha').val()
