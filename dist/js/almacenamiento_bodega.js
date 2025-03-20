@@ -1,5 +1,6 @@
 	var scanning = false;
 	var campo_qr = '';
+	var tipoAlmacenamiento = 'ingreso';
   $(document).ready(function () {
 		cargar_bodegas()
   	cargar_paquetes()
@@ -699,7 +700,7 @@ async function buscar_ruta_linea(item)
  function escanear_qr(campo,item){
  	console.log(campo);
     	iniciarEscanerQR(campo,item);
-        $('#modal_qr_escaner').modal('show');
+        $('#modal_qr_escaner_alma').modal('show');
     }
 
  let scanner; 
@@ -707,9 +708,9 @@ async function buscar_ruta_linea(item)
  function iniciarEscanerQR(campo_qr,item='') {
 
  	console.log(campo_qr);
-    NumCamara = $('#ddl_camaras').val();
+    NumCamara = $('#ddl_camaras_alma').val();
     scanner = new Html5Qrcode("reader");
-    $('#qrescaner_carga').hide();
+    $('#qrescaner_carga_alma').hide();
     Html5Qrcode.getCameras().then(devices => {
        op = '';
        devices.forEach((camera, index) => {
@@ -746,5 +747,12 @@ async function buscar_ruta_linea(item)
 }
 
 
-
-
+function cambiarCamaraAlm()
+{
+    cerrarCamara();
+    setTimeout(() => {
+        iniciarEscanerQR();
+        $('#modal_qr_escaner_alma').modal('show');
+         $('#qrescaner_carga_alma').hide();
+    }, 1000);
+}

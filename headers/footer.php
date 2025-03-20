@@ -457,7 +457,8 @@
         </div>
     </div>
   </div>
-  <div id="modal_qr_escaner" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+  
+ <div id="modal_qr_escaner" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
       <div class="modal-content" style="background: antiquewhite;">
           <div class="modal-header">
@@ -472,7 +473,7 @@
                 </select>               
               </div>              
             </div>
-            <div id="qrescaner_carga">
+            <div id="qrescaner_carga_alma">
               <div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;">
                 <img src="../../img/gif/loader4.1.gif" width="20%"></div>
             </div>

@@ -836,3 +836,77 @@ function cambiar_tipo_asig(id)
     $('#tipoCompra').val(id)
     $('#modal_tipoCompra').modal("hide")
 }
+
+
+function lista_picking()
+{
+    lista_picking_all();
+    $('#modal_lista_picking').modal('show');
+}
+
+function lista_picking_all()
+{
+     $.ajax({
+        url: '../controlador/inventario/asignacion_pickingC.php?Beneficiario=true&fecha='+$('#txtFechaAsign').val(),
+        type: 'POST',
+        dataType: 'json',
+        // data: { param: param },
+        success: function (data) {
+            tr = '';
+            data.forEach(function(item,i){
+                tr+=`<tr>
+                        <td>`+item.text+`</td>
+                        <td><button class="btn btn-danger btn-sm"><i class="bx bx-trash" onclick="eliminar_picking()"></i></button></td>
+                    </tr>`
+            })
+            $('#tbl_body_asignacion').html(tr);
+          console.log(data);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+function eliminar_picking()
+{
+     Swal.fire({
+      title: "Esta seguro de eliminar este registro",
+      text: "",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si!'
+    }).then((result) => {
+      if (result.value == true) {
+        eliminar_picking_all()        
+      }
+    });
+}
+
+function eliminar_picking_all()
+{
+    var param = {}
+      $.ajax({
+        url: '../controlador/inventario/asignacion_pickingC.php?Beneficiario=true&fecha='+$('#txtFechaAsign').val(),
+        type: 'POST',
+        dataType: 'json',
+        data: { param: param },
+        success: function (data) {
+            tr = '';
+            data.forEach(function(item,i){
+                tr+=`<tr>
+                        <td>`+item.text+`</td>
+                        <td><button class="btn btn-danger btn-sm"><i class="bx bx-trash" onclick="eliminar_picking()"></i></button></td>
+                    </tr>`
+            })
+            $('#tbl_body_asignacion').html(tr);
+          console.log(data);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}

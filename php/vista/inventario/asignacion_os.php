@@ -60,6 +60,9 @@
             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
                 <img src="../../img/png/grabar.png">
             </button>
+             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Listar Checking" onclick="lista_picking()">
+                <img src="../../img/png/taskboard.png">
+            </button>
         </div>
     </div>
 </div>
@@ -481,6 +484,46 @@
                     <select name="beneficiario_new" id="beneficiario_new" class="form-select form-select-sm" style="width:100%"></select>
                 </div>
             </div>                       
+          </div>
+          <div class="modal-footer" style="background-color:antiquewhite;">
+              <button type="button" class="btn btn-primary" onclick="asignar_beneficiario()">Asignar Beneficiario</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div id="modal_lista_picking" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Lista de Asignaciones</h4>
+              <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" style="background: antiquewhite;">
+            <div class="row">
+                <div class="col-sm-3">
+                    <input type="date" name="txtFechaAsign" id="txtFechaAsign" value="<?php echo date('Y-m-d'); ?>">
+                </div>
+                <div class="col-sm-9 text-end">
+                    <button onclick="lista_picking_all()" class="btn btn btn-primary">Buscar</button>                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <table>
+                         <thead>
+                             <th>Beneficiario</th>
+                             <th></th>
+                         </thead>
+                         <tbody id="tbl_body_asignacion">
+                             
+                         </tbody>
+                        
+                    </table>
+                    
+                </div>                
+            </div>
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
               <button type="button" class="btn btn-primary" onclick="asignar_beneficiario()">Asignar Beneficiario</button>
