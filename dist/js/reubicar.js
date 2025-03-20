@@ -332,14 +332,16 @@ function reubiPorQR(codigo){
 }
 
  function escanear_qr(item){
-    iniciarEscanerQR(item);
+    $('#txt_tipo').val(item);
+    iniciarEscanerQR();
         $('#modal_qr_escaner').modal('show');
 }
 
 
  let scanner;
  let NumCamara = 0;
- function iniciarEscanerQR(item) {
+ function iniciarEscanerQR() {
+    item = $('#txt_tipo').val();
     NumCamara = $('#ddl_camaras').val();
     scanner = new Html5Qrcode("reader");
     $('#qrescaner_carga').hide();
