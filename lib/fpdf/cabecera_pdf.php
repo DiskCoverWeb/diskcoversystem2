@@ -906,7 +906,7 @@ class cabecera_pdf
 		if($info['factura'][0]['Direccion'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Direccion: ".$info['factura'][0]['Direccion'],0,'L');}
 		if($info['factura'][0]['Email'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Email: ".$info['factura'][0]['Email'],0,'L');}
 
-		if($info['factura'][0]['TC'] == "DO"){
+		if($info['factura'][0]['TC'] == "DO" || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 			$pdf->MultiCell($anchoFact,3,"Codigo: ",0,'L');
 			$pdf->MultiCell($anchoFact,3,"Aporte: ",0,'L');
 			$pdf->MultiCell($anchoFact,3,"Numero de Gavetas: ",0,'L');
@@ -928,7 +928,7 @@ class cabecera_pdf
 
 		if(count($info['lineas']) > 0){
 			foreach($info['lineas'] as $key => $value){
-				if($info['factura'][0]['TC'] == "DO"){
+				if($info['factura'][0]['TC'] == "DO" || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 					$CodigoC = $value['Codigo'];
 					$CodigoN = number_format($value['Cantidad'], 2, '.', '');
 					$Producto = $value['Producto'];
@@ -949,7 +949,7 @@ class cabecera_pdf
 			}
 		}
 
-		if($info['factura'][0]['TC'] == "DO"){
+		if($info['factura'][0]['TC'] == "DO" || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,'L');
 			$pdf->MultiCell($anchoFact,3, $CantBlancos."    T O T A L ".$this->SetearBlancos(strval($Total), 12, 0, true, false, true),0,'L');
 			$pdf->Ln(3);
