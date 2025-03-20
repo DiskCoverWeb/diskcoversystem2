@@ -204,7 +204,7 @@
             </div>
           </div>
         </div>
-         <div class="col-lg-3 col-sm-3">
+         <div class="col-lg-3 col-md-3 col-sm-12">
            <div class="row">
               <div class="col-lg-4 col-sm-3">
                 <button type="button" class="btn btn-light border border-1 w-100" onclick="show_empaque();"><img
@@ -223,13 +223,13 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="row mb-2">
-            <div class="col-sm-1">
+            <div class="col-lg-1 col-md-1 col-sm-3">
               <button type="button" style="width: initial;" class="btn btn-light border border-1 w-100" onclick="show_cantidad()"
                 id="btn_cantidad">
                 <img src="../../img/png/kilo.png" style="width: 42px;height: 42px;" />
               </button>
             </div>
-            <div class="col-sm-2">
+            <div class="col-lg-2 col-sm-3">
               <b>Cantidad</b>
               <input type="" name="txt_cantidad" id="txt_cantidad" class="form-control form-control-sm" value="0">  
               <input type="hidden" name="txt_costo" id="txt_costo" readonly class="form-control form-control-sm"> 
@@ -255,7 +255,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-3 g-2 text-end">
+            <div class="col-lg-3 col-md-3 col-sm-12 g-2 text-end">
               <button type="button" class="btn btn-primary btn-sm m-1" onclick="show_panel()" > AGREGAR</button>
                   <button type="button" class="btn btn-primary btn-sm m-1" onclick=" limpiar()" >Limpiar</button>
                   <input type="hidden" id="A_No" name ="A_No" value="0">
