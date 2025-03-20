@@ -500,10 +500,10 @@
               <h4 class="modal-title">Lista de Asignaciones</h4>
               <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
           </div>
-          <div class="modal-body" style="background: antiquewhite;">
+          <div class="modal-body">
             <div class="row">
                 <div class="col-sm-3">
-                    <input type="date" name="txtFechaAsign" id="txtFechaAsign" value="<?php echo date('Y-m-d'); ?>">
+                    <input type="date" class="form-control" name="txtFechaAsign" id="txtFechaAsign" value="<?php echo date('Y-m-d'); ?>">
                 </div>
                 <div class="col-sm-9 text-end">
                     <button onclick="lista_picking_all()" class="btn btn btn-primary">Buscar</button>                    
@@ -511,7 +511,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <table>
+                    <table class="table table-hover">
                          <thead>
                              <th>Beneficiario</th>
                              <th></th>
@@ -526,8 +526,7 @@
             </div>
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
-              <button type="button" class="btn btn-primary" onclick="asignar_beneficiario()">Asignar Beneficiario</button>
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">OK</button>
           </div>
       </div>
   </div>

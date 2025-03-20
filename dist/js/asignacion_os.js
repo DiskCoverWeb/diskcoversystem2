@@ -856,7 +856,7 @@ function lista_picking_all()
             data.forEach(function(item,i){
                 tr+=`<tr>
                         <td>`+item.text+`</td>
-                        <td><button class="btn btn-danger btn-sm"><i class="bx bx-trash" onclick="eliminar_picking()"></i></button></td>
+                        <td><button class="btn btn-danger btn-sm"><i class="bx bx-trash" onclick="eliminar_picking('`+item.id+`')"></i></button></td>
                     </tr>`
             })
             $('#tbl_body_asignacion').html(tr);
@@ -869,41 +869,44 @@ function lista_picking_all()
 }
 
 
-function eliminar_picking()
+function eliminar_picking(id)
 {
      Swal.fire({
       title: "Esta seguro de eliminar este registro",
       text: "",
-      type: 'warning',
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Si!'
     }).then((result) => {
-      if (result.value == true) {
-        eliminar_picking_all()        
+      if (result.value) {
+        eliminar_picking_all(id)        
       }
     });
 }
 
-function eliminar_picking_all()
+function eliminar_picking_all(id)
 {
-    var param = {}
+    var parametros = 
+    {
+        'idBeneficiario':id,
+        'fecha':$('#txtFechaAsign').val(),
+    }
       $.ajax({
-        url: '../controlador/inventario/asignacion_pickingC.php?Beneficiario=true&fecha='+$('#txtFechaAsign').val(),
+        url: '../controlador/inventario/asignacion_pickingC.php?eliminarPickingAsig=true',
         type: 'POST',
         dataType: 'json',
-        data: { param: param },
+        data: {parametros:parametros},
         success: function (data) {
-            tr = '';
-            data.forEach(function(item,i){
-                tr+=`<tr>
-                        <td>`+item.text+`</td>
-                        <td><button class="btn btn-danger btn-sm"><i class="bx bx-trash" onclick="eliminar_picking()"></i></button></td>
-                    </tr>`
-            })
-            $('#tbl_body_asignacion').html(tr);
-          console.log(data);
+            if(data==1)
+            {
+                Swal.fire("Registro eliminado","","success").then(function()
+                {
+                    lista_picking_all();
+                })
+            }
+          
         },
         error: function (error) {
             console.log(error);

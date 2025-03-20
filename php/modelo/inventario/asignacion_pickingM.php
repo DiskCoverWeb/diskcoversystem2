@@ -204,7 +204,33 @@ class asignacion_pickingM
     }
 
 
+    function lista_lineas_pickking($fecha,$codigoC,$tipo)
+    {
+        $sql = "SELECT   ".Full_Fields("Detalle_Factura")."
+                FROM Detalle_Factura
+                WHERE  Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+                AND Item = '".$_SESSION['INGRESO']['item']."' 
+                AND T = 'K' 
+                AND Fecha = '".$fecha."' 
+                AND CodigoC = '".$codigoC."' 
+                AND No_Hab = '".$tipo."'";
 
+                // print_r($sql);die();
+        return $this->db->datos($sql);
 
+    }
 
+    function delete_lineas($fecha,$codigoC,$tipo)
+    {
+        $sql = "DELETE FROM Detalle_Factura
+                WHERE  Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+                AND Item = '".$_SESSION['INGRESO']['item']."' 
+                AND T = 'K' 
+                AND Fecha = '".$fecha."' 
+                AND CodigoC = '".$codigoC."' 
+                AND No_Hab = '".$tipo."'";
+
+        // print_r($sql);die();
+        return $this->db->String_Sql($sql);
+    }
 }

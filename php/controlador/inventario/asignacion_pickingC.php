@@ -58,13 +58,12 @@ if(isset($_GET['GuardarPicking'])){
     $parametros = $_POST['parametros'];
     echo json_encode($controlador->GuardarPicking($parametros));
 }
-/*
-if(isset($_GET['tipo_asignacion'])){
-    // $parametros = $_POST['parametros'];
-    echo json_encode($controlador->tipo_asignacion());
+
+if(isset($_GET['eliminarPickingAsig'])){
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->eliminarPickingAsig($parametros));
 }
 
-*/
 
 
 
@@ -378,16 +377,16 @@ class asignacion_pickingC
         return $tr;
 
     }
-
-    function tipo_asignacion()
-    {
-        $datos = $this->modelo->tipo_asignacion();
-        foreach ($datos as $key => $value) {
-            $lista[] = array('ID' =>$value['Cmds'] ,'Proceso'=>$value['Proceso'],'Picture'=>$value['Picture'] );
-        }
-        return $lista;
-    }
     */
+
+    function eliminarPickingAsig($parametros)
+    {
+
+        $data = explode('-', $parametros['idBeneficiario']);
+        $beneficiario = $data[0];
+        $tipo = $data[1]; 
+        return $this->modelo->delete_lineas($parametros['fecha'],$beneficiario,$tipo);
+    }
 
     function GuardarPicking($parametros)
     {
