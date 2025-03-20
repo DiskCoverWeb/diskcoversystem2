@@ -41,6 +41,7 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<b class="fw-semibold">Buscar Bodega</b>
+						<input type="hidden" name="txt_tipo" id="txt_tipo">
 						
 						<div class="input-group input-group-sm">
 							<input type="" name="" class="form-control form-control-sm" id="txt_bodega" name="txt_bodega" placeholder="Buscar Bodega por codigo" onblur="lista_stock_ubicado();buscar_ruta()">
