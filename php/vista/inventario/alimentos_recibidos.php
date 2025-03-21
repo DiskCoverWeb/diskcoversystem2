@@ -122,7 +122,7 @@
 						</div>
 						<div class="col-lg-10 col-md-8 col-sm-10">
 							<b>CANTIDAD:</b>
-							<input type="" class="form-control form-control-sm" id="txt_cant" name="txt_cant">	
+							<input type="number" class="form-control form-control-sm" id="txt_cant" name="txt_cant">	
 						</div>
 					</div>
 						<div class="row">
@@ -379,7 +379,7 @@
 
 		          		<form id="div_cantidad">
 	          		<div class="input-group input-group-sm">
-			          		 	<input type="text" class=" form-control input-numero" name="txt_cantidad_add" id="txt_cantidad_add" onblur="cambiar_cantidad()" onKeyPress="return soloNumerosDecimales(event)" placeholder="0" class="form-control">
+			          		 	<input type="number" class=" form-control input-numero" name="txt_cantidad_add" id="txt_cantidad_add" onblur="cambiar_cantidad()" onKeyPress="return soloNumerosDecimales(event)" placeholder="0" class="form-control">
 
 										  <span class="input-group-btn">
 											<button type="button" class="btn-info btn-sm" onclick="mas_input()"><i class="fa fa-plus"></i></button>
@@ -430,7 +430,7 @@
 	
 					<div class="col-sm-6">
 					<b>Cantidad</b>	
-					<input type="text" id="txt_cant_edi" name="txt_cant_edi" class="form-control form-control-sm" onblur="validar_cantidad()">
+					<input type="number" id="txt_cant_edi" name="txt_cant_edi" class="form-control form-control-sm" onblur="validar_cantidad()">
 					<input type="hidden" id="txt_cant_veri" name="txt_cant_veri" class="form-control form-control-sm">
 						
 					</div>

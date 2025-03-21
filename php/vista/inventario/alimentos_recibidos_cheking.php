@@ -29,6 +29,9 @@
 				 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Imprimir etiquetas seleccionadas" onclick="imprimir_etiquetas_pdf()">
 			        <img src="../../img/png/paper.png" height="32px">
 			      </button>
+			       <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Historial de Checking" onclick="historia_checking()">
+			        <img src="../../img/png/ats.png" height="32px">
+			      </button>
 			</div>
     </div>
 </div>
@@ -100,7 +103,7 @@
 						<div class="row">
 							<label for="txt_cant" class="col-sm-6 px-0 col-form-label text-end"><b>CANTIDAD:</b></label>
 							<div class="col-sm-6">
-								<input type="" class="form-control form-control-sm" id="txt_cant" name="txt_cant" readonly>	
+								<input type="number" class="form-control form-control-sm" id="txt_cant" name="txt_cant" readonly>	
 							</div>
 						</div>
 						<div class="row">
@@ -585,6 +588,38 @@
 						</div>
           			</div>
           		</form>
+          	</div>
+          					
+          </div>
+          <div class="modal-footer" style="background-color:antiquewhite;">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<div id="modal_historial_check" class="modal fade myModalNuevoCliente"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header bg-primary">
+			  <h4 class="modal-title text-white">Historial checking</h4>
+			  <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" style="background: antiquewhite;">
+          	<div class="row">
+          		<div class="col-sm-12" style="overflow-y:scroll; height: 350px;">
+          			<table class="table" id="tbl_historial">
+	          			<thead>
+	          				<th>Beneficiario</th>
+	          				<th>Codigo</th>
+	          				<th></th>
+	          			</thead>
+	          			<tbody id="tbl_historial_checking">
+	          				
+	          			</tbody>          			
+	          		</table>          			
+          		</div>
           	</div>
           					
           </div>

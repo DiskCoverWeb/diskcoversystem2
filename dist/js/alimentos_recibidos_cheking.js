@@ -1133,3 +1133,59 @@ var parametros = {
   }
 });
 }
+
+function historia_checking()
+{
+  $('#modal_historial_check').modal('show');
+
+     $.ajax({
+      // data:  {parametros,parametros},      
+      url: '../controlador/inventario/almacenamiento_bodegaC.php?search_contabilizado=true',
+      type:  'post',
+      dataType: 'json',
+      success:  function (response) { 
+        tr='';
+        response.forEach(function(item,i){
+          tr+=`<tr>
+              <td>`+item.data.Cliente+`</td>
+              <td>`+item.text+`</td>
+              <td>
+                  <button class="btn btn-sm btn-info" onclick="imprimirIndividualHis('`+item.id+`','`+item.data.Orden_No+`');"><i class="bx bx-printer"></i></button>
+              </td>
+          </tr>`
+        })
+
+        $('#tbl_historial_checking').html(tr);
+
+         $('#tbl_historial').DataTable({
+              scrollX: true,
+              searching: true,
+              responsive: false,
+          // paging: false,   
+              info: false,   
+              autoWidth: false,  
+          order: [[1, 'asc']], // Ordenar por la segunda columna
+              /*autoWidth: false,
+              responsive: true,*/
+              language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            },
+          });
+      
+      
+
+        console.log(response);
+        
+      }, 
+      error: function(xhr, textStatus, error){
+        $('#myModal_espera').modal('hide');           
+      }
+    });
+}
+
+
+function imprimirIndividualHis(id,num_ped)
+{
+   var  url = '../controlador/inventario/alimentos_recibidosC.php?imprimir_etiqueta_ind=true&num_ped='+num_ped+'&id='+id;
+    window.open(url, '_blank');
+}

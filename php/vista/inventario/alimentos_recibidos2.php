@@ -204,7 +204,7 @@
             </div>
           </div>
         </div>
-         <div class="col-lg-3 col-sm-3">
+         <div class="col-lg-3 col-md-3 col-sm-12">
            <div class="row">
               <div class="col-lg-4 col-sm-3">
                 <button type="button" class="btn btn-light border border-1 w-100" onclick="show_empaque();"><img
@@ -223,15 +223,15 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="row mb-2">
-            <div class="col-sm-1">
+            <div class="col-lg-1 col-md-1 col-sm-3">
               <button type="button" style="width: initial;" class="btn btn-light border border-1 w-100" onclick="show_cantidad()"
                 id="btn_cantidad">
                 <img src="../../img/png/kilo.png" style="width: 42px;height: 42px;" />
               </button>
             </div>
-            <div class="col-sm-2">
+            <div class="col-lg-2 col-sm-3">
               <b>Cantidad</b>
-              <input type="" name="txt_cantidad" id="txt_cantidad" class="form-control form-control-sm" value="0">  
+              <input type="number" name="txt_cantidad" id="txt_cantidad" class="form-control form-control-sm" value="0">  
               <input type="hidden" name="txt_costo" id="txt_costo" readonly class="form-control form-control-sm"> 
               <input type="hidden" name="txt_cta_inv" id="txt_cta_inv" readonly class="form-control form-control-sm"> 
               <input type="hidden" name="txt_contra_cta" id="txt_contra_cta" readonly class="form-control form-control-sm">                   
@@ -255,7 +255,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-3 g-2 text-end">
+            <div class="col-lg-3 col-md-3 col-sm-12 g-2 text-end">
               <button type="button" class="btn btn-primary btn-sm m-1" onclick="show_panel()" > AGREGAR</button>
                   <button type="button" class="btn btn-primary btn-sm m-1" onclick=" limpiar()" >Limpiar</button>
                   <input type="hidden" id="A_No" name ="A_No" value="0">
@@ -374,16 +374,16 @@
 		              <b>Referencia:</b>
 		              <input type="text" name="txt_referencia2" id="txt_referencia2" class="form-control input-sm" readonly="">
 		           </div> -->
-		           <div class="col-sm-9">
+		           <div class="col-sm-8">
 		              <b>Producto:</b><br>
 		              <select class="form-select form-select-sm" id="ddl_producto2" name="ddl_producto2"style="width: 100%;">
 		                <option value="">Seleccione una producto</option>
 		              </select>
 		           </div>
-		           <div class="col-sm-3">
+		           <div class="col-sm-4">
                 <b>Cantidad</b>
                 <div class="input-group">
-                    <input type="text" name="txt_cantidad_pedido" id="txt_cantidad_pedido" class="form-control form-control-sm" />
+                    <input type="number" style="width: 100px;" name="txt_cantidad_pedido" id="txt_cantidad_pedido" class="form-control form-control-sm" />
                     <input type="hidden" name="txt_id_linea_pedido" id="txt_id_linea_pedido">
                     <span class="input-group-text" id="lbl_unidad">-</span>
                 </div>
@@ -435,10 +435,28 @@
           </div>
           <div class="modal-body">
           <b>Cantidad</b>
-          <input type="" name="txt_cantidad2" id="txt_cantidad2" class="form-control" placeholder="0" onblur="cambiar_cantidad()">        					
+            <!-- <div class="input-group">
+                <input type="" name="txt_cantidad2" id="txt_cantidad2" class="form-control" placeholder="0" onblur="cambiar_cantidad()">
+                <button type="button" class="btn-info btn-sm" onclick="mas_input()"><i class="fa fa-plus"></i></button>
+            </div>  --> 
+            <div class="row">
+              <div class="col-sm-12">
+
+                  <form id="div_cantidad">
+                  <div class="input-group input-group-sm">
+                        <input type="number" class=" form-control input-numero" name="txt_cantidad_add" id="txt_cantidad_add" onblur="cambiar_cantidad()" onKeyPress="return soloNumerosDecimales(event)" placeholder="0" class="form-control">
+
+                        <span class="input-group-btn">
+                        <button type="button" class="btn-info btn-sm" onclick="mas_input()"><i class="fa fa-plus"></i></button>
+                      </span>                 
+                  </div>     
+                    </form>  
+                  <input type="text" name="txt_cantidad2" id="txt_cantidad2" class="form-control" readonly>
+              </div>
+            </div>        					
           </div>
           <div class="modal-footer" style="background-color:antiquewhite;">
-              <button type="button" class="btn btn-primary" onclick="cambiar_cantidad()">OK</button>
+              <button type="button" class="btn btn-primary" onclick="cerrar_modal_cant()">OK</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
           </div>
       </div>

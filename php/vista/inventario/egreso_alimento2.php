@@ -58,17 +58,17 @@
 	<div class="card">
 		<div class="card-body">
 			<div class="row">
-				<div class="col-sm-12">
-					<table class="table-sm table bg-light w-100"  id="tbl_asignados">
+				<!-- <div class="col-sm-12"> -->
+					<table class="table-sm table bg-light"  class="display" style="width:100%"  id="tbl_asignados">
 						<thead class="text-center bg-primary text-white">
-							<th style="width:30px;"><b>Item</b></th>
-							<th style="width:100px;"><b>Fecha de Egreso</b></th>
-							<th style="width:200px;"><b>Usuario</b></th>
-							<th style="width:200px ;"><b>Motivo</b></th>
-							<th style="width:100px;"><b>Detalle Egreso</b></th>
-							<th style="width:100px;"><b>Archivo adjunto</b></th>
-							<th style="width:100px ;"><b>SubModulo gastos</b></th>
-							<th style="width:100px ;"><b>Para Contabilizar</b></th>
+							<th style="width:30px; white-space: nowrap;"><b>Item</b></th>
+							<th style="width:100px; white-space: nowrap;"><b>Fecha de Egreso</b></th>
+							<th style="width:200px; white-space: nowrap;"><b>Usuario</b></th>
+							<th style="width:200px ; white-space: nowrap;"><b>Motivo</b></th>
+							<th style="width:100px; white-space: nowrap;"><b>Detalle Egreso</b></th>
+							<th style="width:100px; white-space: nowrap;"><b>Archivo adjunto</b></th>
+							<th style="width:100px ; white-space: nowrap;"><b>SubModulo gastos</b></th>
+							<th style="width:100px ; white-space: nowrap;"><b>Para Contabilizar</b></th>
 						</thead>
 						<tbody>
 							<tr>
@@ -92,7 +92,7 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>	
+				<!-- </div>	 -->
 				
 			</div>
 		</div>
@@ -152,7 +152,6 @@
 	            	<div class="col-sm-12">
 	            		<table class="table bg-light w-100" id="txt_motivo_lista">
 	            			<thead class="bg-primary text-white">
-								<th></th>
 	            				<th>Item</th>
 	            				<th>Donante</th>
 	            				<th>Producto</th>

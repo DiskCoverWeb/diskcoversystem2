@@ -728,7 +728,10 @@ class alimentos_recibidosC
 
   		// return $datos;
 
-  		return  array('num_lin'=>$num,'tabla'=>$datos,'item'=>$num,'cant_total'=>$canti,'reciclaje'=>$canti2,'primera_vez'=>$primeravez);	
+  		$data =   array('num_lin'=>$num,'tabla'=>$datos,'item'=>$num,'cant_total'=>$canti,'reciclaje'=>$canti2,'primera_vez'=>$primeravez);	
+  		// print_r($data);die();
+
+  		return $data;
 
 		// if($num!=0)
 		// {
@@ -997,6 +1000,7 @@ class alimentos_recibidosC
 	} 
 	function eli_all_pedido($data)
 	{
+		// print_r($data);die();
 		$id = $data['pedido'];
 		SetAdoAddNew('Trans_Correos');	
 		SetAdoFields('Giro_No','.');

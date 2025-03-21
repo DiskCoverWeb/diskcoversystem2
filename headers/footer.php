@@ -473,7 +473,7 @@
                 </select>               
               </div>              
             </div>
-            <div id="qrescaner_carga_alma">
+            <div id="qrescaner_carga">
               <div style="height: 100%;width: 100%;display:flex;justify-content:center;align-items:center;">
                 <img src="../../img/gif/loader4.1.gif" width="20%"></div>
             </div>

@@ -913,7 +913,7 @@ function cambiar_estado()
 
 function mas_input()
 {
-    $('#div_cantidad').append('<input type="text" name="txt_cantidad_add" id="txt_cantidad_add" class="form-control input-numero" placeholder="0" onblur="cambiar_cantidad()" onKeyPress="return soloNumerosDecimales(event)">');
+    $('#div_cantidad').append('<input type="number" name="txt_cantidad_add" id="txt_cantidad_add" class="form-control input-numero" placeholder="0" onblur="cambiar_cantidad()" onKeyPress="return soloNumerosDecimales(event)">');
 
 }
 

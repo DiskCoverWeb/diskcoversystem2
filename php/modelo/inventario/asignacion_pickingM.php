@@ -39,7 +39,7 @@ class asignacion_pickingM
             }
 			if($codigo)
 			{
-				$sql.=" CodigoC+' '+ = like '%".$codigo."%'";
+				$sql.=" AND C.Cliente like '%".$codigo."%'";
 			}
 			$sql.=" AND DF.TC = 'OP'
 			AND DF.T = 'K'
