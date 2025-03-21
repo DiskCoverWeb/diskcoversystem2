@@ -235,16 +235,28 @@ class egreso_alimentosC
 		$dia = date('Ymd');
 		$numero_secuencial = numero_comprobante1("Egreso_".$dia,$_SESSION['INGRESO']['item'],1,date('Y-m-d'));
 		$registro = generaCeros(intval($numero_secuencial),3);
-		$orden = str_replace('-','', date('Y-m-d')).'-'.$registro;
+		$orden = str_replace('-','', date('Y-m-d')).'_'.$registro;
 
 		// print_r($orden);die();
 
-		$ruta = dirname(__DIR__,2).'/comprobantes/sustentos/empresa_'.$_SESSION['INGRESO']['item'].'/';
+		$ruta = dirname(__DIR__,2).'/comprobantes/sustentos/entidad_'.$_SESSION['INGRESO']['Entidad_No'].'/empresa_'.$_SESSION['INGRESO']['item'].'/';
 		if(!file_exists($ruta))
 		{
-			$ruta1 = dirname(__DIR__,2).'/comprobantes/sustentos';
-			mkdir($ruta1,0777);
-			mkdir($ruta,0777);
+			$ruta1 = dirname(__DIR__,2).'/comprobantes/sustentos/';
+			if(!file_exists($ruta1))
+			{
+				mkdir($ruta1,0777);
+			}
+			$ruta1 = dirname(__DIR__,2).'/comprobantes/sustentos/entidad_'.$_SESSION['INGRESO']['Entidad_No'].'/';
+			if(!file_exists($ruta1))
+			{
+				mkdir($ruta1,0777);
+			}
+			$ruta1 = dirname(__DIR__,2).'/comprobantes/sustentos/entidad_'.$_SESSION['INGRESO']['Entidad_No'].'/empresa_'.$_SESSION['INGRESO']['item'].'/';
+			if(!file_exists($ruta1))
+			{
+				mkdir($ruta1,0777);
+			}
 		}
 
 		$nombre = "";
