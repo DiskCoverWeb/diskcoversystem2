@@ -117,7 +117,7 @@ class ingreso_descargosM
      	}
      }  
      $sql.=" ORDER BY T.ID DESC";
-     print_r($sql);die();
+     // print_r($sql);die();
 
      return $this->conn1->datos($sql);
        

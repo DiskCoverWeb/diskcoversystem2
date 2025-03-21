@@ -347,8 +347,10 @@ function cambiar_motivo(id,text)
 
 function buscar_producto(codigo)
 {
-	if(codigo=='')
+	// console.log(codigo)
+	if(codigo=='' || codigo==undefined)
 	{
+		limpiar()
 		return false;
 	}
 	var parametros = {
