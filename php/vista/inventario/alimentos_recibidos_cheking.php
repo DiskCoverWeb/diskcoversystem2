@@ -608,7 +608,7 @@
           </div>
           <div class="modal-body" style="background: antiquewhite;">
           	<div class="row">
-          		<div class="col-sm-12" style="overflow-y:scroll; height: 200px;">
+          		<div class="col-sm-12" style="overflow-y:scroll; height: 350px;">
           			<table class="table" id="tbl_historial">
 	          			<thead>
 	          				<th>Beneficiario</th>
