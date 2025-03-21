@@ -938,7 +938,7 @@ function limpiar_nuevo_producto()
 
 function contabilizar()
 { 
-var parametros2 = $("#form_correos").serialize();
+   var parametros2 = $("#form_correos").serialize();
    $.ajax({
      data:  parametros2,
      url:   '../controlador/inventario/alimentos_recibidosC.php?contabilizar=true',

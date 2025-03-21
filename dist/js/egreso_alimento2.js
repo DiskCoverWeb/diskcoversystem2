@@ -356,7 +356,7 @@ function lista_egreso_checking()
   {
       let item_empresa = $('#item_empresa').val();
       $('#modal_documento').modal('show');
-      $('#img_documento').attr('src','../comprobantes/sustentos/empresa_'+item_empresa+'/'+documento)
+      $('#img_documento').attr('src','../comprobantes/sustentos/entidad_'+Entidad+'/empresa_'+ItemEmp +'/'+documento)
   }
 
   function modal_areas()

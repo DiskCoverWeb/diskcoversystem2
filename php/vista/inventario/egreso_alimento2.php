@@ -1,4 +1,8 @@
 <?php date_default_timezone_set('America/Guayaquil'); ?> 
+<script type="text/javascript">
+	ItemEmp = '<?php echo $_SESSION["INGRESO"]["item"]; ?>';
+	Entidad = "<?php echo $_SESSION['INGRESO']['Entidad_No']; ?>";
+</script>
 <script src="../../dist/js/egreso_alimento2.js">
 </script>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">

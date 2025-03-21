@@ -345,10 +345,13 @@ function cambiar_motivo(id,text)
 	$('#myModal_opciones').modal('hide');
 }
 
-function buscar_producto(codigo)
+function buscar_producto()
 {
-	if(codigo=='')
+	// console.log(codigo)
+	codigo = $('#txt_cod_producto').val();
+	if(codigo=='' || codigo==undefined)
 	{
+		limpiar()
 		return false;
 	}
 	var parametros = {
