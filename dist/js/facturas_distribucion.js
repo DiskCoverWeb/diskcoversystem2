@@ -764,8 +764,14 @@ var valTC = 'FA';
 					let tTotalProds = 0;
 					let tBody = $('<tbody id="cuerpoTablaDistri"></tbody>');
 					for(let fila of datos['contenido']){
+						color ='';
+						if(color!='.')
+						{
+							color = 'style="background: '+fila['Tipo'][0]['Color'].replace('Hex_','#')+';"'
+						}
+						console.log(fila)
 						let td;
-						let tr = $('<tr class="asignTablaDistri"></tr>');
+						let tr = $('<tr '+color+'class="asignTablaDistri"></tr>');
 						tr.append($('<td></td>').text(fila['Detalles']['CodBodega']));
 						tr.append($('<td></td>').text(fila['Detalles']['Nombre_Completo']));
 						tr.append($('<td></td>').text(fila['Productos']['Producto']));

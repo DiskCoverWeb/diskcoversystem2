@@ -21,7 +21,7 @@ class facturas_distribucionM
 
   function ConsultarProductos($params){
     
-    $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU
+    $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU,Cta
             FROM Trans_Comision TC 
             INNER JOIN Accesos A ON TC.CodigoU = A.Codigo 
             WHERE CodigoC = '".$params['beneficiario']."' 
@@ -188,6 +188,15 @@ class facturas_distribucionM
             WHERE Item = '".$_SESSION['INGRESO']['item']."' 
             AND Cmds LIKE '83%' 
             AND TP = 'EVALUACI' 
+            ORDER BY Cmds";
+    return $this->db->datos($sql);
+  }
+
+  function consultarCatalogoProcesos($cmds){
+    $sql = "SELECT TOP (200) Item, Nivel, TP, Proceso, DC, Cheque, Mi_Cta, Cmds, Cta_Debe, Cta_Haber, Picture, Color, X, ID 
+            FROM Catalogo_Proceso 
+            WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+            AND Cmds = '".$cmds."'
             ORDER BY Cmds";
     return $this->db->datos($sql);
   }

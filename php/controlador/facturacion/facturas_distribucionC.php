@@ -278,10 +278,12 @@ class facturas_distribucion
 			foreach($datos as $key => $value){
 				$fecha=$value['Fecha']->format("Y-m-d");
 				$producto = Leer_Codigo_Inv($value['Codigo_Inv'], $fecha, $value['CodBodega'], $CodMarca='');
+				$tipo = $this->modelo->consultarCatalogoProcesos($value['Cta']);
 				//Leer_Codigo_Inv($parametros['Codigo'], $parametros['fecha'], $parametros['CodBod'])
 				$contenido[] = array(
 					"Detalles" => $value,
-					"Productos" => $producto['datos']
+					"Productos" => $producto['datos'],
+					'Tipo'=>$tipo,
 				);
 				//array_push($detalles, $producto);
 			}
