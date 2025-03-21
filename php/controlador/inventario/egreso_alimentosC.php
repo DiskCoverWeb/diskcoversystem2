@@ -271,7 +271,7 @@ class egreso_alimentosC
 			$image_base64 = base64_decode($image_parts[1]);
 		
 			// Crear un nombre único para la imagen
-			$nombre = $orden . '.' . $image_type;
+			$nombre = str_replace('-','_',$orden). '.' . $image_type;
 		
 			// Especificar la carpeta donde se guardará
 			$nuevo_nom = $ruta . $nombre;
