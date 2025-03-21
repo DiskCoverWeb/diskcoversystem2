@@ -884,7 +884,7 @@ var valTC = 'FA';
 		
 				let nuevoPVP = totalRecal / parseFloat(nuevoValor);
 		
-				fila.childNodes[4].children[0].children[0].value = nuevoPVP;
+				fila.childNodes[4].children[0].children[0].value = nuevoPVP.toFixed(8);
 	
 				let tc = datosFact;
 				//console.log(comentario);
