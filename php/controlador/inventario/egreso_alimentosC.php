@@ -235,7 +235,7 @@ class egreso_alimentosC
 		$dia = date('Ymd');
 		$numero_secuencial = numero_comprobante1("Egreso_".$dia,$_SESSION['INGRESO']['item'],1,date('Y-m-d'));
 		$registro = generaCeros(intval($numero_secuencial),3);
-		$orden = str_replace('-','', date('Y-m-d')).'_'.$registro;
+		$orden = str_replace('-','', date('Y-m-d')).'-'.$registro;
 
 		// print_r($orden);die();
 
@@ -281,7 +281,7 @@ class egreso_alimentosC
 		}else if(isset($file['archivo'])){
 			$uploadfile_temporal=$file['archivo']['tmp_name'];
 			$tipo = explode('/', $file['archivo']['type']);
-			$nombre = $orden.'.'.$tipo[1];
+			$nombre = str_replace('-','_',$orden).'.'.$tipo[1];
 		   
 			$nuevo_nom=$ruta.$nombre;
 			if (is_uploaded_file($uploadfile_temporal))
