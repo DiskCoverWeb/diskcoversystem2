@@ -160,6 +160,7 @@
 	            				<th>Precio / Costo</th>
 	            				<th>Total</th>
 	            				<th>Validado</th>
+	            				<th></th>
 	            			</thead>
 	            			<tbody id="tbl_body_motivo" >
 	            				<tr>

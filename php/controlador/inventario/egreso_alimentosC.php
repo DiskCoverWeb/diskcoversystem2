@@ -97,6 +97,11 @@ if(isset($_GET['cambiar_a_reportado']))
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->cambiar_a_reportado($parametros));
 }
+if(isset($_GET['guardar_linea']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->guardar_linea($parametros));
+}
 
 /**
  * 
@@ -670,6 +675,19 @@ class egreso_alimentosC
 		}
 		                		// print_r($resp);die();
 		return $resp;
+
+	}
+
+	function guardar_linea($parametros)
+	{
+		$lineas = $this->modelo->cargar_motivo_lista(false,$parametros['id'],false);
+		$total = number_format($lineas[0]['Salida']*$parametros['precio'],2,'.','');
+		SetAdoAddNew("Trans_Kardex"); 		
+	   	SetAdoFields('Valor_Total',$total);
+	   	SetAdoFields('Valor_Unitario',number_format($parametros['precio'],2,'.',''));
+	   	SetAdoFields('Total',$total);
+	   	SetAdoFieldsWhere('ID',$parametros['id']);
+	  	return SetAdoUpdateGeneric();
 
 	}
 
