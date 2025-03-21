@@ -789,7 +789,7 @@ var valTC = 'FA';
 						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodigoU']));
 						tBody.append(tr);
 
-						cTotalProds += parseInt(fila['Detalles']['Total']);
+						cTotalProds += parseFloat(fila['Detalles']['Total']);
 						tTotalProds += parseFloat(totalProducto);
 						console.log(tTotalProds);
 					}
@@ -999,7 +999,7 @@ var valTC = 'FA';
 			nuevoPVP = 0;
 		}
 
-		let costoTotal = parseInt(nuevoValor) * parseFloat(nuevoPVP);
+		let costoTotal = parseFloat(nuevoValor) * parseFloat(nuevoPVP);
 		console.log(costoTotal);
 		fila.childNodes[5].innerText = costoTotal.toFixed(2);
 
@@ -1008,7 +1008,7 @@ var valTC = 'FA';
 		let ADTotal = 0;
 		for(let f of filas){
 			console.log(f);
-			totalCant += parseInt(f.children[3].children[0].children[0].value);
+			totalCant += parseFloat(f.children[3].children[0].children[0].value);
 			console.log(f.children[3].children[0].value);
 			ADTotal += parseFloat(f.children[5].innerText);
 		}
