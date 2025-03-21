@@ -4,6 +4,14 @@ var valTC = 'FA';
 	var docbouche;
 	eliminar_linea('', '');
 	$(document).ready(function () {
+		$.ajax({
+			type: "GET",
+			url: '../controlador/facturacion/facturas_distribucionC.php?Sesion=true',
+			dataType: 'json',
+			success: function (datos) {
+				console.log(datos);
+			}
+		})
 		valTC = $('#hiddenTC').val();
 		let area = $('#contenedor-pantalla').parent();
     	//area.css('background-color', 'rgb(247, 232, 175)');
@@ -681,6 +689,7 @@ var valTC = 'FA';
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (res) {
+				eliminar_linea('', '');
 				if (res['direcciones'].length <= 0) {
 					$('#DCDireccion').empty();
 					var nuevoOption = $('<option>', {
@@ -750,6 +759,7 @@ var valTC = 'FA';
 				}, 1000)
 				
 				if (datos['res'] == 1) {
+					$('#txtRecalcular').attr('disabled', true);
 					let cTotalProds = 0;
 					let tTotalProds = 0;
 					let tBody = $('<tbody id="cuerpoTablaDistri"></tbody>');
