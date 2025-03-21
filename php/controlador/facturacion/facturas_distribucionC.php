@@ -6,6 +6,9 @@ require_once(dirname(__DIR__, 3) . "/lib/fpdf/cabecera_pdf.php");
  * 
  */
 $controlador = new facturas_distribucion();
+if(isset($_GET["Sesion"])){
+	echo json_encode($_SESSION);
+}
 if(isset($_GET["LlenarSelectIVA"])){
 	$fecha = isset($_GET['fecha']) ? $_GET['fecha'] : date('Y-m-d');
 	$fecha = str_replace("-", "", $fecha);
@@ -2060,32 +2063,35 @@ class facturas_distribucion
 					sp_Actualizar_Saldos_Facturas($FA['TC'], $FA['Serie'], $FA['Factura']);
 					$imp = '';
 					// 'MsgBox FA.Autorizacion & vbCrLf & FA.Autorizacion_GR
-					$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
-					$TFA['CLAVE'] = '.'; // '1'
-					$TFA['PorcIva'] = $FA['Porc_IVA'];
-					$this->pdf->Imprimir_Punto_Venta($TFA);
-					$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
-					/*if (strlen($FA['Autorizacion']) >= 13) {
-						//print_r($FA['Autorizacion']);
-						if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 1) {
-						   //print_r("con rodillo");
-						   $TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
-						   $TFA['CLAVE'] = '.'; // '1'
-						   $TFA['PorcIva'] = $FA['Porc_IVA'];
-						   $this->pdf->Imprimir_Punto_Venta($TFA);
-						   $imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
-						} else {
-						   //print_r("sin rodillo");
-						   $TFA = Imprimir_Punto_Venta_datos($FA);
-						   $TFA['CLAVE'] = '.'; // '1'
-						   $TFA['PorcIva'] = $FA['Porc_IVA'];
-						   //$this->pdf->Imprimir_Punto_Venta($info);
-						   $imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
-						   $clave = $this->sri->Clave_acceso($TA['Fecha'], '01', $TA['Serie'], $FA['Factura']);
-						   $this->modelo->pdf_factura_elec($FA['Factura'], $FA['Serie'], $FA['CodigoC'], $imp, $clave, $periodo = false, 0, 1);
-						}
-
-					 } */
+					if($FA['TC'] == 'NDO' || $FA['TC'] == 'NDU' || $FA['TC'] == 'DO'){
+						$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+						$TFA['CLAVE'] = '.';
+						$TFA['PorcIva'] = $FA['Porc_IVA'];
+						$this->pdf->Imprimir_Punto_Venta($TFA);
+						$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+					}else{
+						if (strlen($FA['Autorizacion']) >= 13) {
+							//print_r($FA['Autorizacion']);
+							if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 1) {
+							   //print_r("con rodillo");
+							   $TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+							   $TFA['CLAVE'] = '1';
+							   $TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
+							   $this->pdf->Imprimir_Punto_Venta($TFA);
+							   $imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+							} else {
+							   //print_r("sin rodillo");
+							   $TFA = Imprimir_Punto_Venta_datos($FA);
+							   $TFA['CLAVE'] = '1';
+							   $TFA['PorcIva'] = $FA['Porc_IVA'];
+							   //$this->pdf->Imprimir_Punto_Venta($info);
+							   $imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+							   $clave = $this->sri->Clave_acceso($TA['Fecha'], '01', $TA['Serie'], $FA['Factura']);
+							   $this->modelo->pdf_factura_elec($FA['Factura'], $FA['Serie'], $FA['CodigoC'], $imp, $clave, $periodo = false, 0, 1);
+							}
+	
+						 }
+					}
 					 
 					 $FA['Desde'] = $FA['Factura'];
 					 $FA['Hasta'] = $FA['Factura'];
