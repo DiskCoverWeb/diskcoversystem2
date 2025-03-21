@@ -865,19 +865,21 @@ var valTC = 'FA';
 					}
 				}
 			});
-		}else if(!elemento || (elemento && $(elemento).prop('checked') == true)){
-			let recalculados = 0;
-			let valorRecalcular = $('#txtRecalcular').val();
-			if(valorRecalcular.trim() == ""){
-				$('#txtRecalcular').val(0);
-				valorRecalcular = 0;
-			}else{
-				valorRecalcular = parseFloat(valorRecalcular);
-			}
-			let cantRecalcular = $("input[name='producto_recalcular']:checked").length;
-			let totalRecal = valorRecalcular / cantRecalcular;
-			
-			if(cantRecalcular > 0) $('#myModal_espera').modal('show');
+		}
+		let recalculados = 0;
+		let valorRecalcular = $('#txtRecalcular').val();
+		if(valorRecalcular.trim() == ""){
+			$('#txtRecalcular').val(0);
+			valorRecalcular = 0;
+		}else{
+			valorRecalcular = parseFloat(valorRecalcular);
+		}
+		let cantRecalcular = $("input[name='producto_recalcular']:checked").length;
+		let totalRecal = valorRecalcular / cantRecalcular;
+		
+		if(cantRecalcular > 0){
+			$('#myModal_espera').modal('show');
+
 			$("input[name='producto_recalcular']:checked").each((i,x)=>{
 				let fila = $(x)[0].parentElement.parentElement;
 				fila.childNodes[5].innerText = totalRecal.toFixed(8);
@@ -930,7 +932,7 @@ var valTC = 'FA';
 								$('#myModal_espera').modal('hide');
 							}, 500);
 						}
-
+	
 						if (data == 2) {
 							Swal.fire('Ya no puede ingresar mas productos', '', 'info');
 						} else if (data == 1) {
@@ -943,6 +945,8 @@ var valTC = 'FA';
 				});
 			});
 		}
+
+		
 
 
 
