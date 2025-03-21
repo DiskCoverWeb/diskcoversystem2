@@ -199,7 +199,7 @@ function cargar_motivo_lista(orden)
                     <td>`+item.Producto+`</td>
                     <td>`+item.Stock+`</td>
                     <td>`+item.Salida+`</td>
-                    <td>`+item.Valor_Unitario+`</td>
+                    <td><input type="number" class="form-control form-control-sm" value="`+item.Valor_Unitario+`" id="txt_lineaEgreso_`+item.ID+`" name="txt_lineaEgreso_`+item.ID+`"></td>
                     <td>`+total.toFixed(2)+`</td>`
                     if(item.Solicitud==1)
                     {
@@ -207,8 +207,11 @@ function cargar_motivo_lista(orden)
                     }else
                     {                    
                         tr+=`<td><input class="form-check-input" type="checkbox" onclick="cambiar_estado('`+item.ID+`')" id="rbl_`+item.ID+`" name="rbl_`+item.ID+`"></td>`
-                    }
-                tr+=`</tr>`;
+                    }                    
+                tr+=`<td>
+                        <button tittle="guardar Costo" class="btn btn-primary btn-sm" onclick="guardar_linea('`+item.ID+`','`+orden+`')"><i class="bx bx-save me-0"></i></button>
+                    </td>
+                </tr>`;
         })
 
 
@@ -426,4 +429,33 @@ function lista_egreso_checking()
           }
 
     });
+  }
+
+  function guardar_linea(id,orden)
+  {
+    valor = $('#txt_lineaEgreso_'+id).val();
+    parametros = 
+    {
+      'precio':valor,
+      'id':id,
+    }
+    $.ajax({
+      type: "POST",
+      url:   '../controlador/inventario/egreso_alimentosC.php?guardar_linea=true',
+      data:{parametros:parametros},
+      dataType:'json',
+      success: function(data)
+      {
+        modal_motivo(orden)
+        Swal.fire("Costo editado","","success");
+        console.log(data);
+       
+      },
+          error: function (error) {
+            $('#myModal_espera').modal('hide');
+            // Puedes manejar el error aquí si es necesario
+          }
+
+    });
+
   }
