@@ -193,7 +193,7 @@ function validar_codigo()
             }else{
 
                 data = data.producto[0];
-                console.log(data);
+                // console.log(data);
                 if(data!=undefined)
                 {
                     $('#txt_id').val(data.Codigo_Inv)

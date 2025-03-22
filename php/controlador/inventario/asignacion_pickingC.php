@@ -229,10 +229,15 @@ class asignacion_pickingC
     function buscar_producto($parametros)
     {
         $datos = $this->egresos->buscar_producto(false,$parametros['codigo']);
-        // print_r($parametros);
+       
+        // print_r($existencias); die();
         $validado_grupo =1;
         $lista_producto = array();
         foreach ($datos as $key => $value) {
+             $existencias = costo_venta($value['Codigo_Inv']);
+             // print_r($existencias);die();
+             $value['Stock'] = $existencias[0]['Existencia'];
+
             if($parametros['grupo'] == $value['Codigo_Inv'])
             {
                 $value['ubicacion'] =  $this->ruta_bodega($value['CodBodega']);
