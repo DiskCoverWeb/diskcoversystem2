@@ -18,6 +18,9 @@ $(document).ready(function () {
 
     $('#txt_codigo').on('select2:select', function (e) {
       var data = e.params.data.data;
+      // console.log(data);
+      detalle = 'Ingreso '+data.Cliente+' '+formatoDate(data.Fecha.date);
+      $('#txt_concepto_comp').val(detalle);
       setearCamposPedidos(data);
     });
 
@@ -947,14 +950,15 @@ function contabilizar()
        success:  function (response) { 
 
         // console.log(response);
-       if(response==1)
+       if(response.resp==1)
        {
           Swal.fire({
             icon:'success',
-            title: 'Pedido contabilizado',
+            title: 'Pedido contabilizado Comprobantes:'+ response.com,
             text :'',
           }).then( function() {
-                      location.reload();
+              window.open('../controlador/contabilidad/comproC.php?reporte&comprobante='+response.com+'&TP=CD','_blank')
+              location.reload();
             });
        }else
        {
