@@ -94,7 +94,7 @@ class lista_facturasM
 
    			// print_r($codigo);die();
 		
-		$sql ="SELECT T,TC,Serie,Autorizacion,Factura,Fecha,SubTotal,Con_IVA,IVA,Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,TB,Razon_Social,CodigoC,ID 
+		$sql ="SELECT TOP 10 T,TC,Serie,Autorizacion,Factura,Fecha,SubTotal,Con_IVA,IVA,Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,TB,Razon_Social,CodigoC,ID 
 		FROM Facturas 
 		WHERE Item = '".$_SESSION['INGRESO']['item']."' 
 		AND TC IN ('NDO','NDU') ";
@@ -138,7 +138,7 @@ class lista_facturasM
        }
 
        $sql.=" ORDER BY Serie,Factura DESC "; 
-	$sql.=" OFFSET ".$_SESSION['INGRESO']['paginacionIni']." ROWS FETCH NEXT ".$_SESSION['INGRESO']['numreg']." ROWS ONLY;";   
+	//$sql.=" OFFSET ".$_SESSION['INGRESO']['paginacionIni']." ROWS FETCH NEXT ".$_SESSION['INGRESO']['numreg']." ROWS ONLY;";   
     //print_r($sql);die(); 
 	return $this->db->datos($sql);
 
