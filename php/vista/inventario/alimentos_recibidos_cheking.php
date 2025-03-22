@@ -162,6 +162,11 @@
 									<button type="button" class="btn btn-primary btn-sm" onclick="guardar_comentario_check()">Guardar</button>
 								</div>								
 							</div>
+							<div class="col-sm-12">
+								<b>Concepto comprobante</b>
+								<input type="" name="txt_concepto_comp" id="txt_concepto_comp" class="form-control form-control-sm" value="">
+								
+							</div>
 						</div>
 					</div>
 

@@ -356,7 +356,7 @@ class egreso_alimentosM
 	{
 		$sql = "DELETE Asiento 
 		WHERE Item='".$_SESSION['INGRESO']['item']."' 
-		AND CodigoU='".$_SESSION['INGRESO']['Id']."' 
+		AND CodigoU='".$_SESSION['INGRESO']['CodigoU']."' 
 		AND T_No ='".$t_no."'";
 		
 		return $this->db->String_Sql($sql);
