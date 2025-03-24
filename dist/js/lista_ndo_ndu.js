@@ -414,7 +414,9 @@ var tipo = '';
        success:  function (response) { 
         // console.log(response);
        $('#tbl_tabla_detalle').html(response);
-       $('#myModal_espera').modal('hide');
+       setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
       }
     });
 
@@ -469,7 +471,9 @@ var tipo = '';
         {
           $('#tbl_tablaNoAu').html(response);
         }
-       $('#myModal_espera').modal('hide');
+       setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
       }
     });
 
@@ -485,7 +489,9 @@ var tipo = '';
 			//data: { parametros: parametros },
 			//dataType: 'json',
 			success: function (data) {
-        $('#myModal_espera').modal('hide');
+        setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
         let datajson = JSON.parse(data);
         if(datajson['respuesta'] == 1){
           var url = '../../TEMP/' + datajson['pdf'] + '.pdf';
@@ -521,7 +527,9 @@ var tipo = '';
        success:  function (data) {
        
 
-    // $('#myModal_espera').modal('hide');
+    // setTimeout(()=>{
+				// 	$('#myModal_espera').modal('hide');
+				// }, 1000)
     //    if(response==1)
     //    {
     //      Swal.fire('Factura autoizada','','success').then(function()
@@ -538,7 +546,9 @@ var tipo = '';
     //     Swal.fire(response,'','error')
     //    }
 
-    $('#myModal_espera').modal('hide');
+      setTimeout(()=>{
+        $('#myModal_espera').modal('hide');
+      }, 1000)
       // console.log(data);
       if(data.respuesta==1)
       { 
@@ -593,7 +603,9 @@ var tipo = '';
 
       },
       error: function () {
-        $('#myModal_espera').modal('hide');
+        setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
         alert("Ocurrio un error inesperado, por favor contacte a soporte.");
       }
     });
@@ -963,7 +975,9 @@ function modal_email_fac(factura,serie,codigoc,emails, auto, tc)
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
-           $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+					    $('#myModal_espera').modal('hide');
+				    }, 1000)
             if(response==1)
             {
                 Swal.fire('Email enviado','','success').then(function(){
@@ -976,7 +990,9 @@ function modal_email_fac(factura,serie,codigoc,emails, auto, tc)
          
         }, 
         error: function(xhr, textStatus, error){
-        $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+              $('#myModal_espera').modal('hide');
+            }, 1000)
             // $('#lbl_mensaje').text(xhr.statusText);
             // alert(xhr.statusText);
             // alert(textStatus);
@@ -1063,7 +1079,9 @@ function modal_email_fac(factura,serie,codigoc,emails, auto, tc)
         // dataType: 'json',
         success:  function (response) { 
 
-           $('#myModal_espera').modal('hide');
+          setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+          }, 1000)
           if(response.respuesta=='1')
           {
               console.log(response);
@@ -1135,7 +1153,9 @@ function modal_email_fac(factura,serie,codigoc,emails, auto, tc)
 
            $('#myModal_bloque').modal('show');                           
               $('#bloque_resp').html(response);                            
-           $('#myModal_espera').modal('hide');
+              setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+              }, 1000)
           }
         });
 
