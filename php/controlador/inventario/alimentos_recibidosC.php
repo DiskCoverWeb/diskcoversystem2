@@ -556,6 +556,7 @@ class alimentos_recibidosC
 
 	   $num_ped = $parametro['txt_codigo']; 	
 	   $producto = $this->modelo->catalogo_productos($parametro['txt_referencia']);
+	   print_r($producto);die();
 	   if($producto[0]['TDP']=='R')
 	   {
 	   	 $prod = $this->modelo->existe_en_transKarder($parametro['txt_codigo'],$producto[0]['Codigo_Inv']);

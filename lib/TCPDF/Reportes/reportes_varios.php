@@ -38,8 +38,9 @@ class reportes_varios
 		// print_r($datos);die();				
 		$pdf->SetFont('times', 'B',8);
 		$pdf->SetXY(3,3);
-		$pdf->MultiCell(55, 3,$datos[0]['Cliente'],0,'C');
-		$pdf->Text(20, 10,$datos[0]['Codigo_qr']);
+		$pdf->writeHTMLCell(44, 3,15,2,$datos[0]['Cliente'].'<br>'.$datos[0]['Codigo_qr'],0, 1, false, true, 'C', false);
+		// $pdf->MultiCell(55, 3,$datos[0]['Cliente'],0,'C');
+		// $pdf->Text(20, 10,$datos[0]['Codigo_qr']);
 		$pdf->write2DBarcode($datos[0]['Codigo_qr'], 'QRCODE,L', 3, 5, 14, 14, $style, 'N');
 		$pdf->Output($datos[0]['Codigo_qr'].'.pdf', 'I');
 	
