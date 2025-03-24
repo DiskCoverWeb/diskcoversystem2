@@ -643,6 +643,37 @@ class alimentos_recibidosM
 		return $this->db->datos($sql);
 	}
 
+	function catalogo_subcuentas($cuenta)
+	{
+
+		 // $cid = $this->conn;
+    // 'LISTA DE CODIGO DE ANEXOS
+     $sql = "SELECT * FROM Catalogo_SubCtas   WHERE Item = '".$_SESSION['INGRESO']['item']."' AND Periodo = '".$_SESSION['INGRESO']['periodo']."' AND Codigo = '".$cuenta."'";
+          // print_r($sql);die();
+     return $this->db->datos($sql);
+ 
+	}
+
+	function proveedores($query=false,$Codigo=false)
+	{
+		$sql ="SELECT CI_RUC,Cliente,CP.Cta,CP.Codigo as 'Codigo'
+		FROM Clientes C
+		INNER JOIN Catalogo_CxCxP CP ON C.Codigo = CP.Codigo
+		WHERE CP.Item = '".$_SESSION['INGRESO']['item']."' AND CP.Periodo = '".$_SESSION['INGRESO']['periodo']."' AND LEN(Cliente)>1 AND CP.TC  ='P' ";
+		if($query)
+		{
+			$sql.=" AND Cliente LIKE '%".$query."%'";
+		}
+		if($Codigo)
+		{
+			$sql.=" AND C.Codigo='".$Codigo."'";
+		}
+		$sql.=" ORDER BY C.Cliente OFFSET 0 ROWS FETCH NEXT 25 ROWS ONLY;";
+
+		// print_r($sql); die();
+		return $this->db->datos($sql);
+    
+	}
 
 
 }

@@ -2,6 +2,8 @@
 require_once(dirname(__DIR__,2)."/modelo/inventario/alimentos_recibidosM.php");
 require_once(dirname(__DIR__,2)."/funciones/funciones.php");
 require_once(dirname(__DIR__,3)."/lib/TCPDF/Reportes/reportes_varios.php");
+require_once(dirname(__DIR__,2)."/modelo/inventario/egreso_alimentosM.php");
+require_once(dirname(__DIR__,2)."/modelo/farmacia/ingreso_descargosM.php");
 
 /*
 -----------------nota importante en campo (T)----------------------
@@ -326,10 +328,14 @@ class alimentos_recibidosC
 	private $barras;
 	private $modales;
 	private $reportes;
+	private $egresoAli;
+	private $ing_des;
 	function __construct()
 	{
 		$this->modelo = new alimentos_recibidosM();
 		$this->reportes = new reportes_varios();
+		$this->egresoAli = new egreso_alimentosM();
+		$this->ing_des = new ingreso_descargosM();
 	}
 
 	function guardar($parametros,$transporte,$gavetas)
@@ -550,6 +556,7 @@ class alimentos_recibidosC
 
 	   $num_ped = $parametro['txt_codigo']; 	
 	   $producto = $this->modelo->catalogo_productos($parametro['txt_referencia']);
+	   // print_r($producto);die();
 	   if($producto[0]['TDP']=='R')
 	   {
 	   	 $prod = $this->modelo->existe_en_transKarder($parametro['txt_codigo'],$producto[0]['Codigo_Inv']);
@@ -1110,10 +1117,185 @@ class alimentos_recibidosC
 
 	function contabilizar($parametros)
 	{
+
+
 		SetAdoAddNew('Trans_Correos');
 		SetAdoFields('T','N');		
 		SetAdoFieldsWhere('ID',$parametros['txt_id']);
-		return SetAdoUpdateGeneric();
+		SetAdoUpdateGeneric();
+
+		$asientos_SC = $this->egresoAli->datos_asiento_SC_trans($parametros['txt_codigo']);
+		$fecha = $parametros['txt_fecha'];
+		$detalle = $parametros['txt_concepto_comp'];
+
+		// print_r($parametros);
+		// print_r($asientos_SC);die();
+
+		foreach ($asientos_SC as $key => $value) {
+			 $cuenta = $this->egresoAli->catalogo_cuentas($value['CONTRA_CTA']);
+			 $sub = $this->modelo->proveedores(false,$parametros['txt_codigo_p']);
+			$dataSub = array(
+                    'be'=>$cuenta[0]['Cuenta'],
+                    'ru'=> '',
+                    'co'=> $value['CONTRA_CTA'],// codigo de cuenta cc
+                    'tip'=>$cuenta[0]['TC'],//tipo de cuenta(CE,CD,..--) biene de catalogo subcuentas TC
+                    'tic'=> 2, //debito o credito (1 o 2);
+                    'sub'=> $sub[0]['Codigo'], //Codigo se trae catalogo subcuenta o ruc del proveedor en caso de que se este ingresando
+                    'sub2'=>$cuenta[0]['Cuenta'],//nombre del beneficiario
+                    'fecha_sc'=>$value['Fecha_Fab']->format('Y-m-d'), //fecha 
+                    'fac2'=>0,
+                    'mes'=> 0,
+                    'valorn'=> round($value['total'],2),//valor de sub cuenta 
+                    'moneda'=> 1, /// moneda 1
+                    'Trans'=>$sub[0]['Cliente'],//detalle que se trae del asiento
+                    'T_N'=> '99',
+                    't'=> $cuenta[0]['TC'],                        
+                  );
+
+                $this->ing_des->generar_asientos_SC($dataSub);
+		}
+
+		   // asiento para el haber
+		$asiento_haber  = $this->ing_des->datos_asiento_haber_trans($parametros['txt_codigo'],$parametros['txt_fecha']);
+		// print_r($asiento_haber);die();
+
+		foreach ($asiento_haber as $key => $value) {
+			$cuenta = $this->egresoAli->catalogo_cuentas($value['cuenta']);		
+			// print_r($cuenta);die();	
+				$parametros_haber = array(
+                  "va" =>round($value['total'],2),//valor que se trae del otal sumado
+                  "dconcepto1" =>$cuenta[0]['Cuenta'],
+                  "codigo" => $value['cuenta'], // cuenta de codigo de 
+                  "cuenta" => $cuenta[0]['Cuenta'], // detalle de cuenta;
+                  "efectivo_as" =>$value['fecha']->format('Y-m-d'), // observacion si TC de catalogo de cuenta
+                  "chq_as" => 0,
+                  "moneda" => 1,
+                  "tipo_cue" => 1,
+                  "cotizacion" => 0,
+                  "con" => 0,// depende de moneda
+                  "t_no" => '99',
+                );
+             $re =   $this->ing_des->ingresar_asientos($parametros_haber);
+             // print_r($re);
+		}
+
+
+		// print_r('expression');die();
+
+		//asientos para el debe
+		$asiento_debe = $this->ing_des->datos_asiento_debe_trans($parametros['txt_codigo'],$parametros['txt_fecha']);
+		// print_r($asiento_debe);die();
+		foreach ($asiento_debe as $key => $value) 
+		{
+			// print_r($value);die();
+			$cuenta = $this->egresoAli->catalogo_cuentas($value['cuenta']);		
+				$parametros_debe = array(
+				 "va" =>round($value['total'],2),//valor que se trae del otal sumado
+                  "dconcepto1" =>$cuenta[0]['Cuenta'],
+                  "codigo" => $value['cuenta'], // cuenta de codigo de 
+                  "cuenta" => $cuenta[0]['Cuenta'], // detalle de cuenta;
+                  "efectivo_as" =>$value['fecha']->format('Y-m-d'), // observacion si TC de catalogo de cuenta
+                  "chq_as" => 0,
+                  "moneda" => 1,
+                  "tipo_cue" => 2,
+                  "cotizacion" => 0,
+                  "con" => 0,// depende de moneda
+                  "t_no" => '99',
+			);
+				 $this->ing_des->ingresar_asientos($parametros_debe);
+		}
+		// print_r('expresion');die();
+
+     
+
+		// print_r('expression');die();
+
+		// print_r($fecha.'-'.$nombre.'-'.$ruc);die();
+		// $parametros = array('tip'=> 'CD','fecha'=>$fecha);
+	 //    $num_comprobante = $this->modelo->numero_comprobante($parametros);
+
+	    $num_comprobante = numero_comprobante1('Diario',true,true,$fecha);
+	    $dat_comprobantes = $this->ing_des->datos_comprobante();
+	    $debe = 0;
+		$haber = 0;
+		foreach ($dat_comprobantes as $key => $value) {
+			$debe+=$value['DEBE'];
+			$haber+=$value['HABER'];
+		}
+		// print_r($debe)
+		if(strval($debe)==strval($haber))
+		{
+			if($debe !=0 && $haber!=0)
+			{
+				 $parametro_comprobante = array(
+        	        'ru'=> '000000000', //codigo del cliente que sale co el ruc del beneficiario codigo
+        	        'tip'=>'CD',//tipo de cuenta contable cd, etc
+        	        "fecha1"=> $fecha,// fecha actual 2020-09-21
+        	        'concepto'=>$detalle, //detalle de la transaccion realida
+        	        'totalh'=> round($haber,2), //total del haber
+        	        'num_com'=> '.'.date('Y', strtotime($fecha)).'-'.$num_comprobante, // codigo de comprobante de esta forma 2019-9000002
+        	        );
+				 // print_r($nombre);print_r($ruc);print_r($fecha);
+				 // print_r($parametro_comprobante);die();
+                $resp = $this->ing_des->generar_comprobantes($parametro_comprobante);
+                // $cod = explode('-',$num_comprobante);
+                // die();
+                if($resp==$num_comprobante)
+                {
+                	if($this->ingresar_trans_kardex_entrada($parametros['txt_codigo'],$num_comprobante)==1)
+                	{
+                		 	// mayorizar_inventario_sp();
+                			return array('resp'=>1,'com'=>$num_comprobante);
+                		
+                	}else
+                	{
+                		return array('resp'=>-1,'com'=>'Uno o todos No se pudo registrar en Trans_Kardex');
+                	}
+                }else
+                {
+        	        return array('resp'=>-1,'com'=>$resp);
+                }
+
+			}else
+			{
+				// print_r($debe."-".$haber); 
+				 return array('resp'=>-1,'com'=>'Los resultados son 0');
+
+			}
+		}else
+		{
+			$this->egresoAli->eliminar_asiento('99');
+			$this->egresoAli->eliminar_asieto_sc($CodigoL,'99');
+			return array('resp'=>-1,'com'=>'No coinciden','debe'=>$debe,'haber'=>$haber);
+
+		}	
+
+	}
+
+
+	function ingresar_trans_kardex_entrada($orden,$comprobante,$nombre='')
+    {
+		$datos_K = $this->modelo->cargar_pedidos_trans($orden,false);
+		// print_r($datos_K);die();
+		// $comprobante = explode('.',$comprobante);
+		// $comprobante = explode('-',trim($comprobante[1]));
+		$comprobante = $comprobante;
+		$resp = 1;
+		$lista = '';
+		foreach ($datos_K as $key => $value) {
+
+			// print_r($value);die();
+			SetAdoAddNew("Trans_Kardex"); 		
+		   	SetAdoFields('T','N');
+		   	SetAdoFields('Numero',$comprobante);
+		   	// SetAdoFields('Detalle','Salida inventario prueba');
+		   	SetAdoFields('TP','CD');
+		   	SetAdoFieldsWhere('ID',$value['ID']);
+		  	SetAdoUpdateGeneric();
+		}
+		                		// print_r($resp);die();
+		return $resp;
+
 	}
 
 	function lista_bodegas_arbol($parametros)

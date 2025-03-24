@@ -239,12 +239,24 @@ class egreso_alimentosC
 
 		// print_r($orden);die();
 
-		$ruta = dirname(__DIR__,2).'/comprobantes/sustentos/empresa_'.$_SESSION['INGRESO']['item'].'/';
+		$ruta = dirname(__DIR__,2).'/comprobantes/sustentos/entidad_'.$_SESSION['INGRESO']['Entidad_No'].'/empresa_'.$_SESSION['INGRESO']['item'].'/';
 		if(!file_exists($ruta))
 		{
-			$ruta1 = dirname(__DIR__,2).'/comprobantes/sustentos';
-			mkdir($ruta1,0777);
-			mkdir($ruta,0777);
+			$ruta1 = dirname(__DIR__,2).'/comprobantes/sustentos/';
+			if(!file_exists($ruta1))
+			{
+				mkdir($ruta1,0777);
+			}
+			$ruta1 = dirname(__DIR__,2).'/comprobantes/sustentos/entidad_'.$_SESSION['INGRESO']['Entidad_No'].'/';
+			if(!file_exists($ruta1))
+			{
+				mkdir($ruta1,0777);
+			}
+			$ruta1 = dirname(__DIR__,2).'/comprobantes/sustentos/entidad_'.$_SESSION['INGRESO']['Entidad_No'].'/empresa_'.$_SESSION['INGRESO']['item'].'/';
+			if(!file_exists($ruta1))
+			{
+				mkdir($ruta1,0777);
+			}
 		}
 
 		$nombre = "";
@@ -259,7 +271,7 @@ class egreso_alimentosC
 			$image_base64 = base64_decode($image_parts[1]);
 		
 			// Crear un nombre único para la imagen
-			$nombre = $orden . '.' . $image_type;
+			$nombre = str_replace('-','_',$orden). '.' . $image_type;
 		
 			// Especificar la carpeta donde se guardará
 			$nuevo_nom = $ruta . $nombre;
@@ -269,7 +281,7 @@ class egreso_alimentosC
 		}else if(isset($file['archivo'])){
 			$uploadfile_temporal=$file['archivo']['tmp_name'];
 			$tipo = explode('/', $file['archivo']['type']);
-			$nombre = $orden.'.'.$tipo[1];
+			$nombre = str_replace('-','_',$orden).'.'.$tipo[1];
 		   
 			$nuevo_nom=$ruta.$nombre;
 			if (is_uploaded_file($uploadfile_temporal))

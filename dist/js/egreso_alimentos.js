@@ -404,7 +404,7 @@ function add_egreso()
 		return false;
 	}else if(parseFloat(cant)<=0  || cant=='' || cant==0 )
 	{
-		Swal.fire("La catidad invalida","","info")
+		Swal.fire("La cantidad invalida","","info")
 		return false;
 	}
 
