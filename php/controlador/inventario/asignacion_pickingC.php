@@ -107,7 +107,7 @@ class asignacion_pickingC
                 $datos1 = $this->modelo->cargar_asignacion($value['Codigo'],$value['No_Hab'],'F',$fecha);
                 if(count($datos1)==0)
                 {
-            	   $lista[] = array('id'=>$value['Codigo'].'-'.$value['No_Hab'],'text'=>$value['Cliente'].' ('.$value['Tipo Asignacion'].')','data'=>$value); 
+            	   $lista[] = array('id'=>$value['Codigo'].'-'.$value['No_Hab'].'-'.$value['Orden_No'],'text'=>$value['Cliente'].' ('.$value['Tipo Asignacion'].')','data'=>$value); 
                 }   	
             // }	
     	}
@@ -319,6 +319,7 @@ class asignacion_pickingC
             SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
             SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
             SetAdoFields("T","P");
+            SetAdoFields("Orden_No",$Beneficiario[2]);
             
             return SetAdoUpdate();
         }else{ return -2; }
@@ -398,13 +399,12 @@ class asignacion_pickingC
         // print_r($parametros);die();
         SetAdoAddNew('Trans_Comision');
         SetAdoFields('T','F');      
-       
-        //SetAdoFieldsWhere('CodigoU',$_SESSION['INGRESO']['CodigoU']); //Se elimino la linea porque solo guardaba los productos del picking del ultimo usuario
         SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
         SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']); 
         SetAdoFieldsWhere('CodigoC',$parametros['beneficiario']);  
-        SetAdoFieldsWhere('Fecha',$parametros['fecha']);  
+        SetAdoFieldsWhere('Orden_No',$parametros['orden']);  
         SetAdoFieldsWhere('Cta',$parametros['tipo']);  
+        // SetAdoFieldsWhere('Fecha',$parametros['fechaAsi']);   
         return SetAdoUpdateGeneric();
     }
 

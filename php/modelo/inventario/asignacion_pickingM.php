@@ -16,7 +16,7 @@ class asignacion_pickingM
 
     function tipoBeneficiario($codigo = '', $fecha = '')
     {
-        $sql = "SELECT DISTINCT DF.Ruta,No_Hab,C.Codigo, C.CodigoA,CP5.Proceso AS 'Estado', C.Cliente, C.CI_RUC, CD.Fecha_Registro, CD.Envio_No,CP3.Proceso as 'Frecuencia',CD.CodigoA as CodigoACD,CP4.Proceso as'TipoEntega' ,CD.Beneficiario, CD.No_Soc, CD.Area, CD.Acreditacion,CP1.Proceso as 'AccionSocial', CD.Tipo, CD.Cod_Fam,CP2.Proceso as 'TipoAtencion', CD.Salario, CD.Descuento, CD.Evidencias, CD.Item,C.Actividad,CP.Proceso as 'TipoBene',CP.Color,CP.Picture,CD.Hora_Ent as 'Hora',CD.Tipo_Dato as 'CodVulnera',CP6.Proceso AS 'vulnerabilidad',CD.Observaciones,CD.Hora_Ent,CD.Dia_Ent,CP7.Proceso as 'Tipo Asignacion',DF.CodigoU,A.Nombre_Completo 
+        $sql = "SELECT DISTINCT DF.Ruta,No_Hab,C.Codigo, C.CodigoA,CP5.Proceso AS 'Estado', C.Cliente, C.CI_RUC, CD.Fecha_Registro, CD.Envio_No,CP3.Proceso as 'Frecuencia',CD.CodigoA as CodigoACD,CP4.Proceso as'TipoEntega' ,CD.Beneficiario, CD.No_Soc, CD.Area, CD.Acreditacion,CP1.Proceso as 'AccionSocial', CD.Tipo, CD.Cod_Fam,CP2.Proceso as 'TipoAtencion', CD.Salario, CD.Descuento, CD.Evidencias, CD.Item,C.Actividad,CP.Proceso as 'TipoBene',CP.Color,CP.Picture,CD.Hora_Ent as 'Hora',CD.Tipo_Dato as 'CodVulnera',CP6.Proceso AS 'vulnerabilidad',CD.Observaciones,CD.Hora_Ent,CD.Dia_Ent,CP7.Proceso as 'Tipo Asignacion',DF.CodigoU,A.Nombre_Completo,DF.Orden_No 
             FROM Detalle_Factura DF
             INNER JOIN Accesos A on DF.CodigoU = A.Codigo
             INNER JOIN Clientes C on DF.CodigoC = C.Codigo
@@ -111,10 +111,10 @@ class asignacion_pickingM
 
     function cargar_asignacion($bene,$tipo,$T,$fecha=false)
     {
-        $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega
+        $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,T
                 FROM Trans_Comision TC
                 INNER JOIN Accesos A ON TC.CodigoU = A.Codigo
-                AND CodigoC = '".$bene."'
+                WHERE CodigoC = '".$bene."'
                 AND Cta = '".$tipo."'
                 AND T = '".$T."'";
                 if($fecha)

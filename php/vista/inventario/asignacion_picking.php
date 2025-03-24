@@ -34,7 +34,7 @@
 				<div class="col-lg-6 col-md-6 col-sm-12">
 					<div class="d-flex align-items-center input-group-sm">
 						<span class="input-group-text"><b>Fecha</b></span>
-						<input type="date" class="form-control form-control-sm" id="txtFechaAsign" style="width: fit-content;" value="<?php echo date('Y-m-d'); ?>">
+						<input type="date" class="form-control form-control-sm" id="txtFechaAsign" name="txtFechaAsign" style="width: fit-content;" value="<?php echo date('Y-m-d'); ?>">
 						<span class="input-group-text"><b>Beneficiario</b></span>
 						<select name="beneficiario" id="beneficiario" class="form-select form-select-sm"></select>
 					</div>					
