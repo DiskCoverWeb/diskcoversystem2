@@ -858,10 +858,14 @@ class cabecera_pdf
 
 		$anchoFact = $ancho_PV * 1.75;
 		  
-		$pdf = new FPDF();
+		$pdf = new FPDF('P', 'mm', 'LETTER');
 		$pdf->setMargins(0,0, array($anchoFact, 297));
 		$pdf->SetFont('Courier','',8);
-		$pdf->AddPage('P');
+		if($_SESSION['INGRESO']['Impresora_Rodillo'] == 1){
+			$pdf->AddPage('P');
+		}else{
+			$pdf->AddPage();
+		}
 		// print_r($info);die();
 		if($Grafico_PV){
 			$anchoImg = $ancho_PV * 1.75;
@@ -1048,9 +1052,13 @@ class cabecera_pdf
 			$pdf->MultiCell($anchoFact,3, "   RECIBIDO            ENTREGADO",0,'L');
 
 
-			$pdf->setMargins(0,0, array($anchoFact, 297));
-			$pdf->SetFont('Courier','',8);
-			$pdf->AddPage('P');
+			if($_SESSION['INGRESO']['Impresora_Rodillo'] == 1){
+				$pdf->setMargins(0,0, array($anchoFact, 297));
+				$pdf->SetFont('Courier','',8);
+				$pdf->AddPage('P');
+			}else{
+				$pdf->Ln(3);
+			}
 
 			if($Grafico_PV){
 				$anchoImg = $ancho_PV * 1.75;
