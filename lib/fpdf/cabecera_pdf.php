@@ -858,7 +858,7 @@ class cabecera_pdf
 
 		$anchoFact = $ancho_PV * 1.75;
 		  
-		$pdf = new FPDF('P', 'mm', 'LETTER');
+		$pdf = new FPDF('P', 'mm', 'A3');
 		$pdf->setMargins(0,0, array($anchoFact, 297));
 		$pdf->SetFont('Courier','',8);
 		if($_SESSION['INGRESO']['Impresora_Rodillo'] == 1){
@@ -1002,8 +1002,9 @@ class cabecera_pdf
 			if($Grafico_PV){
 				$anchoImg = $ancho_PV * 1.75;
 				$altoImg = $anchoFact * 0.38;
-				$pdf->Image($src,0,0,$anchoImg,$altoImg);
-				$pdf->SetY($altoImg);
+				$nuevaAltura = $pdf->GetY();
+				$pdf->Image($src,0,$nuevaAltura,$anchoImg,$altoImg);
+				$pdf->SetY($altoImg + $nuevaAltura);
 			}
 			if($Encabezado_PV){
 				if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
@@ -1063,8 +1064,9 @@ class cabecera_pdf
 			if($Grafico_PV){
 				$anchoImg = $ancho_PV * 1.75;
 				$altoImg = $anchoFact * 0.38;
-				$pdf->Image($src,0,0,$anchoImg,$altoImg);
-				$pdf->SetY($altoImg);
+				$nuevaAltura = $pdf->GetY();
+				$pdf->Image($src,0,$nuevaAltura,$anchoImg,$altoImg);
+				$pdf->SetY($altoImg + $nuevaAltura);
 			}
 			if($Encabezado_PV){
 				if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
