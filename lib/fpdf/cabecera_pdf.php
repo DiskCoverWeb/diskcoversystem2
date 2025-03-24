@@ -996,6 +996,7 @@ class cabecera_pdf
 			$pdf->MultiCell($anchoFact,3, $Producto,0,'L');
 			$pdf->Ln(3);
 			$pdf->Ln(3);
+			$pdf->Ln(3);
 
 			//Nueva parte para imprimir nota de donación
 			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
@@ -1108,9 +1109,9 @@ class cabecera_pdf
 			$pdf->Ln(3);
 			$pdf->Ln(3);
 			$pdf->MultiCell($anchoFact,3, "_____________      _______________",0,'L');
-			$pdf->MultiCell($anchoFact,3, "CONFORME      	  PROCESADO",0,'L');
+			$pdf->MultiCell($anchoFact,3, "CONFORME      	    PROCESADO",0,'L');
 			$pdf->MultiCell($anchoFact,3, "C.I./R.U.C      	  POR",0,'L');
-			$pdf->MultiCell($anchoFact,3,"".$info['factura'][0]['RUC_CI']."         ".$info['factura'][0]['CodigoU'],0,'L');
+			$pdf->MultiCell($anchoFact,3,"".$info['factura'][0]['RUC_CI']."      ".$info['factura'][0]['CodigoU'],0,'L');
 		}else{
 			if(count($info['factura']) > 0){
 				if($info['factura'][0]['TC'] == 'PV'){
