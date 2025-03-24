@@ -3,7 +3,7 @@ $tipo = 2; //Se usa para saber que debe regresar dos carpetas en chequear_seguri
 require_once(dirname(__DIR__, 2) . "/db/chequear_seguridad.php");
 require_once(dirname(__DIR__, 2) . "/modelo/facturacion/lista_ndo_nduM.php");
 //require_once(dirname(__DIR__, 2) . "/modelo/facturacion/punto_ventaM.php");
-require(dirname(__DIR__, 3) . '/lib/fpdf/cabecera_pdf.php');
+require_once(dirname(__DIR__, 3) . "/lib/TCPDF/Reportes/reportes_varios.php");
 if (!class_exists('enviar_emails')) {
 	require_once(dirname(__DIR__, 3) . '/lib/phpmailer/enviar_emails.php');
 }
@@ -22,10 +22,6 @@ if(isset($_GET['catalogo']))
 if (isset($_GET['tabla'])) {
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->tabla_facturas($parametros));
-}
-if (isset($_GET['sesion'])) {
-	//$parametros = $_POST['parametros'];
-	echo json_encode($_SESSION);
 }
 if (isset($_GET['tabla_factura_electronica'])) {
 	$parametros = $_POST['parametros'];
@@ -173,7 +169,8 @@ class lista_facturasC
 	public function __construct()
 	{
 		$this->modelo = new lista_facturasM();
-		$this->pdf = new cabecera_pdf();
+		$this->pdf = new reportes_varios();
+		//$this->pdf = new cabecera_pdf();
 		$this->email = new enviar_emails();
 		$this->empresaGeneral = $this->modelo->Empresa_data();
 		$this->sri = new autorizacion_sri();

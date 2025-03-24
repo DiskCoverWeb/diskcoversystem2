@@ -795,14 +795,13 @@ class cabecera_pdf
 	function Imprimir_Punto_Venta($info,$descagar=true)
 	{	
 		$cid=$this->conn;
-	   $sql = "SELECT * from Catalogo_Periodo_Lectivo where Item='".$_SESSION['INGRESO']['item']."'";
 	   $sql = "SELECT *
 		FROM Trans_Abonos TA
 		WHERE TA.Factura = ".$info['factura'][0]['Factura']." 
 		AND TA.Serie = '".$info['factura'][0]['Serie']."' 
 		AND TA.Periodo = '".$_SESSION['INGRESO']['periodo']."'
 		AND TA.Item = '".$_SESSION['INGRESO']['item']."'";
-		$CantBlancos = "";
+		
 	   $stmt = sqlsrv_query($cid, $sql);
 	    if( $stmt === false)  
 	      {  
@@ -817,6 +816,26 @@ class cabecera_pdf
 	    	$filasTA[] = $row;
 		    //echo $row[0];
 	      }
+
+	   $sql = "SELECT Usuario
+		FROM Accesos 
+		WHERE Codigo = '".$_SESSION['INGRESO']['CodigoU']."'";
+	   $stmt = sqlsrv_query($cid, $sql);
+	   if( $stmt === false)  
+		{  
+			echo "Error en consulta PA.\n";  
+			return '';
+			die( print_r( sqlsrv_errors(), true));  
+		}   
+			
+		$filasUsuario = array();	
+		while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC)) 
+		{
+			$filasUsuario[] = $row;
+			//echo $row[0];
+		}
+
+		$CantBlancos = "";
 		$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
 		$ancho_PV = Leer_Campo_Empresa("Cant_Ancho_PV");
 		$Encabezado_PV = Leer_Campo_Empresa("Encabezado_PV");
@@ -917,13 +936,21 @@ class cabecera_pdf
 		}
 		
 		$pdf->MultiCell($anchoFact,3,"Fecha de Emision: ".$info['factura'][0]['Fecha']->format('Y/m/d'),0,'L');
-		$pdf->MultiCell($anchoFact,3,"Hora de Proceso: ".$info['factura'][0]['Hora'],0,'L');
+		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+			$pdf->MultiCell($anchoFact,3,"Atendido por: ".$filasUsuario[0]['Usuario'],0,'L');
+		}else{
+			$pdf->MultiCell($anchoFact,3,"Hora de Proceso: ".$info['factura'][0]['Hora'],0,'L');
+		}
 
 		if(strlen($info['factura'][0]['Autorizacion']) < 13){
 			$pdf->MultiCell($anchoFact,3,"Fecha de caducidad: ".substr(mesesLetras($info['factura'][0]['Vencimiento']->format('m')), 0, 3).'/'.$info['factura'][0]['Vencimiento']->format('Y'),0,'L');
 		}
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
-		$pdf->MultiCell($anchoFact,3,"Cliente: ".$info['factura'][0]['Cliente'],0,'L');
+		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+			$pdf->MultiCell($anchoFact,3,"Usuario: ".$info['factura'][0]['Cliente'],0,'L');
+		}else{
+			$pdf->MultiCell($anchoFact,3,"Cliente: ".$info['factura'][0]['Cliente'],0,'L');
+		}
 		$pdf->MultiCell($anchoFact,3,"R.U.C/C.I.: ".$info['factura'][0]['RUC_CI'],0,'L');
 
 		if($info['factura'][0]['Telefono'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Telefono: ".$info['factura'][0]['Telefono'],0,'L');}
@@ -931,12 +958,27 @@ class cabecera_pdf
 		if($info['factura'][0]['Email'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Email: ".$info['factura'][0]['Email'],0,'L');}
 
 		if($info['factura'][0]['TC'] == "DO" || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
-			$pdf->MultiCell($anchoFact,3,"Codigo: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"Aporte: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"Numero de Gavetas: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"Atencion: ",0,'L');
+			if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+				$pdf->MultiCell($anchoFact,3,"Hora de llegada de la OS: ",0,'L');
+				$pdf->MultiCell($anchoFact,3,"Hora de Atención: ",0,'L');
+				$pdf->MultiCell($anchoFact,3,"Estado: ",0,'L');
+				$pdf->MultiCell($anchoFact,3,"No Gavetas pendientes por entregar: ",0,'L');
+			}else{
+				$pdf->MultiCell($anchoFact,3,"Codigo: ",0,'L');
+				$pdf->MultiCell($anchoFact,3,"Aporte: ",0,'L');
+				$pdf->MultiCell($anchoFact,3,"Numero de Gavetas: ",0,'L');
+				$pdf->MultiCell($anchoFact,3,"Atencion: ",0,'L');
+			}
 			$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0,'L');
-			$pdf->MultiCell($anchoFact,3,"P R O D U C T O/CODIGO CANTIDAD(KG)",0,'L');
+			if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+				$linea1F = "P R O D U C T O";
+				$linea2F = "CANTIDAD(KG)";
+				$pdf->MultiCell($anchoFact,3,$linea1F.str_repeat(' ', $ancho_PV - (strlen($linea1F)+strlen($linea2F))).$linea2F,0,'L');
+				
+			}else{
+				$pdf->MultiCell($anchoFact,3,"P R O D U C T O/CODIGO CANTIDAD(KG)",0,'L');
+				
+			}
 			$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0,'L');
 		}else{
 			$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0,'L');
@@ -958,8 +1000,13 @@ class cabecera_pdf
 					$Producto = $value['Producto'];
 
 					if($value['Tipo_Hab'] <> G_NINGUNO){$Producto .= "(".$value['Tipo_Hab'].")";}
-					$pdf->MultiCell($anchoFact,3,$Producto,0,'L');
-					$pdf->MultiCell($anchoFact,3,$CodigoC.str_repeat(' ', 25 - strlen($CodigoC))." ".str_repeat(' ', 10 - strlen($CodigoN)).$CodigoN,0,'L');
+					if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+						$pdf->MultiCell($anchoFact,3,$Producto.str_repeat(' ', $ancho_PV - (strlen($Producto)+strlen($CodigoN))).$CodigoN,0,'L');
+						//$pdf->MultiCell($anchoFact,3,.$CodigoN,0,'L');
+					}else{
+						$pdf->MultiCell($anchoFact,3,$Producto,0,'L');
+						$pdf->MultiCell($anchoFact,3,$CodigoC.str_repeat(' ', 25 - strlen($CodigoC))." ".str_repeat(' ', 10 - strlen($CodigoN)).$CodigoN,0,'L');
+					}
 					$Total += $value['Cantidad'];
 				}else{
 					$pdf->MultiCell($anchoFact,3, $value['Producto'],0,'L');
@@ -975,7 +1022,11 @@ class cabecera_pdf
 
 		if($info['factura'][0]['TC'] == "DO" || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,'L');
-			$pdf->MultiCell($anchoFact,3, $CantBlancos."    T O T A L ".$this->SetearBlancos(strval($Total), 12, 0, true, false, true),0,'L');
+			if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+				$pdf->MultiCell($anchoFact,3, $CantBlancos."    K I L O S".$this->SetearBlancos(strval($Total), 12, 0, true, false, true),0,'L');
+			}else{
+				$pdf->MultiCell($anchoFact,3, $CantBlancos."    T O T A L".$this->SetearBlancos(strval($Total), 12, 0, true, false, true),0,'L');
+			}
 			$pdf->Ln(3);
 			$pdf->Ln(3);
 			$pdf->Ln(3);
@@ -1032,11 +1083,15 @@ class cabecera_pdf
 			$pdf->Ln(3);
 			$pdf->MultiCell($anchoFact,3,"Fecha de Emision: ".$info['factura'][0]['Fecha']->format('Y/m/d'),0,'L');
 			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
-			$pdf->MultiCell($anchoFact,3,"Cliente: ".$info['factura'][0]['Cliente'],0,'L');
+			if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+				$pdf->MultiCell($anchoFact,3,"Usuario: ".$info['factura'][0]['Cliente'],0,'L');
+			}else{
+				$pdf->MultiCell($anchoFact,3,"Cliente: ".$info['factura'][0]['Cliente'],0,'L');
+			}
 			$pdf->MultiCell($anchoFact,3,"R.U.C/C.I.: ".$info['factura'][0]['RUC_CI'],0,'L');
 			if($info['factura'][0]['Telefono'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Telefono: ".$info['factura'][0]['Telefono'],0,'L');}
 			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
-			$Producto = "Queremos agradecerle por su aporte solidario de USD ".$info['factura'][0]['Total_MN'].", donacion que nos permitira incrementar la atencion a un mayor numero " .
+			$Producto = "Queremos agradecerle por su aporte solidario de USD ".$info['factura'][0]['Total_MN'].", donación que nos permitirá incrementar la atención a un mayor número " .
 						"de personas en vulnerabilidad alimentaria. Usted es muy importante para nosotros.";
 			$pdf->MultiCell($anchoFact,3, $Producto,0,'L');
 			$pdf->Ln(3);
@@ -1084,20 +1139,29 @@ class cabecera_pdf
 				$pdf->MultiCell($anchoFact,3,'Direccion: '.$_SESSION['INGRESO']['Direccion'],0, 'L');
 			}
 			$pdf->Ln(3);
+			$textoReciboCaja = "INGRESO No. ";
+			if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+				$textoReciboCaja = "RECIBO CAJA No. ";
+			}
+
 			if(count($filasTA)>0){
-				$pdf->MultiCell($anchoFact,3,'INGRESO No. '.$filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Cheque'],0,'L');
+				$pdf->MultiCell($anchoFact,3,$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Cheque'],0,'L');
 			}else{
-				$pdf->MultiCell($anchoFact,3,'INGRESO No. 0000',0,'L');
+				$pdf->MultiCell($anchoFact,3,$textoReciboCaja . '0000',0,'L');
 			}
 			$pdf->Ln(3);
 			$pdf->MultiCell($anchoFact,3,"Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d'),0,'L');
 			$pdf->MultiCell($anchoFact,3,"Por USD ".$info['factura'][0]['Total_MN'],0,'L');
 			$pdf->MultiCell($anchoFact,3,"La suma de: ".str_pad((int)($info['factura'][0]['Total_MN'] * 100), 2, "0", STR_PAD_LEFT)."/100",0,'L');
 			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
-			$pdf->MultiCell($anchoFact,3,"Cliente: ".$info['factura'][0]['Cliente'],0,'L');
+			$pdf->MultiCell($anchoFact,3,"Usuario: ".$info['factura'][0]['Cliente'],0,'L');
 			$pdf->MultiCell($anchoFact,3,"NOTA DE DONACION No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
 			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
-			$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE:",0,'L');
+			if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+				$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE: DONACION",0,'L');
+			}else{
+				$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE:",0,'L');
+			}
 			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
 			$pdf->MultiCell($anchoFact,3,"Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d').' - EFECTIVO MN - '.str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).' - Por USD '.$info['factura'][0]['Total_MN'],0,'L');
 			$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
@@ -1106,7 +1170,7 @@ class cabecera_pdf
 			$pdf->Ln(3);
 			$pdf->MultiCell($anchoFact,3, "_____________      _______________",0,'L');
 			$pdf->MultiCell($anchoFact,3, "CONFORME      	    PROCESADO",0,'L');
-			$pdf->MultiCell($anchoFact,3, "C.I./R.U.C      	  POR",0,'L');
+			$pdf->MultiCell($anchoFact,3, "C.I./R.U.C      	  POR ".$filasUsuario[0]['Usuario'],0,'L');
 			$pdf->MultiCell($anchoFact,3,"".$info['factura'][0]['RUC_CI']."      ".$info['factura'][0]['CodigoU'],0,'L');
 		}else{
 			if(count($info['factura']) > 0){
@@ -1173,10 +1237,10 @@ class cabecera_pdf
 		
 		if($descagar)
 		{
-			$pdf->Output('F',dirname(__DIR__,2).'/TEMP/'.$info['factura'][0]['Serie'].'-'.generaCeros($info['factura'][0]['Factura'],7).'.pdf');
+			$pdf->Output('F',dirname(__DIR__,2).'/TEMP/'.$info['factura'][0]['Serie'].'-'.generaCeros($info['factura'][0]['Factura'],7).'.pdf',true);
 		}else
 		{
-     		$pdf->Output();
+     		$pdf->Output('','',true);
 		}
 	}
 
