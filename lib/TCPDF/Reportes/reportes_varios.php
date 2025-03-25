@@ -197,12 +197,14 @@ class reportes_varios
 	$pdf->setMargins(0,0);
 	$pdf->SetFont('Courier','',8);
 	$pdf->AddPage('P');
-
+	
 	// print_r($info);die();
 	if($Grafico_PV){
+		$margenesX = 6;
+		$margenesY = 2;
 		$anchoImg = $ancho_PV * 1.75;
 		$altoImg = $anchoFact * 0.38;
-		$pdf->Image($src,0,0,$anchoImg,$altoImg);
+		$pdf->Image($src,$margenesX,$margenesY,$anchoImg - ($margenesX*2),$altoImg - ($margenesY*3));
 		$pdf->SetY($altoImg);
 	}
 	if($Encabezado_PV){
@@ -218,7 +220,9 @@ class reportes_varios
 			}
 			$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
 			$pdf->Ln(3);
+			$pdf->SetFont('Courier','B',9);
 			$pdf->MultiCell($anchoFact,3,'DONACION DE ALIMENTOS',0,'L');
+			$pdf->SetFont('Courier','',8);
 			$pdf->Ln(3);
 		}else{
 			$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
@@ -280,7 +284,7 @@ class reportes_varios
 			$pdf->MultiCell($anchoFact,3,"Hora de llegada de la OS: ",0,'L');
 			$pdf->MultiCell($anchoFact,3,"Hora de Atención: ",0,'L');
 			$pdf->MultiCell($anchoFact,3,"Estado: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"No Gavetas pendientes por entregar: ",0,'L');
+			$pdf->MultiCell($anchoFact,3,"N° Gavetas pendientes: ",0,'L');
 		}else{
 			$pdf->MultiCell($anchoFact,3,"Codigo: ",0,'L');
 			$pdf->MultiCell($anchoFact,3,"Aporte: ",0,'L');
@@ -364,7 +368,7 @@ class reportes_varios
 	if($info['factura'][0]['TC'] == "DO" || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0, 1, 'L');
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-			$pdf->MultiCell($anchoFact,3, $CantBlancos."    K I L O S".$this->SetearBlancos(strval($Total), 12, 0, true, false, true),0,'L');
+			$pdf->MultiCell($anchoFact,3, $CantBlancos."   TOTAL KILOS".$this->SetearBlancos(strval($Total), 12, 0, true, false, true),0,'L');
 		}else{
 			$pdf->MultiCell($anchoFact,3, $CantBlancos."    T O T A L".$this->SetearBlancos(strval($Total), 12, 0, true, false, true),0,'L');
 		}
@@ -403,10 +407,12 @@ class reportes_varios
 		//Nueva parte para imprimir nota de donación
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
 		if($Grafico_PV && $_SESSION['INGRESO']['IDEntidad'] != '65'){
+			$margenesX = 6;
+			$margenesY = 2;
 			$anchoImg = $ancho_PV * 1.75;
 			$altoImg = $anchoFact * 0.38;
 			$nuevaAltura = $pdf->GetY();
-			$pdf->Image($src,0,$nuevaAltura,$anchoImg,$altoImg);
+			$pdf->Image($src,$margenesX,$nuevaAltura + $margenesY,$anchoImg - ($margenesX*2),$altoImg - ($margenesY*3));
 			$pdf->SetY($altoImg + $nuevaAltura);
 		}
 		if($Encabezado_PV){
@@ -456,10 +462,10 @@ class reportes_varios
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
 		/*$Producto = "Queremos agradecerle por su aporte solidario de USD ".$info['factura'][0]['Total_MN'].", donación que nos permitirá " .
 					"incrementar la atención a un mayor número de personas en vulnerabilidad alimentaria. Usted es muy importante para nosotros.";*/
-		$Producto = "El costo comercial de los kilos entregados es de USD ".number_format((float)$TotalPVP, 2, '.', '').". Su aporte solidario " . 
-					"de USD ".number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')." representa menos del 10% de este valor y " .
+		$Producto = "<b>El costo comercial de los kilos entregados es de USD ".number_format((float)$TotalPVP, 2, '.', '').". Su aporte solidario " . 
+					"de USD ".number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')." representa menos del 10% de este valor</b> y " .
 					"nos ayuda a cubrir costos operativos para asistir a más personas en situación de vulnerabilidad alimentaria.";
-		$pdf->MultiCell($anchoFact,3, $Producto,0,'J');
+		$pdf->writeHTMLCell($anchoFact,3, $pdf->GetX(), $pdf->GetY(),$Producto,0, 1, false, true, 'J');
 		$pdf->Ln(3);
 					
 		$Producto = "Puede donar en efectivo, por depósito o transferencia a la cuenta de ahorros Banco Pichincha N.º 3708204100 " .
@@ -474,6 +480,11 @@ class reportes_varios
 			$pdf->MultiCell($anchoFact,3, "_____________    ___________________",0,'L');
 			$pdf->MultiCell($anchoFact,3, "     BAQ         Organización Social",0,'L');
 			$pdf->MultiCell($anchoFact,3, $_SESSION['INGRESO']['RUC']."          ".$info['factura'][0]['RUC_CI'],0,'L');
+			$pdf->Ln(3);
+			$pdf->SetFont('Courier','B',8);
+			$pdf->MultiCell($anchoFact,3, "EL PRIMER BANCO DE ALIMENTOS DEL ECUADOR",0,'C');
+			$pdf->MultiCell($anchoFact,3, "\"No desperdiciar, alimentar bien y cambiar vidas\"",0,'C');
+			$pdf->SetFont('Courier','',8);
 		}else{
 			$pdf->MultiCell($anchoFact,3, "_____________      _______________",0,'L');
 			$pdf->MultiCell($anchoFact,3, "   RECIBIDO            ENTREGADO",0,'L');
@@ -488,11 +499,19 @@ class reportes_varios
 		//$pdf->SetFont('Courier','',8);
 
 		if($Grafico_PV){
+			$margenesX = 6;
+			$margenesY = 2;
 			$anchoImg = $ancho_PV * 1.75;
 			$altoImg = $anchoFact * 0.38;
 			$nuevaAltura = $pdf->GetY();
-			$pdf->Image($src,0,$nuevaAltura,$anchoImg,$altoImg);
+			$pdf->Image($src,$margenesX,$nuevaAltura + $margenesY,$anchoImg - ($margenesX*2),$altoImg - ($margenesY*3));
 			$pdf->SetY($altoImg + $nuevaAltura);
+
+			/*$anchoImg = $ancho_PV * 1.75;
+			$altoImg = $anchoFact * 0.38;
+			$nuevaAltura = $pdf->GetY();
+			$pdf->Image($src,0,$nuevaAltura,$anchoImg,$altoImg);
+			$pdf->SetY($altoImg + $nuevaAltura);*/
 		}
 		if($Encabezado_PV){
 			if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
