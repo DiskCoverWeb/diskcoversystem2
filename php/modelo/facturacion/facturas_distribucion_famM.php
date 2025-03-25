@@ -21,14 +21,25 @@ class facturas_distribucion_famM
 
   function ConsultarProductos($params){
     
-    $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU
+    /*$sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU
             FROM Trans_Comision TC 
             INNER JOIN Accesos A ON TC.CodigoU = A.Codigo 
             WHERE CodigoC = '".$params['beneficiario']."' 
             AND TC.Item = '".$_SESSION['INGRESO']['item']."' 
             AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
             AND TC.Fecha = '".$params['fecha']."' 
-            AND TC.T='F'";
+            AND TC.T='F'";*/
+    
+    $sql = "SELECT DF.ID,DF.Fecha,A.Nombre_Completo,DF.Cantidad,DF.Precio,DF.Total,DF.CodBodega,CodigoC,DF.Codigo,DF.CodigoU
+            FROM Detalle_Factura DF 
+            INNER JOIN Accesos A ON DF.CodigoU = A.Codigo 
+            WHERE DF.CodigoC IN (". join(',', array_map(fn($valor) => "'".$valor."'",$params['beneficiarios'])) .") 
+            AND DF.Item = '".$_SESSION['INGRESO']['item']."' 
+            AND DF.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+            AND DF.Fecha = '".$params['fecha']."' 
+            AND DF.T='K'
+            AND DF.TC = 'OP' 
+            ORDER BY Fecha DESC";
     //print_r($sql);die();
     return $this->db->datos($sql);
   }
@@ -338,23 +349,27 @@ class facturas_distribucion_famM
   }
   function tablaClientes($parametros)
 	{
-    $sql = "SELECT Item, Cliente,CI_RUC,C.ID
+    /*$sql = "SELECT Item, Cliente,CI_RUC,C.ID
                 FROM Trans_Comision TC 
                 INNER JOIN Clientes C ON TC.CodigoC = C.Codigo 
-                WHERE TC.T = 'F' 
-                AND C.TB = '93.02' 
+                WHERE C.TB = '93.02' 
                 AND Grupo = '".$parametros['grupo']."' 
                 AND Cliente <> '.' 
                 AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-                AND Item = '".$_SESSION['INGRESO']['item']."' ";
+                AND Item = '".$_SESSION['INGRESO']['item']."' ";*/
+    $sql = "SELECT Cliente,CI_RUC,ID
+                FROM Clientes 
+                WHERE TB = '93.02' 
+                AND Grupo = '".$parametros['grupo']."' 
+                AND Cliente <> '.'";
                 //AND Grupo = '" . $parametros['grupo'] . "' ";
-    // print_r($sql);die();
+    //print_r($sql);die();
       
-    if($parametros['donacion']!=''){
+    /*if($parametros['donacion']!=''){
       $sql .= "AND Calificacion = '".$parametros['donacion']."' ";
-    }
+    }*/
 
-    $sql .= "GROUP BY Cliente, CI_RUC,Item,C.ID";
+    //$sql .= "GROUP BY Cliente, CI_RUC,Item,C.ID";
 		/*$sql = "SELECT TOP 50 Cliente,CI_RUC,Codigo,Cta_CxP,Grupo,Cod_Ejec
 			FROM Clientes
 			WHERE FA <> 0

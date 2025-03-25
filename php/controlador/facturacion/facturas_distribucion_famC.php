@@ -302,7 +302,7 @@ class facturas_distribucion
 	function ConsultarProductos($params){
 
 		//Datos quemados por el momento
-		$datos = array(
+		/*$datos = array(
 			"res"=> 1,
 			"contenido"=> array(
 				0 => array(
@@ -357,14 +357,21 @@ class facturas_distribucion
 			)
 		);
 
-		return $datos;
+		return $datos;*/
+		/*$beneficiarios = $this->tablaClientes($params);
+
+		foreach($beneficiarios as $key => $value){
+			$params['beneficiarios'][] = $value['CI_RUC'];
+		}*/
+		$params['beneficiarios'] = array('1102737762','1792066980');
+		
 		$datos = $this->modelo->ConsultarProductos($params);
 		$res = array();
 		if(count($datos) > 0){
 			$contenido = array();
 			foreach($datos as $key => $value){
 				$fecha=$value['Fecha']->format("Y-m-d");
-				$producto = Leer_Codigo_Inv($value['Codigo_Inv'], $fecha, $value['CodBodega'], $CodMarca='');
+				$producto = Leer_Codigo_Inv($value['Codigo'], $fecha, $value['CodBodega'], $CodMarca='');
 				//Leer_Codigo_Inv($parametros['Codigo'], $parametros['fecha'], $parametros['CodBod'])
 				$contenido[] = array(
 					"Detalles" => $value,
@@ -389,6 +396,7 @@ class facturas_distribucion
 				"res" => 1,
 				"contenido" => $contenido
 			);
+			//print_r($res['contenido']);die();
 		}else{
 			$res = array(
 				"res" => 0,
@@ -523,6 +531,11 @@ class facturas_distribucion
 		if(count($datos) <= 0){
 			$datos = $this->modelo->tablaClientesQuemado($parametros);
 		}
+
+		/*foreach($datos as $key => $value){
+			$datos[$key]['Item'] = $_SESSION['INGRESO']['item'];
+		}*/
+		//print_r($datos);die();
 		
 		return $datos;
 		// print_r($datos);die();

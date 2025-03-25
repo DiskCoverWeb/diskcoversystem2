@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.1.0">
+  <infoTributaria>
+    <ambiente>2</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>FUNDACION DE AYUDA SOCIAL BANCO DE ALIMENTOS</razonSocial>
+    <nombreComercial>BANCO DE ALIMENTOS QUITO</nombreComercial>
+    <ruc>1791921429001</ruc>
+    <claveAcceso>1803202501179192142900120010020000000651234567819</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>002</ptoEmi>
+    <secuencial>000000065</secuencial>
+    <dirMatriz>AV PEDRO VICENTE MALDONADO S15283 Y BALZAR</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>18/03/2025</fechaEmision>
+    <dirEstablecimiento>AV PEDRO VICENTE MALDONADO S15283 Y BALZAR</dirEstablecimiento>
+    <obligadoContabilidad>SI</obligadoContabilidad>
+    <tipoIdentificacionComprador>04</tipoIdentificacionComprador>
+    <razonSocialComprador>FUNDACION ISM LETRA PARA TODOS</razonSocialComprador>
+    <identificacionComprador>1792396255001</identificacionComprador>
+    <totalSinImpuestos>37.00</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>0</codigoPorcentaje>
+        <descuentoAdicional>0.00</descuentoAdicional>
+        <baseImponible>37.00</baseImponible>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>37.00</importeTotal>
+    <moneda>DOLAR</moneda>
+    <pagos>
+      <pago>
+        <formaPago>01</formaPago>
+        <total>37.00</total>
+      </pago>
+    </pagos>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>FA.99</codigoPrincipal>
+      <descripcion>DONACION</descripcion>
+      <unidadMedida>DOLAR</unidadMedida>
+      <cantidad>1.000000</cantidad>
+      <precioUnitario>37.000000</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>37.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <tarifa>0</tarifa>
+          <baseImponible>37.00</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Direccion">JORGE MORILLO</campoAdicional>
+    <campoAdicional nombre="Telefono">0958615650</campoAdicional>
+    <campoAdicional nombre="Email">COORDINACIONGENERAL@LETRAPARATODOSORGEC</campoAdicional>
+    <campoAdicional nombre="Referencia">ELSA MORENO</campoAdicional>
+    <campoAdicional nombre="tipoContribuyente">Contribuyente Regimen General</campoAdicional>
+    <campoAdicional nombre="seriePuntoEmision">001002</campoAdicional>
+    <campoAdicional nombre="PlacaVehiculo">.</campoAdicional>
+    <campoAdicional nombre="CtaEstablecimiento">.</campoAdicional>
+  </infoAdicional>
+</factura>

@@ -115,7 +115,7 @@ class reportes_varios
 
 	$sql = "SELECT Usuario
 	FROM Accesos 
-	WHERE Codigo = '".$_SESSION['INGRESO']['CodigoU']."'";
+	WHERE Codigo = '".$info['lineas'][0]['CodigoU']."'";
 	$stmt = sqlsrv_query($cid, $sql);
 	if( $stmt === false)  
 	{  
@@ -130,6 +130,24 @@ class reportes_varios
 		$filasUsuario[] = $row;
 		//echo $row[0];
 	}
+
+	/*$sql = "SELECT Usuario
+	FROM Accesos 
+	WHERE Codigo = '".$info['lineas'][0]['CodigoU']."'";
+	$stmt = sqlsrv_query($cid, $sql);
+	if( $stmt === false)  
+	{  
+		echo "Error en consulta PA.\n";  
+		return '';
+		die( print_r( sqlsrv_errors(), true));  
+	}   
+		
+	$filasUsuario = array();	
+	while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC)) 
+	{
+		$filasUsuario[] = $row;
+		//echo $row[0];
+	}*/
 
 	$CantBlancos = "";
 	$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
@@ -195,7 +213,9 @@ class reportes_varios
 			//$pdf->Ln(6);
 		}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 			$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
-			$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
+			if($_SESSION['INGRESO']['IDEntidad'] != '65'){
+				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
+			}
 			$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
 			$pdf->Ln(3);
 			$pdf->MultiCell($anchoFact,3,'DONACION DE ALIMENTOS',0,'L');
@@ -240,7 +260,7 @@ class reportes_varios
 		$pdf->MultiCell($anchoFact,3,"Hora de Proceso: ".$info['factura'][0]['Hora'],0,'L');
 	}
 
-	if(strlen($info['factura'][0]['Autorizacion']) < 13){
+	if(strlen($info['factura'][0]['Autorizacion']) < 13 && $_SESSION['INGRESO']['IDEntidad'] != '65'){
 		$pdf->MultiCell($anchoFact,3,"Fecha de caducidad: ".substr(mesesLetras($info['factura'][0]['Vencimiento']->format('m')), 0, 3).'/'.$info['factura'][0]['Vencimiento']->format('Y'),0,'L');
 	}
 	$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
@@ -287,6 +307,7 @@ class reportes_varios
 
 
 	$Total = 0;
+	$TotalPVP = 0;
 
 	if(($ancho_PV - 26) > 0){$CantBlancos = str_repeat(' ', $ancho_PV - 26);}else{$CantBlancos = "";}
 
@@ -297,6 +318,26 @@ class reportes_varios
 				$CodigoN = number_format($value['Cantidad'], 2, '.', '');
 				$Producto = $value['Producto'];
 
+				$sql="SELECT *
+					FROM Catalogo_Productos 
+					WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+					AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+					AND Codigo_Inv = '".$CodigoC."'";
+				
+				$stmt = sqlsrv_query($cid, $sql);
+				if( $stmt === false)  
+				{  
+					echo "Error en consulta PA.\n";  
+					return '';
+					die( print_r( sqlsrv_errors(), true));  
+				}
+				$filasCP = array();	
+				while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC)) 
+				{
+					$filasCP[] = $row;
+					//echo $row[0];
+				}
+
 				if($value['Tipo_Hab'] <> G_NINGUNO){$Producto .= "(".$value['Tipo_Hab'].")";}
 				if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 					$pdf->MultiCell($anchoFact,3,$Producto.str_repeat(' ', $ancho_PV - (strlen($Producto)+strlen($CodigoN))).$CodigoN,0,'L');
@@ -305,7 +346,9 @@ class reportes_varios
 					$pdf->MultiCell($anchoFact,3,$Producto,0,'L');
 					$pdf->MultiCell($anchoFact,3,$CodigoC.str_repeat(' ', 25 - strlen($CodigoC))." ".str_repeat(' ', 10 - strlen($CodigoN)).$CodigoN,0,'L');
 				}
+				$PVP = (float)number_format($filasCP[0]['PVP_3'], 2, '.', '') * (float)$value['Cantidad'];
 				$Total += $value['Cantidad'];
+				$TotalPVP += $PVP;
 			}else{
 				$pdf->MultiCell($anchoFact,3, $value['Producto'],0,'L');
 				$Producto = $this->SetearBlancos(strval($value['Cantidad'])."x".number_format($value['Precio'], 2, '.', ','), 12, 0, false)." "
@@ -325,28 +368,41 @@ class reportes_varios
 		}else{
 			$pdf->MultiCell($anchoFact,3, $CantBlancos."    T O T A L".$this->SetearBlancos(strval($Total), 12, 0, true, false, true),0,'L');
 		}
-		$pdf->Ln(3);
-		$pdf->Ln(3);
-		$pdf->Ln(3);
-		$pdf->MultiCell($anchoFact,3, "_____________      _______________",0,'L');
-		$pdf->MultiCell($anchoFact,3, "Entregado por      Recibi Conforme",0,'L');
+
+		if($_SESSION['INGRESO']['IDEntidad'] != '65'){
+			$pdf->Ln(3);
+			$pdf->Ln(3);
+			$pdf->Ln(3);
+			$pdf->MultiCell($anchoFact,3, "_____________      _______________",0,'L');
+			$pdf->MultiCell($anchoFact,3, "Entregado por      Recibi Conforme",0,'L');
+		}
+
 		$pdf->Ln(3);
 		$pdf->MultiCell($anchoFact,3, "IMPORTANTE:",0,'L');
-		$Producto = "Los productos donados, han perdido valor comercial por diferentes motivos, pero mantienen un valor social. " .
-			"Estos productos han pasado por un proceso de clasificación y se encuentran en buen estado. Se recomienda su " .
-			"consumo INMEDIATO y se prohíbe su comercialización. " . $_SESSION['INGRESO']['Razon_Social'] . " no se responsabiliza por " .
-			"cualquier efecto negativo que causare el consumo de alimentos en un tiempo mayor al sugerido.  Con su firma " .
-			"el beneficiario acepta que ha sido informado sobre el estado de los productos, que los recibe con su consentimiento, " .
-			"que los usará para fines benéficos y bajo su completa responsabilidad.";
 
-		$pdf->MultiCell($anchoFact,3, $Producto,0,'L');
+		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+			$Producto = "Los productos donados han perdido valor comercial, pero conservan valor social. Han sido clasificados y están en " .
+				"buen estado. Se recomienda su CONSUMO INMEDIATO y está PROHIBIDA SU COMERCIALIZACIÓN. El BAQ no se responsabiliza por " .
+				"efectos negativos por consumo fuera del tiempo sugerido. Con su firma, el beneficiario acepta haber sido informado del " .
+				"estado de los productos, que los recibe voluntariamente, los usará con fines benéficos y bajo su responsabilidad.";
+				$pdf->MultiCell($anchoFact,3, $Producto,0,'J');
+		}else{
+			$Producto = "Los productos donados, han perdido valor comercial por diferentes motivos, pero mantienen un valor social. " .
+				"Estos productos han pasado por un proceso de clasificación y se encuentran en buen estado. Se recomienda su " .
+				"consumo INMEDIATO y se prohíbe su comercialización. " . $_SESSION['INGRESO']['Razon_Social'] . " no se responsabiliza por " .
+				"cualquier efecto negativo que causare el consumo de alimentos en un tiempo mayor al sugerido.  Con su firma " .
+				"el beneficiario acepta que ha sido informado sobre el estado de los productos, que los recibe con su consentimiento, " .
+				"que los usará para fines benéficos y bajo su completa responsabilidad.";
+				$pdf->MultiCell($anchoFact,3, $Producto,0,'L');
+		}
+
 		$pdf->Ln(3);
 		$pdf->Ln(3);
 		$pdf->Ln(3);
 
 		//Nueva parte para imprimir nota de donación
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
-		if($Grafico_PV){
+		if($Grafico_PV && $_SESSION['INGRESO']['IDEntidad'] != '65'){
 			$anchoImg = $ancho_PV * 1.75;
 			$altoImg = $anchoFact * 0.38;
 			$nuevaAltura = $pdf->GetY();
@@ -360,9 +416,13 @@ class reportes_varios
 				$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
 				//$pdf->Ln(6);
 			}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
-				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
-				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
-				$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
+				if($_SESSION['INGRESO']['IDEntidad'] != '65'){
+					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
+					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
+					$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
+				}else{
+					$pdf->SetFont('Courier','B',9);
+				}
 				$pdf->Ln(3);
 				$pdf->MultiCell($anchoFact,3,'A P O R T E   S O L I D A R I O',0,'L');
 				$pdf->Ln(3);
@@ -371,12 +431,17 @@ class reportes_varios
 				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
 				$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
 			}
-			$pdf->MultiCell($anchoFact,3,'Direccion: '.$_SESSION['INGRESO']['Direccion'],0, 'L');
-			$pdf->MultiCell($anchoFact,3,'Telefono: '.$_SESSION['INGRESO']['Telefono1'],0, 'L');
-			$pdf->Ln(3);
+			if($_SESSION['INGRESO']['IDEntidad'] != '65'){
+				$pdf->MultiCell($anchoFact,3,'Direccion: '.$_SESSION['INGRESO']['Direccion'],0, 'L');
+				$pdf->MultiCell($anchoFact,3,'Telefono: '.$_SESSION['INGRESO']['Telefono1'],0, 'L');
+				$pdf->Ln(3);
+			}else{
+				$pdf->SetFont('Courier','',8);
+			}
 			$pdf->MultiCell($anchoFact,3,"NOTA DE DONACION No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
 			
 		}
+
 
 		$pdf->Ln(3);
 		$pdf->MultiCell($anchoFact,3,"Fecha de Emision: ".$info['factura'][0]['Fecha']->format('Y/m/d'),0,'L');
@@ -389,19 +454,30 @@ class reportes_varios
 		$pdf->MultiCell($anchoFact,3,"R.U.C/C.I.: ".$info['factura'][0]['RUC_CI'],0,'L');
 		if($info['factura'][0]['Telefono'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Telefono: ".$info['factura'][0]['Telefono'],0,'L');}
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
-		$Producto = "Queremos agradecerle por su aporte solidario de USD ".$info['factura'][0]['Total_MN'].", donación que nos permitirá incrementar la atención a un mayor número " .
-					"de personas en vulnerabilidad alimentaria. Usted es muy importante para nosotros.";
-		$pdf->MultiCell($anchoFact,3, $Producto,0,'L');
+		/*$Producto = "Queremos agradecerle por su aporte solidario de USD ".$info['factura'][0]['Total_MN'].", donación que nos permitirá " .
+					"incrementar la atención a un mayor número de personas en vulnerabilidad alimentaria. Usted es muy importante para nosotros.";*/
+		$Producto = "El costo comercial de los kilos entregados es de USD ".number_format((float)$TotalPVP, 2, '.', '').". Su aporte solidario " . 
+					"de USD ".number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')." representa menos del 10% de este valor y " .
+					"nos ayuda a cubrir costos operativos para asistir a más personas en situación de vulnerabilidad alimentaria.";
+		$pdf->MultiCell($anchoFact,3, $Producto,0,'J');
 		$pdf->Ln(3);
-		$Producto = "SU DONACIÓN PUEDE REALIZARLA EN EFECTIVO, DEPOSITO O TRANSFERENCIA BANCARIA A LA CUENTA DE AHORROS BANCO PICHINCHA No.- 3708204100 " .
-					"A NOMBRE DE ".$_SESSION['INGRESO']['Razon_Social'].".";
-		$pdf->MultiCell($anchoFact,3, $Producto,0,'L');
+					
+		$Producto = "Puede donar en efectivo, por depósito o transferencia a la cuenta de ahorros Banco Pichincha N.º 3708204100 " .
+					"a nombre de ".$_SESSION['INGRESO']['Razon_Social'].".";
+		$pdf->MultiCell($anchoFact,3, $Producto,0,'J');
 		
 		$pdf->Ln(3);
 		$pdf->Ln(3);
 		$pdf->Ln(3);
-		$pdf->MultiCell($anchoFact,3, "_____________      _______________",0,'L');
-		$pdf->MultiCell($anchoFact,3, "   RECIBIDO            ENTREGADO",0,'L');
+
+		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+			$pdf->MultiCell($anchoFact,3, "_____________    ___________________",0,'L');
+			$pdf->MultiCell($anchoFact,3, "     BAQ         Organización Social",0,'L');
+			$pdf->MultiCell($anchoFact,3, $_SESSION['INGRESO']['RUC']."          ".$info['factura'][0]['RUC_CI'],0,'L');
+		}else{
+			$pdf->MultiCell($anchoFact,3, "_____________      _______________",0,'L');
+			$pdf->MultiCell($anchoFact,3, "   RECIBIDO            ENTREGADO",0,'L');
+		}
 
 
 		$pdf->Ln(3);
@@ -425,8 +501,10 @@ class reportes_varios
 				$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
 				//$pdf->Ln(6);
 			}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
-				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
-				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
+				if($_SESSION['INGRESO']['IDEntidad'] != '65'){
+					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
+					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
+				}
 				$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
 			}else{
 				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
@@ -443,13 +521,13 @@ class reportes_varios
 		}
 
 		if(count($filasTA)>0){
-			$pdf->MultiCell($anchoFact,3,$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Cheque'],0,'L');
+			$pdf->MultiCell($anchoFact,3,$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Recibo_No'],0,'L');
 		}else{
 			$pdf->MultiCell($anchoFact,3,$textoReciboCaja . '0000',0,'L');
 		}
 		$pdf->Ln(3);
 		$pdf->MultiCell($anchoFact,3,"Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d'),0,'L');
-		$pdf->MultiCell($anchoFact,3,"Por USD ".$info['factura'][0]['Total_MN'],0,'L');
+		$pdf->MultiCell($anchoFact,3,"Por USD ".number_format((float)$info['factura'][0]['Total_MN'], 2, '.', ''),0,'L');
 		$pdf->MultiCell($anchoFact,3,"La suma de: ".str_pad((int)($info['factura'][0]['Total_MN'] * 100), 2, "0", STR_PAD_LEFT)."/100",0,'L');
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
 		$pdf->MultiCell($anchoFact,3,"Usuario: ".$info['factura'][0]['Cliente'],0,'L');
@@ -461,7 +539,7 @@ class reportes_varios
 			$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE:",0,'L');
 		}
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
-		$pdf->MultiCell($anchoFact,3,"Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d').' - EFECTIVO MN - '.str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).' - Por USD '.$info['factura'][0]['Total_MN'],0,'L');
+		$pdf->MultiCell($anchoFact,3,"Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d').' - EFECTIVO MN - '.str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).' - Por USD '.number_format((float)$info['factura'][0]['Total_MN'], 2, '.', ''),0,'L');
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
 		$pdf->Ln(3);
 		$pdf->Ln(3);

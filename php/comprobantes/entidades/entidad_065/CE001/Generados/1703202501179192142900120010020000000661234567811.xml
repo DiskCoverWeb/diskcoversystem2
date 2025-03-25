@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.1.0">
+  <infoTributaria>
+    <ambiente>2</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>FUNDACION DE AYUDA SOCIAL BANCO DE ALIMENTOS</razonSocial>
+    <nombreComercial>BANCO DE ALIMENTOS QUITO</nombreComercial>
+    <ruc>1791921429001</ruc>
+    <claveAcceso>1703202501179192142900120010020000000661234567811</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>002</ptoEmi>
+    <secuencial>000000066</secuencial>
+    <dirMatriz>AV PEDRO VICENTE MALDONADO S15283 Y BALZAR</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>17/03/2025</fechaEmision>
+    <dirEstablecimiento>AV PEDRO VICENTE MALDONADO S15283 Y BALZAR</dirEstablecimiento>
+    <obligadoContabilidad>SI</obligadoContabilidad>
+    <tipoIdentificacionComprador>04</tipoIdentificacionComprador>
+    <razonSocialComprador>CF COMITE DE DESARROLLO INFANTIL NINOS Y NINAS DE JUANITA</razonSocialComprador>
+    <identificacionComprador>1792175674001</identificacionComprador>
+    <totalSinImpuestos>31.35</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>0</codigoPorcentaje>
+        <descuentoAdicional>0.00</descuentoAdicional>
+        <baseImponible>31.35</baseImponible>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>31.35</importeTotal>
+    <moneda>DOLAR</moneda>
+    <pagos>
+      <pago>
+        <formaPago>01</formaPago>
+        <total>31.35</total>
+      </pago>
+    </pagos>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>FA.99</codigoPrincipal>
+      <descripcion>DONACION</descripcion>
+      <unidadMedida>DOLAR</unidadMedida>
+      <cantidad>1.000000</cantidad>
+      <precioUnitario>31.350000</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>31.35</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <tarifa>0</tarifa>
+          <baseImponible>31.35</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Direccion">COMITE DEL PUEBLO, AV JORGE GARCES, SN, Y JUAQUI</campoAdicional>
+    <campoAdicional nombre="Telefono">2475689</campoAdicional>
+    <campoAdicional nombre="Email">CIBVCOMITEDELPUEBLO@HOTMAILCOM</campoAdicional>
+    <campoAdicional nombre="Referencia">ROSA ANDRANGO</campoAdicional>
+    <campoAdicional nombre="tipoContribuyente">Contribuyente Regimen General</campoAdicional>
+    <campoAdicional nombre="seriePuntoEmision">001002</campoAdicional>
+    <campoAdicional nombre="PlacaVehiculo">.</campoAdicional>
+    <campoAdicional nombre="CtaEstablecimiento">.</campoAdicional>
+  </infoAdicional>
+</factura>

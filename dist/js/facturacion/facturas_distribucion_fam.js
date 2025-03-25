@@ -1,5 +1,5 @@
 var valTC = 'FA';
-	var datosFact = "NDO";
+	var datosFact = "NDU";
 	var url_nd;
 	var docbouche;
 	eliminar_linea('', '');
@@ -757,7 +757,7 @@ var valTC = 'FA';
 			}
 		});
 
-		cargarRegistrosProductos();
+		//cargarRegistrosProductos();
 	}
 
 	function formatearUnidadesProductos(unidad){
@@ -802,20 +802,23 @@ var valTC = 'FA';
 						tr.append($('<td></td>').text(fila['Detalles']['CodBodega']));
 						tr.append($('<td></td>').text(fila['Detalles']['Nombre_Completo']));
 						tr.append($('<td></td>').text(fila['Productos']['Producto']));
-						tr.append($('<td></td>').text(parseInt(fila['Detalles']['Total'])));
-						tr.append($('<td></td>').text(parseInt(0)));
-						tr.append($('<td></td>').text(parseFloat(fila['Productos']['PVP']).toFixed(2)));
-						let totalProducto = fila['Detalles']['Total'] * fila['Productos']['PVP'];
-						tr.append($('<td></td>').text(parseFloat(totalProducto).toFixed(2)));
-						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodBodega2']));
+						let cantEntregas = parseFloat(fila['Detalles']['Cantidad']);
+						tr.append($('<td></td>').text(cantEntregas.toFixed(2)));
+						tr.append($('<td></td>').text(parseInt(fila['Detalles']['Cantidad'])));
+						//tr.append($('<td></td>').text(parseFloat(fila['Productos']['PVP']).toFixed(2)));
+						tr.append($('<td></td>').text(parseFloat(fila['Detalles']['Precio']).toFixed(2)));
+						tr.append($('<td></td>').text(parseFloat(fila['Detalles']['Total']).toFixed(2)));
+						//let totalProducto = fila['Detalles']['Total'] * fila['Productos']['PVP'];
+						//tr.append($('<td></td>').text(parseFloat(totalProducto).toFixed(2)));
+						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodBodega']));
 						tr.append($('<td style="display:none;"></td>').text(fila['Productos']['Codigo_Inv']));
 						tr.append($('<td></td>').html('<input type="checkbox" id="producto_cheking" name="producto_cheking" class="form-check-input border-secondary">'));
 						tr.append($('<td></td>').html('<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil"></i></button>'));
 						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodigoU']));
 						tBody.append(tr);
 
-						cTotalProds += parseInt(fila['Detalles']['Total']);
-						tTotalProds += parseFloat(totalProducto);
+						cTotalProds += cantEntregas;
+						tTotalProds += parseFloat(fila['Detalles']['Total']);
 						console.log(tTotalProds);
 					}
 					let tr = $('<tr class="bg-primary-subtle"></tr>');
@@ -832,7 +835,7 @@ var valTC = 'FA';
 					$('#tablaProdCU').text(unidadProd);
 					$('#unidad_dist').val(unidadProd);
 					//buscarValoresGavetas();
-					//ingresarAsientoF();
+					ingresarAsientoF();
 				}
 				$('#myModal_espera').modal('hide');
 			}
@@ -842,10 +845,11 @@ var valTC = 'FA';
 	function modificarLineaFac(campo){
 		let fila = campo.parentElement.parentElement;
 		let valAnt = parseInt(fila.childNodes[3].innerText);
+		console.log(valAnt);
 		fila.childNodes[3].innerHTML = `
 			<input type="text" class="form-control form-control-sm text-center" style="max-width:136px;" placeholder="Cambie la cantidad">
 		`; //name = cod_prod + usuario_q_agg
-		fila.childNodes[9].innerHTML = `
+		fila.childNodes[10].innerHTML = `
 			<div class="input-group input-group-sm" style="min-width: 176px;">
 				<input type="text" class="form-control form-control-sm" placeholder="Coloque un comentario">
 				<button class="btn btn-sm btn-success" style="font-size:8pt;" onclick="aceptarModificarLF(this)"><i class="fa fa-check" aria-hidden="true" style="font-size:8pt;"></i></button>
@@ -858,12 +862,12 @@ var valTC = 'FA';
 	function aceptarModificarLF(campo){
 		let fila = campo.parentElement.parentElement.parentElement;
 		let nuevoValor = fila.childNodes[3].children[0].value; //corregir aqui
-		let comentario = fila.childNodes[9].childNodes[1].childNodes[1].value;
+		let comentario = fila.childNodes[10].childNodes[1].childNodes[1].value;
 		let costoTotal = parseInt(nuevoValor) * parseFloat(fila.childNodes[4].innerText);
 		console.log(nuevoValor);
 		fila.childNodes[3].innerText = nuevoValor;
-		fila.childNodes[5].innerText = costoTotal.toFixed(2);
-		fila.childNodes[9].innerHTML = `
+		fila.childNodes[6].innerText = costoTotal.toFixed(2);
+		fila.childNodes[10].innerHTML = `
 			<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil" aria-hidden="true"></i></button>
 		`;
 
@@ -874,7 +878,7 @@ var valTC = 'FA';
 			console.log(f);
 			totalCant += parseInt(f.children[3].innerText);
 			console.log(f.children[3].innerText);
-			ADTotal += parseFloat(f.children[5].innerText);
+			ADTotal += parseFloat(f.children[6].innerText);
 		}
 		console.log(totalCant);
 		$('#ADCantTotal').html(`<b>${totalCant}</b>`);
@@ -928,7 +932,7 @@ var valTC = 'FA';
 		let fila = campo.parentElement.parentElement.parentElement;
 		console.log(fila);
 		fila.childNodes[3].innerText = valor;
-		fila.childNodes[9].innerHTML = `
+		fila.childNodes[10].innerHTML = `
 			<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil" aria-hidden="true"></i></button>
 		`;
 	}
