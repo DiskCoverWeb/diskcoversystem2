@@ -98,7 +98,7 @@ class punto_ventaM
     //    $sql.=" AND LEN(Cta_Inventario) > 1 ";
     // }
     if ($query) {
-      $sql .= " AND Producto like '%" . $query . "%'";
+         $sql .= " AND (Producto like '%" . $query . "%' OR Codigo_Inv like '%".$query."%' OR Codigo_Barra like '%".$query."%')";
     }
     $sql .= " ORDER BY Producto,Codigo_Inv ";
 
