@@ -451,10 +451,13 @@ function guardar() {
 
     codigo = $('#beneficiario').val();
     beneficiario = codigo.split('-');
+    orden = beneficiario[2];
     var parametros = {
         'beneficiario':beneficiario[0],
         'tipo':beneficiario[1],
         'fecha':$('#fechAten').val(),
+        'fechaAsi':$('#txtFechaAsign').val(),
+        'orden':orden,
     }
     $.ajax({
         url: '../controlador/inventario/asignacion_pickingC.php?GuardarPicking=true',

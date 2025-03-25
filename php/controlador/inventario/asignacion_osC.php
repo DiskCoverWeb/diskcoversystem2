@@ -337,6 +337,7 @@ class asignacion_osC
         SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
         SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
         SetAdoFields("No_Hab",$parametros['asignacion']);
+        SetAdoFields("Orden_No",$parametros['beneficiarioCodigo'].''.str_replace('-',"", $parametros['FechaAte']));
         
         return SetAdoUpdate();
     }
