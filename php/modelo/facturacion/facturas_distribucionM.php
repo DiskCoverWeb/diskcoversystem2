@@ -91,6 +91,25 @@ class facturas_distribucionM
     return $this->db->datos($sql);
   }
 
+  function DCLineaSecuencial($TC, $Fecha, $Codigo = false)
+  {
+    $sql = "SELECT Secuencial 
+      FROM Catalogo_Lineas 
+      WHERE TL <> 0 
+      AND Item = '" . $_SESSION['INGRESO']['item'] . "' 
+      AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' 
+      AND Fact = '" . $TC . "' ";
+      
+    if($Codigo){
+      $sql .= "AND Codigo = '".$Codigo."' ";
+    }
+    $sql .= "AND Fecha <= '" . $Fecha . "' 
+      AND Vencimiento >='" . $Fecha . "' 
+      ORDER BY Codigo ";
+    //print_r($sql);die();
+    return $this->db->datos($sql);
+  }
+
   function consultarGavetas(){
     $sql = "SELECT Periodo,TC,Codigo_Inv,Producto
             FROM Catalogo_Productos
