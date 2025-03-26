@@ -778,7 +778,8 @@ function cerrarCamaraAlma() {
 function cerrarCamaradetalle() {
   	$('#modal_qr_escaner_detalle').modal('hide');
     if (scanner) {
-        scanner.stop().then(() => {            
+        scanner.stop().then(() => {    
+        	limpiar_detalle();        
           $('#qrescaner_carga_detalle').show();
           $('#modal_qr_escaner_detalle').modal('hide');
         }).catch(err => {
@@ -830,8 +831,9 @@ function iniciarEscanerQRdetalle() {
 }
 
 
-function cambiarCamaraAlm()
+function cambiarCamaradeta()
 {
+		limpiar_detalle();     
 		scanner.stop(); 
 		iniciarEscanerQRdetalle();
   
@@ -840,6 +842,7 @@ function cambiarCamaraAlm()
 
 function modal_detalle()
 {
+	limpiar_detalle();  
 	iniciarEscanerQRdetalle();
 	 $('#modal_qr_escaner_detalle').modal('show');
 }
@@ -867,4 +870,15 @@ function cargar_detalle(codbarras)
 		    }
 		});
 
+}
+
+function limpiar_detalle()
+{
+		$('#lbl_barras').text('');
+		$('#lbl_producto').text('');
+		$('#lbl_cantidad').text('');
+		$('#lbl_donante').text('');
+		$('#lbl_bodega').text('');
+		$('#lbl_codbodega').text('');
+		$('#lbl_proceso').text('');
 }

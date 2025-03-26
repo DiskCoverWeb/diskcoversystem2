@@ -708,7 +708,7 @@ class almacenamiento_bodegaC
 				$datos[0]['Lugar'] = 'Almacenamiento';
 				break;
 			case 'C':
-				$datos[0]['Lugar'] = 'Clasficiacion';
+				$datos[0]['Lugar'] = 'Clasificiacion';
 				break;
 			case 'P':
 				$datos[0]['Lugar'] = 'Checking';
@@ -724,7 +724,7 @@ class almacenamiento_bodegaC
 					$datos[0]['Lugar'] = 'Egresos';
 					break;
 				default:
-					$datos[0]['Lugar'] = 'Clasficiacion';
+					$datos[0]['Lugar'] = 'Clasificiacion';
 					break;
 			}
 		}
