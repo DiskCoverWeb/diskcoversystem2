@@ -456,7 +456,7 @@ class lista_facturasM
 	   return $result;
    }
 
-   function Cliente_facturas_estado($cod,$grupo = false,$query=false, $estado)
+   function Cliente_facturas_estado($cod, $estado,$grupo = false,$query=false)
    {
 	   $sql = "SELECT CodigoC as 'Codigo',C.Cliente as 'Cliente',C.CI_RUC,C.Email,C.Direccion,C.Telefono  
 	   FROM Facturas F

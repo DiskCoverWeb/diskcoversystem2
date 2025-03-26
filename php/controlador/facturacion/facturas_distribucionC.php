@@ -1597,7 +1597,7 @@ class facturas_distribucion
 	//funcion que se ejecuta en punto de venta en facturacion
 	function generar_factura($parametros)
 	{
-
+		$Lineas = $this->modelo->DCLineaSecuencial($parametros['TC'], $parametros['MBFecha'], $parametros['FACodLinea']);
 		// print_r($parametros);die();
 		$this->sri->Actualizar_factura($parametros['CI'], $parametros['TextFacturaNo'], $parametros['Serie']);
 
@@ -1629,6 +1629,7 @@ class facturas_distribucion
 				}else{
 				}*/
 				$FA['Serie'] = $parametros['Serie'];
+				$FA['TextFacturaNo'] = $Lineas[0]['Secuencial'];
 				$FA['Cta_CxP'] = $parametros['Cta_Cobrar'];
 				$FA['Autorizacion'] = $parametros['Autorizacion'];
 				$FA['FechaTexto'] = $FechaTexto;
@@ -1908,7 +1909,8 @@ class facturas_distribucion
 			}
 			$FA['Nuevo_Doc'] = True;
 			$FA['Saldo_MN'] = $Saldo;
-			$Factura_No = ReadSetDataNum($FA['TC'] . "_SERIE_" . $FA['Serie'], True, True);
+			//$Factura_No = ReadSetDataNum($FA['TC'] . "_SERIE_" . $FA['Serie'], True, True);
+			$Factura_No = $FA['TextFacturaNo'];
 			$FA['Factura'] = $Factura_No;
 			$FA['FacturaNo'] = $Factura_No;
 			$TipoFactura = $FA['TC'];
