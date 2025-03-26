@@ -540,7 +540,9 @@ class reportes_varios
 		}
 
 		if(count($filasTA)>0){
+			$pdf->SetFont('Courier','B',8);
 			$pdf->MultiCell($anchoFact,3,$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Recibo_No'],0,'L');
+			$pdf->SetFont('Courier','',8);
 		}else{
 			$pdf->MultiCell($anchoFact,3,$textoReciboCaja . '0000',0,'L');
 		}

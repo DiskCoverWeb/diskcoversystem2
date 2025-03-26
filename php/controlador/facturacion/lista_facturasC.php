@@ -683,7 +683,7 @@ class lista_facturasC
 			$grupo = '';
 		}
 		$cod = '';
-		$datos = $this->modelo->Cliente_facturas_estado($cod, $grupo, $query, $estado);
+		$datos = $this->modelo->Cliente_facturas_estado($cod, $estado, $grupo, $query);
 		$res[0] = array('id' => 'T', 'text' => 'Todos', 'email' => '', 'data' => '');
 		foreach ($datos as $key => $value) {
 			$res[] = array('id' => $value['Codigo'], 'text' => $value['Cliente'] . '  CI:' . $value['CI_RUC'], 'email' => $value['Email'], 'data' => $value);
