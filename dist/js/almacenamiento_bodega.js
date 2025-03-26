@@ -795,7 +795,13 @@ function iniciarEscanerQRdetalle() {
     Html5Qrcode.getCameras().then(devices => {
        op = '';
        devices.forEach((camera, index) => {
-         op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
+       	if(index== NumCamara)
+       	{
+         op+='<option value="'+index+'" selected>Camara '+(index+1)+'</option>'
+       	}else
+       	{
+         op+='<option value="'+index+'">Camara '+(index+1)+'</option>'       		
+       	}
        });
        $('#ddl_camaras_detalle').html(op)
 
