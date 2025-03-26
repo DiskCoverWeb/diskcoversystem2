@@ -833,7 +833,7 @@ function iniciarEscanerQRdetalle() {
 
 function cambiarCamaradeta()
 {
-		limpiar_detalle();     
+		// limpiar_detalle();     
 		scanner.stop(); 
 		iniciarEscanerQRdetalle();
   
