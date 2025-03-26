@@ -702,7 +702,7 @@ async function buscar_ruta_linea(item)
  	$('#txt_lectura').val(campo);
     	iniciarEscanerQR(campo,item);
         $('#modal_qr_escaner_alma').modal('show');
-    }
+  }
 
  let scanner; 
  let NumCamara = 0;
@@ -770,4 +770,70 @@ function cerrarCamaraAlma() {
             console.error("Error al detener el escáner:", err);
         });
     }
+}
+
+
+
+
+function cerrarCamaradetalle() {
+  	$('#modal_qr_escaner_detalle').modal('hide');
+    if (scanner) {
+        scanner.stop().then(() => {            
+          $('#qrescaner_carga_detalle').show();
+          $('#modal_qr_escaner_detalle').modal('hide');
+        }).catch(err => {
+            console.error("Error al detener el escáner:", err);
+        });
+    }
+}
+
+function iniciarEscanerQRdetalle() {
+
+    NumCamara = $('#ddl_camaras_detalle').val();
+    scanner = new Html5Qrcode("reader_detalle");
+    $('#qrescaner_carga_detalle').hide();
+    Html5Qrcode.getCameras().then(devices => {
+       op = '';
+       devices.forEach((camera, index) => {
+         op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
+       });
+       $('#ddl_camaras_detalle').html(op)
+
+        if (devices.length > 0) {
+            let cameraId = devices[NumCamara].id; // Usa la primera cámara disponible
+            scanner.start(
+                cameraId,
+                {
+                    fps: 10, // Velocidad de escaneo
+                    qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
+                },
+                (decodedText) => {
+                	console.log(decodedText)
+                  
+                    scanner.stop(); // Detiene la cámara después de leer un código
+                    $('#modal_qr_escaner_alma').modal('hide');
+                },
+                (errorMessage) => {
+                    console.log("Error de escaneo:", errorMessage);
+                }
+            );
+        } else {
+            alert("No se encontró una cámara.");
+        }
+    }).catch(err => console.error("Error al obtener cámaras:", err));
+}
+
+
+function cambiarCamaraAlm()
+{
+		scanner.stop(); 
+		iniciarEscanerQRdetalle();
+  
+}
+
+
+function modal_detalle()
+{
+	iniciarEscanerQRdetalle();
+	 $('#modal_qr_escaner_detalle').modal('show');
 }
