@@ -60,7 +60,7 @@ $(document).ready(function () {
               return `<div class="d-flex align-items-center input-group-sm">
                         ${item.Motivo}
                         <span class="input-group-btn">
-                        <button type="button" class="btn btn-default btn-sm" onclick="modal_motivo('${item.Orden_No}')">
+                        <button type="button" class="btn btn-default btn-sm" onclick="modal_motivo('${item.Orden_No}','${item.motivoid}')">
                           <img src="../../img/png/transporte_caja.png" style="width:20px">
                         </button>
                         </span>
@@ -166,20 +166,21 @@ function cambiar_a_reportado()
       }
   });
 }
-function modal_motivo(orden)
+function modal_motivo(orden,motivo)
 {
-   cargar_motivo_lista(orden);
+   cargar_motivo_lista(orden,motivo);
     $('#myModal_motivo').modal('show');
 }
 
-function cargar_motivo_lista(orden)
+function cargar_motivo_lista(orden,motivo)
 {
    if ($.fn.DataTable.isDataTable('#txt_motivo_lista')) {
       $('#txt_motivo_lista').DataTable().destroy();
   }
   $('#tbl_body_motivo').html('<tr><td colspan="7"></td></tr>');
   var parametros = {
-      'orden':orden
+      'orden':orden,
+      'motivo':motivo,
   }
    $.ajax({
       type: "POST",

@@ -245,7 +245,7 @@ class egreso_alimentosM
 		return $this->db->datos($sql);
 	}
 
-	function cargar_motivo_lista($query=false,$id=false,$orden=false)
+	function cargar_motivo_lista($query=false,$id=false,$orden=false,$motivo=false)
 	{		
 		$sql = "SELECT TK.*,C.Cliente,CP.Producto,CP.Unidad 
 			FROM Trans_Kardex TK
@@ -267,6 +267,10 @@ class egreso_alimentosM
 			if($orden)
 			{
 				$sql.=" AND TK.Orden_No='".$orden."'";
+			}
+			if($motivo)
+			{
+				$sql.=" AND TK.Modelo='".$motivo."'";
 			}
 
 			// print_r($sql);die();
