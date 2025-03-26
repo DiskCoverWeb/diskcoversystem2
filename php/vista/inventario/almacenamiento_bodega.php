@@ -228,7 +228,7 @@
               <div class="col-sm-6">
               	<div class="row">
               		<div class="col-sm-12">
-              			 <select class="form-select" id="ddl_camaras_detalle" name="ddl_camaras_detalle" onchange="cambiarCamaraAlm()">
+              			 <select class="form-select" id="ddl_camaras_detalle" name="ddl_camaras_detalle" onchange="cambiarCamaradeta()">
 		                  <option value="0">Camara 1</option>                
 		                </select>                     			
               		</div>
