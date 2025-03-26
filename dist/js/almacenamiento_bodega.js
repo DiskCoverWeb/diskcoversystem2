@@ -808,8 +808,8 @@ function iniciarEscanerQRdetalle() {
                     qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
                 },
                 (decodedText) => {
-                	console.log(decodedText)
-                  
+                		console.log(decodedText)
+                  	cargar_detalle(decodedText);
                     scanner.stop(); // Detiene la cámara después de leer un código
                     $('#modal_qr_escaner_alma').modal('hide');
                 },
@@ -836,4 +836,29 @@ function modal_detalle()
 {
 	iniciarEscanerQRdetalle();
 	 $('#modal_qr_escaner_detalle').modal('show');
+}
+
+function cargar_detalle(codbarras)
+{
+	 var parametros = {
+			'codbarras':codbarras,
+		}
+		$.ajax({
+		    type: "POST",
+	       url:   '../controlador/inventario/almacenamiento_bodegaC.php?cargar_detalle=true',
+		     data:{parametros:parametros},
+	       dataType:'json',
+		    success: function(data)
+		    {
+		    	$('#lbl_barras').text(data[0].Codigo_Barra);
+					$('#lbl_producto').text(data[0].Producto);
+					$('#lbl_cantidad').text(data[0].Entrada);
+					$('#lbl_donante').text(data[0].Centro_Costo);
+					$('#lbl_bodega').text(data[0].bodega);
+					$('#lbl_codbodega').text(data[0].CodBodega);
+					$('#lbl_proceso').text(data[0].Lugar);
+		    	// productos_asignados();
+		    }
+		});
+
 }
