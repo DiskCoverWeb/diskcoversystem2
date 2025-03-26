@@ -92,10 +92,10 @@ if(isset($_GET['autoincrementable']))
 {
 	$parametros = $_POST['parametros'];
 	// $num = $controlador->autoincrementable($parametros);
-	$dia = date('ymd');
+	$dia = date('Ymd');
 	// print_r($parametros);die();
 	$numero_secuencial = numero_comprobante1("Ingreso_".$dia,$_SESSION['INGRESO']['item'],$incrementa=false,date('Y-m-d'));
-	$num = $parametros['codigo'].'-'.$dia.'-'.generaCeros(intval($numero_secuencial),3);
+	$num = $parametros['codigo'].'-'.date('ymd').'-'.generaCeros(intval($numero_secuencial),3);
 	echo json_encode($num);
 }
 
