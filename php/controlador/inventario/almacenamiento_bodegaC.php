@@ -68,15 +68,11 @@ if(isset($_GET['cargar_info']))
 // 	}
 // 	echo json_encode($controlador->autocomplet_producto($query));
 // }
-// if(isset($_GET['autocom_pro2']))
-// {
-// 	$query = '';
-// 	if(isset($_GET['q']))
-// 	{
-// 		$query = $_GET['q'];
-// 	}
-// 	echo json_encode($controlador->autocomplet_producto2($query));
-// }
+if(isset($_GET['cargar_detalle']))
+{
+	$query = $_POST['parametros'];
+	echo json_encode($controlador->cargar_detalle($query));
+}
 
 if(isset($_GET['cargar_lugar']))
 {
@@ -694,6 +690,46 @@ class almacenamiento_bodegaC
 	{
 		$datos = $this->modelo->cargar_empaques();
 		return $datos;
+	}
+
+	function cargar_detalle($parametros)
+	{
+		// print_r($parametros);die();
+		$datos = $this->modelo->cargar_detalle(false,false,false,false,$parametros['codbarras']);	
+		$datos[0]['Lugar'] = '';
+		if($datos[0]['CodBodega']!='-1')
+		{
+			$datos[0]['bodega']  = $this->ruta_bodega($datos[0]['CodBodega']);
+		}
+		
+
+		switch ($datos[0]['ubi']) {
+			case 'E':
+				$datos[0]['Lugar'] = 'Almacenamiento';
+				break;
+			case 'C':
+				$datos[0]['Lugar'] = 'Clasificiacion';
+				break;
+			case 'P':
+				$datos[0]['Lugar'] = 'Checking';
+				break;
+		}
+		if($datos[0]['Lugar']=='')
+		{
+			switch ($datos[0]['T']) {
+				case 'E':
+					$datos[0]['Lugar'] = 'Almacenamiento';
+					break;
+				case 'C':
+					$datos[0]['Lugar'] = 'Egresos';
+					break;
+				default:
+					$datos[0]['Lugar'] = 'Clasificiacion';
+					break;
+			}
+		}
+		return $datos;
+		// print_r($datos);die();
 	}
 }
 

@@ -778,7 +778,8 @@ function cerrarCamaraAlma() {
 function cerrarCamaradetalle() {
   	$('#modal_qr_escaner_detalle').modal('hide');
     if (scanner) {
-        scanner.stop().then(() => {            
+        scanner.stop().then(() => {    
+        	limpiar_detalle();        
           $('#qrescaner_carga_detalle').show();
           $('#modal_qr_escaner_detalle').modal('hide');
         }).catch(err => {
@@ -795,7 +796,13 @@ function iniciarEscanerQRdetalle() {
     Html5Qrcode.getCameras().then(devices => {
        op = '';
        devices.forEach((camera, index) => {
-         op+='<option value="'+index+'">Camara '+(index+1)+'</option>'
+       	if(index== NumCamara)
+       	{
+         op+='<option value="'+index+'" selected>Camara '+(index+1)+'</option>'
+       	}else
+       	{
+         op+='<option value="'+index+'">Camara '+(index+1)+'</option>'       		
+       	}
        });
        $('#ddl_camaras_detalle').html(op)
 
@@ -808,8 +815,8 @@ function iniciarEscanerQRdetalle() {
                     qrbox: { width: 250, height: 250 } // Tamaño del área de escaneo
                 },
                 (decodedText) => {
-                	console.log(decodedText)
-                  
+                		console.log(decodedText)
+                  	cargar_detalle(decodedText);
                     scanner.stop(); // Detiene la cámara después de leer un código
                     $('#modal_qr_escaner_alma').modal('hide');
                 },
@@ -824,8 +831,9 @@ function iniciarEscanerQRdetalle() {
 }
 
 
-function cambiarCamaraAlm()
+function cambiarCamaradeta()
 {
+		// limpiar_detalle();     
 		scanner.stop(); 
 		iniciarEscanerQRdetalle();
   
@@ -834,6 +842,43 @@ function cambiarCamaraAlm()
 
 function modal_detalle()
 {
+	limpiar_detalle();  
 	iniciarEscanerQRdetalle();
 	 $('#modal_qr_escaner_detalle').modal('show');
+}
+
+function cargar_detalle(codbarras)
+{
+	 var parametros = {
+			'codbarras':codbarras,
+		}
+		$.ajax({
+		    type: "POST",
+	       url:   '../controlador/inventario/almacenamiento_bodegaC.php?cargar_detalle=true',
+		     data:{parametros:parametros},
+	       dataType:'json',
+		    success: function(data)
+		    {
+		    	$('#lbl_barras').text(data[0].Codigo_Barra);
+					$('#lbl_producto').text(data[0].Producto);
+					$('#lbl_cantidad').text(data[0].Entrada);
+					$('#lbl_donante').text(data[0].Centro_Costo);
+					$('#lbl_bodega').text(data[0].bodega);
+					$('#lbl_codbodega').text(data[0].CodBodega);
+					$('#lbl_proceso').text(data[0].Lugar);
+		    	// productos_asignados();
+		    }
+		});
+
+}
+
+function limpiar_detalle()
+{
+		$('#lbl_barras').text('');
+		$('#lbl_producto').text('');
+		$('#lbl_cantidad').text('');
+		$('#lbl_donante').text('');
+		$('#lbl_bodega').text('');
+		$('#lbl_codbodega').text('');
+		$('#lbl_proceso').text('');
 }

@@ -205,6 +205,45 @@ class almacenamiento_bodegaM
 	     return $this->db->datos($sql);
        
 	}
+
+	function cargar_detalle($orden=false,$fecha=false,$nombre=false,$bodega=false,$codbarras=false)
+	{
+	     // 'LISTA DE CODIGO DE ANEXOS
+	     $sql = "SELECT T.*,P.Producto,TC.T as 'ubi' 
+		FROM Trans_Kardex T
+		INNER JOIN Trans_Correos  TC on TC.Envio_No = T.Orden_No
+		INNER JOIN Catalogo_Productos P on P.Codigo_Inv = T.Codigo_Inv
+	     WHERE T.Item = '".$_SESSION['INGRESO']['item']."' 
+	     AND T.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+	     AND T.Item = P.Item
+	     AND T.Periodo = P.Periodo
+		 AND T.Codigo_Inv = P.Codigo_Inv";
+		 if($orden)
+		 {
+	     	$sql.=" AND Orden_No = '".$orden."' ";
+	     }
+	     if($fecha)
+	     {
+	     	$sql.=" AND T.Fecha_DUI = '".$fecha."'";
+	     }   
+	     if($nombre)
+	     {
+	     	$sql.=" AND P.Producto = '".$nombre."'";
+	     }     
+	     if($bodega)
+	     {
+	     	$sql.=" AND T.CodBodega = '".$bodega."'";
+	     } 
+	     if($codbarras)
+	     {
+	     	$sql.=" AND T.Codigo_Barra = '".$codbarras."'";
+	     }  
+	     $sql.=" ORDER BY T.ID DESC";
+	     // print_r($sql);die();
+
+	     return $this->db->datos($sql);
+       
+	}
 	function cargar_pedidos_trans_pedidos($orden,$fecha=false,$bodega=false)
 	{
     // 'LISTA DE CODIGO DE ANEXOS

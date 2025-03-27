@@ -228,7 +228,7 @@
               <div class="col-sm-6">
               	<div class="row">
               		<div class="col-sm-12">
-              			 <select class="form-select" id="ddl_camaras_detalle" name="ddl_camaras_detalle" onchange="cambiarCamaraAlm()">
+              			 <select class="form-select" id="ddl_camaras_detalle" name="ddl_camaras_detalle" onchange="cambiarCamaradeta()">
 		                  <option value="0">Camara 1</option>                
 		                </select>                     			
               		</div>
@@ -245,7 +245,40 @@
                        
               </div>
               <div class="col-sm-6">
-              	<b>Detalle de producto</b>
+              	<div class="row">
+              		<div class="col-sm-12 text-center">
+              			<b>Detalle de producto</u>
+              		</div>
+              		<div class="col-sm-12">
+              			<u>Codigo Barras: </u>
+		              	<label id="lbl_barras"></label>
+              		</div>  
+              		<div class="col-sm-12">
+              			<u>Producto: </u>
+		              	<label id="lbl_producto"></label>
+              		</div>
+              		<div class="col-sm-12">
+              			<u>Cantidad: </u>
+		              	<label id="lbl_cantidad"></label>
+              		</div>  
+              		<div class="col-sm-12">
+              			<u>Donante: </u>
+		              	<label id="lbl_donante"></label>
+              		</div>  
+              		<div class="col-sm-12">
+              			<u>Bodega: </u>
+		              	<label id="lbl_bodega"></label>
+              		</div> 
+              		<div class="col-sm-12">
+              			<u>Codigo Bodega: </u>
+		              	<label id="lbl_codbodega"></label>
+              		</div> 
+              		<div class="col-sm-12">
+              			<u>Proceso: </u>
+		              	<label id="lbl_proceso"></label>
+              		</div>  
+
+              	</div>
               </div>              
             </div>
           </div>

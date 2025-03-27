@@ -481,47 +481,48 @@ function option_select2()
 
             $('#txt_donante').append($('<option>',{value: data.Codigo, text:data.Cliente,selected: true }));
             $('#txt_donante').prop('disabled',true);
-              // console.log(data);
-              $('#txt_codigo').val(data.Cod_Ejec)
+              // console.log(data);            
+              autoincrementable(data.Cod_Ejec)
+              // $('#txt_codigo').val(data.Cod_Ejec)
               $('#txt_ci').val(data.CI_RUC)
               // $('#txt_donante').val(data.Cliente)
               $('#txt_tipo').val(data.Actividad)
               $('#modal_proveedor').modal('hide');
-              generar_codigo();
           }
       });  	
 }
 
-function generar_codigo()
-{
-     var cod = $('#txt_codigo').val();
-     var partes = cod.split('-');
-     cod = partes[0];
-     var fecha = $('#txt_fecha').val();
-     if(fecha!='')
-     {
-         var fecha_formato = new Date(fecha);
-         // $('#txt_codigo').val('');
-         year = fecha_formato.getFullYear().toString();
-         mes = fecha_formato.getMonth()+1;
-         if(mes<10)
-         {
-             mes = '0'+mes; 
-         }
-         day = fecha_formato.getDate()+1
-         if(day<10)
-         {
-             day = '0'+day; 
-         }
-         // console.log(year.substr(2,4))
-         $('#txt_codigo').val(cod+'-'+year.substr(2,4)+''+mes+''+day)
-         autoincrementable();
-        }
-}
-function autoincrementable(){
+// function generar_codigo()
+// {
+//      var cod = $('#txt_codigo').val();
+//      var partes = cod.split('-');
+//      cod = partes[0];
+//      var fecha = $('#txt_fecha').val();
+//      if(fecha!='')
+//      {
+//          var fecha_formato = new Date(fecha);
+//          // $('#txt_codigo').val('');
+//          year = fecha_formato.getFullYear().toString();
+//          mes = fecha_formato.getMonth()+1;
+//          if(mes<10)
+//          {
+//              mes = '0'+mes; 
+//          }
+//          day = fecha_formato.getDate()+1
+//          if(day<10)
+//          {
+//              day = '0'+day; 
+//          }
+//          // console.log(year.substr(2,4))
+//          $('#txt_codigo').val(cod+'-'+year.substr(2,4)+''+mes+''+day)
+//          autoincrementable();
+//         }
+// }
+function autoincrementable(codigo){
         parametros = 
         {
             'fecha':$('#txt_fecha').val(),
+            'codigo':codigo,
         }
         $.ajax({
           type: "POST",
@@ -530,10 +531,8 @@ function autoincrementable(){
           dataType:'json',
           success: function(data)
           {
-              console.log(data);
-              var cod = $('#txt_codigo').val();
-              $('#txt_codigo').val(cod+'-'+data)
-              
+            console.log(data);
+            $('#txt_codigo').val(data);              
           }
       });  	
 }

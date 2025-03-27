@@ -233,7 +233,7 @@ class egreso_alimentosC
 		
 		// para el cheing de egreso se colocara la G
 		$dia = date('Ymd');
-		$numero_secuencial = numero_comprobante1("Egreso_".$dia,$_SESSION['INGRESO']['item'],1,date('Y-m-d'));
+		$numero_secuencial = numero_comprobante1("Egreso_".$dia,$_SESSION['INGRESO']['item'],true,date('Y-m-d'));
 		$registro = generaCeros(intval($numero_secuencial),3);
 		$orden = str_replace('-','', date('Y-m-d')).'-'.$registro;
 
@@ -414,7 +414,7 @@ class egreso_alimentosC
 	function cargar_motivo_lista($parametros)
 	{
 		$tr='';
-		$datos = $this->modelo->cargar_motivo_lista(false,false,$parametros['orden']);
+		$datos = $this->modelo->cargar_motivo_lista(false,false,$parametros['orden'],$parametros['motivo']);
 		foreach ($datos as $key => $value) {
 			// print_r($value);die();
 			$stock = 0;
