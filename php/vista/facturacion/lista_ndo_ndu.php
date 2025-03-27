@@ -71,6 +71,7 @@
           <option value=".">TODOS</option>
         </select>      
     </div>
+    <iframe id="pdfFrame" style="display:none;"></iframe>
     <div class="col-lg-4 col-md-4 col-sm-12">
         <b>CI / RUC</b>
         <select class="form-select form-select-sm" id="ddl_cliente" name="ddl_cliente" onchange="periodos(this.value);rangos();">

@@ -2101,7 +2101,18 @@ function tipo_facturacion(valor)
 							url_nd = '../../TEMP/' + data[1].pdf + '.pdf';
 							
 							window.open(url, '_blank');
-							Swal.fire('Puede imprimir la nota de donacion en el botón con icono de impresora', '', 'info');
+
+							setTimeout(()=>{
+								const iframe = document.getElementById('pdfFrame');
+								iframe.src = url;
+								
+								iframe.onload = function () {
+									iframe.contentWindow.print();
+								};
+							}, 1000);
+							
+
+							//Swal.fire('Puede imprimir la nota de donacion en el botón con icono de impresora', '', 'info');
 							/*parametros = {
 								'TextVUnit': (parseFloat($('#LabelTotal').val())/1).toFixed(2),
 								'TextCant': 1,

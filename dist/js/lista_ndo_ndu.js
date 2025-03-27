@@ -328,7 +328,10 @@ var tipo = '';
                         email+= item.Email2+ ',';
                       }
                   options=`<li>
-                              <a href="#" class="dropdown-item" onclick="Ver_factura('${item.Factura}','${item.Serie}','${item.CodigoC}','${item.Autorizacion}','${item.TC}')"><i class="bx bx-show-alt"></i> Ver nota de donación</a>
+                              <a href="#" class="dropdown-item" onclick="Ver_nd('${item.Factura}','${item.Serie}','${item.CodigoC}','${item.Autorizacion}','${item.TC}')"><i class="bx bxs-printer"></i> Impresora</a>
+                          </li>
+                          <li>
+                              <a href="#" class="dropdown-item" onclick="Ver_nd_pdf('${item.Factura}','${item.Serie}','${item.CodigoC}','${item.Autorizacion}','${item.TC}')"><i class="bx bxs-file-pdf"></i> PDF</a>
                           </li>
                           <li>
                             <a href="#" class="dropdown-item" onclick=" modal_email_fac('${item.Factura}','${item.Serie}','${item.CodigoC}','${email}','${item.Autorizacion}','${item.TC}')"><i class="bx bx-envelope"></i> Enviar por email</a>
@@ -479,13 +482,51 @@ var tipo = '';
 
    }
 
-  function Ver_factura(id,serie,ci,aut,tc)
+  function Ver_nd(id,serie,ci,aut,tc)
 	{		 
     $('#myModal_espera').modal('show');
     peri = $('#ddl_periodo').val();
     $.ajax({
 			type: "GET",
 			url: '../controlador/facturacion/lista_ndo_nduC.php?ver_fac=true&codigo='+id+'&ser='+serie+'&ci='+ci+'&per='+peri+'&auto='+aut+'&tc='+tc,
+			//data: { parametros: parametros },
+			//dataType: 'json',
+			success: function (data) {
+        setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
+        let datajson = JSON.parse(data);
+        if(datajson['respuesta'] == 1){
+          var url = '../../TEMP/' + datajson['pdf'] + '.pdf';
+          //window.open(url, '_blank');
+
+          const iframe = document.getElementById('pdfFrame');
+          iframe.src = url;
+          
+          iframe.onload = function () {
+              iframe.contentWindow.print();
+          };
+
+        }else{
+          Swal.fire('Error', 'Hubo un problema al mostrar la factura.');  
+        }
+      },
+      error: function (err) {
+        $('#myModal_espera').hide();
+        Swal.fire('Error', 'Hubo un problema al mostrar la factura.');
+      }
+    });
+		/*var url = '../controlador/facturacion/lista_ndo_nduC.php?ver_fac=true&codigo='+id+'&ser='+serie+'&ci='+ci+'&per='+peri+'&auto='+aut+'&tc='+tc;		
+		window.open(url,'_blank');*/
+	}
+
+  function Ver_nd_pdf(id,serie,ci,aut,tc)
+	{		 
+    $('#myModal_espera').modal('show');
+    peri = $('#ddl_periodo').val();
+    $.ajax({
+			type: "GET",
+			url: '../controlador/facturacion/lista_ndo_nduC.php?ver_fac_pdf=true&codigo='+id+'&ser='+serie+'&ci='+ci+'&per='+peri+'&auto='+aut+'&tc='+tc,
 			//data: { parametros: parametros },
 			//dataType: 'json',
 			success: function (data) {

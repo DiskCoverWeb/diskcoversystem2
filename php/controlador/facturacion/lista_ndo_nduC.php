@@ -2,6 +2,7 @@
 $tipo = 2; //Se usa para saber que debe regresar dos carpetas en chequear_seguridad
 require_once(dirname(__DIR__, 2) . "/db/chequear_seguridad.php");
 require_once(dirname(__DIR__, 2) . "/modelo/facturacion/lista_ndo_nduM.php");
+require_once(dirname(__DIR__, 3) . "/lib/fpdf/cabecera_pdf.php");
 //require_once(dirname(__DIR__, 2) . "/modelo/facturacion/punto_ventaM.php");
 require_once(dirname(__DIR__, 3) . "/lib/TCPDF/Reportes/reportes_varios.php");
 if (!class_exists('enviar_emails')) {
@@ -40,6 +41,10 @@ if (isset($_GET['perido'])) {
 	echo json_encode($controlador->factura_periodo($parametros));
 }
 if (isset($_GET['ver_fac'])) {
+	// print_r('sss');die();
+	echo json_encode($controlador->ver_fac($_GET['codigo'], $_GET['ser'], $_GET['ci'], $_GET['per'], $_GET['auto'], $_GET['tc']));
+}
+if (isset($_GET['ver_fac_pdf'])) {
 	// print_r('sss');die();
 	echo json_encode($controlador->ver_fac_pdf($_GET['codigo'], $_GET['ser'], $_GET['ci'], $_GET['per'], $_GET['auto'], $_GET['tc']));
 }
@@ -162,6 +167,7 @@ class lista_facturasC
 	private $modelo;
 	private $email;
 	public $pdf;
+	public $pdf2;
 	private $punto_venta;
 	private $empresaGeneral;
 	private $sri;
@@ -170,6 +176,7 @@ class lista_facturasC
 	{
 		$this->modelo = new lista_facturasM();
 		$this->pdf = new reportes_varios();
+		$this->pdf2 = new cabecera_pdf();
 		//$this->pdf = new cabecera_pdf();
 		$this->email = new enviar_emails();
 		$this->empresaGeneral = $this->modelo->Empresa_data();
@@ -426,7 +433,7 @@ class lista_facturasC
 		}
 		return $opcion;
 	}
-	function ver_fac_pdf($cod, $ser, $ci, $per, $auto, $tc)
+	function ver_fac($cod, $ser, $ci, $per, $auto, $tc)
 	{
 		// print_r($cod);die();
 		/*$nombre = $ser . '-' . generaCeros($cod, 7);
@@ -458,6 +465,77 @@ class lista_facturasC
 		} else {
 			return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep);
 		}
+		/*if ($Grafico_PV) {
+		} else {
+			$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+			$TFA['CLAVE'] = '.';
+			//$TFA['PorcIva'] = $FA['Porc_IVA'];
+			$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
+			$this->pdf->Imprimir_Punto_Venta_Grafico($TFA);
+			$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+			$rep = 1;
+			if ($rep == 1) {
+				return array('respuesta' => $rep, 'pdf' => $imp);
+			} else {
+				return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep);
+			}
+
+			// ojo ver cula se piensa imprimir
+			// Imprimir_Punto_Venta($FA);
+		}*/
+		//$this->modelo->pdf_factura($cod,$ser,$ci,$per);
+
+	}
+	function ver_fac_pdf($cod, $ser, $ci, $per, $auto, $tc)
+	{
+		// print_r($cod);die();
+		/*$nombre = $ser . '-' . generaCeros($cod, 7);
+		if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 0) {
+			$this->punto_venta->pdf_factura_elec($cod, $ser, $ci, $nombre, $auto, $per, $aprobado = false);
+		} else {
+			// print_r('expression');die();
+			$this->punto_venta->pdf_factura_elec_rodillo($cod, $ser, $ci, $nombre, $auto, $per, $aprobado = false);
+		}*/
+		//$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
+
+		$FA = array(
+			'Factura' => $cod,
+			'Serie' => $ser,
+			'Autorizacion' => $auto,
+			'TC' => $tc
+		);
+
+		$TFA = Imprimir_Punto_Venta_datos($FA);
+		$TFA['CLAVE'] = '1';
+		$TFA['PorcIva'] = $FA['Porc_IVA'];
+		//$this->pdf->Imprimir_Punto_Venta($info);
+		$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+		//$clave = $this->sri->Clave_acceso($FA['Fecha'], '01', $TA['Serie'], $FA['Factura']);
+		$this->modelo->pdf_factura_elec($FA['Factura'], $FA['Serie'], $FA['CodigoC'], $imp, $imp, $periodo = false, 0, 1);
+		$rep = 1;
+
+		if ($rep == 1) {
+			return array('respuesta' => $rep, 'pdf' => $imp);
+		}
+
+		/*$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+		$TFA['CLAVE'] = '.';
+		$TFA['PorcIva'] =  $_SESSION['INGRESO']['porc'];
+		$this->pdf2->Imprimir_Punto_Venta_Grafico($TFA);
+		$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+		$rep = 1;
+
+		if ($rep == 1) {
+			return array('respuesta' => $rep, 'pdf' => $imp);
+		}*/
+
+		// $TFA = Imprimir_Punto_Venta_datos($FA);
+		// $TFA['CLAVE'] = '1';
+		// $TFA['PorcIva'] = $FA['Porc_IVA'];
+		// //$this->pdf->Imprimir_Punto_Venta($info);
+		// $imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+		// $clave = $this->sri->Clave_acceso($TA['Fecha'], '01', $TA['Serie'], $FA['Factura']);
+		// $this->modelo->pdf_factura_elec($FA['Factura'], $FA['Serie'], $FA['CodigoC'], $imp, $clave, $periodo = false, 0, 1);
 		/*if ($Grafico_PV) {
 		} else {
 			$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);

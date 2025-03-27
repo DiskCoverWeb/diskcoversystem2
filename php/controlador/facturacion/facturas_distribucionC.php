@@ -1599,7 +1599,7 @@ class facturas_distribucion
 	{
 		$Lineas = $this->modelo->DCLineaSecuencial($parametros['TC'], $parametros['MBFecha'], $parametros['FACodLinea']);
 		// print_r($parametros);die();
-		$this->sri->Actualizar_factura($parametros['CI'], $parametros['TextFacturaNo'], $parametros['Serie']);
+		$this->sri->Actualizar_factura($parametros['CI'], $Lineas[0]['Secuencial'], $parametros['Serie']);
 
 		// FechaValida MBFecha
 		$FechaTexto = $parametros['MBFecha'];
