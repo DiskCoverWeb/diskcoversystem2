@@ -105,7 +105,9 @@ $(document).ready(function()
              	$('#myModal_espera').modal('show');
              	tbl_facturas_all.ajax.reload(function() {
                   // Cerrar el modal después de que se hayan recargado los datos
-                  $('#myModal_espera').modal('hide');
+                  setTimeout(()=>{
+                    $('#myModal_espera').modal('hide');
+                  }, 500)
               }, false);
              	tbl_facturas_autorizadas.ajax.reload(null, false);
              	tbl_facturas_Noautorizadas.ajax.reload(null, false);
@@ -298,7 +300,9 @@ $(document).ready(function()
       dataType: 'json',
        success:  function (data) {       
 
-    $('#myModal_espera').modal('hide');
+      setTimeout(()=>{
+        $('#myModal_espera').modal('hide');
+      }, 500)
       console.log(data);
       if(data.respuesta==1)
       { 
@@ -353,7 +357,9 @@ $(document).ready(function()
 
       },
       error: function () {
-        $('#myModal_espera').modal('hide');
+        setTimeout(()=>{
+          $('#myModal_espera').modal('hide');
+        }, 500)
         alert("Ocurrio un error inesperado, por favor contacte a soporte.");
       }
     });
@@ -640,7 +646,9 @@ function modal_email_fac(factura,serie,codigoc,emails)
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
-           $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+              $('#myModal_espera').modal('hide');
+            }, 500)
             if(response==1)
             {
                 Swal.fire('Email enviado','','success').then(function(){
@@ -653,7 +661,9 @@ function modal_email_fac(factura,serie,codigoc,emails)
          
         }, 
         error: function(xhr, textStatus, error){
-        $('#myModal_espera').modal('hide');
+          setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+          }, 500)
             // $('#lbl_mensaje').text(xhr.statusText);
             // alert(xhr.statusText);
             // alert(textStatus);
@@ -680,7 +690,9 @@ function modal_email_fac(factura,serie,codigoc,emails)
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
-            $('#myModal_espera').modal('hide');
+            setTimeout(()=>{
+              $('#myModal_espera').modal('hide');
+            }, 500)
             console.log(response);
               var link = document.createElement("a");
               link.download = response;
@@ -690,7 +702,9 @@ function modal_email_fac(factura,serie,codigoc,emails)
          
         },
         error: function (error) {
-          $('#myModal_espera').modal('hide');
+          setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+          }, 500)
         },
       });
 
@@ -710,7 +724,9 @@ function modal_email_fac(factura,serie,codigoc,emails)
         type:  'post',
         // dataType: 'json',
         success:  function (response) { 
-          $('#myModal_espera').modal('hide');
+          setTimeout(()=>{
+                    $('#myModal_espera').modal('hide');
+                  }, 500)
           if(response!='-1')
           {
             console.log(response);
@@ -725,7 +741,9 @@ function modal_email_fac(factura,serie,codigoc,emails)
           }
         },
         error: function (error) {
-          $('#myModal_espera').modal('hide');
+          setTimeout(()=>{
+                    $('#myModal_espera').modal('hide');
+                  }, 500)
         },
       });
   }
@@ -748,7 +766,9 @@ function modal_email_fac(factura,serie,codigoc,emails)
         // dataType: 'json',
         success:  function (response) { 
 
-           $('#myModal_espera').modal('hide');
+           setTimeout(()=>{
+                    $('#myModal_espera').modal('hide');
+                  }, 500)
           if(response.respuesta=='1')
           {
               console.log(response);
@@ -763,7 +783,9 @@ function modal_email_fac(factura,serie,codigoc,emails)
           }
         },
         error: function (error) {
-          $('#myModal_espera').modal('hide');
+          setTimeout(()=>{
+                    $('#myModal_espera').modal('hide');
+                  }, 500)
         },
       });
   }
@@ -824,7 +846,9 @@ function modal_email_fac(factura,serie,codigoc,emails)
 
            $('#myModal_bloque').modal('show');                           
               $('#bloque_resp').html(response);                            
-           $('#myModal_espera').modal('hide');
+           setTimeout(()=>{
+                    $('#myModal_espera').modal('hide');
+                  }, 500)
           }
         });
 
