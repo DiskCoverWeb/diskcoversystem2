@@ -1,11 +1,12 @@
 <?php 
 require_once('tcpdf_include.php');
+require_once(dirname(__DIR__,3)."/php/db/db1.php");
 class reportes_varios
 {
-	private $conn;
+	private $db;
 	function __construct()
 	{
-		$this->conn = cone_ajax();
+		$this->db = new db();
 	}
 
 	function etiqueta_recepcion_BAQ($datos)
@@ -88,66 +89,23 @@ class reportes_varios
 
 	}
 
-	function Imprimir_Punto_Venta($info,$descagar=true)
+function Imprimir_Punto_Venta($info,$descagar=true)
 {	
-	$cid=$this->conn;
 	$sql = "SELECT *
 	FROM Trans_Abonos TA
 	WHERE TA.Factura = ".$info['factura'][0]['Factura']." 
 	AND TA.Serie = '".$info['factura'][0]['Serie']."' 
 	AND TA.Periodo = '".$_SESSION['INGRESO']['periodo']."'
 	AND TA.Item = '".$_SESSION['INGRESO']['item']."'";
-	
-	$stmt = sqlsrv_query($cid, $sql);
-	if( $stmt === false)  
-		{  
-			echo "Error en consulta PA.\n";  
-			return '';
-			die( print_r( sqlsrv_errors(), true));  
-		}   
 
-	$filasTA = array();	
-	while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC)) 
-		{
-		$filasTA[] = $row;
-		//echo $row[0];
-		}
+	$filasTA = $this->db->datos($sql);
 
 	$sql = "SELECT Usuario
 	FROM Accesos 
 	WHERE Codigo = '".$info['lineas'][0]['CodigoU']."'";
-	$stmt = sqlsrv_query($cid, $sql);
-	if( $stmt === false)  
-	{  
-		echo "Error en consulta PA.\n";  
-		return '';
-		die( print_r( sqlsrv_errors(), true));  
-	}   
-		
-	$filasUsuario = array();	
-	while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC)) 
-	{
-		$filasUsuario[] = $row;
-		//echo $row[0];
-	}
 
-	/*$sql = "SELECT Usuario
-	FROM Accesos 
-	WHERE Codigo = '".$info['lineas'][0]['CodigoU']."'";
-	$stmt = sqlsrv_query($cid, $sql);
-	if( $stmt === false)  
-	{  
-		echo "Error en consulta PA.\n";  
-		return '';
-		die( print_r( sqlsrv_errors(), true));  
-	}   
-		
-	$filasUsuario = array();	
-	while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC)) 
-	{
-		$filasUsuario[] = $row;
-		//echo $row[0];
-	}*/
+	$filasUsuario = $this->db->datos($sql);
+
 
 	$CantBlancos = "";
 	$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
@@ -163,9 +121,6 @@ class reportes_varios
 	if($ancho_PV < 26){
 		$ancho_PV = 26;
 	}
-	// print_r($info);die();
-	// print_r($_SESSION['INGRESO']);
-	// $orientation='P',$unit='mm', array(45,350)
 	if(isset($_SESSION['INGRESO']['Logo_Tipo']))
 		{
 		$logo=$_SESSION['INGRESO']['Logo_Tipo'];
@@ -187,128 +142,137 @@ class reportes_varios
 			}
 
 		}
-		}
+	}
+// print_r($info);die();
 
-	$anchoFact = $ancho_PV * 1.75;
-		
-	$pdf = new TCPDF('P', 'mm', 'A3');
-	$pdf->setPrintHeader(false); // Desactivar encabezado
-	$pdf->setPrintFooter(false); // Opcional: Desactivar pie de página
-	$pdf->setMargins(0,0);
-	$pdf->SetFont('Courier','',8);
-	$pdf->AddPage('P');
-	
-	// print_r($info);die();
-	if($Grafico_PV){
-		$margenesX = 6;
-		$margenesY = 2;
-		$anchoImg = $ancho_PV * 1.75;
-		$altoImg = $anchoFact * 0.38;
-		$pdf->Image($src,$margenesX,$margenesY,$anchoImg - ($margenesX*2),$altoImg - ($margenesY*3));
-		$pdf->SetY($altoImg);
-	}
-	if($Encabezado_PV){
-		if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
-		{
-			$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
-			$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
-			//$pdf->Ln(6);
-		}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
-			$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
-			if($_SESSION['INGRESO']['IDEntidad'] != '65'){
-				$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
-			}
-			$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
-			$pdf->Ln(3);
-			$pdf->SetFont('Courier','B',9);
-			$pdf->MultiCell($anchoFact,3,'DONACION DE ALIMENTOS',0,'L');
-			$pdf->SetFont('Courier','',8);
-			$pdf->Ln(3);
-		}else{
-			$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],0,'L');
-			$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],0,'L');
-			$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],0,'L');
-		}
-		$pdf->MultiCell($anchoFact,3,'Direccion: '.$_SESSION['INGRESO']['Direccion'],0, 'L');
-		$pdf->MultiCell($anchoFact,3,'Telefono: '.$_SESSION['INGRESO']['Telefono1'],0, 'L');
-	}
+$src = str_replace(dirname(__DIR__,3),'', $src);
 
-	if($Encabezado_PV){
-		if($info['factura'][0]['TC'] == "PV"){
-			$pdf->MultiCell($anchoFact,3,"T I C K E T   No. 000-000-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
-			$pdf->Ln(3);
-		}else if($info['factura'][0]['TC'] == "NV"){
-			$pdf->MultiCell($anchoFact,3,"Autorizacion del SRI No.",0,'L');
-			$pdf->MultiCell($anchoFact,3,$info['factura'][0]['Autorizacion'],0,'L');
-			$pdf->MultiCell($anchoFact,3,"NOTA DE VENTA No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
-		}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
-			$pdf->MultiCell($anchoFact,3,"NOTA DE DONACION No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
-		}else{
-			$pdf->MultiCell($anchoFact,3,"Autorizacion del SRI No.",0,'L');
-			$pdf->MultiCell($anchoFact,3,$info['factura'][0]['Autorizacion'],0,'L');
-			$pdf->MultiCell($anchoFact,3,"FACTURA No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
-			if(strlen($info['especial']) > 1){
-				$pdf->MultiCell($anchoFact,3,"Contribuyente Especial No. ".$info['especial'],0,'L');
-			}
-			$pdf->MultiCell($anchoFact,3,"OBLIGADO A LLEVAR CONTABILIDAD: ".$info['conta'],0,'L');
-		}
-	}else{
-		$pdf->MultiCell($anchoFact,3,"Transaccion (".$info['factura'][0]['TC'].") No.".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT),0,'L');
-		$pdf->Ln(3);
+//3.77 = a 1 pixel
+
+$margenesX = 6;
+$margenesY = 2;
+$anchoFact = $ancho_PV * 1.75;
+$anchoImg = ($ancho_PV * 1.75)*3.77;
+$altoImg = ($anchoFact * 0.38)*3.77;
+
+$ticket  = '
+<img src="../../../'.$src.'" style="width: '.$anchoImg.'px; height: '.$altoImg.'px;"></img>
+<pre>
+<table width="239px">';
+if($Encabezado_PV){
+if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
+{
+	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Razon_Social'].'</td></tr>';
+	$ticket.='<tr><td colspan="3">'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</td></tr>';
+	//$pdf->Ln(6);
+}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
+	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Razon_Social'].'</td></tr>';
+	if($_SESSION['INGRESO']['IDEntidad'] != '65'){
+		$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Nombre_Comercial'].'</td></tr>';
 	}
-	
-	$pdf->MultiCell($anchoFact,3,"Fecha de Emision: ".$info['factura'][0]['Fecha']->format('Y/m/d'),0,'L');
+	$ticket.='<tr><td colspan="3">'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</td></tr>';
+	$ticket.='<tr><td colspan="3">'.'DONACION DE ALIMENTOS'.'</td></tr>';
+}else{
+	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Razon_Social'].'</td></tr>';
+	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Nombre_Comercial'].'</td></tr>';
+	$ticket.='<tr><td colspan="3">'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</td></tr>';
+}
+	$ticket.='<tr><td colspan="3">Direccion: '.$_SESSION['INGRESO']['Direccion'].'</td></tr>';
+	$ticket.='<tr><td colspan="3">Telefono: '.$_SESSION['INGRESO']['Telefono1'].'</td></tr>';
+}
+
+if($Encabezado_PV){
+if($info['factura'][0]['TC'] == "PV"){
+	$ticket.='<tr><td colspan="3">T I C K E T   No. 000-000-'.str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
+}else if($info['factura'][0]['TC'] == "NV"){
+	$ticket.='<tr><td colspan="3">Autorizacion del SRI No.</td></tr>';
+	$ticket.='<tr><td colspan="3">'.$info['factura'][0]['Autorizacion'].'</td></tr>';
+	$ticket.='<tr><td colspan="3">NOTA DE VENTA No. '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
+}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
+	$ticket.='<tr><td colspan="3">NOTA DE DONACION No. '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
+}else{
+	$ticket.='<tr><td colspan="3">Autorizacion del SRI No.'.'</td></tr>';
+	$ticket.='<tr><td colspan="3">'.$info['factura'][0]['Autorizacion'].'</td></tr>';
+	$ticket.='<tr><td colspan="3"> FACTURA No. '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
+	if(strlen($info['especial']) > 1){
+		$ticket.='<tr><td colspan="3">Contribuyente Especial No. '.$info['especial'].'</td></tr>';
+	}
+	$ticket.='<tr><td colspan="3">OBLIGADO A LLEVAR CONTABILIDAD: '.$info['conta'].'</td></tr>';
+}
+}else{
+$ticket.='<tr><td colspan="3">Transaccion ('.$info['factura'][0]['TC'].") No.".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
+}
+
+$ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->format('Y/m/d').'</td></tr>';
 	if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-		$pdf->MultiCell($anchoFact,3,"Atendido por: ".$filasUsuario[0]['Usuario'],0,'L');
+		$ticket.="<tr><td colspan='3'>Atendido por: ".$filasUsuario[0]['Usuario'].'</td></tr>';
 	}else{
-		$pdf->MultiCell($anchoFact,3,"Hora de Proceso: ".$info['factura'][0]['Hora'],0,'L');
+		$ticket.="<tr><td colspan='3'>Hora de Proceso: ".$info['factura'][0]['Hora'].'</td></tr>';
 	}
 
 	if(strlen($info['factura'][0]['Autorizacion']) < 13 && $_SESSION['INGRESO']['IDEntidad'] != '65'){
-		$pdf->MultiCell($anchoFact,3,"Fecha de caducidad: ".substr(mesesLetras($info['factura'][0]['Vencimiento']->format('m')), 0, 3).'/'.$info['factura'][0]['Vencimiento']->format('Y'),0,'L');
+		$ticket.="<tr><td colspan='3'>Fecha de caducidad: ".substr(mesesLetras($info['factura'][0]['Vencimiento']->format('m')), 0, 3).'/'.$info['factura'][0]['Vencimiento']->format('Y').'</td></tr>';
 	}
-	$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
+	$ticket.="<tr><td colspan='3'>------------------------------------------</td></tr>";
 	if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-		$pdf->MultiCell($anchoFact,3,"Usuario: ".$info['factura'][0]['Cliente'],0,'L');
+		$ticket.="<tr><td colspan='3'>Usuario: ".$info['factura'][0]['Cliente'].'</td></tr>';
 	}else{
-		$pdf->MultiCell($anchoFact,3,"Cliente: ".$info['factura'][0]['Cliente'],0,'L');
+		$ticket.="<tr><td colspan='3'>Cliente: ".$info['factura'][0]['Cliente'].'</td></tr>';
 	}
-	$pdf->MultiCell($anchoFact,3,"R.U.C/C.I.: ".$info['factura'][0]['RUC_CI'],0,'L');
+	$ticket.="<tr><td colspan='3'>R.U.C/C.I.: ".$info['factura'][0]['RUC_CI'].'</td></tr>';
 
-	if($info['factura'][0]['Telefono'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Telefono: ".$info['factura'][0]['Telefono'],0,'L');}
-	if($info['factura'][0]['Direccion'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Direccion: ".$info['factura'][0]['Direccion'],0,'L');}
-	if($info['factura'][0]['Email'] <> G_NINGUNO){$pdf->MultiCell($anchoFact,3,"Email: ".$info['factura'][0]['Email'],0,'L');}
+	if($info['factura'][0]['Telefono'] <> G_NINGUNO){$ticket.="<tr><td colspan='3'>Telefono: ".$info['factura'][0]['Telefono'].'</td></tr>';}
+	if($info['factura'][0]['Direccion'] <> G_NINGUNO){$ticket.="<tr><td colspan='3'>Direccion: ".$info['factura'][0]['Direccion'].'</td></tr>';}
+	if($info['factura'][0]['Email'] <> G_NINGUNO){$ticket.="<tr><td colspan='3'>Email: ".$info['factura'][0]['Email'].'</td></tr>';}
 
 	if($info['factura'][0]['TC'] == "DO" || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-			$pdf->MultiCell($anchoFact,3,"Hora de llegada de la OS: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"Hora de Atención: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"Estado: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"N° Gavetas pendientes: ",0,'L');
+			$ticket.="<tr><td colspan='3'>Hora de llegada de la OS:</td></tr>";
+			$ticket.="<tr><td colspan='3'>Hora de Atención:</td></tr>";
+			$ticket.="<tr><td colspan='3'>Estado: </td></tr>";
+			$ticket.="<tr><td colspan='3'>N° Gavetas pendientes:</td></tr>";
 		}else{
-			$pdf->MultiCell($anchoFact,3,"Codigo: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"Aporte: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"Numero de Gavetas: ",0,'L');
-			$pdf->MultiCell($anchoFact,3,"Atencion: ",0,'L');
+			$ticket.="<tr><td colspan='3'>Codigo: </td></tr>";
+			$ticket.="<tr><td colspan='3'>Aporte: </td></tr>";
+			$ticket.="<tr><td colspan='3'>Numero de Gavetas: </td></tr>";
+			$ticket.="<tr><td colspan='3'>Atencion: </td></tr>";
 		}
-		$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0, 1, 'L');
+	$ticket.="<tr><td colspan='3'>==========================================</td></tr>";
+
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 			$linea1F = "P R O D U C T O";
 			$linea2F = "CANTIDAD(KG)";
-			$pdf->MultiCell($anchoFact,3,$linea1F.str_repeat(' ', $ancho_PV - (strlen($linea1F)+strlen($linea2F))).$linea2F,0,'L');
+			$ticket.="<tr><td>".$linea1F.'</td><td>'.$linea2F."</td></tr>";
 			
 		}else{
-			$pdf->MultiCell($anchoFact,3,"P R O D U C T O/CODIGO CANTIDAD(KG)",0,'L');
+			$ticket.="<tr><td>P R O D U C T O/CODIGO CANTIDAD(KG)</td></tr>";
 			
 		}
-		$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0, 1, 'L');
+	$ticket.="<tr><td colspan='3'>==========================================</td></tr>";
+
 	}else{
-		$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0, 1, 'L');
-		$pdf->MultiCell($anchoFact,3,"PRODUCTO/Cant x PVP/TOTAL",0,'L');
-		$pdf->Cell($anchoFact,3,str_repeat('=', $ancho_PV),0, 1, 'L');
+		$ticket.="<tr><td colspan='3'>==========================================</td></tr>";
+
+		$ticket.="<tr><td>PRODUCTO/Cant x PVP/TOTAL</td></tr>";		
+		$ticket.="<tr><td colspan='3'>==========================================</td></tr>";
 	}
 	$Efectivo = $info['factura'][0]['Efectivo'];
 
+
+$ticket.='
+</table>
+</pre>';
+
+echo $ticket;
+
+
+	
+
+
+
+
+	
+/*
 
 	$Total = 0;
 	$TotalPVP = 0;
@@ -462,6 +426,8 @@ class reportes_varios
 		$pdf->Cell($anchoFact,3,str_repeat('-', $ancho_PV),0,1,'L');
 		/*$Producto = "Queremos agradecerle por su aporte solidario de USD ".$info['factura'][0]['Total_MN'].", donación que nos permitirá " .
 					"incrementar la atención a un mayor número de personas en vulnerabilidad alimentaria. Usted es muy importante para nosotros.";*/
+
+					/*
 		$Producto = "<b>El costo comercial de los kilos entregados es de USD ".number_format((float)$TotalPVP, 2, '.', '').". Su aporte solidario " . 
 					"de USD ".number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')." representa menos del 10% de este valor</b> y " .
 					"nos ayuda a cubrir costos operativos para asistir a más personas en situación de vulnerabilidad alimentaria.";
@@ -512,6 +478,7 @@ class reportes_varios
 			$nuevaAltura = $pdf->GetY();
 			$pdf->Image($src,0,$nuevaAltura,$anchoImg,$altoImg);
 			$pdf->SetY($altoImg + $nuevaAltura);*/
+			/*
 		}
 		if($Encabezado_PV){
 			if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
@@ -639,6 +606,9 @@ class reportes_varios
 	{
 		$pdf->Output('');
 	}
+
+
+	*/
 }
 
 function CompilarString($cadSQL, $lString = 0, $quitarPuntos = false)

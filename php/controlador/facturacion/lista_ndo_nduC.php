@@ -435,55 +435,28 @@ class lista_facturasC
 	}
 	function ver_fac($cod, $ser, $ci, $per, $auto, $tc)
 	{
-		// print_r($cod);die();
-		/*$nombre = $ser . '-' . generaCeros($cod, 7);
-		if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 0) {
-			$this->punto_venta->pdf_factura_elec($cod, $ser, $ci, $nombre, $auto, $per, $aprobado = false);
-		} else {
-			// print_r('expression');die();
-			$this->punto_venta->pdf_factura_elec_rodillo($cod, $ser, $ci, $nombre, $auto, $per, $aprobado = false);
-		}*/
-		//$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
-
+		
 		$FA = array(
 			'Factura' => $cod,
 			'Serie' => $ser,
 			'Autorizacion' => $auto,
 			'TC' => $tc
 		);
-
 		$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
 		$TFA['CLAVE'] = '.';
-		//$TFA['PorcIva'] = $FA['Porc_IVA'];
 		$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
-		$this->pdf->Imprimir_Punto_Venta($TFA);
-		//Imprimir_Punto_Venta_Grafico($TFA);
-		$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
-		$rep = 1;
-		if ($rep == 1) {
-			return array('respuesta' => $rep, 'pdf' => $imp);
-		} else {
-			return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep);
-		}
-		/*if ($Grafico_PV) {
-		} else {
-			$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
-			$TFA['CLAVE'] = '.';
-			//$TFA['PorcIva'] = $FA['Porc_IVA'];
-			$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
-			$this->pdf->Imprimir_Punto_Venta_Grafico($TFA);
-			$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
-			$rep = 1;
-			if ($rep == 1) {
-				return array('respuesta' => $rep, 'pdf' => $imp);
-			} else {
-				return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep);
-			}
+		
 
-			// ojo ver cula se piensa imprimir
-			// Imprimir_Punto_Venta($FA);
-		}*/
-		//$this->modelo->pdf_factura($cod,$ser,$ci,$per);
+		$ticket = $this->pdf->Imprimir_Punto_Venta($TFA);
+		//Imprimir_Punto_Venta_Grafico($TFA);
+		// $imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+		// $rep = 1;
+		// if ($rep == 1) {
+		// 	return array('respuesta' => $rep, 'pdf' => $imp);
+		// } else {
+		// 	return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep);
+		// }
+		
 
 	}
 	function ver_fac_pdf($cod, $ser, $ci, $per, $auto, $tc)
