@@ -1597,8 +1597,8 @@ class facturas_distribucion
 	//funcion que se ejecuta en punto de venta en facturacion
 	function generar_factura($parametros)
 	{
-		$Lineas = $this->modelo->DCLineaSecuencial($parametros['TC'], $parametros['MBFecha'], $parametros['FACodLinea']);
-		// print_r($parametros);die();
+		$Lineas = $this->modelo->DCLineaSecuencial("FA", $parametros['MBFecha'], $parametros['FACodLinea']);
+		//print_r($Lineas[0]['Secuencial']);die();
 		$this->sri->Actualizar_factura($parametros['CI'], $Lineas[0]['Secuencial'], $parametros['Serie']);
 
 		// FechaValida MBFecha
