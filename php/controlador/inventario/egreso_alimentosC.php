@@ -344,7 +344,7 @@ class egreso_alimentosC
 					</td>
 				</tr>';
 				$datos[$key]['SubModulo'] = $op ;
-			$lineas = $this->modelo->cargar_motivo_lista(false,false,$value['Orden_No']);
+			$lineas = $this->modelo->cargar_motivo_lista(false,false,$value['Orden_No'],$value['motivoid']);
 			// print_r($lineas);
 			foreach ($lineas as $key2 => $value2) {
 				if($value2['Solicitud']=="0")
