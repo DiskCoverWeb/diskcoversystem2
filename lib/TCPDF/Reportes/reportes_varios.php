@@ -303,7 +303,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	{
 	$ticket.="<tr><td colspan='3'>------------------------------------------</td></tr>";
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-			$ticket.="<tr><td></td><td>TOTAL KILOS</td><td align='right'>".strval($Total)."</td></tr>";
+			$ticket.="<tr><td></td><td>TOTAL KILOS</td><td>".strval($Total)."</td></tr>";
 		}else{
 			$ticket.="<tr><td>T O T A L</td><td>".strval($Total)."</td></tr>";
 		}
