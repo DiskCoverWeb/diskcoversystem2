@@ -184,9 +184,9 @@ $ticket  = '
     </style>
 </head>
 <body>
-<img src="../../../'.$src.'" style="width: '.$anchoImg.'px; height: '.$altoImg.'px;"></img>
 <pre>
-<table style="font-family: Arial">';
+<table style="font-family: Arial">
+<tr><td colspan="3"><img src="../../../'.$src.'" style="width: 210px; height: '.$altoImg.'px;"></img></td></tr>';
 if($Encabezado_PV){
 if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
 {
