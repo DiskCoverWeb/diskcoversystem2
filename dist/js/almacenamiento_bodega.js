@@ -859,6 +859,8 @@ function cargar_detalle(codbarras)
 	       dataType:'json',
 		    success: function(data)
 		    {
+		    	if(data.length>0)
+		    	{
 		    	$('#lbl_barras').text(data[0].Codigo_Barra);
 					$('#lbl_producto').text(data[0].Producto);
 					$('#lbl_cantidad').text(data[0].Entrada);
@@ -866,7 +868,10 @@ function cargar_detalle(codbarras)
 					$('#lbl_bodega').text(data[0].bodega);
 					$('#lbl_codbodega').text(data[0].CodBodega);
 					$('#lbl_proceso').text(data[0].Lugar);
+				}else{
 		    	// productos_asignados();
+		    	Swal.fire("Codigo:"+codbarras+' no encontrado',"","info");
+				}
 		    }
 		});
 

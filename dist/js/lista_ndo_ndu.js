@@ -483,39 +483,45 @@ var tipo = '';
    }
 
   function Ver_nd(id,serie,ci,aut,tc)
-	{		 
-    $('#myModal_espera').modal('show');
-    peri = $('#ddl_periodo').val();
-    $.ajax({
-			type: "GET",
-			url: '../controlador/facturacion/lista_ndo_nduC.php?ver_fac=true&codigo='+id+'&ser='+serie+'&ci='+ci+'&per='+peri+'&auto='+aut+'&tc='+tc,
-			//data: { parametros: parametros },
-			//dataType: 'json',
-			success: function (data) {
-        setTimeout(()=>{
-					$('#myModal_espera').modal('hide');
-				}, 1000)
-        let datajson = JSON.parse(data);
-        if(datajson['respuesta'] == 1){
-          var url = '../../TEMP/' + datajson['pdf'] + '.pdf';
-          //window.open(url, '_blank');
+	{
 
-          const iframe = document.getElementById('pdfFrame');
-          iframe.src = url;
+    $('#myModal_espera').show();		 
+    var peri = $('#ddl_periodo').val();
+    var url = '../controlador/facturacion/lista_ndo_nduC.php?ver_fac=true&codigo='+id+'&ser='+serie+'&ci='+ci+'&per='+peri+'&auto='+aut+'&tc='+tc;
+    var html='<iframe style="width:100%; height:50vw;" src="'+url+'&pdf=no" frameborder="0" allowfullscreen id="re_ticket"></iframe>';
+    $('#re_frame').html(html);
+    $('#myModal_espera').hide();
+    document.getElementById('re_ticket').contentWindow.print();
+
+    // $.ajax({
+		// 	type: "GET",
+		// 	//data: { parametros: parametros },
+		// 	//dataType: 'json',
+		// 	success: function (data) {
+    //     setTimeout(()=>{
+		// 			$('#myModal_espera').modal('hide');
+		// 		}, 1000)
+    //     let datajson = JSON.parse(data);
+    //     if(datajson['respuesta'] == 1){
+    //       var url = '../../TEMP/' + datajson['pdf'] + '.pdf';
+    //       //window.open(url, '_blank');
+
+    //       const iframe = document.getElementById('pdfFrame');
+    //       iframe.src = url;
           
-          iframe.onload = function () {
-              iframe.contentWindow.print();
-          };
+    //       iframe.onload = function () {
+    //           iframe.contentWindow.print();
+    //       };
 
-        }else{
-          Swal.fire('Error', 'Hubo un problema al mostrar la factura.');  
-        }
-      },
-      error: function (err) {
-        $('#myModal_espera').hide();
-        Swal.fire('Error', 'Hubo un problema al mostrar la factura.');
-      }
-    });
+    //     }else{
+    //       Swal.fire('Error', 'Hubo un problema al mostrar la factura.');  
+    //     }
+    //   },
+    //   error: function (err) {
+    //     $('#myModal_espera').hide();
+    //     Swal.fire('Error', 'Hubo un problema al mostrar la factura.');
+    //   }
+    // });
 		/*var url = '../controlador/facturacion/lista_ndo_nduC.php?ver_fac=true&codigo='+id+'&ser='+serie+'&ci='+ci+'&per='+peri+'&auto='+aut+'&tc='+tc;		
 		window.open(url,'_blank');*/
 	}

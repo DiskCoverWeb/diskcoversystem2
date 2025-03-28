@@ -42,7 +42,7 @@ if (isset($_GET['perido'])) {
 }
 if (isset($_GET['ver_fac'])) {
 	// print_r('sss');die();
-	echo json_encode($controlador->ver_fac($_GET['codigo'], $_GET['ser'], $_GET['ci'], $_GET['per'], $_GET['auto'], $_GET['tc']));
+	echo $controlador->ver_fac($_GET['codigo'], $_GET['ser'], $_GET['ci'], $_GET['per'], $_GET['auto'], $_GET['tc']);
 }
 if (isset($_GET['ver_fac_url'])) {
 	// print_r('sss');die();
@@ -449,17 +449,10 @@ class lista_facturasC
 		$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
 		$TFA['CLAVE'] = '.';
 		$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
-		
+
 
 		$ticket = $this->pdf->Imprimir_Punto_Venta($TFA);
-		//Imprimir_Punto_Venta_Grafico($TFA);
-		// $imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
-		// $rep = 1;
-		// if ($rep == 1) {
-		// 	return array('respuesta' => $rep, 'pdf' => $imp);
-		// } else {
-		// 	return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep);
-		// }
+		return $ticket;
 		
 
 	}

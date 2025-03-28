@@ -696,6 +696,8 @@ class almacenamiento_bodegaC
 	{
 		// print_r($parametros);die();
 		$datos = $this->modelo->cargar_detalle(false,false,false,false,$parametros['codbarras']);	
+		if(count($datos))
+		{
 		$datos[0]['Lugar'] = '';
 		if($datos[0]['CodBodega']!='-1')
 		{
@@ -727,6 +729,7 @@ class almacenamiento_bodegaC
 					$datos[0]['Lugar'] = 'Clasificiacion';
 					break;
 			}
+		}
 		}
 		return $datos;
 		// print_r($datos);die();
