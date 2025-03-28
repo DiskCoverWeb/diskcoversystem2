@@ -237,7 +237,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 			$ticket.="<tr><td colspan='3'>Numero de Gavetas: </td></tr>";
 			$ticket.="<tr><td colspan='3'>Atencion: </td></tr>";
 		}
-	$ticket.="<tr><td colspan='3'>==========================================</td></tr>";
+	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 			$linea1F = "P R O D U C T O";
@@ -248,13 +248,13 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 			$ticket.="<tr><td>P R O D U C T O/CODIGO CANTIDAD(KG)</td></tr>";
 			
 		}
-	$ticket.="<tr><td colspan='3'>==========================================</td></tr>";
+	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 
 	}else{
-		$ticket.="<tr><td colspan='3'>==========================================</td></tr>";
+	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 
 		$ticket.="<tr><td>PRODUCTO/Cant x PVP/TOTAL</td></tr>";		
-		$ticket.="<tr><td colspan='3'>==========================================</td></tr>";
+	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 	}
 	$Efectivo = $info['factura'][0]['Efectivo'];
 
@@ -282,10 +282,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 				if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 					$ticket.="<tr><td colspan='2'>".$Producto."</td><td align='right'>".$CodigoN."</td></tr>";
 					//$pdf->MultiCell($anchoFact,3,.$CodigoN,0,'L');
-				}else{
-					$ticket.="<tr><td>".$Producto."</td></tr>";
-					$ticket.="<tr><td>".$CodigoC.str_repeat(' ', 25 - strlen($CodigoC))." ".str_repeat(' ', 10 - strlen($CodigoN)).$CodigoN."</td></tr>";
-				}
+				
 				$PVP = (float)number_format($filasCP[0]['PVP_3'], 2, '.', '') * (float)$value['Cantidad'];
 				$Total += $value['Cantidad'];
 				$TotalPVP += $PVP;
