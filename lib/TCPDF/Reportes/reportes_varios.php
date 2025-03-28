@@ -448,11 +448,9 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 	$ticket.="<tr><td colspan='3'>____________           _______________</td></tr>";
-	$ticket.="<tr><td colspan='3'>      Conforme                    Procesado</td></tr>";
+	$ticket.="<tr><td colspan='3'>        Conforme                Procesado</td></tr>";
+	$ticket.="<tr><td colspan='3'>        C.I./R.U.C            Por ".$filasUsuario[0]['Usuario']."</td></tr>";
 	$ticket.="<tr><td colspan='3'> ".$info['factura'][0]['RUC_CI']."            ".$info['factura'][0]['CodigoU']."</td></tr>";
-
-
-
 $ticket.='
 </table></pre>
 </body>
