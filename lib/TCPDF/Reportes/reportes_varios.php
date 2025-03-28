@@ -158,7 +158,7 @@ $altoImg = ($anchoFact * 0.38)*3.77;
 $ticket  = '
 <img src="../../../'.$src.'" style="width: '.$anchoImg.'px; height: '.$altoImg.'px;"></img>
 <pre>
-<table width="70mm"  style="font-family: Arial">';
+<table style="font-family: Arial">';
 if($Encabezado_PV){
 if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
 {
@@ -242,10 +242,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 			$linea1F = "P R O D U C T O";
 			$linea2F = "CANTIDAD(KG)";
-			$ticket.="<tr><td colspan='2' width='100px'>".$linea1F.'</td><td>'.$linea2F."</td></tr>";
-			
-		}else{
-			$ticket.="<tr><td>P R O D U C T O/CODIGO CANTIDAD(KG)</td></tr>";
+			$ticket.="<tr><td>".$linea1F.'</td><td>'.$linea2F."</td></tr>";
 			
 		}
 	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
@@ -280,7 +277,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 				
 				if($value['Tipo_Hab'] <> G_NINGUNO){$Producto .= "(".$value['Tipo_Hab'].")";}
 				if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-					$ticket.="<tr><td colspan='2' width='100px'>".$Producto."</td><td align='right'>".$CodigoN."</td></tr>";
+					$ticket.="<tr><td>".$Producto."</td><td>".$CodigoN."</td></tr>";
 					//$pdf->MultiCell($anchoFact,3,.$CodigoN,0,'L');
 				}
 				
