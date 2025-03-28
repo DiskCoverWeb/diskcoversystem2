@@ -324,7 +324,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 				"buen estado. Se recomienda su CONSUMO INMEDIATO y está PROHIBIDA SU COMERCIALIZACIÓN. El BAQ no se responsabiliza por " .
 				"efectos negativos por consumo fuera del tiempo sugerido. Con su firma, el beneficiario acepta haber sido informado del " .
 				"estado de los productos, que los recibe voluntariamente, los usará con fines benéficos y bajo su responsabilidad.";
-			$ticket.="<tr><td colspan='2'>".$Producto."</td><td></td></tr>";
+			$ticket.="<tr><td colspan='3'>".$Producto."</td></tr>";
 		}else{
 			$Producto = "Los productos donados, han perdido valor comercial por diferentes motivos, pero mantienen un valor social. " .
 				"Estos productos han pasado por un proceso de clasificación y se encuentran en buen estado. Se recomienda su " .
@@ -369,7 +369,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	$ticket.="<tr><td colspan='3'>------------------------------------------</td></tr>";
 	$Producto = "<b>El costo comercial de los kilos entregados es de USD ".number_format((float)$TotalPVP, 2, '.', '').". Su aporte solidario de USD ".number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')." representa menos del 10% de este valor</b> y nos ayuda a cubrir costos operativos para asistir a más personas en situación de vulnerabilidad alimentaria.";
 
-	$ticket.="<tr><td colspan='3'>".$Producto."</td></tr>";
+	$ticket.="<tr><td>".$Producto."</td></tr>";
 	$ticket.="<tr><td colspan='3'></td></tr><tr><td colspan='3'></td></tr>";
 					
 	$Producto = "Puede donar en efectivo, por depósito o transferencia a la cuenta de ahorros Banco Pichincha N.º 3708204100 " .
