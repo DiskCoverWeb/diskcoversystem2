@@ -324,14 +324,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 			$ticket.="<tr><td colspan='2'>TOTAL KILOS</td><td align='right'>".strval($Total)."</td></tr>";
 		}
 
-		if($_SESSION['INGRESO']['IDEntidad'] != '65'){
-			$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
-			$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
-			$ticket.="<tr><td>_______________</td><td></td><td>____________</td></tr>";
-			$ticket.="<tr><td>Entregado por </td><td></td><td>Recibi Conforme</td></tr>";
-		}
-
-		
+				
 		$ticket.="<tr><td></td></tr><tr><td></td></tr>";
 		$ticket.="<tr><td colspan='3'>IMPORTANTE:</td></tr>";
 
@@ -385,9 +378,9 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	$ticket.="<tr><td colspan='3'  style=' text-align: justify;'>".$Producto."</td></tr>";
 
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
-	$ticket.="<tr><td>__________</td><td></td><td>__________</td></tr>";
-	$ticket.="<tr><td align='center'>B A Q</td><td></td><td align='center'>Organización Social</td></tr>";
-	$ticket.="<tr><td style='white-space: nowrap;'>".$_SESSION['INGRESO']['RUC']."</td><td></td><td  style='white-space: nowrap;'>".$info['factura'][0]['RUC_CI']."</td></tr>";
+	$ticket.="<tr><td colspan='3'>____________           _______________</td></tr>";
+	$ticket.="<tr><td colspan='3'>           B A Q              Organización Social</td></tr>";
+	$ticket.="<tr><td colspan='3'> ".$_SESSION['INGRESO']['RUC']."            ".$info['factura'][0]['RUC_CI']."</td></tr>";
 
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 
@@ -401,7 +394,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	$ticket.="<tr><td colspan='3'>_________________________________</td></tr>";
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
-	$ticket.= '<tr><td colspan="3"><img src="../../../'.$src.'" style="width: '.$anchoImg.'px; height: '.$altoImg.'px;"></img></td></tr>';
+	$ticket.= '<tr><td colspan="3"><img src="../../../'.$src.'" style="width: 210px; height: '.$altoImg.'px;"></img></td></tr>';
 	if($Encabezado_PV){
 		if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
 		{
@@ -454,10 +447,11 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
 
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
-	$ticket.="<tr><td>__________</td><td></td><td>__________</td></tr>";
-	$ticket.="<tr><td align='center'>Conforme</td><td></td><td align='center'  style='white-space: nowrap;'>Procesado</td></tr>";
-	$ticket.="<tr><td align='center' style='white-space: nowrap;' >C.I./R.U.C </td><td></td><td align='center'>Por ".$filasUsuario[0]['Usuario']."</td></tr>";
-	$ticket.="<tr><td  align='center'  style='white-space: nowrap;'>".$info['factura'][0]['RUC_CI']."</td><td></td><td  align='center'>".$info['factura'][0]['CodigoU']."</td></tr>";
+	$ticket.="<tr><td colspan='3'>____________           _______________</td></tr>";
+	$ticket.="<tr><td colspan='3'>      Conforme                    Procesado</td></tr>";
+	$ticket.="<tr><td colspan='3'> ".$info['factura'][0]['RUC_CI']."            ".$info['factura'][0]['CodigoU']."</td></tr>";
+
+
 
 $ticket.='
 </table></pre>
