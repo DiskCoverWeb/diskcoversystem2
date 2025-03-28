@@ -303,7 +303,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	{
 	$ticket.="<tr><td colspan='3'>------------------------------------------</td></tr>";
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-			$ticket.="<tr><td></td><td>TOTAL KILOS</td><td align='right'>".strval($Total)."</td></tr>";
+			$ticket.="<tr><td>TOTAL KILOS</td><td></td><td>".strval($Total)."</td></tr>";
 		}else{
 			$ticket.="<tr><td>T O T A L</td><td>".strval($Total)."</td></tr>";
 		}
@@ -324,7 +324,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 				"buen estado. Se recomienda su CONSUMO INMEDIATO y está PROHIBIDA SU COMERCIALIZACIÓN. El BAQ no se responsabiliza por " .
 				"efectos negativos por consumo fuera del tiempo sugerido. Con su firma, el beneficiario acepta haber sido informado del " .
 				"estado de los productos, que los recibe voluntariamente, los usará con fines benéficos y bajo su responsabilidad.";
-			$ticket.="<tr><td colspan='3'>".$Producto."</td></tr>";
+			$ticket.="<tr><td colspan='2'>".$Producto."</td><td></td></tr>";
 		}else{
 			$Producto = "Los productos donados, han perdido valor comercial por diferentes motivos, pero mantienen un valor social. " .
 				"Estos productos han pasado por un proceso de clasificación y se encuentran en buen estado. Se recomienda su " .
