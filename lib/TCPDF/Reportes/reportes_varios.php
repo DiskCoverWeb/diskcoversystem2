@@ -156,6 +156,33 @@ $anchoImg = ($ancho_PV * 1.75)*3.77;
 $altoImg = ($anchoFact * 0.38)*3.77;
 
 $ticket  = '
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: "Courier New", monospace;
+            font-size: 12px;
+            width: 70mm;       /* Ancho seguro para 58mm de papel */
+            margin: 0;         /* Elimina márgenes */
+            padding: 0;        /* Elimina relleno */
+
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Fuerza el ajuste de columnas */
+            white-space: pre-wrap; 
+        }
+        td, th {
+            padding: 2px;
+            word-break: break-word; /* Rompe palabras largas */
+            overflow: hidden;       /* Oculta contenido que exceda */
+        }
+    </style>
+</head>
+<body>
 <img src="../../../'.$src.'" style="width: '.$anchoImg.'px; height: '.$altoImg.'px;"></img>
 <pre>
 <table style="font-family: Arial">';
@@ -247,11 +274,6 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 		}
 	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 
-	}else{
-	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
-
-		$ticket.="<tr><td>PRODUCTO/Cant x PVP/TOTAL</td></tr>";		
-	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 	}
 	$Efectivo = $info['factura'][0]['Efectivo'];
 
@@ -277,7 +299,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 				
 				if($value['Tipo_Hab'] <> G_NINGUNO){$Producto .= "(".$value['Tipo_Hab'].")";}
 				if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-					$ticket.="<tr><td colspan='2' width='100px'>".$Producto."</td><td align='right'>".$CodigoN."</td></tr>";
+					$ticket.="<tr><td colspan='2' width='100px'>".$Producto."</td><td>".$CodigoN."</td></tr>";
 					//$pdf->MultiCell($anchoFact,3,.$CodigoN,0,'L');
 				}
 				
@@ -451,7 +473,9 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	$ticket.="<tr><td  align='center'>".$info['factura'][0]['RUC_CI']."</td><td></td><td  align='center'>".$info['factura'][0]['CodigoU']."</td></tr>";
 
 $ticket.='
-</table></pre>';
+</table></pre>
+</body>
+</html>';
 
 return $ticket;
 }
