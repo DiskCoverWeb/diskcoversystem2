@@ -157,7 +157,6 @@ $altoImg = ($anchoFact * 0.38)*3.77;
 
 $ticket  = '
 <img src="../../../'.$src.'" style="width: '.$anchoImg.'px; height: '.$altoImg.'px;"></img>
-<pre>
 <table width="239px">';
 if($Encabezado_PV){
 if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
@@ -456,8 +455,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	$ticket.="<tr><td  align='center'>".$info['factura'][0]['RUC_CI']."</td><td></td><td  align='center'>".$info['factura'][0]['CodigoU']."</td></tr>";
 
 $ticket.='
-</table>
-</pre>';
+</table>';
 
 return $ticket;
 }
