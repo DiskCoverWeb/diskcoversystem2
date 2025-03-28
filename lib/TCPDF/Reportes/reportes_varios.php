@@ -237,21 +237,21 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 			$ticket.="<tr><td colspan='3'>Numero de Gavetas: </td></tr>";
 			$ticket.="<tr><td colspan='3'>Atencion: </td></tr>";
 		}
-	$ticket.="<tr><td colspan='3'>===============================</td></tr>";
+	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 			$linea1F = "P R O D U C T O";
 			$linea2F = "CANTIDAD(KG)";
-			$ticket.="<tr><td>".$linea1F.'</td><td></td><td>'.$linea2F."</td></tr>";
+			$ticket.="<tr><td colspan='2' width='100px'>".$linea1F.'</td><td>'.$linea2F."</td></tr>";
 			
 		}
-	$ticket.="<tr><td colspan='3'>================================</td></tr>";
+	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 
 	}else{
-	$ticket.="<tr><td colspan='3'>================================</td></tr>";
+	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 
 		$ticket.="<tr><td>PRODUCTO/Cant x PVP/TOTAL</td></tr>";		
-	$ticket.="<tr><td colspan='3'>================================</td></tr>";
+	$ticket.="<tr><td colspan='3'>====================================</td></tr>";
 	}
 	$Efectivo = $info['factura'][0]['Efectivo'];
 
@@ -277,7 +277,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 				
 				if($value['Tipo_Hab'] <> G_NINGUNO){$Producto .= "(".$value['Tipo_Hab'].")";}
 				if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-					$ticket.="<tr><td>".$Producto."</td><td></td><td>".$CodigoN."</td></tr>";
+					$ticket.="<tr><td colspan='2' width='100px'>".$Producto."</td><td align='right'>".$CodigoN."</td></tr>";
 					//$pdf->MultiCell($anchoFact,3,.$CodigoN,0,'L');
 				}
 				
@@ -303,7 +303,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	{
 	$ticket.="<tr><td colspan='3'>------------------------------------------</td></tr>";
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-			$ticket.="<tr><td>TOTAL KILOS</td><td></td><td>".strval($Total)."</td></tr>";
+			$ticket.="<tr><td></td><td>TOTAL KILOS</td><td align='right'>".strval($Total)."</td></tr>";
 		}else{
 			$ticket.="<tr><td>T O T A L</td><td>".strval($Total)."</td></tr>";
 		}
@@ -369,7 +369,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	$ticket.="<tr><td colspan='3'>------------------------------------------</td></tr>";
 	$Producto = "<b>El costo comercial de los kilos entregados es de USD ".number_format((float)$TotalPVP, 2, '.', '').". Su aporte solidario de USD ".number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')." representa menos del 10% de este valor</b> y nos ayuda a cubrir costos operativos para asistir a más personas en situación de vulnerabilidad alimentaria.";
 
-	$ticket.="<tr><td>".$Producto."</td></tr>";
+	$ticket.="<tr><td colspan='3'>".$Producto."</td></tr>";
 	$ticket.="<tr><td colspan='3'></td></tr><tr><td colspan='3'></td></tr>";
 					
 	$Producto = "Puede donar en efectivo, por depósito o transferencia a la cuenta de ahorros Banco Pichincha N.º 3708204100 " .
