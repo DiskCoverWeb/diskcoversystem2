@@ -162,11 +162,11 @@ $ticket  = '
 <head>
     <style>
         body {
-            font-family: "Courier New", monospace;
+            font-family: Arial;
             font-size: 12px;
-            width: 70mm;       /* Ancho seguro para 58mm de papel */
+            width: 60mm;       /* Ancho seguro para 58mm de papel */
             margin: 0;         /* Elimina márgenes */
-            padding: 0;        /* Elimina relleno */
+            padding: 5mm;        /* Elimina relleno */
 
         }
         table {
