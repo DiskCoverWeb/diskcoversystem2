@@ -158,7 +158,7 @@ $altoImg = ($anchoFact * 0.38)*3.77;
 $ticket  = '
 <img src="../../../'.$src.'" style="width: '.$anchoImg.'px; height: '.$altoImg.'px;"></img>
 <pre>
-<table width="70mm"  style="font-family: Times">';
+<table width="70mm"  style="font-family: Arial">';
 if($Encabezado_PV){
 if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
 {
