@@ -2091,7 +2091,9 @@ function tipo_facturacion(valor)
 						Swal.fire(data.text, '', 'error');
 					}
 				}else{
-					if (data[1].respuesta == 1) {
+					if(data[1].respuesta=='-999'){
+						Swal.fire("Asigne una serie a la empresa","Serie_FA no esta asignada","error");
+					}else if (data[1].respuesta == 1) {
 						Swal.fire({
 							icon: 'success',
 							title: 'Nota de Venta y Factura Creadas',
