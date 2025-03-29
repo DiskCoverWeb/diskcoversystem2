@@ -253,6 +253,7 @@ class facturas_distribucionM
     return $this->db->String_Sql($sql);
   }
 
+
   function Listar_Clientes_PV($query, $parametros)
   {
     $sql = "SELECT Cliente, Codigo, CI_RUC,TD,Grupo,Email,C.T,Direccion,DirNumero,Calificacion 

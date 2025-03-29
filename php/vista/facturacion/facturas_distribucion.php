@@ -9,6 +9,8 @@ $TC = 'FA';
 if (isset ($_GET['tipo'])) {
 	$TC = $_GET['tipo'];
 }
+
+// print_r($_SESSION['INGRESO']);
 ?>
 
 <script src="../../dist/js/facturas_distribucion.js">
@@ -279,7 +281,7 @@ if (isset ($_GET['tipo'])) {
 			<div class="col-sm-3" style="display:flex;flex-direction:column;justify-content:center">
 				<div class="row">
 					<div class="col-sm-12 mb-2">
-						<button class="btn btn-light border border-1 btn-sm" onclick="$('#modalInfoFactura').modal('show')">Seleccionar métodos de pago</button>
+						<button class="btn btn-outline-primary border border-1 btn-sm" onclick="$('#modalInfoFactura').modal('show')">Seleccionar métodos de pago</button>
 						
 					</div>
 				</div>
@@ -385,7 +387,7 @@ if (isset ($_GET['tipo'])) {
 							<b>Cuenta x Cobrar</b>
 						</div>
 						<div class="col-sm-7">
-							<select class="form-control form-control-sm" id="DCLineas" name="DCLineas"
+							<select class="form-select form-select-sm" id="DCLineas" name="DCLineas"
 								>
 								<option value="">Seleccione</option>
 							</select>
@@ -396,7 +398,7 @@ if (isset ($_GET['tipo'])) {
 							<b>I.V.A %</b>
 						</div>
 						<div class="col-sm-7">
-							<select class="form-control form-control-sm" style="width:100%" name="DCPorcenIVA" id="DCPorcenIVA" onblur="cambiar_iva(this)">
+							<select class="form-select form-select-sm" style="width:100%" name="DCPorcenIVA" id="DCPorcenIVA" onblur="cambiar_iva(this)">
 
 							</select>
 						</div>
@@ -504,7 +506,7 @@ if (isset ($_GET['tipo'])) {
 						</div>
 						<div class="col-sm-7">
 							<input type="text" name="LblCambio" id="LblCambio" class="form-control form-control-sm text-end"
-								style="color: red;" value="0.00">
+								style="color: red;" value="0.00" readonly>
 						</div>
 					</div>
 					<div class="row" id="bouche_banco_input" style="margin:10px 0;display:none;">

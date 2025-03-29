@@ -1037,6 +1037,7 @@ class registro_beneficiarioC
         if(count($cliente)>0){
             SetAdoAddNew("Clientes_Datos_Extras");
             SetAdoFields('Codigo', $cliente[0]['Codigo']);
+            SetAdoFields('Item', $_SESSION['INGRESO']['item']);
             
             if($datos['select_93']=='93.01')
             {
@@ -1100,7 +1101,7 @@ class registro_beneficiarioC
                 SetAdoUpdate();                
             }else
             {
-                SetAdoFieldsWhere('Item', $_SESSION['INGRESO']['item']);
+                //SetAdoFieldsWhere('Item', $_SESSION['INGRESO']['item']);
                 SetAdoFieldsWhere('Codigo', $cliente[0]['Codigo']);
                 SetAdoUpdateGeneric();
             }

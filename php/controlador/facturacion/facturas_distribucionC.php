@@ -1597,9 +1597,8 @@ class facturas_distribucion
 	//funcion que se ejecuta en punto de venta en facturacion
 	function generar_factura($parametros)
 	{
-		$Lineas = $this->modelo->DCLineaSecuencial("FA", $parametros['MBFecha'], $parametros['FACodLinea']);
-		//print_r($Lineas[0]['Secuencial']);die();
-		$this->sri->Actualizar_factura($parametros['CI'], $Lineas[0]['Secuencial'], $parametros['Serie']);
+		$numFac = ReadSetDataNum("FA_SERIE_".$_SESSION['INGRESO']['Serie_FA'],true,false,false);
+		$this->sri->Actualizar_factura($parametros['CI'],$numFac,strval($_SESSION['INGRESO']['Serie_FA']));
 
 		// FechaValida MBFecha
 		$FechaTexto = $parametros['MBFecha'];
@@ -1628,8 +1627,8 @@ class facturas_distribucion
 					$FA['TC'] = "DO";
 				}else{
 				}*/
-				$FA['Serie'] = $parametros['Serie'];
-				$FA['TextFacturaNo'] = $Lineas[0]['Secuencial'];
+				$FA['Serie'] = $_SESSION['INGRESO']['Serie_FA'];
+				$FA['TextFacturaNo'] = $numFac;
 				$FA['Cta_CxP'] = $parametros['Cta_Cobrar'];
 				$FA['Autorizacion'] = $parametros['Autorizacion'];
 				$FA['FechaTexto'] = $FechaTexto;
@@ -1659,9 +1658,20 @@ class facturas_distribucion
 				// print_r($parametros);die();	       
 				//return $this->ProcGrabar($FA);
 				$r = $this->ProcGrabar($FA);
-				if($r['respuesta'] == 1){
+				// print_r($r);die();
+				if(isset($r['respuesta']) && $r['respuesta'] == 1){
 					// Hacer el borrado Trans_Comision
 					$r2 = $this->generar_factura_FA($FA, $r);
+
+
+					SetAdoAddNew('Detalle_Factura');
+					SetAdoFields('T','N');      
+			        SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
+			        SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']); 
+			        SetAdoFieldsWhere('CodigoC',$parametros['CodigoCliente']); 
+			        SetAdoFieldsWhere('TC','OP');  
+       				SetAdoUpdateGeneric();
+
 					$this->modelo->EliminarTransComision($FA['Fecha'], $FA['CodigoC'], $parametros['CodigoU']);
 					return $r2;
 				}
