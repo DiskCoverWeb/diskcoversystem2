@@ -2018,7 +2018,9 @@ function tipo_facturacion(valor)
 				}, 1000)
 				// console.log(data);
 				if(data.length == 1){
-					if (data.respuesta == 1) {
+					if(data.respuesta=='-999'){
+						Swal.fire("Asigne una serie a la empresa","Serie_FA no esta asignada","error");
+					}else if (data.respuesta == 1) {
 						Swal.fire({
 							icon: 'success',
 							title: 'Factura Creada',

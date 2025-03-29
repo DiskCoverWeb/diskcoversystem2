@@ -1600,6 +1600,11 @@ class facturas_distribucion
 		$params = array('beneficiario'=>$parametros['CodigoCliente'],'fecha'=>$parametros['MBFecha']);
 		$lineas_fac = $this->modelo->ConsultarProductos($params);
 
+		if($_SESSION['INGRESO']['Serie_FA']=='.')
+		{
+			return array('respuesta'=>'-999');
+		}
+
 		// print_r($lineas_fac);die();
 
 		$numFac = ReadSetDataNum("FA_SERIE_".$_SESSION['INGRESO']['Serie_FA'],true,true);
