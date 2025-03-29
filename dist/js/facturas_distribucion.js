@@ -2018,7 +2018,7 @@ function tipo_facturacion(valor)
 					$('#myModal_espera').modal('hide');
 				}, 1000)
 				if(data.respuesta=='-999'){
-					Swal.fire("Asigne una serie a la empresa","Serie_FA no egregada","error");
+					Swal.fire("Asigne una serie a la empresa","Serie_FA no esta agregada","error");
 					return false;
 				}
 				// console.log(data);
