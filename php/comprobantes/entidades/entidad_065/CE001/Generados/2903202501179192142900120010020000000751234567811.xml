@@ -20,24 +20,24 @@
     <tipoIdentificacionComprador>04</tipoIdentificacionComprador>
     <razonSocialComprador>PRISMANET PROFESIONAL SA</razonSocialComprador>
     <identificacionComprador>1792164710001</identificacionComprador>
-    <totalSinImpuestos>0.96</totalSinImpuestos>
+    <totalSinImpuestos>0.30</totalSinImpuestos>
     <totalDescuento>0.00</totalDescuento>
     <totalConImpuestos>
       <totalImpuesto>
         <codigo>2</codigo>
         <codigoPorcentaje>0</codigoPorcentaje>
         <descuentoAdicional>0.00</descuentoAdicional>
-        <baseImponible>0.96</baseImponible>
+        <baseImponible>0.30</baseImponible>
         <valor>0.00</valor>
       </totalImpuesto>
     </totalConImpuestos>
     <propina>0.00</propina>
-    <importeTotal>0.96</importeTotal>
+    <importeTotal>0.30</importeTotal>
     <moneda>DOLAR</moneda>
     <pagos>
       <pago>
         <formaPago>01</formaPago>
-        <total>0.96</total>
+        <total>0.30</total>
       </pago>
     </pagos>
   </infoFactura>
@@ -47,15 +47,15 @@
       <descripcion>DONACION</descripcion>
       <unidadMedida>DOLAR</unidadMedida>
       <cantidad>1.000000</cantidad>
-      <precioUnitario>0.960000</precioUnitario>
+      <precioUnitario>0.300000</precioUnitario>
       <descuento>0.00</descuento>
-      <precioTotalSinImpuesto>0.96</precioTotalSinImpuesto>
+      <precioTotalSinImpuesto>0.30</precioTotalSinImpuesto>
       <impuestos>
         <impuesto>
           <codigo>2</codigo>
           <codigoPorcentaje>0</codigoPorcentaje>
           <tarifa>0</tarifa>
-          <baseImponible>0.96</baseImponible>
+          <baseImponible>0.30</baseImponible>
           <valor>0.00</valor>
         </impuesto>
       </impuestos>

@@ -1597,7 +1597,12 @@ class facturas_distribucion
 	//funcion que se ejecuta en punto de venta en facturacion
 	function generar_factura($parametros)
 	{
-		$numFac = ReadSetDataNum("FA_SERIE_".$_SESSION['INGRESO']['Serie_FA'],true,false,false);
+		$params = array('beneficiario'=>$parametros['CodigoCliente'],'fecha'=>$parametros['MBFecha']);
+		$lineas_fac = $this->modelo->ConsultarProductos($params);
+
+		// print_r($lineas_fac);die();
+
+		$numFac = ReadSetDataNum("FA_SERIE_".$_SESSION['INGRESO']['Serie_FA'],true,true,false);
 		$this->sri->Actualizar_factura($parametros['CI'],$numFac,strval($_SESSION['INGRESO']['Serie_FA']));
 
 		// FechaValida MBFecha
@@ -1662,7 +1667,9 @@ class facturas_distribucion
 				if(isset($r['respuesta']) && $r['respuesta'] == 1){
 					// Hacer el borrado Trans_Comision
 					$r2 = $this->generar_factura_FA($FA, $r);
-       				$this->modelo->EliminarOPDetalleFactura($parametros['CodigoCliente']);
+					foreach ($lineas_fac as $key => $value) {
+       					$this->modelo->EliminarOPDetalleFactura($parametros['CodigoCliente'],$value['Cta'],$value['Codigo_Inv']);
+					}
 					$this->modelo->EliminarTransComision($FA['Fecha'], $FA['CodigoC'], $parametros['CodigoU']);
 					return $r2;
 				}
