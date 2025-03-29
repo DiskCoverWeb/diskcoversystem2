@@ -253,6 +253,15 @@ class facturas_distribucionM
     return $this->db->String_Sql($sql);
   }
 
+  function EliminarOPDetalleFactura($codigo){
+    $sql = "DELETE Detalle_Factura
+            WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+            AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+            AND CodigoC = '".$codigo."'
+            TC = 'OP'";
+    return $this->db->String_Sql($sql);
+  }
+
 
   function Listar_Clientes_PV($query, $parametros)
   {

@@ -1662,16 +1662,7 @@ class facturas_distribucion
 				if(isset($r['respuesta']) && $r['respuesta'] == 1){
 					// Hacer el borrado Trans_Comision
 					$r2 = $this->generar_factura_FA($FA, $r);
-
-
-					SetAdoAddNew('Detalle_Factura');
-					SetAdoFields('T','N');      
-			        SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
-			        SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']); 
-			        SetAdoFieldsWhere('CodigoC',$parametros['CodigoCliente']); 
-			        SetAdoFieldsWhere('TC','OP');  
-       				SetAdoUpdateGeneric();
-
+       				$this->modelo->EliminarOPDetalleFactura($parametros['CodigoCliente']);
 					$this->modelo->EliminarTransComision($FA['Fecha'], $FA['CodigoC'], $parametros['CodigoU']);
 					return $r2;
 				}
