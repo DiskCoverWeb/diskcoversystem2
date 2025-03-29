@@ -1602,7 +1602,7 @@ class facturas_distribucion
 
 		// print_r($lineas_fac);die();
 
-		$numFac = ReadSetDataNum("FA_SERIE_".$_SESSION['INGRESO']['Serie_FA'],true,true,false);
+		$numFac = ReadSetDataNum("FA_SERIE_".$_SESSION['INGRESO']['Serie_FA'],true,true);
 		$this->sri->Actualizar_factura($parametros['CI'],$numFac,strval($_SESSION['INGRESO']['Serie_FA']));
 
 		// FechaValida MBFecha
