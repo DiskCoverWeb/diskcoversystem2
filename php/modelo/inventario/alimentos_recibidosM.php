@@ -219,8 +219,8 @@ class alimentos_recibidosM
      WHERE T.Item = '".$_SESSION['INGRESO']['item']."' 
      AND T.Periodo = '".$_SESSION['INGRESO']['periodo']."'
      AND Orden_No = '".$orden."' 
-     AND T.Codigo_Inv NOT LIKE 'GA.%'
-     AND T.T = '.'";
+     AND T.Codigo_Inv NOT LIKE 'GA.%'";
+     // AND T.T = '.' ===> no colocar esto porque esto afecta en ingreso checking 
      // AND T.Codigo_P = '".$paciente."'
      $sql.="AND Numero =0
      AND T.Item = P.Item
