@@ -106,7 +106,7 @@ $(document).ready(function () {
               },
               { data: null,
                  render: function(data, type, item) {
-                    botons = `<button class="btn btn-sm btn-primary" onclick="editar_precio('${data.ID}');"><i class="fa fa-save"></i></button>`;
+                    botons = `<button class="btn btn-sm btn-primary" onclick="editar_precio('${data.ID}');guardar_check()"><i class="fa fa-save"></i></button>`;
                     if(data.TDP=='R')
                     {
                         botons+=`<button class="btn btn-sm btn-warning" onclick="cargar_tras_pedidos('${data.Producto}','${data.Orden_No}')"><i class="fa fa-list"></i></button>`;
