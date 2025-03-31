@@ -168,6 +168,7 @@ function cambiar_a_reportado()
 }
 function modal_motivo(orden,motivo)
 {
+  $('#txt_idMotivo').val(motivo);
    cargar_motivo_lista(orden,motivo);
     $('#myModal_motivo').modal('show');
 }
@@ -434,6 +435,7 @@ function lista_egreso_checking()
 
   function guardar_linea(id,orden)
   {
+    motivo = $('#txt_idMotivo').val();
     valor = $('#txt_lineaEgreso_'+id).val();
     parametros = 
     {
@@ -447,7 +449,7 @@ function lista_egreso_checking()
       dataType:'json',
       success: function(data)
       {
-        modal_motivo(orden)
+        modal_motivo(orden,motivo);
         Swal.fire("Costo editado","","success");
         console.log(data);
        

@@ -150,6 +150,7 @@
             <div class="modal-header bg-primary">
 				<h4 class="modal-title text-white">Motivo</h4>
                 <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                <input type="hidden" name="txt_idMotivo" id="txt_idMotivo">
             </div>
             <div class="modal-body">
             	<div class="row">            		
