@@ -27,6 +27,7 @@ $(document).ready(function () {
 
     tbl_pedidos_all = $('#tbl_body').DataTable({
           // responsive: true,
+          pageLength: 25,
           language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
           },
@@ -125,7 +126,7 @@ $(document).ready(function () {
 
 function toggleBtnImpresoraInd(id){
   let isCboxChecked = $('#rbl_conta_'+id).prop('checked');
-
+  guardar_check();
   if(isCboxChecked){
     $('#btn_impr_'+id).show();
   }else{
