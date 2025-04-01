@@ -643,10 +643,10 @@ function validar_comprobante()
                     </div> 
                     <div class="col-md-3" id="no_cheque" style="display: none;">
                       <div class="input-group">
-                          <div class="input-group-addon input-xs">
+                          <div class="input-group-addon d-flex align-items-center form-control-sm">
                             <b>No. Cheq:</b>
                           </div>
-                          <input type="text" class="form-control input-xs" id="no_cheq" name='no_cheq' placeholder="00000001" style="text-align:right;"  onKeyPress='return soloNumerosDecimales(event)' maxlength='20' size='13' value='00000001' onblur="agregar_depo()">
+                          <input type="text" class="form-control form-control-sm d-flex align-items-center" id="no_cheq" name='no_cheq' placeholder="000000001" style="text-align:right;"  onKeyPress='return soloAlfaNumericos(event)' maxlength='20' size='13' value='00000001' onblur="agregar_depo()">
                       </div>  
                     </div>
                   </div>

@@ -414,7 +414,6 @@ function tip_cuenta($cuenta)
 
 function grabar_cuenta($parametros)
 {
-	// print_r($parametros);
 	$editar = false;
 	$ID='';
 	if($parametros['OpcG']=='true')

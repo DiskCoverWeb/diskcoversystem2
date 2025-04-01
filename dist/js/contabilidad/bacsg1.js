@@ -132,6 +132,7 @@ function cargar_balance_consolidado(type){
                     scrollX: true,
                     scrollY: '400px',
                     scrollCollapse: true,
+                    paging: false,
                     createdRow: function(row, data){
                         alignEnd(row, data);
                     },
@@ -202,6 +203,7 @@ function cargar_datos(item,nombre,imprimir=false)
                         scrollX: true,
                         scrollY: '400px',
                         scrollCollapse: true,
+                        paging: false, 
                         drawCallback: function (){
                             Formato_datos_numericos();
                         },

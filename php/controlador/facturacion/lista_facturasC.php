@@ -186,7 +186,57 @@ class lista_facturasC
 				$tbl[$key]['ExisteSerie'] = 'Si';
 			}
 		}
-
+		$contadorBotones=0;
+		$botoneshtml=array();
+		//Armamos los botones, no modificamos nada en el array original
+		foreach ($tbl as $dataTbl){	
+			$email = '';
+			if($dataTbl['Email'] != '.' && $dataTbl['Email'] != ''){
+				$email .= $dataTbl['Email'].',';
+			}
+			if($dataTbl['EmailR'] != '.' && $dataTbl['EmailR'] != ''){
+				$email .= $dataTbl['EmailR'].',';
+			}
+			if($dataTbl['Email'] != '.' && $dataTbl['Email'] != ''){
+				$email .= $dataTbl['Email'].',';
+			}
+			$dataTbl['Email'] = $email;
+			$fecha = $dataTbl['Fecha']->format('Y-m-d');
+			$dataTbl['Fecha']=$fecha;
+			$botones[0] = array('boton'=>'Ver_factura', 'icono'=>'<i class="bx bx-show-alt ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=>'Factura,Serie,CodigoC,Autorizacion');
+			$botones[1] = array('boton'=>'modal_email_fac', 'icono'=>'<i class="bx bx-envelope ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=> 'Factura,Serie,CodigoC,Email');
+			$botones[2] = array('boton'=>'descargar_fac', 'icono'=>'<i class="bx bx-download ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=>'Factura,Serie,CodigoC');
+			if($dataTbl['ExisteSerie'] == 'Si' && strlen($dataTbl['Autorizacion']) == 13 && $parametros['tipo'] != '' ){
+				$botones[3] = array('boton'=>'autorizar', 'icono'=>'<i class="bx bx-paper-plane ps-1 bx-xs"></i>','tipo'=>'success','id'=>'TC,Factura,Serie,Fecha');
+			}
+			if($dataTbl['T'] != 'A' && $parametros['tipo'] != ''){
+				$botones[5] = array('boton'=>'anular_factura', 'icono'=>'<i class="bx bx-x ps-1 bx-xs"></i>', 'tipo'=> 'danger', 'id'=>'Factura,Serie,CodigoC');
+			}
+			if(strlen($dataTbl['Autorizacion']) > 13){
+				$botones[6] = array('boton'=>'descargar_xml', 'icono'=>'<i class="bx bx-download ps-1 bx-xs"></i>','tipo'=>'info', 'id'=>'Autorizacion');
+			} else if(strlen($dataTbl['Autorizacion']) <= 13 && $dataTbl['T'] != 'A'){
+				$botones[6] = array('boton'=>'generar_xml', 'icono'=>'<i class="bx bx-download ps-1 bx-xs"></i>','tipo'=>'info', 'id'=>'Factura,Serie,TC');
+			}
+			$botoneshtml[$contadorBotones] = '';
+			foreach($botones as $boton){
+				if(isset($boton)){
+					$ids = explode(',', $boton['id']);
+					$parametros_boton = array_map(fn($id) => $dataTbl[$id] ?? $id, $ids);
+					$botoneshtml[$contadorBotones] .= '<button type="button" data-bs-toggle="tooltip" class="btn btn-sm py-0 px-0 btn-'.$boton['tipo'].'" '.
+					'onclick="'.$boton['boton'].'(\''.implode("','", $parametros_boton).'\')"'.
+					'title="'.$boton['boton'].'">'.
+					$boton['icono'].
+					'</button> ';
+				}
+			}
+			$contadorBotones++;
+		}
+		$index =0;
+		//Agregamos los botones a la tabla
+		foreach($tbl as &$fila){
+			$fila[] = '<div class="row row-cols-auto ps-1">'.$botoneshtml[$index].'</div>';
+			$index++;
+		}
 		return $tbl;
 	}
 

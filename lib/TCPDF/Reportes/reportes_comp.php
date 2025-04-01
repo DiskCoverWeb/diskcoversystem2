@@ -26,12 +26,13 @@ class PDFC extends TCPDF{
     }
     function Header() {
         //Marco para el header
+        $this-> setLineWidth(0.02646);
         $this->SetFont('Times', 'B', 30);
         if($_SESSION['INGRESO']['Nombre_Comercial']<>$_SESSION['INGRESO']['Razon_Social']){
-            $this->Cell(180,  25, '', 1, 1,  'C', false);
+            $this->MultiCell(180,  25, '', 1, 'C',  false, 1);
         }
         else {
-            $this->Cell(180, 20, '', 1, 1, 'C', false);
+            $this->MultiCell(180, 20, '', 1, 'C', false, 1);
         }
         //Lado Izquiero (logo)
         $this->SetXY(x: 13, y: 3);
@@ -44,15 +45,16 @@ class PDFC extends TCPDF{
         }
         //Lado central (Informacion de cabecera)
         $this->SetFont('times','',size: 10);
-        $this->Cell(0, 0, $_SESSION['INGRESO']['Razon_Social'], 0, 1, 'C', false);
+        //$this->MultiCell(w: 0, h: 0, txt: '', border: 0, align: 'L', fill: false, ln: 1);
+        $this->MultiCell(0, 0, $_SESSION['INGRESO']['Razon_Social'], 0, 'C', false, 1);
         //si razon social es distinto de nombre comercial, imprimirlo
         if($_SESSION['INGRESO']['Nombre_Comercial']<>$_SESSION['INGRESO']['Razon_Social']){
             $this->SetFont('times', '', 9);
-            $this->Cell(0, 0, $_SESSION['INGRESO']['Nombre_Comercial'], 0, 1, 'C', false);
+            $this->MultiCell(0, 0, $_SESSION['INGRESO']['Nombre_Comercial'], 0, 'C', false, 1);
         }
         $txt = 'R.U.C. :'.$_SESSION['INGRESO']['RUC'];
         $this->SetFont('times','',8);
-        $this->Cell(0, 0, $txt, 0, 1, 'C', false);
+        $this->MultiCell(0, 0, $txt, 0, 'C', false, 1);
         $this->SetFont('times', '', 6);
         $txt_dir = $_SESSION['INGRESO']['Direccion'].'-'.$_SESSION['INGRESO']['Telefono1'].' / '.$_SESSION['INGRESO']['FAX'];
         $this->Cell(0, 0, $txt_dir, 0, 1, 'C', false);
@@ -87,16 +89,36 @@ class PDFC extends TCPDF{
         //lado derecho (Informacion del comprobante)
         $this->SetY(3);
         $Fecha1 = explode("-", $this->datos_cabecera['Fecha_ex']);
-        $txt_no = 'No. '.substr($this->datos_cabecera['Fecha_ex'], 2, 2)."-".$this->datos_cabecera['Numero'];
-        $txt_fecha = 'Fecha: '.$this->datos_cabecera['Fecha'];
-        $txt_pag = 'Pagina No. '.$this->getPage();
-        $this->SetX(x: 150);
-        $this->Cell(40, 0, $txt_no, 1, 1, 'L', false);
-        $this->ln(h: 1);
-        $this->SetX(x: 150);
-        $this->Cell(40, 0, $txt_fecha, 1, 1, 'L', false);
-        $this->SetX(x: 150);
-        $this->Cell(40, 0, $txt_pag, 1, 1, 'L', false);
+        $txt_no = substr($this->datos_cabecera['Fecha_ex'], 2, 2)."-".$this->datos_cabecera['Numero'];
+        $txt_fecha = $this->datos_cabecera['Fecha'];
+        $txt_pag = $this->getPage();
+        $this->SetFont('times', 'B', 10);
+        $this->SetX(150);
+        $this->MultiCell(40, 0, 'No. ', 1, 'L', false, 0);
+        $this->SetFont('times', '', 8);
+        $this->SetX(157);
+        $this->MultiCell(40,  0, $txt_no, 0, 'L', false, 1);
+        $this->ln(2);
+        $this->SetFont('times', 'B', 10);
+        $this->SetX(150);
+        $this->MultiCell(40, 0, 'Fecha: ', 1, 'L', false, 0);
+        $this->SetFont('times', '', 8);
+        $this->SetX(162);
+        $this->MultiCell(40, 0, $txt_fecha, 0, 'L', false, 1);
+        $this->ln(2);
+        $this->SetFont('times', 'B', 10);
+        $this->SetX(150);
+        //esto Cambia en nota de credito y en nota de debito
+        if ($this->datos_cabecera['Tipo_Comprobante'] == 'CI' || $this->datos_cabecera['Tipo_Comprobante'] == 'CE'){
+            $this->SetFont('times', '', 8);
+            $this->MultiCell(40, 0, $this->datos_cabecera['Monto'], 1, 'C', false, 1);
+        } else {
+            $this->MultiCell(40, 0, 'Pagina No. ', 1, 'L', false, 0);
+            $this->SetX(168);
+            $this->SetFont('times', '', 8);
+            $this->MultiCell(40, 0, $txt_pag, 0, 'L', false, 0); 
+        }
+        
 
         //Para cuando hay mas paginas
         $pag = $this->getPage();
@@ -111,11 +133,11 @@ class PDFC extends TCPDF{
             <table>
                 <thead>
                     <tr> 
-                        <th style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black;" align="center">{$array[0]}</th> 
-                        <th style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black;" align="center" colspan="2">{$array[1]}</th> 
-                        <th style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black;" align="center">{$array[2]}</th> 
-                        <th style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black;" align="center">{$array[3]}</th> 
-                        <th style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black;" align="center">{$array[4]}</th> 
+                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center">{$array[0]}</th> 
+                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center" colspan="2">{$array[1]}</th> 
+                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center">{$array[2]}</th> 
+                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center">{$array[3]}</th> 
+                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center">{$array[4]}</th> 
                     </tr>
                 </thead>
             </table> 
@@ -128,28 +150,11 @@ class PDFC extends TCPDF{
         <table cellpadding="2">
             <tbody>
                 <tr>
-                    <td style="border-left: 1px solid black; border-right: 1px solid black;">{$array[0]}</td>
-                    <td style="border-left: 1px solid black; border-right: 1px solid black;" colspan="2">{$array[1]} </td>
-                    <td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">{$array[2]}</td>
-                    <td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">{$array[3]}</td>
-                    <td align="right" style="border-left: 1px solid black; border-right: 1px solid black;">{$array[4]}</td>
-                </tr>
-            </tbody>
-        </table> 
-        EOD;
-        $this->writeHTML($tbl, 0, false, false, false, 'L');
-    }
-
-    function Row_End($array){
-        $tbl = <<<EOD
-        <table cellpadding="2">
-            <tbody>
-                <tr>
-                    <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">{$array[0]}</td>
-                    <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;" colspan="2">{$array[1]}</td>
-                    <td align="right" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">{$array[2]}</td>
-                    <td align="right" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">{$array[3]}</td>
-                    <td align="right" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">{$array[4]}</td>
+                    <td style="border-left: 0.1px solid black; border-right: 0.1px solid black;">{$array[0]}</td>
+                    <td style="border-left: 0.1px solid black; border-right: 0.1px solid black;" colspan="2">{$array[1]} </td>
+                    <td align="right" style="border-left: 0.1px solid black; border-right: 0.1px solid black;">{$array[2]}</td>
+                    <td align="right" style="border-left: 0.1px solid black; border-right: 0.1px solid black;">{$array[3]}</td>
+                    <td align="right" style="border-left: 0.1px solid black; border-right: 0.1px solid black;">{$array[4]}</td>
                 </tr>
             </tbody>
         </table> 
@@ -162,9 +167,9 @@ class PDFC extends TCPDF{
         <table cellpadding="2">
             <tbody>
                 <tr>
-                    <td align="right" border="1" colspan="4">{$array[0]}</td>
-                    <td align="right" border="1">{$array[1]}</td>
-                    <td align="right" border="1">{$array[2]}</td>
+                    <td align="right" style="border: 0.1px solid black" colspan="4">{$array[0]}</td>
+                    <td align="right" style="border: 0.1px solid black">{$array[1]}</td>
+                    <td align="right" style="border: 0.1px solid black">{$array[2]}</td>
                 </tr>
             </tbody>
         </table> 
@@ -175,20 +180,20 @@ class PDFC extends TCPDF{
     function Footer_1 ($usuario){
         $this->SetFont('times', '', 8);
         $tbl = <<<EOD
-        <table border="1" cellpadding="3">
+        <table cellpadding="3">
             <tbody>
                 <tr>
-                    <td align="center" rowspan="2">Cotizacion</td>
-                    <td align="center">{$usuario}</td>
-                    <td align="center"></td>
-                    <td align="center"></td>
-                    <td align="center"></td>
+                    <td style="text-align: center; border: 0.1px solid black" rowspan="2">Cotizacion</td>
+                    <td style="text-align: center; border: 0.1px solid black">{$usuario}</td>
+                    <td style="text-align: center; border: 0.1px solid black"></td>
+                    <td style="text-align: center; border: 0.1px solid black"></td>
+                    <td style="text-align: center; border: 0.1px solid black"></td>
                 </tr>
                 <tr>
-                    <td align="center">Elaborado por</td>
-                    <td align="center">Contador</td>
-                    <td align="center">Aprovado por</td>
-                    <td align="center">Conforme</td>
+                    <td style="text-align: center; border: 0.1px solid black">Elaborado por</td>
+                    <td style="text-align: center; border: 0.1px solid black">Contador</td>
+                    <td style="text-align: center; border: 0.1px solid black">Aprovado por</td>
+                    <td style="text-align: center; border: 0.1px solid black">Conforme</td>
                 </tr>
             </tbody> 
         </table>
@@ -206,11 +211,11 @@ class PDFC extends TCPDF{
                 <table>
                     <tbody>
                         <tr>
-                            <td style="border-top: 1px solid black;"></td>
-                            <td style="border-top: 1px solid black;" colspan="2">{$txt}</td>
-                            <td style="border-top: 1px solid black;"></td>
-                            <td style="border-top: 1px solid black;"></td>
-                            <td style="border-top: 1px solid black;"></td>
+                            <td style="border-top: 0.1px solid black;"></td>
+                            <td style="border-top: 0.1px solid black;" colspan="2">{$txt}</td>
+                            <td style="border-top: 0.1px solid black;"></td>
+                            <td style="border-top: 0.1px solid black;"></td>
+                            <td style="border-top: 0.1px solid black;"></td>
                         </tr> 
                     </tbody>
                 </table>
@@ -227,6 +232,30 @@ class PDFC extends TCPDF{
             $this->cab_table($arr);
         }else{
 
+        }
+    }
+
+    function CheckPageEnd($CurrentY){
+        $PageHeight = $this->getPageHeight();
+        $MidPageHeight = ($this->getPageHeight())/2;
+        if ($CurrentY < $MidPageHeight){
+            if ($CurrentY < ($MidPageHeight - 30)){
+                $array = ['', '', '', '', ''];
+                $this->Row($array);
+                $this->ln();
+                $this->CheckPageEnd($this->GetY());
+            } else {
+                return; // retornemos la funcion
+            }
+        } elseif($CurrentY > $MidPageHeight) {
+            if ($CurrentY < ($PageHeight - 45)){
+                $array = ['', '', '', '', ''];
+                $this->Row($array);
+                $this->ln();
+                $this->CheckPageEnd($this->GetY());
+            } else {
+                return; // retornar a la funcion
+            }
         }
     }
 }
@@ -246,6 +275,7 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
     $datos_cabecera['Numero'] = $stmt[0]['Numero'];
     $datos_cabecera['Fecha'] = strtoupper($stmt[0]['Fecha']->format('d/M/Y'));
     $datos_cabecera['Fecha_ex'] = $stmt[0]['Fecha']->format('Y-m-d');
+    $datos_cabecera['Monto'] = number_format(0, 2, '.', ',');
     $pdf->datos_cabecera = $datos_cabecera;
 
     //Despues de la cabecera
@@ -258,6 +288,7 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
     }
     $pag = $pdf->getPage();
     if($pag === 1){
+        $pdf->setLineWidth(0.02646);
         $pdf->SetFont('times', '', 10);
         $txt_p = "Concepto de: ";
         $pdf->MultiCell(0, 10, '', 1,  'L', false, 0);
@@ -300,10 +331,10 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
                     $pdf->SetFont('helvetica', '', 8);
                     $arr=array('', $value['Detalle'], '', '', '');
                     $pdf->Row($array);
-                    $pdf->Row_End($arr);
+                    $pdf->Row($arr);
                 }
                 else{
-                    $pdf->Row_End($array);
+                    $pdf->Row($array);
                 }
             }
             else{
@@ -320,6 +351,7 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
         $sumcr = number_format($sumcr, 2, '.', '');
         $array = array('TOTALES', $sumdb, $sumcr);
         $pdf->SetFont('times', 'B', 10);
+        $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
     $usuario = $stmt1[0]['Nombre_Completo'];
@@ -357,6 +389,8 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
     $datos_cabecera['Numero'] = $stmt[0]['Numero'];
     $datos_cabecera['Fecha'] = strtoupper($stmt[0]['Fecha']->format('d/M/Y'));
     $datos_cabecera['Fecha_ex'] = $stmt[0]['Fecha']->format('Y-m-d');
+    $Monto_Total = $stmt[0]['Monto_Total'];
+    $datos_cabecera['Monto'] = number_format($Monto_Total, 2, '.', ',');
     $pdf->datos_cabecera = $datos_cabecera;
 
     //Despues de la cabecera
@@ -369,10 +403,13 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
     }
     $pag = $pdf->getPage();
     if($pag === 1){
+        $pdf->setLineWidth(0.02646);
         $cliente = $stmt1[0]['Cliente'];
         $ruc_ci = $stmt1[0]['CI_RUC'];
-        $Monto_Total = $stmt[0]['Monto_Total'];
         $Monto_Total =NumerosEnLetras::convertir(number_format($Monto_Total, 2, '.', ''),'', true, 'Centavos');
+        
+        //Para la cabecera
+        
         $y = $pdf->GetY();
         $txt_1 = 'Pagado a: ';
         $txt_2 = 'R.U.C. / C.I.: ';
@@ -489,10 +526,10 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
                     $pdf->SetFont('helvetica', '', 8);
                     $arr=array('', $value['Detalle'], '', '', '');
                     $pdf->Row($array);
-                    $pdf->Row_End($arr);
+                    $pdf->Row($arr);
                 }
                 else{
-                    $pdf->Row_End($array);
+                    $pdf->Row($array);
                 }
             }
             else{
@@ -509,6 +546,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
         $sumcr = number_format($sumcr, 2, '.', '');
         $array = array('TOTALES', $sumdb, $sumcr);
         $pdf->SetFont('times', 'B', 10);
+        $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
     $usuario = $stmt1[0]['Nombre_Completo'];
@@ -542,8 +580,9 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
     $datos_cabecera['Numero'] = $stmt[0]['Numero'];
     $datos_cabecera['Fecha_ex'] = $stmt[0]['Fecha']->format('Y-m-d');
     $datos_cabecera['Fecha'] = strtoupper($stmt[0]['Fecha']->format('d/M/Y'));
+    $Monto_Total = $stmt[0]['Monto_Total'];
+    $datos_cabecera['Monto'] = number_format((float)$Monto_Total, 2, '.', ',');
     $pdf->datos_cabecera = $datos_cabecera;
-
     //Despues de la cabecera
     $pdf->AddPage();
     if($_SESSION['INGRESO']['Nombre_Comercial']<>$_SESSION['INGRESO']['Razon_Social']){
@@ -554,9 +593,11 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
     }
     $pag = $pdf->getPage();
     if($pag === 1){
+        $pdf->setLineWidth(0.02646);
         $cliente = $stmt1[0]['Cliente'];
         $ruc_ci = $stmt1[0]['CI_RUC'];
-        $Monto_Total = $stmt[0]['Monto_Total'];
+        
+
         $Monto_Total =NumerosEnLetras::convertir(number_format($Monto_Total, 2, '.', ''),'', true, 'Centavos');
         $y = $pdf->GetY();
         $txt_1 = 'Pagado a: ';
@@ -595,16 +636,16 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
                     $pdf->SetXY(55, $y);
                     $Monto = number_format($stmt8[0]['monto'],2,'.',',');
                     $pdf->MultiCell(0, 10, $Monto, 0, 'L', false, 1);
-                    $pdf->SetXY(80,$y);
+                    $pdf->SetXY(70,$y);
                     $pdf->SetFont('times', 'B', 10);
                     $pdf->MultiCell(0, 10, 'Banco: ', 0, 'L', false, 1);
-                    $pdf->SetFont('times', '', 10);
-                    $pdf->SetXY( 93, $y);
-                    $pdf->MultiCell(0, 10, $stmt8[0]['Cuenta'], 0, 'L', false, 1);
+                    $pdf->SetFont('times', '', 8);
+                    $pdf->SetXY( 83, $y);
+                    $pdf->MultiCell(50, 10, $stmt8[0]['Cuenta'], 0, 'L', false, 1);
                     $pdf->SetFont('times', 'B', 10);
                     $pdf->SetXY( 140, $y);
                     $pdf->MultiCell(0, 10, 'Cheque No.', 0, 'L', false, 1);
-                    $pdf->SetFont('times', '', 10);
+                    $pdf->SetFont('times', '', 8);
                     $pdf->SetXY(160, $y);
                     $pdf->MultiCell(0, 10, $stmt8[0]['Cheq_Dep'], 0, 'L', false, 1);
                 }
@@ -671,10 +712,10 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
                     $pdf->SetFont('helvetica', '', 8);
                     $arr=array('', $value['Detalle'], '', '', '');
                     $pdf->Row($array);
-                    $pdf->Row_End($arr);
+                    $pdf->Row($arr);
                 }
                 else{
-                    $pdf->Row_End($array);
+                    $pdf->Row($array);
                 }
             }
             else{
@@ -691,9 +732,11 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
         $sumcr = number_format($sumcr, 2, '.', '');
         $array = array('TOTALES', $sumdb, $sumcr);
         $pdf->SetFont('times', 'B', 10);
+        $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
     $usuario = $stmt1[0]['Nombre_Completo'];
+    $y = $pdf->GetY();
     $pdf->Footer_1($usuario);
     
     $pdf->Output('Egresos.pdf', 'I');
@@ -731,6 +774,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
     $datos_cabecera['Tipo_Comprobante'] = $stmt[0]['TP'];
     $datos_cabecera['Numero'] = $stmt[0]['Numero'];
     $datos_cabecera['Fecha'] = strtoupper($stmt[0]['Fecha']->format('d/M/Y'));
+    $datos_cabecera['Monto'] = number_format(0, 2, '.', ',');
     $pdf->datos_cabecera = $datos_cabecera;
 
     //Despues de la cabecera
@@ -743,6 +787,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
     }
     $pag = $pdf->getPage();
     if($pag === 1){
+        $pdf->setLineWidth(0.02646);
         $pdf->SetFont('times', '', 10);
         $txt_p = "Concepto de: ";
         $pdf->MultiCell(0, 10, '', 1,  'L', false, 0);
@@ -785,10 +830,10 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
                     $pdf->SetFont('helvetica', '', 8);
                     $arr=array('', $value['Detalle'], '', '', '');
                     $pdf->Row($array);
-                    $pdf->Row_End($arr);
+                    $pdf->Row($arr);
                 }
                 else{
-                    $pdf->Row_End($array);
+                    $pdf->Row($array);
                 }
             }
             else{
@@ -805,6 +850,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
         $sumcr = number_format($sumcr, 2, '.', '');
         $array = array('TOTALES', $sumdb, $sumcr);
         $pdf->SetFont('times', 'B', 10);
+        $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
     $usuario = $stmt1[0]['Nombre_Completo'];
@@ -845,6 +891,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
     $datos_cabecera['Tipo_Comprobante'] = $stmt[0]['TP'];
     $datos_cabecera['Numero'] = $stmt[0]['Numero'];
     $datos_cabecera['Fecha'] = strtoupper($stmt[0]['Fecha']->format('d/M/Y'));
+    $datos_cabecera['Monto'] = number_format(0, 2, '.', ',');
     $pdf->datos_cabecera = $datos_cabecera;
 
     //Despues de la cabecera
@@ -857,6 +904,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
     }
     $pag = $pdf->getPage();
     if($pag === 1){
+        $pdf->setLineWidth(0.02646);
         $pdf->SetFont('times', '', 10);
         $txt_p = "Concepto de: ";
         $pdf->MultiCell(0, 10, '', 1,  'L', false, 0);
@@ -899,10 +947,10 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
                     $pdf->SetFont('helvetica', '', 8);
                     $arr=array('', $value['Detalle'], '', '', '');
                     $pdf->Row($array);
-                    $pdf->Row_End($arr);
+                    $pdf->Row($arr);
                 }
                 else{
-                    $pdf->Row_End($array);
+                    $pdf->Row($array);
                 }
             }
             else{
@@ -919,6 +967,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
         $sumcr = number_format($sumcr, 2, '.', '');
         $array = array('TOTALES', $sumdb, $sumcr);
         $pdf->SetFont('times', 'B', 10);
+        $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
     $usuario = $stmt1[0]['Nombre_Completo'];
