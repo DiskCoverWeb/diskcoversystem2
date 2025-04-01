@@ -270,27 +270,23 @@
 
 <div class="row">
   <div class="card">
-    <div class="card-body">
-      <div class="row" style="overflow-x:scroll;">
-       <!--  <div class="col-sm-12">
-          <div class=""> -->
-                    
-            <table class="table" id="tbl_body">
+    <div class="card-body"> 
+            <table class="table table-sm w-100" id="tbl_body" style="table-layout: auto;">
               <thead>
-                <th style="width:7%;">ITEM</th>
-                <th style="width:150px;">FECHA DE CLASIFICACION</th>
-                <th style="width:150px;">FECHA DE EXPIRACION</th>
-                <th>DESCRIPCION</th>
+                <!-- <tr> -->
+                <th>ITEM</th>
+                <th>FECHA CLASIFICACION</th>
+                <th>FECHA EXPIRACION</th>
+                <th >DESCRIPCION</th>
                 <th>CANTIDAD</th>
-                <th style="width:250px;">CODIGO USUARIO</th>
-                <th style="width:200px;">CODIGO DE BARRAS</th>
-                <th>SUCURSAL</th>
-                <th style="width:100px;">QR</th>
-                <th width="8%"></th>
+                <th >CODIGO USUARIO</th>
+                <th>CODIGO DE BARRAS</th>
+                <th >SUCURSAL</th>
+                <th></th>
+              <!-- </tr> -->
               </thead>
-              <tbody>
+              <tbody id="tbl_body_principal">
                 <tr>
-                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -302,9 +298,7 @@
                   <td></td>
                 </tr>
               </tbody>
-            </table>            
-        <!-- </div>
-      </div>   -->    
+            </table>       
     </div>    
   </div>  
 </div>
@@ -420,7 +414,7 @@
           <div class="modal-footer" style="background-color:antiquewhite;">
               <!-- <button type="button" class="btn btn-primary" onclick="datos_cliente()">Usar Cliente</button> -->
               <button type="button" class="btn btn-primary" onclick="terminar_pedido()">Terminar</button>
-              <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal" onclick="cerra_verificar()">Cerrar</button>
           </div>
       </div>
   </div>

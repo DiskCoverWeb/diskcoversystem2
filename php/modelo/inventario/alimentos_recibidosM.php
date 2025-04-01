@@ -211,7 +211,7 @@ class alimentos_recibidosM
 	}
 	//------------------viene de trasnkardex--------------------
 
-	function cargar_pedidos_trans($orden,$fecha=false,$nombre=false,$id=false)
+	function cargar_pedidos_trans($orden,$fecha=false,$nombre=false,$id=false,$tipo= false)
 	{
     // 'LISTA DE CODIGO DE ANEXOS
      $sql = "SELECT T.*,P.Producto,P.Unidad,P.TDP,A.Nombre_Completo 
@@ -220,6 +220,10 @@ class alimentos_recibidosM
      AND T.Periodo = '".$_SESSION['INGRESO']['periodo']."'
      AND Orden_No = '".$orden."' 
      AND T.Codigo_Inv NOT LIKE 'GA.%'";
+     if($tipo)
+     {
+     	$sql.="AND T.T = '.' ";
+     }
      // AND T.T = '.' ===> no colocar esto porque esto afecta en ingreso checking 
      // AND T.Codigo_P = '".$paciente."'
      $sql.="AND Numero =0

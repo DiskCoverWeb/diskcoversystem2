@@ -668,92 +668,137 @@ class alimentos_recibidosC
     {
     	// print_r($parametros);die();
     	// print_r($ordenes);die();
-    	$datos = $this->modelo->cargar_pedidos_trans($parametros['num_ped'],false);
 
-    	// return $datos;
+    	$tabla = '';
+    	$tabla2 = '';
+    	$totalTbl1 = 0;
+    	$totalTbl2 = 0;
+    	$totalGlobal = 0;
+    	$primeravez = 0;
 
-		// print_r($datos);die();
-		$num = count($datos);
 
-		$tr = '';
-		$iva = 0;$subtotal=0;$total=0;
-		$negativos = false;
-		$procedimiento = '';
-		$cabecera = '';
-		$reciclaje = 0;
-       
-      	$canti = 0;
-      	$canti2 = 0;
-      	$primeravez = 0;
-		foreach ($datos as $key => $value) 
-		{
-			$datos[$key]['sucursal'] = '.';
+    	$datos = $this->modelo->cargar_pedidos_trans($parametros['num_ped'],false,false,false,'.');
+    	$numLineasTbl1 = count($datos);
+    	foreach ($datos as $key => $value) {
+    		$sucursal = '.';
 			if($value['Codigo_Dr']!='.')
 			{
 				$dato_sucursal = $this->modelo->sucursales($query = false,$codigo=false,$value['Codigo_Dr']);
-				$datos[$key]['sucursal'] =   $dato_sucursal[0]['Direccion'];
+				$sucursal =   $dato_sucursal[0]['Direccion'];
 			} 
-
 			$prod = $this->modelo->catalogo_productos($value['Codigo_Inv']);
-			$art = $prod[0]['TDP'];
+			$TDP = $prod[0]['TDP'];
 
-      		$canti = $canti+$value['Entrada'];      
+    		$tabla.='<tr>    		
+    					<td>'.($key+1).'</td>
+    					<td>'.$value['Fecha_Fab']->format('Y-m-d').'</td>
+    					<td>'.$value['Fecha_Exp']->format('Y-m-d').'</td>
+    					<td>'.$value['Producto'].'</td>
+    					<td>'.$value['Entrada'].'</td>
+    					<td>'.$value['Nombre_Completo'].'</td>
+    					<td>'.$value['Codigo_Barra'].'</td>
+    					<td>'.$sucursal.'</td>
+    					<td>
+    						<button class="btn btn-sm btn-danger" title="Eliminar linea"  onclick="eliminar_lin(\''.$value['ID'].'\',\''.$TDP.'\')" ><i class="bx bx-trash m-0"></i></button>';
+    					if($TDP !='.'){
+    						$primeravez = 1;
+                      		$tabla.='<button class="btn btn-sm btn-primary" title="Agregar a '.$value['Producto'].'"  onclick="show_producto2(\''.$value['ID'].'\')" ><i class=" bx bx-list-ol m-0"></i></button>';  
+                    	}
+    		$tabla.='</td></tr>';
+    		$totalGlobal = $totalGlobal+$value['Entrada'];
+    	}
 
-			$iva+=number_format($value['Total_IVA'],2);
-			// print_r($value['VALOR_UNIT']);
-			$sub = $value['Valor_Unitario']*$value['Entrada'];
-			$subtotal+=$sub;
-			$procedimiento=$value['Detalle'];
 
-			$total+=$value['Valor_Total'];
+    	$datos = $this->modelo->cargar_pedidos_trans_pedidos($parametros['num_ped'],false);
+    	foreach ($datos as $key => $value) {
+    		$tabla2.='<tr>
+  					<td>'.($key+1).'</td>
+  					<td>'.$value['Producto'].'</td>
+  					<td>'.number_format($value['Cantidad'],2,'.','').' '.$value['UNIDAD'].'</td>
+  					<td width="90px">
+  					<!--	<button class="btn btn-sm btn-primary" onclick="editar_lin(\''.$value['ID'].'\')" title="Editar linea"><span class="glyphicon glyphicon-floppy-disk"></span></button> -->
+  						<button class="btn btn-sm btn-danger" title="Eliminar linea"  onclick="eliminar_lin_pedido(\''.$value['ID'].'\')" ><b class="bx bx-trash"></b></button>
+  					</td>
+  				</tr>';
 
-			$FechaInventario = $value['Fecha']->format('Y-m-d');
- 	 		$CodBodega = '01';
-			$costo_existencias =  Leer_Codigo_Inv($value['Codigo_Inv'],$FechaInventario,$CodBodega,$CodMarca='');
+    		$totalTbl2 = $totalTbl2+number_format($value['Cantidad'],2,'.','');
+    	}
+
+    	$totalTbl1 = $totalGlobal;
+		return array('tabla'=>$tabla,'tabla2'=>$tabla2,'totalGlobal'=>$totalGlobal,'totalTabla1'=>$totalTbl1,'totalTabla2'=>$totalTbl2,'num_lin'=>$numLineasTbl1,'primera_vez'=>$primeravez);
+
+		// $num = count($datos);
+
+		// $tr = '';
+		// $iva = 0;$subtotal=0;$total=0;
+		// $negativos = false;
+		// $procedimiento = '';
+		// $cabecera = '';
+		// $reciclaje = 0;
+       
+      	// $canti = 0;
+      	// $canti2 = 0;
+      	// $primeravez = 0;
+		// foreach ($datos as $key => $value) 
+		// {
+		// 	$datos[$key]['sucursal'] = '.';
+		// 	if($value['Codigo_Dr']!='.')
+		// 	{
+		// 		$dato_sucursal = $this->modelo->sucursales($query = false,$codigo=false,$value['Codigo_Dr']);
+		// 		$datos[$key]['sucursal'] =   $dato_sucursal[0]['Direccion'];
+		// 	} 
+
+		// 	$prod = $this->modelo->catalogo_productos($value['Codigo_Inv']);
+		// 	$art = $prod[0]['TDP'];
+
+      	// 	$canti = $canti+$value['Entrada'];      
+
+		// 	$iva+=number_format($value['Total_IVA'],2);
+		// 	// print_r($value['VALOR_UNIT']);
+		// 	$sub = $value['Valor_Unitario']*$value['Entrada'];
+		// 	$subtotal+=$sub;
+		// 	$procedimiento=$value['Detalle'];
+
+		// 	$total+=$value['Valor_Total'];
+
+		// 	$FechaInventario = $value['Fecha']->format('Y-m-d');
+ 	 	// 	$CodBodega = '01';
+		// 	$costo_existencias =  Leer_Codigo_Inv($value['Codigo_Inv'],$FechaInventario,$CodBodega,$CodMarca='');
 		
-			if($costo_existencias['respueta']!=1){
-					$costo_existencias['datos']['Stock'] = 0; 
-					$costo_existencias['datos']['Costo'] = 0;
-			}else{
-				$exis = number_format($costo_existencias['datos']['Stock']-$value['Entrada'],2);
-				if($exis<0)
-				{
-					$nega = $exis;
-					$negativos = true;
-				}
-			}
-			$nega = 0;		
+		// 	if($costo_existencias['respueta']!=1){
+		// 			$costo_existencias['datos']['Stock'] = 0; 
+		// 			$costo_existencias['datos']['Costo'] = 0;
+		// 	}else{
+		// 		$exis = number_format($costo_existencias['datos']['Stock']-$value['Entrada'],2);
+		// 		if($exis<0)
+		// 		{
+		// 			$nega = $exis;
+		// 			$negativos = true;
+		// 		}
+		// 	}
+		// 	$nega = 0;		
 			
-			if($value['TDP']!='.')
-			{  						
-				$primeravez = 1;
-				$canti2 = $canti2+$value['Entrada'];
-			}
+		// 	if($value['TDP']!='.')
+		// 	{  						
+		// 		$primeravez = 1;
+		// 		$canti2 = $canti2+$value['Entrada'];
+		// 	}
 			
-		}
-		// $tr.='<tr>
-  		// 		<td colspan="4"><b>TOTALES</b></td>	
-  		// 		<td>'.$canti.'</td>	
-  		// 		<td></td>		
-  		// 	</tr>';
+		// }
+		// // $tr.='<tr>
+  		// // 		<td colspan="4"><b>TOTALES</b></td>	
+  		// // 		<td>'.$canti.'</td>	
+  		// // 		<td></td>		
+  		// // 	</tr>';
 
-  		// return $datos;
+  		// // return $datos;
 
-  		$data =   array('num_lin'=>$num,'tabla'=>$datos,'item'=>$num,'cant_total'=>$canti,'reciclaje'=>$canti2,'primera_vez'=>$primeravez);	
-  		// print_r($data);die();
+  		// $data =   array('num_lin'=>$num,'tabla'=>$datos,'item'=>$num,'cant_total'=>$canti,'reciclaje'=>$canti2,'primera_vez'=>$primeravez);	
+  		// // print_r($data);die();
 
-  		return $data;
+  		// return $data;
 
-		// if($num!=0)
-		// {
-		// 	// print_r($tr);die();
-		// 	$tabla = array('num_lin'=>$num,'tabla'=>$tr,'item'=>$num,'cant_total'=>$canti,'reciclaje'=>$canti2,'primera_vez'=>$primeravez);	
-		// 	return $tabla;		
-		// }else
-		// {
-		// 	$tabla = array('num_lin'=>0,'tabla'=>'<tr><td colspan="9" class="text-center"><b><i>Sin registros...<i></b></td></tr>','item'=>0,'cant_total'=>0,'reciclaje'=>0);
-		// 	return $tabla;		
-		// }		
+		
     }
 
     function cargar_productos_trans_pedidos_datos($parametros)

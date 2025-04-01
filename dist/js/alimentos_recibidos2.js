@@ -2,12 +2,10 @@
 	var canvasElement;
 	var canvas;
 	var scanning = false;
-  var tbl_pedidos_all;
+  var tbl_pedidos_all = null;
+  var intervaloPedidos = null;
+
   $(document).ready(function () {
-    // video = document.createElement("video");
-    // canvasElement = document.getElementById("qr-canvas");
-    // canvas = canvasElement.getContext("2d", { willReadFrequently: true });
-    // notificaciones();
     cargar_paquetes();
     
     $('#txt_fecha').focus();
@@ -17,10 +15,10 @@
     });
 
   	 window.addEventListener("message", function(event) {
-            if (event.data === "closeModal") {
-                autocoplet_ingreso();
-            }
-        });    
+          if (event.data === "closeModal") {
+              autocoplet_ingreso();
+          }
+      });    
   	autocoplet_alimento();
   	autocoplet_ingreso();
   	pedidos();
@@ -39,11 +37,17 @@
              $('#txt_cantidad').focus();
           }
       });
+    
+    $('#txt_codigo').on('select2:select', function (e) {
+      var data = e.params.data.data;
+      setearCamposPedidos(data);
+    });
+
 
   	
   	$('#ddl_producto').on('select2:select', function (e) {
       var data = e.params.data.data;
-      cargar_pedido2();
+      // cargar_pedido2();
       $('#txt_unidad').val(data[0].Unidad);
       $('#txt_producto').append($('<option>',{value: data[0].Codigo_Inv, text:data[0].Producto,selected: true }));
       
@@ -98,7 +102,7 @@
 
       primera_vez = $('#txt_primera_vez').val();
 
-      cargar_pedido2();
+      // cargar_pedido2();
 
       if(data[0].TDP=='R')
       {
@@ -116,106 +120,101 @@
       costeo(data[0].Codigo_Inv);
     });
 
-    $('#txt_codigo').on('select2:select', function (e) {
-      var data = e.params.data.data;
-    	setearCamposPedidos(data);
-    });
+  
 
-
-     tbl_pedidos_all = $('#tbl_body').DataTable({
-          // responsive: true,
-          language: {
-              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-          },
-          ajax: {
-               url:   '../controlador/inventario/alimentos_recibidosC.php?pedido=true',
-              type: 'POST',  // Cambia el método a POST    
-              data: function(d) {
-                  var parametros = {                    
-                    num_ped:$('#txt_codigo').val(),
-                  };
-                  return { parametros: parametros };
-              },              
-              dataSrc: function(json) {
+  //    tbl_pedidos_all = $('#tbl_body').DataTable({
+  //         // responsive: true,
+  //         language: {
+  //             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+  //         },
+  //         ajax: {
+  //              url:   '../controlador/inventario/alimentos_recibidosC.php?pedido=true',
+  //             type: 'POST',  // Cambia el método a POST    
+  //             data: function(d) {
+  //                 var parametros = {                    
+  //                   num_ped:$('#txt_codigo').val(),
+  //                 };
+  //                 return { parametros: parametros };
+  //             },              
+  //             dataSrc: function(json) {
               
-                var diff = parseFloat(json.cant_total)-parseFloat(json.reciclaje);
-                if(diff < 0)
-                {
-                  diff = diff*(-1);
-                }
-                $('#txt_primera_vez').val(json.primera_vez);
+  //               var diff = parseFloat(json.cant_total)-parseFloat(json.reciclaje);
+  //               if(diff < 0)
+  //               {
+  //                 diff = diff*(-1);
+  //               }
+  //               $('#txt_primera_vez').val(json.primera_vez);
 
-                var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
-                var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
-                var total_pedido = $('#txt_cant').val();
-                var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
+  //               var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
+  //               var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
+  //               var total_pedido = $('#txt_cant').val();
+  //               var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
 
 
-                $('#txt_faltante').val(faltantes.toFixed(2));
+  //               $('#txt_faltante').val(faltantes.toFixed(2));
 
-                // console.log(json);
+  //               console.log(json);
 
-                // Devolver solo la parte de la tabla para DataTables
-                return json.tabla;
-            }        
-          },
-           scrollX: true,  // Habilitar desplazamiento horizontal
+  //               // Devolver solo la parte de la tabla para DataTables
+  //               return json.tabla;
+  //           }        
+  //         },
+  //          scrollX: true,  // Habilitar desplazamiento horizontal
    
-          columns: [
-              { data: null, // Columna autoincremental
-                    render: function (data, type, row, meta) {
-                        return meta.row + 1; // meta.row es el índice de la fila
-                    }
-              },
-               { data: 'Fecha_Fab.date',  
-                  render: function(data, type, item) {
-                      return data ? new Date(data).toLocaleDateString() : '';
-                  }
-              },
-              { data: 'Fecha_Exp.date',  
-                  render: function(data, type, item) {
-                      return data ? new Date(data).toLocaleDateString() : '';
-                  }
-              },
-              { data: 'Producto' },
-              { data: 'Entrada' },
-              { data: 'Nombre_Completo' },
-              { data: 'Codigo_Barra'},
-              { data: 'sucursal' },
-              { data: null,
-                 render: function(data, type, row) {
-                    return `<div id="qr_${data.Codigo_Barra}"></div>
-                            <script>
-                                setTimeout(() => {
-                                    new QRCode(document.getElementById('qr_${data.Codigo_Barra}'), {
-                                        text: '${data.Codigo_Barra}',
-                                        width: 70,
-                                        height: 70
-                                    });
-                                }, 100);
-                            </script>`;
-                }
-              },
-              { data: null,
-                 render: function(data, type, item) {
-                      var botones = `<button class="btn btn-sm btn-danger" title="Eliminar linea"  onclick="eliminar_lin('${data.ID}','${data.TDP}')" ><i class="bx bx-trash m-0"></i></button>`;                      
+  //         columns: [
+  //             { data: null, // Columna autoincremental
+  //                   render: function (data, type, row, meta) {
+  //                       return meta.row + 1; // meta.row es el índice de la fila
+  //                   }
+  //             },
+  //              { data: 'Fecha_Fab.date',  
+  //                 render: function(data, type, item) {
+  //                     return data ? new Date(data).toLocaleDateString() : '';
+  //                 }
+  //             },
+  //             { data: 'Fecha_Exp.date',  
+  //                 render: function(data, type, item) {
+  //                     return data ? new Date(data).toLocaleDateString() : '';
+  //                 }
+  //             },
+  //             { data: 'Producto' },
+  //             { data: 'Entrada' },
+  //             { data: 'Nombre_Completo' },
+  //             { data: 'Codigo_Barra'},
+  //             { data: 'sucursal' },
+  //             { data: null,
+  //                render: function(data, type, row) {
+  //                   return `<div id="qr_${data.Codigo_Barra}"></div>
+  //                           <script>
+  //                               setTimeout(() => {
+  //                                   new QRCode(document.getElementById('qr_${data.Codigo_Barra}'), {
+  //                                       text: '${data.Codigo_Barra}',
+  //                                       width: 70,
+  //                                       height: 70
+  //                                   });
+  //                               }, 100);
+  //                           </script>`;
+  //               }
+  //             },
+  //             { data: null,
+  //                render: function(data, type, item) {
+  //                     var botones = `<button class="btn btn-sm btn-danger" title="Eliminar linea"  onclick="eliminar_lin('${data.ID}','${data.TDP}')" ><i class="bx bx-trash m-0"></i></button>`;                      
                     
-                    if(data.TDP !='.'){
-                      botones+=`<button class="btn btn-sm btn-primary" title="Agregar a ${data.Producto}"  onclick=" show_producto2('${data.ID}')" ><i class=" bx bx-list-ol m-0"></i></button>`;  
-                    }
+  //                   if(data.TDP !='.'){
+  //                     botones+=`<button class="btn btn-sm btn-primary" title="Agregar a ${data.Producto}"  onclick=" show_producto2('${data.ID}')" ><i class=" bx bx-list-ol m-0"></i></button>`;  
+  //                   }
 
-                    return botones;         
-                  }
-              },
+  //                   return botones;         
+  //                 }
+  //             },
               
-          ]
-     });
-
+  //         ]
+  //    });
 
   })
 
   function setearCamposPedidos(data){
-    limpiar();
+      limpiar();
     	limpiar_reciclaje();
 
       console.log(data);
@@ -261,32 +260,42 @@
       	// cargar_pedido();
    
       	 // $('#pnl_normal').css('display','none');
-        
-            cargar_pedido();
-
-         setInterval(function() {
-         cargar_pedido2();
-         cargar_pedido();
-          }, 5000); 
+       iniciarActualizacion();
   }
 
-   function pedidos(){
-  $('#txt_codigo').select2({
-    placeholder: 'Seleccione una beneficiario',
-    width:'100%',
-    ajax: {
-      url:   '../controlador/inventario/alimentos_recibidosC.php?search=true',          
-      dataType: 'json',
-      delay: 250,
-      processResults: function (data) {
-        // console.log(data);
-        return {
-          results: data
-        };
-      },
-      cache: true
+  function iniciarActualizacion() {
+
+    if (intervaloPedidos !== null) return;
+    cargar_pedido();
+    intervaloPedidos = setInterval(cargar_pedido, 7000);
+}
+
+// Función para detener el intervalo
+function detenerActualizacion() {
+    if (intervaloPedidos !== null) {
+        clearInterval(intervaloPedidos);
+        intervaloPedidos = null;
     }
-  });
+}
+
+
+  function pedidos(){
+    $('#txt_codigo').select2({
+      placeholder: 'Seleccione una beneficiario',
+      width:'100%',
+      ajax: {
+        url:   '../controlador/inventario/alimentos_recibidosC.php?search=true',          
+        dataType: 'json',
+        delay: 250,
+        processResults: function (data) {
+          // console.log(data);
+          return {
+            results: data
+          };
+        },
+        cache: true
+      }
+    });
 }
 
 function pedidosPorQR(codigo){
@@ -409,6 +418,8 @@ function cargar_paquetes()
 
   function guardar_pedido()
   {
+      tbl_pedidos_all.abort();
+      detenerActualizacion();
   		var total_ingresado_pedido = $('#txt_cant_total_pedido').val();
   		var total_ingresado_kardex = $('#txt_cant_total').val(); 
   		var total_recibir = $('#txt_cant').val();
@@ -431,9 +442,12 @@ function cargar_paquetes()
   			return false;
   		}  	
 
-  		total_final = parseFloat(cant)+parseFloat(total_ingresado_kardex)+parseFloat(total_ingresado_pedido);
+  		total_final = parseFloat(cant)+parseFloat(total_ingresado_kardex);
   		cant_suge = parseFloat(total_recibir);
   		
+      // console.log(cant)
+      // console.log(total_ingresado_kardex)
+      // console.log(total_ingresado_pedido)
 
 
   	 if(total_final>cant_suge)
@@ -451,7 +465,7 @@ function cargar_paquetes()
           dataType:'json',
 	      success: function(data)
 	      {	      	
-	      		cargar_pedido2();	
+          iniciarActualizacion();
 	      }
 	  });
   }
@@ -601,7 +615,7 @@ function autocoplet_ingreso()
 		  	 }
 
 
-  		total_final = (parseFloat(cant_ing)+parseFloat(cant_total_kardex)+parseFloat(cant_total));
+  		total_final = (parseFloat(cant_ing)+parseFloat(cant_total_kardex));
   		cant_suge = parseFloat(cant_suge);
 	   if($('#txt_TipoSubMod').val()!='R')
 	   {
@@ -1113,29 +1127,95 @@ function autocoplet_ingreso()
   function cargar_pedido()
   {
 
-     tbl_pedidos_all.ajax.reload(null, false);
-  }
-
-
-  function cargar_pedido2()
-  {
+     // tbl_pedidos_all.ajax.reload(null, false);
+    if ($.fn.DataTable.isDataTable('#tbl_body')) {
+      $('#tbl_body').DataTable().destroy();
+    }
     var parametros=
     {
-      'num_ped':$('#txt_codigo').val(),
+       num_ped:$('#txt_codigo').val(),
     }
-     $.ajax({
+  tbl_pedidos_all = $.ajax({
       data:  {parametros:parametros},
-      url:   '../controlador/inventario/alimentos_recibidosC.php?pedido_trans=true',
+      url:   '../controlador/inventario/alimentos_recibidosC.php?pedido=true',
       type:  'post',
       dataType: 'json',
       success:  function (response) {
         console.log(response);
-        $('#tbl_body_pedido').html(response.tabla);
-        $('#txt_cant_total_pedido').val(response.cant_total);   
-        $('#txt_total_lin_pedido').val(response.num_lin);       
+        if(response.tabla!='')
+        {
+            $('#tbl_body_principal').html(response.tabla);
+
+            $('#tbl_body').DataTable({
+              scrollX: true,
+              scrollCollapse: true, 
+              searching: false,
+              responsive: false,
+              paging: false,   
+              info: false,   
+              autoWidth: false,  
+              order: [[1, 'asc']], // Ordenar por la segunda columna
+              language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+              },
+              initComplete: function() {
+                  // Ajustar columnas después de la inicialización
+                  this.api().columns.adjust().draw();
+              }
+            });
+
+            // table.columns.adjust().draw();
+        }else
+        {
+           $('#tbl_body_principal').html('<tr><td colspan="9">Sin registros<td></tr>');
+        }
+        if(response.tabla2!='')
+        {
+           $('#tbl_body_pedido').html(response.tabla2);
+        }else
+        {
+           $('#tbl_body_pedido').html('<tr><td colspan="4">Sin registros<td></tr>');
+        }
+
+          var diff = response.totalGlobal;
+          if(diff < 0)
+          {
+            diff = diff*(-1);
+          }
+          $('#txt_primera_vez').val(response.primera_vez);
+          $('#txt_cant_total_pedido').val(response.totalTabla2);
+          // var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
+          var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
+          var total_pedido = $('#txt_cant').val();
+          var faltantes = parseFloat(total_pedido)-parseFloat(diff);
+
+
+          $('#txt_faltante').val(faltantes.toFixed(2));
+
       }
     });
   }
+
+
+  // function cargar_pedido2()
+  // {
+  //   var parametros=
+  //   {
+  //     'num_ped':$('#txt_codigo').val(),
+  //   }
+  //    $.ajax({
+  //     data:  {parametros:parametros},
+  //     url:   '../controlador/inventario/alimentos_recibidosC.php?pedido_trans=true',
+  //     type:  'post',
+  //     dataType: 'json',
+  //     success:  function (response) {
+  //       console.log(response);
+  //       $('#tbl_body_pedido').html(response.tabla);
+  //       $('#txt_cant_total_pedido').val(response.cant_total);   
+  //       $('#txt_total_lin_pedido').val(response.num_lin);       
+  //     }
+  //   });
+  // }
 
  function calculos()
    {
@@ -1184,6 +1264,7 @@ function autocoplet_ingreso()
 
   function agregar()
   {
+    detenerActualizacion();
     var reci = $('#txt_TipoSubMod').val();
     
     var parametros = $("#form_add_producto").serialize();    
@@ -1204,7 +1285,8 @@ function autocoplet_ingreso()
                 title: 'Agregado a pedido',
                 text :'',
               }).then( function() {                 
-                   cargar_pedido(); 
+                   // cargar_pedido(); 
+                iniciarActualizacion();
                    $('#txt_paquetes').val('');
                    $('#ddl_sucursales').val('');                
               });
@@ -1314,6 +1396,8 @@ function autocoplet_ingreso()
 
 function eliminar_lin(num,tipo)
 {
+  tbl_pedidos_all.abort();
+  detenerActualizacion();
   pedido = $('#txt_codigo').val();
   // console.log(cli);
 
@@ -1322,7 +1406,7 @@ function eliminar_lin(num,tipo)
       Swal.fire({
         title: 'Quiere eliminar este registro?',
         text: "Al eliminar este registro se borrara tambien los productos ligados a este item!",
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -1357,8 +1441,9 @@ function eliminar_linea_trans(num,tpd=0)
       success:  function (response) { 
         if(response==1)
         {
-          cargar_pedido();
-          cargar_pedido2();
+          // cargar_pedido();
+          // cargar_pedido2();
+          iniciarActualizacion();
         }
       }
     });
@@ -1379,7 +1464,8 @@ function eliminar_all_pedido(pedido)
         success:  function (response) { 
           if(response==1)
           {
-            cargar_pedido2();
+            // cargar_pedido2();
+            iniciarActualizacion();
           }
         }
       });
@@ -1388,13 +1474,15 @@ function eliminar_all_pedido(pedido)
 
   function eliminar_lin_pedido(num)
   {
+    tbl_pedidos_all.abort();
+    detenerActualizacion();
     var ruc = $('#txt_ruc').val();
     var cli = $('#ddl_paciente').text();
     // console.log(cli);
     Swal.fire({
       title: 'Quiere eliminar este registro?',
       text: "Esta seguro de eliminar este registro!",
-      type: 'warning',
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -1413,12 +1501,22 @@ function eliminar_all_pedido(pedido)
               success:  function (response) { 
                 if(response==1)
                 {
-                  cargar_pedido2();
+                  // cargar_pedido();
+                  iniciarActualizacion();
                 }
               }
             });
         }
       });
+  }
+
+  function cerra_verificar()
+  {
+    if($('#txt_cant_total_pedido').val()!=0)
+    {
+      terminar_pedido();
+    }
+
   }
 
   function terminar_pedido()
@@ -1468,8 +1566,8 @@ function eliminar_all_pedido(pedido)
           success:  function (response) { 
             if(response==1)
             {
-              cargar_pedido();
-              cargar_pedido2();
+              // cargar_pedido();
+              // cargar_pedido2();
             }
           }
         });
