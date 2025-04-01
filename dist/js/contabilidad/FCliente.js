@@ -74,8 +74,9 @@ function buscar_numero_ci() {
         $('#ruc').val(ci_ruc);
         codigo();
       }
-
-      $("#myModal_espera").modal('hide');
+      setTimeout(()=>{
+        $("#myModal_espera").modal('hide');
+      }, 500);
 
     }
   });
@@ -135,9 +136,10 @@ function codigo() {
         console.log(response);
         $('#codigoc').val(response.Codigo_RUC_CI);
         $('#TD').val(response.Tipo_Beneficiario);
-        $("#myModal_espera").modal('hide');
+        setTimeout(()=>{
+          $('#myModal_espera').modal('hide');
+        }, 500);
         MostrarOcultarBtnAddMedidor()
-
       }
     });
   } else {

@@ -75,22 +75,26 @@ function cargar_beneficiario(ci)
 }
 
 function guardar_diferencia()
-{      
-    var form = $('#formu1').serialize();
-    form = form+'&Trans_No='+Trans_No+'&Ln_No='+Ln_No;;
-    $.ajax({
-      data:  form,
-      url:   '../controlador/contabilidad/incomC.php?guardar_diferencia=true',
-      type:  'post',
-      dataType: 'json',
-      success:  function (response) {
-        if(response==1)
-        {
-          FormActivate();
-        }
-        
+{
+  $('#myModal_espera').modal('show');
+  var form = $('#formu1').serialize();
+  form = form+'&Trans_No='+Trans_No+'&Ln_No='+Ln_No;;
+  $.ajax({
+    data:  form,
+    url:   '../controlador/contabilidad/incomC.php?guardar_diferencia=true',
+    type:  'post',
+    dataType: 'json',
+    success:  function (response) {
+      if(response==1)
+      {
+        setTimeout(()=>{
+          $('#myModal_espera').modal('hide');
+        }, 1000);
+        FormActivate();
       }
-    }); 
+      
+    }
+  }); 
 }
 function mostrar_efectivo()
     {
@@ -1803,12 +1807,26 @@ function DCBanco_LostFocus()
         url:   '../controlador/contabilidad/incomC.php?DCBanco_LostFocus=true',
         type:  'post',
         dataType: 'json',
-          success:  function (response) { 
+          success:  function (response) {
+            response = padZeros(response); 
+            //console.log("response: " + response);
             $('#no_cheq').val(response);
             //console.log(response);     
         }
       });
   
+}
+
+function padZeros(text, limit=9){
+  if (text.length >= limit){ 
+    return text
+  } else {
+    textnum = text;
+    while (textnum.length < limit){
+      textnum = '0' + text;
+    }
+    return textnum;
+  }
 }
 
 function salir_todo()

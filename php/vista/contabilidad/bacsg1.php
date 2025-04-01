@@ -42,17 +42,7 @@
 							<i ><img src="../../img/png/salire.png" class="user-image" alt="User Image"
 							></i> 
 						</a>
-						<a class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Imprimir resultados" id='imprimir_pdf'>
-							<i ><img src="../../img/png/pdf.png" class="user-image" alt="User Image"
-							></i> 
-						</a>
 						
-						<a id='imprimir_excel' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Exportar Excel" href="#">
-							<i ><img src="../../img/png/table_excel.png" class="user-image" alt="User Image"
-							></i> 
-						</a>
-
-
 						<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Procesar balance de Comprobación" onclick=" cargar_datos('1','BALANCE DE COMPROBACION')">
 							<img src="../../img/png/pbc.png" class="user-image" alt="User Image"
 							>
@@ -124,7 +114,7 @@
 							style='font-size:20px; display:block; height:100%; width:100%;'></i> 
 						</a> -->
 
-						<button class="btn btn-outline-secondary btn-sm" title="Presenta estado de resultado (ingreso y egresos)" onclick="cargar_datos('6','ESTADO DE RESULTADOS')">
+						<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Presenta estado de resultado (ingreso y egresos)" onclick="cargar_datos('6','ESTADO DE RESULTADOS')">
 							<img src="../../img/png/up.png" class="user-image" alt="User Image"
 							>
 						</button>
@@ -146,7 +136,14 @@
 							<i ><img src="../../img/png/books.png" class="user-image" alt="User Image"
 							></i> 
 						</button>
-					
+						<a id='imprimir_excel' class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Exportar Excel" href="#">
+							<i ><img src="../../img/png/table_excel.png" class="user-image" alt="User Image"
+							></i> 
+						</a>
+						<a class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Imprimir resultados" id='imprimir_pdf'>
+							<i ><img src="../../img/png/pdf.png" class="user-image" alt="User Image"
+							></i> 
+						</a>
 			  </div>
 			  <div class="box-body p-2">
 			  	<div class="row">

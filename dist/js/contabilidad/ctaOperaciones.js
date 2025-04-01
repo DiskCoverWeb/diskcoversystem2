@@ -304,6 +304,8 @@ function tipo_pago()
 function grabar_cuenta()
 {
   var num = $('#MBoxCta').val();
+  var numtemp = num.endsWith('.') ? num.slice(0, -1): num;
+  num = numtemp;
   var nom = $('#TextConcepto').val();
   if(nom =='')
   {
@@ -331,7 +333,12 @@ function grabar()
   $('#myModal_espera').modal('show');
   var acre = $('#MBoxCtaAcreditar').val();
   if(acre == ''){acre = 0;}
-
+  var num = $('#MBoxCta').val();
+  var numtemp = num.endsWith('.') ? num.slice(0, -1): num;
+  num = numtemp;
+  var ctaSup = $('#LabelCtaSup').val();
+  var ctaSuptemp = ctaSup.endsWith('.') ? ctaSup.slice(0, -1): ctaSup;
+  ctaSup = ctaSuptemp;
   var parametros=  {
     'OpcG':$('#OpcG').is(':checked'),
     'OpcD':$('#OpcD').is(':checked'),
@@ -341,8 +348,8 @@ function grabar()
     'Numero': 0,
     'LstSubMod':$('#LstSubMod').val(),
     'TextConcepto':$('#TextConcepto').val(),
-    'MBoxCta':$('#MBoxCta').val(),
-    'LabelCtaSup':$('#LabelCtaSup').val(),
+    'MBoxCta':num,
+    'LabelCtaSup':ctaSup,
     'MBoxCtaAcreditar':acre,
     'OpcNoAplica':$('#OpcNoAplica').is(':checked'),
     'OpcIEmp':$('#OpcIEmp').is(':checked'),

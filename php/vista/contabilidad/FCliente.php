@@ -232,7 +232,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
     </div>    
   </div>
   <!-- Modal CXC y CXP -->
-  <div class="modal fade" id="modal_cuentas" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal fade" id="modal_cuentas" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">

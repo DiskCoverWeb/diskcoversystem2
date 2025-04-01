@@ -3,6 +3,7 @@
 require_once(dirname(__DIR__,2)."/modelo/contabilidad/contabilidad_model.php");
 require_once(dirname(__DIR__,2)."/modelo/loginM.php");
 require(dirname(__DIR__,3).'/lib/fpdf/cabecera_pdf.php');
+require (dirname(__DIR__,3).'/lib/TCPDF/Reportes/reportes_balances.php');
 
 if(isset($_POST['submitlog'])) 
 {
@@ -637,7 +638,11 @@ function sp_proceso_balance_pdf($parametros)
 			// $pdf++
 			 
 			$datos = $modelo->listar_tipo_balanceSQl_pdf($parametros['balMes'],$parametros['tipo_b'],$parametros['tipo_p'],true);
-			$campos = str_replace(array('TC','DG'),array('',''), $datos['campos']);
+			$titulo = $parametros['nom'];
+			$fechaini = $parametros['desde'];
+			$fechafin = $parametros['hasta'];
+			ImprimirBalanceComprobacion($datos, $parametros['tipo_b'], $fechafin, $fechaini, $titulo);
+			/*$campos = str_replace(array('TC','DG'),array('',''), $datos['campos']);
 			$campos = explode(',',trim($campos));
 			$campos = array_values(array_filter($campos));
 			$ali =array();
@@ -727,12 +732,10 @@ function sp_proceso_balance_pdf($parametros)
 		        $pos = $pos+1;
 	        $pdf->cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$parametros['desde'],$parametros['hasta'],$sizetable,$mostrar);
 
-
+			*/
 		
 		}else
-		{
-			
-			print_r('expression');die();
+		{			
 			$datos = $modelo->ListarTipoDeBalance_Ext_pdf($parametros['balMes'],'BC',$parametros['ext']);
 			$campos = explode(',',trim($datos['campos']));
 			$ali =array();
@@ -825,7 +828,7 @@ function sp_proceso_balance_pdf_situacion($parametros)
 		$fechafin =str_replace('-','',date("Y-m-t", strtotime($parametros['desde']))); 
 		// print_r($fechaini.'-');print_r($fechafin);die();
 	}
-	// print_r($parametros);die();
+	//print_r($parametros);die();
 	if($parametros['check']=='false'){
 		$balance=$modelo->sp_procesar_balance_SQL($fechaini,$fechafin,$parametros['coop'],$parametros['sucur'],$parametros['balMes'],$parametros['ext']);
     }else
@@ -840,7 +843,8 @@ function sp_proceso_balance_pdf_situacion($parametros)
 			$datos = $modelo->listar_tipo_balanceSQl_pdf($parametros['balMes'],$parametros['tipo_b'],$parametros['tipo_p'],true);
 			$campos = explode(',',trim($datos['campos']));
 				$ali =array();
-			$medi =array();
+			imprimirEstadoResultado($datos, $parametros['tipo_b'], $parametros['hasta']);
+			/*$medi =array();
 			
 			$pdf = new cabecera_pdf();	
 
@@ -875,7 +879,7 @@ function sp_proceso_balance_pdf_situacion($parametros)
 		        $tablaHTML[$pos]['estilo']='I';
 		        $tablaHTML[$pos]['borde'] = 'BT';
 		        $pos = $pos+1;
-	        $pdf->cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$parametros['desde'],$parametros['hasta'],$sizetable,$mostrar);
+	        $pdf->cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$parametros['desde'],$parametros['hasta'],$sizetable,$mostrar);*/
 
 
 		

@@ -185,6 +185,17 @@ function soloNumerosDecimales(e)
 	var key = window.Event ? e.which : e.keyCode
 	return (key <= 13 || (key >= 48 && key <= 57) || key==46)
 }
+
+function soloAlfaNumericos(e){
+  var key = window.Event ? e.which : e.keyCode
+  return (key <= 13 || 
+      (key >= 48 && key <= 57) ||  // Números
+      (key >= 65 && key <= 90) ||  // Letras mayúsculas
+      (key >= 97 && key <= 122) ||    // Letras minúsculas
+      key==46
+  );
+}
+
 function mayusculas(campo,valor)
 {
     $('#'+campo).val(valor.ucwords());

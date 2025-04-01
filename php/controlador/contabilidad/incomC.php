@@ -2386,10 +2386,14 @@ function ExistenMovimientos($parametros)
 	     
 	}
 
+    
+
 	function guardar_diferencia($parametros)
 	{
-		// print_r($parametros);die();
+	    //print_r($parametros);die();
+        //checamos si existen con esta Cuenta
 	   $asientos = $this->modelo->asientos();
+       $this->verificarAsientos($parametros['conceptoe'], $parametros['conceptob'], $asientos);
        if(isset($parametros['efec'])){
           $OpcDH = 2; $ValorDH = $parametros['vae'];
           $Codigo = Leer_Cta_Catalogo($parametros['conceptoe']);
@@ -2428,6 +2432,19 @@ function ExistenMovimientos($parametros)
                
        	return 1;
 	}
+
+    function verificarAsientos($efectivo, $banco, $array_asientos){
+        foreach($array_asientos as $index => $asiento){
+            //print_r(value: $asiento); die();
+            if ($efectivo == $asiento['CODIGO'] && $asiento['TC']=='CJ'){
+                $array_eliminar = ['Codigo'=>$asiento['CODIGO'], 'tabla'=>'asiento', 'ID'=>$asiento['ID']];
+                $this->eliminar_registro($array_eliminar);
+            } else if ($banco == $asiento['CODIGO'] && $asiento['TC']=='BA') {
+                $array_eliminar = ['Codigo'=>$asiento['CODIGO'], 'tabla'=>'asiento', 'ID'=>$asiento['ID']];
+                $this->eliminar_registro($array_eliminar);
+            }
+        }
+    }
 
 	function Facturas_Pendientes_SC($parametros)
 	{
