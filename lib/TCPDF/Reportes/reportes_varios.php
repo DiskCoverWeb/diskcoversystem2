@@ -417,7 +417,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 
 		$ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Recibo_No']."<b></td></tr>";
 
-		$ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja ."0000</b></td></tr>";
+		// $ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja ."0000</b></td></tr>";
 		$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 
 		$ticket.="<tr><td colspan='3'>Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d')."</td></tr>";
