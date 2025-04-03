@@ -725,7 +725,7 @@ class alimentos_recibidosC
     	}
 
     	$totalTbl1 = $totalGlobal;
-		return array('tabla'=>$tabla,'tabla2'=>$tabla2,'totalGlobal'=>$totalGlobal,'totalTabla1'=>$totalTbl1,'totalTabla2'=>$totalTbl2,'num_lin'=>$numLineasTbl1,'primera_vez'=>$primeravez);
+		return array('tabla'=>$tabla,'tabla2'=>$tabla2,'totalGlobal'=>number_format($totalGlobal,2,'.',''),'totalTabla1'=>number_format($totalTbl1,2,'.',''),'totalTabla2'=>number_format($totalTbl2,2,'.',''),'num_lin'=>$numLineasTbl1,'primera_vez'=>$primeravez);
 
 		// $num = count($datos);
 
