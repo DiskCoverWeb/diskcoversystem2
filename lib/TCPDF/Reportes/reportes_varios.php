@@ -343,7 +343,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 		$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
 		$ticket.="<tr><td colspan='3'></td></tr><tr><td colspan='3'></td></tr>";
-		$ticket.="<tr><td colspan='3' style='text-align:center'><b>A P O R T E   S O L I D A R I O</b></td></tr>";
+		$ticket.="<tr><td colspan='3' style='text-align:center'><b>APORTE SOLIDARIO</b></td></tr>";
 		$ticket.="<tr><td colspan='3'></td></tr>";
 	}else{
 		$ticket.="<tr><td colspan='3'>".$_SESSION['INGRESO']['Razon_Social']."</td></tr>";
