@@ -190,23 +190,20 @@ $ticket  = '
 if($Encabezado_PV){
 if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
 {
-	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Razon_Social'].'</td></tr>';
-	$ticket.='<tr><td colspan="3">'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.$_SESSION['INGRESO']['Razon_Social'].'</b></td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</b></td></tr>';
 	//$pdf->Ln(6);
 }else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
-	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Razon_Social'].'</td></tr>';
-	if($_SESSION['INGRESO']['IDEntidad'] != '65'){
-		$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Nombre_Comercial'].'</td></tr>';
-	}
-	$ticket.='<tr><td colspan="3">'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</td></tr>';
-	$ticket.='<tr><td colspan="3">'.'DONACION DE ALIMENTOS'.'</td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.$_SESSION['INGRESO']['Razon_Social'].'</b></td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</b></td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.'DONACION DE ALIMENTOS'.'</b></td></tr>';
 }else{
 	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Razon_Social'].'</td></tr>';
 	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Nombre_Comercial'].'</td></tr>';
 	$ticket.='<tr><td colspan="3">'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</td></tr>';
 }
-	$ticket.='<tr><td colspan="3">Direccion: '.$_SESSION['INGRESO']['Direccion'].'</td></tr>';
-	$ticket.='<tr><td colspan="3">Telefono: '.$_SESSION['INGRESO']['Telefono1'].'</td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: justify;">Direccion: '.$_SESSION['INGRESO']['Direccion'].'</td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: justify;">Telefono: '.$_SESSION['INGRESO']['Telefono1'].'</td></tr>';
 }
 
 if($Encabezado_PV){
@@ -217,7 +214,7 @@ if($info['factura'][0]['TC'] == "PV"){
 	$ticket.='<tr><td colspan="3">'.$info['factura'][0]['Autorizacion'].'</td></tr>';
 	$ticket.='<tr><td colspan="3">NOTA DE VENTA No. '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
 }else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
-	$ticket.='<tr><td colspan="3">NOTA DE DONACION No. '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
+	$ticket.='<tr><td colspan="3"><span style="font-size:10px; text-align: justify;">NOTA DE DONACION No.</span> '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
 }else{
 	$ticket.='<tr><td colspan="3">Autorizacion del SRI No.'.'</td></tr>';
 	$ticket.='<tr><td colspan="3">'.$info['factura'][0]['Autorizacion'].'</td></tr>';
@@ -233,7 +230,7 @@ $ticket.='<tr><td colspan="3">Transaccion ('.$info['factura'][0]['TC'].") No.".s
 
 $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->format('Y/m/d').'</td></tr>';
 	if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-		$ticket.="<tr><td colspan='3'>Atendido por: ".$filasUsuario[0]['Usuario'].'</td></tr>';
+		$ticket.="<tr><td colspan='3' style='text-align: justify;'>Atendido por: ".$filasUsuario[0]['Usuario'].'</td></tr>';
 	}else{
 		$ticket.="<tr><td colspan='3'>Hora de Proceso: ".$info['factura'][0]['Hora'].'</td></tr>';
 	}
@@ -321,7 +318,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 
 	$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
 		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
-			$ticket.="<tr><td colspan='2'>TOTAL KILOS</td><td align='right'>".strval($Total)."</td></tr>";
+			$ticket.="<tr><td colspan='2'>TOTAL KILOS</td><td align='right'>".number_format($Total,2,'.','')."</td></tr>";
 		}
 
 				
@@ -346,14 +343,15 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 		$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
 		$ticket.="<tr><td colspan='3'></td></tr><tr><td colspan='3'></td></tr>";
-		$ticket.="<tr><td colspan='3'>A P O R T E   S O L I D A R I O</td></tr>";
+		$ticket.="<tr><td colspan='3' style='text-align:center'><b>A P O R T E   S O L I D A R I O</b></td></tr>";
 		$ticket.="<tr><td colspan='3'></td></tr>";
 	}else{
 		$ticket.="<tr><td colspan='3'>".$_SESSION['INGRESO']['Razon_Social']."</td></tr>";
 		$ticket.="<tr><td colspan='3'>".$_SESSION['INGRESO']['Nombre_Comercial']."</td></tr>";
 		$ticket.="<tr><td colspan='3'>R.U.C ".$_SESSION['INGRESO']['RUC']."</td></tr>";
 	}
-	
+
+
 	$ticket.="<tr><td colspan='3'>NOTA DE DONACION No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT)."</td></tr>";	
 }
 	$ticket.="<tr><td colspan='3'></td></tr><tr><td colspan='3'></td></tr>";
@@ -386,7 +384,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 
 	$ticket.="<tr><td colspan='3'>EL PRIMER BANCO DE ALIMENTOS DEL ECUADOR</td></tr>";
 
-	$ticket.='<tr><td colspan="3">"No desperdiciar, alimentar bien y cambiar vidas"</td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align:center"><b>"No desperdiciar, alimentar bien, cambiar vidas"</b></td></tr>';
 
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
@@ -419,9 +417,9 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 
 	if(count($filasTA)>0){
 
-		$ticket.="<tr><td colspan='3'>".$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Recibo_No']."</td></tr>";
+		$ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Recibo_No']."<b></td></tr>";
 	}else{
-		$ticket.="<tr><td colspan='3'>".$textoReciboCaja ."0000</td></tr>";
+		$ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja ."0000</b></td></tr>";
 	}
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 
@@ -447,10 +445,10 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
 
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
-	$ticket.="<tr><td colspan='3'>____________           _______________</td></tr>";
-	$ticket.="<tr><td colspan='3'>        Conforme                Procesado</td></tr>";
-	$ticket.="<tr><td colspan='3'>        C.I./R.U.C            Por ".$filasUsuario[0]['Usuario']."</td></tr>";
-	$ticket.="<tr><td colspan='3'> ".$info['factura'][0]['RUC_CI']."            ".$info['factura'][0]['CodigoU']."</td></tr>";
+	$ticket.="<tr><td colspan='3'>______________          ______________</td></tr>";
+	$ticket.="<tr><td colspan='3'>      Conforme                       Procesado</td></tr>";
+	$ticket.="<tr><td colspan='3'>      C.I./R.U.C                   Por ".$filasUsuario[0]['Usuario']."</td></tr>";
+	$ticket.="<tr><td colspan='3'> ".$info['factura'][0]['RUC_CI']."               ".$info['factura'][0]['CodigoU']."</td></tr>";
 $ticket.='
 </table></pre>
 </body>
