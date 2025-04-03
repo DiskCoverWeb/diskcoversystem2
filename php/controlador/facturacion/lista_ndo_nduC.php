@@ -450,8 +450,10 @@ class lista_facturasC
 		$TFA['CLAVE'] = '.';
 		$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
 
+		$abonos = $this->modelo->trans_abonos($TFA['factura'][0]['Factura'],$TFA['factura'][0]['Serie'],$TFA['factura'][0]['CodigoC'],$TFA['factura'][0]['Autorizacion']);
 
-		$ticket = $this->pdf->Imprimir_Punto_Venta($TFA);
+
+		$ticket = $this->pdf->Imprimir_Punto_Venta($TFA,$abonos);
 		return $ticket;
 		
 

@@ -242,6 +242,8 @@ class loginC
 	        $_SESSION['INGRESO']['Ambiente'] = $empresa[0]['Ambiente'];
 	        $_SESSION['INGRESO']['Obligado_Conta'] = $empresa[0]['Obligado_Conta'];
 	        $_SESSION['INGRESO']['LeyendaFA'] = $empresa[0]['LeyendaFA'];
+	        $_SESSION['INGRESO']['LeyendaFAT'] = $empresa[0]['LeyendaFAT'];
+	        $_SESSION['INGRESO']['Debo_Pagare'] = $empresa[0]['Debo_Pagare'];
 	        $_SESSION['INGRESO']['Email'] = $empresa[0]['Email'];
 	        $_SESSION['INGRESO']['RUC'] = $empresa[0]['RUC'];
 	        $_SESSION['INGRESO']['Gerente'] = $empresa[0]['Gerente'];

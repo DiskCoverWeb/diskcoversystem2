@@ -706,6 +706,21 @@ class lista_facturasM
       return $stmt;
    }
 
+   function trans_abonos($factura,$serie,$ci,$clave_acceso)
+   {
+   	  $sql2="SELECT * 
+	    FROM Trans_Abonos 
+	    WHERE Factura = '".$factura."' 
+	    AND Serie = '".$serie."' 
+	    AND CodigoC='".$ci."' 
+	    AND Item = '".$_SESSION['INGRESO']['item']."'
+	    AND Autorizacion = '".$clave_acceso."'
+	    AND Periodo =  '".$_SESSION['INGRESO']['periodo']."' "; 
+
+	 // print_r($sql2);die();
+	  return $this->db->datos($sql2);
+   }
+
 
   
 }
