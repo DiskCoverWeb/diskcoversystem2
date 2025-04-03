@@ -508,7 +508,7 @@
         </div>
   </div>
 </div>
-<div id="re_frame"></div>
+<div id="re_frame" style="display:none;"></div>
 
 
 
