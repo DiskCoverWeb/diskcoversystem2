@@ -415,6 +415,8 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 		$textoReciboCaja = "RECIBO CAJA No. ";
 	}
 
+
+	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 	if(count($filasTA)>0){
 
 		$ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Recibo_No']."<b></td></tr>";
@@ -447,7 +449,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 	$ticket.="<tr><td colspan='3'>______________          ______________</td></tr>";
 	$ticket.="<tr><td colspan='3'>      Conforme                       Procesado</td></tr>";
-	$ticket.="<tr><td colspan='3'>      C.I./R.U.C                   Por ".$filasUsuario[0]['Usuario']."</td></tr>";
+	$ticket.="<tr><td colspan='3'>      C.I./R.U.C                   Por: ".$filasUsuario[0]['Usuario']."</td></tr>";
 	$ticket.="<tr><td colspan='3'> ".$info['factura'][0]['RUC_CI']."               ".$info['factura'][0]['CodigoU']."</td></tr>";
 $ticket.='
 </table></pre>
