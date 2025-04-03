@@ -454,7 +454,7 @@ function cargar_paquetes()
   	 {
   	 	// console.log(total_final);
   	 	// console.log(cant_suge);
-  	 		Swal.fire('La cantidad Ingresada supera a la cantidad registrada','','info');
+  	 		Swal.fire('La cantidad Ingresada supera a la cantidad registrada.','','info');
   	 		return false
   	 }
   	  var parametros = $('#form_correos').serialize();
@@ -619,9 +619,10 @@ function autocoplet_ingreso()
   		cant_suge = parseFloat(cant_suge);
 	   if($('#txt_TipoSubMod').val()!='R')
 	   {
-  	 	if(total_final >cant_suge)
+  	 	if(total_final.toFixed(2) >cant_suge.toFixed(2))
   	 	{
-        // console.log(total_final+'-'+cant_suge);
+        console.log(total_final+'-'+cant_suge);
+        console.log(cant_ing+'-'+cant_total_kardex);
   	 			Swal.fire('La cantidad Ingresada supera a la cantidad registrada','','info');
   	 			return false
   	 	}
