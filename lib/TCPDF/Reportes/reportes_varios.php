@@ -197,6 +197,8 @@ if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'
 	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.$_SESSION['INGRESO']['Razon_Social'].'</b></td></tr>';
 	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</b></td></tr>';
 	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.'DONACIÓN DE ALIMENTOS'.'</b></td></tr>';
+	$ticket.="<tr><td></td></tr><tr><td></td></tr>";
+
 }else{
 	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Razon_Social'].'</td></tr>';
 	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Nombre_Comercial'].'</td></tr>';
@@ -212,9 +214,9 @@ if($info['factura'][0]['TC'] == "PV"){
 }else if($info['factura'][0]['TC'] == "NV"){
 	$ticket.='<tr><td colspan="3">Autorizacion del SRI No.</td></tr>';
 	$ticket.='<tr><td colspan="3">'.$info['factura'][0]['Autorizacion'].'</td></tr>';
-	$ticket.='<tr><td colspan="3">NOTA DE VENTA No. '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
+	$ticket.='<tr><td colspan="3">NOTA DE VENTA No. <span>'.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'<span></td></tr>';
 }else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
-	$ticket.='<tr><td colspan="3"><span style="font-size:10px; text-align: justify;">NOTA DE DONACIÓN No.</span> '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
+	$ticket.='<tr><td colspan="3"><span style="font-size:11px; text-align: justify;">NOTA DE DONACIÓN No. <span style="color:red">'.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'<span></span></td></tr>';
 }else{
 	$ticket.='<tr><td colspan="3">Autorizacion del SRI No.'.'</td></tr>';
 	$ticket.='<tr><td colspan="3">'.$info['factura'][0]['Autorizacion'].'</td></tr>';
@@ -352,7 +354,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 	}
 
 
-	$ticket.="<tr><td colspan='3'>NOTA DE DONACION No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT)."</td></tr>";	
+	$ticket.="<tr><td colspan='3'><span style='color:red; font-size:11px;'>NOTA DE DONACION No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT)."</span></td></tr>";	
 }
 	$ticket.="<tr><td colspan='3'></td></tr><tr><td colspan='3'></td></tr>";
 	$ticket.="<tr><td colspan='3'>Fecha de Emisión: ".$info['factura'][0]['Fecha']->format('Y/m/d')."</td></tr>";
