@@ -196,14 +196,14 @@ if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'
 }else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
 	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.$_SESSION['INGRESO']['Razon_Social'].'</b></td></tr>';
 	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</b></td></tr>';
-	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.'DONACION DE ALIMENTOS'.'</b></td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: center;"><b>'.'DONACIÓN DE ALIMENTOS'.'</b></td></tr>';
 }else{
 	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Razon_Social'].'</td></tr>';
 	$ticket.='<tr><td colspan="3">'.$_SESSION['INGRESO']['Nombre_Comercial'].'</td></tr>';
 	$ticket.='<tr><td colspan="3">'.'R.U.C '.$_SESSION['INGRESO']['RUC'].'</td></tr>';
 }
-	$ticket.='<tr><td colspan="3" style="text-align: justify;">Direccion: '.$_SESSION['INGRESO']['Direccion'].'</td></tr>';
-	$ticket.='<tr><td colspan="3" style="text-align: justify;">Telefono: '.$_SESSION['INGRESO']['Telefono1'].'</td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: justify;">Dirección: '.$_SESSION['INGRESO']['Direccion'].'</td></tr>';
+	$ticket.='<tr><td colspan="3" style="text-align: justify;">Teléfono: '.$_SESSION['INGRESO']['Telefono1'].'</td></tr>';
 }
 
 if($Encabezado_PV){
@@ -214,7 +214,7 @@ if($info['factura'][0]['TC'] == "PV"){
 	$ticket.='<tr><td colspan="3">'.$info['factura'][0]['Autorizacion'].'</td></tr>';
 	$ticket.='<tr><td colspan="3">NOTA DE VENTA No. '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
 }else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
-	$ticket.='<tr><td colspan="3"><span style="font-size:10px; text-align: justify;">NOTA DE DONACION No.</span> '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
+	$ticket.='<tr><td colspan="3"><span style="font-size:10px; text-align: justify;">NOTA DE DONACIÓN No.</span> '.$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
 }else{
 	$ticket.='<tr><td colspan="3">Autorizacion del SRI No.'.'</td></tr>';
 	$ticket.='<tr><td colspan="3">'.$info['factura'][0]['Autorizacion'].'</td></tr>';
@@ -228,7 +228,7 @@ if($info['factura'][0]['TC'] == "PV"){
 $ticket.='<tr><td colspan="3">Transaccion ('.$info['factura'][0]['TC'].") No.".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).'</td></tr>';
 }
 
-$ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->format('Y/m/d').'</td></tr>';
+$ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']->format('Y/m/d').'</td></tr>';
 	if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 		$ticket.="<tr><td colspan='3' style='text-align: justify;'>Atendido por: ".$filasUsuario[0]['Usuario'].'</td></tr>';
 	}else{
@@ -246,8 +246,8 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	}
 	$ticket.="<tr><td colspan='3'>R.U.C/C.I.: ".$info['factura'][0]['RUC_CI'].'</td></tr>';
 
-	if($info['factura'][0]['Telefono'] <> G_NINGUNO){$ticket.="<tr><td colspan='3'>Telefono: ".$info['factura'][0]['Telefono'].'</td></tr>';}
-	if($info['factura'][0]['Direccion'] <> G_NINGUNO){$ticket.="<tr><td colspan='3'>Direccion: ".$info['factura'][0]['Direccion'].'</td></tr>';}
+	if($info['factura'][0]['Telefono'] <> G_NINGUNO){$ticket.="<tr><td colspan='3'>Teléfono: ".$info['factura'][0]['Telefono'].'</td></tr>';}
+	if($info['factura'][0]['Direccion'] <> G_NINGUNO){$ticket.="<tr><td colspan='3'>Dirección: ".$info['factura'][0]['Direccion'].'</td></tr>';}
 	if($info['factura'][0]['Email'] <> G_NINGUNO){$ticket.="<tr><td colspan='3'>Email: ".$info['factura'][0]['Email'].'</td></tr>';}
 
 	if($info['factura'][0]['TC'] == "DO" || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
@@ -355,7 +355,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 	$ticket.="<tr><td colspan='3'>NOTA DE DONACION No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT)."</td></tr>";	
 }
 	$ticket.="<tr><td colspan='3'></td></tr><tr><td colspan='3'></td></tr>";
-	$ticket.="<tr><td colspan='3'>Fecha de Emision: ".$info['factura'][0]['Fecha']->format('Y/m/d')."</td></tr>";
+	$ticket.="<tr><td colspan='3'>Fecha de Emisión: ".$info['factura'][0]['Fecha']->format('Y/m/d')."</td></tr>";
 	$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
 	if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 		$ticket.="<tr><td colspan='3'>Usuario: ".$info['factura'][0]['Cliente']."</td></tr>";
@@ -382,7 +382,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 
-	$ticket.="<tr><td colspan='3'>EL PRIMER BANCO DE ALIMENTOS DEL ECUADOR</td></tr>";
+	$ticket.="<tr><td colspan='3' style='text-align:center'><b>EL PRIMER BANCO DE ALIMENTOS DEL ECUADOR</b></td></tr>";
 
 	$ticket.='<tr><td colspan="3" style="text-align:center"><b>"No desperdiciar, alimentar bien, cambiar vidas"</b></td></tr>';
 
@@ -407,8 +407,8 @@ $ticket.='<tr><td colspan="3">Fecha de Emision: '.$info['factura'][0]['Fecha']->
 			$ticket.="<tr><td colspan='3'>".$_SESSION['INGRESO']['Nombre_Comercial']."</td></tr>";
 			$ticket.="<tr><td colspan='3'>R.U.C ".$_SESSION['INGRESO']['RUC']."</td></tr>";
 		}
-		$ticket.="<tr><td colspan='3'>Telefono: ".$_SESSION['INGRESO']['Telefono1']."</td></tr>";
-		$ticket.="<tr><td colspan='3'>Direccion: ".$_SESSION['INGRESO']['Direccion']."</td></tr>";
+		$ticket.="<tr><td colspan='3'>Teléfono: ".$_SESSION['INGRESO']['Telefono1']."</td></tr>";
+		$ticket.="<tr><td colspan='3'>Dirección: ".$_SESSION['INGRESO']['Direccion']."</td></tr>";
 	}
 	$textoReciboCaja = "INGRESO No. ";
 	if($_SESSION['INGRESO']['IDEntidad'] == '65'){
