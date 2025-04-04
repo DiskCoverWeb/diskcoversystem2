@@ -202,7 +202,8 @@ class loginC
 	        $_SESSION['INGRESO']['Porc_Serv'] = round($empresa[0]['Servicio'] / 100, 2);
 	        $datos = getInfoIPS();
 	        $_SESSION['INGRESO']['IP_Local'] = $datos['local_net_address'];
-	        $_SESSION['INGRESO']['HOST_NAME'] = $datos['host_name'];
+	        $_SESSION['INGRESO']['HOST_NAME'] = $datos['host_name'];	        
+	        $_SESSION['INGRESO']['Serie_FA'] = $empresa[0]['Serie_FA'];
 
 	        //datos de empresa seleccionada
 	        $empresa = $this->modelo->getEmpresasDE($_SESSION['INGRESO']['item'], $_SESSION['INGRESO']['noempr']);
@@ -262,6 +263,10 @@ class loginC
 	        $_SESSION['INGRESO']['Dec_Costo'] = $empresa[0]['Dec_Costo'];
 	        $_SESSION['INGRESO']['Cotizacion'] = $empresa[0]['Cotizacion'];
 	        $_SESSION['INGRESO']['Servicio'] = $empresa[0]['Servicio'];
+	        if($_SESSION['INGRESO']['Serie_FA']=='.' && $empresa[0]['Serie_FA']!='.')
+	        {
+	        	$_SESSION['INGRESO']['Serie_FA'] = $empresa[0]['Serie_FA'];
+	        }
 
 	        if (is_object($empresa[0]['Fecha_Igualar'])) {
 	            $_SESSION['INGRESO']['Fecha_Igualar'] = $empresa[0]['Fecha_Igualar']->format('Y-m-d');
@@ -295,7 +300,6 @@ class loginC
 	            $_SESSION['INGRESO']['smtp_Secure'] = $empresa[0]['smtp_Secure'];
 	        }
 
-	        $_SESSION['INGRESO']['Serie_FA'] = $empresa[0]['Serie_FA'];
 	        $modulos = $this->modelo->modulos_habiliatados();
 	        $_SESSION['INGRESO']['modulo'] = $modulos;
 
