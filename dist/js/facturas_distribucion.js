@@ -1714,12 +1714,6 @@ function tipo_facturacion(valor)
 			return false;
 		}
 
-		var total = parseFloat($('#LabelTotal').val()).toFixed(4);
-		var efectivo = parseFloat($('#TxtEfectivo').val()).toFixed(4);
-		var banco = parseFloat($('#TextCheque').val()).toFixed(4);
-
-		var btnInfoEfectivo = parseInt($('#btnToggleInfoEfectivo').attr('stateval'));
-		var btnInfoBanco = parseInt($('#btnToggleInfoBanco').attr('stateval'));
 		Swal.fire({
 			allowOutsideClick: false,
 			title: 'Esta Seguro que desea grabar: \n Comprobante  No. ' + $('#TextFacturaNo').val(),
@@ -1731,37 +1725,43 @@ function tipo_facturacion(valor)
 			confirmButtonText: 'Si!'
 		}).then((result) => {
 			if (result.value == true) {
-				if (btnInfoEfectivo){
-					if(efectivo < total || isNaN(efectivo) || efectivo == 0){
-						Swal.fire('El pago por efectivo es menor al total de la factura','', 'info');
-						return false;
-					}
-				}else if(btnInfoBanco){
-					if(banco < total || isNaN(banco) || banco == 0){
-						Swal.fire('El pago porbanco es menor al total de la factura','', 'info');
-						return false;
-					}
-				}else if(btnInfoBanco && btnInfoEfectivo){
-					if((efectivo + banco) < total || isNaN(banco) || isNaN(efectivo) || (efectivo + banco) == 0){
-						//Swal.fire('Si el pago es por banco este no debe superar el total de la factura', 'PUNTO VENTA', 'info').then(function () { $('#TextCheque').select(); });
-						Swal.fire('El pago es menor al total de la factura','', 'info');
-						return false;
-					}
-				}else if(btnInfoBanco == 0 && btnInfoEfectivo == 0){
-					Swal.fire('Debe seleccionar la forma de pago','', 'info');
-					return false;
-				}
-				/*if (banco > total) {
-					Swal.fire('Si el pago es por banco este no debe superar el total de la factura', 'PUNTO VENTA', 'info').then(function () { $('#TextCheque').select(); });
-					return false;
-				}*/
-				grabar_evaluacion();
-				//generar_factura()
-				//grabar_gavetas();
-				//guardar_bouche();
+				 validar_pago();	
+				
 			}
 		})
 		
+	}
+
+	function validar_pago()
+	{
+		var total = parseFloat($('#LabelTotal').val()).toFixed(4);
+		var efectivo = parseFloat($('#TxtEfectivo').val()).toFixed(4);
+		var banco = parseFloat($('#TextCheque').val()).toFixed(4);
+
+		total_abono = parseFloat(efectivo+banco);
+		
+		if(total_abono!=total)
+		{
+
+			Swal.fire({
+				allowOutsideClick: false,
+				title: 'El Comprobante  No. ' + $('#TextFacturaNo').val()+"No tiene abonos",
+				text: "Desea continuar ?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Si!'
+			}).then((result) => {
+				if (result.value == true) {
+					grabar_evaluacion();
+				}
+			})
+		}else
+		{
+			grabar_evaluacion();
+		}
+
 	}
 
 	function guardar_bouche(){
@@ -2013,14 +2013,16 @@ function tipo_facturacion(valor)
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
-				console.log(data);
-				setTimeout(()=>{
-					$('#myModal_espera').modal('hide');
-				}, 1000)
 				if(data.respuesta=='-999'){
 					Swal.fire("Asigne una serie a la empresa","Serie_FA no esta agregada","error");
 					return false;
 				}
+
+				console.log(data);
+				setTimeout(()=>{
+					$('#myModal_espera').modal('hide');
+				}, 1000)
+				
 				// console.log(data);
 				if(data.length == 1){
 					if (data.respuesta == 1) {
@@ -2032,20 +2034,6 @@ function tipo_facturacion(valor)
 						}).then(function () {
 							var url = '../../TEMP/' + data.pdf + '.pdf';
 							window.open(url, '_blank');
-							/*parametros = {
-								'TextVUnit': (parseFloat($('#LabelTotal').val())/1).toFixed(2),
-								'TextCant': 1,
-								'TC': valTC,
-								'TxtDocumentos': '.',
-								'Codigo': 'FA.99',
-								'fecha': $('#MBFecha').val(),
-								'CodBod': '',
-								'VTotal': $('#LabelTotal').val(),
-								'CodigoCliente': $('#codigoCliente').val(),
-								'TextServicios': '.',
-								'TextVDescto': 0,
-								'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text
-							};*/
 							AdoLinea();
 							eliminar_linea('', '');
 							//crearAsientoFFA(parametros);
@@ -2101,37 +2089,21 @@ function tipo_facturacion(valor)
 							confirmButtonText: 'Ok!',
 							allowOutsideClick: false,
 						}).then(function () {
+
+							// imprimir baucher	
+							var  id = data[0].factura
+							var serie =   $('#LblSerie').text(); //data[0].serie
+							var ci =  data[0].codigoc
+							var aut =  data[0].auto
+							var tc =  'NDO';
+							Ver_nd(id,serie,ci,aut,tc);
+			
 							$('#imprimir_nd').removeAttr('disabled');
-							var url = '../../TEMP/' + data[0].pdf + '.pdf';
-							url_nd = '../../TEMP/' + data[1].pdf + '.pdf';
-							
+							var url = '../../TEMP/' + data[0].pdf + '.pdf';							
 							window.open(url, '_blank');
 
-							setTimeout(()=>{
-								const iframe = document.getElementById('pdfFrame');
-								iframe.src = url;
-								
-								iframe.onload = function () {
-									iframe.contentWindow.print();
-								};
-							}, 1000);
 							
 
-							//Swal.fire('Puede imprimir la nota de donacion en el botón con icono de impresora', '', 'info');
-							/*parametros = {
-								'TextVUnit': (parseFloat($('#LabelTotal').val())/1).toFixed(2),
-								'TextCant': 1,
-								'TC': valTC,
-								'TxtDocumentos': '.',
-								'Codigo': 'FA.99',
-								'fecha': $('#MBFecha').val(),
-								'CodBod': '',
-								'VTotal': $('#LabelTotal').val(),
-								'CodigoCliente': $('#codigoCliente').val(),
-								'TextServicios': '.',
-								'TextVDescto': 0,
-								'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text
-							};*/
 							AdoLinea();
 							eliminar_linea('', '');
 							//crearAsientoFFA(parametros);
@@ -2191,6 +2163,25 @@ function tipo_facturacion(valor)
 			}
 		});
 
+	}
+
+	function Ver_nd(id,serie,ci,aut,tc)
+	{
+		 
+	    var peri = '.';
+	    var url = '../controlador/facturacion/lista_ndo_nduC.php?ver_fac=true&codigo='+id+'&ser='+serie+'&ci='+ci+'&per='+peri+'&auto='+aut+'&tc='+tc;
+	    var html='<iframe style="width: 48mm; height: 100vh; border: none;" src="'+url+'&pdf=no" frameborder="0" allowfullscreen id="re_ticket"></iframe>';
+	    $('#re_frame').html(html);
+	    // document.getElementById('re_ticket').contentWindow.print();
+	    const iframeWindow = document.getElementById('re_ticket').contentWindow;
+	    
+	    iframeWindow.onbeforeprint = function() {
+		    iframeWindow.document.title = "ND_"+serie+"_"+generar_ceros(id,7)+".pdf"; // Nombre deseado
+		};
+		iframeWindow.onafterprint = function() {
+		    window.location.reload(); // Recarga la página principal
+		};
+		iframeWindow.print();
 	}
 
 	function calcular_pago() {

@@ -959,6 +959,7 @@ class facturas_distribucion
 		}
 		$parametros['SerieFactura'] = $serie;*/
 
+		$serie_fa = $_SESSION['INGRESO']['Serie_FA'];
 		$datosAdoLinea = $this->modelo->AdoLinea($parametros);
 		$mensaje = "";
 		if (count($datosAdoLinea) > 0) {
@@ -972,7 +973,7 @@ class facturas_distribucion
 						Salga de este proceso y llame al su técnico
 						o al Contador de su Organizacion.";
 		}
-		$NumComp = ReadSetDataNum($TC . "_SERIE_" . $serie, True, False);
+		$NumComp = ReadSetDataNum("FA_SERIE_" . $serie_fa, false, False);
 		return array('mensaje' => $mensaje, 'SerieFactura' => $serie, 'NumComp' => generaCeros($NumComp, 9), 'CodigoL' => $CodigoL, 'Cta_Cobrar' => $Cta_Cobrar, 'Autorizacion' => $Autorizacion);
 	}
 
@@ -1090,9 +1091,6 @@ class facturas_distribucion
 		$electronico = 0;
 		if (isset($parametros['electronico'])) {
 			$electronico = $parametros['electronico'];
-		}
-		if (!isset($parametros['Serie'])) {
-			$parametros['Serie'] = $_SESSION['INGRESO']['Serie_FA'];
 		}
 		$Porc_Iva = floatval($parametros['PorcIva']/100);
 		$TextVUnit = $parametros['TextVUnit'];
@@ -1616,28 +1614,21 @@ class facturas_distribucion
 		
 		// print_r(floatval(number_format($FA['Total_MN'],4,'.','')).'-'.floatval(number_format($parametros['TxtEfectivo'],4,'.','')).'-');
 		// print_r(floatval(number_format($FA['Total_MN'],4,'.',''))-floatval(number_format($parametros['TxtEfectivo'],4,'.',''))); die();
-		if ((floatval(number_format($parametros['TxtEfectivo'], 4, '.', '')) + floatval(number_format($parametros['valorBan'], 4, '.', '')) - floatval(number_format($FA['Total_MN'], 4, '.', ''))) >= 0) {
+		// if ((floatval(number_format($parametros['TxtEfectivo'], 4, '.', '')) + floatval(number_format($parametros['valorBan'], 4, '.', '')) - floatval(number_format($FA['Total_MN'], 4, '.', ''))) >= 0) {
 			$electronico = 0;
 			if (isset($parametros['electronico'])) {
 				$electronico = $parametros['electronico'];
 			}
-			//$datos = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
-			//if (count($datos) > 0) {
-				// print_r($datos);die();
-				//$FA['Nota'] = $parametros['TxtNota'];
-				//$FA['Observacion'] = $parametros['TxtObservacion'];
-				//$FA['Gavetas'] = intval($parametros['TxtGavetas']);
+			
 				$FA['codigoCliente'] = $parametros['CodigoCliente'];
 				$FA['CodigoC'] = $parametros['CodigoCliente'];
 				$FA['TextCI'] = $parametros['CI'];
 				$FA['TxtEmail'] = $parametros['email'];
 				$FA['Cliente'] = trim(str_replace($parametros['CI'] . ' -', '', $parametros['NombreCliente']));
 				$FA['TC'] = $parametros['TC'];
-				/*if($parametros['TC'] == "NDO" || $parametros['TC'] == "NDU"){
-					$FA['TC'] = "DO";
-				}else{
-				}*/
-				$FA['Serie'] = $_SESSION['INGRESO']['Serie_FA'];
+				
+				$FA['Serie'] = $parametros['Serie'];				
+				$FA['Serie_FA'] = $_SESSION['INGRESO']['Serie_FA'];
 				$FA['TextFacturaNo'] = $numFac;
 				$FA['Cta_CxP'] = $parametros['Cta_Cobrar'];
 				$FA['Autorizacion'] = $parametros['Autorizacion'];
@@ -1683,13 +1674,15 @@ class facturas_distribucion
 			//} else {
 			//	return array('respuesta' => -1, 'text' => "Cuenta CxC sin setear en catalogo de lineas");
 			//}
-		} else {
-			return array('respuesta' => -5, 'text' => "El Efectivo no alcanza para grabar");
-		}
+		// } else {
+		// 	$this->generar_factura_abono_cero($parametros);
+		// 	return array('respuesta' => -5, 'text' => "El Efectivo no alcanza para grabar");
+		// }
 	}
 
 	function generar_factura_FA($FA, $res){
 		$FA['TC'] = 'FA';
+		$FA['Serie'] = $FA['Serie_FA'];
 		$params = array(
 			'TextVUnit' => $FA['FATextVUnit'],
 			'VTotal' => $FA['FAVTotal'],
@@ -1703,11 +1696,12 @@ class facturas_distribucion
 			'CodBod' => '',
 			'TextServicios' => '.',
 			'TextVDescto' => '0',
+			'Serie' => $FA['Serie_FA'],
 		);
 		$this->IngresarAsientoF($params);
 
 		$Lineas = $this->modelo->DCLinea($FA['TC'], $FA['Fecha'], $FA['FACodLinea']);
-		$FA['Serie'] = $Lineas[0]['Serie'];
+		// $FA['Serie'] = $Lineas[0]['Serie'];
 		$FA['Cta_CxP'] = $Lineas[0]['CxC'];
 		$FA['Autorizacion'] = $Lineas[0]['Autorizacion'];
 		$FA['CodigoL'] = $Lineas[0]['Codigo'];
@@ -1738,14 +1732,38 @@ class facturas_distribucion
 		// print_r($parametros);die();
 		// FechaValida MBFecha
 
-		$this->sri->Actualizar_factura($parametros['CI'], $parametros['TextFacturaNo'], $parametros['Serie']);
+		$params = array('beneficiario'=>$parametros['CodigoCliente'],'fecha'=>$parametros['MBFecha']);
+		$lineas_fac = $this->modelo->ConsultarProductos($params);
 
+		if($_SESSION['INGRESO']['Serie_FA']=='.')
+		{
+			return array('respuesta'=>'-999');
+		}
+
+		// print_r($lineas_fac);die();
+
+		$numFac = ReadSetDataNum("FA_SERIE_".$_SESSION['INGRESO']['Serie_FA'],false,true);
+		$this->sri->Actualizar_factura($parametros['CI'],$numFac,strval($_SESSION['INGRESO']['Serie_FA']));
+
+		// FechaValida MBFecha
 		$FechaTexto = $parametros['MBFecha'];
 		$FA = Calculos_Totales_Factura();
+
+		// print_r($parametros);
+
+		// print_r($FA);die();
+		print_r((floatval(number_format($parametros['TxtEfectivo'], 4, '.', ''))));
+		print_r((floatval(number_format($parametros['valorBan'], 4, '.', ''))));
+		print_r((floatval(number_format($FA['Total_MN'], 4, '.', ''))));
+
+
+	die();
 
 		// print_r(floatval(number_format($FA['Total_MN'],4,'.','')).'-'.floatval(number_format($parametros['TxtEfectivo'],4,'.','')).'-');
 		// print_r(floatval(number_format($FA['Total_MN'],4,'.',''))-floatval(number_format($parametros['TxtEfectivo'],4,'.',''))); die();
 		if ((floatval(number_format($parametros['TxtEfectivo'], 4, '.', '')) + floatval(number_format($parametros['valorBan'], 4, '.', '')) - floatval(number_format($FA['Total_MN'], 4, '.', ''))) >= 0) {
+
+			print_r('expression');die();
 			$electronico = 0;
 			if (isset($parametros['electronico'])) {
 				$electronico = $parametros['electronico'];
@@ -1753,17 +1771,18 @@ class facturas_distribucion
 			$datos = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
 			if (count($datos) > 0) {
 				// print_r($datos);die();
-				$FA['Nota'] = $parametros['TxtNota'];
-				$FA['Observacion'] = $parametros['TxtObservacion'];
-				$FA['Gavetas'] = intval($parametros['TxtGavetas']);
+				$FA['codigoCliente'] = $parametros['CodigoCliente'];
 				$FA['CodigoC'] = $parametros['CodigoCliente'];
 				$FA['TextCI'] = $parametros['CI'];
 				$FA['TxtEmail'] = $parametros['email'];
 				$FA['Cliente'] = trim(str_replace($parametros['CI'] . ' -', '', $parametros['NombreCliente']));
 				$FA['TC'] = $parametros['TC'];
-				$FA['Serie'] = $parametros['Serie'];
-				$FA['Cta_CxP'] = $datos[0]['CxC'];
-				$FA['Autorizacion'] = $datos[0]['Autorizacion'];
+				
+				$FA['Serie'] = $parametros['Serie'];				
+				$FA['Serie_FA'] = $_SESSION['INGRESO']['Serie_FA'];
+				$FA['TextFacturaNo'] = $numFac;
+				$FA['Cta_CxP'] = $parametros['Cta_Cobrar'];
+				$FA['Autorizacion'] = $parametros['Autorizacion'];
 				$FA['FechaTexto'] = $FechaTexto;
 				$FA['Fecha'] = $FechaTexto;
 				$FA['Total'] = $FA['Total_MN'];
@@ -1775,11 +1794,32 @@ class facturas_distribucion
 				$FA['CodDoc'] = $parametros['CodDoc'];
 				$FA['valorBan'] = $parametros['valorBan'];
 				$FA['TxtEfectivo'] = $parametros['TxtEfectivo'];
+				$FA['Cod_CxC'] = $parametros['CodigoL'];
+				$FA['CLAVE'] = ".";
+				$FA['TxtPorcIva'] = $parametros['PorcIva'];
+				$FA['Porc_IVA'] = (floatval($parametros['PorcIva'])/100);
+				$FA['FATextVUnit'] = $parametros['FATextVUnit'];
+				$FA['FAVTotal'] = $parametros['FAVTotal'];
+				$FA['FACodLinea'] = $parametros['FACodLinea'];
+				if(isset($parametros['Comprobante'])){
+					$FA['Comprobante'] = $parametros['Comprobante'];
+				}
 
 				$Moneda_US = False;
 				$TextoFormaPago = G_PAGOCONT;
-				// print_r($parametros);die();
-				return $this->ProcGrabar_Abono_cero($FA);
+				print_r($FA);die();
+				$r =  $this->ProcGrabar_Abono_cero($FA);
+				if(isset($r['respuesta']) && $r['respuesta'] == 1){
+					// Hacer el borrado Trans_Comision
+					$r2 = $this->generar_factura_FA($FA, $r);
+					foreach ($lineas_fac as $key => $value) {
+       					$this->modelo->EliminarOPDetalleFactura($parametros['CodigoCliente'],$value['Cta'],$value['Codigo_Inv']);
+					}
+					$this->modelo->EliminarTransComision($FA['Fecha'], $FA['CodigoC'], $parametros['CodigoU']);
+					return $r2;
+				}
+
+				return $r;
 			} else {
 				return array('respuesta' => -1, 'text' => "Cuenta CxC sin setear en catalogo de lineas");
 			}
@@ -2034,37 +2074,8 @@ class facturas_distribucion
 				// print_r($FA)
 				$imp_guia = '';
 				if ($FA['TC'] <> "NDO" || $FA['TC'] <> "NDU") {
-					/*//la respuesta puede se texto si envia numero significa que todo saliobien
-					$rep = $this->sri->Autorizar_factura_o_liquidacion($FA);
-
-					// print_r($rep);die();
-					$clave = $this->sri->Clave_acceso($TA['Fecha'], '01', $TA['Serie'], $Factura_No);
-					
-					// print_r($rep);die();
-					// SRI_Crear_Clave_Acceso_Facturas($FA,true); 
-					$FA['Desde'] = $FA['Factura'];
-					$FA['Hasta'] = $FA['Factura'];
-					// Imprimir_Facturas_CxC(FacturasPV, FA, True, False, True, True);
-					$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
-					$TFA['CLAVE'] = $clave;
-					$TFA['PorcIva'] = $FA['Porc_IVA'];
-					$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
-
-					$this->modelo->pdf_factura_elec($FA['Factura'], $FA['Serie'], $FA['codigoCliente'], $imp, $clave, $periodo = false, 0, 1);
-					// print_r('ex');die();
-					if ($rep == 1) {
-						if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 0 && $_SESSION['INGRESO']['Grafico_PV'] == 0) {
-
-							return array('respuesta' => $rep, 'pdf' => $imp, 'clave' => $clave,'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
-						} else {
-
-							$this->pdf->Imprimir_Punto_Venta_Grafico($TFA);
-							return array('respuesta' => $rep, 'pdf' => $imp, 'clave' => $clave, 'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
-						}
-
-					} else {
-						return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep, 'clave' => $clave,'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
-					}*/
+					/*//la respuesta puede se texto si envia numero significa que todo saliobien/*/
+				
 
 					$respuesta = '';
 					// 'Autorizamos la factura
@@ -2114,7 +2125,7 @@ class facturas_distribucion
 					 $FA['Hasta'] = $FA['Factura'];
 					 $this->modelo->Facturas_Impresas($FA); 
 
-					 return array('respuesta' => $respuesta, 'pdf' => $imp, 'clave' => $clave, 'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
+					 return array('respuesta' => $respuesta, 'pdf' => $imp, 'clave' =>$clave,'auto'=>$FA['Autorizacion'],'serie'=> $FA['Serie'],'factura'=>$FA['Factura'],'tc'=>$FA['TC'],'codigoc'=>$FA['codigoCliente'],'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
 				}
 			} else {
 				// print_r('dddd');die();

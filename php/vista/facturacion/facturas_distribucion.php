@@ -79,7 +79,7 @@ if (isset ($_GET['tipo'])) {
 				</div>
 			</div>
 		</div>
-		<iframe id="pdfFrame" style="display:none;"></iframe>
+		<div id="re_frame" style="display:none;"></div>
 	</div>
 	<div id="interfaz_campos">
 		<div class="row pb-2">
