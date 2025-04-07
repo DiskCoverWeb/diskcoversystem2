@@ -615,14 +615,14 @@ function autocoplet_ingreso()
 		  	 }
 
 
-  		total_final = (parseFloat(cant_ing)+parseFloat(cant_total_kardex));
-  		cant_suge = parseFloat(cant_suge);
+  	total_final = (parseFloat(cant_ing)+parseFloat(cant_total_kardex)).toFixed(2);
+  	cant_suge = parseFloat(cant_suge).toFixed(2);
 	   if($('#txt_TipoSubMod').val()!='R')
 	   {
-  	 	if(total_final.toFixed(2) >cant_suge.toFixed(2))
+  	 	if(parseFloat(total_final)>parseFloat(cant_suge))
   	 	{
-        console.log(total_final+'-'+cant_suge);
-        console.log(cant_ing+'-'+cant_total_kardex);
+          console.log(total_final+'-'+cant_suge);
+          console.log(cant_ing+'-'+cant_total_kardex);
   	 			Swal.fire('La cantidad Ingresada supera a la cantidad registrada','','info');
   	 			return false
   	 	}
