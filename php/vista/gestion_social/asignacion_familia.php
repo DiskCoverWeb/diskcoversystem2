@@ -44,7 +44,7 @@
                     <div class="col-lg-4 col-md-8 col-sm-12">
                         <b>Grupo</b>
                         <div class="d-flex align-items-center input-group-sm">
-                            <select name="ddl_grupos" id="ddl_grupos" class="form-select form-select-sm"></select>
+                            <select name="ddl_grupos" id="ddl_grupos" class="form-select form-select-sm" onchange="listaAsignacion()"></select>
                              <button type="button" title="Agregar beneficiario"  class="btn btn-success btn-sm" onclick="add_beneficiario()">
                                 <i class="fa fa-plus m-0" style="font-size:8pt;"></i>
                             </button>
@@ -96,7 +96,7 @@
                                 </div> 
                             </div>
                             <div class="col-sm-4">
-                                <input type="number" name="CantGlobSugDist" id="CantGlobSugDist" readonly style=""
+                                <input type="number" name="CantGlobDist" id="CantGlobDist" readonly style=""
                                     class="form-control form-control-sm">
                             </div>
                         </div>
