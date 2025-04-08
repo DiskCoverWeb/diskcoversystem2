@@ -117,6 +117,18 @@ class egreso_alimentosM
 			return $this->db->datos($sql);
 	}
 
+	function delete_egreso_checking($orden)
+	{
+		$sql = "DELETE FROM Trans_Kardex
+				WHERE Item = '".$_SESSION['INGRESO']['item']."'
+				AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+				AND T ='G'
+				AND Orden_No ='".$orden."'";
+
+				// print_r($sql);die();
+		return $this->db->String_Sql($sql);
+	}
+
 	function lista_egreso_checking($query=false,$id=false,$area =false,$orden=false)
 	{
 		$sql = "SELECT

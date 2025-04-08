@@ -104,11 +104,11 @@ class asignacion_pickingC
             // if($diaActual==$dia[1])
             // {
             //     //buscamos si el usuario ya genero en este dia pedidos para facturar
-                $datos1 = $this->modelo->cargar_asignacion($value['Codigo'],$value['No_Hab'],'F',$fecha);
-                if(count($datos1)==0)
-                {
+                // $datos1 = $this->modelo->cargar_asignacion($value['Codigo'],$value['No_Hab'],'F',$fecha);
+                // if(count($datos1)==0)
+                // {
             	   $lista[] = array('id'=>$value['Codigo'].'-'.$value['No_Hab'].'-'.$value['Orden_No'],'text'=>$value['Cliente'].' ('.$value['Tipo Asignacion'].')','data'=>$value); 
-                }   	
+                // }   	
             // }	
     	}
     	return $lista;

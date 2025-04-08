@@ -28,6 +28,11 @@ $(document).ready(function () {
          scrollX: true,  // Habilitar desplazamiento horizontal
      
         columns: [
+          { data:  null,
+            render: function(data, type, item) {
+              return `<button class="btn btn-danger btn-sm" onclick="eliminar_egreso('${item.Orden_No}')"><i class="bx bx-trash me-0"></i></button>`;                    
+            }
+          },
           { data: null, // Columna autoincremental
               render: function (data, type, row, meta) {
                 return meta.row + 1; // meta.row es el índice de la fila
@@ -99,6 +104,52 @@ $(document).ready(function () {
       });
 
 })
+
+
+function eliminar_egreso(orden)
+{
+   Swal.fire({
+      title: 'Esta seguro?',
+      text: "Esta usted seguro de que quiere borrar este registro!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si!'
+    }).then((result) => {
+      if (result.value==true) {
+        IngClave('Supervisor');
+        $('#txt_ordenNo').val(orden);
+        $('#clave_supervisor').modal('show');
+      }
+  })
+}
+
+function resp_clave_ingreso()
+{
+    var parametros = {
+          'orden': $('#txt_ordenNo').val(),
+    }
+    $.ajax({
+      data:  {parametros,parametros},
+      url:   '../controlador/inventario/egreso_alimentosC.php?eliminar_egreso_check=true',
+      type:  'post',
+      dataType: 'json',
+      success:  function (response) { 
+        if(response==1)
+        {            
+            Swal.fire("Registro eliminado","","success").then(function(){
+              lista_egreso_checking();
+            });
+        }
+        console.log(response);
+        
+      }, 
+      error: function(xhr, textStatus, error){
+        $('#myModal_espera').modal('hide');           
+      }
+  });
+}
 
 function modal_mensaje(orden)
 {

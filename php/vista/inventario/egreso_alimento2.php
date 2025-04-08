@@ -65,6 +65,7 @@
 				<!-- <div class="col-sm-12"> -->
 					<table class="table-sm table bg-light"  class="display" style="width:100%"  id="tbl_asignados">
 						<thead class="text-center bg-primary text-white">
+							<th></th>
 							<th style="width:30px; white-space: nowrap;"><b>Item</b></th>
 							<th style="width:100px; white-space: nowrap;"><b>Fecha de Egreso</b></th>
 							<th style="width:200px; white-space: nowrap;"><b>Usuario</b></th>
@@ -151,6 +152,7 @@
 				<h4 class="modal-title text-white">Motivo</h4>
                 <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
                 <input type="hidden" name="txt_idMotivo" id="txt_idMotivo">
+                <input type="hidden" name="txt_ordenNo" id="txt_ordenNo">
             </div>
             <div class="modal-body">
             	<div class="row">            		

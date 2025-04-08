@@ -49,7 +49,9 @@ class asignacion_pickingM
             AND CD.Item = CP2.Item 
             AND CD.Item = CP3.Item 
             AND CD.Item = CP4.Item  
-            AND CD.Item = CP5.Item";     
+            AND CD.Item = CP5.Item  
+            AND CD.Item = CP6.Item  
+            AND CD.Item = CP7.Item";     
 
             // print_r($sql);die();   
 

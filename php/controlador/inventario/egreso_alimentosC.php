@@ -102,6 +102,11 @@ if(isset($_GET['guardar_linea']))
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->guardar_linea($parametros));
 }
+if(isset($_GET['eliminar_egreso_check']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->eliminar_egreso_check($parametros));
+}
 
 /**
  * 
@@ -209,6 +214,12 @@ class egreso_alimentosC
 	function eliminar_egreso($id)
 	{
 		return $this->modelo->eliminar($id);
+		// print_r($id);die();
+	}
+
+	function eliminar_egreso_check($parametros)
+	{
+		return $this->modelo->delete_egreso_checking($parametros['orden']);
 		// print_r($id);die();
 	}
 	function eliminar_egreso_all()
