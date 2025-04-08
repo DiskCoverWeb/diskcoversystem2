@@ -106,52 +106,7 @@
     <div class="col-lg-12 col-md-2 col-sm-6 text-end mt-1">
       <button class="btn btn-primary btn-sm" type="button" onclick="validar()"><i class="bx bx-search"></i> Buscar</button>
     </div>    
-          <!--<b>GRUPO</b>
-          <select class="form-control input-xs" id="ddl_grupo" name="ddl_grupo" onchange="autocmpletar_cliente()">
-            <option value=".">TODOS</option>
-          </select>-->
-          <!-- <input type="text" name="txt_grupo" id="txt_grupo" class="form-control input-sm"> -->
-        <!--</div>-->
-        <!--<div class="col-sm-5">
-          <b>CI / RUC</b>
-          <select class="form-control input-xs" id="ddl_cliente" name="ddl_cliente" onchange="periodos(this.value);rangos();">
-            <option value="">Seleccione Cliente</option>
-          </select>
-        </div>
-        <div class="col-sm-1" style="padding: 0px;">
-          <b>Serie</b>
-            <select class="form-control input-xs" name="DCLinea" id="DCLinea" tabindex="1" style="padding-left:8px" onchange="autocmpletar_cliente_tipo2()">
-              <option value=""></option>
-            </select>
-        </div>
-        <div class="col-sm-2" id="campo_clave">
-          <b>CLAVE</b>
-          <input type="password" name="txt_clave" id="txt_clave" class="form-control input-xs">
-          <a href="#" onclick="recuperar_clave()"><i class="fa fa-key"></i> Recupera clave</a>
-        </div>
-        <div class="col-sm-2" style="display:none;" >
-          <b>Periodo</b>
-          <select class="form-control input-xs" id="ddl_periodo" name="ddl_periodo" onchange="rangos()">
-            <option value=".">Seleccione perido</option>
-          </select>
-        </div>
-        <div class="col-sm-2">
-          <b>Desde</b>
-            <input type="date" name="txt_desde" id="txt_desde" class="form-control input-xs" value="<?php //echo date('Y-m-d')?>">
-        </div>  
-        <div class="col-sm-2">
-          <b>Hasta</b>
-            <input type="date" name="txt_hasta" id="txt_hasta" class="form-control input-xs" value="<?php //echo date('Y-m-d')?>">
-        </div>      -->                   
-      
-      <!--<div class="row">            
-        <div class="col-sm-6 text-right">
-        </div>       
-        <div class="col-sm-6 text-right">
-          <button class="btn btn-primary btn-xs" type="button" onclick="validar()"><i class="fa fa-search"></i> Buscar</button>
-        </div>
-        
-      </div>-->
+
       
   </form>
     <div class="panel" id="panel_datos" style="display:none;margin-bottom: 1px;">
@@ -173,242 +128,55 @@
         </div>
       </div>      
     </div>
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="nav-tabs-custom" style="padding:25px 20px">
-        <!--<ul class="nav nav-tabs">
-          <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Todos</a></li>
-          <li class="" id="tab_2_"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Autorizados</a></li>
-          <li class="" id="tab_3_"><a href="#tab_3" data-toggle="tab" aria-expanded="false">No Autorizados</a></li>
-          <li class="" id="tab_4_" onclick="cargar_lineas()"><a href="#tab_4" data-toggle="tab" aria-expanded="false">Detalle Factura</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="tab_1">-->
-              <div class="row">
-                <div class="col-sm-12">
-                  <h2 style="margin-top: 0px;">Listado de Notas de Donación</h2>
-                </div>
-                <!--<div class="col-sm-3 d-flex justify-content-end" id="panel_pag">
-                  
-                </div>-->
-                <div  class="col-sm-12" style="overflow-x: scroll;height: 500px;">    
-                  <table id="tbl_tabla" class="table fs-8" style="width:100%;">
-                    <thead>
-                      <th></th>
-                      <th>T</th>          
-                      <th>Razon_Social</th>
-                      <th>TC</th>
-                      <th>Serie</th>
-                      <th>Autorizacion</th>
-                      <th>Factura</th>
-                      <th>Fecha</th>
-                      <th>SubTotal</th>
-                      <th>Con_IVA</th>
-                      <th>IVA</th>
-                      <th>Descuento</th>
-                      <th>Total</th>
-                      <th>Saldo</th>
-                      <th>RUC_CI</th>
-                      <th>TB</th>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </table>
-              
-                </div>    
-              </div>
-            <!--</div>
-
-            <div class="tab-pane" id="tab_2">
-              <div class="row">
-                <div class="col-sm-6">
-                  <h2 style="margin-top: 0px;">Listado de Notas de Donación</h2>
-                </div>
-                <div class="col-sm-6 text-right" id="panel_pagAu">
-                  
-                </div>
-                <div  class="col-sm-12" style="overflow-x: scroll;height: 500px;">    
-                  <table class="table text-sm" style=" white-space: nowrap;">
-                    <thead>
-                      <th></th>
-                      <th>T</th>          
-                      <th>Razon_Social</th>
-                      <th>TC</th>
-                      <th>Serie</th>
-                      <th>Autorizacion</th>
-                      <th>Factura</th>
-                      <th>Fecha</th>
-                      <th>SubTotal</th>
-                      <th>Con_IVA</th>
-                      <th>IVA</th>
-                      <th>Descuento</th>
-                      <th>Total</th>
-                      <th>Saldo</th>
-                      <th>RUC_CI</th>
-                      <th>TB</th>
-                    </thead>
-                    <tbody  id="tbl_tablaAu">
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </table>
-              
-                </div>    
-              </div>
-
-
-            </div>
-
-            <div class="tab-pane" id="tab_3">
-              <div class="row">
-                <div class="col-sm-6">
-
-                  <div class="input-group margin">
-                      <div class="input-group-btn open">
-                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Acciones
-                              <span class="fa fa-caret-down"></span>
-                          </button>
-                          <ul class="dropdown-menu">
-                            <li onclick="autorizar_blo()"><a href="#">Autorizar en bloque</a></li>
-                            <li onclick=""><a href="#">Anular en bloque</a></li>
-                          </ul>
-                      </div>
-                  </div>
-                  <h2 style="margin-top: 0px;">Listado de Notas de Donación</h2>
-                </div>
-                <div class="col-sm-6 text-right" id="panel_pagNoAu">
-                  
-                </div>
-                <div  class="col-sm-12" style="overflow-x: scroll;height: 500px;">    
-                  <table class="table text-sm" style=" white-space: nowrap;">
-                    <thead>
-                      <th></th>
-                      <th>T</th>          
-                      <th>Razon_Social</th>
-                      <th>TC</th>
-                      <th>Serie</th>
-                      <th>Autorizacion</th>
-                      <th>Factura</th>
-                      <th>Fecha</th>
-                      <th>SubTotal</th>
-                      <th>Con_IVA</th>
-                      <th>IVA</th>
-                      <th>Descuento</th>
-                      <th>Total</th>
-                      <th>Saldo</th>
-                      <th>RUC_CI</th>
-                      <th>TB</th>
-                    </thead>
-                    <tbody  id="tbl_tablaNoAu">
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </table>
-              
-                </div>    
-              </div>
-            </div>
-            <div class="tab-pane" id="tab_4">
-              <div class="row">
-                <div class="col-sm-6">
-                  <h2 style="margin-top: 0px;">Listado de Notas de Donación</h2>
-                </div>
-                <div class="col-sm-6 text-right" id="panel_pag">
-                  
-                </div>
-                <div  class="col-sm-12" style="overflow-x: scroll;height: 500px;">    
-                  <table class="table text-sm" style=" white-space: nowrap;">
-                    <thead>
-                      <th>T</th>          
-                      <th>Producto</th>
-                      <th>TC</th>
-                      <th>Serie</th>
-                      <th>Autorizacion</th>
-                      <th>Factura</th>
-                      <th>Fecha</th>
-                      <th>Mes</th>
-                      <th>Año</th>
-                      <th>IVA</th>
-                      <th>Descuento</th>
-                      <th>Total</th>
-                      <th>RUC_CI</th>
-                    </thead>
-                    <tbody  id="tbl_tabla_detalle">
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </table>
-              
-                </div>    
-              </div>
-            </div>-->
-        <!--</div>-->
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <h3 style="margin-top: 0px;">Listado de Notas de Donación</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">   
+          <table id="tbl_tabla" class="table table-hover w-100">
+            <thead>
+              <th></th>
+              <th>T</th>          
+              <th>Razon_Social</th>
+              <th>TC</th>
+              <th>Serie</th>
+              <th>Autorizacion</th>
+              <th>Factura</th>
+              <th>Fecha</th>
+              <th>SubTotal</th>
+              <th>Con_IVA</th>
+              <th>IVA</th>
+              <th>Descuento</th>
+              <th>Total</th>
+              <th>Saldo</th>
+              <th>RUC_CI</th>
+              <th>TB</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
       </div>
     </div>
   </div> 

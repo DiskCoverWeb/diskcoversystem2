@@ -15,12 +15,12 @@ var tipo = '';
         tipo=2;
     }
 
-    tbl_ndo_ndu = $('#tbl_tabla').DataTable({
-        // responsive: true,
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-        }
-    });
+    // tbl_ndo_ndu = $('#tbl_tabla').DataTable({
+    //     // responsive: true,
+    //     language: {
+    //         url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+    //     }
+    // });
 
     $.ajax({
       url: '../controlador/facturacion/lista_ndo_nduC.php?sesion=true',
@@ -286,7 +286,9 @@ var tipo = '';
     }
     //var tipo = '<?php echo $tipo; ?>'
     
-    tbl_ndo_ndu.destroy();
+    if ($.fn.DataTable.isDataTable('#tbl_tabla')) {
+        $('#tbl_tabla').DataTable().destroy();
+    }
 
     tbl_ndo_ndu = $('#tbl_tabla').DataTable({
         // responsive: true,

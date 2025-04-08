@@ -94,7 +94,7 @@ class lista_facturasM
 
    			// print_r($codigo);die();
 		
-		$sql ="SELECT TOP 10 T,TC,Serie,Autorizacion,Factura,Fecha,SubTotal,Con_IVA,IVA,Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,TB,Razon_Social,CodigoC,ID 
+		$sql ="SELECT TOP 100 T,TC,Serie,Autorizacion,Factura,Fecha,SubTotal,Con_IVA,IVA,Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,TB,Razon_Social,CodigoC,ID 
 		FROM Facturas 
 		WHERE Item = '".$_SESSION['INGRESO']['item']."' 
 		AND TC IN ('NDO','NDU') ";
@@ -137,9 +137,9 @@ class lista_facturasM
        	 $sql.= " AND Fecha BETWEEN   '".$desde."' AND '".$hasta."' ";
        }
 
-       $sql.=" ORDER BY Serie,Factura DESC "; 
+       $sql.=" ORDER BY Factura DESC "; 
 	//$sql.=" OFFSET ".$_SESSION['INGRESO']['paginacionIni']." ROWS FETCH NEXT ".$_SESSION['INGRESO']['numreg']." ROWS ONLY;";   
-    //print_r($sql);die(); 
+    // print_r($sql);die(); 
 	return $this->db->datos($sql);
 
        // return $datos;
@@ -441,7 +441,7 @@ class lista_facturasM
 
    function Cliente_facturas($cod,$grupo = false,$query=false,$clave=false, $serie=false)
    {
-	   $sql = "SELECT CodigoC as 'Codigo',C.Cliente as 'Cliente',C.CI_RUC,C.Email,C.Direccion,C.Telefono  
+	   $sql = "SELECT top 25 CodigoC as 'Codigo',C.Cliente as 'Cliente',C.CI_RUC,C.Email,C.Direccion,C.Telefono  
 	   FROM Facturas F
 	   INNER JOIN Clientes C ON F.CodigoC = C.Codigo 
 	   AND F.Item = '" . $_SESSION['INGRESO']['item'] . "' 
@@ -466,9 +466,8 @@ class lista_facturasM
 		$sql.=" and F.Serie='".$serie."'";
 	   }
 	   $sql.=" GROUP BY CodigoC,C.Cliente,C.CI_RUC,C.Email,C.Direccion,C.Telefono ";
-	   $sql.=" ORDER BY C.Cliente OFFSET 0 ROWS FETCH NEXT 25 ROWS ONLY;";
-	   
-	   //print_r($sql);die();
+
+	   // print_r($sql);die();
 		$result = $this->db->datos($sql);
 	   return $result;
    }
