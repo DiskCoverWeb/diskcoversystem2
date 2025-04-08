@@ -381,7 +381,7 @@ var tipo = '';
             { data: 'TB' }
         ],
         order: [
-            [1, 'asc']
+            [1, 'desc']
         ]
     });
   }
