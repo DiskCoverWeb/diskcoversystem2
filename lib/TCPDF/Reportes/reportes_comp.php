@@ -27,7 +27,7 @@ class PDFC extends TCPDF{
     function Header() {
         //Marco para el header
         $this-> setLineWidth(0.02646);
-        $this->SetFont('Times', 'B', 30);
+        $this->SetFont('helvetica', 'B', 30);
         if($_SESSION['INGRESO']['Nombre_Comercial']<>$_SESSION['INGRESO']['Razon_Social']){
             $this->MultiCell(180,  25, '', 1, 'C',  false, 1);
         }
@@ -38,27 +38,27 @@ class PDFC extends TCPDF{
         $this->SetXY(x: 13, y: 3);
         $src = $this->url_logo();
         if ($src !== '.'){
-            $this->Image($src, 20, 5, 35, 15);
+            $this->Image($src, 20, 5, 25, 15);
         } else{
             $txt = '';
             $this->Write(0, $txt, '', 0, 'C', true);
         }
         //Lado central (Informacion de cabecera)
-        $this->SetFont('times','',size: 10);
+        $this->SetFont('helvetica','B', 10);
         //$this->MultiCell(w: 0, h: 0, txt: '', border: 0, align: 'L', fill: false, ln: 1);
         $this->MultiCell(0, 0, $_SESSION['INGRESO']['Razon_Social'], 0, 'C', false, 1);
         //si razon social es distinto de nombre comercial, imprimirlo
         if($_SESSION['INGRESO']['Nombre_Comercial']<>$_SESSION['INGRESO']['Razon_Social']){
-            $this->SetFont('times', '', 9);
+            $this->SetFont('helvetica', 'B', 9);
             $this->MultiCell(0, 0, $_SESSION['INGRESO']['Nombre_Comercial'], 0, 'C', false, 1);
         }
         $txt = 'R.U.C. :'.$_SESSION['INGRESO']['RUC'];
-        $this->SetFont('times','',8);
+        $this->SetFont('helvetica','B',8);
         $this->MultiCell(0, 0, $txt, 0, 'C', false, 1);
-        $this->SetFont('times', '', 6);
-        $txt_dir = $_SESSION['INGRESO']['Direccion'].'-'.$_SESSION['INGRESO']['Telefono1'].' / '.$_SESSION['INGRESO']['FAX'];
+        $this->SetFont('helvetica', 'B', 6);
+        $txt_dir = 'Dir: '.$_SESSION['INGRESO']['Direccion'].' - Teléf: '.$_SESSION['INGRESO']['Telefono1'].' /FAX:'.$_SESSION['INGRESO']['FAX'];
         $this->Cell(0, 0, $txt_dir, 0, 1, 'C', false);
-        $this->SetFont('times', 'B', 12);
+        $this->SetFont('times', 'B', 16);
         $pag = $this->getPage();
         if($pag !== 1){
             $txt_t = 'CONTINUACIÓN';
@@ -92,30 +92,30 @@ class PDFC extends TCPDF{
         $txt_no = substr($this->datos_cabecera['Fecha_ex'], 2, 2)."-".$this->datos_cabecera['Numero'];
         $txt_fecha = $this->datos_cabecera['Fecha'];
         $txt_pag = $this->getPage();
-        $this->SetFont('times', 'B', 10);
-        $this->SetX(150);
-        $this->MultiCell(40, 0, 'No. ', 1, 'L', false, 0);
-        $this->SetFont('times', '', 8);
-        $this->SetX(157);
+        $this->SetFont('times', 'B', 14);
+        $this->SetX(150+3);
+        $this->MultiCell(40, 0, ' No. ', 1, 'L', false, 0);
+        $this->SetFont('helvetica', '', 8);
+        $this->SetX(167+3);
         $this->MultiCell(40,  0, $txt_no, 0, 'L', false, 1);
-        $this->ln(2);
+        $this->ln(4);
         $this->SetFont('times', 'B', 10);
-        $this->SetX(150);
-        $this->MultiCell(40, 0, 'Fecha: ', 1, 'L', false, 0);
-        $this->SetFont('times', '', 8);
-        $this->SetX(162);
+        $this->SetX(150+3);
+        $this->MultiCell(40, 0, ' Fecha: ', 1, 'L', false, 0);
+        $this->SetFont('helvetica', '', 8);
+        $this->SetX(164+3);
         $this->MultiCell(40, 0, $txt_fecha, 0, 'L', false, 1);
         $this->ln(2);
-        $this->SetFont('times', 'B', 10);
-        $this->SetX(150);
+        $this->SetX(150+3);
         //esto Cambia en nota de credito y en nota de debito
         if ($this->datos_cabecera['Tipo_Comprobante'] == 'CI' || $this->datos_cabecera['Tipo_Comprobante'] == 'CE'){
-            $this->SetFont('times', '', 8);
-            $this->MultiCell(40, 0, $this->datos_cabecera['Monto'], 1, 'C', false, 1);
+            $this->SetFont('helvetica', '', 8);
+            $this->MultiCell(40, 5, '        '.$this->datos_cabecera['Monto'], 1, 'L', false, 1, null, null, true, 0, 0, true, 0, 'M');
         } else {
-            $this->MultiCell(40, 0, 'Pagina No. ', 1, 'L', false, 0);
-            $this->SetX(168);
-            $this->SetFont('times', '', 8);
+            $this->SetFont('times', 'B', 10);
+            $this->MultiCell(40, 0, ' Pagina No. ', 1, 'L', false, 0);
+            $this->SetX(174+3);
+            $this->SetFont('helvetica', '', 8);
             $this->MultiCell(40, 0, $txt_pag, 0, 'L', false, 0); 
         }
         
@@ -123,6 +123,7 @@ class PDFC extends TCPDF{
         //Para cuando hay mas paginas
         $pag = $this->getPage();
         if($pag !== 1){
+            $this->SetFont('times', 'B', 11);
             $this->SetY(25);
             $this->MultiCell(0, 0, 'C O N T A B I L I Z A C I O N', 'LRT', 'C', false, 0);
         }
@@ -133,11 +134,11 @@ class PDFC extends TCPDF{
             <table>
                 <thead>
                     <tr> 
-                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center">{$array[0]}</th> 
-                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center" colspan="2">{$array[1]}</th> 
-                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center">{$array[2]}</th> 
-                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center">{$array[3]}</th> 
-                        <th style="border-left: 0.1px solid black; border-right: 0.1px solid black; border-top: 0.1px solid black;" align="center">{$array[4]}</th> 
+                        <th style="border:0.1px solid black;" align="center">{$array[0]}</th> 
+                        <th style="border:0.1px solid black;" align="center" colspan="2">{$array[1]}</th> 
+                        <th style="border:0.1px solid black;" align="center">{$array[2]}</th> 
+                        <th style="border:0.1px solid black;" align="center">{$array[3]}</th> 
+                        <th style="border:0.1px solid black;" align="center">{$array[4]}</th> 
                     </tr>
                 </thead>
             </table> 
@@ -146,8 +147,9 @@ class PDFC extends TCPDF{
     }
     
     function Row($array){
+        $this->SetFont('helvetica', '', 8);
         $tbl = <<<EOD
-        <table cellpadding="2">
+        <table cellpadding="1">
             <tbody>
                 <tr>
                     <td style="border-left: 0.1px solid black; border-right: 0.1px solid black;">{$array[0]}</td>
@@ -163,11 +165,12 @@ class PDFC extends TCPDF{
     }
 
     function Row_Totales($array){
+        $this->SetFont('times', '', 8);
         $tbl = <<<EOD
         <table cellpadding="2">
             <tbody>
                 <tr>
-                    <td align="right" style="border: 0.1px solid black" colspan="4">{$array[0]}</td>
+                    <td align="right" style="border: 0.1px solid black" colspan="4"><b>{$array[0]}</b></td>
                     <td align="right" style="border: 0.1px solid black">{$array[1]}</td>
                     <td align="right" style="border: 0.1px solid black">{$array[2]}</td>
                 </tr>
@@ -183,17 +186,17 @@ class PDFC extends TCPDF{
         <table cellpadding="3">
             <tbody>
                 <tr>
-                    <td style="text-align: center; border: 0.1px solid black" rowspan="2">Cotizacion</td>
-                    <td style="text-align: center; border: 0.1px solid black">{$usuario}</td>
-                    <td style="text-align: center; border: 0.1px solid black"></td>
-                    <td style="text-align: center; border: 0.1px solid black"></td>
-                    <td style="text-align: center; border: 0.1px solid black"></td>
+                    <td style="font-size: 11px; text-align: center; border: 0.1px solid black" rowspan="2">COTIZACIÓN</td>
+                    <td style="font-size: 11px; text-align: center; border: 0.1px solid black">{$usuario}</td>
+                    <td style="font-size: 11px; text-align: center; border: 0.1px solid black"></td>
+                    <td style="font-size: 11px; text-align: center; border: 0.1px solid black"></td>
+                    <td style="font-size: 11px; text-align: center; border: 0.1px solid black"></td>
                 </tr>
                 <tr>
-                    <td style="text-align: center; border: 0.1px solid black">Elaborado por</td>
-                    <td style="text-align: center; border: 0.1px solid black">Contador</td>
-                    <td style="text-align: center; border: 0.1px solid black">Aprovado por</td>
-                    <td style="text-align: center; border: 0.1px solid black">Conforme</td>
+                    <td style="font-size: 11px; text-align: center; border: 0.1px solid black">Elaborado por</td>
+                    <td style="font-size: 11px; text-align: center; border: 0.1px solid black">Contador</td>
+                    <td style="font-size: 11px; text-align: center; border: 0.1px solid black">Aprovado por</td>
+                    <td style="font-size: 11px; text-align: center; border: 0.1px solid black">Conforme</td>
                 </tr>
             </tbody> 
         </table>
@@ -204,15 +207,15 @@ class PDFC extends TCPDF{
     function PageCheckBreak(){
         $y = $this->GetY();
         $PageHeight = $this->getPageHeight();
-        $limit = 40;
-        $txt = strtoupper("continua en la siguiente pagina");
+        $limit = 45;
+        $txt = strtoupper("continua en la siguiente pagina...");
         if(($PageHeight - $y) < $limit){
             $tbl_limit = <<<EOD
                 <table>
                     <tbody>
                         <tr>
                             <td style="border-top: 0.1px solid black;"></td>
-                            <td style="border-top: 0.1px solid black;" colspan="2">{$txt}</td>
+                            <td style="font-size: 8px; border-top: 0.1px solid black;" colspan="2"><i>{$txt}</i></td>
                             <td style="border-top: 0.1px solid black;"></td>
                             <td style="border-top: 0.1px solid black;"></td>
                             <td style="border-top: 0.1px solid black;"></td>
@@ -228,7 +231,7 @@ class PDFC extends TCPDF{
                 $this->SetY(25);
             }
             $this->SetFont('times', 'B', 11);
-            $arr=array('CODIGO', 'CONCEPTO', 'PARCIAL M/E', 'DEBE', 'HABER');
+            $arr=array('CODIGO', 'C O N C E P T O', 'PARCIAL M/E', 'D E B E', 'H A B E R');
             $this->cab_table($arr);
         }else{
 
@@ -239,7 +242,7 @@ class PDFC extends TCPDF{
         $PageHeight = $this->getPageHeight();
         $MidPageHeight = ($this->getPageHeight())/2;
         if ($CurrentY < $MidPageHeight){
-            if ($CurrentY < ($MidPageHeight - 30)){
+            if ($CurrentY < ($MidPageHeight - 45)){
                 $array = ['', '', '', '', ''];
                 $this->Row($array);
                 $this->ln();
@@ -287,14 +290,14 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
         $pdf->SetY(20);
     }
     $pag = $pdf->getPage();
-    if($pag === 1){
+    if($pag == 1){
         $pdf->setLineWidth(0.02646);
-        $pdf->SetFont('times', '', 10);
+        $pdf->SetFont('times', 'B', 10);
         $txt_p = "Concepto de: ";
         $pdf->MultiCell(0, 10, '', 1,  'L', false, 0);
         $pdf->SetX(15);
-        $pdf->MultiCell(21, 10, $txt_p, 0, 'L', false, 0);
-        $pdf->SetFont('times', '', 10);
+        $pdf->MultiCell(23, 10, $txt_p, 0, 'L', false, 0);
+        $pdf->SetFont('helvetica', '', 8);
         $pdf->MultiCell(0, 10, $stmt[0]['Concepto'], 0, 'L', false, 1);
         $pdf->SetFont('times', 'B', 11);
         $pdf->MultiCell(0, 0,  'C O N T A B I L I Z A C I O N', 1, 'C', false, 1);
@@ -304,7 +307,7 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
 
     //Cabecera de la tabla
     $pdf->SetFont('times', 'B', 11);
-    $val = array('CODIGO', 'CONCEPTO', 'PARCIAL M/E', 'DEBE', 'HABER');
+    $val = array('CODIGO', 'C O N C E P T O', 'PARCIAL M/E', 'D E B E', 'H A B E R');
     $pdf->cab_table($val);
 
     //Cuerpo de la tabla
@@ -340,7 +343,6 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
             else{
                 $pdf->Row($array);
                 if($value['Detalle']!='.' && $value['Detalle']!=''){
-                    $pdf->SetFont('helvetica', '', 8);
                     $arr=array('', $value['Detalle'], '', '', '');
                     $pdf->Row($arr);
                 }
@@ -349,8 +351,8 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
         }
         $sumdb = number_format($sumdb, 2, '.', '');
         $sumcr = number_format($sumcr, 2, '.', '');
-        $array = array('TOTALES', $sumdb, $sumcr);
-        $pdf->SetFont('times', 'B', 10);
+        $array = array('T O T A L E S', $sumdb, $sumcr);
+        $pdf->SetFont('times', '', 10);
         $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
@@ -402,7 +404,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
         $pdf->SetY(20);
     }
     $pag = $pdf->getPage();
-    if($pag === 1){
+    if($pag == 1){
         $pdf->setLineWidth(0.02646);
         $cliente = $stmt1[0]['Cliente'];
         $ruc_ci = $stmt1[0]['CI_RUC'];
@@ -411,32 +413,37 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
         //Para la cabecera
         
         $y = $pdf->GetY();
-        $txt_1 = 'Pagado a: ';
+        $txt_1 = 'Recibido de: ';
         $txt_2 = 'R.U.C. / C.I.: ';
         
         //Fila informacion de pago
         $pdf->SetFont('times', style: 'B', size: 10);
-        $pdf->MultiCell(0, 0, $txt_1, 1, 'L', false, 0);
-        $pdf->SetFont('times', '', size: 10);
-        $pdf->SetXY(31,$y);
+        $pdf->MultiCell(0, 0, $txt_1, 'LTR', 'L', false, 0);
+        $pdf->SetFont('helvetica', '', size: 8);
+        $pdf->SetXY(35,$y);
         $pdf->MultiCell(0, 0, $cliente, 0, 'L', false, 0);
         $pdf->SetXY(140, $y);
         $pdf->SetFont('times', style: 'B', size: 10);
-        $pdf->MultiCell(0, 0, $txt_2, 0, 'L', false, 1);
+        $pdf->MultiCell(0, 0, $txt_2, 0, 'L', false, 0);
         $pdf->SetXY( 162, $y);
-        $pdf->SetFont('times', style: '', size: 10);
-        $pdf->MultiCell(0, 0, $ruc_ci, 0, 'L', false, 1);
+        $pdf->SetFont('helvetica', style: '', size: 8);
+        $pdf->MultiCell(0, 0, $ruc_ci, 0, 'L', false, 0);
+        $pdf->ln();
+        $pdf->SetY(($pdf->GetY())+1);
         //Informacion de cheque
         if($stmt8_count<>0){
             $y = $pdf->GetY();
             $pdf->MultiCell(0, 10,'', 1, 'L', false, 1);
             $pdf->SetY($y);
+            $pdf->SetFont('times', 'B', 10);
             $pdf->MultiCell(0, 0, 'La cantidad de: ', 0, 'L', false, 1);
             $pdf->SetXY(40, $y);
+            $pdf->SetFont('helvetica', '', 8);
             $pdf->MultiCell(0, 10, $Monto_Total, 0, 'L', false, 1);
             if(count($stmt8)>0){
                 $y = $pdf->GetY();
-                $pdf->MultiCell(0, 30, '', 1, 'L', false, 1);
+                $pdf->SetFont('timesB', '', 10);
+                $pdf->MultiCell(0, 30, '', 'TLR', 'L', false, 1);
                 $pdf->SetXY(22, $y);
                 $pdf->MultiCell(0, 0, 'Cheques S/.', '0', 'L', false, 1);
                 $pdf->SetXY(22, $y + 5);
@@ -445,18 +452,19 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
                     $pdf->Circle(20, $y + 2, 1, 0, 360, 'D');
                     $pdf->Circle(20, $y + 7, 1, 0, 360, 'D');
                     $pdf->SetXY(55, $y);
+                    $pdf->SetFont('helvetica', '', 8);
                     $Monto = number_format($stmt8[0]['monto'],2,'.',',');
                     $pdf->MultiCell(0, 10, $Monto, 0, 'L', false, 1);
                     $pdf->SetXY(80,$y);
                     $pdf->SetFont('times', 'B', 10);
                     $pdf->MultiCell(0, 10, 'Banco: ', 0, 'L', false, 1);
-                    $pdf->SetFont('times', '', 10);
+                    $pdf->SetFont('helvetica', '', 8);
                     $pdf->SetXY( 93, $y);
                     $pdf->MultiCell(0, 10, $stmt8[0]['Cuenta'], 0, 'L', false, 1);
                     $pdf->SetFont('times', 'B', 10);
                     $pdf->SetXY( 140, $y);
                     $pdf->MultiCell(0, 10, 'Deposito No.', 0, 'L', false, 1);
-                    $pdf->SetFont('times', '', 10);
+                    $pdf->SetFont('helvetica', '', 8);
                     $pdf->SetXY(160, $y);
                     $pdf->MultiCell(0, 10, $stmt8[0]['Cheq_Dep'], 0, 'L', false, 1);
                 }
@@ -464,6 +472,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
                     $pdf->Circle(20, $y + 2, 1, 0, 360, 'D');
                     $pdf->Circle(20, $y + 7, 1, 0, 360, 'D'); 
                     $pdf->SetXY(55, $y + 5);
+                    $pdf->SetFont('helvetica', '', 8);
                     $Monto = number_format($stmt8[0]['monto'],2,'.',',');
                     $pdf->MultiCell(0, 0, $Monto, 0, 'L', false, 1);
                     $pdf->SetFont('times', 'B', 10);
@@ -471,7 +480,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
                     $pdf->MultiCell(0, 10, 'Caja:', 0, 'L', false, 1);
                     $pdf->SetXY(140, $y);
                     $pdf->MultiCell(0, 10, 'Deposito No.', 0, 'L', false, 0);
-                    $pdf->SetFont('times', '', 10);
+                    $pdf->SetFont('helvetica', '', 8);
                     $pdf->SetXY(93, $y);
                     $pdf->MultiCell(0, 10, $stmt8[0]['Cuenta'], 0, 'L', false, 1);
                     $pdf->SetXY(160, $y);
@@ -484,12 +493,12 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
         
 
         
-        
+        $pdf->SetFont('times', 'B', 10);
         $txt_p = "Concepto de: ";
         $pdf->MultiCell(0, 10, '', 1,  'L', false, 0);
         $pdf->SetX(15);
-        $pdf->MultiCell(21, 10, $txt_p, 0, 'L', false, 0);
-        $pdf->SetFont('times', '', 10);
+        $pdf->MultiCell(23, 10, $txt_p, 0, 'L', false, 0);
+        $pdf->SetFont('helvetica', '', 8);
         $pdf->MultiCell(0, 10, $stmt[0]['Concepto'], 0, 'L', false, 1);
         $pdf->SetFont('times', 'B', 11);
         $pdf->MultiCell(0, 0,  'C O N T A B I L I Z A C I O N', 1, 'C', false, 1);
@@ -499,7 +508,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
 
     //Cabecera de la tabla
     $pdf->SetFont('times', 'B', 11);
-    $val = array('CODIGO', 'CONCEPTO', 'PARCIAL M/E', 'DEBE', 'HABER');
+    $val = array('CODIGO', 'C O N C E P T O', 'PARCIAL M/E', 'D E B E', 'H A B E R');
     $pdf->cab_table($val);
 
     //Cuerpo de la tabla
@@ -544,8 +553,8 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null, $stmt8_
         }
         $sumdb = number_format($sumdb, 2, '.', '');
         $sumcr = number_format($sumcr, 2, '.', '');
-        $array = array('TOTALES', $sumdb, $sumcr);
-        $pdf->SetFont('times', 'B', 10);
+        $array = array('T O T A L E S', $sumdb, $sumcr);
+        $pdf->SetFont('times', '', 10);
         $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
@@ -592,7 +601,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
         $pdf->SetY(20);
     }
     $pag = $pdf->getPage();
-    if($pag === 1){
+    if($pag == 1){
         $pdf->setLineWidth(0.02646);
         $cliente = $stmt1[0]['Cliente'];
         $ruc_ci = $stmt1[0]['CI_RUC'];
@@ -605,27 +614,32 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
         
         //Fila informacion de pago
         $pdf->SetFont('times', style: 'B', size: 10);
-        $pdf->MultiCell(0, 0, $txt_1, 1, 'L', false, 0);
-        $pdf->SetFont('times', '', size: 10);
+        $pdf->MultiCell(0, 0, $txt_1, 'LTR', 'L', false, 0);
+        $pdf->SetFont('helvetica', '', size: 8);
         $pdf->SetXY(31,$y);
         $pdf->MultiCell(0, 0, $cliente, 0, 'L', false, 0);
         $pdf->SetXY(140, $y);
         $pdf->SetFont('times', style: 'B', size: 10);
-        $pdf->MultiCell(0, 0, $txt_2, 0, 'L', false, 1);
+        $pdf->MultiCell(0, 0, $txt_2, 0, 'L', false, 0);
         $pdf->SetXY( 162, $y);
-        $pdf->SetFont('times', style: '', size: 10);
-        $pdf->MultiCell(0, 0, $ruc_ci, 0, 'L', false, 1);
+        $pdf->SetFont('helvetica', style: '', size: 8);
+        $pdf->MultiCell(0, 0, $ruc_ci, 0, 'L', false, 0);
         //Informacion de cheque
+        $pdf->ln();
+        $pdf->SetY(($pdf->GetY())+1);
         if($stmt8_count<>0){
             $y = $pdf->GetY();
             $pdf->MultiCell(0, 10,'', 1, 'L', false, 1);
             $pdf->SetY($y);
+            $pdf->SetFont('timesB', '', 10);
             $pdf->MultiCell(0, 0, 'La cantidad de: ', 0, 'L', false, 1);
             $pdf->SetXY(40, $y);
+            $pdf->SetFont('helvetica', '', 8);
             $pdf->MultiCell(0, 10, $Monto_Total, 0, 'L', false, 1);
             if(count($stmt8)>0){
                 $y = $pdf->GetY();
-                $pdf->MultiCell(0, 30, '', 1, 'L', false, 1);
+                $pdf->SetFont('timesB', '', 10);
+                $pdf->MultiCell(0, 30, '', 'LTR', 'L', false, 1);
                 $pdf->SetXY(22, $y);
                 $pdf->MultiCell(0, 0, 'Cheques S/.', '0', 'L', false, 1);
                 $pdf->SetXY(22, $y + 5);
@@ -634,18 +648,19 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
                     $pdf->Circle(20, $y + 2, 1, 0, 360, 'D');
                     $pdf->Circle(20, $y + 7, 1, 0, 360, 'D');
                     $pdf->SetXY(55, $y);
+                    $pdf->SetFont('helvetica', '', 8);
                     $Monto = number_format($stmt8[0]['monto'],2,'.',',');
                     $pdf->MultiCell(0, 10, $Monto, 0, 'L', false, 1);
                     $pdf->SetXY(70,$y);
                     $pdf->SetFont('times', 'B', 10);
                     $pdf->MultiCell(0, 10, 'Banco: ', 0, 'L', false, 1);
-                    $pdf->SetFont('times', '', 8);
+                    $pdf->SetFont('helvetica', '', 8);
                     $pdf->SetXY( 83, $y);
                     $pdf->MultiCell(50, 10, $stmt8[0]['Cuenta'], 0, 'L', false, 1);
                     $pdf->SetFont('times', 'B', 10);
                     $pdf->SetXY( 140, $y);
                     $pdf->MultiCell(0, 10, 'Cheque No.', 0, 'L', false, 1);
-                    $pdf->SetFont('times', '', 8);
+                    $pdf->SetFont('helvetica', '', 8);
                     $pdf->SetXY(160, $y);
                     $pdf->MultiCell(0, 10, $stmt8[0]['Cheq_Dep'], 0, 'L', false, 1);
                 }
@@ -660,7 +675,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
                     $pdf->MultiCell(0, 10, 'Caja:', 0, 'L', false, 1);
                     $pdf->SetXY(140, $y);
                     $pdf->MultiCell(0, 10, 'Retiro No.', 0, 'L', false, 0);
-                    $pdf->SetFont('times', '', 10);
+                    $pdf->SetFont('helvetica', '', 8);
                     $pdf->SetXY(93, $y);
                     $pdf->MultiCell(0, 10, $stmt8[0]['Cuenta'], 0, 'L', false, 1);
                     $pdf->SetXY(160, $y);
@@ -670,12 +685,12 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
         }
 
 
-        $pdf->SetFont('times', '', 10);
+        $pdf->SetFont('times', 'B', 10);
         $txt_p = "Concepto de: ";
         $pdf->MultiCell(0, 10, '', 1,  'L', false, 0);
         $pdf->SetX(15);
-        $pdf->MultiCell(21, 10, $txt_p, 0, 'L', false, 0);
-        $pdf->SetFont('times', '', 10);
+        $pdf->MultiCell(23, 10, $txt_p, 0, 'L', false, 0);
+        $pdf->SetFont('helvetica', '',8);
         $pdf->MultiCell(0, 10, $stmt[0]['Concepto'], 0, 'L', false, 1);
         $pdf->SetFont('times', 'B', 11);
         $pdf->MultiCell(0, 0,  'C O N T A B I L I Z A C I O N', 1, 'C', false, 1);
@@ -685,7 +700,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
 
     //Cabecera de la tabla
     $pdf->SetFont('times', 'B', 11);
-    $val = array('CODIGO', 'CONCEPTO', 'PARCIAL M/E', 'DEBE', 'HABER');
+    $val = array('CODIGO', 'C O N C E P T O', 'PARCIAL M/E', 'D E B E', 'H A B E R');
     $pdf->cab_table($val);
 
     //Cuerpo de la tabla
@@ -730,8 +745,8 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null,$stmt8_c
         }
         $sumdb = number_format($sumdb, 2, '.', '');
         $sumcr = number_format($sumcr, 2, '.', '');
-        $array = array('TOTALES', $sumdb, $sumcr);
-        $pdf->SetFont('times', 'B', 10);
+        $array = array('T O T A L E S', $sumdb, $sumcr);
+        $pdf->SetFont('times', '', 10);
         $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
@@ -786,14 +801,14 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
         $pdf->SetY(20);
     }
     $pag = $pdf->getPage();
-    if($pag === 1){
+    if($pag == 1){
         $pdf->setLineWidth(0.02646);
-        $pdf->SetFont('times', '', 10);
+        $pdf->SetFont('times', 'B', 10);
         $txt_p = "Concepto de: ";
         $pdf->MultiCell(0, 10, '', 1,  'L', false, 0);
         $pdf->SetX(15);
-        $pdf->MultiCell(21, 10, $txt_p, 0, 'L', false, 0);
-        $pdf->SetFont('times', '', 10);
+        $pdf->MultiCell(23, 10, $txt_p, 0, 'L', false, 0);
+        $pdf->SetFont('helvetica', '', 8);
         $pdf->MultiCell(0, 10, $stmt[0]['Concepto'], 0, 'L', false, 1);
         $pdf->SetFont('times', 'B', 11);
         $pdf->MultiCell(0, 0,  'C O N T A B I L I Z A C I O N', 1, 'C', false, 1);
@@ -803,7 +818,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
 
     //Cabecera de la tabla
     $pdf->SetFont('times', 'B', 11);
-    $val = array('CODIGO', 'CONCEPTO', 'PARCIAL M/E', 'DEBE', 'HABER');
+    $val = array('CODIGO', 'C O N C E P T O', 'PARCIAL M/E', 'D E B E', 'H A B E R');
     $pdf->cab_table($val);
 
     //Cuerpo de la tabla
@@ -848,8 +863,8 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
         }
         $sumdb = number_format($sumdb, 2, '.', '');
         $sumcr = number_format($sumcr, 2, '.', '');
-        $array = array('TOTALES', $sumdb, $sumcr);
-        $pdf->SetFont('times', 'B', 10);
+        $array = array('T O T A L E S', $sumdb, $sumcr);
+        $pdf->SetFont('times', '', 10);
         $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
@@ -903,14 +918,14 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
         $pdf->SetY(20);
     }
     $pag = $pdf->getPage();
-    if($pag === 1){
+    if($pag == 1){
         $pdf->setLineWidth(0.02646);
-        $pdf->SetFont('times', '', 10);
+        $pdf->SetFont('times', 'B', 10);
         $txt_p = "Concepto de: ";
         $pdf->MultiCell(0, 10, '', 1,  'L', false, 0);
         $pdf->SetX(15);
-        $pdf->MultiCell(21, 10, $txt_p, 0, 'L', false, 0);
-        $pdf->SetFont('times', '', 10);
+        $pdf->MultiCell(23, 10, $txt_p, 0, 'L', false, 0);
+        $pdf->SetFont('helvetica', '', 8);
         $pdf->MultiCell(0, 10, $stmt[0]['Concepto'], 0, 'L', false, 1);
         $pdf->SetFont('times', 'B', 11);
         $pdf->MultiCell(0, 0,  'C O N T A B I L I Z A C I O N', 1, 'C', false, 1);
@@ -920,7 +935,7 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
 
     //Cabecera de la tabla
     $pdf->SetFont('times', 'B', 11);
-    $val = array('CODIGO', 'CONCEPTO', 'PARCIAL M/E', 'DEBE', 'HABER');
+    $val = array('CODIGO', 'C O N C E P T O', 'PARCIAL M/E', 'D E B E', 'H A B E R');
     $pdf->cab_table($val);
 
     //Cuerpo de la tabla
@@ -965,8 +980,8 @@ $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
         }
         $sumdb = number_format($sumdb, 2, '.', '');
         $sumcr = number_format($sumcr, 2, '.', '');
-        $array = array('TOTALES', $sumdb, $sumcr);
-        $pdf->SetFont('times', 'B', 10);
+        $array = array('T O T A L E S', $sumdb, $sumcr);
+        $pdf->SetFont('times', '', 10);
         $pdf->CheckPageEnd($pdf->GetY());
         $pdf->Row_Totales($array);
     }
