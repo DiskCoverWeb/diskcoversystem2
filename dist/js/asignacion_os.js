@@ -301,6 +301,9 @@ function agregar() {
             {
                 listaAsignacion();
                 limpiar();
+            }else if(data=="-2")
+            {
+                swal.fire("El grupo de producto ya esta registrado","","info");
             }
         },
         error: function (error) {

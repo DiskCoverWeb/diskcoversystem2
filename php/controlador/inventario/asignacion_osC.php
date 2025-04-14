@@ -321,31 +321,38 @@ class asignacion_osC
     {
 
         $producto = Leer_Codigo_Inv($parametros['Codigo'],$parametros['FechaAte']);
-
-        // print_r($parametros);die();
-        SetAdoAddNew("Detalle_Factura");
-        SetAdoFields("TC","OP");
-        SetAdoFields("CodigoC",$parametros['beneficiarioCodigo']);
-        SetAdoFields("Procedencia",$parametros['Comentario']);
-        SetAdoFields("Codigo",$parametros['Codigo']);
-        SetAdoFields("Producto",$parametros['Producto']);
-        SetAdoFields("Cantidad",$parametros['Cantidad']);
-        SetAdoFields("Precio",number_format($producto['datos']['PVP'],2,'','.'));
-        SetAdoFields("Total",number_format($producto['datos']['PVP']*$parametros['Cantidad'],2,'','.'));
-        SetAdoFields("Fecha",$parametros['FechaAte']);
-        SetAdoFields("Item",$_SESSION['INGRESO']['item']);
-        SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
-        SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
-        SetAdoFields("No_Hab",$parametros['asignacion']);
-        SetAdoFields("Orden_No",$parametros['beneficiarioCodigo'].''.str_replace('-',"", $parametros['FechaAte']));
-        
-        return SetAdoUpdate();
+        $datos = $this->modelo->listaAsignacionActual($parametros['beneficiarioCodigo'],'OP',$parametros['asignacion'],$parametros['FechaAte'],$parametros['Codigo']);
+        if(count($datos)==0)
+        {
+            // print_r($parametros);die();
+            SetAdoAddNew("Detalle_Factura");
+            SetAdoFields("TC","OP");
+            SetAdoFields("CodigoC",$parametros['beneficiarioCodigo']);
+            SetAdoFields("Procedencia",$parametros['Comentario']);
+            SetAdoFields("Codigo",$parametros['Codigo']);
+            SetAdoFields("Producto",$parametros['Producto']);
+            SetAdoFields("Cantidad",$parametros['Cantidad']);
+            SetAdoFields("Precio",number_format($producto['datos']['PVP'],2,'','.'));
+            SetAdoFields("Total",number_format($producto['datos']['PVP']*$parametros['Cantidad'],2,'','.'));
+            SetAdoFields("Fecha",$parametros['FechaAte']);
+            SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+            SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+            SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+            SetAdoFields("No_Hab",$parametros['asignacion']);
+            SetAdoFields("Orden_No",$parametros['beneficiarioCodigo'].''.str_replace('-',"", $parametros['FechaAte']));
+            
+            return SetAdoUpdate();
+        }else
+        {
+            return -2;
+        }
     }
 
     function addAsignacionFamilias($parametros)
     {
 
         $producto = Leer_Codigo_Inv($parametros['Codigo'],$parametros['FechaAte']);
+
 
         print_r($parametros);die();
         SetAdoAddNew("Detalle_Factura");

@@ -117,6 +117,38 @@ class asignacion_osM
         return $this->db->String_Sql($sql);
     }
 
+    function listaAsignacionActual($beneficiario,$TC=false,$tipo=false,$fecha=false,$codigoInv=false)
+    {
+         $sql = "SELECT ".Full_Fields("Detalle_Factura")."
+                FROM Detalle_Factura
+                WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+                AND Periodo='".$_SESSION['INGRESO']['periodo']."' 
+                AND CodigoC = '".$beneficiario."' ";
+                if($fecha)
+                {
+                    $sql.="AND Fecha = '".$fecha."' ";
+                }
+                if($TC)
+                {
+                    $sql.="AND TC = '".$TC."'";
+                }
+                if($tipo)
+                {
+                    $sql.=" AND No_Hab = '".$tipo."'";
+                } 
+                if($codigoInv)
+                {
+                    $sql.=" AND Codigo = '".$codigoInv."'";
+                }                
+
+                // print_r($sql);die();
+        try{
+            return $this->db->datos($sql);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+    }
+
     function llenarCamposPoblacion($codigo)
     {
         $sqlFecha = "SELECT MAX(FechaM) AS UltimaFecha FROM Trans_Tipo_Poblacion 
