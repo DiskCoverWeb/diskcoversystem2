@@ -76,14 +76,14 @@ class asignacion_pickingM
         }
     }
 
-    function listaAsignacion($beneficiario,$T=false,$tipo=false,$tipoVenta=false)
+    function listaAsignacion($beneficiario,$T=false,$tipo=false,$tipoVenta=false,$fecha=false)
     {
          $sql = "SELECT ".Full_Fields("Detalle_Factura")."
                 FROM Detalle_Factura
                 WHERE Item = '".$_SESSION['INGRESO']['item']."' 
                 AND Periodo='".$_SESSION['INGRESO']['periodo']."'
                 AND CodigoC = '".$beneficiario."'
-                AND Fecha = '".date('Y-m-d')."'";
+                AND Fecha =  '".$fecha."'";
                 if($T)
                 {
                     $sql.="AND T = '".$T."'";
@@ -121,7 +121,8 @@ class asignacion_pickingM
                 AND T = '".$T."'";
                 if($fecha)
                 {
-                    $sql.=" AND Fecha >= '".$fecha."'";
+                    //fecha_A es la fecha de asignacion
+                    $sql.=" AND Fecha_A = '".$fecha."'";
                 }
                 // print_r($sql);die();
         return $this->db->datos($sql);    

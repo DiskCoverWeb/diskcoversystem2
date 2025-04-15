@@ -122,7 +122,7 @@ class asignacion_pickingC
         $tr = '';
         $cantidad = 0;
         $res = array();
-        $datos = $this->asignacion->listaAsignacion($parametros['beneficiario'],'K',$parametros['tipo'],$parametros['fecha']);
+        $datos = $this->modelo->listaAsignacion($parametros['beneficiario'],'K',false,$parametros['tipo'],$parametros['fecha']);
 
         $detalle = '';
         $ddlGrupoPro = '';
@@ -313,6 +313,7 @@ class asignacion_pickingC
             SetAdoFields("Codigo_Inv",$parametros['CodigoInv']);
             SetAdoFields("Total",$parametros['Cantidad']);
             SetAdoFields("Fecha",$parametros['FechaAte']);
+            SetAdoFields("Fecha_A",$parametros['FechaAsign']);
             SetAdoFields("Fecha_C",date('Y-m-d'));      
             SetAdoFields("CodBodega",$bode[0]['Codigo_Barra']);        
             SetAdoFields("Item",$_SESSION['INGRESO']['item']);
