@@ -110,7 +110,7 @@ class PDFBal extends TCPDF{
             $this->MultiCell(0, 0, $titulo, 0, 'C', false, 1);
             $this->SetFont('times', '', 10);
             $txt_fecha = 'Periodo Desde: '.$formatoFechaIni.' Hasta: '.$formatoFechaFin.'';
-            $this->MultiCell(0, 0, $txt_fecha, 0, 'C', false, 1);
+            $this->MultiCell(0, 0, $txt_fecha, 0, 'C', false, 0);
         }
         if ($this->datos_cabecera['tipo_balance'] == 6 || $this->datos_cabecera['tipo_balance'] == 5){
             $this->setFont('timesB', '', 10);
@@ -229,19 +229,29 @@ class PDFBal extends TCPDF{
     }
 
     function Row_Head($array){
-        $html = '<table><thead><tr>';
-        $contador = 0;
-        foreach($array as $dato){
-            $contador++;
-            if ($contador==2){
-                $html .= '<th colspan="2" style="border: 0.5x solid black; text-align: center; font-size: 15px"><b>'."{$dato}".'</b></th>';
-            }
-            else{
-                $html .= '<th style="border: 0.5px solid black; text-align: center;"><b>'."{$dato}".'</b></th>';
-            }
-        }
-        $html .= '</tr></thead></table>';
-        $this->writeHTML($html, 1, true, true, true, 'C');
+        $this->setLineWidth(0.132);
+        $this->SetFont('timesB', '', 10);
+        $w1 = 25.7;
+        $w2 = 51.5;
+        $w3 = 25.65;
+        $w4 = 25.68;
+        $w5 = 25.75;
+        $w6 = 25.7;
+
+        $height = 10;
+        $x = 15;
+        $y = ($this->GetY()) - 3;
+
+        //Aqui imprimimos la cabecera
+        $this->setLineWidth(0.132);
+        $this->MultiCell($w1, $height, $array[0], 1, 'C', false, 0, $x, $y, true, 0, false, true, 10, 'M');
+        $this->SetFont('timesB', '', 14);
+        $this->MultiCell($w2, $height, $array[1],1, 'C', false, 0, '', '', true, 0, false, true, 10, 'M');
+        $this->SetFont('timesB', '', 10);
+        $this->MultiCell($w3, $height, $array[2], 1, 'C', false, 0, '', '', true, 0, false, true, 10, 'M');
+        $this->MultiCell($w4, $height, $array[3], 1, 'C', false, 0, '', '', true, 0, false, true, 10, 'M');
+        $this->MultiCell($w5, $height, $array[4], 1, 'C', false, 0, '', '', true, 0, false, true, 10, 'M');
+        $this->MultiCell($w6, $height, $array[5], 1, 'C', false, 1, '', '', true, 0, false, true, 10, 'M');
     }
 
     function Row_Body($array, $array_param=""){
