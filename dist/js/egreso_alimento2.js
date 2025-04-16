@@ -250,6 +250,7 @@ function cargar_motivo_lista(orden,motivo)
                     <td>`+(i+1)+`</td>
                     <td>`+item.Cliente+`</td>
                     <td>`+item.Producto+`</td>
+                    <td>`+item.Codigo_Barra+`</td>
                     <td>`+item.Stock+`</td>
                     <td>`+item.Salida+`</td>
                     <td><input type="number" class="form-control form-control-sm" value="`+item.Valor_Unitario+`" id="txt_lineaEgreso_`+item.ID+`" name="txt_lineaEgreso_`+item.ID+`"></td>
@@ -283,6 +284,10 @@ function cargar_motivo_lista(orden,motivo)
               language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
             },
+            columnDefs: [
+                { targets: 2, width: "200px" },
+                { targets: 3, width: "500px" },
+            ],
           });
           // Ejecutar en carga y cuando cambia el tamaño de pantalla
           /*dividirTabla();
