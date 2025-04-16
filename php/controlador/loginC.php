@@ -248,6 +248,7 @@ class loginC
 	        $_SESSION['INGRESO']['Email'] = $empresa[0]['Email'];
 	        $_SESSION['INGRESO']['RUC'] = $empresa[0]['RUC'];
 	        $_SESSION['INGRESO']['Gerente'] = $empresa[0]['Gerente'];
+			$_SESSION['INGRESO']['Contador'] = $empresa[0]['Contador'];
 
 	        $_SESSION['INGRESO']['modulo_'] = "";
 	        

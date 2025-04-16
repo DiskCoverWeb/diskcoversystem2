@@ -147,8 +147,8 @@ class PDFBal extends TCPDF{
     function Row_Cabecera($array_Datos){
         $this->SetFont('timesB', '', 12);
         $this->MultiCell(25, 10, $array_Datos[0], 0, 'L', false, 0);
-        $this->MultiCell(85, 10, $array_Datos[1], 0, 'L', false, 0);
-        $this->MultiCell(35, 10, $array_Datos[2], 0, 'L', false, 0);
+        $this->MultiCell(95, 10, $array_Datos[1], 0, 'L', false, 0);
+        $this->MultiCell(30, 10, $array_Datos[2], 0, 'L', false, 0);
         $this->MultiCell(25, 10, $array_Datos[3], 0, 'L', false, 0);
         $this->MultiCell(30, 10, $array_Datos[4], 0, 'L', false, 0);
     }   
@@ -210,7 +210,7 @@ class PDFBal extends TCPDF{
     }
 
     function PageCheckBreak($y){
-        $limit = 40;
+        $limit = 30;
         $PageHeight = $this->getPageHeight();
         if(($PageHeight - $y) < $limit){
             if ($this->datos_cabecera['tipo_balance'] == 1 || $this->datos_cabecera['tipo_balance'] == 2 || $this->datos_cabecera['tipo_balance']  == 4){
@@ -255,6 +255,7 @@ class PDFBal extends TCPDF{
     }
 
     function Row_Body($array, $array_param=""){
+        $this->SetFont("times", "", 9);
         $html = '<table><tbody><tr>';
         $contador = 0; // Nos servira tanto para el tamaño de la 2 columna como para alinear los parametrso
         //Vemos si es la ultima columna: la suma de debitos y creditos.
@@ -398,10 +399,10 @@ function imprimirEstadoResultado($datosTabla, $tipoBal, $fecha_hasta){
     $pdf->SetFont('times', 'B', 8);
     $pdf->SetX(30);
     //Puesto para nombre representante legal
-    $pdf->Multicell(0, 0, '', 0, 'L', false, 0);
+    $pdf->Multicell(0, 0, $_SESSION['INGRESO']['Gerente'], 0, 'L', false, 0);
     $pdf->SetX(125);
     //Puesto para nombre contador
-    $pdf->Multicell(0, 0, '', 0, 'L', false, 0);
+    $pdf->Multicell(0, 0, $_SESSION['INGRESO']['Contador'], 0, 'L', false, 0);
     $pdf->ln();
     $pdf->SetX(30);
     $pdf->Multicell(0, 0, 'R.U.C. '.$_SESSION['INGRESO']['RUC_Contador'], 0, 'L', false, 0);
