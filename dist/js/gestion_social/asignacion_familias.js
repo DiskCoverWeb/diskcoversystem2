@@ -360,7 +360,7 @@ function guardar()
         'grupo':$('#ddl_grupos').val(),
         'fecha':$('#fechAten').val(),
         'tipo':$('#tipoCompra').val(),
-        'Comentario':$('#comeGeneAsig').val(),
+        'comentario':$('#comeGeneAsig').val(),
     }
      $.ajax({
         url: '../controlador/inventario/asignacion_familiasC.php?GuardarAsignacion=true',

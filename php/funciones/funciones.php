@@ -10275,7 +10275,7 @@ function Datos_Iniciales_Entidad_SP_MySQL($empresa, $usuario)
       array("pActivo", 'OUT'),
       array("EstadoUsuario", 'OUT'),
   );
-  $sql = "Call sp_mysql_datos_iniciales";
+  $sql = "Call sp_mysql_datos_iniciales_entidad";
   $rsMySQL =  $conn->ejecutar_procesos_almacenados($sql,$parametros, true,$tipo='MYSQL');
   $Fecha_CO = $rsMySQL["@FechaCO"];
   $Fecha_CE = $rsMySQL["@FechaCE"];

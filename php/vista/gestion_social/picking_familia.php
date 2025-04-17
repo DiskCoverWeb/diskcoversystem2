@@ -1,7 +1,6 @@
 <script src="../../dist/js/gestion_social/picking_familias.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="../../dist/js/qrCode.min.js"></script>
-<script type="text/javascript" src="../../dist/js/asignacion_picking.js"></script>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
     <div class="ps-3">
@@ -34,14 +33,20 @@
 			<div class="row mb-1">
 				<div class="col-lg-4 col-md-6 col-sm-12">
 					<div class="d-flex align-items-center input-group-sm">
+						<span class="input-group-text"><b>Codigo Asignacion</b></span>
+						<select name="ddl_asignaciones_fam" id="ddl_asignaciones_fam" class="form-select form-select-sm"></select>
+					</div>					
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-12">
+					<div class="d-flex align-items-center input-group-sm">
 						<span class="input-group-text"><b>Programa</b></span>
-						<select name="ddl_programas" id="ddl_programas" onchange="grupos()" class="form-select form-select-sm"></select>
+						<select name="ddl_programas" id="ddl_programas" class="form-select form-select-sm" disabled></select>
 					</div>					
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-12">
 					<div class="d-flex align-items-center input-group-sm">
 						<span class="input-group-text"><b>Grupo</b></span>
-						<select name="ddl_grupos" id="ddl_grupos" class="form-select form-select-sm"></select>
+						<select name="ddl_grupos" id="ddl_grupos" class="form-select form-select-sm" disabled></select>
 					</div>					
 				</div>
 				<div class="col-lg-2 col-md-6">
@@ -56,6 +61,12 @@
 					<div class="input-group input-group-sm">
 						<span class="input-group-text"><b>Fecha Atención:</b></span>
 						<input type="date" name="fechAten" id="fechAten" class="form-control form-control-sm" value="<?php echo date('Y-m-d');?>" readonly>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12">
+					<div class="input-group input-group-sm">
+						<span class="input-group-text"><b>Fecha Asignacion:</b></span>
+						<input type="date" name="txt_fechaAsig" id="txt_fechaAsig" class="form-control form-control-sm" value="<?php echo date('Y-m-d');?>" readonly>
 					</div>
 				</div>
 			</div>
