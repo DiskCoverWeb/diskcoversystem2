@@ -157,11 +157,12 @@
             <div class="modal-body">
             	<div class="row">            		
 	            	<div class="col-sm-12">
-	            		<table class="table bg-light w-100" id="txt_motivo_lista">
+	            		<table class="table bg-light w-100 " id="txt_motivo_lista">
 	            			<thead class="bg-primary text-white">
 	            				<th>Item</th>
 	            				<th>Donante</th>
 	            				<th>Producto</th>
+	            				<th>Codigo</th>
 	            				<th>Stock</th>
 	            				<th>Cant Final(kg)</th>
 	            				<th>Precio / Costo</th>
@@ -172,6 +173,7 @@
 	            			<tbody id="tbl_body_motivo" >
 	            				<tr>
 									<td></td>
+	            					<td></td>
 	            					<td></td>
 	            					<td></td>
 	            					<td></td>

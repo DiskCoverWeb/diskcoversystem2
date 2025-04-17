@@ -1,4 +1,9 @@
 <?php
+ // DESARROLLADOR     : Javier Farinango
+ // FECHA CREACION    : 02/04/2025
+ // FECHA MODIFICACION: 02/04/2025 - 02/04/
+ // DESCIPCION        : pantalla de asignaciones  
+
 require_once(dirname(__DIR__, 2) . "/modelo/inventario/asignacion_pickingM.php");
 require_once(dirname(__DIR__, 2) . "/modelo/inventario/asignacion_osM.php");
 require_once(dirname(__DIR__, 2) . "/modelo/inventario/egreso_alimentosM.php");
