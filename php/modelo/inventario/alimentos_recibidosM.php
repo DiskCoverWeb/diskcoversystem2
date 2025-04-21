@@ -222,7 +222,7 @@ class alimentos_recibidosM
      AND T.Codigo_Inv NOT LIKE 'GA.%'";
      if($tipo)
      {
-     	$sql.="AND T.T = '.' ";
+     	$sql.="AND (T.T = '.' OR T.T = 'C')";
      }
      // AND T.T = '.' ===> no colocar esto porque esto afecta en ingreso checking 
      // AND T.Codigo_P = '".$paciente."'
