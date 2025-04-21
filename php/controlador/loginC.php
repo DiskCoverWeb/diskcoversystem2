@@ -707,9 +707,7 @@ class loginC
 
 			// print_r($datos);die();
 		}
-
 	}
-
 	function enviar_email($parametros)
 	{
 		$empresaGeneral = $this->modelo->Empresa_data($parametros['ruc']);
@@ -724,7 +722,7 @@ class loginC
 			$datos[0]['Email'] = $parametros['email'];
 		}
 
-		$email_conexion = 'info@diskcoversystem.com';
+		$email_conexion = 'informacion@diskcoversystem.com';
 		$email_pass = 'info2021DiskCover';
 		$correo_apooyo = "credenciales@diskcoversystem.com"; //correo que saldra ala do del emisor
 		$cuerpo_correo = '
@@ -790,9 +788,6 @@ Esta direccion de correo electronico no admite respuestas. En caso de requerir a
 			return -1;
 		}
 	}
-
-
-
 }
 
 ?>

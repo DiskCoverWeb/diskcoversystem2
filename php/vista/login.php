@@ -45,7 +45,7 @@
 										<p class="mb-0">Por favor, inicie sesión en su cuenta</p>
 									</div>
 									<div class="form-body">
-										<form class="row g-3">
+										<form class="row g-3" autocomplete="on">
 											<input type="hidden" name="txt_cartera" id="txt_cartera" value="0">
 											<input type="hidden" name="txt_entidad_id" id="txt_entidad_id">
 		   								<input type="hidden" name="txt_item" id="txt_item">
@@ -55,12 +55,12 @@
 											</div>
 											<div class="col-12">
 												<label for="inputEmailAddress" class="form-label">Email</label>
-												<input type="email" class="form-control"  name="txt_correo" id="txt_correo" placeholder="Correo / Usuario" onblur="validar_usuario()">
+												<input type="email" class="form-control"  name="txt_correo" id="txt_correo" placeholder="Correo / Usuario" onblur="validar_usuario()" autocomplete="username">
 											</div>
 											<div class="col-12 mb-0">
 												<label for="inputChoosePassword" class="form-label">Contraseña</label>
 												<div class="input-group" id="show_hide_password">
-													<input type="password" class="form-control border-end-0" name="txt_contra" id="txt_contra"  value="12345678" placeholder="Enter Password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
+													<input type="password" class="form-control border-end-0" name="txt_contra" id="txt_contra"  value="12345678" placeholder="Enter Password" autocomplete="current-password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
 												</div>
 											</div>
 												<div id="form_cartera" style="display:none">
@@ -75,7 +75,7 @@
 												</div>
 
 											
-											<div class="col-md-12 text-end"><a href="recuperar.php">olvido su contraseña ?</a>
+											<div class="col-md-12 text-end"><a href="recuperar.php">¿Olvidó su contraseña?</a>
 											</div>
 											<div class="col-12">
 												<div class="d-grid">

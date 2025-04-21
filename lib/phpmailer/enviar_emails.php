@@ -35,11 +35,11 @@ class enviar_emails
     {
 
       $server_externo = 1;
-      $empresaGeneral[0]['smtp_Servidor'] = "smtp.diskcoversystem.com";
+      $empresaGeneral[0]['smtp_Servidor'] = "imap.diskcoversystem.com";
       $empresaGeneral[0]['Email_Conexion'] = "admin";
       $empresaGeneral[0]['Email_Contraseña'] = "Admin@2023";
       $empresaGeneral[0]['smtp_SSL'] = 0;
-      $empresaGeneral[0]['smtp_Puerto'] = 26;
+      $empresaGeneral[0]['smtp_Puerto'] = 587;
     }
 
     $res = 1;
@@ -161,12 +161,13 @@ class enviar_emails
 
     if ($empresaGeneral[0]["smtp_Servidor"] == "relay.dnsexit.com" ||  $empresaGeneral[0]["smtp_Servidor"] == "mail.diskcoversystem.com") 
     {
+
       $server_externo = 1;
-      $empresaGeneral[0]['smtp_Servidor'] = "smtp.diskcoversystem.com";
+      $empresaGeneral[0]['smtp_Servidor'] = "imap.diskcoversystem.com";
       $empresaGeneral[0]['Email_Conexion'] = "admin";
       $empresaGeneral[0]['Email_Contraseña'] = "Admin@2023";
       $empresaGeneral[0]['smtp_SSL'] = 0;
-      $empresaGeneral[0]['smtp_Puerto'] = 26;
+      $empresaGeneral[0]['smtp_Puerto'] = 587;
     }
 
     $res = 1;
@@ -258,22 +259,86 @@ class enviar_emails
   // funcion de envios enviando datos por correo (funciona)
   function enviar_credenciales($archivos = false, $to_correo = "", $cuerpo_correo = "", $titulo_correo = "", $correo_apooyo = "", $nombre = "", $EMAIL_CONEXION = "", $EMAIL_CONTRASEÑA = "", $HTML = false, $empresaGeneral = "")
   {
+    $server_externo = 0;
 
+    if ($empresaGeneral[0]["smtp_Servidor"] == "mail.diskcoversystem.com") {
+      $server_externo = 1;
+      $empresaGeneral[0]['smtp_Servidor'] = "imap.diskcoversystem.com";
+      $empresaGeneral[0]['Email_Conexion'] = "admin";
+      $empresaGeneral[0]['Email_Contraseña'] = "Admin@2023";
+      $empresaGeneral[0]['smtp_SSL'] = 0;
+      $empresaGeneral[0]['smtp_puerto'] = 587;
+    }
 
-    // print_r($empresaGeneral);die();
+    //print_r($empresaGeneral);die();
     //Instantiation and passing `true` enables exceptions
-    $mail = new PHPMailer(true);
-    $mail->SMTPOptions = array(
-      'ssl' => array(
-        'verify_peer' => false,
-        'verify_peer_name' => false,
-        'allow_self_signed' => true
-      )
-    );
+    
 
+    $res = 0;
+    $to_correo = trim($to_correo);
+    $to_correo = str_replace(';', ',', $to_correo);
+    $to = explode(',', $to_correo);
+    foreach($to as $key => $value){
+      if($value != '.' && $value != ''){
+        //SMTPDebug nos ayudara a definir el problema en caso de haber alguno.
+        $mail = new PHPMailer(true);
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->SMTPOptions = array(
+          'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+          )
+        );
+        try {
+          $mail->isSMTP();
+          $mail->Host = $empresaGeneral[0]['smtp_Servidor'];
+          $mail->SMTPAuth = true;
+          $mail->Username = $empresaGeneral[0]['Email_Conexion'];
+          $mail->Password = $empresaGeneral[0]['Email_Contraseña'];
+        
+          if ($server_externo == 0) //SMTP password
+          {
+            if ($empresaGeneral[0]['smtp_SSL'] == 1) {
+              $mail->SMTPSecure = 'ssl';
+              $mail->Port = 465;
+            } else {
+              $mail->SMTPSecure = 'tls';
+              $mail->Port = 587;
+            }
+          } else {
+            if ($empresaGeneral[0]['smtp_SSL'] == 1) {
+              $mail->SMTPSecure = 'ssl';
+            } else {
+              $mail->SMTPSecure = 'tls';
+            }
+            $mail->Port = $empresaGeneral[0]['smtp_Puerto'];
+          }
+          $from = str_replace("@diskcoversystem.com", "@imap.diskcoversystem.com", $EMAIL_CONEXION);
+          $mail->setFrom($from, 'Informacion DiskCover System');
+          $mail->addAddress($value);
+
+          if($HTML){
+            $mail->isHTML(true);
+          }
+
+          $mail->Subject = $titulo_correo;
+          $mail->Body=$cuerpo_correo;
+
+
+          if ($mail->send()){
+            $res = 1;
+          }
+        } catch (Exception $e){
+          return -1;
+        }
+      }
+    }
+    return $res;
+/*
     try {
       //Server settings
-      // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                 //Enable verbose debug output
+      //$mail->SMTPDebug = SMTP::DEBUG_SERVER;                 //Enable verbose debug output
       $mail->isSMTP(); //Send using SMTP
       $mail->Host = $empresaGeneral[0]['smtp_Servidor']; //Set the SMTP server to send through
       $mail->SMTPAuth = true; //Enable SMTP authentication
@@ -286,6 +351,9 @@ class enviar_emails
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
       }
+/*
+      $from = str_replace("@diskcoversystem.com","@imap.diskcoversystem.com", $_SESSION['INGRESO']['Email_Conexion_CE']);
+
 
       $mail->setFrom($empresaGeneral[0]['Email_Conexion'], 'DiskCover System');
       $mail->addAddress($to_correo); //Add a recipient
@@ -311,9 +379,10 @@ class enviar_emails
       }
 
     } catch (Exception $e) {
-      // print_r($mail);die();
+      //print_r($mail);die();
       return -1;
-    }
+    }*/
+
   }
 
   function enviar_historial($archivos = false, $to_correo = "", $cuerpo_correo = "", $titulo_correo = "", $nombre = "")
