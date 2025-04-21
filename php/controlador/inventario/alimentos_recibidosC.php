@@ -1786,7 +1786,8 @@ class alimentos_recibidosC
 
 	function imprimir_etiqueta_ind($parametros)//cambiar
 	{
-		$tbl = $this->modelo->cargar_pedidos_trans($parametros['num_ped'],false, false, $parametros['id']);
+		$tbl = $this->modelo->cargar_pedidos_transHistorial($parametros['num_ped'],false, false, $parametros['id']);
+		// print_r($tbl);die();
 		$this->reportes->etiqueta_clasificacion_BAQ($tbl);
 	}
 

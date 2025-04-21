@@ -249,6 +249,45 @@ class alimentos_recibidosM
      return $this->db->datos($sql);
        
 	}
+
+	function cargar_pedidos_transHistorial($orden,$fecha=false,$nombre=false,$id=false,$tipo= false)
+	{
+    // 'LISTA DE CODIGO DE ANEXOS
+     $sql = "SELECT T.*,P.Producto,P.Unidad,P.TDP,A.Nombre_Completo 
+     FROM Trans_Kardex  T ,Catalogo_Productos P, Accesos A        
+     WHERE T.Item = '".$_SESSION['INGRESO']['item']."' 
+     AND T.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+     AND Orden_No = '".$orden."' 
+     AND T.Codigo_Inv NOT LIKE 'GA.%'";
+     if($tipo)
+     {
+     	$sql.="AND T.T = '.' ";
+     }
+     // AND T.T = '.' ===> no colocar esto porque esto afecta en ingreso checking 
+     // AND T.Codigo_P = '".$paciente."'
+     $sql.="
+     AND T.Item = P.Item
+     AND T.Periodo = P.Periodo
+	 AND T.Codigo_Inv = P.Codigo_Inv
+	 AND T.CodigoU = A.Codigo ";
+	 if($id)
+	 {
+		$sql.=" AND T.ID = ".$id." ";
+	 }
+     if($fecha)
+     {
+     	$sql.=" AND T.Fecha = '".$fecha."'";
+     }
+     if($nombre)
+     {
+     	$sql.=" AND P.Producto = '".$nombre."'";
+     }     
+     $sql.=" ORDER BY T.ID DESC";
+     // print_r($sql);die();
+
+     return $this->db->datos($sql);
+       
+	}
 	function cargar_pedidos_trans_pedidos($orden,$fecha=false,$codigo_inv=false)
 	{
     // 'LISTA DE CODIGO DE ANEXOS
