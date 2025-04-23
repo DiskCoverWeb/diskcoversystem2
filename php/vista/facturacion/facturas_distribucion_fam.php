@@ -71,6 +71,13 @@ if (isset ($_GET['tipo'])) {
 				</div>
 				<div class="col-auto">
 					<div class="input-group input-group-sm">
+						<label for="MBFecha" class="input-group-text"><b>Fecha checking</b></label>
+						<input type="date" name="MBFechaChek" id="MBFechaChek" class="form-control form-control-sm"
+							value="<?php echo date('Y-m-d'); ?>" readonly>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="input-group input-group-sm">
 						<label for="HoraDespacho" class="input-group-text"><b>Hora de despacho:</b></label>
 						<input type="time" class="form-control form-control-sm" id="HoraDespacho" placeholder="HH:mm" value="<?php echo date('H:i');?>">
 					</div>
@@ -88,7 +95,7 @@ if (isset ($_GET['tipo'])) {
 						<!-- <select class="form-select form-select-sm" name="DCTipoFact2" id="DCTipoFact2">
 
 						</select> -->
-						<input type="text" class="form-control form-control-sm" name="DCTipoFact2" id="DCTipoFact2" value="NDU" readonly>
+						<input type="text" class="form-control form-control-sm" name="DCTipoFact2" id="DCTipoFact2" value="NDO" readonly>
 					</div>
 				</div>
 				<div class="col-sm-6 pb-2">
@@ -99,30 +106,27 @@ if (isset ($_GET['tipo'])) {
 					</div>
 				</div>
 				<div class="col-sm-12 pb-2">
-					<div class="input-group input-group-sm">
-						<span class="input-group-text"><b>Programa</b></span>
-						<!-- <select class="form-select form-select-sm" id="DCCliente" name="DCCliente" onchange="select()">
-							<option value="">Seleccione Cliente</option>
-						</select> -->
-						<select class="form-select form-select-sm" id="ddl_programas" name="ddl_programas">
-							<option value="">Seleccione Programa</option>
-						</select>
-						<span class="input-group-text"><b>Grupo</b></span>
-						<select class="form-select form-select-sm" id="ddl_grupos" name="ddl_grupos">
-							<option value="">Seleccione Grupo</option>
-						</select>
-						<button type="button" class="btn btn-success btn-sm" style="font-size: 8pt;" onclick="mostrarClientes();"
-							title="Usuarios del grupo"><span class="fa fa-user-plus" style="font-size: 8pt;"></span></button>
+					<div class="row">
+						<div class="col-sm-4">
+							<b>Pedido</b>					
+							<select class="form-select form-select-sm" id="ddl_pedidos" name="ddl_pedidos">
+								<option value="">Seleccione Prog</option>
+							</select>
+						</div>
+						<div class="col-sm-4">
+							<b>Programa</b>				
+							<select class="form-select form-select-sm w-100" id="ddl_programas" name="ddl_programas" disabled>
+								<option value="">Seleccione Programa</option>
+							</select>
+						</div>
+						<div class="col-sm-4">
+							<b>Grupo</b>
+							<select class="form-select form-select-sm" id="ddl_grupos" name="ddl_grupos" disabled>
+								<option value="">Seleccione Grupo</option>
+							</select>				
+						</div>
 					</div>
-					<!-- <div class="input-group" id="ddl" style="width:100%">
-						<select class="form-control" id="DCCliente" name="DCCliente" onchange="select()">
-							<option value="">Seleccione Cliente</option>
-						</select>
-						<span class="input-group-btn">
-							<button type="button" class="btn btn-success btn-xs btn-flat" onclick="addCliente()"
-								title="Nuevo cliente"><span class="fa fa-user-plus"></span></button>
-						</span>
-					</div> -->
+					
 					<input type="hidden" name="codigoCliente" id="codigoCliente" class="form-control input-xs">
 					<input type="hidden" name="LblT" id="LblT" class="form-control input-xs">
 				</div>
@@ -225,8 +229,8 @@ if (isset ($_GET['tipo'])) {
 <div class="row">
 	<div class="col-sm-12">
 		<div class="row text-center" style="padding-bottom:10px;height:250px;overflow-y:auto;">
-			<div class="col-sm-12" id="tbl_DGAsientoF">
-				<table class="table-sm table-hover table bg-light">
+			<div class="col-sm-12">
+				<table class="table-sm table-hover table bg-light" id="tbl_lineas_factura">
 					<thead class="text-center bg-primary text-white">
 						<tr>
 							<th>Código</th>
@@ -240,7 +244,7 @@ if (isset ($_GET['tipo'])) {
 							<th>Modificar</th>
 						</tr>
 					</thead>
-					<tbody id="cuerpoTablaDistri"></tbody>
+					<!-- <tbody id="cuerpoTablaDistri"></tbody> -->
 					
 				</table>
 			</div>
@@ -275,7 +279,7 @@ if (isset ($_GET['tipo'])) {
 						<b>Total Factura</b>
 					</div>
 					<div class="col-sm-6">
-						<input type="text" name="LabelTotal" id="LabelTotal2" class="form-control form-control-sm text-danger"
+						<input type="text" name="LabelTotal2" id="LabelTotal2" class="form-control form-control-sm text-danger"
 							value="0.00" readonly>
 					</div>
 				</div>
@@ -286,116 +290,38 @@ if (isset ($_GET['tipo'])) {
 </div>
 <br><br>
 
-<div id="modalClientes" class="modal fade">
+<div id="modal_grupoIntegrantes" class="modal fade">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header bg-primary">
-				<h4 class="modal-title text-white">Clientes registrados</h4>
+				<h4 class="modal-title text-white">Integrantes de Grupos</h4>
 				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
                 <div class="row">
-                    <table class="table table-sm table-hover table-striped" id="tblClientes">
-                        <thead>
-                            <tr>
+                	<div class="col-sm-12">
+                		<table class="table table-sm table-hover table-striped" id="tblClientes">
+	                        <thead>
                                 <th>ITEM</th>
                                 <th>USUARIO</th>
                                 <th>CEDULA</th>
-                                <!-- <th>ASISTENCIA</th> -->
                                 <th>PARA FACTURAR</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+	                        </thead>
+	                        <tbody id="tbl_integrantes"></tbody>
+	                    </table>
+                	</div>
+                    
                 </div>
-				<!-- <div style="overflow-x: auto; margin-bottom:20px">
-				</div> -->
-				<!-- <div class="row">
-					<div class="col-sm-3">
-						<b>COMENTARIO:</b>
-					</div>
-					<div class="col-sm-9">
-						<textarea class="form-control" name="comentario_eval" id="comentario_eval" style="height:80px;"></textarea>
-					</div>
-				</div> -->
 			</div>
 			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="Generar_factura()">Generar Facturas</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div id="modalEvaluacionFundaciones" class="modal fade">
-	<div class="modal-dialog modal-md">
-		<div class="modal-content">
-			<div class="modal-header bg-primary">
-				<h4 class="modal-title text-white">Evaluación Fundaciones</h4>
-				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
-			</div>
-			<div class="modal-body" style="overflow-y: auto; max-height: 300px; margin:5px">
-				<div style="overflow-x: auto; margin-bottom:20px">
-					<table class="table-sm table-hover table bg-light" id="tablaEvalFundaciones" style="width:fit-content;margin:0 auto;">
-						<thead class="text-center bg-primary text-white">
-							<tr>
-								<th>ITEM</th>
-								<th>BUENO</th>
-								<th>MALO</th>
-							</tr>
-						</thead>
-						<tbody id="cuerpoTablaEFund">
-							
-						</tbody>
-					</table>
-				</div>
-				<div class="row">
-					<div class="col-sm-3">
-						<b>COMENTARIO:</b>
-					</div>
-					<div class="col-sm-9">
-						<textarea class="form-control" name="comentario_eval" id="comentario_eval" style="height:80px;"></textarea>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-success" id="btnAceptarEvaluacion" data-bs-dismiss="modal">Aceptar</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-			</div>
-		</div>
-	</div>
-</div>
 
-<div id="modalGavetasInfo" class="modal fade">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header bg-primary">
-				<h4 class="modal-title text-white">Gavetas</h4>
-				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
-			</div>
-			<div class="modal-body" style="overflow-y: auto; height: fit-content; margin:5px">
-				<div style="overflow-x:auto;">
-					<table class="table-sm table-hover table bg-light" id="tablaGavetas">
-						<thead class="text-center bg-primary text-white">
-							<tr>
-								<th>GAVETAS</th>
-								<th>ENTREGADAS</th>
-								<th>DEVUELTAS</th>
-								<th>PENDIENTES</th>
-							</tr>
-						</thead>
-						<tbody id="cuerpoTablaGavetas">
-							
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-success" data-bs-dismiss="modal" id="btnAceptarInfoGavetas">Aceptar</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetInputsGavetas()">Cancelar</button>
-			</div>
-		</div>
-	</div>
-</div>
 
 <div id="modalInfoFactura" class="modal fade">
 	<div class="modal-dialog">
@@ -548,60 +474,7 @@ if (isset ($_GET['tipo'])) {
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success" data-bs-dismiss="modal" id="btnAceptarInfoGavetas">Aceptar</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetInputsGavetas()">Cancelar</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div id="modalGavetasVer" class="modal fade">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header bg-primary">
-				<h4 class="modal-title text-white">Gavetas</h4>
-				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
-			</div>
-			<div class="modal-body" style="overflow-y: auto; height: fit-content; margin:5px">
-				<div style="overflow-x:auto;">
-					<table class="table-sm table-hover table bg-light" id="tablaGavetasVer">
-						<thead class="text-center bg-primary text-white">
-							<tr>
-								<th>GAVETAS</th>
-								<!--<th>ENTREGADAS</th>
-								<th>DEVUELTAS</th>-->
-								<th>PENDIENTES</th>
-							</tr>
-						</thead>
-						<tbody id="cuerpoTablaGavetasVer" class="text-center">
-							
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div class="modal-footer">
-				
-			</div>
-		</div>
-	</div>
-</div>
-
-
-
-<div id="myModal_boletos" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header bg-primary">
-				<h4 class="modal-title text-white">Ingrese el rango de boletos</h4>
-			</div>
-			<div class="modal-body">
-				<b>Desde:</b>
-				<input type="text" name="TxtRifaD" id="TxtRifaD" class="form-control form-control-sm" value="0">
-				<b>Hasta:</b>
-				<input type="text" name="TxtRifaH" id="TxtRifaH" class="form-control form-control-sm" value="0">
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-light border border-1" data-bs-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="Command2_Click();">Aceptar</button>
+				<!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetInputsGavetas()">Cancelar</button> -->
 			</div>
 		</div>
 	</div>

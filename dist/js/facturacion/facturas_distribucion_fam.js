@@ -1,153 +1,187 @@
-var valTC = 'FA';
-	var datosFact = "NDU";
-	var url_nd;
-	var docbouche;
-	eliminar_linea('', '');
 	$(document).ready(function () {
-		valTC = $('#hiddenTC').val();
-		let area = $('#contenedor-pantalla').parent();
+		 autocomplete_pedidos();
+		 serie();
 
-		tbl_clientes = $('#tblClientes').DataTable({
-			// responsive: true,
-			language: {
-				url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-			},
-			paging:false,
-			searching:false,
-			info:false,
-		});
+		 DCLineas(); 
+		 DCPorcenIvaFD()
 
-    	//area.css('background-color', 'rgb(247, 232, 175)');
-		//catalogoLineas();
-		//toggleInfoEfectivo();
-		DCLineas();
-		preseleccionar_opciones();
-		//eventos_select();
-		//autocomplete_cliente();
-		autocomplete_programa();
-		autocomplete_grupo();
-		autocomplete_producto();
-		//serie();
-		//tipo_documento();
-		DCBodega();
-		DGAsientoF();
-		AdoLinea();
-		AdoAuxCatalogoProductos();
-		construirTablaGavetas();
-		construirTablaEvalFundaciones();
+		 $('#ddl_pedidos').on('select2:select', function (e) {
+        var datos = e.params.data.data;//Datos beneficiario seleccionado
+        console.log(datos);
+        $('#MBFechaChek').val(formatoDate(datos.Fecha.date));//Fecha de Atencion
+        datos.Fecha = formatoDate(datos.Fecha.date);
+        $('#ddl_programas').html('<option value="'+datos.CodigoL+'" >'+datos.Programa+'</option>');
+        $('#ddl_grupos').html('<option value="'+datos.CodigoB+'" >'+datos.Grupo+'</option>');
+        cargar_asignacion();
 
-		$('#ddl_grupos').on('select2:select', () => {
-			cargarRegistrosProductos();
-		})
-		//DCDireccion();
-		$('#DCDireccion').on('blur', function () {
-			var DireccionAux = $('#DCDireccion').val();
-			DCDireccion(DireccionAux);
-		});
-
-		//$('#DCDireccion').on('select2:select', autocomplete_grupo());
+    	});
+	})
 
 
-		DCBanco();
-
-		$(document).keyup(function (e) {
-			if (e.key === "Escape") { // escape key maps to keycode `27`
-				//ingresar_total();
-			}
-			console.log(e.key);
-		});
-
-
-		// $('#DCCliente').on('select2:select', function (e) {
-		//     var data = e.params.data.data;
-		//     console.log(e);
-		//     $('#Lblemail').val(data[0].Email);
-		//     $('#LblRUC').val(data[0].CI_RUC);
-		//     $('#codigoCliente').val(data[0].Codigo);
-		//     $('#LblT').val(data[0].T);
-
-		//     console.log(data);
-		//   });
-
-		//DCTipoFact2();
-		//DCPorcenIvaFD();
-	});
-
-	function mostrarClientes(){
-		if($('#ddl_programas').val() == '' && $('#ddl_grupos').val() == ''){
-			Swal.fire(
-				'Por favor, seleccionar programa y grupo',
-				'',
-				'error'
-			);
-			return;
-		}
-		$('#modalClientes').modal('show')
-
-		tbl_clientes.destroy();
-
-		tbl_clientes = $('#tblClientes').DataTable({
-			// responsive: true,
-			language: {
-				url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-			},
-			/*columnDefs: [
-				{ targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
-			],*/
+	function autocomplete_pedidos() {
+		$('#ddl_pedidos').select2({
+			// width: '100%',
+			placeholder: 'Seleccione programa',
 			ajax: {
-				url: '../controlador/facturacion/facturas_distribucion_famC.php?tablaClientes=true',
-				type: 'POST',  // Cambia el método a POST    
-				data: function(d) {
-					var parametros = {
-					  	'programa': $('#ddl_programas').val(),
-					  	'grupo': $('#ddl_grupos').val(),
-						'donacion': datosFact,
-						'fecha': $("#MBFecha").val()
+				url: '../controlador/facturacion/facturas_distribucion_famC.php?ddl_pedidos_familia=true',
+				dataType: 'json',
+				delay: 250,
+				/*data: function (params) {
+                    return {
+                        query: params.term,
+						v_donacion: datosFact,
+						fecha: $("#MBFecha").val()
+                    }
+                },*/
+				processResults: function (data) {
+					return {
+						results: data
 					};
-					return { parametros: parametros };
 				},
-				dataSrc: '',             
-			},
-			  scrollX: true,  // Habilitar desplazamiento horizontal
-				paging:false,
-				searching:false,
-				info:false,
-				scrollY: 330,
-				scrollCollapse: true,
-			columns: [
-				{ data: 'Item'},
-				{ data: 'Cliente', width: '350px'},
-				{ data: 'CI_RUC'},
-				// { data: null,
-				// 	render: function(data, type, item) {
-				// 		return `<div class="form-check">
-				// 					<input class="form-check-input" type="checkbox" value="1" id="cbxAsistencia"  name="cbxAsistencia">
-				// 					<label class="form-check-label" for="cbxAsistencia">
-										
-				// 					</label>
-				// 				</div>`;
-				// 	} 
-				// },
-				{ data: null,
-					render: function(data, type, item) {
-						return `<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="1" id="cbxFacturarInd_${data.ID}"  name="cbxFacturarInd" onchange="$('#btnFactInd_${data.ID}').prop('disabled',!$('#cbxFacturarInd_${data.ID}').prop('checked'));">
-									<label class="form-check-label" for="cbxFacturarInd">
-										<button class="btn btn-sm btn-primary" onclick="facturarCliente('${data.CI_RUC}')" id="btnFactInd_${data.ID}" disabled><i class="bx bxs-save"></i></button>
-									</label>
-								</div>`;
-					} 
-				}
-			]
+				cache: true
+			}
 		});
 	}
 
-	function imprimirNotaDonacion(){
-		if(url_nd != undefined){
-			window.open(url_nd, '_blank');
-		}else{
-			Swal.fire('Error', 'No se creó correcatamente la Nota de Donación', 'error');
+	function serie() {
+		var TC = $('#DCTipoFact2').val();
+		var parametros =
+		{
+			'TC': TC,
 		}
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucionC.php?LblSerie=true',
+			data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+				if (data.serie != '.') {
+					$('#LblSerie').text(data.serie);
+					$('#TextFacturaNo').val(data.NumCom);
+				} else {
+					numeroFactura();
+				}
+				validar_cta();
+			}
+		});
+	}
+
+	function numeroFactura() {
+		DCLinea = $("#DCLinea").val();
+		// console.log(DCLinea);
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturar_pensionC.php?numFactura=true',
+			data: {
+				'DCLinea': DCLinea,
+			},
+			dataType: 'json',
+			success: function (data) {
+				datos = data;
+				document.querySelector('#LblSerie').innerText = datos.serie;
+				$("#TextFacturaNo").val(datos.codigo);
+			}
+		});
+	}
+
+	function validar_cta() {
+		var parametros =
+		{
+			'TC': $('#DCTipoFact2').val(),
+			'Serie': $('#LblSerie').text(),
+			'Fecha': $('#MBFecha').val(),
+		}
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucion_famC.php?validar_cta=true',
+			data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+				if (data != 1) {
+					Swal.fire({
+						icon: 'info',
+						title: data,
+						text: '',
+						allowOutsideClick: false,
+					});
+				}
+			}
+		});
+
+	}
+
+
+	function cargar_asignacion()
+	{
+		if ($.fn.DataTable.isDataTable('#tbl_lineas_factura')) {
+	      $('#tbl_lineas_factura').DataTable().destroy();
+	  	}
+	 var   tbl_asignados_all = $('#tbl_lineas_factura').DataTable({
+	    	scrollX: true,
+          	searching: false,
+          	responsive: false,
+          	// paging: false,   
+          	info: false,   
+          	autoWidth: false,   
+	        language: {
+	          url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+	        },
+	        ajax: {
+	          url: '../controlador/facturacion/facturas_distribucion_famC.php?cargar_asignacion=true',
+	          type: 'POST',  // Cambia el método a POST   
+	          data: function(d) {
+	              var parametros = {                    
+	               orden:$('#ddl_pedidos').val(),         
+	               fechaPick:$('#MBFechaChek').val(),
+	              };
+	              return { parametros: parametros };
+	          },   
+	           // dataSrc: function(json) {
+	           // 	console.log(json);
+	           // },
+	          dataSrc: '',             
+	        },
+         	scrollX: true,  // Habilitar desplazamiento horizontal
+     
+        columns: [
+         	{data:'CodBodega'},
+	        {data: 'Nombre_Completo'},
+	        {data: 'Producto'},
+	        {data: 'cantidad'},
+	        {data: 'cantidad'},
+	        {data:'PVP'},
+	        {data:'total'},
+	        { data: null,
+	             render: function(data, type, item) {
+	                return ``;  
+	                               
+	            }
+	        },
+	        { data: null,
+	             render: function(data, type, item) {
+	                return ``;  
+	                               
+	            }
+	        },
+          
+        ],
+      });
+
+
+	 tbl_asignados_all.on('draw', function() {
+		let sumaTotal = 0;
+		tbl_asignados_all.rows().data().each(function(row) {
+			// console.log(row)
+		    sumaTotal += parseFloat(row.total) || 0;
+		});
+
+		$("#LabelTotal").val(sumaTotal.toFixed(2));
+		$("#LabelTotal2").val(sumaTotal.toFixed(2));
+
+	})
+
+
+	    
 	}
 
 	function DCLineas() {
@@ -158,7 +192,7 @@ var valTC = 'FA';
 		}
 		$.ajax({
 			type: "POST",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?DCLineas=true',
+			url: '../controlador/facturacion/facturas_distribucionC.php?DCLineas=true',
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
@@ -169,17 +203,134 @@ var valTC = 'FA';
 		});
 	}
 
-	function alertaDesarrollo(msg){
-		Swal.fire('Funcionalidad en Desarrollo', msg, 'info');
+	function DCPorcenIvaFD(){
+		let fecha = $("#MBFecha").val();
+		$('#DCPorcenIVA').select2({
+			placeholder: 'Seleccione IVA',
+			dropdownParent: $('#modalInfoFactura'),
+			ajax: {
+				url: '../controlador/facturacion/facturas_distribucionC.php?LlenarSelectIVA=true',
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+                    return {
+                        query: params.term,
+                        fecha: fecha
+                    }
+                },
+				processResults: function (data) {
+					return {
+						results: data
+					};
+				},
+				cache: true
+			}
+		});
 	}
 
-	function Imprimir_Punto_Venta(Tipo_Facturas){
-		alertaDesarrollo('El proceso de impresion aun se encuentra en desarrollo');
+	function generar() {
+
+		IntegrantesGrupo();
+		$('#modal_grupoIntegrantes').modal('show');
 	}
+
+	function IntegrantesGrupo()
+	{
+		var parametros =
+		{
+			'programa': $('#ddl_programas').val(),
+			'grupo': $('#ddl_grupos').val(),
+		}
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucion_famC.php?IntegrantesGrupo=true',
+			data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+				tr = '';
+				data.forEach(function(item,i){
+					tr+=`<tr>
+						<td>`+(i+1)+`</td>
+						<td>`+item.Cliente+`</td>
+						<td>`+item.CI_RUC+`</td>
+						<td class="text-center"><input class="class_integrante" type='checkbox' value="`+item.Codigo+`" id="rbl_facturar_`+item.ID+`" name="rbl_facturar_`+item.ID+`"></td>
+					</tr>`;
+				})
+				$('#tbl_integrantes').html(tr);
+			}
+		});
+	}
+
+	function Generar_factura()
+	{
+		var integrantes = [];
+
+		$('.class_integrante').each(function() {
+		    const checkbox = $(this);
+		    const isChecked = checkbox.prop('checked'); 
+		    if (isChecked) {
+		        integrantes.push(checkbox[0].value);
+		    }
+		});
+
+		console.log(integrantes.length)
+
+		if(integrantes.length==0)
+		{
+			Swal.fire("Seleccione algun Integrante de grupo","","info");
+			return false;
+		}
+
+
+		var parametros =
+		{
+			'programa': $('#ddl_programas').val(),
+			'grupo': $('#ddl_grupos').val(),
+			'orden': $('#ddl_pedidos').val(),
+			'fechaPick': $('#MBFechaChek').val(),
+			'fecha': $('#MBFecha').val(),
+			'integrantes':integrantes,
+
+
+			'TxtEfectivo': $('#btnToggleInfoEfectivo').attr('stateval')=="1" ? $('#TxtEfectivo').val() : 0.00,
+			'TextFacturaNo': $('#TextFacturaNo').val(),
+			'TipoFactura': $('#DCTipoFact2').val(),
+			'TC':$('#DCTipoFact2').val(),
+			'Serie': $('#LblSerie').text(),
+			'DCBancoN': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco option:selected').text() : "",
+			'DCBancoC': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco').val() : "",
+			'TextBanco': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextBanco').val() : "",
+			'TextCheqNo': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextCheqNo').val() : "",
+			'CodDoc': $('#CodDoc').val(),
+			'valorBan':  $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextCheque').val() : 0.00,
+			'Cta_Cobrar': $('#Cta_CxP').val(),
+			'Autorizacion': $('#Autorizacion').val(),
+			'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
+		}
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucion_famC.php?GenerarFactura=true',
+			data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+				
+			}
+		});
+
+	}
+
+
 	
-	function FacturarAsignacion(Tipo_Facturas){
-		alertaDesarrollo('El proceso de facturar aun se encuentra en desarrollo');
-	}
+
+
+
+
+
+
+	// ====================================================================================================================
+
+
+	
 	
 	function toggleInfoEfectivo(){
 		let btn = $('#btnToggleInfoEfectivo');
@@ -223,286 +374,8 @@ var valTC = 'FA';
 		}
 	}
 
-	function agregarArchivo(){
-		let archivoBouche = $('#archivoAdd')[0].files[0];
-		/*let descHtml = `
-			<div class="col-sm-12" style="position:relative;display:flex; flex-direction:column; align-items:center;">
-				<div style="position: relative;height: 60px;width: 60px;">                            
-					<button style="padding: 0;background: none;border: none;color: red;position: absolute;right: -7px;top: -10px;" onclick="borrarArchivoBouche()"><i class="fa fa-times-circle" aria-hidden="true"></i></button>
-					<img src="../../img/png/document.png" style="width: 100%;height: 100%;">
-				</div>
-				<p style="margin-top:3px;">${archivoBouche.name}</p>
-			</div>
-		`;
-		$('#modalDescContainer div').html(descHtml);*/
-	}
 
-	function borrarArchivoBouche(){
-		$('#archivoAdd')[0].value='';
-		$('#modalDescContainer div').html('');
-	}
-
-	function resetInputsGavetas(){
-		let gavetasInputs = $('.gavetas_info');
-		for (let gavInp of gavetasInputs){
-			gavInp.value = '';
-			if(gavInp.id.includes('total')){
-				gavInp.value = 0;
-			}
-			$('#gavetas_entregadas').val(0);
-			$('#gavetas_devueltas').val(0);
-			$('#gavetas_pendientes').val(0);
-		}
-	}
-
-	function tablaGavetas(accion, datos){
-		if(accion == 'Editar'){
-			$('#cuerpoTablaGavetas').remove();
-		}else if(accion == 'Visualizar'){
-			$('#cuerpoTablaGavetasVer').remove();
-		}
-		let tBody = $(`<tbody id="${accion=='Editar'?"cuerpoTablaGavetas":"cuerpoTablaGavetasVer"}" class="text-center"></tbody>`);
-		for(let fila of datos){
-			let td;
-			let colorGaveta = fila['Producto'].replace('Gaveta ', '');
-			let tr = (accion=='Editar')?$(`<tr id="${fila['Codigo_Inv']}"></tr>`):$('<tr></tr>');
-			tr.append($('<td></td>').html(`<b>${colorGaveta}</b>`));
-			if(accion=='Editar'){
-				td = $('<td></td>');
-				td.append($(`<input type="text" class="form-control gavetas_info" name="${fila['Codigo_Inv']}" id="gavetas_${colorGaveta.toLowerCase()}_entregadas" onchange="calcularTotalGavetas('${fila['Codigo_Inv']}')">`));
-				tr.append(td);
-				td = $('<td></td>');
-				td.append($(`<input type="text" class="form-control gavetas_info" name="${fila['Codigo_Inv']}" id="gavetas_${colorGaveta.toLowerCase()}_devueltas" onchange="calcularTotalGavetas('${fila['Codigo_Inv']}')">`));
-				tr.append(td);
-				td = $('<td></td>');
-				td.append($(`<input type="text" class="form-control gavetas_info" name="${fila['Codigo_Inv']}" id="gavetas_${colorGaveta.toLowerCase()}_pendientes" disabled>`));
-				tr.append(td);
-			}else{
-				td = $(`<td id="gdet_pendientes_${fila['Codigo_Inv']}" class="gdet_pendientes"></td>`).text('0');
-				tr.append(td);
-			}
-			/*td = (accion=='Editar')?$('<td></td>'):$(`<td id="gavetas_${colorGaveta.toLowerCase()}_entregadas_ver"></td>`).text('0');
-			if(accion=='Editar'){
-				td.append($(`<input type="text" class="form-control gavetas_info" id="gavetas_${colorGaveta.toLowerCase()}_entregadas" onchange="calcularTotalGavetas()">`));
-			}
-			tr.append(td);
-			td = (accion=='Editar')?$('<td></td>'):$(`<td id="gavetas_${colorGaveta.toLowerCase()}_devueltas_ver"></td>`).text('0');
-			if(accion=='Editar'){
-				td.append($(`<input type="text" class="form-control gavetas_info" id="gavetas_${colorGaveta.toLowerCase()}_devueltas" onchange="calcularTotalGavetas()">`));
-			}
-			tr.append(td);
-			td = (accion=='Editar')?$('<td></td>'):$(`<td id="gavetas_${colorGaveta.toLowerCase()}_pendientes_ver"></td>`).text('0');
-			if(accion=='Editar'){
-				td.append($(`<input type="text" class="form-control gavetas_info" id="gavetas_${colorGaveta.toLowerCase()}_pendientes" onchange="calcularTotalGavetas()">`));
-			}
-			tr.append(td);*/
-			tBody.append(tr);
-		}
-		let td;
-		let tr = $(`<tr></tr>`);
-		let totalGavetasHTML = "";
-		
-		if(accion=='Editar'){
-			totalGavetasHTML = `
-				<td><b>TOTAL</b></td>
-				<td>
-					<input type="text" class="form-control gavetas_info" id="gavetas_total_entregadas" value="0" style="font-weight:bold" onchange="calcularTotalGavetas()" disabled>
-				</td>
-				<td>
-					<input type="text" class="form-control gavetas_info" id="gavetas_total_devueltas" value="0" style="font-weight:bold" onchange="calcularTotalGavetas()" disabled>
-				</td>
-				<td>
-					<input type="text" class="form-control gavetas_info" id="gavetas_total_pendientes" value="0" style="font-weight:bold" onchange="calcularTotalGavetas()" disabled>
-				</td>
-			`;
-			tr.html(totalGavetasHTML);
-			tBody.append(tr);
-			$('#tablaGavetas').append(tBody);
-		}else{
-			totalGavetasHTML = `
-				<td><b>TOTAL</b></td>
-				<td id="gavetas_total_pendientes_ver">
-					<b>0</b>
-				</td>
-			`;
-			tr.html(totalGavetasHTML);
-			tBody.append(tr);
-			$('#tablaGavetasVer').append(tBody);
-		}
-		/*tr.html(totalGavetasHTML);
-		tBody.append(tr);
-		$('#tablaGavetas').append(tBody);*/
-	}
-
-	function buscarValoresGavetas(){
-		let parametros = {
-			codigo: $('#codigoCliente').val()
-		};
-		$('#myModal_espera').modal('show');
-		$.ajax({
-			type: "POST",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?ValoresGavetas=true',
-			data: {'parametros': parametros},
-			dataType: 'json',
-			success: function (datos) {
-				$('#myModal_espera').modal('hide');
-				$('.gdet_pendientes').text('0');
-				$('#gavetas_total_pendientes_ver b').text('0');
-				$('#gavetas_pendientes2').val('0');
-				if (datos['res'] == 1) {
-					let valoresGavetas = datos['contenido']
-					let estadovGavs = "";
-					for(let vGavs of valoresGavetas){
-						if(estadovGavs != vGavs['Codigo_Inv']){
-							document.getElementById(`gdet_pendientes_${vGavs['Codigo_Inv']}`).innerText = vGavs['Existencia'];
-							//console.log(vGavs['Existencia']);
-							estadovGavs = vGavs['Codigo_Inv'];
-						}
-					}
-				}
-				let gDetPendientes = $('.gdet_pendientes');
-				let totalGDetPendientes = 0;
-				for(let gdp of gDetPendientes){
-					totalGDetPendientes += parseInt(gdp.textContent);
-				}
-				$('#gavetas_total_pendientes_ver b').text(totalGDetPendientes);
-				$('#gavetas_pendientes2').val(totalGDetPendientes)
-			}
-		})
-	}
-
-	function construirTablaGavetas(){
-		//$('#myModal_espera').modal('show');
-		/*let codigoC = $('#codigoCliente').val();
-		let parametros = {
-			'beneficiario': codigoC
-		}*/
-		$.ajax({
-			type: "GET",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?ConsultarGavetas=true',
-			dataType: 'json',
-			success: function (datos) {
-				//$('#myModal_espera').modal('hide');
-				if (datos['res'] == 1) {
-					tablaGavetas("Visualizar", datos['contenido']);
-					tablaGavetas("Editar", datos['contenido']);
-					//buscarValoresGavetas();
-				}
-			}
-		})
-	}
-
-	function construirTablaEvalFundaciones(){
-		//$('#myModal_espera').modal('show');
-		$.ajax({
-			type: "GET",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?consultarEvaluacionFundaciones=true',
-			dataType: 'json',
-			success: function (datos) {
-				//$('#myModal_espera').modal('hide');
-				$('#cuerpoTablaEFund').remove();
-				if (datos['res'] == 1) {
-					let tBody = $('<tbody id="cuerpoTablaEFund" class="text-center"></tbody>');
-					for(let fila of datos['contenido']){
-						let td;
-						//let colorGaveta = fila['Producto'].replace('Gaveta ', '');
-						let tr = $(`<tr id="${fila['Cmds']}"></tr>`);
-						tr.append($('<td></td>').html(`<b>${fila['Proceso']}</b>`));
-						td = $('<td></td>');
-						td.append($(`<input type="radio" class="form-check-input" id="${fila['Cmds']}_bueno" name="${fila['Cmds']}" checked>`));
-						tr.append(td);
-						td = $('<td></td>');
-						td.append($(`<input type="radio" class="form-check-input" id="${fila['Cmds']}_malo" name="${fila['Cmds']}">`));
-						tr.append(td);
-						tBody.append(tr);
-					}
-					$('#tablaEvalFundaciones').append(tBody);
-				}
-			}
-		})
-	}
-
-	/*function createTableFromContent(datos, elemento) {
-		let indice = 0;
-		let table = $('<table class="table"></table>')
-		let tHead = $('<thead></thead>');
-		let tBody = $('<tbody></tbody>');
-		for(let fila of datos){
-			let cols = Object.getOwnPropertyNames(fila);
-			if(indice === 0){
-				let tr = $('<tr></tr>');
-				for(let col of cols){
-					let th = $('<th></th>').text(col);
-					tr.append(th);
-				}
-				tHead.append(tr);
-			}
-
-			let tr = $('<tr></tr>');
-			for(let col of cols){
-				let td = $('<td></td>').text(isNaN(parseInt(fila[col])) ? fila[col].trim() : fila[col]);
-				tr.append(td);
-			}
-			tBody.append(tr);
-			
-			indice += 1;
-		}
-		table.append(tHead);
-		table.append(tBody);
-		$(`#${elemento}`).append(table);
-	}*/
-
-	function calcularTotalGavetas(codInv){
-		let totalGEntregadas = 0;
-		let totalGDevueltas = 0;
-		let totalGPendientes = 0;
-		const inputsGavetas = document.querySelectorAll('.gavetas_info');
-
-		const gavetasxcolores = document.querySelectorAll(`input[name="${codInv}"]`);
-		let gAnteriores = parseInt(document.getElementById(`gdet_pendientes_${codInv}`).innerText); //valor de: Ver Detalle -> Pendientes[Color]
-		let gEntregadas = parseInt(gavetasxcolores[0].value.trim()==""?0:gavetasxcolores[0].value);
-		let gDevueltas = parseInt(gavetasxcolores[1].value.trim()==""?0:gavetasxcolores[1].value);
-		let gPendientes = gAnteriores + gEntregadas - gDevueltas;
-		gavetasxcolores[2].value = gPendientes;
-
-		inputsGavetas.forEach(inGaveta => {
-			/*console.log("---------- in for ----------");
-			console.log(totalGDevueltas);
-			console.log(totalGEntregadas);
-			console.log(totalGPendientes);*/
-			let tipoGaveta = inGaveta.id;
-			console.log(tipoGaveta);
-			
-			if(!tipoGaveta.includes('total')){
-				if(tipoGaveta.includes('entregadas')){
-					totalGEntregadas += parseInt(inGaveta.value.trim()==""?0:inGaveta.value);
-				}else if(tipoGaveta.includes('devueltas')){
-					totalGDevueltas += parseInt(inGaveta.value.trim()==""?0:inGaveta.value);
-				}else if(tipoGaveta.includes('pendientes')){
-					totalGPendientes += parseInt(inGaveta.value.trim()==""?0:inGaveta.value);
-				}
-			}
-		});
-
-		$('#gavetas_total_entregadas').val(totalGEntregadas);
-		$('#gavetas_entregadas').val(totalGEntregadas);
-		$('#gavetas_total_devueltas').val(totalGDevueltas);
-		$('#gavetas_devueltas').val(totalGDevueltas);
-		$('#gavetas_total_pendientes').val(totalGPendientes);
-		$('#gavetas_pendientes').val(totalGPendientes);
-	}
-
-	/*function aceptarInfoGavetas(){
-		let gavetasInfo = document.querySelectorAll('.gavetas_info');
-		gavetasInfo.forEach((ginfo) => {
-			if(ginfo.id.includes('total')){
-				$(`#${ginfo.id}_ver`).html(`<b>${ginfo.value==''?0:ginfo.value}</b>`);
-			}else{
-				$(`#${ginfo.id}_ver`).html(`${ginfo.value==''?0:ginfo.value}`);
-			}
-		})
-		$('#modalGavetasInfo').modal('hide');
-	}*/
+	
 
 	// Deja preseleccionadas las opciones de los selects
 	function preseleccionar_opciones(){
@@ -530,32 +403,6 @@ var valTC = 'FA';
 			}
 		});
 		
-		/*$.ajax({
-			type: "GET",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?LlenarSelectTipoFactura=true',
-			dataType: 'json',
-			success: function(data){
-				//Escoge el primer registro
-				let opcion = data[0]
-				
-				console.log(opcion);
-				//Crea la opcion y la agrega como predefinida al select
-				let newOption = new Option(opcion['text'], opcion['id'], true, true);
-				$("#DCTipoFact2").append(newOption).trigger('change');
-				
-				//Agrega el resto de datos al option predefinido
-				let masDetalles = opcion['data'];
-				$("#DCTipoFact2").select2("data")[0]['data'] = masDetalles;
-
-				//Muestra Fact de la opcion predefinida en Label1
-				if(masDetalles[0]['Fact'] == 'NDO'){
-					$("#Label1").text(`NOTA DE DONACIÓN ORGANIZACIONES`);
-				}else if(masDetalles[0]['Fact'] == 'NDU'){
-					$("#Label1").text(`NOTA DE DONACIÓN USUARIOS`);
-				}
-				//$("#Label1").text(`FACTURA (${masDetalles[0]['Fact']}) NO.`);
-			}
-		});*/
 	}
 
 	//Agrega eventos a selects
@@ -573,30 +420,7 @@ var valTC = 'FA';
 		})
 	}
 
-	function DCPorcenIvaFD(){
-		let fecha = $("#MBFecha").val();
-		$('#DCPorcenIVA').select2({
-			placeholder: 'Seleccione IVA',
-			dropdownParent: $('#modalInfoFactura'),
-			ajax: {
-				url: '../controlador/facturacion/facturas_distribucion_famC.php?LlenarSelectIVA=true',
-				dataType: 'json',
-				delay: 250,
-				data: function (params) {
-                    return {
-                        query: params.term,
-                        fecha: fecha
-                    }
-                },
-				processResults: function (data) {
-					return {
-						results: data
-					};
-				},
-				cache: true
-			}
-		});
-	}
+
 
 	function DCTipoFact2(){
 		//let fecha = $("#MBFecha").val().replaceAll("-","");
@@ -769,78 +593,78 @@ var valTC = 'FA';
 		return unidades[unidad];
 	}
 
-	function cargarRegistrosProductos(){
+	// function cargarRegistrosProductos(){
 		
-		let codigoPrograma = $('#ddl_programas').val();
-		let codigoGrupo = $('#ddl_grupos').val();
-		let parametros = {
-			'programa': codigoPrograma,
-			'grupo': codigoGrupo,
-			'fecha': $('#MBFecha').val()
-		}
-		$.ajax({
-			type: "POST",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?ConsultarProductos=true',
-			data: { parametros },
-			dataType: 'json',
-			beforeSend: () => {
-				$('#myModal_espera').modal('show');
-			},
-			success: function (datos) {
-				setTimeout(()=>{
-					$('#myModal_espera').modal('hide');
-				}, 1000);
+	// 	let codigoPrograma = $('#ddl_programas').val();
+	// 	let codigoGrupo = $('#ddl_grupos').val();
+	// 	let parametros = {
+	// 		'programa': codigoPrograma,
+	// 		'grupo': codigoGrupo,
+	// 		'fecha': $('#MBFecha').val()
+	// 	}
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: '../controlador/facturacion/facturas_distribucion_famC.php?ConsultarProductos=true',
+	// 		data: { parametros },
+	// 		dataType: 'json',
+	// 		beforeSend: () => {
+	// 			$('#myModal_espera').modal('show');
+	// 		},
+	// 		success: function (datos) {
+	// 			setTimeout(()=>{
+	// 				$('#myModal_espera').modal('hide');
+	// 			}, 1000);
 
-				$('#cuerpoTablaDistri').remove();
-				if (datos['res'] == 1) {
-					let cTotalProds = 0;
-					let tTotalProds = 0;
-					let tBody = $('<tbody id="cuerpoTablaDistri"></tbody>');
-					for(let fila of datos['contenido']){
-						let td;
-						let tr = $('<tr class="asignTablaDistri"></tr>');
-						tr.append($('<td></td>').text(fila['Detalles']['CodBodega']));
-						tr.append($('<td></td>').text(fila['Detalles']['Nombre_Completo']));
-						tr.append($('<td></td>').text(fila['Productos']['Producto']));
-						let cantEntregas = parseFloat(fila['Detalles']['Cantidad']);
-						tr.append($('<td></td>').text(cantEntregas.toFixed(2)));
-						tr.append($('<td></td>').text(parseInt(fila['Detalles']['Cantidad'])));
-						//tr.append($('<td></td>').text(parseFloat(fila['Productos']['PVP']).toFixed(2)));
-						tr.append($('<td></td>').text(parseFloat(fila['Detalles']['Precio']).toFixed(2)));
-						tr.append($('<td></td>').text(parseFloat(fila['Detalles']['Total']).toFixed(2)));
-						//let totalProducto = fila['Detalles']['Total'] * fila['Productos']['PVP'];
-						//tr.append($('<td></td>').text(parseFloat(totalProducto).toFixed(2)));
-						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodBodega']));
-						tr.append($('<td style="display:none;"></td>').text(fila['Productos']['Codigo_Inv']));
-						tr.append($('<td></td>').html('<input type="checkbox" id="producto_cheking" name="producto_cheking" class="form-check-input border-secondary">'));
-						tr.append($('<td></td>').html('<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil"></i></button>'));
-						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodigoU']));
-						tBody.append(tr);
+	// 			$('#cuerpoTablaDistri').remove();
+	// 			if (datos['res'] == 1) {
+	// 				let cTotalProds = 0;
+	// 				let tTotalProds = 0;
+	// 				let tBody = $('<tbody id="cuerpoTablaDistri"></tbody>');
+	// 				for(let fila of datos['contenido']){
+	// 					let td;
+	// 					let tr = $('<tr class="asignTablaDistri"></tr>');
+	// 					tr.append($('<td></td>').text(fila['Detalles']['CodBodega']));
+	// 					tr.append($('<td></td>').text(fila['Detalles']['Nombre_Completo']));
+	// 					tr.append($('<td></td>').text(fila['Productos']['Producto']));
+	// 					let cantEntregas = parseFloat(fila['Detalles']['Cantidad']);
+	// 					tr.append($('<td></td>').text(cantEntregas.toFixed(2)));
+	// 					tr.append($('<td></td>').text(parseInt(fila['Detalles']['Cantidad'])));
+	// 					//tr.append($('<td></td>').text(parseFloat(fila['Productos']['PVP']).toFixed(2)));
+	// 					tr.append($('<td></td>').text(parseFloat(fila['Detalles']['Precio']).toFixed(2)));
+	// 					tr.append($('<td></td>').text(parseFloat(fila['Detalles']['Total']).toFixed(2)));
+	// 					//let totalProducto = fila['Detalles']['Total'] * fila['Productos']['PVP'];
+	// 					//tr.append($('<td></td>').text(parseFloat(totalProducto).toFixed(2)));
+	// 					tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodBodega']));
+	// 					tr.append($('<td style="display:none;"></td>').text(fila['Productos']['Codigo_Inv']));
+	// 					tr.append($('<td></td>').html('<input type="checkbox" id="producto_cheking" name="producto_cheking" class="form-check-input border-secondary">'));
+	// 					tr.append($('<td></td>').html('<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil"></i></button>'));
+	// 					tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodigoU']));
+	// 					tBody.append(tr);
 
-						cTotalProds += cantEntregas;
-						tTotalProds += parseFloat(fila['Detalles']['Total']);
-						console.log(tTotalProds);
-					}
-					let tr = $('<tr class="bg-primary-subtle"></tr>');
-					tr.append($('<td colspan="3"></td>').html('<b>Total</b>'));
-					tr.append($('<td id="ADCantTotal"></td>').html(`<b>${cTotalProds}</b>`));
-					tr.append($('<td colspan="2"></td>'));
-					//tr.append($('<td></td>'));
-					tr.append($('<td id="ADTotal"></td>').html(`<b>${tTotalProds.toFixed(2)}</b>`));
-					tr.append($('<td colspan="2"></td>'));
-					tBody.append(tr);
-					$('#tbl_DGAsientoF table').append(tBody);
-					$('#kilos_distribuir').val(cTotalProds);
-					let unidadProd = formatearUnidadesProductos(datos['contenido'][0]['Productos']['Unidad']);
-					$('#tablaProdCU').text(unidadProd);
-					$('#unidad_dist').val(unidadProd);
-					//buscarValoresGavetas();
-					ingresarAsientoF();
-				}
-				$('#myModal_espera').modal('hide');
-			}
-		})
-	}
+	// 					cTotalProds += cantEntregas;
+	// 					tTotalProds += parseFloat(fila['Detalles']['Total']);
+	// 					console.log(tTotalProds);
+	// 				}
+	// 				let tr = $('<tr class="bg-primary-subtle"></tr>');
+	// 				tr.append($('<td colspan="3"></td>').html('<b>Total</b>'));
+	// 				tr.append($('<td id="ADCantTotal"></td>').html(`<b>${cTotalProds}</b>`));
+	// 				tr.append($('<td colspan="2"></td>'));
+	// 				//tr.append($('<td></td>'));
+	// 				tr.append($('<td id="ADTotal"></td>').html(`<b>${tTotalProds.toFixed(2)}</b>`));
+	// 				tr.append($('<td colspan="2"></td>'));
+	// 				tBody.append(tr);
+	// 				$('#tbl_DGAsientoF table').append(tBody);
+	// 				$('#kilos_distribuir').val(cTotalProds);
+	// 				let unidadProd = formatearUnidadesProductos(datos['contenido'][0]['Productos']['Unidad']);
+	// 				$('#tablaProdCU').text(unidadProd);
+	// 				$('#unidad_dist').val(unidadProd);
+	// 				//buscarValoresGavetas();
+	// 				ingresarAsientoF();
+	// 			}
+	// 			$('#myModal_espera').modal('hide');
+	// 		}
+	// 	})
+	// }
 
 	function modificarLineaFac(campo){
 		let fila = campo.parentElement.parentElement;
@@ -1032,31 +856,7 @@ var valTC = 'FA';
 		console.log(registro);
 	}
 
-	function validar_cta() {
-		var parametros =
-		{
-			'TC': valTC,
-			'Serie': $('#LblSerie').text(),
-			'Fecha': $('#MBFecha').val(),
-		}
-		$.ajax({
-			type: "POST",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?validar_cta=true',
-			data: { parametros: parametros },
-			dataType: 'json',
-			success: function (data) {
-				if (data != 1) {
-					Swal.fire({
-						icon: 'info',
-						title: data,
-						text: '',
-						allowOutsideClick: false,
-					});
-				}
-			}
-		});
-
-	}
+	
 	function tipo_documento() {
 		/*var tc = $('#DCLinea').val();
 		tc = tc.split(' ');*/
@@ -1139,78 +939,7 @@ var valTC = 'FA';
 		});
 	}
 
-	function autocomplete_programa() {
-		$('#ddl_programas').select2({
-			width: '25%',
-			placeholder: 'Seleccione programa',
-			ajax: {
-				url: '../controlador/facturacion/facturas_distribucion_famC.php?ddl_programas=true&valor=85',
-				dataType: 'json',
-				delay: 250,
-				/*data: function (params) {
-                    return {
-                        query: params.term,
-						v_donacion: datosFact,
-						fecha: $("#MBFecha").val()
-                    }
-                },*/
-				processResults: function (data) {
-					return {
-						results: data
-					};
-				},
-				cache: true
-			}
-		});
-	}
 
-	function autocomplete_grupo()
-	{
-		$('#ddl_grupos').select2({
-			width: '25%',
-			placeholder: 'Seleccione grupo',
-			ajax: {
-				url: '../controlador/facturacion/facturas_distribucion_famC.php?ddl_grupos=true',
-				dataType: 'json',
-				delay: 250,
-				data: function (params) {
-                    return {
-                        query: params.term,
-						valor: $('#ddl_programas').val(),
-                    }
-                },
-				processResults: function (data) {
-					return {
-						results: data
-					};
-				},
-				cache: true
-			}
-		});
-		//programa = 
-		/*$('#ddl_grupos').select2({
-			width: '25%',
-			placeholder: 'Seleccione grupo',
-			ajax: {
-				url:   '../controlador/inventario/registro_beneficiarioC.php?ddl_grupos=true',
-				dataType: 'json',
-				delay: 250,
-				data: function (params) {
-                    return {
-                        query: params.term,
-						programa: $('#ddl_programas').val(),
-                    }
-                },
-				processResults: function (data) {
-				// console.log(data);
-				return {
-				results: data.respuesta
-				};
-			},
-			cache: true
-			}
-		});*/
-	}
 
 	function DCDireccion(dirAux) {
 		var parametros = {
@@ -1324,29 +1053,7 @@ var valTC = 'FA';
 	}
 
 
-	function serie() {
-		var TC = valTC;
-		var parametros =
-		{
-			'TC': TC,
-		}
-		$.ajax({
-			type: "POST",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?LblSerie=true',
-			data: { parametros: parametros },
-			dataType: 'json',
-			success: function (data) {
-				if (data.serie != '.') {
-					$('#LblSerie').text(data.serie);
-					$('#TextFacturaNo').val(data.NumCom);
-				} else {
-					numeroFactura();
-				}
-				validar_cta();
-			}
-		});
-	}
-
+	
 	function DCBodega() {
 		$.ajax({
 			type: "POST",
@@ -1547,68 +1254,6 @@ var valTC = 'FA';
 		});
 	}
 
-	function generar() {
-		/*var bod = $('#DCBodega').val();
-		if (bod == '') {
-
-			Swal.fire('Ingrese o Seleccione una bodega', '', 'info').then(function () { $('#TextFacturaNo').focus() });
-			return false;
-		}*/
-		var Cli = $('#DCCliente').val();
-		if (Cli == '') {
-			Swal.fire('Seleccione un cliente', '', 'info');
-			return false;
-		}
-
-		var total = parseFloat($('#LabelTotal').val()).toFixed(4);
-		var efectivo = parseFloat($('#TxtEfectivo').val()).toFixed(4);
-		var banco = parseFloat($('#TextCheque').val()).toFixed(4);
-
-		var btnInfoEfectivo = parseInt($('#btnToggleInfoEfectivo').attr('stateval'));
-		var btnInfoBanco = parseInt($('#btnToggleInfoBanco').attr('stateval'));
-		Swal.fire({
-			allowOutsideClick: false,
-			title: 'Esta Seguro que desea grabar: \n Comprobante  No. ' + $('#TextFacturaNo').val(),
-			text: '',
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: 'Si!'
-		}).then((result) => {
-			if (result.value == true) {
-				if (btnInfoEfectivo){
-					if(efectivo < total || isNaN(efectivo) || efectivo == 0){
-						Swal.fire('El pago por efectivo es menor al total de la factura','', 'info');
-						return false;
-					}
-				}else if(btnInfoBanco){
-					if(banco < total || isNaN(banco) || banco == 0){
-						Swal.fire('El pago porbanco es menor al total de la factura','', 'info');
-						return false;
-					}
-				}else if(btnInfoBanco && btnInfoEfectivo){
-					if((efectivo + banco) < total || isNaN(banco) || isNaN(efectivo) || (efectivo + banco) == 0){
-						//Swal.fire('Si el pago es por banco este no debe superar el total de la factura', 'PUNTO VENTA', 'info').then(function () { $('#TextCheque').select(); });
-						Swal.fire('El pago es menor al total de la factura','', 'info');
-						return false;
-					}
-				}else if(btnInfoBanco == 0 && btnInfoEfectivo == 0){
-					Swal.fire('Debe seleccionar la forma de pago','', 'info');
-					return false;
-				}
-				/*if (banco > total) {
-					Swal.fire('Si el pago es por banco este no debe superar el total de la factura', 'PUNTO VENTA', 'info').then(function () { $('#TextCheque').select(); });
-					return false;
-				}*/
-				grabar_evaluacion();
-				//generar_factura()
-				//grabar_gavetas();
-				//guardar_bouche();
-			}
-		})
-		
-	}
 
 	function guardar_bouche(){
 		//$('#myModal_espera').modal('show');
@@ -2045,23 +1690,7 @@ var valTC = 'FA';
 
 	}
 
-	function numeroFactura() {
-		DCLinea = $("#DCLinea").val();
-		// console.log(DCLinea);
-		$.ajax({
-			type: "POST",
-			url: '../controlador/facturacion/facturar_pensionC.php?numFactura=true',
-			data: {
-				'DCLinea': DCLinea,
-			},
-			dataType: 'json',
-			success: function (data) {
-				datos = data;
-				document.querySelector('#LblSerie').innerText = datos.serie;
-				$("#TextFacturaNo").val(datos.codigo);
-			}
-		});
-	}
+	
 
 	function catalogoLineas() {
 		$('#myModal_espera').modal('show');
