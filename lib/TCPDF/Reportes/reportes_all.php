@@ -24,22 +24,27 @@ class MYPDF extends TCPDF
 			$logo = $logoName;
 		}
 
-		$src_jpg = dirname(__DIR__, 2) . '/img/logotipos/' . $logo . '.jpg';
+		$src_jpg = dirname(__DIR__, 3) . '/img/logotipos/' . $logo . '.jpg';
 		//gif
-		$src_gif = dirname(__DIR__, 2) . '/img/logotipos/' . $logo . '.gif';
+		$src_gif = dirname(__DIR__, 3) . '/img/logotipos/' . $logo . '.gif';
 		//png
-		$src_png = dirname(__DIR__, 2) . '/img/logotipos/' . $logo . '.png';
+		$src_png = dirname(__DIR__, 3) . '/img/logotipos/' . $logo . '.png';
 
 		if (@getimagesize($src_png)) {
-			return $src_png;
+			$ruta=$src_png;
 		} else if (@getimagesize($src_jpg)) {
-			return $src_jpg;
+			$ruta = $src_jpg;
 		} else if (@getimagesize($src_gif)) {
-			return $src_gif;
+			$ruta = $src_gif;
 		} else {
-			return '.';
+			$ruta = '.';
 
 		}
+		// print_r($src_jpg);
+		// print_r($logo);
+		// print_r($ruta);die();
+
+		return $ruta;
 		//En caso de que ninguno de los 3 exista, no se muestra nada como logo. 
 	}
 
@@ -48,7 +53,7 @@ class MYPDF extends TCPDF
 
         // print_r($this->datos[0]);die();
         $this->SetXY(13,7);
-      		$src = $this->url_logo();
+      	$src = $this->url_logo();
 		if ($src !== '.') {
 			$this->Image($src, 13, 5, 42, 20);
 		} 
@@ -329,7 +334,7 @@ class reportes_all
 
 
 		//============================================cuadro cliente ==========================================
-
+	// print_r('expression');die();
 	$pdf->SetFont('helvetica', 'B', 7);
 	$cuardo_3_X  = $cuardo_3_X+1;
 	$pdf->SetXY($cuardo_3_X,$cuardo_3_Y);
@@ -340,7 +345,7 @@ class reportes_all
 
 	$pdf->SetX($cuardo_3_X,$cuardo_3_Y+$pdf->GetY());
 	$posicion_row  = $pdf->GetY();
-	$pdf->MultiCell($row_1, 3,mb_convert_encoding($datos[0]['Razon_Social'], 'ISO-8859-1', 'UTF-8'), $border, '', 0, 1, '', '', true);
+	$pdf->MultiCell($row_1, 3,$datos[0]['Razon_Social'], $border, '', 0, 1, '', '', true);
 	$pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
 	$pdf->MultiCell($medita_total_3-$row_1, 3,$datos[0]['RUC_CI'], $border, '', 0, 1, '', '', true);
 
@@ -898,12 +903,16 @@ class reportes_all
 
 
 	$pdf->writeHTML($tbl, true, false, false, false, '');
+	$texto = '';
+	if(strtoupper($_SESSION['INGRESO']['Debo_Pagare'])=='SI')
+	{
 
-	$texto ="Debo y Pagaré incondicionalmente a la orden de ".$_SESSION['INGRESO']['Razon_Social']." el valor expresado en este documento mas el máximo interés legal por mora, vigente en el Sistema Financiero
-Nacional desde la fecha de vencimiento, SIN PROTESTO, exímase de presentación para el pago así como la falta de estos hechos. Renuncio fuero y domicilio y me someto a los jueces competentes
-de la ciudad de Quito, Distrito Metropolitano, y al trámite verbal sumario o ejecutivo a elección de ".$_SESSION['INGRESO']['Razon_Social']." o de sus cesionarios. Acepto que ".$_SESSION['INGRESO']['Razon_Social'].",
-ceda y transfiera en cualquier momento los derechos que emanan de la presente factura-pagaré sin que sea necesaria notificación algún ni nueva aceptación de mi parte. Suscribo la presente
-factura-pagaré en conformidad con todos sus términos";
+		$texto ="Debo y Pagaré incondicionalmente a la orden de ".$_SESSION['INGRESO']['Razon_Social']." el valor expresado en este documento mas el máximo interés legal por mora, vigente en el Sistema Financiero
+	Nacional desde la fecha de vencimiento, SIN PROTESTO, exímase de presentación para el pago así como la falta de estos hechos. Renuncio fuero y domicilio y me someto a los jueces competentes
+	de la ciudad de Quito, Distrito Metropolitano, y al trámite verbal sumario o ejecutivo a elección de ".$_SESSION['INGRESO']['Razon_Social']." o de sus cesionarios. Acepto que ".$_SESSION['INGRESO']['Razon_Social'].",
+	ceda y transfiera en cualquier momento los derechos que emanan de la presente factura-pagaré sin que sea necesaria notificación algún ni nueva aceptación de mi parte. Suscribo la presente
+	factura-pagaré en conformidad con todos sus términos";
+	}
 
 	$pdf->MultiCell(190, 4,$texto, $border, '', 0, 1, '', '', true);
 
