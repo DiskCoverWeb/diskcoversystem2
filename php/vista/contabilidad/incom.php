@@ -220,6 +220,20 @@ function Form_Activate()
       }
     });
 
+    //modal_CC aca realizamos saltos para CC
+    $(document).on('keydown', '#modal_CC td.editable-decimal', function(event){
+      if(event.key === 'Enter'){
+        event.preventDefault();
+        var editables = $('#modal_CC td.editable-decimal');
+        var currentIndex = editables.index(this);
+        var nextIndex = currentIndex + 1;
+        if (nextIndex >= editables.lenght){
+          nextIndex = 0;
+        }
+        editables.eq(nextIndex).focus();
+      }
+    })
+
     $(document).on('input', 'td.editable-decimal', function() {
         var text = $(this).text();
         if (!/^[\d.]*$/.test(text)) {

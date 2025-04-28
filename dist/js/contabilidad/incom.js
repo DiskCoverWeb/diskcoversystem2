@@ -1258,9 +1258,7 @@ function get_cell_focus(){
           selection.removeAllRanges();
           selection.addRange(range);
       }, 1);
-
       //Seleccionar el 1er elemento al aparecer el modal
-      
   });
 
   let firstEditableCell = $('#myTable td[contenteditable="true"]').first();
