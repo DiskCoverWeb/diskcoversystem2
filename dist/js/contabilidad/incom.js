@@ -17,7 +17,7 @@ function FormActivate() {
 function autocoplet_bene(){
   $('#beneficiario1').select2({
     placeholder: 'Seleccione una beneficiario',
-    width:'75%',
+    width:'100%',
     dropdownAutoWidth: true,
     selectionCssClass: 'form-control form-control-sm h-100',  // Para el contenedor de Select2
     ajax: {
@@ -72,6 +72,17 @@ function cargar_beneficiario(ci)
         $('#beneficiario1').append($('<option>',{value:  response[0].id, text: response[0].text,selected: true }));
   }
 }); 
+}
+
+function usar_cliente(nombre, ruc, codigo, email, t='N'){
+  $('#ruc').val(ruc);
+  $('#email').val(email);
+  $('#beneficiario1').append($('<option>', {
+    value: codigo,
+    text: nombre,
+    selected: true
+  }));
+  $('#myModal').modal('hide');
 }
 
 function guardar_diferencia()
