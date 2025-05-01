@@ -11,6 +11,12 @@
       background-color: #CFE9EF;  color: #444;  border-color: #ddd;  border-bottom-left-radius: 5px;  border-top-left-radius:  5px;}
     #select2-cuentar-results .select2-results__option {   white-space: pre;  }
 
+    .select2-selection__rendered {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
 </style>
   <!-- =========================================INICIO DE PROGRAMACION =================================== -->
 <?php
@@ -176,6 +182,7 @@ function Form_Activate()
 
   
   $(document).ready(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip(); 
     Form_Activate();
     cargar_cuenta();
     
@@ -219,6 +226,20 @@ function Form_Activate()
           e.preventDefault(); // Evita el ingreso del carácter
       }
     });
+
+    //modal_CC aca realizamos saltos para CC
+    $(document).on('keydown', '#modal_CC td.editable-decimal', function(event){
+      if(event.key === 'Enter'){
+        event.preventDefault();
+        var editables = $('#modal_CC td.editable-decimal');
+        var currentIndex = editables.index(this);
+        var nextIndex = currentIndex + 1;
+        if (nextIndex >= editables.lenght){
+          nextIndex = 0;
+        }
+        editables.eq(nextIndex).focus();
+      }
+    })
 
     $(document).on('input', 'td.editable-decimal', function() {
         var text = $(this).text();
@@ -525,18 +546,23 @@ function validar_comprobante()
                  </div>
             <!-- </div> -->
           </div>
-          <div class="col-sm-6 col-md-6 col-lg-6 d-flex flex-nowrap">
+          <div class="col-sm-6 col-md-6 col-lg-6">
             <!-- <div class="form-group"> -->
                  <div class="input-group">
                    <div class="input-group-addon d-flex align-items-center p-2 text-box">
                      <b>BENEFICIARIO:</b>
-                   </div>                        
+                   </div>
+                   <div class="row-cols-auto d-flex flex-nowrap">                        
                     <select id="beneficiario1" name='beneficiario1' class='form-control form-control-sm' onchange="benefeciario_edit()">
                       <option value="">Seleccione beneficiario</option>                                
                     </select>
+                    <button type="button" class="btn btn-success btn-sm btn-flat rounded" id="btn_nuevo_cliente" onclick="addCliente()" title="Nuevo Cliente" data-bs-toggle="tooltip">
+                      <span class="bx bx-user-plus"></span>
+                    </button>
                     <input type="hidden" name="beneficiario2" id="beneficiario2" value='' />
+                    </div>
                  </div>
-            <!-- </div> -->
+             <!-- </div> -->
           </div>
           
           <div class="col-md-3 col-sm-3 col-lg-3">
