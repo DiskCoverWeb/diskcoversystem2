@@ -356,13 +356,14 @@ function Leer_Datos_Cliente_SP($BuscarCodigo)
 
     $conn = new db();
     $BuscarCodigo1 = '';
+    $JSON_OutPut = '';
    $parametros = array(
       array(&$_SESSION['INGRESO']['item'], SQLSRV_PARAM_IN),
       array(&$_SESSION['INGRESO']['periodo'], SQLSRV_PARAM_IN),
       array(&$BuscarCodigo, SQLSRV_PARAM_IN),
-      array(&$BuscarCodigo1, SQLSRV_PARAM_INOUT)
+      array(&$JSON_OutPut, SQLSRV_PARAM_INOUT)
     );
-    $sql = "EXEC  sp_Leer_Datos_Cliente @Item= ?,@Periodo=?,@Codigo_CIRUC_Cliente=?,@Codigo_Encontrado=?";
+    $sql = "EXEC  sp_Leer_Datos_Cliente @Item= ?,@Periodo=?,@Codigo_CIRUC_Cliente=?,@JSON_OutPut=?";
     return $conn->ejecutar_procesos_almacenados($sql,$parametros,$tipo=false);
 }
 
