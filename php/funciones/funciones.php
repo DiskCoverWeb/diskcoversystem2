@@ -364,7 +364,12 @@ function Leer_Datos_Cliente_SP($BuscarCodigo)
       array(&$JSON_OutPut, SQLSRV_PARAM_INOUT)
     );
     $sql = "EXEC  sp_Leer_Datos_Cliente @Item= ?,@Periodo=?,@Codigo_CIRUC_Cliente=?,@JSON_OutPut=?";
-    return $conn->ejecutar_procesos_almacenados($sql,$parametros,$tipo=false);
+    $respuesta =  $conn->ejecutar_procesos_almacenados($sql,$parametros,1);
+     if($respuesta==1)
+      {
+        return $JSON_OutPut;
+      }
+      return $JSON_OutPut;  
 }
 
 function sp_Actualizar_Saldos_Facturas($TC,$serie,$factura)
@@ -6364,44 +6369,49 @@ function  Leer_Datos_Cliente_FA($Codigo_CIRUC_Cliente)
     $conn = new db();
     $TFA = array();    
     if(strlen($Codigo_CIRUC_Cliente) <= 0){$Codigo_CIRUC_Cliente = G_NINGUNO;}
-    Leer_Datos_Cliente_SP($Codigo_CIRUC_Cliente);
+    $datos = Leer_Datos_Cliente_SP($Codigo_CIRUC_Cliente);
     $TFA['CodigoC'] = $Codigo_CIRUC_Cliente;
 
+     $Cliente = json_decode("[".$datos."]", true);
+     if (json_last_error() !== JSON_ERROR_NONE) {
+          die('Error al decodificar JSON: ' . json_last_error_msg());
+      }
    // 'Verificamos la informacion del Clienete
      if( $TFA['CodigoC'] <> ".")
      {  
-         $sql = "SELECT Cliente,CI_RUC,TD,Email,EmailR,Direccion,DireccionT,Ciudad,Telefono,Telefono_R,Grupo,Representante,CI_RUC_R,TD_R 
-          FROM Clientes 
-          WHERE Codigo = '".$TFA['CodigoC']."' ";
-          $datos = $conn->datos($sql);
+         //  print_r($datos);die();
+         // $sql = "SELECT Cliente,CI_RUC,TD,Email,EmailR,Direccion,DireccionT,Ciudad,Telefono,Telefono_R,Grupo,Representante,CI_RUC_R,TD_R 
+         //  FROM Clientes 
+         //  WHERE Codigo = '".$TFA['CodigoC']."' ";
+         //  $datos = $conn->datos($sql);
 
-         if(count($datos) > 0)
+         if(count($Cliente) > 0)
           {
-           $TFA['Cliente'] = $datos[0]["Cliente"];
-           $TFA['CI_RUC'] = $datos[0]["CI_RUC"];
-           $TFA['TD'] = $datos[0]["TD"];
-           $TFA['EmailC'] = $datos[0]["Email"];
-           $TFA['EmailR'] = $datos[0]["EmailR"];
-           $TFA['TelefonoC'] = $datos[0]["Telefono"];
-           $TFA['DireccionC'] = $datos[0]["Direccion"];
-           $TFA['Curso'] = $datos[0]["Direccion"];
-           $TFA['CiudadC'] = $datos[0]["Ciudad"];
-           $TFA['Grupo'] = $datos[0]["Grupo"];
+           $TFA['Cliente'] = $Cliente[0]["Cliente"];
+           $TFA['CI_RUC'] = $Cliente[0]["CI_RUC"];
+           $TFA['TD'] = $Cliente[0]["TD"];
+           $TFA['EmailC'] = $Cliente[0]["Email"];
+           $TFA['EmailR'] = $Cliente[0]["EmailR"];
+           $TFA['TelefonoC'] = $Cliente[0]["Telefono"];
+           $TFA['DireccionC'] = $Cliente[0]["Direccion"];
+           $TFA['Curso'] = $Cliente[0]["Direccion"];
+           $TFA['CiudadC'] = $Cliente[0]["Ciudad"];
+           $TFA['Grupo'] = $Cliente[0]["Grupo"];
            
            $TFA['Razon_Social'] = "CONSUMIDOR FINAL";
            $TFA['RUC_CI'] = "9999999999999";
            $TFA['TB'] = "R";
-            if( strlen($datos[0]["Representante"]) > 1 And strlen($datos[0]["CI_RUC_R"]) > 1)
+            if( strlen($Cliente[0]["Representante"]) > 1 And strlen($Cliente[0]["CI_RUC_R"]) > 1)
             {
-              $TFA['TB'] = $datos[0]["TD_R"];
+              $TFA['TB'] = $Cliente[0]["TD_R"];
               switch ($TFA['TB']) {
                 case 'C':
                 case 'R':
                 case 'P':
-                     $TFA['Razon_Social'] = $datos[0]["Representante"];
-                     $TFA['RUC_CI'] = $datos[0]["CI_RUC_R"];
-                     $TFA['TelefonoC'] = $datos[0]["Telefono_R"];
-                     $TFA['DireccionC'] = $datos[0]["DireccionT"];
+                     $TFA['Razon_Social'] = $Cliente[0]["Representante"];
+                     $TFA['RUC_CI'] = $Cliente[0]["CI_RUC_R"];
+                     $TFA['TelefonoC'] = $Cliente[0]["Telefono_R"];
+                     $TFA['DireccionC'] = $Cliente[0]["DireccionT"];
                   break;
               }               
 
@@ -6411,9 +6421,9 @@ function  Leer_Datos_Cliente_FA($Codigo_CIRUC_Cliente)
                 case 'C':
                 case 'R':
                 case 'P':
-                     $TFA['Razon_Social'] = $datos[0]["Cliente"];
-                     $TFA['RUC_CI'] = $datos[0]["CI_RUC"];
-                     $TFA['TB'] = $datos[0]["TD"];
+                     $TFA['Razon_Social'] = $Cliente[0]["Cliente"];
+                     $TFA['RUC_CI'] = $Cliente[0]["CI_RUC"];
+                     $TFA['TB'] = $Cliente[0]["TD"];
                   break;
               }
             }               
