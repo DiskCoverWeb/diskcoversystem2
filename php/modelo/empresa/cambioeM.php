@@ -357,6 +357,61 @@ class cambioeM
 		return $this->db->String_Sql($sql,'MYSQL');
 	}
 
+	function guardar_masivoFechaCompElec($parametros)
+	{
+
+		// print_r($parametros);die();
+
+		$sql = "UPDATE lista_empresas SET";
+		if(isset($parametros['FechaCE'])){
+			$sql .= " Fecha_CE='".$parametros['FechaCE']."' ";
+		}
+		
+		$sql .= " WHERE ID_Empresa='".$parametros['entidad']."'";
+
+		/*$sql = "UPDATE lista_empresas set Fecha='".$parametros['FechaR']."' , Fecha_VPN='".$parametros['FechaV']."' , Fecha_CE='".$parametros['Fecha']."'  
+		WHERE ID_Empresa='".$parametros['entidad']."'";*/
+
+		// print_r($sql);die();
+
+		$em = $this->entidad($query=false,$parametros['entidad'],$ciudad=false);
+		// print_r($em);die();
+		if(count($em)>0 && isset($parametros['FechaCE']))
+		{
+			foreach ($em as $key => $value) {
+				if($value['IP_VPN_RUTA']!='.' && $value['IP_VPN_RUTA']!='')
+				{
+					$conn = $this->db->modulos_sql_server($value['IP_VPN_RUTA'],$value['Usuario_DB'],$value['Contrasena_DB'],$value['Base_Datos'],$value['Puerto']);
+		            // print_r($conn);die();
+		            if($conn!=-1)
+		            {
+		            	$fe =  date("Y-m-d",strtotime($parametros['FechaCE']."- 1 year"));
+		            	$sql2 = "UPDATE Catalogo_Lineas 
+			    		SET Vencimiento = '".$parametros['FechaCE']."',Fecha = '".$fe."' 
+			    		WHERE Item = '".$value['Item']."' AND Periodo = '.'  AND TL <> 0 AND len(Autorizacion)>=13";
+
+			    		// print_r($sql2);die();
+			    		$sql3 = "UPDATE Empresas SET Fecha_CE = '".$parametros['FechaCE']."' WHERE Item='".$value['Item']."'";
+
+		    		// print_r($sql3);
+
+	            	    $r = $this->db->ejecutar_sql_terceros($sql2,$value['IP_VPN_RUTA'],$value['Usuario_DB'],$value['Contrasena_DB'],$value['Base_Datos'],$value['Puerto']);
+
+		            	$r = $this->db->ejecutar_sql_terceros($sql3,$value['IP_VPN_RUTA'],$value['Usuario_DB'],$value['Contrasena_DB'],$value['Base_Datos'],$value['Puerto']);
+
+		            	// print_r($r);die();
+		            }
+	        	}
+			}
+		}
+
+		// print_r($em);die();
+
+
+		return $this->db->String_Sql($sql,'MYSQL');
+	}
+
+
 	function asignar_clave($parametros)
 	{
 		$sql="Update Clientes set Clave = SUBSTRING(CI_RUC,1,10)where Codigo <> '.' and LEN(Clave)<=1";		

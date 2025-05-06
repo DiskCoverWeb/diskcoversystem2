@@ -608,6 +608,33 @@ $.ajax({
     }
 });
 }
+
+function cambiarEmpresaMaFechaComElec()
+{
+    $('#myModal_espera').modal('show');
+    var parametros = $('#form_encabezados').serialize() + "&" + $('#form_empresa').find(':not(#tab_5 input, #tab_5 select)').serialize();
+    $.ajax({
+        type: "POST",
+         url: '../controlador/empresa/cambioeC.php?guardar_masivoFechaCompElec=true',
+        data: parametros,
+        dataType:'json',
+
+        success: function(data)
+        {
+            if(data==1)
+            {
+                Swal.fire('Entidad modificada con exito.','','success');
+            }else
+            {
+                Swal.fire('Intente mas tarde','','error');
+            }   
+
+            $('#myModal_espera').modal('hide');     
+        }
+    });
+
+}
+
 function mostrarEmpresa()
 {
 $('#reporte_exc').css('display','initial');

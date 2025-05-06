@@ -52,6 +52,11 @@ if(isset($_GET['guardar_masivo']))
 	$parametros = $_POST;
 	echo json_encode($controlador->guardar_masivo($parametros));
 }
+if(isset($_GET['guardar_masivoFechaCompElec']))
+{
+	$parametros = $_POST;
+	echo json_encode($controlador->guardar_masivoFechaCompElec($parametros));
+}
 if(isset($_GET['subdireccion']))
 {
     $query = $_POST['txtsubdi'];
@@ -333,6 +338,13 @@ class cambioeC
 	function  guardar_masivo($parametros)
 	{
 		return $this->modelo->guardar_masivo($parametros);
+
+	}
+
+	function  guardar_masivoFechaCompElec($parametros)
+	{
+		// print_r($parametros);die();
+		return $this->modelo->guardar_masivoFechaCompElec($parametros);
 
 	}
 
