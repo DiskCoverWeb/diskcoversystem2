@@ -411,6 +411,16 @@ class asignacion_pickingC
         SetAdoFieldsWhere('Orden_No',$parametros['orden']);  
         SetAdoFieldsWhere('Cta',$parametros['tipo']);  
         // SetAdoFieldsWhere('Fecha',$parametros['fechaAsi']);   
+        SetAdoUpdateGeneric(); 
+
+        SetAdoAddNew('Detalle_Factura');
+        SetAdoFields('T','KF');      
+        SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
+        SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']); 
+        SetAdoFieldsWhere('CodigoC',$parametros['beneficiario']);  
+        SetAdoFieldsWhere('Orden_No',$parametros['orden']);  
+        SetAdoFieldsWhere('No_Hab',$parametros['tipo']);  
+        // SetAdoFieldsWhere('Fecha',$parametros['fechaAsi']);   
         return SetAdoUpdateGeneric();
     }
 
