@@ -83,7 +83,8 @@ class asignacion_pickingM
                 WHERE Item = '".$_SESSION['INGRESO']['item']."' 
                 AND Periodo='".$_SESSION['INGRESO']['periodo']."'
                 AND CodigoC = '".$beneficiario."'
-                AND Fecha =  '".$fecha."'";
+                AND Fecha =  '".$fecha."'
+                AND Factura =  '0'";
                 if($T)
                 {
                     $sql.="AND T = '".$T."'";
@@ -139,7 +140,7 @@ class asignacion_pickingM
                 AND T = 'P'
                 AND Fecha >= '".$fecha."' ";
 
-                //print_r($sql);die();
+                // print_r($sql);die();
         return $this->db->datos($sql);   
     }
 
