@@ -28,7 +28,8 @@ class facturas_distribucionM
             AND TC.Item = '".$_SESSION['INGRESO']['item']."' 
             AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
             AND TC.Fecha = '".$params['fecha']."' 
-            AND TC.T='F'";
+            AND TC.T='F'
+            AND TC.TC = '.'";
     //print_r($sql);die();
     return $this->db->datos($sql);
   }
