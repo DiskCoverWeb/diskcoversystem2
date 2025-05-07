@@ -584,33 +584,51 @@ $.ajax({
 
 function cambiarEmpresaMa()
 {
-$('#myModal_espera').modal('show');
-var parametros = $('#form_encabezados').serialize() + "&" + $('#form_empresa').find(':not(#tab_5 input, #tab_5 select)').serialize();
-$.ajax({
-    type: "POST",
-     url: '../controlador/empresa/cambioeC.php?guardar_masivo=true',
-    data: parametros,
-    dataType:'json',
+    let empresas = $('#empresas').val();
 
-    success: function(data)
-    {
-        if(data==1)
-        {
-            Swal.fire('Entidad modificada con exito.','','success');
-        }else
-        {
-            Swal.fire('Intente mas tarde','','error');
-        }	
-
-        setTimeout(()=>{
-            $('#myModal_espera').modal('hide');
-        }, 2000);	
+    if(empresas == ''){
+        Swal.fire('Seleccione una Empresa', '', 'error');
+        return;
     }
-});
+
+    $('#myModal_espera').modal('show');
+    var parametros = $('#form_encabezados').serialize() + "&" + $('#form_empresa').find(':not(#tab_5 input, #tab_5 select)').serialize();
+    $.ajax({
+        type: "POST",
+        url: '../controlador/empresa/cambioeC.php?guardar_masivo=true',
+        data: parametros,
+        dataType:'json',
+
+        success: function(data)
+        {
+            if($('#file_firma').val()!='')
+            {
+                subir_firma();
+            }
+            if(data==1)
+            {
+                Swal.fire('Entidad modificada con exito.','','success');
+            }else
+            {
+                Swal.fire('Intente mas tarde','','error');
+            }	
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
+        }
+    });
 }
 
 function cambiarEmpresaMaFechaComElec()
 {
+
+    let empresas = $('#empresas').val();
+
+    if(empresas == ''){
+        Swal.fire('Seleccione una Empresa', '', 'error');
+        return;
+    }
+
     $('#myModal_espera').modal('show');
     var parametros = $('#form_encabezados').serialize() + "&" + $('#form_empresa').find(':not(#tab_5 input, #tab_5 select)').serialize();
     $.ajax({

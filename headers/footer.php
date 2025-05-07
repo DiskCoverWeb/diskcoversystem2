@@ -385,8 +385,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title d-flex justify-content-start">Cliente Nuevo</h4>
-                <button type="button" class="btn-close d-flex justify-content-end" data-bs-dismiss="modal"></button>
+                <h4 class="modal-title d-flex justify-content-start">Nuevo Cliente</h4>
             </div>
             <div class="modal-body">
                 <iframe id="FCliente" width="100%" height="400px" marginheight="0" frameborder="0"></iframe>

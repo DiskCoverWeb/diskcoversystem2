@@ -29,7 +29,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 				<button type="button" id="btnLineasGrabar" class="btn btn-outline-secondary btn-sm rounded-0" disabled data-bs-toggle="tooltip" title="Actualizar Puntos de Emisión" onclick="confirmar()"><img src="../../img/png/grabar_lineascxc.png"></button>
 			</div>
 			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Guardar Masivo: Fechas de renovaciones" onclick='cambiarEmpresaMa();'><img src="../../img/png/guardarmasivo.png"></button>
-			<button type="button" class="btn btn-outline-secondary btn-sm" title="Guardar Masivo: Fechas de Comprobantes electronicos" onclick='cambiarEmpresaMaFechaComElec();'><img src="../../img/png/guardarmasivo.png"></button>
+			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Guardar Masivo: Fechas de Comprobantes electronicos" onclick='cambiarEmpresaMaFechaComElec();'><img src="../../img/png/guardarmasivo.png"></button>
 	        
 			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Mostrar Vencimiento" onclick='mostrarEmpresa();'><img src="../../img/png/reporte_1.png"></button>
 			<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Asignar credenciales de comprobanmtes electronicos" onclick='asignar_clave();'><img src="../../img/png/credencial_cliente.png"></button>
