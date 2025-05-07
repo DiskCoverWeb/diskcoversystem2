@@ -243,8 +243,8 @@ class facturas_distribucionM
     return $this->db->datos($sql);
   }
 
-  function EliminarTransComision($fecha, $cliente, $usuario){
-    $sql = "DELETE Trans_Comision
+  function EliminarTransComision($fecha, $cliente, $usuario,$factura){
+    $sql = "UPDATE Trans_Comision  SET TC = 'KF',Factura = '".$factura."'
             WHERE Item = '".$_SESSION['INGRESO']['item']."' 
             AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
             AND Fecha = '".$fecha."' 
@@ -253,8 +253,8 @@ class facturas_distribucionM
     return $this->db->String_Sql($sql);
   }
 
-  function EliminarOPDetalleFactura($codigo,$no_hab,$codigo_inv){
-    $sql = "UPDATE Detalle_Factura SET T = 'KF'
+  function EliminarOPDetalleFactura($codigo,$no_hab,$codigo_inv,$factura){
+    $sql = "UPDATE Detalle_Factura SET T = 'KF',Factura = '".$factura."'
             WHERE Item = '".$_SESSION['INGRESO']['item']."' 
             AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
             AND CodigoC = '".$codigo."'
@@ -274,6 +274,7 @@ class facturas_distribucionM
                 WHERE TC.T = 'F' 
                 AND TC.Fecha = '".$parametros['fecha']."'
                 AND Cliente <> '.' 
+                AND TC = '.' 
                 AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
                 AND Item = '".$_SESSION['INGRESO']['item']."'";
     if (!is_numeric($query)) {

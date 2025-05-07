@@ -763,6 +763,8 @@ var valTC = 'FA';
 					let cTotalProds = 0;
 					let tTotalProds = 0;
 					let tBody = $('<tbody id="cuerpoTablaDistri"></tbody>');
+					console.log(datos['contenido'][0]['FechaIng']);
+					$('#txt_fecha_ing').val(datos['contenido'][0]['FechaIng']);
 					for(let fila of datos['contenido']){
 						color ='';
 						if(color!='.')
@@ -1997,7 +1999,7 @@ function tipo_facturacion(valor)
 			'FAVTotal': $('#LabelTotal').val(),
 			'FACodLinea': $('#DCLineas').val(),
 			'CodigoU': $('.asignTablaDistri')[0].children[10].textContent,
-			//'cheking': $('#DCPorcenIVA').val(),
+			// 'FechaIng': $('#').val(),
 			//'PorcIva': $('#DCPorcenIVA').val()
 		}
 

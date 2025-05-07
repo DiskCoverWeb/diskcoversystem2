@@ -120,6 +120,7 @@ if (isset ($_GET['tipo'])) {
 					</div> -->
 					<input type="hidden" name="codigoCliente" id="codigoCliente" class="form-control input-xs">
 					<input type="hidden" name="LblT" id="LblT" class="form-control input-xs">
+					<input type="hidden" name="txt_fecha_ing" id="txt_fecha_ing" class="form-control input-xs">
 				</div>
 				<div class="col-sm-4 ps-0 pb-2">
 					<div class="input-group input-group-sm">

@@ -284,6 +284,7 @@ class facturas_distribucion
 					"Detalles" => $value,
 					"Productos" => $producto['datos'],
 					'Tipo'=>$tipo,
+					'FechaIng'=>$fecha,
 				);
 				//array_push($detalles, $producto);
 			}
@@ -1595,6 +1596,7 @@ class facturas_distribucion
 	//funcion que se ejecuta en punto de venta en facturacion
 	function generar_factura($parametros)
 	{
+		// print_r($parametros);die();
 		$params = array('beneficiario'=>$parametros['CodigoCliente'],'fecha'=>$parametros['MBFecha']);
 		$lineas_fac = $this->modelo->ConsultarProductos($params);
 
@@ -1664,9 +1666,9 @@ class facturas_distribucion
 					// Hacer el borrado Trans_Comision
 					$r2 = $this->generar_factura_FA($FA, $r);
 					foreach ($lineas_fac as $key => $value) {
-       					$this->modelo->EliminarOPDetalleFactura($parametros['CodigoCliente'],$value['Cta'],$value['Codigo_Inv']);
+       					$this->modelo->EliminarOPDetalleFactura($parametros['CodigoCliente'],$value['Cta'],$value['Codigo_Inv'],$FA['TextFacturaNo']);
 					}
-					$this->modelo->EliminarTransComision($FA['Fecha'], $FA['CodigoC'], $parametros['CodigoU']);
+					$this->modelo->EliminarTransComision($FA['Fecha'], $FA['CodigoC'], $parametros['CodigoU'],$FA['TextFacturaNo']);
 					return $r2;
 				}
 
@@ -1807,15 +1809,15 @@ class facturas_distribucion
 
 				$Moneda_US = False;
 				$TextoFormaPago = G_PAGOCONT;
-				print_r($FA);die();
+				// print_r($FA);die();
 				$r =  $this->ProcGrabar_Abono_cero($FA);
 				if(isset($r['respuesta']) && $r['respuesta'] == 1){
 					// Hacer el borrado Trans_Comision
 					$r2 = $this->generar_factura_FA($FA, $r);
 					foreach ($lineas_fac as $key => $value) {
-       					$this->modelo->EliminarOPDetalleFactura($parametros['CodigoCliente'],$value['Cta'],$value['Codigo_Inv']);
+       					$this->modelo->EliminarOPDetalleFactura($parametros['CodigoCliente'],$value['Cta'],$value['Codigo_Inv'],$FA['TextFacturaNo']);
 					}
-					$this->modelo->EliminarTransComision($FA['Fecha'], $FA['CodigoC'], $parametros['CodigoU']);
+					$this->modelo->EliminarTransComision($FA['Fecha'], $FA['CodigoC'], $parametros['CodigoU'],$FA['TextFacturaNo']);
 					return $r2;
 				}
 
