@@ -317,8 +317,24 @@ class cambioeM
 	}
 	function guardar_masivo($parametros)
 	{
-		$sql = "UPDATE lista_empresas set Fecha='".$parametros['FechaR']."' , Fecha_VPN='".$parametros['FechaV']."' , Fecha_CE='".$parametros['Fecha']."'  
-		WHERE ID_Empresa='".$parametros['entidad']."'";
+		
+		$sql = "UPDATE lista_empresas SET";
+		if(isset($parametros['FechaR'])){
+			$sql .= " Fecha='".$parametros['FechaR']."',";
+		}
+		if(isset($parametros['FechaV'])){
+			$sql .= " Fecha_VPN='".$parametros['FechaV']."',";
+		}
+		if(isset($parametros['Fecha'])){
+			$sql .= " Fecha_CE='".$parametros['Fecha']."',";
+		}
+
+		$sql = substr($sql, 0, -1);
+
+		$sql .= " WHERE ID_Empresa='".$parametros['entidad']."'";
+		
+		//$sql = "UPDATE lista_empresas set Fecha='".$parametros['FechaR']."' , Fecha_VPN='".$parametros['FechaV']."' , Fecha_CE='".$parametros['Fecha']."'  
+		//WHERE ID_Empresa='".$parametros['entidad']."'";
 
 		$em = $this->entidad($query=false,$parametros['entidad'],$ciudad=false);
 		// print_r($em);die();
@@ -331,13 +347,13 @@ class cambioeM
 		            // print_r($conn);die();
 		            if($conn!=-1)
 		            {
-		            	$fe =  date("Y-m-d",strtotime($parametros['Fecha']."- 1 year"));
+		            	$fe =  date("Y-m-d",strtotime($parametros['FechaCE']."- 1 year"));
 		            	$sql2 = "UPDATE Catalogo_Lineas 
-			    		SET Vencimiento = '".$parametros['Fecha']."',Fecha = '".$fe."' 
+			    		SET Vencimiento = '".$parametros['FechaCE']."',Fecha = '".$fe."' 
 			    		WHERE Item = '".$value['Item']."' AND Periodo = '.'  AND TL <> 0 AND len(Autorizacion)>=13";
 
 			    		// print_r($sql2);die();
-			    		$sql3 = "UPDATE Empresas SET Fecha_CE = '".$parametros['Fecha']."' WHERE Item='".$value['Item']."'";
+			    		$sql3 = "UPDATE Empresas SET Fecha_CE = '".$parametros['FechaCE']."' WHERE Item='".$value['Item']."'";
 
 		    		// print_r($sql3);
 

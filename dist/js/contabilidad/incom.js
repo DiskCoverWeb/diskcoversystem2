@@ -75,14 +75,19 @@ function cargar_beneficiario(ci)
 }
 
 function usar_cliente(nombre, ruc, codigo, email, t='N'){
-  $('#ruc').val(ruc);
-  $('#email').val(email);
-  $('#beneficiario1').append($('<option>', {
-    value: codigo,
-    text: nombre,
-    selected: true
-  }));
-  $('#myModal').modal('hide');
+  if (nombre=='' && ruc=='' && codigo=='' && email==''){
+    Swal.fire('Ingrese datos del cliente', '', 'error');
+  } else{
+    $('#ruc').val(ruc);
+    $('#email').val(email);
+    $('#beneficiario1').append($('<option>', {
+      value: codigo,
+      text: nombre,
+      selected: true
+    }));
+    $('#myModal').modal('hide');
+  }
+  
 }
 
 function guardar_diferencia()
