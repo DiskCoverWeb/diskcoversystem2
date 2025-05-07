@@ -18,6 +18,14 @@ if (isset($_GET['Beneficiario'])) {
     }
     echo json_encode($controlador->Beneficiario($query, $fecha));
 }
+if (isset($_GET['BeneficiarioPickFac'])) {
+    $fecha = $_GET['fecha'];
+    $query = '';
+    if (isset($_GET['query'])) {
+        $query = $_GET['query'];
+    }
+    echo json_encode($controlador->BeneficiarioPickFac($query, $fecha));
+}
 
 if(isset($_GET['datosExtra'])){
     $parametros = $_POST['param'];
@@ -118,6 +126,39 @@ class asignacion_pickingC
     	}
     	return $lista;
     }
+
+    
+    function BeneficiarioPickFac($query, $fecha)
+    {
+
+        $datos = $this->modelo->tipoBeneficiarioPickFac($query, $fecha);
+
+        // print_r($datos);die();
+        $lista = array();
+        $diaActual =  BuscardiasSemana(date('w'));
+        $diaActual = $diaActual[1]+1;
+        if($diaActual>6)
+        {
+            $diaActual = 0;
+        }   
+
+        foreach ($datos as $key => $value) {
+            $dia = BuscardiasSemana($value['Dia_Ent']);
+
+            $value['Dia_Ent']  = $dia[0];
+            // if($diaActual==$dia[1])
+            // {
+            //     //buscamos si el usuario ya genero en este dia pedidos para facturar
+                // $datos1 = $this->modelo->cargar_asignacion($value['Codigo'],$value['No_Hab'],'F',$fecha);
+                // if(count($datos1)==0)
+                // {
+                   $lista[] = array('id'=>$value['Codigo'].'-'.$value['No_Hab'].'-'.$value['Orden_No'],'text'=>$value['Cliente'].' ('.$value['Tipo Asignacion'].')','data'=>$value); 
+                // }    
+            // }    
+        }
+        return $lista;
+    }
+
 
 
 

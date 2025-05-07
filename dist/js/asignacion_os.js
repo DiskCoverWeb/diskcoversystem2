@@ -850,17 +850,22 @@ function lista_picking()
 function lista_picking_all()
 {
      $.ajax({
-        url: '../controlador/inventario/asignacion_pickingC.php?Beneficiario=true&fecha='+$('#txtFechaAsign').val(),
+        url: '../controlador/inventario/asignacion_pickingC.php?BeneficiarioPickFac=true&fecha='+$('#txtFechaAsign').val(),
         type: 'POST',
         dataType: 'json',
         // data: { param: param },
         success: function (data) {
             tr = '';
             data.forEach(function(item,i){
+                console.log(item)
                 tr+=`<tr>
                         <td>`+item.text+`</td>
-                        <td><button class="btn btn-danger btn-sm"><i class="bx bx-trash" onclick="eliminar_picking('`+item.id+`')"></i></button></td>
-                    </tr>`
+                        <td>`;
+                        if(item.data.T =='K')
+                        {
+                            tr+=`<button class="btn btn-danger btn-sm"><i class="bx bx-trash" onclick="eliminar_picking('`+item.id+`')"></i></button></td>`;
+                        }
+                    tr+=`</tr>`
             })
             $('#tbl_body_asignacion').html(tr);
           console.log(data);
