@@ -254,7 +254,7 @@ class facturas_distribucionM
   }
 
   function EliminarOPDetalleFactura($codigo,$no_hab,$codigo_inv){
-    $sql = "DELETE Detalle_Factura
+    $sql = "UPDATE Detalle_Factura SET T = 'KF'
             WHERE Item = '".$_SESSION['INGRESO']['item']."' 
             AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
             AND CodigoC = '".$codigo."'
