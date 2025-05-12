@@ -11,6 +11,10 @@
       background-color: #CFE9EF;  color: #444;  border-color: #ddd;  border-bottom-left-radius: 5px;  border-top-left-radius:  5px;}
     #select2-cuentar-results .select2-results__option {   white-space: pre;  }
 
+    .select2.select2-container {
+      width: 300px !important;
+    }
+
     .select2-selection__rendered {
       text-overflow: ellipsis;
       white-space: nowrap;

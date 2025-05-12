@@ -10,8 +10,8 @@
         </ol>
       </nav>
     </div>          
-  </div>
-  <div class="row">
+</div>
+<div class="row">
     <div class="col-lg-5 col-md-6 col-sm-12">
       <div class="btn-group" role="group" aria-label="Basic example">
 	      	<a href="inicio.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">

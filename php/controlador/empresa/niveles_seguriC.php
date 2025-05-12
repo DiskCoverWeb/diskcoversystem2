@@ -186,18 +186,18 @@ class niveles_seguriC
 			{
 				if($key==0)
 				{
-					$tabs.='<li class="active" id="tab_'.$value.'" onclick="activo(\''.$value.'\')"><a data-toggle="tab" href="#'.$datos_empresas[0]['Item'].'">'.$datos_empresas[0]['text'].'</a></li>';
+					$tabs.='<li class="active" id="tab_'.$value.'" onclick="activo(\''.$value.'\')"><a data-bs-toggle="tab" href="#'.$datos_empresas[0]['Item'].'">'.$datos_empresas[0]['text'].'</a></li>';
 
 				}else
 				{
-					$tabs.='<li><a data-toggle="tab" href="#'.$datos_empresas[0]['id'].'">'.$datos_empresas[0]['text'].'</a></li>';
+					$tabs.='<li><a data-bs-toggle="tab" href="#'.$datos_empresas[0]['id'].'">'.$datos_empresas[0]['text'].'</a></li>';
 				}
 				 $modulos = $this->modelo->modulos_todo();
 				 if(count($datos_empresas)>0)
 				 {				 	
 				 	if($key==0)
 				 	{
-				 		$items.='<div id="'.$datos_empresas[0]['Item'].'" class="tab-pane fade in active">';
+				 		$items.='<div id="'.$datos_empresas[0]['Item'].'" class="tab-pane fade show active">';
 				 	}else
 				 	{
 				 		$items.='<div id="'.$datos_empresas[0]['Item'].'" class="tab-pane fade">';
@@ -217,15 +217,15 @@ class niveles_seguriC
 				 			}
 				 			if($existente == 1)
 				 			 {
-				 			 	$items .= '<label class="checkbox-inline"><input type="checkbox" name="modulos_'.$value.'_'.$value1['modulo'].'" id="modulos_'.$value.'_'.$value1['modulo'].'" value="'.$value1['modulo'].'" checked><b>'.$value1['aplicacion'].'</b></label><br>';				 				
+				 			 	$items .= '<label class="form-check-label"><input class="form-check-input" type="checkbox" name="modulos_'.$value.'_'.$value1['modulo'].'" id="modulos_'.$value.'_'.$value1['modulo'].'" value="'.$value1['modulo'].'" checked><b>'.$value1['aplicacion'].'</b></label><br>';				 				
 				 			 }else
 				 			 {
-				 			 	$items .= '<label class="checkbox-inline"><input type="checkbox" name="modulos_'.$value.'_'.$value1['modulo'].'" id="modulos_'.$value.'_'.$value1['modulo'].'" value="'.$value1['modulo'].'"><b>'.$value1['aplicacion'].'</b></label><br>';
+				 			 	$items .= '<label class="form-check-label"><input class="form-check-input" type="checkbox" name="modulos_'.$value.'_'.$value1['modulo'].'" id="modulos_'.$value.'_'.$value1['modulo'].'" value="'.$value1['modulo'].'"><b>'.$value1['aplicacion'].'</b></label><br>';
 				 			 }
 				 			 $existente = 0;
 				 		}else
 				 		{
-				 			$items .= '<label class="checkbox-inline"><input type="checkbox" name="modulos_'.$value.'_'.$value1['modulo'].'" id="modulos_'.$value.'_'.$value1['modulo'].'" value="'.$value1['modulo'].'"><b>'.$value1['aplicacion'].'</b></label><br>';
+				 			$items .= '<label class="form-check-label"><input class="form-check-input" type="checkbox" name="modulos_'.$value.'_'.$value1['modulo'].'" id="modulos_'.$value.'_'.$value1['modulo'].'" value="'.$value1['modulo'].'"><b>'.$value1['aplicacion'].'</b></label><br>';
 				 		}
 				 	}
 				 	$items.='</form></div>';
@@ -843,11 +843,11 @@ class niveles_seguriC
 		$tbl2 = '';
 		$modulos = $this->modelo->modulos_todo();
 				$tbl2.='<div class="row">
-								<div class=" col-xs-2 col-sm-3 col-lg-3" style="background-color:#e2fbff;">
+								<div class=" col-sm-3 col-lg-3" style="background-color:#e2fbff;">
 								Aplicar a todas las empresas
 									<br>							
 								</div>
-            				<div class="col-xs-10 col-lg-9" style="overflow-x:scroll;">
+            				<div class="col-lg-9" style="overflow-x:scroll;">
               					<div class="row"><div class="col-sm-12">';
 
 
@@ -864,7 +864,7 @@ class niveles_seguriC
 					{							
 						$tbl2.='<td class="text-center" style="border: solid 1px; width: 50px;">
 								'.$value2['aplicacion'].'</br>
-				            <input type="checkbox" name="rbl_'.$value2['modulo'].'" id="rbl_'.$value2['modulo'].'" title="'.$value2['aplicacion'].'" onclick="marcar_acceso_todos(\''.$value2['modulo'].'\')">
+				            <input type="checkbox" class="form-check-input" name="rbl_'.$value2['modulo'].'" id="rbl_'.$value2['modulo'].'" title="'.$value2['aplicacion'].'" onclick="marcar_acceso_todos(\''.$value2['modulo'].'\')">
 				        </td>';
 				    }
 				}else
@@ -873,7 +873,7 @@ class niveles_seguriC
 					// print_r('diferente a prisma');
 					$tbl2.='<td class="text-center" style="border: solid 1px; width: 50px;">
 								'.$value2['aplicacion'].'</br>
-				            <input type="checkbox" name="rbl_'.$value2['modulo'].'" id="rbl_'.$value2['modulo'].'" title="'.$value2['aplicacion'].'" onclick="marcar_acceso_todos(\''.$value2['modulo'].'\')">
+				            <input type="checkbox" class="form-check-input" name="rbl_'.$value2['modulo'].'" id="rbl_'.$value2['modulo'].'" title="'.$value2['aplicacion'].'" onclick="marcar_acceso_todos(\''.$value2['modulo'].'\')">
 				        </td>';
 
 				}
@@ -922,7 +922,7 @@ class niveles_seguriC
 					$server = '<p><i class="fa fa-circle text-yellow"></i> Base de datos o nonexion no establecida</p>';
 				}
 				$tbl2.='<div class="row">
-								<div class=" col-xs-2 col-sm-3 col-lg-3" style="background-color:#e2fbff;">
+								<div class=" col-sm-3 col-lg-3" style="background-color:#e2fbff;">
 										<div class="row">
 										  <div class="col-sm-12">
 										  	<b>'.$value1['text'].'</b>
@@ -941,7 +941,7 @@ class niveles_seguriC
 										  </div>
 										</div>									
 								</div>
-            				<div class="col-xs-10 col-lg-9" style="overflow-x:scroll;">
+            				<div class="col-lg-9" style="overflow-x:scroll;">
               					<div class="row"><div class="col-sm-12">';
 
 
@@ -958,7 +958,7 @@ class niveles_seguriC
 					{							
 						$tbl2.='<td class="text-center" style="border: solid 1px; width: 50px;">
 								'.$value2['aplicacion'].'</br>
-				            <input type="checkbox" name="rbl_'.$value2['modulo'].'_'.$value1['id'].'" id="rbl_'.$value2['modulo'].'_'.$value1['id'].'" title="'.$value2['aplicacion'].'" onclick="listar_empresa_modificada(\''.$value1['id'].'\')" '.$server.' >
+				            <input type="checkbox" class="form-check-input" name="rbl_'.$value2['modulo'].'_'.$value1['id'].'" id="rbl_'.$value2['modulo'].'_'.$value1['id'].'" title="'.$value2['aplicacion'].'" onclick="listar_empresa_modificada(\''.$value1['id'].'\')" '.$server.' >
 				        </td>';
 				    }
 				}else
@@ -966,7 +966,7 @@ class niveles_seguriC
 
 					$tbl2.='<td class="text-center" style="border: solid 1px; width: 50px;">
 								'.$value2['aplicacion'].'</br>
-				            <input type="checkbox" name="rbl_'.$value2['modulo'].'_'.$value1['id'].'" id="rbl_'.$value2['modulo'].'_'.$value1['id'].'" title="'.$value2['aplicacion'].'" onclick="listar_empresa_modificada(\''.$value1['id'].'\')" '.$server.' >
+				            <input type="checkbox" class="form-check-input" name="rbl_'.$value2['modulo'].'_'.$value1['id'].'" id="rbl_'.$value2['modulo'].'_'.$value1['id'].'" title="'.$value2['aplicacion'].'" onclick="listar_empresa_modificada(\''.$value1['id'].'\')" '.$server.' >
 				        </td>';
 
 				}
@@ -1113,8 +1113,8 @@ A solicitud de El(a) Sr(a) '.$parametros['usuario'].' se envian sus credenciales
 </table>
 A este usuario se asigno las siguientes Entidades: 
 <br>
-<table>
-<tr><td width="30%"><b>Codigo</b></td><td width="50%"><b>Entidad</b></td></tr>
+<table class="table table-bordered">
+<tr class="table-primary"><td width="30%"><b>Codigo</b></td><td width="50%"><b>Entidad</b></td></tr>
 ';
 foreach ($datos as $value) {
 	$cuerpo_correo .= '<tr><td>'.$value['id'].'</td><td>'.$value['text'].'</td></tr>';
@@ -1198,8 +1198,8 @@ A solicitud de El(a) Sr(a) '.$parametros['usuario'].' se envian sus credenciales
 <b>Email:</b></td><td>'.$datos[0]['Email'].'<br>
 A este usuario se asigno las siguientes Entidades: 
 <br>
-<table>
-<tr><td width="30%"><b>Codigo</b></td><td width="50%"><b>Entidad</b></td></tr>';
+<table class="table table-bordered">
+<tr class="table-primary"><td width="30%"><b>Codigo</b></td><td width="50%"><b>Entidad</b></td></tr>';
 foreach ($datos as $value) {
 	$cuerpo_correo .= '<tr><td>'.$value['id'].'</td><td>'.$value['text'].'</td></tr>';
 }
@@ -1246,8 +1246,8 @@ A solicitud de El(a) Sr(a) '.$datos['Nombre_Usuario'].' se envian sus credencial
 </table>
 A este usuario se asigno las siguientes Entidades: 
 <br>
-<table>
-<tr><td width="30%"><b>Codigo</b></td><td width="50%"><b>Entidad</b></td></tr>
+<table class="table table-borderedw">
+<tr class="table-primary"><td width="30%"><b>Codigo</b></td><td width="50%"><b>Entidad</b></td></tr>
 ';
 foreach ($datos0 as $value) {
 	$cuerpo_correo .= '<tr><td>'.$value['id'].'</td><td>'.mb_convert_encoding($value['text'], 'ISO-8859-1','UTF-8').'</td></tr>';
@@ -1363,7 +1363,7 @@ Emails: recepcion@diskcoversystem.com o prisma_net@hotmail.es
 				foreach ($modulos as $key => $value) {
 					$ver = '';
 					if($key==0){ $ver = 'active';}
-					$op.='<li class="'.$ver.'"><a data-toggle="tab" href="#'.str_replace(' ','_',$value['aplicacion']).'">'.$value['aplicacion'].'</a></li>';
+					$op.='<li class="'.$ver.'"><a data-bs-toggle="tab" href="#'.str_replace(' ','_',$value['aplicacion']).'">'.$value['aplicacion'].'</a></li>';
 				}
 				$encontrado = 0;
 				$op.='</ul>
@@ -1383,7 +1383,7 @@ Emails: recepcion@diskcoversystem.com o prisma_net@hotmail.es
 							foreach ($pag_select as $key2 => $value2) {
 								if($value1['ID']==$value2['Pagina'])
 								{
-									$op.='<label><input type="checkbox" checked id="rbl_'.$value1['ID'].'" onclick="guardar_pag(\''.$parametros['entidad'].'\',\''.$parametros['item'].'\',\''.$parametros['usuario'].'\',\''.$value1['ID'].'\',\''.$value['modulo'].'\')"> '.$value1['descripcionMenu'].'</label><br>';
+									$op.='<label class="form-check-label"><input class="form-check-input" type="checkbox" checked id="rbl_'.$value1['ID'].'" onclick="guardar_pag(\''.$parametros['entidad'].'\',\''.$parametros['item'].'\',\''.$parametros['usuario'].'\',\''.$value1['ID'].'\',\''.$value['modulo'].'\')"> '.$value1['descripcionMenu'].'</label><br>';
 									$encontrado = 1;
 								}
 							}
@@ -1391,7 +1391,7 @@ Emails: recepcion@diskcoversystem.com o prisma_net@hotmail.es
 						}
 						if($encontrado==0)
 						{
-						$op.='<label><input type="checkbox" id="rbl_'.$value1['ID'].'" onclick="guardar_pag(\''.$parametros['entidad'].'\',\''.$parametros['item'].'\',\''.$parametros['usuario'].'\',\''.$value1['ID'].'\',\''.$value['modulo'].'\')"> '.$value1['descripcionMenu'].'</label><br>';
+						$op.='<label class="form-check-label"><input class="form-check-input" type="checkbox" id="rbl_'.$value1['ID'].'" onclick="guardar_pag(\''.$parametros['entidad'].'\',\''.$parametros['item'].'\',\''.$parametros['usuario'].'\',\''.$value1['ID'].'\',\''.$value['modulo'].'\')"> '.$value1['descripcionMenu'].'</label><br>';
 						}
 					}
 					$op.='</div>';
