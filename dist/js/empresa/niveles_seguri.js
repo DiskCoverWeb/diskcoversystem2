@@ -275,7 +275,7 @@ let listado_empresas = [];
             Swal.fire({
                 title: response.alerta,
                 text:'Esto podria ocasionar problemas futuros',
-                type:'info',
+                icon:'info',
                 width: 600,
               })
              // Swal.fire(,'s','info');
@@ -389,7 +389,7 @@ function guardar()
           if(response.mensaje!='')
           {
             Swal.fire({
-               type: 'success',               
+               icon: 'success',               
                title: response.mensaje,
                text: 'Guardado Correctamente!',
                showConfirmButton: true
@@ -450,7 +450,7 @@ function guardar()
     			 {
     			 	Swal.fire({
     						//position: 'top-end',
-    						type: 'success',
+    						icon: 'success',
     						title: 'Usuario bloqueado Correctamente!',
     						showConfirmButton: true
     						//timer: 2500
@@ -458,6 +458,24 @@ function guardar()
     					$('#myModal_espera').modal('hide'); 
     			 	
     			 }
+          else if(response == -1){
+            Swal.fire({
+              icon: 'error',
+              title: 'Error de conexión',
+              text: 'Sucedión un error de conexión. Intentelo más tarde',
+              showConfirmButton: true
+            });
+            $('#myModal_espera').modal('hide');
+          }
+          else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Sucedión un error en el proceso. Intentelo nuevamente',
+              showConfirmButton: true
+            });
+            $('#myModal_espera').modal('hide');
+          }
     		}
     	});
  }
@@ -482,7 +500,7 @@ function guardar()
            {
             Swal.fire({
                 //position: 'top-end',
-                type: 'success',
+                icon: 'success',
                 title: 'Usuario Desbloqueado Correctamente!',
                 showConfirmButton: true
                 //timer: 2500
@@ -569,7 +587,7 @@ function guardar()
    if(usu=='' || cla == '' || nom== '' || ced == '' )
    {
     Swal.fire({
-      type: 'info',
+      icon: 'info',
       title: 'Llene todo los campos!',
       showConfirmButton: true});
    }else
@@ -589,7 +607,7 @@ function guardar()
           $('#myModal_espera').modal('hide'); 
          
              Swal.fire({
-                 type: 'success',
+                 icon: 'success',
                  title: 'Usuario Guardado!',
                  showConfirmButton: true});
           
@@ -599,7 +617,7 @@ function guardar()
 
           $('#myModal_espera').modal('hide'); 
             Swal.fire({
-              type: 'info',
+              icon: 'info',
               title: 'Usuario y Clave existente!',
               showConfirmButton: true});
 
@@ -609,7 +627,7 @@ function guardar()
 
           $('#myModal_espera').modal('hide'); 
             Swal.fire({
-              type: 'info',
+              icon: 'info',
               title: 'Nuevo Usuario no registrar en base de datos de la entidad!',
               showConfirmButton: true});
 
@@ -618,7 +636,7 @@ function guardar()
 
           $('#myModal_espera').modal('hide'); 
              Swal.fire({
-              type: 'error',
+              icon: 'error',
               title: 'Surgio un problema intente mas tarde!',
               showConfirmButton: true});
 
@@ -632,7 +650,7 @@ function guardar()
  }else
  {
   Swal.fire({
-              type: 'error',
+              icon: 'error',
               title: 'Selecione una entidad!',
               showConfirmButton: true});
  }
@@ -657,7 +675,7 @@ function guardar()
            {
             Swal.fire({
                 //position: 'top-end',
-                type: 'info',
+                icon: 'info',
                 title: 'RUC no encontrado!',
                 showConfirmButton: true
                 //timer: 2500
@@ -899,10 +917,10 @@ function enviar_email()
         type:  'post',
         dataType: 'json',
         beforeSend: function () { 
-          $('#myModal_espera').modal('show'); 
+          $('#myModal_espera').modal('show');
+          console.log("enviando email"); 
         },
         success:  function (response) { 
-          console.log(response);
           if(response == 1)
            {
              Swal.fire('Email enviado,Se guardara el correo','','success');
@@ -910,7 +928,8 @@ function enviar_email()
             
            }else
            {
-             Swal.fire('No se pudo enviar el correo','asegurese que el correo o las credensiales SMTP sean correctos','error');
+             console.log("Envío fallido");
+             Swal.fire('No se pudo enviar el correo','Asegurese que el correo o las credenciales SMTP sean correctos','error');
            }
 
            $('#myModal_espera').modal('hide');

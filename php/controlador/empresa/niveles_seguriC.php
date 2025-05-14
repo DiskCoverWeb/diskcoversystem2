@@ -1153,7 +1153,7 @@ Emails: recepcion@diskcoversystem.com o prisma_net@hotmail.es
 	  	$titulo_correo = 'Credenciales de acceso al sistema DiskCover System';
 	  	$archivos = false;
 	  	$correo = $parametros['email'];
-	  	// print_r($correo);die();
+	  	//print_r($correo);die();
 	  	// $resp = $this->modelo->ingresar_update($datos,'Clientes',$where);  	
 	  	
 	  	// if($resp==1)

@@ -331,40 +331,38 @@ class niveles_seguriM
 	{
 		$registrado = true;
 		$sql= "SELECT DISTINCT Base_Datos,Usuario_DB,Contrasena_DB,IP_VPN_RUTA,Tipo_Base,Puerto  FROM lista_empresas WHERE ID_Empresa = '".$parametros['ent']."' AND Base_Datos <>'.'";
-		 $datos = $this->db->datos($sql,'MY SQL');
+		$datos = $this->db->datos($sql,'MY SQL');
 		 $insertado = false;
-		// print_r($datos);die();
-		 foreach ($datos as $key => $value) {
-		 	if($value['Usuario_DB']=='sa')
-		 	{
+		foreach ($datos as $key => $value) {
+			if($value['Usuario_DB']=='diskcover')
+			{
+				// print_r($value);die();
+				//Validación a conexión a base SQL server de terceros (sqlsrv).
+				$cid2 = $this->db->modulos_sql_server($value['IP_VPN_RUTA'],$value['Usuario_DB'],$value['Contrasena_DB'],$value['Base_Datos'],$value['Puerto']);
+				if($cid2!=-1)
+				{
 
-		 	// print_r($value);die();
-		 	     $cid2 = $this->db->modulos_sql_server($value['IP_VPN_RUTA'],$value['Usuario_DB'],$value['Contrasena_DB'],$value['Base_Datos'],$value['Puerto']);
+				$sql="UPDATE Accesos SET TODOS =0 WHERE Codigo = '".$parametros['ci']."'";
+				// print_r($sql);die();
+				$stmt = sqlsrv_query($cid2, $sql);
+				if($stmt === false)  
+					{  
+						// print_r('fallo');die();
+						// echo "Error en consulta PA.\n";
+						// print_r($sql);die();
+						return -1;
+					die( print_r( sqlsrv_errors(), true));  
+					}else
+					{
 
-		 	     // print_r($value['IP_VPN_RUTA'].'-'.$value['Usuario_DB'].'-'.$value['Contrasena_DB'].'-'.$value['Base_Datos'].'-'.$value['Puerto']);
-		 	     if($cid2!=-1)
-		 	     {
-
-		 	     $sql="UPDATE Accesos SET TODOS =0 WHERE Codigo = '".$parametros['ci']."'";
-		 	     // print_r($sql);die();
-		 	    $stmt = sqlsrv_query($cid2, $sql);
-	            if($stmt === false)  
-	        	    {  
-	        	    	// print_r('fallo');die();
-	        		    // echo "Error en consulta PA.\n";
-	        		    // print_r($sql);die();
-	        		    return -1;
-		               die( print_r( sqlsrv_errors(), true));  
-	                }else
-	                {
-
-	        	    	// print_r('si');die();
-	            	    cerrarSQLSERVERFUN($cid2);
-	            	    $insertado = true;
-	                }     
-	            }
-	        }     
-		 }
+						// print_r('si');die();
+						cerrarSQLSERVERFUN($cid2);
+						$insertado = true;
+					}     
+				}
+			}   
+		}
+		 
 		 if($insertado == true)
 		 {
 		 	return 1;
@@ -380,14 +378,15 @@ class niveles_seguriM
 	{
 		$registrado = true;
 		$sql= "SELECT DISTINCT Base_Datos,Usuario_DB,Contrasena_DB,IP_VPN_RUTA,Tipo_Base,Puerto  FROM lista_empresas WHERE ID_Empresa = '".$parametros['ent']."' AND Base_Datos <>'.'";
-		 $datos = $this->db->datos($sql,'MY SQL');
+		// print_r($sql); die(); 
+		$datos = $this->db->datos($sql,'MY SQL');
 		 $insertado = false;
 		// print_r($datos);die();
 		 foreach ($datos as $key => $value) {
-		 	if($value['Usuario_DB']=='sa')
+		 	if($value['Usuario_DB']=='diskcover')
 		 	{
 
-		 	// print_r($value);die();
+		 	     //print_r($value);die();
 		 	     $cid2 = $this->db->modulos_sql_server($value['IP_VPN_RUTA'],$value['Usuario_DB'],$value['Contrasena_DB'],$value['Base_Datos'],$value['Puerto']);
 
 		 	     // print_r($value['IP_VPN_RUTA'].'-'.$value['Usuario_DB'].'-'.$value['Contrasena_DB'].'-'.$value['Base_Datos'].'-'.$value['Puerto']);die();
