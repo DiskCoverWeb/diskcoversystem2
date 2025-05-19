@@ -95,14 +95,16 @@ if (isset ($_GET['tipo'])) {
 						<!-- <select class="form-select form-select-sm" name="DCTipoFact2" id="DCTipoFact2">
 
 						</select> -->
-						<input type="text" class="form-control form-control-sm" name="DCTipoFact2" id="DCTipoFact2" value="NDO" readonly>
+						<input type="text" class="form-control form-control-sm" name="DCTipoFact2" id="DCTipoFact2" value="NDU" readonly>
 					</div>
 				</div>
 				<div class="col-sm-6 pb-2">
 					<div class="input-group input-group-sm">
 						<label for="TextFacturaNo" class="input-group-text"><b id="Label1">NOTA DE DONACIÓN DE USUARIOS</b></label>
 						<span class="input-group-text" id="LblSerie"><b></b></span>
-						<input type="" class="form-control form-control-sm" id="TextFacturaNo" name="TextFacturaNo" readonly>
+						<input type="" class="form-control form-control-sm" id="TextNDUNo" name="TextNDUNo" readonly>
+						<span class="input-group-text d-none" id="LblSerieFA"><b></b></span>
+						<input type="" class="form-control form-control-sm d-none" id="TextFacturaNo" name="TextFacturaNo" readonly>
 					</div>
 				</div>
 				<div class="col-sm-12 pb-2">
@@ -234,15 +236,12 @@ if (isset ($_GET['tipo'])) {
 					<thead class="text-center bg-primary text-white">
 						<tr>
 							<th>Código</th>
-							<th>Usuario</th>
 							<th>Producto</th>
-							<th>Cantidad (<span id="tablaProdCU">.</span>)</th> <!-- TODO: (Kg) dinámico -->
-							<th>Cantidad de entregas</th> <!-- TODO: (Kg) dinámico -->
-							<th>Aporte unitario</th>
+							<th>Total Asignado</th> <!-- TODO: (Kg) dinámico -->
+							<th>No Entregadas(<span id="tablaProdCU">.</span>)</th> <!-- TODO: (Kg) dinámico -->
+							<th>pvp</th>
 							<th>Aporte total</th>
-							<th>Cheking</th>
-							<th>Modificar</th>
-						</tr>
+							</tr>
 					</thead>
 					<!-- <tbody id="cuerpoTablaDistri"></tbody> -->
 					
@@ -290,8 +289,10 @@ if (isset ($_GET['tipo'])) {
 </div>
 <br><br>
 
-<div id="modal_grupoIntegrantes" class="modal fade">
-	<div class="modal-dialog modal-lg">
+
+
+<div id="modal_grupoIntegrantes" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+	<div class="modal-dialog modal-xl">
 		<div class="modal-content">
 			<div class="modal-header bg-primary">
 				<h4 class="modal-title text-white">Integrantes de Grupos</h4>
@@ -302,24 +303,63 @@ if (isset ($_GET['tipo'])) {
                 	<div class="col-sm-12">
                 		<table class="table table-sm table-hover table-striped" id="tblClientes">
 	                        <thead>
+                                <th></th>
                                 <th>ITEM</th>
                                 <th>USUARIO</th>
                                 <th>CEDULA</th>
-                                <th>PARA FACTURAR</th>
+                                <th>CANT ENTR</th>
+                                <th>TOTAL</th>
+                                <th>APORTE</th>
+                                <th>PRODUCTO</th>
 	                        </thead>
 	                        <tbody id="tbl_integrantes"></tbody>
 	                    </table>
-                	</div>
-                    
+                	</div>                    
                 </div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" onclick="Generar_factura()">Generar Facturas</button>
+				<button type="button" class="btn btn-primary"  onclick="Generar_factura()">Generar Facturas</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 			</div>
 		</div>
 	</div>
 </div>
+
+<div id="modal_grupoAlimentos" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-primary">
+				<h4 class="modal-title text-white">Grupo de alimentos</h4>
+				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+               	<input type="hidden" name="txt_integrate_produ" id="txt_integrate_produ">
+                <div class="row">
+                	<div class="col-sm-12" id="">
+                		<table class="table table-sm table-hover table-striped" id="tblClientes">
+	                        <thead>
+                                <th><input id="cbx_all_producto" name="cbx_all_producto" type="checkbox" onclick="all_Producto()"> </th>
+                                <th>PRODUCTO</th>
+                                <th>CANTIDAD SUG</th>
+                                <th>CANTIDAD ENT</th>
+                                <th>PVP</th>
+                                <th>TOTAL</th>
+	                        </thead>
+	                        <tbody id="tbl_grupoAlimento"></tbody>
+	                    </table>
+                		
+                	</div>                	
+                </div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary"  onclick="SeleccionarIntegrante()">Ok</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 
 
 

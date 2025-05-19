@@ -44,7 +44,7 @@
                     <div class="col-lg-4 col-md-8 col-sm-12">
                         <b>Grupo</b>
                         <div class="d-flex align-items-center input-group-sm">
-                            <select name="ddl_grupos" id="ddl_grupos" class="form-select form-select-sm" onchange="listaAsignacion()"></select>
+                            <select name="ddl_grupos" id="ddl_grupos" class="form-select form-select-sm" onchange="listaAsignacion();IntegrantesGrupo()"></select>
                              <button type="button" title="Agregar beneficiario"  class="btn btn-success btn-sm" onclick="add_beneficiario()">
                                 <i class="fa fa-plus m-0" style="font-size:8pt;"></i>
                             </button>
@@ -70,7 +70,7 @@
                     </div> 
                 </div>
                 <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
                                                
                         <div class="row">                    
                             <div class="input-group input-group-sm">
@@ -83,11 +83,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="row align-items-center">
                             <div class="col-sm-8">
                                 <div class="row align-items-center">
-                                    <div class="col-lg-2  col-md-3 col-sm-2">                        
+                                    <div class="col-lg-3  col-md-3 col-sm-2">                        
                                         <img  src="../../img/png/cantidad_global.png" style="width: 100%;" />
                                     </div>  
                                     <div class="col-lg-8 col-md-9 col-sm-10" style="padding:0px">                        
@@ -98,6 +98,15 @@
                             <div class="col-sm-4">
                                 <input type="number" name="CantGlobDist" id="CantGlobDist" readonly style=""
                                     class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-lg-4 col-md-6 col-sm-12">
+                                               
+                        <div class="row">                    
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><b>Codigo pedido:</b></span>
+                                <input type="text" name="txt_codigo_pedido" id="txt_codigo_pedido" class="form-control form-control-sm" readonly>
                             </div>
                         </div>
                     </div>
@@ -134,22 +143,26 @@
                         </label>
                         <input type="text" name="stock" id="stock" class="form-control form-control-sm" readonly>
                     </div>
-                    <div class="col-lg-2 col-md-4">
+                    <div class="col-lg-4 col-md-4">
                         <div class="row">
-                            <div class="col-sm-5">
+                            <div class="col-sm-4">
                                 <button type="button" class="btn btn-outline-secondary" onclick="show_cantidad()"
                                     id="btn_cantidad">
                                     <img src="../../img/png/kilo.png" style="width: 42px;height: 42px;" />
                                 </button>
                             </div>
-                            <div class="col-sm-7">
-                                <b>Cantidad</b>
-                                <input type="number" name="cant" id="cant" class="form-control form-control-sm">
+                            <div class="col-sm-4">
+                                <b>Cantidad c/p</b>
+                                <input type="number" name="cant_cp" id="cant_cp" class="form-control form-control-sm" onblur="calcular()">
+                            </div>
+                            <div class="col-sm-4">
+                                <b>Total</b>
+                                <input type="number" name="cant" id="cant" class="form-control form-control-sm" readonly>
                             </div>                            
                         </div>
                     </div>
                     
-                    <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <label for="comeAsig">
                             <b>Comentario de Asignación</b>
                         </label>
@@ -184,6 +197,7 @@
                                                 <th style="width:7%;">ITEM</th>
                                                 <th>PRODUCTO</th>
                                                 <th>CANTIDAD</th>
+                                                <th>TOTAL</th>
                                                 <th>COMENTARIO DE ASIGNACIÓN</th>
                                                 <th>ELIMINAR</th>
                                             </tr>
@@ -261,28 +275,22 @@
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Tipo de población</h4>
+                    <h4 class="modal-title">INtegrantes de grupo</h4>
                     <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" style="overflow-y: auto; max-height: 300px; background: antiquewhite;">
                     <div class="table-responsive">
-                        <table class="table table-sm table-hover" id="tablaPoblacion">
+                        <table class="table table-sm table-hover table-striped" id="tblClientes">
                             <thead>
-                                <tr>
-                                    <th scope="col" colspan="2">Tipo de Población</th>
-                                    <th scope="col">Hombres</th>
-                                    <th scope="col">Mujeres</th>
-                                    <th scope="col">Total</th>
-                                </tr>
+                                <th>ITEM</th>
+                                <th>USUARIO</th>
+                                <th>CEDULA</th>
                             </thead>
-                            <tbody id="tbl_body_poblacion">
-
-                            </tbody>
+                            <tbody id="tbl_integrantes"></tbody>
                         </table>
                     </div>
                 </div>
                 <div class="modal-footer"  style="background-color:antiquewhite;">
-                    <button type="button" class="btn btn-primary" id="btnGuardarGrupo">Aceptar</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>

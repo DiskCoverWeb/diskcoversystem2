@@ -50,7 +50,7 @@ class egreso_alimentosM
 	}
 	function buscar_producto($query=false,$id=false,$grupo=false)
 	{
-		$sql = "SELECT TK.*,C.Cliente,CP.Producto,CP.Unidad,CP.Cta_Inventario 
+		$sql = "SELECT TK.*,C.Cliente,CP.Producto,CP.Unidad,CP.Cta_Inventario,TK.Codigo_Barra
 			FROM Trans_Kardex TK
 			INNER JOIN Catalogo_Productos CP on TK.Codigo_Inv = CP.Codigo_Inv 
 			INNER JOIN Clientes C on TK.Codigo_P = C.Codigo

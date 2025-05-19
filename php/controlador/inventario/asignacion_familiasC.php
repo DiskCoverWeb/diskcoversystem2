@@ -45,6 +45,11 @@ if(isset($_GET['GuardarPicking'])){
     $parametros = $_POST['parametros'];
     echo json_encode($controlador->GuardarPicking($parametros));
 }
+if(isset($_GET['tipo_asignacion'])){
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->tipo_asignacion($parametros));
+}
+
 
 
 class asignacion_familiasC
@@ -75,6 +80,8 @@ class asignacion_familiasC
     function addAsignacion($parametros)
     {
 
+        // print_r($parametros);die();
+
         $producto = Leer_Codigo_Inv($parametros['Codigo'],$parametros['FechaAte']);
 
         // print_r($parametros);die();
@@ -89,7 +96,8 @@ class asignacion_familiasC
         SetAdoFields("Procedencia",$parametros['Comentario']);
         SetAdoFields("Codigo",$parametros['Codigo']);
         SetAdoFields("Producto",$parametros['Producto']);
-        SetAdoFields("Cantidad",$parametros['Cantidad']);
+        SetAdoFields("Cantidad",$parametros['CantidadCp']);
+        SetAdoFields("Cant_Hab",$parametros['Cantidad']);
         SetAdoFields("Precio",number_format($producto['datos']['PVP'],2,'','.'));
         SetAdoFields("Total",number_format($producto['datos']['PVP']*$parametros['Cantidad'],2,'','.'));
         SetAdoFields("Fecha",$parametros['FechaAte']);
@@ -142,7 +150,7 @@ class asignacion_familiasC
         $cantidad = 0;
         $res = array();
         $orden = str_replace('.',"_",$parametros['grupo']).'_'.str_replace('-',"", $parametros['fecha']);
-        $datos = $this->modelo->listaAsignacion($orden,'P',$parametros['tipo']);
+        $datos = $this->modelo->listaAsignacion($orden,'P',false,$parametros['tipo']);
         foreach ($datos as $key => $value) {
             $tr.='<tr>
                     <td>'.($key+1).'</td>
@@ -191,10 +199,11 @@ class asignacion_familiasC
         $ctotal = 0;
         // print_r($datos);die();
         foreach ($datos as $key => $value) {
-            $cant = $value['Cantidad']; 
+            $cant = $value['Cant_Hab']; 
             $cant_ing = $this->modelo->total_ingresados($parametros['orden'],$value['Codigo'],$value['No_Hab']);
+            // print_r($cant_ing);die();
             if($cant_ing[0]['Total']!=''){ 
-                $c = ($value['Cantidad']-$cant_ing[0]['Total']);
+                $c = ($value['Cant_Hab']-$cant_ing[0]['Total']);
                 $cant = $c;
             }
             // print_r($cant_ing);die();
@@ -215,7 +224,7 @@ class asignacion_familiasC
                     </div>
                     <div class="col-sm-3" style="padding:0px">
                         <div class="input-group input-group-sm">
-                            <input type="text" class="form-control form-control-sm" value="'.number_format($value['Cantidad'],2,'.','').'" readonly="">
+                            <input type="text" class="form-control form-control-sm" value="'.number_format($value['Cant_Hab'],2,'.','').'" readonly="">
                             <span class="input-group-text"><b>Dif:</b></span>
                             <input type="text" class="form-control form-control-sm" value="'.number_format(($cant),2,'.','').'" readonly>                            
                         </div>
@@ -225,7 +234,7 @@ class asignacion_familiasC
                     </div>                               
                 </div>';
             $ddlGrupoPro.= '<option value="'.$value['Codigo'].'" >'.$value['Producto'].'</option>';
-            $total =  $total+number_format($value['Cantidad'],2,'.','');
+            $total =  $total+number_format($value['Cant_Hab'],2,'.','');
             $ctotal =  $ctotal+number_format($cant,2,'.','');
         }
         $detalle.='<div class="row">                                    
@@ -257,55 +266,63 @@ class asignacion_familiasC
     {
 
         // print_r($parametros);die();
-
-        $Beneficiario = explode('-',$parametros['asignacion']);
-        $stock = 0; 
-        // buscar producto bodega
-         $bode = $this->egresos->buscar_producto(false,$parametros['codigoProducto']);
-
-        // cantidad ingresada
-        $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsig']);
-        $cant_ing = $cant_ing[0]['Total'];
-
-        // cantida que se pide
-        $stock = $this->modelo->listaAsignacion($Beneficiario[0],$T=false,$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsig']);
-        if(isset($stock[0]['Cantidad']))
-        {
-            $stock = $stock[0]['Cantidad'];
-        }
-
-        // print_r($cant_ing);die();
-        // print_r($stock);die();
-        $cant_ing = $cant_ing+$parametros['Cantidad'];
-
-
-        // print_r($cant_ing);
-        // print_r('-'.$stock);
-        
-        // print_r($bode);
-        // die();
-        if($cant_ing<=$stock)
+        $asignacion = explode('-', $parametros['asignacion']);
+        $producto = $this->modelo->cargar_asignacion($asignacion[0],$asignacion[1],'P',$parametros['FechaAsig'],$parametros['codBarras']);
+        if(count($producto)==0)
         {
 
-            $producto = Leer_Codigo_Inv($parametros['CodigoInv'],$parametros['FechaAte']);
-            SetAdoAddNew("Trans_Comision");
-            // SetAdoFields("CodigoC",$Beneficiario[0]);
-            SetAdoFields("Cta",$Beneficiario[1]);
-            SetAdoFields("Codigo_Inv",$parametros['CodigoInv']);
-            SetAdoFields("Total",$parametros['Cantidad']);
-            SetAdoFields("Fecha",$parametros['FechaAte']);
-            SetAdoFields("Fecha_A",$parametros['FechaAsig']);
-            SetAdoFields("Fecha_C",date('Y-m-d'));      
-            SetAdoFields("CodBodega",$bode[0]['Codigo_Barra']);        
-            SetAdoFields("Item",$_SESSION['INGRESO']['item']);
-            SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
-            SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
-            SetAdoFields("T","P");
-            SetAdoFields("TP","OF");
-            SetAdoFields("Orden_No",$Beneficiario[0]);
+            $Beneficiario = explode('-',$parametros['asignacion']);
+            $stock = 0; 
+            // buscar producto bodega
+             $bode = $this->egresos->buscar_producto(false,$parametros['codigoProducto']);
+
+            // cantidad ingresada
+            $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsig']);
+            $cant_ing = $cant_ing[0]['Total'];
+
+            // cantida que se pide
+            $stock = $this->modelo->listaAsignacion($Beneficiario[0],$T=false,$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsig']);
+            if(isset($stock[0]['Cantidad']))
+            {
+                $stock = $stock[0]['Cant_Hab'];
+            }
+
+            // print_r($cant_ing);die();
+            // print_r($stock);die();
+            $cant_ing = $cant_ing+$parametros['Cantidad'];
+
+
+            // print_r($cant_ing);
+            // print_r('-'.$stock);
             
-            return SetAdoUpdate();
-        }else{ return -2; }
+            // print_r($bode);
+            // die();
+            if($cant_ing<=$stock)
+            {
+
+                $producto = Leer_Codigo_Inv($parametros['CodigoInv'],$parametros['FechaAte']);
+                SetAdoAddNew("Trans_Comision");
+                SetAdoFields("Codigo_Barra",$parametros['codBarras']);
+                SetAdoFields("Cta",$Beneficiario[1]);
+                SetAdoFields("Codigo_Inv",$parametros['CodigoInv']);
+                SetAdoFields("Total",$parametros['Cantidad']);
+                SetAdoFields("Fecha",$parametros['FechaAte']);
+                SetAdoFields("Fecha_A",$parametros['FechaAsig']);
+                SetAdoFields("Fecha_C",date('Y-m-d'));      
+                SetAdoFields("CodBodega",$bode[0]['Codigo_Barra']);        
+                SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+                SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+                SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+                SetAdoFields("T","P");
+                SetAdoFields("TP","OF");
+                SetAdoFields("Orden_No",$Beneficiario[0]);
+                
+                return SetAdoUpdate();
+            }else{ return -2; }
+        }else
+        {
+            return -3;
+        }
     }
 
     function GuardarPicking($parametros)
@@ -333,6 +350,29 @@ class asignacion_familiasC
         // SetAdoFieldsWhere('Fecha',$parametros['fechaAsi']);   
 
         return SetAdoUpdateGeneric();
+    }
+
+    function tipo_asignacion($parametros)
+    {
+        $asignaciones = $this->modelo->listaAsignacionUnicos($orden=false,$T=false,$tipo=false,$parametros['fecha'],$parametros['grupo']);
+        $tipo = $this->modelo->tipo_asignacion();
+        $lista = array();
+        foreach ($tipo as $key => $value) {
+            $encontrado = 0;
+            foreach ($asignaciones as $key2 => $value2) {
+                if($value2['No_Hab']==$value['Cmds'])
+                {
+                    $encontrado = 1;
+                    break;
+                }
+            }
+            if($encontrado==0)
+            {
+                $lista[] = $value;
+            }
+        }
+        return $lista;
+
     }
 
 

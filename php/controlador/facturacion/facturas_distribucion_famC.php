@@ -1,5 +1,6 @@
 <?php
 require(dirname(__DIR__, 2) . '/modelo/facturacion/facturas_distribucion_famM.php');
+require_once(dirname(__DIR__, 2) . '/modelo/facturacion/punto_ventaM.php');
 require_once(dirname(__DIR__, 2) . "/comprobantes/SRI/autorizar_sri.php");
 require_once(dirname(__DIR__, 3) . "/lib/fpdf/cabecera_pdf.php");
 /**
@@ -29,17 +30,33 @@ if(isset($_GET["GenerarFactura"])){
 	echo json_encode($controlador->GenerarFactura($parametros));
 }
 
+if(isset($_GET['cargarOrden'])){
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->cargarOrden($parametros));
+}
+
+if (isset($_GET['LblSerieNDU'])) {
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->SerieNDU($parametros));
+}
+if (isset($_GET['finalizarFactura'])) {
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->finalizarFactura($parametros));
+}
+
 
 class facturas_distribucion_fam
 {
 	private $modelo;
 	private $sri;
 	private $pdf;
+	private $punto_venta;
 	function __construct()
 	{
 		$this->modelo = new facturas_distribucion_famM();
 		$this->sri = new autorizacion_sri();
 		$this->pdf = new cabecera_pdf();
+		$this->punto_venta =  new punto_ventaM();
 	}
 
 	
@@ -55,7 +72,12 @@ class facturas_distribucion_fam
 	}
 	function cargar_asignacion($parametros)
 	{
+		// print_r($parametros);die();
+		$integrantes = $this->modelo->IntegrantesGrupo($parametros['grupo']);
 		$datos = $this->modelo->cargar_asignacion($parametros['orden'],false,'F',$parametros['fechaPick']);
+		foreach ($datos as $key => $value) {
+			$datos[$key]['NumIntegrante'] = count($integrantes);
+		}
 		// print_r($datos);die();
 		return $datos;
 	}
@@ -68,13 +90,650 @@ class facturas_distribucion_fam
 
 	}
 
+
+
 	function GenerarFactura($parametros)
 	{
-		// $datos = $this->modelo->IntegrantesGrupo($parametros['grupo']);
-		// return $datos;
-		print_r($parametros);die();
+		// print_r($parametros);die();
+
+		$this->modelo->ProductosSisponible($parametros['orden'],'F');
+		$electronico = 0;
+		if (isset($parametros['electronico'])) {
+			$electronico = $parametros['electronico'];
+		}
+		$datosFA['MBFecha'] = $parametros['fecha'];		
+		$datosTick['MBFecha'] = $parametros['fecha'];
+
+		$FechaTexto =  $parametros['fecha'];
+		$datosFA['TC'] = $parametros['TipoFactura'];
+		$datosFA['Serie'] = $parametros['SerieFA'];
+
+		$datosTick['TC'] = $parametros['TipoNDU'];
+		$datosTick['Serie'] = $parametros['Serie'];
+		$datosFA['FacturaNo'] = $parametros['TextFacturaNo'];
+
+		$CodigoL = '.';
+		$CodigoL2 = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
+		if (count($CodigoL2) > 0) {
+			$CodigoL = $CodigoL2[0]['Codigo'];
+		}
+		$integrantes = json_decode($parametros['integrantes'],true);
+		$abonos = json_decode($parametros['Abonointegrantes'],true);
+
+
+
+			
+		$respuesta_final = array();
+
+		foreach ($integrantes as $key => $value) {
+			$cliente = Leer_Datos_Cliente_FA($key);
+			$datosFA['CI'] = $key;
+			$datosTick['CI'] = $key;
+			$lineas = $value;
+			$Ln_No = 1;
+			$datosFA['TxtEfectivo'] = $abonos[$key]['abono'];
+			$datosTick['TxtEfectivo'] = $abonos[$key]['abono'];
+			// print_r($cliente);die();
+			// $datosFA['T'] = $cliente['TB'];
+			foreach ($lineas as $key2 => $value2) {
+				$producto = Leer_Codigo_Inv($value2['Codigo'],$datosFA['MBFecha']);
+				if($producto['respueta']==1)
+				{
+					$producto = $producto['datos'];
+					// print_r($producto);die();
+					// print_r($value2);die();
+					SetAdoAddNew("Asiento_F");
+		            SetAdoFields("CODIGO", $value2['Codigo']);
+		            SetAdoFields("CODIGO_L", $CodigoL);
+		            SetAdoFields("PRODUCTO", $producto['Producto']);
+		            SetAdoFields("CANT", $value2['cantidad']);
+		            SetAdoFields("PRECIO", $value2['pvp']);
+		            SetAdoFields("TOTAL", $value2['total']);
+		            // SetAdoFields("Total_Desc", $value['Total_Desc']);
+		            // SetAdoFields("Total_IVA", $value['Total_IVA']);
+		            SetAdoFields("Serie_No", $datosFA['Serie'] );
+		            // SetAdoFields("CodBod", $value['CodBodega']);
+		            SetAdoFields("Costo", number_format($producto['Costo'],2,'.',''));
+		            // SetAdoFields("Cta", $parametros['cta']);
+		            SetAdoFields("Item", $_SESSION['INGRESO']['item']);
+		            SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
+		            SetAdoFields("A_No", $Ln_No);
+		            // SetAdoFields("Numero", $ordenP);
+		            SetAdoUpdate();
+		            $Ln_No = $Ln_No + 1;
+	        	}
+			}
+
+			$datosFA['TextBanco'] = 0;
+			$datosFA['TextCheqNo'] = 0;
+			$datosFA['DCBancoC'] = '';
+			$datosFA['CodDoc'] = '01';
+			$datosFA['valorBan'] = 0;
+			$datosFA['PorcIva'] = $parametros['PorcIva'];
+
+
+
+			$factura =  $this->GenerarFacturaUni($datosFA);
+
+			$datosTick['FacturaNo'] = $factura['factura'];
+			$datosTick['TextBanco'] = 0;
+			$datosTick['TextCheqNo'] = 0;
+			$datosTick['DCBancoC'] = '';
+			$datosTick['CodDoc'] = '01';
+			$datosTick['valorBan'] = 0;
+			$datosTick['PorcIva'] = $parametros['PorcIva'];
+
+			//insertya en trasn kardex
+
+			$this->ingresar_trans_kardex_salidas_FA($lineas,$parametros,$factura['factura'],$factura['serie']);
+
+			//genera lineas de tickes
+			foreach ($lineas as $key2 => $value2) {
+				$producto = Leer_Codigo_Inv($value2['Codigo'],$datosFA['MBFecha']);
+				if($producto['respueta']==1)
+				{
+					$producto = $producto['datos'];
+					// print_r($producto);die();
+					// print_r($value2);die();
+					SetAdoAddNew("Asiento_F");
+		            SetAdoFields("CODIGO", $value2['Codigo']);
+		            SetAdoFields("CODIGO_L", $CodigoL);
+		            SetAdoFields("PRODUCTO", $producto['Producto']);
+		            SetAdoFields("CANT", $value2['cantidad']);
+		            SetAdoFields("PRECIO", $value2['pvp']);
+		            SetAdoFields("TOTAL", $value2['total']);
+		            // SetAdoFields("Total_Desc", $value['Total_Desc']);
+		            // SetAdoFields("Total_IVA", $value['Total_IVA']);
+		            SetAdoFields("Serie_No", $datosFA['Serie'] );
+		            // SetAdoFields("CodBod", $value['CodBodega']);
+		            SetAdoFields("Costo", number_format($producto['Costo'],2,'.',''));
+		            // SetAdoFields("Cta", $parametros['cta']);
+		            SetAdoFields("Item", $_SESSION['INGRESO']['item']);
+		            SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
+		            SetAdoFields("A_No", $Ln_No);
+		            // SetAdoFields("Numero", $ordenP);
+		            SetAdoUpdate();
+		            $Ln_No = $Ln_No + 1;
+	        	}
+			}
+
+
+			$Ticket = $this->GenerarTicketUni($datosTick);
+			// $this->ingresar_trans_kardex_salidas_FA($integrantes);
+			array_push($respuesta_final, $factura);
+		}
+
+		return $respuesta_final;
+		// print_r($respuesta_final);die();
 
 	}
+
+	function ingresar_trans_kardex_salidas_FA($lineas,$parametros,$factura,$serie)
+	{
+		// print_r($lineas);
+		// print_r($parametros);die();
+
+		$productosDistribuidos = json_decode($parametros['integrantes'],true);
+
+		$listadoK = array();
+
+			$lineasKardex = array();
+			foreach ($lineas as $key2 => $value2) {
+				$cantidad = $value2['cantidad'];
+				$CodigoProducto = $this->modelo->cargar_asignacion($parametros['orden'],$tipo=false,'F',$parametros['fechaPick'],$value2['Codigo']);
+
+				$i = 0;
+				while ($cantidad!=0) {
+					$disponible = $CodigoProducto[$i]['Porc'];
+					if($disponible>0)
+					{
+						if($disponible>=$cantidad)
+						{
+							$tomado = $cantidad;
+							$cantidad = 0;
+						}
+						else if($disponible<$cantidad)
+						{
+							$cantidad = $cantidad-$disponible;
+							$tomado = $disponible;
+						}
+						
+						if($cantidad>=0)
+						{
+							$dispo = $disponible-$tomado;
+							$this->modelo->ACtualizarDisponibilidad($parametros['orden'],'F',$CodigoProducto[$i]['CodBodega'],$dispo);
+							$lines = array('CodBarras'=>$CodigoProducto[$i]['CodBodega'],'cantidad'=>$tomado,'Valor_Unitario'=>$value2['pvp'],'codigo_Inv'=>$value2['Codigo'],'fecha'=>$parametros['fecha']);
+							array_push($lineasKardex, $lines);
+							// $i++;
+						}
+					}
+					$i++;
+				}				
+			}
+
+			// print_r($lineasKardex);die();
+			// $listadoK[$key] = $lineasKardex;
+	
+
+
+		// print_r($lineasKardex);die();
+
+
+
+		$resp = 1;
+		$lista = '';
+		// foreach ($listadoK as $key => $value) {
+
+			$lineas = $lineasKardex;
+			foreach ($lineas as $key2 => $value2) {
+								
+				SetAdoAddNew('Trans_Kardex');
+				SetAdoFields('Numero', 0);
+				SetAdoFields('T', 'N');
+				SetAdoFields('TP', '.');
+				SetAdoFields('Costo', number_format($value2['Valor_Unitario'], $_SESSION['INGRESO']['Dec_PVP'], '.', ''));
+				SetAdoFields('Total', number_format(($value2['Valor_Unitario']*$value2['cantidad']), 2, '.', ''));
+				// SetAdoFields('Existencia', number_format(($cant[2]), 2, '.', '') - number_format(($value['Cantidad']), 2, '.', ''));
+				SetAdoFields('CodBodega', '01');
+				SetAdoFields('Detalle', 'Salida de inventario (FA) para  con FACTURA : ' .  $factura . ' el dia ' . $value2['fecha']);
+				SetAdoFields('Procesado', 0);
+				// SetAdoFields('Total_IVA', number_format($value['Total_IVA'], 2, '.', ''));
+				SetAdoFields('Codigo_Inv', $value2['codigo_Inv']);
+				SetAdoFields('Salida', $value2['cantidad']);
+				SetAdoFields('Valor_Unitario', number_format($value2['Valor_Unitario'], $_SESSION['INGRESO']['Dec_PVP'], '.', ''));
+				SetAdoFields('Valor_Total', number_format(($value2['Valor_Unitario']*$value2['cantidad']), 2, '.', ''));
+				SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
+				SetAdoFields('Item', $_SESSION['INGRESO']['item']);
+				SetAdoFields('Periodo', $_SESSION['INGRESO']['periodo']);
+				SetAdoFields('Factura', $factura);
+				SetAdoFields('Codigo_Barra', $value2['CodBarras']);
+				SetAdoFields('TC','FA');
+				SetAdoFields('Serie',$serie);
+				SetAdoUpdate();
+
+			}
+
+		// }
+		// print_r($resp);die();
+		return $resp;
+
+	}
+
+
+
+
+
+	function GenerarFacturaUni($parametros)
+	{
+		
+		$electronico = 0;
+		if (isset($parametros['electronico'])) {
+			$electronico = $parametros['electronico'];
+		}
+
+		// FechaValida MBFecha
+		$FechaTexto = $parametros['MBFecha'];
+		$FA = Calculos_Totales_Factura();
+		$datos = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
+		$cliente = Leer_Datos_Cliente_FA($parametros['CI']);
+
+		if (count($datos) > 0 && count($cliente)>0)  {
+			// print_r($datos);die();
+			// $FA['Nota'] = $parametros['TxtNota'];
+			// $FA['Observacion'] = $parametros['TxtObservacion'];
+
+			// print_r($FA);die();
+			$FA['CodigoC'] = $cliente['CodigoC'];
+			$FA['codigoCliente'] = $cliente['CodigoC'];
+			$FA['TextCI'] = $parametros['CI'];
+			$FA['TxtEmail'] = $cliente['EmailC'];
+			$FA['Cliente'] = trim(str_replace($cliente['CI_RUC'] . ' -', '', $cliente['Cliente']));
+			$FA['TC'] = $parametros['TC'];
+			$FA['Serie'] = $parametros['Serie'];
+			$FA['Cta_CxP'] = $datos[0]['CxC'];
+			$FA['Autorizacion'] = $datos[0]['Autorizacion'];
+			$FA['FechaTexto'] = $FechaTexto;
+			$FA['Fecha'] = $FechaTexto;
+			$FA['Total'] = $FA['Total_MN'];
+			$FA['Total_Abonos'] = 0;
+			$FA['TextBanco'] = $parametros['TextBanco'];
+			$FA['TextCheqNo'] = $parametros['TextCheqNo'];
+			$FA['DCBancoC'] = $parametros['DCBancoC'];
+			// $FA['T'] = $parametros['T'];
+			$FA['CodDoc'] = $parametros['CodDoc'];
+			$FA['valorBan'] = $parametros['valorBan'];
+			$FA['TxtEfectivo'] = $parametros['TxtEfectivo'];
+			$FA['Cod_CxC'] = $datos[0]['Codigo'];
+			$FA['Remision'] = 0;
+			if (isset($parametros['tipo_pago'])) {
+				$FA['Tipo_Pago'] = $parametros['tipo_pago'];
+			} else {
+				$FA['Tipo_Pago'] = '01';
+			}
+			$FA['Porc_IVA'] = (floatval($parametros['PorcIva'])/100);
+
+			$Moneda_US = False;
+			$TextoFormaPago = G_PAGOCONT;
+
+			// print_r($FA);die();
+			$resp =  $this->ProcGrabar($FA);
+			return $resp;
+		} else {
+			return array('respuesta' => -1, 'text' => "Cuenta CxC sin setear en catalogo de lineas");
+		}
+	}
+
+
+	function GenerarTicketUni($parametros)
+	{
+		
+		$electronico = 0;
+		if (isset($parametros['electronico'])) {
+			$electronico = $parametros['electronico'];
+		}
+
+		// FechaValida MBFecha
+		$FechaTexto = $parametros['MBFecha'];
+		$FA = Calculos_Totales_Factura();
+		$datos = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
+		$cliente = Leer_Datos_Cliente_FA($parametros['CI']);
+
+		if (count($datos) > 0 && count($cliente)>0)  {
+			// print_r($datos);die();
+			// $FA['Nota'] = $parametros['TxtNota'];
+			// $FA['Observacion'] = $parametros['TxtObservacion'];
+
+			// print_r($FA);die();
+			$FA['FacturaNo'] = $parametros['FacturaNo'];
+			$FA['CodigoC'] = $cliente['CodigoC'];
+			$FA['codigoCliente'] = $cliente['CodigoC'];
+			$FA['TextCI'] = $parametros['CI'];
+			$FA['TxtEmail'] = $cliente['EmailC'];
+			$FA['Cliente'] = trim(str_replace($cliente['CI_RUC'] . ' -', '', $cliente['Cliente']));
+			$FA['TC'] = $parametros['TC'];
+			$FA['Serie'] = $parametros['Serie'];
+			$FA['Cta_CxP'] = $datos[0]['CxC'];
+			$FA['Autorizacion'] = $datos[0]['Autorizacion'];
+			$FA['FechaTexto'] = $FechaTexto;
+			$FA['Fecha'] = $FechaTexto;
+			$FA['Total'] = $FA['Total_MN'];
+			$FA['Total_Abonos'] = 0;
+			$FA['TextBanco'] = $parametros['TextBanco'];
+			$FA['TextCheqNo'] = $parametros['TextCheqNo'];
+			$FA['DCBancoC'] = $parametros['DCBancoC'];
+			// $FA['T'] = $parametros['T'];
+			$FA['CodDoc'] = $parametros['CodDoc'];
+			$FA['valorBan'] = $parametros['valorBan'];
+			$FA['TxtEfectivo'] = $parametros['TxtEfectivo'];
+			$FA['Cod_CxC'] = $datos[0]['Codigo'];
+			$FA['Remision'] = 0;
+			if (isset($parametros['tipo_pago'])) {
+				$FA['Tipo_Pago'] = $parametros['tipo_pago'];
+			} else {
+				$FA['Tipo_Pago'] = '01';
+			}
+			$FA['Porc_IVA'] = (floatval($parametros['PorcIva'])/100);
+
+			$Moneda_US = False;
+			$TextoFormaPago = G_PAGOCONT;
+
+			// print_r($FA);die();
+			$resp =  $this->ProcGrabar($FA);
+			// print_r($resp);die();
+			return $resp;
+		} else {
+			return array('respuesta' => -1, 'text' => "Cuenta CxC sin setear en catalogo de lineas");
+		}
+	}
+
+
+
+
+	function ProcGrabar($FA)
+	{
+		$conn = new db();
+		$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
+		if(!isset($FA['Porc_IVA']))
+		{
+			$FA['Porc_IVA'] = $_SESSION['INGRESO']['porc'];
+		}
+		// 'Seteamos los encabezados para las facturas
+		// $FA = Calculos_Totales_Factura();
+		$Dolar = 0;
+
+		// print_r($FA);die();
+		$datos = $this->punto_venta->DGAsientoF();
+		$datos = $datos['datos'];
+		// $servicios = 0;
+		// foreach ($datos as $key => $value) {
+		// 	$servicios+= $value['SERVICIO'];
+		//  }
+		if (count($datos) > 0) {
+			$HoraTexto = date("H:i:s");
+			$Total_FacturaME = 0;
+			$Moneda_US = False;
+			if ($Moneda_US) {
+				$Total_Factura = number_format(($FA['Sin_IVA'] + $FA['Con_IVA'] - $FA['Descuento'] - $FA['Descuento2'] + $FA['Total_IVA'] + $FA['Servicio']) * $Dolar, 2, '.', '');
+				$Total_FacturaME = number_format($FA['Sin_IVA'] + $FA['Con_IVA'] - $FA['Descuento'] - $FA['Descuento2'] + $FA['Total_IVA'] + $FA['Servicio'], 2, '.', ',');
+			} else {
+				$Total_Factura = number_format($FA['Sin_IVA'] + $FA['Con_IVA'] - $FA['Descuento'] - $FA['Descuento2'] + $FA['Total_IVA'] + $FA['Servicio'], 2, '.', '');
+				$Total_FacturaME = 0;
+			}
+			$Saldo = $Total_Factura;
+			$Saldo_ME = $Total_FacturaME;
+			if ($Saldo < 0) {
+				$Saldo = 0;
+			}
+			$FA['Nuevo_Doc'] = True;
+			$FA['Saldo_MN'] = $Saldo;
+
+			if($FA['TC']=='FA')
+			{
+				$Factura_No = ReadSetDataNum($FA['TC'] . "_SERIE_" . $FA['Serie'], True, True);
+			}else{ $Factura_No = $FA['FacturaNo']; }
+			$FA['Factura'] = $Factura_No;
+			$FA['FacturaNo'] = $Factura_No;
+			$TipoFactura = $FA['TC'];
+			if ($TipoFactura == "PV") {
+				Control_Procesos("F", "Grabar Ticket No. " . $Factura_No, '');
+			} else if ($TipoFactura == "NV") {
+				Control_Procesos("F", "Grabar Nota de Venta No. " . $Factura_No, '');
+			} else if ($TipoFactura == "CP") {
+				Control_Procesos("F", "Grabar Cheque Protestado No. " . $Factura_No, '');
+			} else if ($TipoFactura == "LC") {
+				Control_Procesos("F", "Grabar Liquidacion de Compras No. " . $Factura_No, '');
+			} else if ($TipoFactura == "DO") {
+				Control_Procesos("F", "Grabar Nota de Donacion No. " . $Factura_No, '');
+			}else if ($TipoFactura == "NDU") {
+				Control_Procesos("F", "Grabar Nota de Donacion No. " . $Factura_No, '');
+			}else {
+				Control_Procesos("F", "Grabar Factura No. " . $Factura_No, '');
+			}
+			// $this->modelo->delete_factura($TipoFactura,$Factura_No);
+
+			$TextoFormaPago = G_PAGOCRED;
+			$T = G_PENDIENTE;
+			// 'Grabamos el numero de factura
+
+			// print_r($FA);die();
+			$r = Grabar_Factura1($FA);
+			if ($r != 1) {
+				return $r;
+			}
+
+			// print_r($FA);die();
+			if ($FA['TC'] <> "CP") {
+				$Evaluar = True;
+				$FechaTexto = $FA['FechaTexto'];
+				$Total_Factura = $Total_Factura - $FA['valorBan'];
+				// if($FA['TxtEfectivo']>$Total_Factura){$Total_Factura= }
+
+				// 'Abono en efectivo
+
+				// 'Abono en efectivo
+				$TA['T'] = G_NORMAL;
+				$TA['TP'] = $TipoFactura;
+				$TA['Fecha'] = $FechaTexto;
+				$TA['Cta_CxP'] = $FA['Cta_CxP'];
+				$TA['Cta'] = $_SESSION['SETEOS']['Cta_CajaG'];
+				$TA['Banco'] = "EFECTIVO MN";
+				$TA['Cheque'] = generaCeros($FA['Factura'], 8);
+				$TA['Factura'] = $FA['Factura'];
+				$TA['Serie'] = $FA['Serie'];
+				$TA['Autorizacion'] = $FA['Autorizacion'];
+				$TA['CodigoC'] = $FA['codigoCliente'];
+				$TA['codigoCliente'] = $FA['codigoCliente'];
+				// $Total_Factura = 0;
+				$TA['Abono'] = $FA['TxtEfectivo'];
+				$TA['Saldo'] = $Total_Factura - $FA['TxtEfectivo'];
+				// print_r('adasdasdasd');die();
+				Grabar_Abonos($TA);
+
+
+				// 'Abono de Factura Banco
+				$TA['T'] = G_NORMAL;
+				$TA['TP'] = $TipoFactura;
+				$TA['Fecha'] = $FechaTexto;
+				$TA['Cta'] = $FA['DCBancoC'];
+				$TA['Cta_CxP'] = $FA['Cta_CxP'];
+				$TA['Banco'] = $FA['TextBanco'];
+				$TA['Cheque'] = $FA['TextCheqNo'];
+				$TA['Factura'] = $Factura_No; //pendiente
+				$Total_Bancos = 0;
+				$TA['Abono'] = $FA['valorBan'];
+				// print_r($TA);die();
+				Grabar_Abonos($TA);
+				// print_r($TA);die();
+
+
+
+				$FA['TC'] = $TA['TP'];
+				$FA['Serie'] = $TA['Serie'];
+				$FA['Autorizacion'] = $TA['Autorizacion'];
+				$FA['Factura'] = $Factura_No;
+				$sql = "UPDATE Facturas
+          SET Saldo_MN = 0 ";
+				if (isset($FA['TxtEfectivo']) && $FA['TxtEfectivo'] == 0) {
+					$sql .= ",T = 'P'";
+				} else {
+					$sql .= " ,T = 'C' ";
+				}
+				$sql .= "
+          WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+          AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "'
+          AND Factura = " . $Factura_No . "
+          AND TC = '" . $TipoFactura . "'
+          AND CodigoC = '" . $FA['codigoCliente'] . "'
+          AND Autorizacion = '" . $FA['Autorizacion'] . "'
+          AND Serie = '" . $FA['Serie'] . "' ";
+
+				$conn->String_Sql($sql);
+			}
+
+			if (strlen($FA['Autorizacion']) >= 13) {
+
+				// print_r('si');die();
+				// print_r('drrrrddd');die();
+				$imp_guia = '';
+				if ($FA['TC'] <> "DO" && $FA['TC'] <> "NDU") {
+					//la respuesta puede se texto si envia numero significa que todo saliobien
+					$resp = $this->sri->Autorizar_factura_o_liquidacion($FA);
+					if($resp[0]=='-1')
+					{
+						return $resp;
+					}
+					$clave = $this->sri->Clave_acceso($TA['Fecha'], '01', $TA['Serie'], $Factura_No);
+					$imp_guia = '';
+					$clave_guia = '';
+					
+					// print_r($rep);die();
+					// SRI_Crear_Clave_Acceso_Facturas($FA,true); 
+					$FA['Desde'] = $FA['Factura'];
+					$FA['Hasta'] = $FA['Factura'];
+					// Imprimir_Facturas_CxC(FacturasPV, FA, True, False, True, True);
+					$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+					$TFA['CLAVE'] = $clave;
+					$TFA['PorcIva'] = $FA['Porc_IVA'];
+					$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+
+					$this->punto_venta->pdf_factura_elec($FA['Factura'], $FA['Serie'], $FA['codigoCliente'], $imp, $clave, $periodo = false, 0, 1);
+					// print_r($resp);die();
+					if ($resp[0] == 1) {
+						if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 0 && $_SESSION['INGRESO']['Grafico_PV'] == 0) {
+							$resp['rodillo'] = $_SESSION['INGRESO']['Impresora_Rodillo'];
+							$resp['pdf'] = $imp; 
+							
+							return $rep; 
+
+						} else if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 1 && $_SESSION['INGRESO']['Grafico_PV'] == 0) {
+							// impresion matricial
+							return array('respuesta' => $resp, 'pdf' => $imp, 'clave' => $clave,'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo'],'factura'=>$FA['Factura'],'serie'=>$FA['Serie']);
+
+						} else if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 0 && $_SESSION['INGRESO']['Grafico_PV'] == 1) {
+							$this->pdf->Imprimir_Punto_Venta_Grafico($TFA);
+							return array('respuesta' => $resp, 'pdf' => $imp, 'clave' => $clave,'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo'],'factura'=>$FA['Factura'],'serie'=>$FA['Serie']);
+						} else {
+							$this->pdf->Imprimir_Punto_Venta_Grafico($TFA);
+							return array('respuesta' => $resp, 'pdf' => $imp, 'clave' => $clave,'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo'],'factura'=>$FA['Factura'],'serie'=>$FA['Serie']);
+						}
+
+					} else {
+
+						$respuesta = array('msj'=>$resp,'rodillo'=>$_SESSION['INGRESO']['Impresora_Rodillo'],'pdf'=> $imp,'factura'=>$FA['Factura'],'serie'=>$FA['Serie']); 
+
+						return $respuesta; 
+
+						// array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep, 'clave' => $clave, 'respuesta_guia' => $rep1, 'pdf_guia' => $imp_guia, 'clave_guia' => $clave_guia, 'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
+					}
+				}
+			} else {
+				// print_r('dddd');die();
+				if ($Grafico_PV) {
+					$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+					Imprimir_Punto_Venta_Grafico($TFA);
+					Imprimir_Punto_Venta_Grafico($TFA);
+				} else {
+					$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+					$TFA['CLAVE'] = '.';
+					$this->pdf->Imprimir_Punto_Venta_Grafico($TFA);
+					$imp = $FA['Serie'] . '-' . generaCeros($FA['Factura'], 7);
+					$rep = 1;
+					if ($rep == 1) {
+						return array('respuesta' => $rep, 'pdf' => $imp);
+					} else {
+						return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep);
+					}
+
+					// ojo ver cula se piensa imprimir
+					// Imprimir_Punto_Venta($FA);
+				}
+			}
+			$sql = "DELETE 
+				      FROM Asiento_F
+				      WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+				      AND CodigoU = '" . $_SESSION['INGRESO']['CodigoU'] . "' ";
+					$conn->String_Sql($sql);
+			return 1;
+		} else {
+			return "No se puede grabar la Factura,  falta datos.";
+		}
+	}
+
+
+
+
+	function cargarOrden($parametros)
+    {
+        // print_r($parametros);die();
+        $tr = '';
+        $cantidad = 0;
+        $res = array();
+        $datos = $this->modelo->listaAsignacion($parametros['pedido'],'KF',false,false,false);
+        $integrantes = $this->modelo->IntegrantesGrupo($parametros['grupo']);
+        // print_r($integrantes);die();
+
+        $detalle = '';
+        $ddlGrupoPro = '';
+        $total = 0;
+        $ctotal = 0;
+        return $datos;
+    }
+
+    function SerieNDU($parametros)
+	{
+
+		// print_r($parametros);die();
+		$emision = date('Y-m-d');
+		$vencimiento = date('Y-m-d');
+		// busca serie de empresa
+			// busca serie de usuario
+			$serie = $this->modelo->getSerieUsuario($_SESSION['INGRESO']['CodigoU']);
+			// print_r($serie);die();
+			if (count($serie) > 0 && isset($serie[0]['Serie_FA'])) {
+				$serie = $serie[0]['Serie_FA'];
+			}
+			// busca en catalogo de lineas si no en existe o es punto
+			if ($serie == '.') {
+				$datos = $this->modelo->getCatalogoLineas13($emision, $vencimiento,$parametros['TC'] );
+				$serie = $datos[0]['Serie'];
+			}
+		
+		$NumComp = ReadSetDataNum($parametros['TC'] . "_SERIE_" . $serie, True, False);
+
+		$res = array('serie' => $serie, 'NumCom' => generaCeros($NumComp, 9));
+
+		return $res;
+	}
+
+	function finalizarFactura($parametros)
+	{
+		SetAdoAddNew("Detalle_Factura");
+		SetAdoFields("T",'N');
+		SetAdoFieldsWhere('Orden_No',$parametros['orden']);
+		return  SetAdoUpdateGeneric();
+		    
+	}
+
 
 
 }

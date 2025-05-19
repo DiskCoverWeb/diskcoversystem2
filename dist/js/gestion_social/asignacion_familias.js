@@ -1,6 +1,5 @@
 $(document).ready(function () {
      programas();
-     tipoCompra();
      autocoplet_pro2();
 
 })
@@ -101,11 +100,16 @@ function grupos()
 
 function tipoCompra()
 {
+    var datos = 
+    {
+        'grupo':$('#ddl_grupos').val(),
+        'fecha':$('#fechAten').val(),
+    }
     $.ajax({
-        url: '../controlador/inventario/asignacion_osC.php?tipo_asignacion=true',
+        url: '../controlador/inventario/asignacion_familiasC.php?tipo_asignacion=true',
         type: 'POST',
         dataType: 'json',
-        // data: { param: datos },
+        data: { parametros: datos },
     success: function (data) {
         console.log(data);
 
@@ -165,6 +169,15 @@ function guardar()
     // });
 }
 
+function calcular()
+{
+    var numeroIntegrantes = $('#totalPersAten').val();
+    var cantidadCP = $('#cant_cp').val();
+    var totalParaIntegrantes = parseFloat(numeroIntegrantes)*parseFloat(cantidadCP);
+
+    $('#cant').val(totalParaIntegrantes.toFixed(3));
+}
+
 function add_beneficiario(){
     $('#modal_addBeneficiario').modal('show');
 }
@@ -195,6 +208,7 @@ function agregar() {
         'Codigo': $('#grupProd').val(),
         'Producto': $('#grupProd option:selected').text(),
         'Cantidad': $('#cant').val(),
+        'CantidadCp': $('#cant_cp').val(),
         'Comentario': $('#comeAsig').val(),
         'programa':$('#ddl_programas').val(), 
         'programaNombre':$('#ddl_programas option:selected').text(),   
@@ -237,6 +251,46 @@ function limpiar() {
     $("#comeAsig").val("");
 }
 
+function IntegrantesGrupo()
+{
+    tipoCompra();
+    var grupo = $('#ddl_grupos').val();
+    var fech = $('#fechAten').val();
+    grupo = grupo.replace(/\./g,'_');
+    fech = fech.replace(/-/g,'')
+    codigo = grupo+'_'+fech;
+    $('#txt_codigo_pedido').val(codigo);
+   
+    var parametros =
+        {
+            'programa': $('#ddl_programas').val(),
+            'grupo': $('#ddl_grupos').val(),
+        }
+        $.ajax({
+            type: "POST",
+            url: '../controlador/facturacion/facturas_distribucion_famC.php?IntegrantesGrupo=true',
+            data: { parametros: parametros },
+            dataType: 'json',
+            success: function (data) {
+                tr = '';
+                data.forEach(function(item,i){
+                    tr+=`<tr>
+                        <td>`+(i+1)+`</td>
+                        <td>`+item.Cliente+`</td>
+                        <td>`+item.CI_RUC+`</td>
+                    </tr>`;
+                })
+                $('#tbl_integrantes').html(tr);
+
+                $('#totalPersAten').val(data.length);
+            }
+        });
+}
+
+function llenarCamposPoblacion()
+{
+    $('#modalBtnGrupo').modal('show');
+}
 function listaAsignacion() {
      if ($.fn.DataTable.isDataTable('#tbl_asignacion_os')) {
       $('#tbl_asignacion_os').DataTable().destroy();
@@ -296,6 +350,11 @@ function listaAsignacion() {
             // },
             { data: 'Producto'},
             { data: 'Cantidad',  
+                render: function(data, type, item) {
+                    return data ? parseFloat(data) : '';
+                }
+            },
+            { data: 'Cant_Hab',  
                 render: function(data, type, item) {
                     return data ? parseFloat(data) : '';
                 }

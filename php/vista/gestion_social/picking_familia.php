@@ -153,6 +153,7 @@
 								</button>
 							</div>
 							<input type="hidden" id="txt_id" name="txt_id">
+							<input type="hidden" id="txt_codBarras" name="txt_codBarras">
 						</div>
 					</div>
 				</div>
@@ -245,7 +246,7 @@
 
 
 <div id="modalDetalleCantidad" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
 				<h4 class="modal-title">Ver detalle</h4>

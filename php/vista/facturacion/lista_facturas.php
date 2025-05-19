@@ -56,7 +56,7 @@
                 title: "Acciones"
               },
               { data: 'T' },
-              { data: 'Razon_Social' },
+              { data: 'Cliente' },
               { data: 'TC' },
               { data: 'Serie' },
               { data: 'Autorizacion' },
@@ -113,7 +113,7 @@
                 title: "Acciones"
               },
               { data: 'T' },
-              { data: 'Razon_Social' },
+              { data: 'Cliente' },
               { data: 'TC' },
               { data: 'Serie' },
               { data: 'Autorizacion' },
@@ -170,7 +170,7 @@
                 title: "Acciones"
               },
               { data: 'T' },
-              { data: 'Razon_Social' },
+              { data: 'Cliente' },
               { data: 'TC' },
               { data: 'Serie' },
               { data: 'Autorizacion' },

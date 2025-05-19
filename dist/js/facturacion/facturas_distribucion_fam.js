@@ -1,7 +1,7 @@
+	var ListaIntegrantesXProducto = {};
 	$(document).ready(function () {
 		 autocomplete_pedidos();
 		 serie();
-
 		 DCLineas(); 
 		 DCPorcenIvaFD()
 
@@ -43,7 +43,7 @@
 		});
 	}
 
-	function serie() {
+	function  DCLineas() {
 		var TC = $('#DCTipoFact2').val();
 		var parametros =
 		{
@@ -51,13 +51,13 @@
 		}
 		$.ajax({
 			type: "POST",
-			url: '../controlador/facturacion/facturas_distribucionC.php?LblSerie=true',
+			url: '../controlador/facturacion/facturas_distribucion_famC.php?LblSerieNDU=true',
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
 				if (data.serie != '.') {
 					$('#LblSerie').text(data.serie);
-					$('#TextFacturaNo').val(data.NumCom);
+					$('#TextNDUNo').val(data.NumCom);
 				} else {
 					numeroFactura();
 				}
@@ -65,6 +65,8 @@
 			}
 		});
 	}
+
+
 
 	function numeroFactura() {
 		DCLinea = $("#DCLinea").val();
@@ -132,7 +134,8 @@
 	          data: function(d) {
 	              var parametros = {                    
 	               orden:$('#ddl_pedidos').val(),         
-	               fechaPick:$('#MBFechaChek').val(),
+	               fechaPick:$('#MBFechaChek').val(),     
+	               grupo:$('#ddl_grupos').val(),
 	              };
 	              return { parametros: parametros };
 	          },   
@@ -145,24 +148,20 @@
      
         columns: [
          	{data:'CodBodega'},
-	        {data: 'Nombre_Completo'},
 	        {data: 'Producto'},
 	        {data: 'cantidad'},
-	        {data: 'cantidad'},
-	        {data:'PVP'},
-	        {data:'total'},
-	        { data: null,
-	             render: function(data, type, item) {
-	                return ``;  
-	                               
-	            }
-	        },
-	        { data: null,
-	             render: function(data, type, item) {
-	                return ``;  
-	                               
-	            }
-	        },
+	        {data: 'NumIntegrante'},
+	        {data:'PVP',
+	        	render: function(data, type, row) {
+			    	return parseFloat(data).toFixed(2);
+			  	}
+			},
+	        {data:'total',
+	       	 render: function(data, type, row) {
+			    return parseFloat(data).toFixed(2);
+			  }
+			},
+	       
           
         ],
       });
@@ -184,7 +183,7 @@
 	    
 	}
 
-	function DCLineas() {
+	function serie() {
 		var parametros =
 		{
 			'Fecha': $('#MBFecha').val(),
@@ -192,10 +191,15 @@
 		}
 		$.ajax({
 			type: "POST",
-			url: '../controlador/facturacion/facturas_distribucionC.php?DCLineas=true',
+			url: '../controlador/facturacion/facturas_distribucionC.php?LblSerie=true',
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
+
+				$('#LblSerieFA').text(data.serie)
+				$('#TextFacturaNo').val(data.NumCom);
+				$('#TextNDUNo').val(data.NumCom)
+
 				llenarComboList(data, 'DCLineas');
 				//$('#Cod_CxC').val(data[0].nombre);  //FA
 				//Lineas_De_CxC();
@@ -228,10 +232,79 @@
 		});
 	}
 
-	function generar() {
+	function validarProductos(codigoC) {
+		$('#cbx_all_producto').prop('checked',false);
+		if($('#rbl_facturar_'+codigoC).prop('checked'))
+		{
+			$('#txt_integrate_produ').val(codigoC);
+			cargarOrden();
+			$('#modal_grupoAlimentos').modal('show');
+		}else
+		{
+			Swal.fire("Habilite al integrante","","info")
+		}
+	}
 
+	function generar() 
+	{
 		IntegrantesGrupo();
+		cargarOrden();
 		$('#modal_grupoIntegrantes').modal('show');
+	}
+
+	function cargarOrden()
+	{
+		var parametros =
+		{
+			'programa': $('#ddl_programas').val(),
+			'grupo': $('#ddl_grupos').val(),
+			'pedido':$('#ddl_pedidos').val(),
+		}
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucion_famC.php?cargarOrden=true',
+			data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+				console.log(data);
+				tr = '';
+				var total = 0;
+				data.forEach(function(item,i){
+					tr+= `<tr>
+							<td>
+								<input class="class_productos" type="checkbox" value="`+item.Codigo+`">
+							</td>
+							<td>`+item.Producto+`</td>
+							<td>`+item.Cantidad+`</td>
+							<td>
+								<input type="text" onblur="calcular_totales_x_integrante('`+item.Codigo.replaceAll('.','_')+`')" id="txt_cantidad_entregada_`+item.Codigo.replaceAll('.','_')+`" class="form-control form-control-sm" value="`+item.Cantidad+`">
+							</td>
+							<td>
+								<input type="text" onblur="calcular_totales_x_integrante('`+item.Codigo.replaceAll('.','_')+`')" id="txt_pvp_entregada_`+item.Codigo.replaceAll('.','_')+`" class="form-control form-control-sm" value="`+item.Precio+`">
+							</td>
+							<td>
+								<input type="text" readonly="" id="txt_total_entregada_`+item.Codigo.replaceAll('.','_')+`" class="form-control form-control-sm" value="`+(item.Precio*item.Cantidad)+`">
+							</td>
+						</tr>`;
+						total+=parseFloat(item.Cant_Hab);
+				})
+				console.log(data)
+				// console.log(data.detalle);
+				$('#tbl_grupoAlimento').html(tr);
+				$('#txt_total_fam').val(total.toFixed(2));
+			}
+		});
+	}
+
+
+	function calcular_totales_x_integrante(codigoC)
+	{
+		var cant = $('#txt_cantidad_entregada_'+codigoC).val();
+		var pvp = $('#txt_pvp_entregada_'+codigoC).val();
+
+		var total = parseFloat(cant)*parseFloat(pvp);
+		$('#txt_total_entregada_'+codigoC).val(total.toFixed(2));
+
 	}
 
 	function IntegrantesGrupo()
@@ -250,37 +323,154 @@
 				tr = '';
 				data.forEach(function(item,i){
 					tr+=`<tr>
+						<td class="text-center"><input class="class_integrante" type='checkbox' onclick="SelectionarIntegerante()" value="`+item.Codigo+`" id="rbl_facturar_`+item.Codigo+`" name="rbl_facturar_`+item.Codigo+`" checked="" ></td>
 						<td>`+(i+1)+`</td>
 						<td>`+item.Cliente+`</td>
 						<td>`+item.CI_RUC+`</td>
-						<td class="text-center"><input class="class_integrante" type='checkbox' value="`+item.Codigo+`" id="rbl_facturar_`+item.ID+`" name="rbl_facturar_`+item.ID+`"></td>
+						<td>
+							<input type="" id="txt_cant_cp_`+item.Codigo+`" name ="" class="form-control form-control-sm" value="0" readonly>
+						</td>
+						<td>
+							<input type="" id="txt_total_cp_`+item.Codigo+`" name ="" class="form-control form-control-sm" value="0" readonly>
+						</td>
+						<td>
+							<input type="" id="txt_abono_cp_`+item.Codigo+`" name ="" class="form-control form-control-sm" value="0" >
+						</td>
+						<td class="text-center">
+							<button type="button" class="btn" onclick="validarProductos('`+item.Codigo+`')">
+                            	<img id="img_tipoBene" src="../../img/png/cantidad_global.png" style="width: 32px;">
+                            </button>    
+						</td>
 					</tr>`;
 				})
+
+				tr+=`<tr>
+						<td>
+							<br>
+							<b></b>
+						</td>
+						<td>
+							<b>No Familias</b>
+							<label>`+data.length+` / <span id="lbl_cantiInte">`+data.length+`</span></label>
+						</td>
+						<td>
+							<b>Total Relativo</b>
+							<input type="" id="txt_total_fam" name ="" class="form-control form-control-sm" value="0">
+						</td>
+						<td>
+							<b>Total Entregado</b>
+							<input type="" id="txt_total_fam_ent" name ="" class="form-control form-control-sm" value="0">
+						</td>
+						<td>
+						</td>
+					</tr>`
 				$('#tbl_integrantes').html(tr);
 			}
 		});
 	}
 
-	function Generar_factura()
+	function SeleccionarIntegrante()
 	{
-		var integrantes = [];
 
+		var productos = [];
+		var codigoC = $('#txt_integrate_produ').val();
+
+		var valor_entre = 0;
+		var total_entre = 0;
+		$('.class_productos').each(function() {
+		    const checkbox = $(this);
+		    const isChecked = checkbox.prop('checked'); 
+		    if (isChecked) {
+		    	codigoInv = checkbox[0].value;
+		    	var cant = $('#txt_cantidad_entregada_'+codigoInv.replaceAll('.','_')).val()
+		    	var pvp = $('#txt_pvp_entregada_'+codigoInv.replaceAll('.','_')).val()
+		    	var total = $('#txt_total_entregada_'+codigoInv.replaceAll('.','_')).val()
+		    	productos.push({'Codigo':codigoInv,'cantidad':cant,'pvp':pvp,'total':total})
+		    	valor_entre+=parseFloat(cant);
+		    	total_entre+=parseFloat(total);
+		    }
+		});
+
+		ListaIntegrantesXProducto[codigoC] = productos;
+
+		$('#txt_cant_cp_'+codigoC).val(valor_entre.toFixed(2))
+		$('#txt_total_cp_'+codigoC).val(total_entre.toFixed(2));
+		// console.log(codigoC)
+		// console.log(productos);
+		// console.log(ListaIntegrantesXProducto)
+		calcular_totales()
+		$('#modal_grupoAlimentos').modal('hide');
+
+	}
+
+	function SelectionarIntegerante()
+	{
+		var cant = 0;
 		$('.class_integrante').each(function() {
 		    const checkbox = $(this);
 		    const isChecked = checkbox.prop('checked'); 
 		    if (isChecked) {
-		        integrantes.push(checkbox[0].value);
+		    	cant++;
+		    }else
+		    {
+		    	var codigoC = checkbox[0].value;
+		    	$('#txt_cant_cp_'+codigoC).val(0)
+		    	$('#txt_total_cp_'+codigoC).val(0)
+		    	delete ListaIntegrantesXProducto[codigoC]
+		    	calcular_totales();
+		    	console.log(ListaIntegrantesXProducto)
 		    }
 		});
+		$('#lbl_cantiInte').text(cant);		
+	}
 
-		console.log(integrantes.length)
+	function calcular_totales()
+	{		
+		console.log(ListaIntegrantesXProducto);
+		var total_ent = 0;
+		for(let key in ListaIntegrantesXProducto )
+		{
+			lineas = ListaIntegrantesXProducto[key];
+			lineas.forEach(function(item,i){
+				total_ent+=parseFloat(item.cantidad);
+				console.log(item);
+			})
+			console.log(ListaIntegrantesXProducto[key]);
+		}
+		
+		$('#txt_total_fam_ent').val(total_ent.toFixed(2));
 
-		if(integrantes.length==0)
+	}
+
+	function Generar_factura()
+	{
+
+		if(Object.keys(ListaIntegrantesXProducto).length==0)
 		{
 			Swal.fire("Seleccione algun Integrante de grupo","","info");
 			return false;
 		}
 
+		var ListaAbonos = {};
+		$('.class_integrante').each(function() {
+		    const checkbox = $(this);
+		    const isChecked = checkbox.prop('checked'); 
+		    if (isChecked) {
+		    	valor = $('#txt_cant_cp_'+checkbox[0].value).val();
+		    	valorT = $('#txt_abono_cp_'+checkbox[0].value).val();
+		    	if(valor==0)
+		    	{
+		    		Swal.fire("Producto no asignado para :"+checkbox[0].value,"Seleccione producto ó elimine de listado de integrantes","error")
+		    		return false;
+		    	}
+		    	ListaAbonos[checkbox[0].value] = {'abono':valorT,'cliente':checkbox[0].value}
+		    }
+		});
+		var integrantes = JSON.stringify(ListaIntegrantesXProducto);
+		var ListaAbonos = JSON.stringify(ListaAbonos);
+		// console.log(integrantes)
+
+		// console.log(ListaAbonos)
 
 		var parametros =
 		{
@@ -290,13 +480,16 @@
 			'fechaPick': $('#MBFechaChek').val(),
 			'fecha': $('#MBFecha').val(),
 			'integrantes':integrantes,
-
+			'Abonointegrantes':ListaAbonos,
 
 			'TxtEfectivo': $('#btnToggleInfoEfectivo').attr('stateval')=="1" ? $('#TxtEfectivo').val() : 0.00,
 			'TextFacturaNo': $('#TextFacturaNo').val(),
-			'TipoFactura': $('#DCTipoFact2').val(),
+			'TipoFactura': 'FA',
+			'TextNDUNo': $('#TextNDUNo').val(),
+			'TipoNDU': $('#DCTipoFact2').val(),
 			'TC':$('#DCTipoFact2').val(),
 			'Serie': $('#LblSerie').text(),
+			'SerieFA': $('#LblSerieFA').text(),
 			'DCBancoN': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco option:selected').text() : "",
 			'DCBancoC': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco').val() : "",
 			'TextBanco': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextBanco').val() : "",
@@ -305,16 +498,80 @@
 			'valorBan':  $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextCheque').val() : 0.00,
 			'Cta_Cobrar': $('#Cta_CxP').val(),
 			'Autorizacion': $('#Autorizacion').val(),
-			'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
+			'PorcIva':$('#DCPorcenIVA').text(),
 		}
+
 		$.ajax({
 			type: "POST",
 			url: '../controlador/facturacion/facturas_distribucion_famC.php?GenerarFactura=true',
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
-				
+				console.log(data);
+				todobien = 1;
+				data.forEach(function(item,i){
+					var resp = item.respuesta[0];
+					if(!resp==1)
+					{
+						todobien = 0;
+					}
+				})
+
+				if(todobien==1)
+				{
+					Swal.fire("Factura Generada","","success").then(function(){
+						// editar para que no aparesca la factura 
+						finalizarFactura()
+						// mostrar los tiquets y facturas  
+					})
+				}
+
+			},
+		    error: function(error){
+		      console.error("Error revisar: ", error);
+		    }
+		});
+
+	}
+
+	function finalizarFactura()
+	{
+		var parametros = 
+		{
+			'programa': $('#ddl_programas').val(),
+			'grupo': $('#ddl_grupos').val(),
+			'orden': $('#ddl_pedidos').val(),
+			'fechaPick': $('#MBFechaChek').val(),
+			'fecha': $('#MBFecha').val(),
+		}
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucion_famC.php?finalizarFactura=true',
+			data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+				if(data==1)
+				{
+					location.reload();
+				}
 			}
+		});
+
+	}
+
+
+	function all_Producto()
+	{
+		var estado = true;
+		if(!$('#cbx_all_producto').prop('checked'))
+		{
+			estado = false;
+		}
+
+		$('.class_productos').each(function() {
+		    	const checkbox = $(this);
+		    	console.log(checkbox);
+		    	checkbox.prop('checked',estado);
 		});
 
 	}
@@ -377,33 +634,33 @@
 
 	
 
-	// Deja preseleccionadas las opciones de los selects
-	function preseleccionar_opciones(){
-		$.ajax({
-			type: "GET",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?LlenarSelectIVA=true',
-			dataType: 'json',
-			success: function(data){
-				//Escoge el primer registro
-				let opcion = data[0]
+	// // Deja preseleccionadas las opciones de los selects
+	// function preseleccionar_opciones(){
+	// 	$.ajax({
+	// 		type: "GET",
+	// 		url: '../controlador/facturacion/facturas_distribucion_famC.php?LlenarSelectIVA=true',
+	// 		dataType: 'json',
+	// 		success: function(data){
+	// 			//Escoge el primer registro
+	// 			let opcion = data[0]
 
-				//Crea la opcion y la agrega como predefinida al select
-				for(let d of data){
-					let newOption = new Option(d['text'], d['id'], true, true);
-					$("#DCPorcenIVA").append(newOption);
-				}
-				let DCPorcenIVA = document.getElementById('DCPorcenIVA');
-				DCPorcenIVA.selectedIndex = 0;
-				//$("#DCPorcenIVA").trigger('change');
-				//cambiar_iva(DCPorcenIVA);
-				let valor = DCPorcenIVA.selectedOptions[0].text;
-				console.log(valor);
-				$('#Label3').text('I.V.A. '+parseFloat(valor).toFixed(2)+'%');
-				//tipo_documento();
-			}
-		});
+	// 			//Crea la opcion y la agrega como predefinida al select
+	// 			for(let d of data){
+	// 				let newOption = new Option(d['text'], d['id'], true, true);
+	// 				$("#DCPorcenIVA").append(newOption);
+	// 			}
+	// 			let DCPorcenIVA = document.getElementById('DCPorcenIVA');
+	// 			DCPorcenIVA.selectedIndex = 0;
+	// 			//$("#DCPorcenIVA").trigger('change');
+	// 			//cambiar_iva(DCPorcenIVA);
+	// 			let valor = DCPorcenIVA.selectedOptions[0].text;
+	// 			console.log(valor);
+	// 			$('#Label3').text('I.V.A. '+parseFloat(valor).toFixed(2)+'%');
+	// 			//tipo_documento();
+	// 		}
+	// 	});
 		
-	}
+	// }
 
 	//Agrega eventos a selects
 	function eventos_select(){
@@ -1443,219 +1700,219 @@
 		});
 	}
 
-	function generar_factura() {
-		//$('#myModal_espera').modal('show');
+	// function generar_factura() {
+	// 	//$('#myModal_espera').modal('show');
 
 		
 		
-		/*var tc = $('#DCLinea').val();
-		tc = tc.split(' ');*/
+	// 	/*var tc = $('#DCLinea').val();
+	// 	tc = tc.split(' ');*/
 
-		var tc = datosFact;
-		var parametros =
-		{
-			'MBFecha': $('#MBFecha').val(),
-			'TxtEfectivo': $('#btnToggleInfoEfectivo').attr('stateval')=="1" ? $('#TxtEfectivo').val() : 0.00,
-			'TextFacturaNo': $('#TextFacturaNo').val(),
-			//'TxtNota': $('#TxtNota').val(),
-			//'TxtObservacion': $('#TxtObservacion').val(),
-			'TipoFactura': tc,
-			//'TxtGavetas': $('#TxtGavetas').val(),
-			'CodigoCliente': $('#codigoCliente').val(),
-			'email': $('#Lblemail').val(),
-			'CI': $('#LblRUC').val(),
-			'NombreCliente': $('#DCCliente option:selected').text(),
-			'TC': tc,
-			'Serie': $('#LblSerie').text(),
-			'DCBancoN': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco option:selected').text() : "",
-			'DCBancoC': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco').val() : "",
-			'T': $('#LblT').val(),
-			'TextBanco': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextBanco').val() : "",
-			'TextCheqNo': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextCheqNo').val() : "",
-			'CodDoc': $('#CodDoc').val(),
-			'valorBan':  $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextCheque').val() : 0.00,
-			'Cta_Cobrar': $('#Cta_CxP').val(),
-			'Autorizacion': $('#Autorizacion').val(),
-			'CodigoL': $('#CodigoL').val(),
-			'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
-			'FATextVUnit': (parseFloat($('#LabelTotal').val())/1).toFixed(2),
-			'FAVTotal': $('#LabelTotal').val(),
-			'FACodLinea': $('#DCLineas').val(),
-			'CodigoU': $('.asignTablaDistri')[0].children[10].textContent,
-			//'cheking': $('#DCPorcenIVA').val(),
-			//'PorcIva': $('#DCPorcenIVA').val()
-		}
+	// 	var tc = datosFact;
+	// 	var parametros =
+	// 	{
+	// 		'MBFecha': $('#MBFecha').val(),
+	// 		'TxtEfectivo': $('#btnToggleInfoEfectivo').attr('stateval')=="1" ? $('#TxtEfectivo').val() : 0.00,
+	// 		'TextFacturaNo': $('#TextFacturaNo').val(),
+	// 		//'TxtNota': $('#TxtNota').val(),
+	// 		//'TxtObservacion': $('#TxtObservacion').val(),
+	// 		'TipoFactura': tc,
+	// 		//'TxtGavetas': $('#TxtGavetas').val(),
+	// 		'CodigoCliente': $('#codigoCliente').val(),
+	// 		'email': $('#Lblemail').val(),
+	// 		'CI': $('#LblRUC').val(),
+	// 		'NombreCliente': $('#DCCliente option:selected').text(),
+	// 		'TC': tc,
+	// 		'Serie': $('#LblSerie').text(),
+	// 		'DCBancoN': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco option:selected').text() : "",
+	// 		'DCBancoC': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco').val() : "",
+	// 		'T': $('#LblT').val(),
+	// 		'TextBanco': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextBanco').val() : "",
+	// 		'TextCheqNo': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextCheqNo').val() : "",
+	// 		'CodDoc': $('#CodDoc').val(),
+	// 		'valorBan':  $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextCheque').val() : 0.00,
+	// 		'Cta_Cobrar': $('#Cta_CxP').val(),
+	// 		'Autorizacion': $('#Autorizacion').val(),
+	// 		'CodigoL': $('#CodigoL').val(),
+	// 		'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
+	// 		'FATextVUnit': (parseFloat($('#LabelTotal').val())/1).toFixed(2),
+	// 		'FAVTotal': $('#LabelTotal').val(),
+	// 		'FACodLinea': $('#DCLineas').val(),
+	// 		'CodigoU': $('.asignTablaDistri')[0].children[10].textContent,
+	// 		//'cheking': $('#DCPorcenIVA').val(),
+	// 		//'PorcIva': $('#DCPorcenIVA').val()
+	// 	}
 
-		if(docbouche != undefined && docbouche.trim() != ''){
-			parametros['Comprobante'] = docbouche;
-		}
+	// 	if(docbouche != undefined && docbouche.trim() != ''){
+	// 		parametros['Comprobante'] = docbouche;
+	// 	}
 
-		console.log(parametros);
+	// 	console.log(parametros);
 
-		$.ajax({
-			type: "POST",
-			url: '../controlador/facturacion/facturas_distribucion_famC.php?generar_factura=true',
-			data: { parametros: parametros },
-			dataType: 'json',
-			success: function (data) {
-				$('#myModal_espera').modal('hide');
-				// console.log(data);
-				if(data.length == 1){
-					if (data.respuesta == 1) {
-						Swal.fire({
-							icon: 'success',
-							title: 'Factura Creada',
-							confirmButtonText: 'Ok!',
-							allowOutsideClick: false,
-						}).then(function () {
-							var url = '../../TEMP/' + data.pdf + '.pdf';
-							window.open(url, '_blank');
-							/*parametros = {
-								'TextVUnit': (parseFloat($('#LabelTotal').val())/1).toFixed(2),
-								'TextCant': 1,
-								'TC': valTC,
-								'TxtDocumentos': '.',
-								'Codigo': 'FA.99',
-								'fecha': $('#MBFecha').val(),
-								'CodBod': '',
-								'VTotal': $('#LabelTotal').val(),
-								'CodigoCliente': $('#codigoCliente').val(),
-								'TextServicios': '.',
-								'TextVDescto': 0,
-								'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text
-							};*/
-							AdoLinea();
-							eliminar_linea('', '');
-							//crearAsientoFFA(parametros);
-						})
-					} else if (data.respuesta == -1) {
-						if(data.text=='' || data.text == null)
-						{
-							Swal.fire({
-								icon: 'error',
-								title: 'XML devuelto',
-								text:'Error al generar XML o al firmar',
-								confirmButtonText: 'Ok!',
-								allowOutsideClick: false,
-							}).then(function () {
-								location.reload();
-							})
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: '../controlador/facturacion/facturas_distribucion_famC.php?generar_factura=true',
+	// 		data: { parametros: parametros },
+	// 		dataType: 'json',
+	// 		success: function (data) {
+	// 			$('#myModal_espera').modal('hide');
+	// 			// console.log(data);
+	// 			if(data.length == 1){
+	// 				if (data.respuesta == 1) {
+	// 					Swal.fire({
+	// 						icon: 'success',
+	// 						title: 'Factura Creada',
+	// 						confirmButtonText: 'Ok!',
+	// 						allowOutsideClick: false,
+	// 					}).then(function () {
+	// 						var url = '../../TEMP/' + data.pdf + '.pdf';
+	// 						window.open(url, '_blank');
+	// 						/*parametros = {
+	// 							'TextVUnit': (parseFloat($('#LabelTotal').val())/1).toFixed(2),
+	// 							'TextCant': 1,
+	// 							'TC': valTC,
+	// 							'TxtDocumentos': '.',
+	// 							'Codigo': 'FA.99',
+	// 							'fecha': $('#MBFecha').val(),
+	// 							'CodBod': '',
+	// 							'VTotal': $('#LabelTotal').val(),
+	// 							'CodigoCliente': $('#codigoCliente').val(),
+	// 							'TextServicios': '.',
+	// 							'TextVDescto': 0,
+	// 							'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text
+	// 						};*/
+	// 						AdoLinea();
+	// 						eliminar_linea('', '');
+	// 						//crearAsientoFFA(parametros);
+	// 					})
+	// 				} else if (data.respuesta == -1) {
+	// 					if(data.text=='' || data.text == null)
+	// 					{
+	// 						Swal.fire({
+	// 							icon: 'error',
+	// 							title: 'XML devuelto',
+	// 							text:'Error al generar XML o al firmar',
+	// 							confirmButtonText: 'Ok!',
+	// 							allowOutsideClick: false,
+	// 						}).then(function () {
+	// 							location.reload();
+	// 						})
 						
-							tipo_error_sri(data.clave);
-						}else{
-						Swal.fire({
-								icon: 'error',
-								title: data.text,
-								confirmButtonText: 'Ok!',
-								allowOutsideClick: false,
-							}).then(function () {
-								location.reload();
-							})
-						}
-					} else if (data.respuesta == 2) {
-						// Swal.fire('XML devuelto', '', 'error');
-						Swal.fire({
-							icon: 'error',
-							title: 'XML devuelto',
-							text:'Error al generar XML o al firmar',
-							confirmButtonText: 'Ok!',
-							allowOutsideClick: false,
-						}).then(function () {
-							location.reload();
-						})
+	// 						tipo_error_sri(data.clave);
+	// 					}else{
+	// 					Swal.fire({
+	// 							icon: 'error',
+	// 							title: data.text,
+	// 							confirmButtonText: 'Ok!',
+	// 							allowOutsideClick: false,
+	// 						}).then(function () {
+	// 							location.reload();
+	// 						})
+	// 					}
+	// 				} else if (data.respuesta == 2) {
+	// 					// Swal.fire('XML devuelto', '', 'error');
+	// 					Swal.fire({
+	// 						icon: 'error',
+	// 						title: 'XML devuelto',
+	// 						text:'Error al generar XML o al firmar',
+	// 						confirmButtonText: 'Ok!',
+	// 						allowOutsideClick: false,
+	// 					}).then(function () {
+	// 						location.reload();
+	// 					})
 					
-						tipo_error_sri(data.clave);
-					}
-					else if (data.respuesta == 4) {
-						Swal.fire('SRI intermitente intente mas tarde', '', 'info');
-					} else {
-						Swal.fire(data.text, '', 'error');
-					}
-				}else{
-					if (data[1].respuesta == 1) {
-						Swal.fire({
-							icon: 'success',
-							title: 'Nota de Venta y Factura Creadas',
-							confirmButtonText: 'Ok!',
-							allowOutsideClick: false,
-						}).then(function () {
-							$('#imprimir_nd').removeAttr('disabled');
-							var url = '../../TEMP/' + data[0].pdf + '.pdf';
-							url_nd = '../../TEMP/' + data[1].pdf + '.pdf';
+	// 					tipo_error_sri(data.clave);
+	// 				}
+	// 				else if (data.respuesta == 4) {
+	// 					Swal.fire('SRI intermitente intente mas tarde', '', 'info');
+	// 				} else {
+	// 					Swal.fire(data.text, '', 'error');
+	// 				}
+	// 			}else{
+	// 				if (data[1].respuesta == 1) {
+	// 					Swal.fire({
+	// 						icon: 'success',
+	// 						title: 'Nota de Venta y Factura Creadas',
+	// 						confirmButtonText: 'Ok!',
+	// 						allowOutsideClick: false,
+	// 					}).then(function () {
+	// 						$('#imprimir_nd').removeAttr('disabled');
+	// 						var url = '../../TEMP/' + data[0].pdf + '.pdf';
+	// 						url_nd = '../../TEMP/' + data[1].pdf + '.pdf';
 							
-							window.open(url, '_blank');
-							Swal.fire('Puede imprimir la nota de donacion en el botón con icono de impresora', '', 'info');
-							/*parametros = {
-								'TextVUnit': (parseFloat($('#LabelTotal').val())/1).toFixed(2),
-								'TextCant': 1,
-								'TC': valTC,
-								'TxtDocumentos': '.',
-								'Codigo': 'FA.99',
-								'fecha': $('#MBFecha').val(),
-								'CodBod': '',
-								'VTotal': $('#LabelTotal').val(),
-								'CodigoCliente': $('#codigoCliente').val(),
-								'TextServicios': '.',
-								'TextVDescto': 0,
-								'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text
-							};*/
-							AdoLinea();
-							eliminar_linea('', '');
-							//crearAsientoFFA(parametros);
-						})
-					} else if (data[1].respuesta == -1) {
-						if(data[1].text=='' || data[1].text == null)
-						{
-							Swal.fire({
-								icon: 'error',
-								title: 'XML devuelto',
-								text:'Error al generar XML o al firmar',
-								confirmButtonText: 'Ok!',
-								allowOutsideClick: false,
-							}).then(function () {
-								location.reload();
-							})
+	// 						window.open(url, '_blank');
+	// 						Swal.fire('Puede imprimir la nota de donacion en el botón con icono de impresora', '', 'info');
+	// 						/*parametros = {
+	// 							'TextVUnit': (parseFloat($('#LabelTotal').val())/1).toFixed(2),
+	// 							'TextCant': 1,
+	// 							'TC': valTC,
+	// 							'TxtDocumentos': '.',
+	// 							'Codigo': 'FA.99',
+	// 							'fecha': $('#MBFecha').val(),
+	// 							'CodBod': '',
+	// 							'VTotal': $('#LabelTotal').val(),
+	// 							'CodigoCliente': $('#codigoCliente').val(),
+	// 							'TextServicios': '.',
+	// 							'TextVDescto': 0,
+	// 							'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text
+	// 						};*/
+	// 						AdoLinea();
+	// 						eliminar_linea('', '');
+	// 						//crearAsientoFFA(parametros);
+	// 					})
+	// 				} else if (data[1].respuesta == -1) {
+	// 					if(data[1].text=='' || data[1].text == null)
+	// 					{
+	// 						Swal.fire({
+	// 							icon: 'error',
+	// 							title: 'XML devuelto',
+	// 							text:'Error al generar XML o al firmar',
+	// 							confirmButtonText: 'Ok!',
+	// 							allowOutsideClick: false,
+	// 						}).then(function () {
+	// 							location.reload();
+	// 						})
 						
-							tipo_error_sri(data[1].clave);
-						}else{
-						Swal.fire({
-								icon: 'error',
-								title: data[1].text,
-								confirmButtonText: 'Ok!',
-								allowOutsideClick: false,
-							}).then(function () {
-								location.reload();
-							})
-						}
-					} else if (data[1].respuesta == 2) {
-						// Swal.fire('XML devuelto', '', 'error');
-						Swal.fire({
-							icon: 'error',
-							title: 'XML devuelto',
-							text:'Error al generar XML o al firmar',
-							confirmButtonText: 'Ok!',
-							allowOutsideClick: false,
-						}).then(function () {
-							location.reload();
-						})
+	// 						tipo_error_sri(data[1].clave);
+	// 					}else{
+	// 					Swal.fire({
+	// 							icon: 'error',
+	// 							title: data[1].text,
+	// 							confirmButtonText: 'Ok!',
+	// 							allowOutsideClick: false,
+	// 						}).then(function () {
+	// 							location.reload();
+	// 						})
+	// 					}
+	// 				} else if (data[1].respuesta == 2) {
+	// 					// Swal.fire('XML devuelto', '', 'error');
+	// 					Swal.fire({
+	// 						icon: 'error',
+	// 						title: 'XML devuelto',
+	// 						text:'Error al generar XML o al firmar',
+	// 						confirmButtonText: 'Ok!',
+	// 						allowOutsideClick: false,
+	// 					}).then(function () {
+	// 						location.reload();
+	// 					})
 					
-						tipo_error_sri(data[1].clave);
-					}
-					else if (data[1].respuesta == 4) {
-						Swal.fire('SRI intermitente intente mas tarde', '', 'info');
-					} else {
-						Swal.fire(data[1].text, '', 'error');
-					}
-				}
+	// 					tipo_error_sri(data[1].clave);
+	// 				}
+	// 				else if (data[1].respuesta == 4) {
+	// 					Swal.fire('SRI intermitente intente mas tarde', '', 'info');
+	// 				} else {
+	// 					Swal.fire(data[1].text, '', 'error');
+	// 				}
+	// 			}
 				
 
-			},
-			error: (err) => {
-				Swal.fire('Error', 'Hubo un problema al guardar la factura.','info');
-			}
-		});
+	// 		},
+	// 		error: (err) => {
+	// 			Swal.fire('Error', 'Hubo un problema al guardar la factura.','info');
+	// 		}
+	// 	});
 
-	}
+	// }
 
 	function calcular_pago() {
 

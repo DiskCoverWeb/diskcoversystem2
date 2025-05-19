@@ -40,7 +40,7 @@ function ver_detalle()
     {
         'Orden_No':parte[0],
         'No_Hab':parte[1],
-        'Fecha':$('#fechaAsig').val(),
+        'Fecha':$('#txt_fechaAsig').val(),
     }
     cargarOrden(datos);
     $('#modalDetalleCantidad').modal('show');
@@ -284,6 +284,7 @@ function validar_codigo()
                     $('#txt_stock').val(data.Entrada)
                     $('#txt_unidad').val(data.Unidad)
                     $('#txt_fecha_exp').val(formatoDate(data.Fecha.date));
+                    $('#txt_codBarras').val(data.Codigo_Barra)
 
                     var fecha1 = new Date();
                     var fecha2 = new Date(formatoDate(data.Fecha_Exp.date));
@@ -359,6 +360,7 @@ function agregar_picking()
     'FechaAsig':$('#txt_fechaAsig').val(),
     'codigoProducto':$('#txt_codigo').val(),
     'id':$('#txt_codigo').val(),
+    'codBarras':$('#txt_codBarras').val(),
     }
     $.ajax({
         type: "POST",
@@ -374,6 +376,9 @@ function agregar_picking()
             }else if(data==-2)
             {
                 Swal.fire("El producto no se puede ingresar por que supera el total de Grupo","","error")
+            }else
+            {                
+                Swal.fire("El producto ya esta registrado","","error")
             }
             console.log(data);
         }

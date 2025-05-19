@@ -49,9 +49,41 @@ class facturas_distribucion_famM
       return $this->db->datos($sql);
   }
 
-  function cargar_asignacion($orden,$tipo=false,$T=false,$fecha=false)
+  function listaAsignacion($orden,$T=false,$tipo=false,$tipoVenta=false,$fecha=false)
   {
-        $sql = "SELECT CodBodega,Nombre_Completo,Producto,TC.Total as cantidad,PVP,(TC.Total*PVP) as total 
+         $sql = "SELECT ".Full_Fields("Detalle_Factura")."
+                FROM Detalle_Factura
+                WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+                AND Periodo='".$_SESSION['INGRESO']['periodo']."' 
+                AND Orden_No = '".$orden."' 
+                AND TC = 'OF' ";
+                if($fecha)
+                {
+                    $sql.="AND Fecha = '".$fecha."' ";
+                }
+                if($T)
+                {
+                    $sql.="AND T = '".$T."'";
+                }
+                 if($tipo)
+                {
+                    $sql.=" AND Codigo = '".$tipo."'";
+                }
+                if($tipoVenta)
+                {
+                    $sql.=" AND No_Hab = '".$tipoVenta."'";
+                }                
+                // print_r($sql);die();
+        try{
+            return $this->db->datos($sql);
+        }catch(Exception $e){
+            throw new Exception($e);
+        }
+  }
+
+  function cargar_asignacion($orden,$tipo=false,$T=false,$fecha=false,$codigo_inv=false)
+  {
+        $sql = "SELECT CodBodega,Nombre_Completo,Producto,TC.Total as cantidad,PVP,(TC.Total*PVP) as total,TC.Codigo_Inv,TC.Codigo_Barra,Porc  
                 FROM Trans_Comision TC 
                 INNER JOIN Accesos A ON TC.CodigoU = A.Codigo 
                 INNER JOIN Catalogo_Productos CP ON TC.Codigo_Inv = CP.Codigo_Inv
@@ -68,17 +100,95 @@ class facturas_distribucion_famM
                     //fecha_A es la fecha de asignacion
                     $sql.=" AND Fecha_A = '".$fecha."'";
                 }
+
+                if($codigo_inv)
+                {
+                    //fecha_A es la fecha de asignacion
+                    $sql.=" AND TC.Codigo_Inv = '".$codigo_inv."'";
+                }
                 // print_r($sql);die();
         return $this->db->datos($sql);    
     }
+
+    function ProductosSisponible($orden,$T)
+    {
+        $sql = "UPDATE Trans_Comision SET Porc = Total  
+                WHERE Orden_No = '".$orden."'
+                AND T = '".$T."'
+                AND Item = '".$_SESSION['INGRESO']['item']."' 
+                AND Periodo='".$_SESSION['INGRESO']['periodo']."' ";
+
+        return $this->db->String_Sql($sql);   
+    }
+
+    function ACtualizarDisponibilidad($orden,$T,$codbarras,$cantidad)
+    {
+        $sql = "UPDATE Trans_Comision SET Porc = '".$cantidad."'  
+                WHERE Orden_No = '".$orden."'
+                AND T = '".$T."'
+                AND CodBodega = '".$codbarras."'
+                AND Item = '".$_SESSION['INGRESO']['item']."' 
+                AND Periodo='".$_SESSION['INGRESO']['periodo']."' ";
+
+                // print_r($sql);die();
+
+        return $this->db->String_Sql($sql);   
+    }
+
 
     function IntegrantesGrupo($grupo)
     {
       $sql = "SELECT ".Full_Fields('Clientes')."
               FROM Clientes
               WHERE Grupo = '".$grupo."'";
+
+              // print_r($sql);die();
         return $this->db->datos($sql);
     }
+    function getSerieUsuario($codigoU)
+    {
+         $sql = "SELECT * FROM Accesos WHERE Codigo = '" . $codigoU . "'";
+        // print_r($sql);die();
+        $stmt = $this->db->datos($sql);
+        return $stmt;
+    }
+    function getCatalogoLineas13($fecha, $vencimiento,$TC)
+    {
+        $sql = "  SELECT * FROM Catalogo_Lineas 
+                WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
+                AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' 
+                AND Fact = '".$TC."'
+                AND CONVERT(DATE,Fecha) <= '" . $fecha . "'
+                AND CONVERT(DATE,Vencimiento) >= '" . $vencimiento . "'
+                AND len(Autorizacion)>=13
+                ORDER BY Codigo";
+
+                // print_r($sql);die();
+        $stmt = $this->db->datos($sql);
+        return $stmt;
+    }
+
+    function catalogo_lineas($TC, $SerieFactura, $emision, $vencimiento, $electronico = false)
+    {
+        $sql = "SELECT *
+             FROM Catalogo_Lineas
+             WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+             AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "'
+             AND Fact = '" . $TC . "'
+             AND Serie = '" . $SerieFactura . "'
+             AND TL <> 0
+             AND CONVERT(DATE,Fecha) <= '" . $emision . "'
+             AND CONVERT(DATE,Vencimiento) >= '" . $vencimiento . "'";
+        if ($electronico) {
+          $sql .= " AND len(Autorizacion)=13";
+        }
+        $sql .= " ORDER BY Codigo ";
+        // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+
+
 
 
 }

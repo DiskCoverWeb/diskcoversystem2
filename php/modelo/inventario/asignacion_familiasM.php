@@ -51,7 +51,7 @@ class asignacion_familiasM
         }
     }
 
-    function listaAsignacionUnicos($orden=false,$T=false,$tipo=false,$fecha=false)
+    function listaAsignacionUnicos($orden=false,$T=false,$tipo=false,$fecha=false,$grupo = false)
     {
          $sql = "SELECT Orden_No,No_Hab,Fecha,CodigoL,CP.Proceso as 'Programa',CodigoB,CP1.Proceso as 'Grupo'
                 FROM Detalle_Factura DF
@@ -75,6 +75,10 @@ class asignacion_familiasM
                 if($tipo)
                 {
                     $sql.=" AND No_Hab = '".$tipo."'";
+                } 
+                if($grupo)
+                {
+                    $sql.=" AND CodigoB = '".$grupo."'";
                 }                
                 $sql.= ' AND DF.Item = CP.Item
                 Group by Orden_No,No_Hab,Fecha,CodigoL,CP.Proceso,CodigoB,CP1.Proceso';
@@ -100,7 +104,7 @@ class asignacion_familiasM
         return $this->db->datos($sql);   
     }
 
-    function cargar_asignacion($bene,$tipo,$T,$fecha=false)
+    function cargar_asignacion($bene,$tipo,$T,$fecha=false,$codbarras=false)
     {
         $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,T
                 FROM Trans_Comision TC
@@ -113,20 +117,46 @@ class asignacion_familiasM
                     //fecha_A es la fecha de asignacion
                     $sql.=" AND Fecha_A = '".$fecha."'";
                 }
+                if($codbarras)
+                {
+                    $sql.=" AND TC.Codigo_Barra = '".$codbarras."'";
+                }
                 // print_r($sql);die();
         return $this->db->datos($sql);    
     }
 
-    function lineasKArdex($codBarras)
+
+
+    function lineasKArdex($codBarras=false,$id=false)
     {
         $sql ="SELECT TK.Codigo_Barra,TK.Fecha,CP.Producto
             FROM trans_kardex TK
             INNER JOIN Catalogo_Productos CP on TK.Codigo_Inv = CP.Codigo_Inv 
-            WHERE TK.Codigo_Barra = '".$codBarras."'";
+            WHERE 1=1 ";
+            if($codBarras)
+            {
+                $sql.=" AND TK.Codigo_Barra = '".$codBarras."'";
+            }
+            if($id)
+            {
+                $sql.=" AND TK.ID = '".$id."'";
+            }
                // print_r($sql);die();
+            
 
         return $this->db->datos($sql);   
     }
+
+
+    function tipo_asignacion()
+    {
+        $sql = "SELECT ".Full_Fields('Catalogo_Proceso')." 
+                FROM Catalogo_Proceso 
+                WHERE TP = 'TIPOASIG' 
+                AND Item='".$_SESSION['INGRESO']['item']."' ";
+        return $this->db->datos($sql);    
+    }
+
 
 
 }

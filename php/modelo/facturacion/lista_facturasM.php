@@ -77,7 +77,7 @@ class lista_facturasM
 
    			// print_r($codigo);die();
 		
-		$sql ="SELECT F.T,TC,Serie,Autorizacion,Factura,F.Fecha,SubTotal,Con_IVA,IVA,F.Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,F.TB,Razon_Social,CodigoC,F.ID,Email,Email2,EmailR 
+		$sql ="SELECT TOP (100) F.T,TC,Serie,Autorizacion,Factura,F.Fecha,SubTotal,Con_IVA,IVA,F.Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,F.TB,C.Cliente,Razon_Social,CodigoC,F.ID,Email,Email2,EmailR 
 		FROM Facturas F
 		LEFT JOIN Clientes C on F.CodigoC = C.Codigo 
 		WHERE Item = '".$_SESSION['INGRESO']['item']."' 
@@ -121,8 +121,7 @@ class lista_facturasM
        	 $sql.= " AND F.Fecha BETWEEN   '".$desde."' AND '".$hasta."' ";
        }
 
-       $sql.=" ORDER BY Serie,Factura DESC "; 
-	$sql.=" OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;";   
+       $sql.=" ORDER BY Factura DESC ";  
     // print_r($_SESSION['INGRESO']);
 	// print_r($sql);die();    
 	return $this->db->datos($sql);
