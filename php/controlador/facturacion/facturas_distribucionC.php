@@ -2067,9 +2067,9 @@ class facturas_distribucion
 
 				$conn->String_Sql($sql);
 			}
-			//print_r($FA);die();
+			// print_r($FA);die();
 
-			if (strlen($FA['Autorizacion']) >= 13) {
+			if (strlen($FA['Autorizacion']) >= 13 && $FA['TC']!='NDO') {
 
 				// print_r('si');die();
 				// print_r('drrrrddd');die();
@@ -2083,8 +2083,8 @@ class facturas_distribucion
 					// 'Autorizamos la factura
 					if (strlen($FA['Autorizacion']) == 13) {
 						$respuesta = $this->sri->Autorizar_factura_o_liquidacion($FA);
+						$clave = $this->sri->Clave_acceso($FA['Fecha'], '01', $FA['Serie'], $FA['Factura']);
 						if($respuesta == 1){
-						   $clave = $this->sri->Clave_acceso($FA['Fecha'], '01', $FA['Serie'], $FA['Factura']);
 						   $FA['Autorizacion'] = $clave;
 						   $FA['Clave_Acceso'] = $clave;
 						}

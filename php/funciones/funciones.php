@@ -6295,6 +6295,7 @@ function datos_tabla($tabla,$campo=false)
     $TFA['Descuento_0'] = 0;
     $TFA['Descuento_X'] = 0;
     $TFA['Servicio'] = 0;
+    $TFA['cod_doc'] = '01';
 
     //Miramos de cuanto es la factura para los calculos de los totales
     $Total_Desc_ME = 0;

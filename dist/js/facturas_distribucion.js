@@ -2027,7 +2027,7 @@ function tipo_facturacion(valor)
 				
 				// console.log(data);
 				if(data.length == 1){
-					if (data.respuesta == 1) {
+					if (data.respuesta[0] == 1) {
 						Swal.fire({
 							icon: 'success',
 							title: 'Factura Creada',
@@ -2040,7 +2040,7 @@ function tipo_facturacion(valor)
 							eliminar_linea('', '');
 							//crearAsientoFFA(parametros);
 						})
-					} else if (data.respuesta == -1) {
+					} else if (data.respuesta[0] == -1) {
 						if(data.text=='' || data.text == null)
 						{
 							Swal.fire({
@@ -2050,7 +2050,7 @@ function tipo_facturacion(valor)
 								confirmButtonText: 'Ok!',
 								allowOutsideClick: false,
 							}).then(function () {
-								location.reload();
+								// location.reload();
 							})
 						
 							tipo_error_sri(data.clave);
