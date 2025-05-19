@@ -318,7 +318,7 @@ class facturarC
             SetAdoFields("Serie_No", $value['Serie_No']);
             SetAdoFields("CodBod", $value['CodBodega']);
             SetAdoFields("Costo", $value['Costo']);
-            SetAdoFields("Cta", $parametros['cta']);
+            // SetAdoFields("Cta", $parametros['cta']);
             SetAdoFields("Item", $_SESSION['INGRESO']['item']);
             SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
             SetAdoFields("A_No", $Ln_No);
