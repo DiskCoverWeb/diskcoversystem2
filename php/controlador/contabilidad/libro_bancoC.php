@@ -131,7 +131,7 @@ class libro_bancoC
 
 			    $tablaHTML[$pos]['medidas']=$tablaHTML[2]['medidas'];
 		        $tablaHTML[$pos]['alineado']=$ali;
-		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),$value['Saldo']);
+		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),number_format($value['Saldo'],2,'.',''));
 		        $tablaHTML[$pos]['borde'] ='LR';
 		        $pos = $pos+1;
 		        $fecha = $value['Fecha']->format('Y-m-d');
@@ -156,7 +156,7 @@ class libro_bancoC
 				    
 			    $tablaHTML[$pos]['medidas']=$tablaHTML[2]['medidas'];
 		        $tablaHTML[$pos]['alineado']=$ali;
-		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),$value['Saldo']);
+		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),number_format($value['Saldo'],2,'.',''));
 		        $tablaHTML[$pos]['borde'] ='LR';
 		         $pos = $pos+1;
 		        $fecha = $value['Fecha']->format('Y-m-d');
@@ -196,7 +196,7 @@ class libro_bancoC
 		          
 			    $tablaHTML[$pos]['medidas']=$tablaHTML[2]['medidas'];
 		        $tablaHTML[$pos]['alineado']=$ali;
-		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),$value['Saldo']);
+		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),number_format($value['Saldo'],2,'.',''));
 		        $tablaHTML[$pos]['borde'] ='LR';
 		         $pos = $pos+1;
 		        $fecha = $value['Fecha']->format('Y-m-d');
@@ -210,7 +210,7 @@ class libro_bancoC
 		            $tablaHTML[$pos]['alineado']=array('L','R','R','R','R','R');
 		            $tablaHTML[$pos]['datos']=array('Fin de: '.mes_X_nombre($mes),'TOTALES','',$debe,$haber,$saldo);
 		            $tablaHTML[$pos]['borde'] ='T';
-		            $tablaHTML[$pos]['estilo']='BI';				
+		            $tablaHTML[$pos]['estilo']='BI';	
 
 		$this->pdf->cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$parametros['desde'],$parametros['hasta'],$sizetable,$mostrar,25,'L');
   }

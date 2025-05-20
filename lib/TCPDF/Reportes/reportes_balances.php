@@ -8,6 +8,7 @@ require('tcpdf_include.php');
 class PDFBal extends TCPDF{
     public $datos_cabecera;
     function Header(){
+        //Header para Balance de comprobación
         if ($this->datos_cabecera['tipo_balance'] == 1 || $this->datos_cabecera['tipo_balance'] == 2 || $this->datos_cabecera['tipo_balance'] == 4){
             if(isset($_SESSION['INGRESO']['Logo_Tipo'])){
                     $logo=$_SESSION['INGRESO']['Logo_Tipo'];
@@ -112,6 +113,7 @@ class PDFBal extends TCPDF{
             $txt_fecha = 'Periodo Desde: '.$formatoFechaIni.' Hasta: '.$formatoFechaFin.'';
             $this->MultiCell(0, 0, $txt_fecha, 0, 'C', false, 0);
         }
+        //Header para estad de resultado
         if ($this->datos_cabecera['tipo_balance'] == 6 || $this->datos_cabecera['tipo_balance'] == 5){
             $this->setFont('timesB', '', 10);
             $text_pag = 'Página No.'.$this->getPage();
@@ -139,12 +141,12 @@ class PDFBal extends TCPDF{
             $this->SetY($y);
             $this->SetFont('times', '', 12);
             $Cabecera_tabla = ["CODIGO", "CUENTA", "ANALITICO", "PARCIAL", "TOTAL"];
-            $this->Row_Cabecera($Cabecera_tabla);
+            $this->Cabecera_Estado($Cabecera_tabla);
             $y = $this->GetY();
             $this->ln();
         }
     }
-    function Row_Cabecera($array_Datos){
+    function Cabecera_Estado($array_Datos){
         $this->SetFont('timesB', '', 12);
         $this->MultiCell(25, 10, $array_Datos[0], 0, 'L', false, 0);
         $this->MultiCell(95, 10, $array_Datos[1], 0, 'L', false, 0);
@@ -153,59 +155,71 @@ class PDFBal extends TCPDF{
         $this->MultiCell(30, 10, $array_Datos[4], 0, 'L', false, 0);
     }   
 
-    function Row_Balance_Estado($datos, $array_param){
-        if($array_param['DG'] == 'G'){
+    function Fila_Balance_Estado($datos){
+        
+        if($datos['DG'] == 'G'){
             $this->SetFont('timesB', '', 8);
         } else {
             $this->SetFont('times', '', 8);
         }
-        $ancho0 = $this->GetStringWidth($datos[0]) + 6;
-        $ancho1 = $this->GetStringWidth($datos[1]) + 4;
-        $ancho2 = $this->GetStringWidth($datos[2]) + 8;
-        $ancho3 = $this->GetStringWidth($datos[3]) + 8;
-        $ancho4 = $this->GetStringWidth($datos[4]) + 8;
-        $ancho5 = $this->GetStringWidth($datos[5]) + 8;
-        $ancho6 = $this->GetStringWidth($datos[6]) + 8;
-        $ancho7 = $this->GetStringWidth($datos[7]) + 8;
 
-        if($array_param['DG'] == 'D'){
+        //limpiamos los datos a no imprimir.
+        $tipo['DG'] = $datos['DG'];
+        $tipo['TC'] = $datos['TC'];
+        unset($datos['DG'], $datos['TC']);
+        
+        $contador = 0;
+        foreach ($datos as $elemento) {
+            if($contador<2){
+                $anchoExtra = ($contador==0) ? 6 : 4;
+                $ancho[$contador] = $this->GetStringWidth($elemento) + $anchoExtra;
+            } else {
+                $ancho[$contador] = ($this->GetStringWidth($elemento)!=0) ? 20 : 8;
+            }
+            $contador++;
+        }
+
+
+        if($tipo['DG'] == 'D'){
             //subrayado y curva.
-            if(in_array($array_param['TC'], ['C', 'P'])){
+            if(in_array($tipo['TC'], ['C', 'P'])){
                 $this->SetFont('times', 'IU', 8);
             }
             //curvilinea nada mas.
-            else if(in_array($array_param['TC'], ['CJ', 'TJ', 'BA', 'CB', 'RP', 'RF', 'RB', 'RI', 'CC'])){
+            else if(in_array($tipo['TC'], ['CJ', 'TJ', 'BA', 'CB', 'RP', 'RF', 'RB', 'RI', 'CC'])){
                 $this->SetFont('times', 'I', 8);
             }
             else {
                 $this->SetFont('times', '', 8);
             }
         }
-        $this->MultiCell($ancho0, 0, $datos[0], 0, 'L', false, 0);
-        $this->MultiCell(10, 0, '', 0, 'L', false, 0);
-        $this->MultiCell($ancho1, 0, $datos[1],  0, 'L', false, 0);
-        $x = $this->GetX();
-        // Bucle para avanzar en X hasta llegar a 135
-        while ($x < 135) {
-            $this->SetX($x + 1); // Mueve 1 unidad hacia la derecha
-            $x = $this->GetX();  // Actualiza la posición
+        //Imprimir, volvemos contador a 0 para el foreach
+        $contador = 0;
+        foreach($datos as $elemento){
+            switch($contador){
+                case 0:
+                    $this->MultiCell($ancho[$contador], 0, $elemento, 0, 'L', false, 0);
+                    $this->MultiCell(10, 0, '', 0, 'L', false, 0);
+                    break;
+                case 1:
+                    $this->MultiCell($ancho[$contador], 0, $elemento, 0, 'L', false, 0);
+                    //bucle para rellenar el espacio
+                    $x = $this->GetX();
+                    if($x < 137){
+                        $this->SetX(137);
+                    }
+                    break;
+                default:
+                    if($tipo['DG'] == 'G'){
+                        $this->SetFont('timesB', '', 8);
+                    } else {
+                        $this->SetFont('times', '', 8);
+                    }
+                    $this->MultiCell($ancho[$contador], 0, $elemento, 0, 'R', false, 0);
+                    break;
+            }
+            $contador++;
         }
-        if($array_param['DG'] == 'G'){
-            $this->SetFont('timesB', '', 8);
-        } else {
-            $this->SetFont('times', '', 8);
-        }
-        $this->MultiCell($ancho2, 0, $datos[2], 0, 'L', false, 0);
-        $this->MultiCell($ancho3, 0, $datos[3], 0, 'L', false, 0);
-        $this->MultiCell($ancho4, 0, $datos[4], 0, 'L', false, 0);
-        $this->MultiCell($ancho5, 0, $datos[5], 0, 'L', false, 0);
-        $this->MultiCell($ancho6, 0, $datos[6], 0, 'L', false, 0);
-        $this->MultiCell($ancho7, 0, $datos[7], 0, 'L', false, 0);
-
-        /*$x = $this->GetX();
-        $info = [$x, $datos[1]];
-        print_r($info); 
-        echo '</br>';*/
         $this->ln();
     }
 
@@ -219,7 +233,7 @@ class PDFBal extends TCPDF{
                 $this->AddPage();
                 $this->SetY(44);
                 $Nom_Columnas = ["CODIGO", "CUENTA", "SALDO ANTERIOR", "DEBITOS", "CREDITOS", "SALDO ACTUAL"];
-                $this->Row_Head($Nom_Columnas);
+                $this->Cabecera_Balance_Estado($Nom_Columnas);
             } else if ($this->datos_cabecera['tipo_balance'] == 6 || $this->datos_cabecera['tipo_balance'] == 5) {
                 $this->AddPage();
                 $this->SetY(28);
@@ -228,9 +242,11 @@ class PDFBal extends TCPDF{
 
     }
 
-    function Row_Head($array){
+    function Cabecera_Balance_Estado($array){
+        //Grosor de lineas
         $this->setLineWidth(0.132);
         $this->SetFont('timesB', '', 10);
+        //medidas para la
         $w1 = 25.7;
         $w2 = 51.5;
         $w3 = 25.65;
@@ -254,12 +270,23 @@ class PDFBal extends TCPDF{
         $this->MultiCell($w6, $height, $array[5], 1, 'C', false, 1, '', '', true, 0, false, true, 10, 'M');
     }
 
-    function Row_Body($array, $array_param=""){
+    function Fila_Balance_Comprobacion($array){
+        //Limpiamos valores a no imprimir, si son condicionales usamos otro array.
+        if(isset($array['DG'])){
+            $condicional['DG'] = $array['DG'];
+        }
+        if(isset($array['TC'])){
+            $condicional['TC'] = $array['TC'];
+        }
+        $condicional['sum']  = $array['sum'];
+
+        unset($array['DG'], $array['TC'], $array['sum']);
+
         $this->SetFont("times", "", 9);
         $html = '<table><tbody><tr>';
         $contador = 0; // Nos servira tanto para el tamaño de la 2 columna como para alinear los parametrso
         //Vemos si es la ultima columna: la suma de debitos y creditos.
-        if($array_param['sum'] == true){
+        if($condicional['sum'] == true){
             foreach($array as $data){
                $contador++;
                if($contador == 2){
@@ -273,11 +300,11 @@ class PDFBal extends TCPDF{
                }
             }
         }else{    //Para grupo
-            if($array_param['DG'] == 'G'){
+            if($condicional['DG'] == 'G'){
                 foreach($array as $data){
                     $contador++;
                     if ($contador == 2){
-                        if($array_param['TC'] == 'CC'){
+                        if($condicional['TC'] == 'CC'){
                             $html .= '<td colspan="2" style="border: 0.5px solid black;"><b><i>'."{$data}".'</i></b></td>';
                         } else {
                             $html .= '<td colspan="2" style="border: 0.5px solid black;"><b>'."{$data}".'</b></td>';
@@ -297,16 +324,16 @@ class PDFBal extends TCPDF{
                 }
             }
             //Para Detalle 
-            else if ($array_param['DG'] == 'D'){
+            else if ($condicional['DG'] == 'D'){
                 foreach ($array as $data){
                     $contador++;
                     if ($contador == 2){
                         //Analizamos el TC aqui
-                        if (in_array($array_param['TC'], ['TJ', 'G', 'CC', 'P', 'CB', 'RP', 'RF', 'RB', 'RI', 'I'])){
+                        if (in_array($condicional['TC'], ['TJ', 'G', 'CC', 'P', 'CB', 'RP', 'RF', 'RB', 'RI', 'I'])){
                             $html .= '<td colspan="2" style="border-left: 0.5px solid black; border-right: 0.5px solid black;"><i>'."{$data}".'</i></td>';
                         }
                         //Cursiva y Subrayado
-                        elseif (in_array($array_param['TC'], ['CJ', 'BA', 'C'])){
+                        elseif (in_array($condicional['TC'], ['CJ', 'BA', 'C'])){
                             $html .= '<td colspan="2" style="border-left: 0.5px solid black; border-right: 0.5px solid black;"><i><u>'."{$data}".'</u></i></td>';
                         } else {
                             $html .= '<td colspan="2" style="border-left: 0.5px solid black: border-right: 0.5px solid black;">'."{$data}".'</td>';
@@ -344,50 +371,11 @@ function imprimirEstadoResultado($datosTabla, $tipoBal, $fecha_hasta){
     $pdf->AddPage(); // Añadir una página antes de agregar contenido
     //Salida de Datos;
     $pdf->SetY(28);
-    if (count($datosTabla)>0){
-        foreach($datosTabla as $value){
-            if (!is_array($value)) {
-                continue;  // Saltar si no es un array
-            }
-            foreach($value as $value2){
-                if (intval($value2['Total_N6']) == 0){
-                    $value2['Total_N6'] = '';
-                } else {
-                    $value2['Total_N6'] = number_format((float)$value2['Total_N6'], 2, '.', ',');
-                }
-                if (intval($value2['Total_N5']) == 0){
-                    $value2['Total_N5'] = '';
-                } else {
-                    $value2['Total_N5'] = number_format((float)$value2['Total_N5'], 2, '.', ',');
-                }
-                if (intval($value2['Total_N4']) == 0){
-                    $value2['Total_N4'] = '';
-                } else {
-                    $value2['Total_N4'] = number_format((float)$value2['Total_N4'], 2, '.', ',');
-                }
-                if (intval($value2['Total_N3']) == 0){
-                    $value2['Total_N3'] = '';
-                } else {
-                    $value2['Total_N3'] = number_format((float)$value2['Total_N3'], 2, '.', ',');
-                }
-                if (intval($value2['Total_N2']) == 0){
-                    $value2['Total_N2'] = '';
-                } else {
-                    $value2['Total_N2'] = number_format((float)$value2['Total_N2'], 2, '.', ',');
-                }
-                if (intval($value2['Total_N1']) == 0){
-                    $value2['Total_N1'] = '';
-                } else {
-                    $value2['Total_N1'] = number_format((float)$value2['Total_N1'], 2, '.', ',');
-                }
-                //Transformamos el array para que pueda ser recorrido mediante indices.
-                $datos = array_values($value2);
-                $param['DG'] = $value2['DG'];
-                $param['TC'] = $value2['TC'];
-                $pdf->Row_Balance_Estado($datos, $param);
-                $y = $pdf->GetY();
-                $pdf->PageCheckBreak($y);
-            }
+    if(isset($datosTabla['datos'])){
+        foreach($datosTabla['datos'] as $row){
+            $pdf->Fila_Balance_Estado($row);
+            $y = $pdf->GetY();
+            $pdf->PageCheckBreak($y);
         }
     }
 
@@ -433,59 +421,29 @@ function imprimirBalanceComprobacion($datosTabla, $tipoBal, $fechaHasta, $fechaD
     $pdf->SetFont('times', '', 10);
     $Nom_Columnas = ["CODIGO", "CUENTA", "SALDO ANTERIOR", "DEBITOS", "CREDITOS", "SALDO ACTUAL"];
     //ancho de 180//
-    $pdf->Row_Head($Nom_Columnas);
+    $pdf->Cabecera_Balance_Estado($Nom_Columnas);
     //print_r($datosTabla); die(); 
     $pdf->SetFont("times", "", 9);
     $Suma_debitos = 0;
     $Suma_creditos = 0;
-    foreach ($datosTabla as $datos){
-        if (is_array($datos)){
-            foreach($datos as $dato){
-                if(is_array($dato)){
-                    if (floatval($dato['Saldo_Anterior']) == 0){
-                        $dato['Saldo_Anterior'] = '';
-                    } else {
-                        $Saldo_anterior = (float)$dato['Saldo_Anterior'];
-                        $dato['Saldo_Anterior'] = number_format($Saldo_anterior,2,'.', ',');
-                    }
-                    if (floatval($dato['Debitos']) == 0){
-                        $dato['Debitos'] = '';
-                    } else {
-                        $debito = (float)$dato['Saldo_Anterior'];
-                        $Suma_debitos += $debito;
-                        $dato['Debitos'] = number_format($debito,2,'.', ',');
-                    }
-                    if (floatval($dato['Creditos']) == 0){
-                        $dato['Creditos'] = '';
-                    } else {
-                        $credito = (float)$dato['Creditos'];
-                        $Suma_creditos += $credito;
-                        $dato['Creditos'] = number_format($credito,2,'.', ',');
-                    }
-                    if (floatval($dato['Saldo_Total']) == 0){
-                        $dato['Saldo_Total'] = '';
-                    } else {
-                        $Saldo_total = (float)$dato['Saldo_Total'];
-                        $dato['Saldo_Total'] = number_format($Saldo_total,2,'.', ',');
-                    }
-                    $row_datos = [$dato['Codigo'], $dato['Cuenta'], $dato['Saldo_Anterior'], $dato['Debitos'], $dato['Creditos'], $dato['Saldo_Total']];
-                    $param['TC'] = $dato['TC'];
-                    $param['DG'] = $dato['DG']; 
-                    $param['sum'] = false;
-                    $pdf->Row_Body($row_datos, $param);
-                    $y = $pdf->GetY();
-                    $pdf->PageCheckBreak($y);
-                }
-            }
+    if(isset($datosTabla['datos'])){
+        foreach($datosTabla['datos'] as $row){
+            $Suma_creditos += (float)$row['Creditos'];
+            $Suma_debitos += (float)$row['Saldo_Anterior'];
+            //valor row, sirve para ubicar la fila de los totales.
+            $row['sum'] = false;
+            $pdf->Fila_Balance_Comprobacion($row);
+            $y = $pdf->GetY();
+            $pdf->PageCheckBreak($y);
         }
     }
     //al final agregamos las sumatorias de creditos y debitos
     $Creditos=number_format($Suma_creditos, 2, '.', ',');
     $Debitos=number_format($Suma_debitos, 2, '.', ',');
     $array=['', '', '', $Debitos, $Creditos, ''];
-    $param['sum'] = true;
-    $pdf->Row_Body($array, $param);
-    $pdf->Output('Balance.pdf'. 'I');
+    $array['sum'] = true;
+    $pdf->Fila_Balance_Comprobacion($array);
+    $pdf->Output('Balance de comprobación.pdf', 'I');
 }
 
 ?>

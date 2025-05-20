@@ -38,7 +38,7 @@
 		 <div class="col-xs-12">
 			 <div class="box mb-1">
 			  <div class="box-header btn-group p-2">
-						<a class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Salir del modulo" href="./contabilidad.php?mod=contabilidad#">
+						<a class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Salir del modulo" href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>">
 							<i ><img src="../../img/png/salire.png" class="user-image" alt="User Image"
 							></i> 
 						</a>

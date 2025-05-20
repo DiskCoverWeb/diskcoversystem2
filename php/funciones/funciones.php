@@ -6087,7 +6087,24 @@ function costo_venta($codigo_inv)  // optimizado
     sqlsrv_close($cid);
     return ($result);
 }
-
+//función generica. Ayuda a formatear datos de un array.
+function datosGenericos($data){
+  //Nota: Usar el campo "datos o data" de tu array si estos datos estan en la etiqueta.
+  foreach ($data as &$row){
+    foreach($row as $key => &$value){
+      $key1 = strtolower($key);
+      if($key1 === 'cta' || str_starts_with($key1, 'codigo')){
+        continue;
+      } else {
+        if(is_numeric($value) && strpos($value, '.') !== false){
+            $value =round((float)$value, 2) == 0 ? '' : number_format((float)$value, 2, '.', ',');
+            
+        }
+      }
+    }
+  }
+  return $data;
+}
 
 function tablaGenerica($data){
   $tablaHtml = '

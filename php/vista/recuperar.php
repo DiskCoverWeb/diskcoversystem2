@@ -69,6 +69,7 @@
 								         <br>
 								       </form>										
 									</div>
+									<!---
 									<div class="login-separater text-center mb-2"> <span>OR SIGN IN WITH</span>
 										<hr/>
 									</div>
@@ -78,7 +79,7 @@
 										<a href="javascript:;" class="list-inline-item bg-google text-white border-0 rounded-3"><i class="bx bxl-google"></i></a>
 										<a href="javascript:;" class="list-inline-item bg-linkedin text-white border-0 rounded-3"><i class="bx bxl-linkedin"></i></a>
 									</div>
-
+									-->
 								</div>
 							</div>
 						</div>

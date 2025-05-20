@@ -641,101 +641,14 @@ function sp_proceso_balance_pdf($parametros)
 			$titulo = $parametros['nom'];
 			$fechaini = $parametros['desde'];
 			$fechafin = $parametros['hasta'];
+
+			//formateo de datos.
+			$datos['datos'] = datosGenericos($datos['datos']);
 			ImprimirBalanceComprobacion($datos, $parametros['tipo_b'], $fechafin, $fechaini, $titulo);
-			/*$campos = str_replace(array('TC','DG'),array('',''), $datos['campos']);
-			$campos = explode(',',trim($campos));
-			$campos = array_values(array_filter($campos));
-			$ali =array();
-			$medi =array();
-			foreach ($campos as $key => $value) {
-
-				switch ($value) {
-					case 'Cuenta':
-							$ali[$key] = 'L';
-							$medi[$key] =55;
-						break;
-					case 'Codigo':
-							$ali[$key] = 'L';
-							$medi[$key] =36;
-						break;
-					
-					default:
-							$val =  strlen(trim($value));
-							if($val != 2){
-							$ali[$key] = 'L';
-							$medi[$key] = $val*2.5;
-						    }else
-						    {
-						    	$ali[$key] = 'L';
-							    $medi[$key] = $val*4;
-						    }
-
-						break;
-				}
-			}
-			$pdf = new cabecera_pdf();	
-
-// print_r($campos);die();
-	        $titulo = $parametros['nom'];
-	        $mostrar = true;
-	        $sizetable =9;
-	        $tablaHTML = array();
-		    $tablaHTML[0]['medidas']=$medi;
-		    $tablaHTML[0]['alineado']=$ali;
-		    $tablaHTML[0]['datos']=$campos;
-		    $tablaHTML[0]['estilo']='BI';
-		    $tablaHTML[0]['borde'] = '1';
-		    $pos = 1;
-
-		    // print_r($datos);die();
-
-		    	$totalD = 0;
-		    	$totalH = 0;
-		    foreach ($datos['datos'] as $key => $value) {
-		    	$datos = array();
-		    	$alineado = array();
-		    	// print_r($value);die();
-		    	foreach($value as $key1 => $valu)
-		    	{
-		    		// print_r($value);die();
-		    		if($key1!='DG' && $key1!='TC')
-		    		{
-		    			if(is_numeric($valu))
-		    			{
-
-		    				array_push($datos, number_format($valu,2,'.',''));
-		    				array_push($alineado,'R');
-		    			}else
-		    			{
-		    				array_push($datos, $valu);		    	
-		    				array_push($alineado,'L');		
-		    			}
-		    		}
-		    	}
-
-		    	// print_r($alineado);die();
-			    	$tablaHTML[$pos]['medidas']=$tablaHTML[0]['medidas'];
-		        $tablaHTML[$pos]['alineado']= $alineado;
-		        $tablaHTML[$pos]['datos']=$datos;
-		        $tablaHTML[$pos]['estilo']='I';
-		        $tablaHTML[$pos]['borde'] = 'RL';
-		        $pos = $pos+1;
-
-		        $totalD = $totalD + $datos[3];
-		    		$totalH = $totalH + $datos[4];
-		    }
-		    		$tablaHTML[$pos]['medidas']=$tablaHTML[0]['medidas'];
-		        $tablaHTML[$pos]['alineado']=$alineado;
-		        $tablaHTML[$pos]['datos']=array('','','',$totalD,$totalH,'');
-		        $tablaHTML[$pos]['estilo']='I';
-		        $tablaHTML[$pos]['borde'] = 'BT';
-		        $pos = $pos+1;
-	        $pdf->cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$parametros['desde'],$parametros['hasta'],$sizetable,$mostrar);
-
-			*/
-		
 		}else
-		{			
+		{
+			/*	
+			Balance externo //Revisar el SP.		
 			$datos = $modelo->ListarTipoDeBalance_Ext_pdf($parametros['balMes'],'BC',$parametros['ext']);
 			$campos = explode(',',trim($datos['campos']));
 			$ali =array();
@@ -807,7 +720,7 @@ function sp_proceso_balance_pdf($parametros)
 		    }
 	        $pdf->cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$parametros['desde'],$parametros['hasta'],$sizetable,$mostrar);
 
-
+			*/
 
 		}
 	}
@@ -843,6 +756,7 @@ function sp_proceso_balance_pdf_situacion($parametros)
 			$datos = $modelo->listar_tipo_balanceSQl_pdf($parametros['balMes'],$parametros['tipo_b'],$parametros['tipo_p'],true);
 			$campos = explode(',',trim($datos['campos']));
 				$ali =array();
+			$datos['datos'] = datosGenericos($datos['datos']);
 			imprimirEstadoResultado($datos, $parametros['tipo_b'], $parametros['hasta']);
 			/*$medi =array();
 			
@@ -1165,6 +1079,10 @@ function check_sucursal(){
 	$modelo = new contabilidad_model();
 	$Sucursales = $modelo->listar_sucursales();
 	return $Sucursales;
+}
+
+function formatear_numeros_contables($datos){
+	var_dump($datos); die();
 }
 
 ?>

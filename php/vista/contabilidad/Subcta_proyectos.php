@@ -19,7 +19,7 @@
 </div>
 <div class="row row-cols-auto">
   <div class="btn-group">
-      <a  href="./contabilidad.php?mod=contabilidad#" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
+      <a  href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
         <img src="../../img/png/salire.png">
       </a>
       <a href="#" onclick="imprimir_excel()" data-bs-toggle="tooltip" class="btn btn-outline-secondary btn-sm" title="Descargar excel" id='imprimir_excel'>

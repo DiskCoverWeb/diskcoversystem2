@@ -62,8 +62,7 @@ date_default_timezone_set('America/Guayaquil');
 </div>
 <div class="row row-cols-auto mb-2">
     <div class="btn-group">
-        <a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
-        print_r($ruta[0] . '#'); ?>" data-bs-toggle="tooltip" title="Salir" class="btn btn-outline-secondary btn-sm">
+        <a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-bs-toggle="tooltip" title="Salir" class="btn btn-outline-secondary btn-sm">
             <img src="../../img/png/salire.png">
         </a>
         <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Grabar" id="btnGrabar"

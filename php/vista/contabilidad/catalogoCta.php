@@ -14,7 +14,7 @@
 <div class="row">
     <div class="col-lg-5 col-md-6 col-sm-12">
       <div class="btn-group" role="group" aria-label="Basic example">
-	      	<a href="inicio.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
+	      		<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
 					<img src="../../img/png/salire.png">
 				</a>
 				<a href="#" class="btn btn-sm btn-outline-secondary" id='imprimir_pdf'  data-bs-toggle="tooltip" title="Descargar PDF">

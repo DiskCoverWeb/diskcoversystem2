@@ -270,7 +270,7 @@ class enviar_emails
       $empresaGeneral[0]['smtp_puerto'] = 587;
     }
 
-    //print_r($empresaGeneral);die();
+    //print_r($empresaGeneral[0]);die();
     //Instantiation and passing `true` enables exceptions
     
 
@@ -309,10 +309,11 @@ class enviar_emails
           } else {
             if ($empresaGeneral[0]['smtp_SSL'] == 1) {
               $mail->SMTPSecure = 'ssl';
+              $mail->Port = 465;
             } else {
               $mail->SMTPSecure = 'tls';
+              $mail->Port = 587;
             }
-            $mail->Port = $empresaGeneral[0]['smtp_Puerto'];
           }
           $from = str_replace("@diskcoversystem.com", "@imap.diskcoversystem.com", $EMAIL_CONEXION);
           $mail->setFrom($from, 'Informacion DiskCover System');
@@ -325,7 +326,7 @@ class enviar_emails
           $mail->Subject = $titulo_correo;
           $mail->Body=$cuerpo_correo;
 
-
+          print_r($mail); die();
           if ($mail->send()){
             $res = 1;
           }

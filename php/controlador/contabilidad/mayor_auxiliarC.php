@@ -314,7 +314,8 @@ class mayor_auxiliarC
 		$tablaHTML[$pos]['alineado']=array('L','R','R','R','R','R');
 		$tablaHTML[$pos]['datos']=array('Fin de: '.mes_X_nombre($mes),'TOTALES','',$debe,$haber,$saldo);
 		$tablaHTML[$pos]['borde'] ='T';
-		$tablaHTML[$pos]['estilo']='BI';		
+		$tablaHTML[$pos]['estilo']='BI';
+		//transformamos		
 		$this->pdf->cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$desde,$hasta,$sizetable,$mostrar,25);
   }
 

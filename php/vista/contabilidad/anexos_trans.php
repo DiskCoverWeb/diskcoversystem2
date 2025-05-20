@@ -25,7 +25,7 @@
 <div class="container-lg">
   <div class="row row-cols auto">
     <div class="col-lg-8 col-sm-10 col-md-8"> 
-      <a  href="./contabilidad.php?mod=contabilidad#" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
+      <a  href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
         <img src="../../img/png/salire.png">
       </a>
       <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" title="Año" data-bs-toggle="dropdown">

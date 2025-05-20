@@ -198,7 +198,7 @@ class Reporte_subModulo
 		$datos = $this->ModeloSubModulo->cargar_consulta_x_meses();
 		$titulo = 'Reporte '.str_replace($cta,'', $parametros['Cta']);
 		$tablaHTML = array();
-		$tablaHTML[0]['medidas']=array(80,10,10,25,60);
+		$tablaHTML[0]['medidas']=array(80,15,10,25,60);
 		$tablaHTML[0]['alineado']=array('L','L','L','R','L');
 		$tablaHTML[0]['datos']=array('PROVEEDOR','Anio','MES','VALOR POR MES','CATEGORIA');
 		$tablaHTML[0]['estilo']='BI';
@@ -207,8 +207,7 @@ class Reporte_subModulo
 		$pos = 1;
 		$bene = '';
 		$total = 0;
-		foreach ($datos as $key => $value) {
-			
+		foreach ($datos['data'] as $key => $value) {
 			if($value['Anio']!='TOTAL')
 			{
 				if($value['Beneficiario']==$bene){$prove = '';}else{$prove = $value['Beneficiario'];}

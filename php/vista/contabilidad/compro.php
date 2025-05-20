@@ -57,7 +57,7 @@
 	</div>
 	<div class="row">
 		<div class="d-flex align-items-center btn-group col-sm-12 col-md-6 col-lg-5">
-			<a class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Salir del modulo" href="./contabilidad.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>">
+			<a class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Salir del modulo" href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>">
 				<img src="../../img/png/salire.png">
 			</a>
 			<a class="btn btn-sm btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Exportar Excel" href="javascript:void(0)" onclick="GenerarExcelResultadoComprobante()">

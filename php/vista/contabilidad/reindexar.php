@@ -5,7 +5,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-			<a href="inicio.php?mod=<?php echo $_SESSION['INGRESO']['modulo_']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-default">
+			<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-default">
         		<img src="../../img/png/salire.png">
         	</a>
 			<a href="#" class="btn btn-default" id='imprimir_pdf'  data-bs-toggle="tooltip"title="Descargar PDF">

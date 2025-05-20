@@ -37,7 +37,7 @@
 			  <div class="box-body">
 			  	<div class="row d-flex">
     				<div class="btn-group d-flex align-items-center col-3 col-sm-3 col-md-3 col-lg-3"> 
-							<a class="btn btn-outline-secondary btn-sm"  title="Salir del modulo" href="./contabilidad.php?mod=contabilidad#">
+							<a class="btn btn-outline-secondary btn-sm"  title="Salir del modulo" href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>">
 								<i><img src="../../img/png/salire.png"></i>
 							</a>
 							<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">

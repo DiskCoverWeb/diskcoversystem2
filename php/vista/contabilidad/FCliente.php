@@ -71,7 +71,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
   <!-- BOTONES CXC y CXP -->
   <div class="row row-cols-auto">
     <div class="d-flex justify-content-center align-items-center btn-group">
-        <a href="./farmacia.php?mod=Farmacia#" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
+        <a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
           <img src="../../img/png/salire.png">
         </a>
         <button type="button" class="btn btn-sm btn-outline-secondary" onclick="cargar_cuentas('cxc')" data-bs-toggle="tooltip" title="Asignar a Cuenta por Cobrar Contabilidad">

@@ -62,7 +62,7 @@
   <div class="row">
     <div class="col-sm-6">
       <div class="btn-group">
-          <a  href="./contabilidad.php?mod=contabilidad#"   data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
+          <a  href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>"   data-bs-toggle="tooltip" title="Salir de modulo" class="btn btn-sm btn-outline-secondary">
             <img src="../../img/png/salire.png">
           </a>
           <div data-bs-toggle="tooltip" title="Descargar PDF">        

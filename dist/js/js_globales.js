@@ -676,11 +676,11 @@ function ProcesarDatos(data){
 			//Para variables monetarias que son strings.
 			if(typeof value === "string"){
 				const keyLower = key.toLowerCase();
-				if(!keyLower.startsWith("Codigo") && keyLower != "cta"){
-					const numeric = Number(value);
+				if(!keyLower.startsWith("codigo") && keyLower != "cta"){
+          const numeric = Number(value);
 					if(!isNaN(numeric)){
 						if(value.includes(".")){
-							obj[key] = numeric.toFixed(2);
+						  obj[key] = numeric.toFixed(2);
 						}
 					}
 				}
