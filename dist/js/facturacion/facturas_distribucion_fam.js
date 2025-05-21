@@ -283,7 +283,7 @@
 								<input type="text" onblur="calcular_totales_x_integrante('`+item.Codigo.replaceAll('.','_')+`')" id="txt_pvp_entregada_`+item.Codigo.replaceAll('.','_')+`" class="form-control form-control-sm" value="`+item.Precio+`">
 							</td>
 							<td>
-								<input type="text" readonly="" id="txt_total_entregada_`+item.Codigo.replaceAll('.','_')+`" class="form-control form-control-sm" value="`+(item.Precio*item.Cantidad)+`">
+								<input type="text" onblur="recalcular_pvp('`+item.Codigo.replaceAll('.','_')+`')" id="txt_total_entregada_`+item.Codigo.replaceAll('.','_')+`" class="form-control form-control-sm" value="`+(item.Precio*item.Cantidad)+`">
 							</td>
 						</tr>`;
 						total+=parseFloat(item.Cant_Hab);
@@ -296,6 +296,14 @@
 		});
 	}
 
+	function recalcular_pvp(codigo)
+	{
+		var total = $('#txt_total_entregada_'+codigo).val();
+		var cant = $('#txt_cantidad_entregada_'+codigo).val();
+		var pvp = parseFloat(total)/parseFloat(cant);
+		$('#txt_pvp_entregada_'+codigo).val(pvp.toFixed(2));
+
+	}
 
 	function calcular_totales_x_integrante(codigoC)
 	{
@@ -354,7 +362,7 @@
 							<label>`+data.length+` / <span id="lbl_cantiInte">`+data.length+`</span></label>
 						</td>
 						<td>
-							<b>Total Relativo</b>
+							<b>Total Asignado</b>
 							<input type="" id="txt_total_fam" name ="" class="form-control form-control-sm" value="0">
 						</td>
 						<td>
@@ -395,6 +403,7 @@
 
 		$('#txt_cant_cp_'+codigoC).val(valor_entre.toFixed(2))
 		$('#txt_total_cp_'+codigoC).val(total_entre.toFixed(2));
+		$('#txt_abono_cp_'+codigoC).val(total_entre.toFixed(2));
 		// console.log(codigoC)
 		// console.log(productos);
 		// console.log(ListaIntegrantesXProducto)
