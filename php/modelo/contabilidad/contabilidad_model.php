@@ -838,7 +838,7 @@ public $Mensaje        ="";
 		
 		if($imprimir==false)
 		{
-			$tabla = grilla_generica_new($sql);
+			$tabla = $this->db_->datos($sql);
 			// print_r($tabla);die();
 
 			// $tabla= grilla_generica($stmt,$SQLMsg1,null,'1',null,null,null,true);

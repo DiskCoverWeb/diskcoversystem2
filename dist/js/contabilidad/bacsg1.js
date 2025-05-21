@@ -18,7 +18,7 @@ $(document).ready(function()
         mes=1;
     }
 
-        var url = '../controlador/contabilidad/contabilidad_controller.php?datos_balance_excel=true&desde='+$('#desde').val()+'&hasta='+$('#hasta').val()+'&ext='+bal_ext+'&check='+$('#tbalan').prop('checked')+'&tipo_p='+$('input:radio[name=optionsRadios]:checked').val()+'&tipo_b='+$('#txt_item').val()+'&coop=0&sucur=0&balMes='+mes+'&nom='+$('#lbl_titulo').text()+'&imp=true';                 
+        var url = '../controlador/contabilidad/contabilidad_controller.php?datos_balance_excel=true&desde='+$('#desde').val()+'&hasta='+$('#hasta').val()+'&ext='+bal_ext+'&check='+$('#tbalan').prop('checked')+'&tipo_p='+$('input:radio[name=optionsRadios]:checked').val()+'&tipo_b='+$('#txt_item').val()+'&coop=0&sucur=0&balMes='+mes+'&nom='+$('#lbl_titulo').val()+'&imp=true';                 
         window.open(url, '_blank');
 
 
@@ -150,6 +150,7 @@ function cargar_datos(item,nombre,imprimir=false)
         $('#tbl_datos').empty();
     }
     $('#txt_item').val(item);
+    $('#lbl_titulo').val(nombre.toUpperCase());
     var bal_ext = '00';
     var mes = 0;
     if($('#tbalan').prop('checked'))

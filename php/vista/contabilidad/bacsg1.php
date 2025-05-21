@@ -149,6 +149,7 @@
 			  	<div class="row">
 			  		<div class="col-sm-2">
 			  			<input type="hidden" name="" id="txt_item" value="1">
+						<input type="hidden" name="" id="lbl_titulo" value="">
 			  			<b>Desde:</b>
 			  			 <input type="date" class="form-control form-control-sm" id="desde" name="fechai" value='<?php echo date('Y-m-d',strtotime($_SESSION['INGRESO']['Fechai'])) ?>' onkeyup="validar_year_mayor(this.id)" onblur="validar_year_menor(this.id)">		  			
 			  		</div>
