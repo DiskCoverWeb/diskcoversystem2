@@ -301,7 +301,7 @@
 		var total = $('#txt_total_entregada_'+codigo).val();
 		var cant = $('#txt_cantidad_entregada_'+codigo).val();
 		var pvp = parseFloat(total)/parseFloat(cant);
-		$('#txt_pvp_entregada_'+codigo).val(pvp.toFixed(2));
+		$('#txt_pvp_entregada_'+codigo).val(pvp.toFixed(4));
 
 	}
 
