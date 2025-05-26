@@ -19,7 +19,7 @@ class facturas_distribucionM
     $this->pdf = new cabecera_pdf();
   }
 
-  function ConsultarProductos($params){
+  function ConsultarProductos($params,$id = false){
     
     $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU,Cta
             FROM Trans_Comision TC 
@@ -30,6 +30,10 @@ class facturas_distribucionM
             AND TC.Fecha = '".$params['fecha']."' 
             AND TC.T='F'
             AND TC.TC = '.'";
+            if($id)
+            {
+               $sql.=" AND TC.ID = '".$id."' ";
+            }
     //print_r($sql);die();
     return $this->db->datos($sql);
   }
