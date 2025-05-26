@@ -77,7 +77,7 @@ class lista_facturasM
 
    			// print_r($codigo);die();
 		
-		$sql ="SELECT TOP (100) F.T,TC,Serie,Autorizacion,Factura,F.Fecha,SubTotal,Con_IVA,IVA,F.Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,F.TB,C.Cliente,Razon_Social,CodigoC,F.ID,Email,Email2,EmailR 
+		$sql ="SELECT F.T,TC,Serie,Autorizacion,Factura,F.Fecha,SubTotal,Con_IVA,IVA,F.Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,F.TB,C.Cliente,Razon_Social,CodigoC,F.ID,Email,Email2,EmailR 
 		FROM Facturas F
 		LEFT JOIN Clientes C on F.CodigoC = C.Codigo 
 		WHERE Item = '".$_SESSION['INGRESO']['item']."' 

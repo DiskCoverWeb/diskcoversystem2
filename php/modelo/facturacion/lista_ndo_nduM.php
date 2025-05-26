@@ -94,7 +94,7 @@ class lista_facturasM
 
    			// print_r($codigo);die();
 		
-		$sql ="SELECT TOP 100 T,TC,Serie,Autorizacion,Factura,Fecha,SubTotal,Con_IVA,IVA,Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,TB,Razon_Social,CodigoC,ID 
+		$sql ="SELECT T,TC,Serie,Autorizacion,Factura,Fecha,SubTotal,Con_IVA,IVA,Descuento+Descuento2 as Descuentos,Total_MN as Total,Saldo_MN as Saldo,RUC_CI,TB,Razon_Social,CodigoC,ID 
 		FROM Facturas 
 		WHERE Item = '".$_SESSION['INGRESO']['item']."' 
 		AND TC IN ('NDO','NDU') ";
