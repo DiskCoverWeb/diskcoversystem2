@@ -1667,6 +1667,7 @@ class facturas_distribucion
 				if(isset($parametros['Comprobante'])){
 					$FA['Comprobante'] = $parametros['Comprobante'];
 				}
+				// $FA['tipoTC'] = 
 
 				$Moneda_US = False;
 				$TextoFormaPago = G_PAGOCONT;
@@ -1711,6 +1712,7 @@ class facturas_distribucion
 			'TextServicios' => '.',
 			'TextVDescto' => '0',
 			'Serie' => $FA['Serie_FA'],
+			'tipoTC' => '.',
 		);
 		$this->IngresarAsientoF($params);
 
@@ -1771,13 +1773,13 @@ class facturas_distribucion
 		print_r((floatval(number_format($FA['Total_MN'], 4, '.', ''))));
 
 
-	die();
+	// die();
 
 		// print_r(floatval(number_format($FA['Total_MN'],4,'.','')).'-'.floatval(number_format($parametros['TxtEfectivo'],4,'.','')).'-');
 		// print_r(floatval(number_format($FA['Total_MN'],4,'.',''))-floatval(number_format($parametros['TxtEfectivo'],4,'.',''))); die();
 		if ((floatval(number_format($parametros['TxtEfectivo'], 4, '.', '')) + floatval(number_format($parametros['valorBan'], 4, '.', '')) - floatval(number_format($FA['Total_MN'], 4, '.', ''))) >= 0) {
 
-			print_r('expression');die();
+			// print_r('expression');die();
 			$electronico = 0;
 			if (isset($parametros['electronico'])) {
 				$electronico = $parametros['electronico'];
