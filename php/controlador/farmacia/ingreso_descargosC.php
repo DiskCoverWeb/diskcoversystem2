@@ -243,7 +243,7 @@ class ingreso_descargosC
     	 $neg = false;
     	 $num = 0;
     	 $procedimiento = '';
-         $tab='<ul class="nav nav-tabs">';
+         $tab='<ul class="nav nav-tabs nav-warning">';
          $content = '<div class="tab-content">';
     	foreach ($ordenes as $key => $value) {
     		if($value['SUBCTA']!='.')
@@ -252,13 +252,20 @@ class ingreso_descargosC
     		if($key==0)
     		{
 
-    		    $content.='<input type="hidden" id="txt_f"  value="'.$value['Fecha']->format('Y-m-d').'"><div id="'.$value['SUBCTA'].'-'.$value['Fecha']->format('Y-m-d').'" class="tab-pane fade in active">';
-    			$tab.='<li class="active"><a data-toggle="tab" href="#'.$value['SUBCTA'].'-'.$value['Fecha']->format('Y-m-d').'">'.'Fecha: '.$value['Fecha']->format('Y-m-d').'</a></li>';
+    		    $content.='<input type="hidden" id="txt_f"  value="'.$value['Fecha']->format('Y-m-d').'">
+    		    			<div id="'.$value['SUBCTA'].'-'.$value['Fecha']->format('Y-m-d').'" class="tab-pane fade active show">';
+
+    			$tab.='<li class="nav-item active">
+    					<a data-bs-toggle="tab" class="nav-link active" href="#'.$value['SUBCTA'].'-'.$value['Fecha']->format('Y-m-d').'">'.'Fecha: '.$value['Fecha']->format('Y-m-d').'</a>
+    				</li>';
     		}else
     		{
 
     		    $content.='<div id="'.$value['SUBCTA'].'-'.$value['Fecha']->format('Y-m-d').'" class="tab-pane fade">';
-    			$tab.='<li><a data-toggle="tab" href="#'.$value['SUBCTA'].'-'.$value['Fecha']->format('Y-m-d').'">'.'Fecha: '.$value['Fecha']->format('Y-m-d').'</a></li>';
+
+    			$tab.='<li class="nav-item">
+    					<a data-bs-toggle="tab" class="nav-link"  href="#'.$value['SUBCTA'].'-'.$value['Fecha']->format('Y-m-d').'">'.'Fecha: '.$value['Fecha']->format('Y-m-d').'</a>
+    				</li>';
     		}
     		  $datos =  $this->cargar_pedidos_tab($value['ORDEN'],$value['SUBCTA'],$value['Fecha']->format('Y-m-d'),$parametros['paciente']);
     		  // print_r($datos);die();
@@ -310,7 +317,7 @@ class ingreso_descargosC
 		$iva = 0;$subtotal=0;$total=0;
 		$negativos = false;
 		$procedimiento = '';
-		$cabecera = '<table class="table-sm table-hover" style="width:100%">
+		$cabecera = '<br><table class="table table-hover" style="width:100%">
         <thead>
           <th>ITEM</th>
           <th>FECHA</th>
@@ -355,8 +362,6 @@ class ingreso_descargosC
 
 
 
-			// $costo =  $this->modelo->costo_producto($value['Codigo_Inv']);
-			// $existencias =  $this->modelo->costo_venta($value['Codigo_Inv']);
 
 			if($costo_existencias['respueta']!=1){$costo_existencias['datos']['Stock'] = 0; $costo_existencias['datos']['Costo'] = 0;}
 			else{
@@ -368,59 +373,41 @@ class ingreso_descargosC
 				}
 			}
 			$nega = 0;			
-			// if(empty($costo))
-			// {
-			// 	$costo[0]['Costo'] = 0;
-			// 	// $costo[0]['Existencia'] = 0;
-			// }else
-			// {
-			// 	$exis = number_format($existencias[0]['Existencia']-$value['Salida'],2);
-			// 	if($exis<0)
-			// 	{
-			// 		$nega = $exis;
-			// 		$negativos = true;
-			// 	}
-			// }
+			
 
-			if($d=='')
-			{
-			$d =  dimenciones_tabl(strlen($value['ID']));
-			$d1 =  dimenciones_tabl(strlen($value['Fecha']->format('Y-m-d')));
-			$d2 =  dimenciones_tabl(strlen($value['Codigo_Inv']));
-			$d3 =  dimenciones_tabl(strlen($value['Producto']));
-			$d4 =  dimenciones_tabl(strlen($value['Salida']));
-			$d5 =  dimenciones_tabl(strlen($value['Valor_Unitario']));
-			$d6 =  dimenciones_tabl(strlen($value['Total_IVA']));
-			$d7 =  dimenciones_tabl(strlen($value['Valor_Total']));
-		  }
 			$tr.='<tr>
-  					<td width="'.$d.'">'.$key.'</td>
-  					<td width="'.$d1.'">'.$value['Fecha']->format('Y-m-d').'</td>
-  					<td width="'.$d2.'">'.$value['Codigo_Inv'].'</td>
-  					<td width="'.$d3.'">'.$value['Producto'].'</td>
-  					<td width="'.$d4.'" class="text-right">
-  					     <input type="text" class=" text-right form-control input-sm" id="txt_can_lin_'.$value['ID'].'" value="'.$value['Salida'].'" onblur="calcular_totales(\''.$value['ID'].'\');"/>
+  					<td>'.($key+1).'</td>
+  					<td>'.$value['Fecha']->format('Y-m-d').'</td>
+  					<td>'.$value['Codigo_Inv'].'</td>
+  					<td>'.$value['Producto'].'</td>
+  					<td class="text-right">
+  					     <input type="text" class=" text-right form-control form-control-sm" id="txt_can_lin_'.$value['ID'].'" value="'.$value['Salida'].'" onblur="calcular_totales(\''.$value['ID'].'\');"/>
   					</td>
-  					<td width="'.$d5.'">
-  					     <input type="text" onblur="calcular_totales(\''.$value['ID'].'\');" class="text-right form-control input-sm" id="txt_pre_lin_'.$value['ID'].'" value="'.number_format($value['Valor_Unitario'],2).'" readonly=""/>
+  					<td>
+  					     <input type="text" onblur="calcular_totales(\''.$value['ID'].'\');" class="text-right form-control form-control-sm" id="txt_pre_lin_'.$value['ID'].'" value="'.number_format($value['Valor_Unitario'],2).'" readonly=""/>
   					</td>
-  					<td width="'.$d6.'">
-  					     <input type="text" onblur="calcular_totales(\''.$value['ID'].'\');" class="text-right form-control input-sm" id="txt_iva_lin_'.$value['ID'].'" value="'.number_format($value['Total_IVA'],4).'" readonly=""/>
+  					<td>
+  					     <input type="text" onblur="calcular_totales(\''.$value['ID'].'\');" class="text-right form-control form-control-sm" id="txt_iva_lin_'.$value['ID'].'" value="'.number_format($value['Total_IVA'],4).'" readonly=""/>
   					</td>
-  					<td width="'.$d7.'">
-  					     <input type="text" class="text-right form-control input-sm" id="txt_tot_lin_'.$value['ID'].'" value="'.number_format($value['Valor_Total'],4).'" readonly="" />
+  					<td>
+  					     <input type="text" class="text-right form-control form-control-sm" id="txt_tot_lin_'.$value['ID'].'" value="'.number_format($value['Valor_Total'],4).'" readonly="" />
   					</td>
-  					<td width="'.$d7.'">
-  					     <input type="text" class="form-control input-sm" id="txt_negarivo_'.$value['ID'].'" value="'.$nega.'" readonly="" />
+  					<td>
+  					     <input type="text" class="form-control form-control-sm" id="txt_negarivo_'.$value['ID'].'" value="'.$nega.'" readonly="" />
   					</td>
   					<td width="90px">
-  						<button class="btn btn-sm btn-primary" onclick="editar_lin(\''.$value['ID'].'\')" title="Editar paciente"><span class="glyphicon glyphicon-floppy-disk"></span></button> 
-  						<button class="btn btn-sm btn-danger" title="Eliminar paciente"  onclick="eliminar_lin(\''.$value['ID'].'\')" ><span class="glyphicon glyphicon-trash"></span></button>
+  						<button class="btn btn-sm btn-primary" onclick="editar_lin(\''.$value['ID'].'\')" title="Editar paciente"><span class="bx bx-save"></span></button> 
+  						<button class="btn btn-sm btn-danger" title="Eliminar paciente"  onclick="eliminar_lin(\''.$value['ID'].'\')" ><span class="bx bx-trash"></span></button>
   					</td>
   				</tr>';
 			
 		}
-		$tr.='<tr><td colspan="2"><button type="button" class="btn btn-primary" onclick="generar_factura(\''.$fecha.'\')" id="btn_comprobante"><i class="fa fa-file-text-o"></i> Generar comprobante</button></td><td colspan="4"></td><td class="text-right">Total:</td><td><input type="text" class="form-control input-sm" value="'.$subtotal.'"></td><td colspan="2"></td></tr>';
+		$tr.='<tr>
+				<td colspan="2">
+					<button type="button" class="btn btn-primary btn-sm" onclick="generar_factura(\''.$fecha.'\')" id="btn_comprobante"><i class="bx bx-file"></i> Generar comprobante</button></td><td colspan="4">
+				</td>
+				<td class="text-right">Total:</td>
+				<td><input type="text" class="form-control form-control-sm" value="'.$subtotal.'"></td><td colspan="2"></td></tr>';
 		// print_r($datos);die();
 		if($num!=0)
 		{

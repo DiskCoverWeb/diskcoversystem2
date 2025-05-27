@@ -26,12 +26,11 @@ class articulosM
 		}
 
 		$cid = $this->conn;
-		$sql = "SELECT ID,Codigo_Inv,Producto,TC,Minimo,Maximo,Cta_Inventario,Unidad,Ubicacion,IVA,Reg_Sanitario FROM Catalogo_Productos  WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."' AND item='".$_SESSION['INGRESO']['item']."'  AND TC='P' AND LEN(Cta_Inventario)>3 AND LEN(Cta_Costo_Venta)>3 ";
+		$sql = "SELECT Top(25) ID,Codigo_Inv,Producto,TC,Minimo,Maximo,Cta_Inventario,Unidad,Ubicacion,IVA,Reg_Sanitario FROM Catalogo_Productos  WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."' AND item='".$_SESSION['INGRESO']['item']."'  AND TC='P' AND LEN(Cta_Inventario)>3 AND LEN(Cta_Costo_Venta)>3 ";
 		if($query) 
 		{
 			$sql.=" AND Codigo_Inv+' '+Producto LIKE '%".$query."%'";
 		}
-		$sql.=" ORDER BY ID OFFSET ".$pag." ROWS FETCH NEXT 25 ROWS ONLY;";
 		
 		$datos = $this->conn->datos($sql);
        return $datos;

@@ -278,65 +278,36 @@ class ingreso_descargosC
 		}
 		$datos = $this->modelo->pedido_paciente($parametros['codigo'],$parametros['tipo'],$parametros['query'],$parametros['desde'],$parametros['hasta'],$parametros['busfe'],$parametros['area'],$arti[0]);
 		$tr='';
-		// print_r($nega);die();		
-		foreach ($datos as $key => $value) {			
-			$bur = '';
-			// print_r($nega)die();
+		// print_r($nega);die();	
 
-		if ($parametros['nega']=='true') {
-			if(isset($nega['ordenes'])){
-		
-			foreach ($nega['ordenes'] as $key1 => $value1) {
-				if($value1['ORDEN'] == $value['ORDEN'])
-				{
-						$bur = '<i class="fa fa-circle-o text-red"></i>';
-						break;
+		// return $datos; 
+
+		foreach ($datos as $key => $value) 
+		{	
+			$datos[$key]['negativo'] = '';
+			if ($parametros['nega']=='true') {
+				if(isset($nega['ordenes'])){
+					foreach ($nega['ordenes'] as $key1 => $value1) {
+						if($value1['ORDEN'] == $value['ORDEN'])
+						{
+								$datos[$key]['negativo'] =  '<i class="fa fa-circle-o text-red"></i>';
+								break;
+						}
+					}
+				}else{
+				  	foreach ($nega as $key1 => $value1) {
+						if($value1['ORDEN'] == $value['ORDEN'])
+						{
+								$datos[$key]['negativo'] = '<i class="fa fa-circle-o text-red"></i>';
+								break;
+						}
+					}
+
 				}
 			}
-		  }else
-		  {
-		  	foreach ($nega as $key1 => $value1) {
-				if($value1['ORDEN'] == $value['ORDEN'])
-				{
-						$bur = '<i class="fa fa-circle-o text-red"></i>';
-						break;
-				}
-			}
-
-		  }
 		} 
-			
-			$item = $key+1;
-			$d =  dimenciones_tabl(strlen($item));
-			$d2 =  dimenciones_tabl(strlen($value['ORDEN']));
-			$d3 =  dimenciones_tabl(strlen($value['nombre']));
-			$d4 =  dimenciones_tabl(strlen($value['subcta']));
-			$d5 =  dimenciones_tabl(strlen($value['importe']));
-			$d6 =  dimenciones_tabl(strlen($value['Fecha_Fab']->format('Y-m-d')));
-			$d7 =  dimenciones_tabl(strlen('E'));
-			$tr.='<tr>
-  					<td width="'.$d.'">'.$item.'</td>
-  					<td width="'.$d2.'">'.$value['ORDEN'].'</td>
-  					<td width="'.$d3.'">'.$bur.' '.$value['nombre'].'</td>
-  					<td width="'.$d4.'">'.$value['subcta'].'</td>
-  					<td width="'.$d5.'">'.$value['importe'].'</td>
-  					<td width="'.$d6.'">'.$value['Fecha_Fab']->format('Y-m-d').'</td>
-  					<td width="'.$d7.'">E</td>
-  					<td width="90px">
-  						<a href="../vista/farmacia.php?mod='.$_SESSION['INGRESO']['modulo_'].'&acc=ingresar_descargos&acc1=Ingresar%20Descargos&b=1&po=subcu&num_ped='.$value['ORDEN'].'&area='.$value['area'].'-'.$value['Detalle'].'&cod='.$value['his'].'#" class="btn btn-sm btn-primary" title="Editar pedido"><span class="glyphicon glyphicon-pencil"></span></a>
-  						<button class="btn btn-sm btn-danger" onclick="eliminar_pedido(\''.$value['ORDEN'].'\',\''.$value['area'].'\')"><span class="glyphicon glyphicon-trash"></span></button>
-  					</td>
-  				</tr>';
-		}
-		if(count($datos)>0)
-		{
-			$tabla = array('num_lin'=>0,'tabla'=>$tr);
-			return $tabla;
-		}else
-		{
-			$tabla = array('num_lin'=>0,'tabla'=>'<tr><td colspan="7" class="text-center"><b><i>Sin registros...<i></b></td></tr>');
-			return $tabla;		
-		}
+
+		return $datos;	
 
 	}
 

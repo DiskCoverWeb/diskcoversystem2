@@ -60,10 +60,12 @@ class pacienteC
 
 	function cargar_paciente($parametros)
 	{
-		$datos = $this->modelo->cargar_paciente($parametros,$parametros['pag']);
-		$paginacion = paginancion('Clientes',$parametros['fun'],$parametros['pag']);
+		$datos = $this->modelo->cargar_paciente($parametros);
+		// $paginacion = paginancion('Clientes',$parametros['fun'],$parametros['pag']);
 		// print_r($paginacion);die();
 		$tr = '';
+
+		return $datos;
 		foreach ($datos as $key => $value) 
 		{
 			$d =  dimenciones_tabl(strlen($value['ID']));
