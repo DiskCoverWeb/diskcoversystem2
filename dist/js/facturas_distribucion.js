@@ -794,7 +794,7 @@ var valTC = 'FA';
 
 						cTotalProds += parseFloat(fila['Detalles']['Total']);
 						tTotalProds += parseFloat(totalProducto);
-						console.log(tTotalProds);
+						// console.log(tTotalProds);
 					}
 					let tr = $('<tr class="bg-primary-subtle"></tr>');
 					tr.append($('<td colspan="3"></td>').html('<b>Total</b>'));
@@ -876,10 +876,7 @@ var valTC = 'FA';
 			});
 		}
 
-		let campoid = elemento.id.split('_');
-		console.log(campoid);
-		let idTC = campoid[2];
-
+		
 		let recalculados = 0;
 		let valorRecalcular = $('#txtRecalcular').val();
 		if(valorRecalcular.trim() == ""){
@@ -898,6 +895,14 @@ var valTC = 'FA';
 				let fila = $(x)[0].parentElement.parentElement;
 				fila.childNodes[5].innerText = totalRecal.toFixed(8);
 				let nuevoValor = fila.childNodes[3].children[0].children[0].value;
+
+				// console.log(fila);
+
+				console.log(fila.childNodes[4].children[0].children[0]);
+				let campoid = fila.childNodes[4].children[0].children[0].id.split('_');
+				console.log(campoid);
+				let idTC = campoid[2];
+
 	
 				if(nuevoValor.trim() == ""){
 					fila.childNodes[3].children[0].children[0].value = "0";
@@ -1181,7 +1186,7 @@ var valTC = 'FA';
 
 		for(let fila of filas){
 			fila = fila.children;
-			console.log(fila);
+			// console.log(fila);
 			//console.log(fila[0].textContent + " => " + fila[1].textContent + " => " + fila[2].textContent + " => " + fila[3].textContent + " => " + fila[4].textContent + " => " + fila[5].textContent + " => " + fila[6].textContent + " => " + fila[7].textContent);
 			let tc = datosFact;
 			let parametros =
