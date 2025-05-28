@@ -12,7 +12,7 @@
 		</div>          
 	</div>
 	<div class="row row-cols-auto">
-		<div class=" btn-group">
+		<div class="btn-group">
 			<a href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" data-bs-toggle="tooltip"  title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
 				<img src="../../img/png/salire.png">
 			</a>
@@ -49,22 +49,20 @@
 		<div class="col-sm-6">
 			<div class="input-group">
 				<div class="input-group-addon col-3 d-flex align-items-center">
-				<label style=""><input type="checkbox" name="check_usu" id="check_usu"> Por Usuario</label>
+				<label><input type="checkbox" name="check_usu" id="check_usu"> Por Usuario</label>
 				</div>
 				<select class="form-select form-select-sm col-6 border" id="DCUsuario" name="DCUsuario">
 					<option value="">Seleccione </option>
 				</select>
 			</div>
-	<!--
 			<div class="input-group" id="panel_agencia">
-				<div class="input-group-addon">	           
-				<label style="margin:-3px"><input type="checkbox" name="check_agencia" id="check_agencia"> Agencia</label>
+				<div class="input-group-addon col-3 d-flex align-items-center">	           
+					<label><input type="checkbox" name="check_agencia" id="check_agencia"> Agencia</label>
 				</div>
-				<select class="form-control form-control-sm" id="DCAgencia" name="DCAgencia">
+				<select class="form-select form-select-sm" id="DCAgencia" name="DCAgencia">
 					<option value="">Seleccione </option>
 				</select>
-		</div>     	
-	-->
+			</div>     	
 		</div>
 		<div class="col-sm-3">
 			<div class="panel panel-primary"  style="margin:0px">     		
@@ -127,25 +125,25 @@
 					SUB MAYOR
 				</div>
 				<div class="panel-body border border-primary rounded-bottom">
-					<div class="table-responsive">
-						<table class="text text-sm w-100" id="tbl_body">
+					<div class="table-responsive" style="max-height: 400px;">
+						<table class="table text-sm w-100" id="tbl_body">
 							<thead>
 								<tr>
-								<th class="text-center">Cta</th>
-								<th class="text-center">Fecha</th>
-								<th class="text-center">TP</th>
-								<th class="text-center">Numero</th>
-								<th class="text-center">Cliente</th>
-								<th class="text-center">Concepto</th>
-								<th class="text-center">Debitos</th>
-								<th class="text-center">Creditos</th>
-								<th class="text-center">Saldo_MN</th>
-								<th class="text-center">Factura</th>
-								<th class="text-center">Parcial_ME</th>
-								<th class="text-center">Detalles_SubCta</th>
-								<th class="text-center">Fecha_V</th>
-								<th class="text-center">Codigo</th>
-								<th class="text-center">Item</th>
+									<th class="text-center">Cta</th>
+									<th class="text-center">Fecha</th>
+									<th class="text-center">TP</th>
+									<th class="text-center">Numero</th>
+									<th class="text-center">Cliente</th>
+									<th class="text-center">Concepto</th>
+									<th class="text-center">Debitos</th>
+									<th class="text-center">Creditos</th>
+									<th class="text-center">Saldo_MN</th>
+									<th class="text-center">Factura</th>
+									<th class="text-center">Parcial_ME</th>
+									<th class="text-center">Detalle_SubCta</th>
+									<th class="text-center">Fecha_V</th>
+									<th class="text-center">Codigo</th>
+									<th class="text-center">Item</th>
 								</tr> 
 							</thead> 
 						</table>

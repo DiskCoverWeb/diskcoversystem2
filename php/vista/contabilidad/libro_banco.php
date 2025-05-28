@@ -86,7 +86,7 @@
 		</div>
 		<div class="tab-content">
 			<div id="home" class="col-sm-12">
-				<div class="table-responsive">
+				<div class="table-responsive" style="max-height: 400px;">
 					<table class="table text-sm" id="tbl_libro_banco">
 						<thead>
 							<tr>

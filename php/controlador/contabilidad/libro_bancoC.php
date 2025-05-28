@@ -77,7 +77,7 @@ class libro_bancoC
 		$hasta = str_replace('-','',$parametros['hasta']);
 
   	$datos = $this->modelo->consultar_banco_($desde,$hasta,$parametros['CheckAgencia'],$parametros['DCAgencia'],$parametros['CheckUsu'],$parametros['DCUsuario'],$parametros['DCCtas'], true);
-
+	$datos = datosGenericos($datos);
 		$titulo = 'L I B R O    B A N C O';
 		$sizetable =7;
 		$mostrar = TRUE;
@@ -131,11 +131,11 @@ class libro_bancoC
 
 			    $tablaHTML[$pos]['medidas']=$tablaHTML[2]['medidas'];
 		        $tablaHTML[$pos]['alineado']=$ali;
-		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),number_format($value['Saldo'],2,'.',''));
+		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],$value['Debe'],$value['Haber'],$value['Saldo']);
 		        $tablaHTML[$pos]['borde'] ='LR';
 		        $pos = $pos+1;
 		        $fecha = $value['Fecha']->format('Y-m-d');
-		        $debe+=$value['Debe']; $haber+=$value['Haber'];$saldo = $value['Saldo'];
+		        $debe+=(float)$value['Debe']; $haber+=(float)$value['Haber'];$saldo = (float)$value['Saldo'];
 		   }else
 		   {
 		   	  if($mes == $value['Fecha']->format('n'))
@@ -156,11 +156,11 @@ class libro_bancoC
 				    
 			    $tablaHTML[$pos]['medidas']=$tablaHTML[2]['medidas'];
 		        $tablaHTML[$pos]['alineado']=$ali;
-		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),number_format($value['Saldo'],2,'.',''));
+		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],$value['Debe'],$value['Haber'],$value['Saldo']);
 		        $tablaHTML[$pos]['borde'] ='LR';
 		         $pos = $pos+1;
 		        $fecha = $value['Fecha']->format('Y-m-d');
-		        $debe+=$value['Debe']; $haber+=$value['Haber'];$saldo = $value['Saldo'];
+		        $debe+=(float)$value['Debe']; $haber+=(float)$value['Haber'];$saldo = (float)$value['Saldo'];
 		            
 		      	}else
 		      	{
@@ -196,11 +196,11 @@ class libro_bancoC
 		          
 			    $tablaHTML[$pos]['medidas']=$tablaHTML[2]['medidas'];
 		        $tablaHTML[$pos]['alineado']=$ali;
-		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),number_format($value['Saldo'],2,'.',''));
+		        $tablaHTML[$pos]['datos']=array($fecha,$value['TP'],$value['Numero'],$value['Cheq_Dep'],$value['Cliente'],$value['Concepto'],$value['Parcial_ME'],$value['Debe'],$value['Haber'],$value['Saldo']);
 		        $tablaHTML[$pos]['borde'] ='LR';
 		         $pos = $pos+1;
 		        $fecha = $value['Fecha']->format('Y-m-d');
-		        $debe+=$value['Debe']; $haber+=$value['Haber'];$saldo = $value['Saldo'];
+		        $debe+=(float)$value['Debe']; $haber+=(float)$value['Haber'];$saldo = (float)$value['Saldo'];
 
 
 		      	}

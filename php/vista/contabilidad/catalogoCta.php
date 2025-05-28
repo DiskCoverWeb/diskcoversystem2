@@ -51,7 +51,7 @@
 				<div class="row">
 					<h6>PLAN DE CUENTAS</h6>
 					<div class="col-lg-12">
-						<div class="table-responsive">
+						<div class="table-responsive" style="max-height: 400px;">
 							<table class="table text-sm w-100" id="tbl_tablaCta">
 								<thead>
 									<tr>

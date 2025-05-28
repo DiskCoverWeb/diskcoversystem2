@@ -6088,7 +6088,7 @@ function costo_venta($codigo_inv)  // optimizado
     return ($result);
 }
 //función generica. Ayuda a formatear datos de un array.
-function datosGenericos($data){
+function datosGenericos($data, $SuprZero=true){
   //Nota: Usar el campo "datos o data" de tu array si estos datos estan en la etiqueta.
   foreach ($data as &$row){
     foreach($row as $key => &$value){
@@ -6097,8 +6097,11 @@ function datosGenericos($data){
         continue;
       } else {
         if(is_numeric($value) && strpos($value, '.') !== false){
-            $value =round((float)$value, 2) == 0 ? '' : number_format((float)$value, 2, '.', ',');
-            
+          if($SuprZero){
+            $value = round((float)$value, 2) == 0 ? '' : number_format((float)$value, 2, '.', ',');
+          }  else{
+            $value = number_format((float)$value, 2, '.', ',');  
+          }
         }
       }
     }

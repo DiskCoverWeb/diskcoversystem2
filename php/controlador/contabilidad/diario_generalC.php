@@ -288,6 +288,7 @@ class diario_generalC
 			$parametros['CheckNum']);
 	
 		$temp='';
+		$datos = datosGenericos($datos, false);
 		$total_debe= 0;
 		$total_haber = 0;	
 		$tablaHTML = array();
@@ -345,10 +346,10 @@ class diario_generalC
 	               // $concepto.= $value['Concepto']."\n";
 					$cta.=$value['Cta'].'      ';
 					$cuenta.=$value['Cuenta']."\n";
-					$debe.=round($value['Debe'],2)."\n";
-					$haber.=round($value['Haber'],2)."\n";
-					$total_debe+=round($value['Debe'],2);
-			        $total_haber+=round($value['Haber'],2);
+					$debe.=$value['Debe']."\n";
+					$haber.=$value['Haber']."\n";
+					$total_debe+=round((float)$value['Debe'],2);
+			        $total_haber+=round((float)$value['Haber'],2);
 				
 				}
 
@@ -426,7 +427,6 @@ class diario_generalC
 			$parametros['CheckNum']);
 
 		   		$tablaHTML=''; 
-
 		$temp='';
 		$total_debe= 0;
 		$total_haber = 0;

@@ -198,7 +198,7 @@
             <div class="tab-pane fade active show" id="Primary-DG">
               <div class="col-sm-12">
                 <div class="table-responsive" style="max-height: 400px;">
-                  <table class="table text-sm" id="tbl_DiarioGeneral">
+                  <table class="table text-sm w-100" id="tbl_DiarioGeneral">
                     <thead>
                       <tr>
                         <th class="text-center">Fecha</th>
@@ -245,8 +245,8 @@
             </div>
             <div class="tab-pane fade" id="Primary-SM">
               <div class="col-sm-12">
-                <div class="table-responsive">
-                  <table class="table text-sm" id="tbl_Submodulos">
+                <div class="table-responsive" style="max-height: 400px;">
+                  <table class="table text-sm w-100" id="tbl_Submodulos">
                     <thead>
                       <tr>
                         <th class="text-center">Fecha</th>

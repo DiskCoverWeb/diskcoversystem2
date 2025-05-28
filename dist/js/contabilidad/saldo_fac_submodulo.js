@@ -103,6 +103,10 @@ $.ajax({
 
 function consultar_datos()
 {		
+if($.fn.dataTable.isDataTable('#tbl_saldo_meses')){
+    $('#tbl_saldo_meses').DataTable().clear().destroy(); 
+    $('#tbl_saldo_meses').empty();
+}
 $('#reporte_tipo').val(0);
 var parametros =
 {
@@ -126,13 +130,48 @@ $.ajax({
     beforeSend: function () {		
          $('#myModal_espera').modal('show');  
     },
-        success:  function (response) {
+    success:  function (response) {
         totales();
         setTimeout(function(){
             $('#myModal_espera').modal('hide');          
-        }, 2000);  
-        
-        
+        }, 2000);
+        $('#tbl_saldo_meses').DataTable({
+            language:{
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+            },
+            data: ProcesarDatos(response.data),
+            paging: false,
+            searching: false,
+            info: false,
+            destroy: true,
+            columns: [
+                {data:"Cuenta", title:"Cuenta"},
+                {data:"Cliente", title:"Cliente"},
+                {data:"Telefono", title:"Telefono"},
+                {data:"Factura", title:"Factura"},
+                {data:"Fecha_Emi", title:"Fecha_Emi",
+                    render: function(data, type, item){
+                        const fecha = data?.date;
+                        return fecha ? new Date(fecha).toLocaleDateString() : '';
+                    }
+                },
+                {data:"Fecha_Ven", title:"Fecha_Ven",
+                    render: function(data, type, item){
+                        const fecha = data?.date;
+                        return fecha ? new Date(fecha).toLocaleDateString() : '';
+                    }
+                },
+                {data:"Total", title:"Total"},
+                {data:"Abonos", title:"Abonos"},
+                {data:"Saldo", title:"Saldo"},
+                {data:"TC", title:"TC"},
+                {data:"Codigo", title:"Codigo"},
+                {data:"Cta", title:"Cta"}
+            ],
+            createdRow: function(row, data){
+                alignEnd(row, data);
+            }
+        });
     }
 });
 
@@ -140,9 +179,6 @@ $.ajax({
 
 function consultar_datos_x_meses()
 {
-if($.fn.dataTable.isDataTable('#tbl_saldo_meses')){
-    $('#tbl_saldo_meses').DataTable().clear().destroy();
-}
 $('#reporte_tipo').val(1);
 if($('#tipo_cuenta').val()=='')
 {
@@ -163,6 +199,12 @@ if($('#txt_hasta').val()=='')
 {
     Swal.fire('Fecha hasta invalida','','info');
     return false;
+}
+if($.fn.dataTable.isDataTable('#tbl_saldo_meses')){
+    //limpiamos configuracion
+    $('#tbl_saldo_meses').DataTable().clear().destroy();
+    //limpiamos elementos
+    $('#tbl_saldo_meses').empty();
 }
 var parametros =
 {
@@ -219,12 +261,12 @@ tbl_saldo_meses = $('#tbl_saldo_meses').DataTable({
     paging: false, 
     searching: false,
     columns: [
-        { "data":"Cta" },
-        { "data":"Beneficiario" },
-        { "data":"Anio" },
-        { "data":"Mes" },
-        { "data":"Valor_x_Mes" },
-        { "data":"Categoria" }
+        { "data":"Cta", title:"Cta"},
+        { "data":"Beneficiario", title:"Beneficiario" },
+        { "data":"Anio", title:"Anio" },
+        { "data":"Mes", title:"Mes" },
+        { "data":"Valor_x_Mes", title:"Valor_x_Mes" },
+        { "data":"Categoria", title:"Categoria" }
     ],
     createdRow: function(row, data){
         alignEnd(row, data);
@@ -320,10 +362,15 @@ tbl_saldo_temp = $('#tbl_saldo_temporal').DataTable({
             console.error("Error: ", xhr, status, error);
         }
     },
-    'colums': [
+    columns: [
         {"data": "Cuenta"},
         {"data": "Cliente"},
-        {"data": "Fecha_Venc"},
+        {"data": "Fecha_Venc",
+            render: function(data, type, item) {
+                const fecha = data?.date;
+                return fecha ? new Date(fecha).toLocaleDateString() : '';
+            }
+        },
         {"data": "Factura"},
         {"data": "Ven 1 a 7"},
         {"data": "Ven 8 a 30"},

@@ -215,9 +215,6 @@ function libro_submodulo()
       { data: 'Creditos'},
       { data: 'Prima'}
     ],
-    order: [
-      [0, 'asc']
-    ], 
     createdRow: function(row, data){
       alignEnd(row, data);
     }

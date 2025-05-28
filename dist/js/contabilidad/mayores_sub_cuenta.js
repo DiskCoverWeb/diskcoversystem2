@@ -164,10 +164,17 @@ function Consultar_Un_Submodulo()
                     },
                     searching: false, 
                     paging: false,
+                    autoWidth: true,
+                    info: false,
                     data: ProcesarDatos(response.tbl.data),
-                    'columns': [
+                    "columns": [
                         {"data":"Cta"},
-                        {"data":"Fecha"},
+                        {"data":"Fecha",
+                            render: function(data, type, item){
+                                const fecha = data?.date;
+                                return fecha ? new Date(fecha).toLocaleDateString() : '';
+                            }
+                        },
                         {"data":"TP"},
                         {"data":"Numero"},
                         {"data":"Cliente"},
@@ -177,13 +184,18 @@ function Consultar_Un_Submodulo()
                         {"data":"Saldo_MN"},
                         {"data":"Factura"},
                         {"data":"Parcial_ME"},
-                        {"data":"Detalles_SubCta"},
-                        {"data":"Fecha_V"},
+                        {"data":"Detalle_SubCta"},
+                        {"data":"Fecha_V",
+                            render: function(data, type, item){
+                                const fecha = data?.date;
+                                return fecha ? new Date(fecha).toLocaleDateString() : '';
+                            }
+                        },
                         {"data":"Codigo"},
                         {"data":"Item"}
                     ], 
                     createdRow: function(row, data){
-                        alingEnd(row, data)
+                        alignEnd(row, data)
                     }
                 })
                 //console.log(response.titulo);
@@ -210,7 +222,7 @@ $(document).ready(function()
         window.open(url, '_blank');
     });
 
-    
+    $('[data-bs-toggle="tooltip"]').tooltip();
 });
 
 

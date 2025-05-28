@@ -154,24 +154,26 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-sm-2">
-			<b>DEBE:</b>
-		</div>
-		<div class="col-sm-2">
-			<input type="text" class="form-control form-control-sm" style="font-size: 0.70rem" name="debe" id="debe" value="0.00" readonly>	  		
-		</div>
-		<div class="col-sm-2">
-			<b>HABER:</b>
-		</div>
-		<div class="col-sm-2">	  		
-			<input type="text" class="form-control form-control-sm" style="font-size: 0.70rem" name="haber" id="haber" value="0.00" readonly>
-		</div>
-		<div class="col-sm-2">
-			<b>SALDO MN:</b>
-		</div>
-		<div class="col-sm-2">	  		
-			<input type="text" class="form-control form-control-sm" style="font-size: 0.70rem" name="saldo" id="saldo" value="0.00" readonly>
+	<div>
+		<div class="row">
+			<div class="col-sm-2">
+				<b>DEBE:</b>
+			</div>
+			<div class="col-sm-2">
+				<input type="text" class="form-control form-control-sm" style="font-size: 0.70rem" name="debe" id="debe" value="0.00" readonly>	  		
+			</div>
+			<div class="col-sm-2">
+				<b>HABER:</b>
+			</div>
+			<div class="col-sm-2">	  		
+				<input type="text" class="form-control form-control-sm" style="font-size: 0.70rem" name="haber" id="haber" value="0.00" readonly>
+			</div>
+			<div class="col-sm-2">
+				<b>SALDO MN:</b>
+			</div>
+			<div class="col-sm-2">	  		
+				<input type="text" class="form-control form-control-sm" style="font-size: 0.70rem" name="saldo" id="saldo" value="0.00" readonly>
+			</div>
 		</div>
 	</div>
 </div>

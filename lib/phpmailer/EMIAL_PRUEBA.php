@@ -22,7 +22,7 @@ $mail = new PHPMailer(true);
 // host://Username://pass://Puerto://Secure:ssl
 
     //Server settings
-    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+    $mail->SMTPDebug = SMTP::DEBUG_LOWLEVEL;                      //Enable verbose debug output
     $mail->isSMTP();                                            //Send using SMTP
     // $mail->Host       = "smtp.diskcoversystem.com";                     //Set the SMTP server to send through
     // $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
@@ -38,13 +38,13 @@ $mail = new PHPMailer(true);
     $mail->Password = 'Admin@2023';
     $mail->SMTPSecure = false; // Dejar en blanco para 'tls'
     $mail->SMTPAutoTLS = true; // Desactivar el inicio automático de TLS
-    $mail->Port = 26;
+    $mail->Port = 143;
 
    
 
 
     //Recipients
-    $mail->setFrom('informacion@smtp.diskcoversystem.com', 'Mailer');
+    $mail->setFrom('informacion@imap.diskcoversystem.com', 'Mailer');
     $mail->addAddress('jeanasencio2000@gmail.com');     //Add a recipient
     // $mail->addAddress('javier.farinango92@gmail.com');     //Add a recipient
     // $mail->addAddress('diskcoversystem@msn.com');     //Add a recipient

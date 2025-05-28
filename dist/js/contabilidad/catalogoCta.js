@@ -6,9 +6,8 @@ function consultar_datos()
     }
     var columnasIdxNum = [];
     tbl_catalogoCta = $('#tbl_tablaCta').DataTable({
-        lengthChange: false, // Desactiva el menú de selección de registros por página
-        paging: true,        // Mantiene la paginación habilitada
-        pageLength: 10,
+        paging: false,
+        searching: false,
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },

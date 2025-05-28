@@ -101,6 +101,7 @@ class mayores_sub_cuentaC
 	function reporte_pdf($parametros)
 	{
 			$datos = $this->modelo->Consultar_Un_Submodulo_datos($parametros);
+			$datos['datos'] = datosGenericos($datos['datos']);
 			$datos1 = $datos;
 
 			$temp = '';
@@ -194,9 +195,9 @@ class mayores_sub_cuentaC
 						$tablaHTML[$pos]['alineado']=$tablaHTML[$pos-1]['alineado'];
 						$tablaHTML[$pos]['datos']=array($value2['Fecha']->format('Y-m-d'),$value2['Factura'],$value2['TP'],$value2['Numero'],$value2['Concepto'],$value2['Parcial_ME'],$value2['Debitos'],$value2['Creditos'],$value2['Saldo_MN']);
 						$tablaHTML[$pos]['borde'] ='LR';
-						$deb+=$value2['Debitos'];
-						$sal+=$value2['Saldo_MN'];
-						$cre+=$value2['Creditos'];
+						$deb+=(float)$value2['Debitos'];
+						$sal+=(float)$value2['Saldo_MN'];
+						$cre+=(float)$value2['Creditos'];
 						unset($datos1['datos'][$key2]);
 						$pos+=1;
 					}

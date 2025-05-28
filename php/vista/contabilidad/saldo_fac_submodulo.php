@@ -33,8 +33,8 @@
         	</a>
         	<a href="#"  class="btn btn-outline-secondary btn-sm"  data-bs-toggle="tooltip" title="Descargar excel" id='descargar_excel'>
         		<img src="../../img/png/table_excel.png">
-        	</a> 
-        	<input type="hidden" name="reporte_tipo" id="reporte_tipo" value="0">        	
+        	</a>
+			<input type="hidden" name="reporte_tipo" id="reporte_tipo" value="0">        	 
 	    </div>
 		<div class="row row-cols-auto">
 			<div class="col-4">
@@ -119,33 +119,15 @@
 	  		</ul>
 	  	    <div class="tab-content">
 	  	    	<div id="home" class="tab-pane fade active show">
-						<div class="table-responsive">
+						<div class="table-responsive" style="max-height: 400px; ">
 							<table class="table text-sm w-100" id="tbl_saldo_meses">
-								<thead>
-									<tr>
-										<th class="text-center">Cta</th>
-										<th class="text-center">Beneficiario</th>
-										<th class="text-center">Anio</th>
-										<th class="text-center">Mes</th>
-										<th class="text-center">Valor_x_Mes</th>
-										<th class="text-center">Categoria</th>	
-									</tr>
-								</thead> 
-								<tbody>
-									<tr>
-										<td></td> 
-										<td></td> 
-										<td></td> 
-										<td></td> 
-										<td></td> 
-										<td></td> 
-									</tr>
-								</tbody> 
+								<thead></thead> 
+								<tbody></tbody> 
 							</table>
 						</div>    	   	
 	  	    	</div>
 	  	    	<div id="menu1" class="tab-pane fade">
-						<div class="table-responsive">
+						<div class="table-responsive" style="max-height: 400px; ">
 							<table class="table text-sm w-100" id="tbl_saldo_temporal">
 								<thead>
 									<tr>
