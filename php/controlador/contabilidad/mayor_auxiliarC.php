@@ -89,7 +89,7 @@ class mayor_auxiliarC
 	
 
   		$datos = $this->modelo->ListarMayoresAux($parametros['OpcUno'],$parametros['PorConceptos'],$parametros['txt_CtaI'],$parametros['txt_CtaF'],$desde,$hasta,$parametros['DCCtas'],$parametros['CheckAgencia'],$parametros['DCAgencia'],$parametros['CheckUsu'],$parametros['DCUsuario'], $soloMayorDatos = true);
-
+		$datos = datosGenericos($datos);
        if($sub != 'false')
        {       	
   		$submodulo = $this->modelo->consultatr_submodulos($desde,$hasta,$parametros['CheckAgencia'],$parametros['DCAgencia'],$parametros['CheckUsu'],$parametros['DCUsuario']);
@@ -164,16 +164,16 @@ class mayor_auxiliarC
 		        $pos = $pos+1;
 		        $tablaHTML[$pos]['medidas']=$tablaHTML[2]['medidas'];
 		        $tablaHTML[$pos]['alineado']=array('L','L','L','L','R','R','R','R');
-		        $tablaHTML[$pos]['datos']=array('','','',$value['Concepto'],'',number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),$value['Saldo']);
+		        $tablaHTML[$pos]['datos']=array('','','',$value['Concepto'],'',$value['Debe'],$value['Haber'],$value['Saldo']);
 		        $tablaHTML[$pos]['borde'] =$borderow;
 		        $pos = $pos+1;
 		        $fecha = $value['Fecha']->format('Y-m-d');
-		        $debe+=$value['Debe']; $haber+=$value['Haber'];$saldo += $value['Saldo'];
+		        $debe+=(float)$value['Debe']; $haber+=(float)$value['Haber'];$saldo += (float)$value['Saldo'];
 		        foreach ($submodulo as $key => $value1) {
 		        	if($value1['Numero'] == $value['Numero'])
 		        	{
 
-		        		if($value1['Debitos'] == '.0000')
+		        		if($value1['Debitos'] == '0.00')
 		        		{
 		        			$p='R';
 		        			$parcial = $value1['Creditos'];
@@ -213,16 +213,16 @@ class mayor_auxiliarC
 		            $pos = $pos+1;
 		            $tablaHTML[$pos]['medidas']=$tablaHTML[2]['medidas'];
 		            $tablaHTML[$pos]['alineado']=array('L','L','L','L','R','R','R','R');
-		            $tablaHTML[$pos]['datos']=array('','','',$value['Concepto'],'',number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),$value['Saldo']);
+		            $tablaHTML[$pos]['datos']=array('','','',$value['Concepto'],'',$value['Debe'],$value['Haber'],$value['Saldo']);
 		            $tablaHTML[$pos]['borde'] =$borderow;
 		            $pos = $pos+1;
 		            $fecha = $value['Fecha']->format('Y-m-d');
-		            $debe+=$value['Debe']; $haber+=$value['Haber'];$saldo += $value['Saldo'];
+		            $debe+=(float)$value['Debe']; $haber+=(float)$value['Haber'];$saldo += (float)$value['Saldo'];
 		             foreach ($submodulo as $key => $value1) {
 		        	if($value1['Numero'] == $value['Numero'])
 		        	{
 
-		        		if($value1['Debitos'] == '.0000')
+		        		if($value1['Debitos'] == '0.00')
 		        		{
 		        			$p='R';
 		        			$parcial = $value1['Creditos'];
@@ -278,13 +278,13 @@ class mayor_auxiliarC
 		          $pos = $pos+1;
 		          $tablaHTML[$pos]['medidas']=$tablaHTML[2]['medidas'];
 		          $tablaHTML[$pos]['alineado']=array('L','L','L','L','R','R','R','R');
-		          $tablaHTML[$pos]['datos']=array('','','',$value['Concepto'],'',number_format($value['Debe'],2,'.',''),number_format($value['Haber'],2,'.',''),$value['Saldo']);
+		          $tablaHTML[$pos]['datos']=array('','','',$value['Concepto'],'',$value['Debe'],$value['Haber'],$value['Saldo']);
 		          $tablaHTML[$pos]['borde'] =$borderow;		          
 		          $pos = $pos+1;
 		           foreach ($submodulo as $key => $value1) {
 		        	if($value1['Numero'] == $value['Numero'])
 		        	{
-		        		if($value1['Debitos'] == '.0000')
+		        		if($value1['Debitos'] == '0.00')
 		        		{
 		        			$p='R';
 		        			$parcial = $value1['Creditos'];
@@ -301,7 +301,7 @@ class mayor_auxiliarC
 		        	}
 		        }
 		          $pos = $pos+1;  
-		          $debe+=$value['Debe']; $haber+=$value['Haber'];$saldo += $value['Saldo'];
+		          $debe+=(float)$value['Debe']; $haber+=(float)$value['Haber']; $saldo += (float)$value['Saldo'];
 
 		      	}
 		      	

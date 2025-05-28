@@ -426,33 +426,34 @@ class diario_generalC
 			$parametros['CheckUsuario'],
 			$parametros['CheckNum']);
 
-		   		$tablaHTML=''; 
+		$datos = datosGenericos($datos);
+			$tablaHTML=''; 
 		$temp='';
 		$total_debe= 0;
 		$total_haber = 0;
 		 foreach ($datos as $key => $value){
-		 	if(round($value['Debe'],2) == 0)
+		 	if(round((float)$value['Debe'],2) == 0)
 		 	{
 		 		$deb = '&nbsp;';
 		 	}else
 		 	{
-		 		$deb = round($value['Debe'],2);
+		 		$deb = $value['Debe'];
 		 	}
 			
-			if(round($value['Haber'],2) == 0)
+			if(round((float)$value['Haber'],2) == 0)
 		 	{
 		 		$hab = '&nbsp;';
 		 	}else
 		 	{
-		 		$hab = round($value['Haber'],2);
+		 		$hab = $value['Haber'];
 		 	}
 
-		 	if(round($value['Parcial_ME'],2) == 0)
+		 	if(round((float)$value['Parcial_ME'],2) == 0)
 		 	{
 		 		$par_me = '&nbsp;';
 		 	}else
 		 	{
-		 		$par_me = round($value['Parcial_ME'],2);
+		 		$par_me = $value['Parcial_ME'];
 		 	}
 			
 			if($temp=='')
@@ -478,8 +479,8 @@ class diario_generalC
 
 		   			}
 		   		}
-		   		$total_debe+=$value['Debe'];
-			    $total_haber+=$value['Haber'];
+		   		$total_debe+=(float)$value['Debe'];
+			    $total_haber+=(float)$value['Haber'];
 
 		   }else
 		   {
@@ -506,8 +507,8 @@ class diario_generalC
 		   			}
 		   		}
 
-		   		$total_debe+=$value['Debe'];
-			    $total_haber+=$value['Haber'];
+		   		$total_debe+=(float)$value['Debe'];
+			    $total_haber+=(float)$value['Haber'];
 
 		   	}else
 		   	{

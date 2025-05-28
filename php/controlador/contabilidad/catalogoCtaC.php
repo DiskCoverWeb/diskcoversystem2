@@ -58,6 +58,7 @@ class catalogoCtaC
 	function imprimir_pdf($parametros)
 	{
 	    $datos = $this->modelo->cargar_datos_cuenta_datos($parametros['OpcT'],$parametros['OpcG'],$parametros['OpcD'],$parametros['txt_CtaI'],$parametros['txt_CtaF']);
+		$datos = datosGenericos($datos);
 		// print_r($datos);die();
 	    $tablaHTML = array();
 		$tablaHTML[0]['medidas']=array(15,10,10,10,25,70,25,25);
