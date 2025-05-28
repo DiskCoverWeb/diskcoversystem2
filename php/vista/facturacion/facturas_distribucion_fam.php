@@ -389,7 +389,7 @@ if (isset ($_GET['tipo'])) {
 							<b>I.V.A %</b>
 						</div>
 						<div class="col-sm-7">
-							<select class="form-control form-control-sm" style="width:100%" name="DCPorcenIVA" id="DCPorcenIVA" onblur="cambiar_iva(this)">
+							<select class="form-select form-select-sm" style="width:100%" name="DCPorcenIVA" id="DCPorcenIVA" onblur="cambiar_iva(this)">
 
 							</select>
 						</div>
@@ -447,6 +447,16 @@ if (isset ($_GET['tipo'])) {
 					<div id="campos_fact_efectivo" style="display:block;">
 						<div class="row">
 							<div class="col-sm-5">
+								<b>CUENTA</b>
+							</div>
+							<div class="col-sm-7">
+								<select class="form-select form-select-sm" id="">
+									<option>Seleccion opciones</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-5">
 								<b>EFECTIVO</b>
 							</div>
 							<div class="col-sm-7">
@@ -456,6 +466,7 @@ if (isset ($_GET['tipo'])) {
 						</div>
 					</div>
 					<div id="campos_fact_banco" style="display:none;">
+						<hr>
 						<div class="row">
 							<div class="col-sm-5">
 								<b>CUENTA DEL BANCO</b>

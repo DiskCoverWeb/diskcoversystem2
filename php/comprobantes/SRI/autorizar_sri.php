@@ -41,7 +41,7 @@ class autorizacion_sri
 
 
 		 $this->rutaJava8  = "";
-		//$this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
+		// $this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
 	}
 	function encriptar($dato)
 	{

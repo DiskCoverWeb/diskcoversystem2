@@ -1088,7 +1088,7 @@ class facturas_distribucion
 
 	function IngresarAsientoF($parametros)
 	{
-		// print_r($parametros);die();
+		// print_r($parametros);
 		$electronico = 0;
 		if (isset($parametros['electronico'])) {
 			$electronico = $parametros['electronico'];
@@ -1106,6 +1106,7 @@ class facturas_distribucion
 		$Serie = $parametros['Serie'];
 		$producto = Leer_Codigo_Inv($parametros['Codigo'], $parametros['fecha'], $parametros['CodBod']);
 		$CodigoL2 = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $parametros['fecha'], $parametros['fecha'], $electronico);
+		$tipoTC = $parametros['tipoTC'];
 		if (count($CodigoL2) > 0) {
 			$CodigoL = $CodigoL2[0]['Codigo'];
 			$Serie = $CodigoL2[0]['Serie'];
@@ -1213,7 +1214,7 @@ class facturas_distribucion
 					SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
 					SetAdoFields('Codigo_Cliente', $parametros['CodigoCliente']);
 					SetAdoFields('A_No', $A_No + 1);
-
+					SetAdoFields('HABIT',$tipoTC);
 					if(isset($parametros['CodBod2'])){
 						SetAdoFields('CodBod', $parametros['CodBod2']);
 					}
@@ -1348,6 +1349,9 @@ class facturas_distribucion
 					// Next i
 				} else {
 					// print_r($articulo);
+					// print_r($parametros);
+
+					// die();
 					// die();	
 					if (isset($parametros['Producto'])) {
 						// esto se usa en facturacion_elec al cambiar el nombre
@@ -1356,6 +1360,11 @@ class facturas_distribucion
 					/*print_r($TextCant);
 					print_r($TextVUnit);
 					die();*/
+
+					$params = array('beneficiario'=>$parametros['CodigoCliente'],'fecha'=>$parametros['fecha']);
+					$data = $this->modelo->ConsultarProductos($params,$parametros['IdTransComi']);
+
+					// print_r($data);die();
 
 					SetAdoAddNew('Asiento_F');
 					//SetAdoFields('CODIGO', $articulo['Codigo_Inv']);
@@ -1387,6 +1396,9 @@ class facturas_distribucion
 					SetAdoFieldsWhere('Codigo_Cliente', $parametros['CodigoCliente']);
 					//SetAdoFieldsWhere('CodBod', $parametros['CodigoCliente']);
 					SetAdoFieldsWhere('Serie', $parametros['Serie']);
+					SetAdoFieldsWhere('CANT', $data[0]['Total']);
+					SetAdoFieldsWhere('HABIT', $data[0]['Cta']);
+					// SetAdoFieldsWhere('PRECIO', $data[0]['Serie']);
 					
 					return SetAdoUpdateGeneric();
 
@@ -1655,6 +1667,7 @@ class facturas_distribucion
 				if(isset($parametros['Comprobante'])){
 					$FA['Comprobante'] = $parametros['Comprobante'];
 				}
+				// $FA['tipoTC'] = 
 
 				$Moneda_US = False;
 				$TextoFormaPago = G_PAGOCONT;
@@ -1699,6 +1712,7 @@ class facturas_distribucion
 			'TextServicios' => '.',
 			'TextVDescto' => '0',
 			'Serie' => $FA['Serie_FA'],
+			'tipoTC' => '.',
 		);
 		$this->IngresarAsientoF($params);
 
@@ -1759,13 +1773,13 @@ class facturas_distribucion
 		print_r((floatval(number_format($FA['Total_MN'], 4, '.', ''))));
 
 
-	die();
+	// die();
 
 		// print_r(floatval(number_format($FA['Total_MN'],4,'.','')).'-'.floatval(number_format($parametros['TxtEfectivo'],4,'.','')).'-');
 		// print_r(floatval(number_format($FA['Total_MN'],4,'.',''))-floatval(number_format($parametros['TxtEfectivo'],4,'.',''))); die();
 		if ((floatval(number_format($parametros['TxtEfectivo'], 4, '.', '')) + floatval(number_format($parametros['valorBan'], 4, '.', '')) - floatval(number_format($FA['Total_MN'], 4, '.', ''))) >= 0) {
 
-			print_r('expression');die();
+			// print_r('expression');die();
 			$electronico = 0;
 			if (isset($parametros['electronico'])) {
 				$electronico = $parametros['electronico'];

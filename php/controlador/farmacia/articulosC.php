@@ -247,11 +247,11 @@ class articulosC
   				<th>FECHA</th>
   				<th>REFERENCIA</th>
   				<th>DESCRIPCION</th>
-          <th class="text-right">CANTIDAD</th>
-          <th class="text-right">PRECIO</th>
-  		 <th class="text-right">DCTO</th>
-  		 <th class="text-right">SUB TOTAL</th>
-          <th class="text-right">IVA</th>
+		          <th class="text-right">CANTIDAD</th>
+		          <th class="text-right">PRECIO</th>
+		  		<th class="text-right">DCTO</th>
+		  		<th class="text-right">SUB TOTAL</th>
+		          <th class="text-right">IVA</th>
   				<th class="text-right">TOTAL</th>
   				<th></th>
   			</thead>
@@ -283,14 +283,14 @@ class articulosC
 
     		$su = number_format(($value['VALOR_UNIT']*$value['CANTIDAD'])-number_format($value['P_DESC'],2),2,'.','');
 
-			$d =   dimenciones_tabl(strlen($value['A_No']));
-			$d1 =   dimenciones_tabl(strlen($fecha));
-			$d2 =   dimenciones_tabl(strlen($value['CODIGO_INV']));
-			$d3 =   dimenciones_tabl(strlen($value['PRODUCTO']));
-			$d4 =   dimenciones_tabl(strlen($value['CANTIDAD']));
-			$d5 =   dimenciones_tabl(strlen($value['VALOR_UNIT']));
-			$d6 =   dimenciones_tabl(strlen($value['IVA']));
-			$d7 =   dimenciones_tabl(strlen($value['VALOR_TOTAL']));
+			$d =   ''; //dimenciones_tabl(strlen($value['A_No']));
+			$d1 =  ''; // dimenciones_tabl(strlen($fecha));
+			$d2 =  ''; // dimenciones_tabl(strlen($value['CODIGO_INV']));
+			$d3 =  ''; // dimenciones_tabl(strlen($value['PRODUCTO']));
+			$d4 =  ''; // dimenciones_tabl(strlen($value['CANTIDAD']));
+			$d5 =  ''; // dimenciones_tabl(strlen($value['VALOR_UNIT']));
+			$d6 =  ''; // dimenciones_tabl(strlen($value['IVA']));
+			$d7 =  ''; // dimenciones_tabl(strlen($value['VALOR_TOTAL']));
     		$tr.='<tr>
   					<td width="'.$d.'">'.$value['A_No'].'</td>
   					<td width="'.$d1.'">'.$fecha.'</td>
@@ -303,8 +303,7 @@ class articulosC
   					<td width="'.$d7.'" class="text-right">'.$value['IVA'].'</td>
   					<td width="'.$d7.'" class="text-right">'.$value['VALOR_TOTAL'].'</td>
   					<td width="10px">
-  						<!-- <button class="btn btn-xs btn-primary" onclick="editar_lin()" title="Editar paciente"><span class="glyphicon glyphicon-floppy-disk"></span></button> -->
-  						<button class="btn btn-xs btn-danger" title="Eliminar paciente"  onclick="eliminar_lin(\''.$value['A_No'].'\',\''.$orden.'\',\''.$prove.'\')" ><span class="glyphicon glyphicon-trash"></span></button>
+  						<button class="btn btn-sm btn-danger" title="Eliminar paciente"  onclick="eliminar_lin(\''.$value['A_No'].'\',\''.$orden.'\',\''.$prove.'\')" ><span class="bx bx-trash"></span></button>
   					</td>
   				</tr>';
 			
@@ -329,9 +328,10 @@ class articulosC
 		<input type="hidden" id="iva_'.$orden.'" value="'.$ivatotal.'"/>		 
 		</div>
 		<div class="col-sm-7" style=" display:'.$show.'">		
-		<button type="button" class="btn btn-primary" onclick="generar_factura(\''.$orden.'\',\''.$prove.'\')" ><i class="fa fa-archive"></i> Registrar Ingreso</button>
-		<button type="button" class="btn btn-default" onclick="subir(\''.$orden.'\',\''.$prove.'\')"><i class="fa fa-upload"></i> Subir Documento</button>
-		<button type="button" class="btn btn-danger" onclick="eliminar_todo(\''.$orden.'\',\''.$prove.'\')"><i class="fa fa-trash"></i> Eliminar Todo</button> <br><br>
+		<button type="button" class="btn btn-primary btn-sm" onclick="generar_factura(\''.$orden.'\',\''.$prove.'\')" ><i class="bx bx-archive"></i> Registrar Ingreso
+		</button>
+		<button type="button" class="btn btn-outline-secondary btn-sm" onclick="subir(\''.$orden.'\',\''.$prove.'\')"><i class="bx bx-upload"></i> Subir Documento</button>
+		<button type="button" class="btn btn-danger btn-sm" onclick="eliminar_todo(\''.$orden.'\',\''.$prove.'\')"><i class="bx bx-trash"></i> Eliminar Todo</button> <br><br>
 		</div>';
 
 		 return $cabecera_tabla.$tr.$footer_tabla;
@@ -339,31 +339,34 @@ class articulosC
 
     function cargar_productos($parametros)
     {
-    	$ordenes = $this->modelo->cargar_productos_pedido_TAB();
-    	$datos = $this->modelo->cargar_productos_pedido();
-    	
-         $tab=' <ul class="nav nav-tabs">';
-         $content = '<div class="tab-content">';
-    	foreach ($ordenes as $key => $value) {
-    		if($value['SUBCTA']!='.')
-    		{
-    		$prove = $this->modelo->proveedores(false,$value['SUBCTA']);
-    		if($key==0)
-    		{
+	    	$ordenes = $this->modelo->cargar_productos_pedido_TAB();
+	    	$datos = $this->modelo->cargar_productos_pedido();
+	    	
+	    $tab=' <ul class="nav nav-tabs nav-warning">';
+	    $content = '<div class="tab-content">';
+	    	foreach ($ordenes as $key => $value) {
+	    		if($value['SUBCTA']!='.')
+	    		{
+	    		$prove = $this->modelo->proveedores(false,$value['SUBCTA']);
+	    		if($key==0)
+	    		{
 
-    		    $content.='<div id="'.$value['SUBCTA'].'-'.$value['ORDEN'].'" class="tab-pane fade in active">';
-    			$tab.='<li class="active"><a data-toggle="tab" href="#'.$value['SUBCTA'].'-'.$value['ORDEN'].'">'.$prove[0]['Cliente'].' Num Factura: '.$value['ORDEN'].'</a></li>';
-    		}else
-    		{
+	    		    $content.='<div id="'.$value['SUBCTA'].'-'.$value['ORDEN'].'" class="tab-pane fade show active">';
+	    			$tab.='<li class="nav-item active">
+	    					<a data-bs-toggle="tab" class="nav-link active" href="#'.$value['SUBCTA'].'-'.$value['ORDEN'].'">'.$prove[0]['Cliente'].' Num Factura: '.$value['ORDEN'].'</a>
+	    				</li>';
+	    		}else
+	    		{
 
-    		    $content.='<div id="'.$value['SUBCTA'].'-'.$value['ORDEN'].'" class="tab-pane fade">';
-    			$tab.='<li><a data-toggle="tab" href="#'.$value['SUBCTA'].'-'.$value['ORDEN'].'">'.$prove[0]['Cliente'].' Num Factura: '.$value['ORDEN'].'</a></li>';
-    		}
+	    		    $content.='<div id="'.$value['SUBCTA'].'-'.$value['ORDEN'].'" class="tab-pane fade">';
+	    			$tab.='<li class="nav-item">
+	    					<a data-bs-toggle="tab" class="nav-link active" href="#'.$value['SUBCTA'].'-'.$value['ORDEN'].'">'.$prove[0]['Cliente'].' Num Factura: '.$value['ORDEN'].'</a></li>';
+	    		}
 
-    		    $content.= $this->crear_tabla_datos($value['ORDEN'],$value['SUBCTA']);
-    		$content.='</div>';
-    	  }
-    	}
+	    		    $content.= $this->crear_tabla_datos($value['ORDEN'],$value['SUBCTA']);
+	    		$content.='</div>';
+	    	  }
+	    	}
     	$tab.='</ul>';
     	$content.='</div>';
     	$tabs_tabla = $tab.$content;

@@ -3511,8 +3511,16 @@ function validar_registro()
         codigo();
       }
 
-      $("#myModal_espera").modal('hide');
+      setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 1000)
 
+    },
+    error: (err) => {
+        setTimeout(()=>{
+            $('#myModal_espera').modal('hide');
+        }, 1000)
+        Swal.fire('Error', 'Hubo un problema al guardar la factura.','info');
     }
   });
 }

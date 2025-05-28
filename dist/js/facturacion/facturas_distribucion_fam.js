@@ -1,9 +1,11 @@
 	var ListaIntegrantesXProducto = {};
 	$(document).ready(function () {
 		 autocomplete_pedidos();
+		 DCLineasNDU(); 
 		 serie();
 		 DCLineas(); 
 		 DCPorcenIvaFD()
+
 
 		 $('#ddl_pedidos').on('select2:select', function (e) {
         var datos = e.params.data.data;//Datos beneficiario seleccionado
@@ -43,7 +45,7 @@
 		});
 	}
 
-	function  DCLineas() {
+	function  DCLineasNDU() {
 		var TC = $('#DCTipoFact2').val();
 		var parametros =
 		{
@@ -55,6 +57,7 @@
 			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
+				console.log(data);
 				if (data.serie != '.') {
 					$('#LblSerie').text(data.serie);
 					$('#TextNDUNo').val(data.NumCom);
@@ -62,6 +65,25 @@
 					numeroFactura();
 				}
 				validar_cta();
+			}
+		});
+	}
+
+	function DCLineas() {
+		var parametros =
+		{
+			'Fecha': $('#MBFecha').val(),
+			'TC': 'FA'
+		}
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucionC.php?DCLineas=true',
+			data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+				llenarComboList(data, 'DCLineas');
+				//$('#Cod_CxC').val(data[0].nombre);  //FA
+				//Lineas_De_CxC();
 			}
 		});
 	}
@@ -196,49 +218,90 @@
 			dataType: 'json',
 			success: function (data) {
 
+				console.log(data);
+
 				$('#LblSerieFA').text(data.serie)
 				$('#TextFacturaNo').val(data.NumCom);
 				$('#TextNDUNo').val(data.NumCom)
 
-				llenarComboList(data, 'DCLineas');
+				// llenarComboList(data, 'DCLineas');
 				//$('#Cod_CxC').val(data[0].nombre);  //FA
 				//Lineas_De_CxC();
 			}
 		});
 	}
 
-	function DCPorcenIvaFD(){
-		let fecha = $("#MBFecha").val();
-		$('#DCPorcenIVA').select2({
-			placeholder: 'Seleccione IVA',
-			dropdownParent: $('#modalInfoFactura'),
-			ajax: {
-				url: '../controlador/facturacion/facturas_distribucionC.php?LlenarSelectIVA=true',
-				dataType: 'json',
-				delay: 250,
-				data: function (params) {
-                    return {
-                        query: params.term,
-                        fecha: fecha
-                    }
-                },
-				processResults: function (data) {
-					return {
-						results: data
-					};
-				},
-				cache: true
+	function DCPorcenIvaFD() {
+		
+		$.ajax({
+			type: "GET",
+			url: '../controlador/facturacion/facturas_distribucionC.php?LlenarSelectIVA=true',
+			data: { fecha:  $('#MBFecha').val() },
+			dataType: 'json',
+			success: function (data) {
+				console.log(data);
+				response = [];
+				data.forEach(function(item,i){
+					response.push({'codigo':item.id,'nombre':item.text})
+				})
+
+				llenarComboList(response, 'DCPorcenIVA');
+				//$('#Cod_CxC').val(data[0].nombre);  //FA
+				//Lineas_De_CxC();
 			}
 		});
 	}
 
-	function validarProductos(codigoC) {
+	// function DCPorcenIvaFD(){
+	// 	let fecha = $("#MBFecha").val();
+	// 	$('#DCPorcenIVA').select2({
+	// 		placeholder: 'Seleccione IVA',
+	// 		dropdownParent: $('#modalInfoFactura'),
+	// 		ajax: {
+	// 			url: '../controlador/facturacion/facturas_distribucionC.php?LlenarSelectIVA=true',
+	// 			dataType: 'json',
+	// 			delay: 250,
+	// 			data: function (params) {
+    //                 return {
+    //                     query: params.term,
+    //                     fecha: fecha
+    //                 }
+    //             },
+	// 			processResults: function (data) {
+	// 				return {
+	// 					results: data
+	// 				};
+	// 			},
+	// 			cache: true
+	// 		}
+	// 	});
+	// }
+
+	async function validarProductos(codigoC) {
 		$('#cbx_all_producto').prop('checked',false);
 		if($('#rbl_facturar_'+codigoC).prop('checked'))
 		{
 			$('#txt_integrate_produ').val(codigoC);
-			cargarOrden();
-			$('#modal_grupoAlimentos').modal('show');
+			await cargarOrden();
+			if(Object.keys(ListaIntegrantesXProducto).length==0)
+			{				
+				$('#modal_grupoAlimentos').modal('show');
+			}else
+			{
+				if(ListaIntegrantesXProducto[codigoC]!=undefined)
+				{
+					$('#txt_integrate_produ').val(codigoC);					
+					ListaIntegrantesXProducto[codigoC].forEach(function(item,i){
+						console.log(item);
+						$('#txt_cantidad_entregada_'+item.Codigo.replaceAll('.','_')).val(item.cantidad);
+						$('#txt_pvp_entregada_'+item.Codigo.replaceAll('.','_')).val(item.pvp);
+						$('#txt_total_entregada_'+item.Codigo.replaceAll('.','_')).val(item.total);
+						$('#rbl_prod_entregada_'+item.Codigo.replaceAll('.','_')).prop('checked',true);
+					})
+				}
+				$('#modal_grupoAlimentos').modal('show');
+			}
+
 		}else
 		{
 			Swal.fire("Habilite al integrante","","info")
@@ -248,7 +311,7 @@
 	function generar() 
 	{
 		IntegrantesGrupo();
-		cargarOrden();
+		// cargarOrden();
 		$('#modal_grupoIntegrantes').modal('show');
 	}
 
@@ -260,7 +323,7 @@
 			'grupo': $('#ddl_grupos').val(),
 			'pedido':$('#ddl_pedidos').val(),
 		}
-		$.ajax({
+	return	$.ajax({
 			type: "POST",
 			url: '../controlador/facturacion/facturas_distribucion_famC.php?cargarOrden=true',
 			data: { parametros: parametros },
@@ -272,7 +335,7 @@
 				data.forEach(function(item,i){
 					tr+= `<tr>
 							<td>
-								<input class="class_productos" type="checkbox" value="`+item.Codigo+`">
+								<input class="class_productos" type="checkbox" value="`+item.Codigo+`" id="rbl_prod_entregada_`+item.Codigo.replaceAll('.','_')+`">
 							</td>
 							<td>`+item.Producto+`</td>
 							<td>`+item.Cantidad+`</td>
@@ -342,7 +405,10 @@
 							<input type="" id="txt_total_cp_`+item.Codigo+`" name ="" class="form-control form-control-sm" value="0" readonly>
 						</td>
 						<td>
-							<input type="" id="txt_abono_cp_`+item.Codigo+`" name ="" class="form-control form-control-sm" value="0" >
+							<div class="input-group">
+								<input type="" readonly="" id="txt_abono_cp_`+item.Codigo+`" name ="" class="form-control form-control-sm" value="0" >
+								<button class="btn btn-light border border-1 btn-sm" onclick="modal_forma_pago('`+item.Codigo+`')">Forma de pago</button>
+							</div>
 						</td>
 						<td class="text-center">
 							<button type="button" class="btn" onclick="validarProductos('`+item.Codigo+`')">
@@ -1991,4 +2057,9 @@
 		if (ddl == '') {
 			Swal.fire('Ingrese o Seleccione una bodega', '', 'info').then(function () { $('#TextFacturaNo').focus() });
 		}
+	}
+
+	function modal_forma_pago(codigo)
+	{
+		$('#modalInfoFactura').modal('show')
 	}

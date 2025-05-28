@@ -778,22 +778,23 @@ var valTC = 'FA';
 						tr.append($('<td></td>').text(fila['Detalles']['Nombre_Completo']));
 						tr.append($('<td></td>').text(fila['Productos']['Producto']));
 						//tr.append($('<td></td>').text(parseInt(fila['Detalles']['Total'])));
-						tr.append($('<td><div class="row justify-content-center"><input class="form-control form-control-sm" onchange="modificarLineaFac(this)" style="max-width:95px;" value="'+fila['Detalles']['Total']+'" disabled></div></td>'));
+						tr.append($('<td><div class="row justify-content-center"><input id="txt_cant_'+fila['Detalles']['ID']+'" class="form-control form-control-sm" onchange="modificarLineaFac(this)" style="max-width:95px;" value="'+fila['Detalles']['Total']+'" disabled></div></td>'));
 						//tr.append($('<td></td>').text(parseFloat(fila['Productos']['PVP']).toFixed(2)));
-						tr.append($('<td><div class="row justify-content-center"><input class="form-control form-control-sm" onchange="modificarLineaFac(this)" style="max-width:85px;" value="'+fila['Productos']['PVP']+'" valAnterior="'+fila['Productos']['PVP']+'" disabled></div></td>'));
+						tr.append($('<td><div class="row justify-content-center"><input id="txt_pvp_'+fila['Detalles']['ID']+'" class="form-control form-control-sm" onchange="modificarLineaFac(this)" style="max-width:85px;" value="'+fila['Productos']['PVP']+'" valAnterior="'+fila['Productos']['PVP']+'" disabled></div></td>'));
 						let totalProducto = fila['Detalles']['Total'] * fila['Productos']['PVP'];
 						tr.append($('<td valAnterior="'+parseFloat(totalProducto).toFixed(8)+'"></td>').text(parseFloat(totalProducto).toFixed(8)));
 						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodBodega2']));
 						tr.append($('<td style="display:none;"></td>').text(fila['Productos']['Codigo_Inv']));
-						tr.append($('<td></td>').html('<input type="checkbox" id="producto_recalcular" name="producto_recalcular" onchange="recalcularLineaFact(this)" class="form-check-input border-secondary" disabled>'));
-						tr.append($('<td></td>').html('<input type="checkbox" id="producto_cheking" name="producto_cheking" class="form-check-input border-secondary" disabled>'));
+						tr.append($('<td></td>').html('<input type="checkbox" id="producto_recalcular_'+fila['Detalles']['ID']+'" name="producto_recalcular" onchange="recalcularLineaFact(this)" class="form-check-input border-secondary" disabled>'));
+						tr.append($('<td></td>').html('<input type="checkbox" id="producto_cheking_'+fila['Detalles']['ID']+'" name="producto_cheking" class="form-check-input border-secondary" disabled>'));
 						//tr.append($('<td></td>').html('<button style="width:50px" class="btn btn-sm btn-primary" onclick="modificarLineaFac(this)"><i class="bx bxs-pencil"></i></button>'));
 						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['CodigoU']));
+						tr.append($('<td style="display:none;"></td>').text(fila['Detalles']['Cta']));
 						tBody.append(tr);
 
 						cTotalProds += parseFloat(fila['Detalles']['Total']);
 						tTotalProds += parseFloat(totalProducto);
-						console.log(tTotalProds);
+						// console.log(tTotalProds);
 					}
 					let tr = $('<tr class="bg-primary-subtle"></tr>');
 					tr.append($('<td colspan="3"></td>').html('<b>Total</b>'));
@@ -817,10 +818,15 @@ var valTC = 'FA';
 	var filaTbl = null;*/
 
 	function recalcularLineaFact(elemento = null){
+		
 		if(elemento && $(elemento).prop('checked') == false){
 			let cbxFila = elemento.parentElement.parentElement;
 			cbxFila.childNodes[5].innerText = cbxFila.childNodes[5].getAttribute('valAnterior');
 			cbxFila.childNodes[4].children[0].children[0].value = cbxFila.childNodes[4].children[0].children[0].getAttribute('valAnterior');
+
+				let campoid = elemento.id.split('_');
+				console.log(campoid);
+				let idTC = campoid[2];
 
 			let tc = datosFact;
 			let parametros =
@@ -844,6 +850,7 @@ var valTC = 'FA';
 				'TextVDescto': 0,
 				'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
 				'cheking': cbxFila.childNodes[8].children[0].checked==true?1:0,
+				'IdTransComi':idTC,
 			}
 			console.log(parametros);
 			$('#myModal_espera').modal('show');
@@ -868,6 +875,8 @@ var valTC = 'FA';
 				}
 			});
 		}
+
+		
 		let recalculados = 0;
 		let valorRecalcular = $('#txtRecalcular').val();
 		if(valorRecalcular.trim() == ""){
@@ -886,6 +895,14 @@ var valTC = 'FA';
 				let fila = $(x)[0].parentElement.parentElement;
 				fila.childNodes[5].innerText = totalRecal.toFixed(8);
 				let nuevoValor = fila.childNodes[3].children[0].children[0].value;
+
+				// console.log(fila);
+
+				console.log(fila.childNodes[4].children[0].children[0]);
+				let campoid = fila.childNodes[4].children[0].children[0].id.split('_');
+				console.log(campoid);
+				let idTC = campoid[2];
+
 	
 				if(nuevoValor.trim() == ""){
 					fila.childNodes[3].children[0].children[0].value = "0";
@@ -919,6 +936,7 @@ var valTC = 'FA';
 					'TextVDescto': 0,
 					'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
 					'cheking': fila.childNodes[8].children[0].checked==true?1:0,
+					'IdTransComi':idTC,
 				}
 				console.log(parametros);
 				
@@ -988,6 +1006,8 @@ var valTC = 'FA';
 	}
 
 	function modificarLineaFac(campo){
+		// console.log(campo);
+		let campoid = campo.id.split('_');
 		let fila = campo.parentElement.parentElement.parentElement;
 		let nuevoValor = fila.childNodes[3].children[0].children[0].value;
 		let nuevoPVP = fila.childNodes[4].children[0].children[0].value;
@@ -1001,8 +1021,9 @@ var valTC = 'FA';
 			nuevoPVP = 0;
 		}
 
+
 		let costoTotal = parseFloat(nuevoValor) * parseFloat(nuevoPVP);
-		console.log(costoTotal);
+		// console.log(costoTotal);
 		fila.childNodes[5].innerText = costoTotal.toFixed(2);
 
 		let filas = $('.asignTablaDistri');
@@ -1011,14 +1032,15 @@ var valTC = 'FA';
 		for(let f of filas){
 			console.log(f);
 			totalCant += parseFloat(f.children[3].children[0].children[0].value);
-			console.log(f.children[3].children[0].value);
+			// console.log(f.children[3].children[0].value);
 			ADTotal += parseFloat(f.children[5].innerText);
 		}
-		console.log(totalCant);
+		// console.log(totalCant);
 		$('#ADCantTotal').html(`<b>${totalCant}</b>`);
 		$('#ADTotal').html(`<b>${ADTotal.toFixed(2)}</b>`);
 
 		let tc = datosFact;
+		let idTC = campoid[2];
 		//console.log(comentario);
 		let parametros =
 		{
@@ -1041,6 +1063,7 @@ var valTC = 'FA';
 			'TextVDescto': 0,
 			'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
 			'cheking': fila.childNodes[8].children[0].checked==true?1:0,
+			'IdTransComi':idTC,
 		}
 		console.log(parametros);
 		$('#myModal_espera').modal('show');
@@ -1163,6 +1186,7 @@ var valTC = 'FA';
 
 		for(let fila of filas){
 			fila = fila.children;
+			// console.log(fila);
 			//console.log(fila[0].textContent + " => " + fila[1].textContent + " => " + fila[2].textContent + " => " + fila[3].textContent + " => " + fila[4].textContent + " => " + fila[5].textContent + " => " + fila[6].textContent + " => " + fila[7].textContent);
 			let tc = datosFact;
 			let parametros =
@@ -1184,7 +1208,8 @@ var valTC = 'FA';
 				'TextServicios': '.',
 				'TextVDescto': 0,
 				'PorcIva': document.getElementById('DCPorcenIVA').selectedOptions[0].text,
-				'cheking': fila[8].children[0].checked==true?1:0
+				'cheking': fila[8].children[0].checked==true?1:0,
+				'tipoTC':fila[11].innerText,
 			}
 			$.ajax({
 				type: "POST",

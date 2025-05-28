@@ -21,7 +21,7 @@ class pacienteM
 			$pag = 0;
 		}
 		$cid = $this->conn;
-		$sql="SELECT * FROM Clientes WHERE Matricula<>0";
+		$sql="SELECT TOP(200) * FROM Clientes WHERE Matricula<>0";
 
 		if($parametros['codigo']!='')
 		{
@@ -50,7 +50,6 @@ class pacienteM
 				    break;		
 		   }
 	    }
-		$sql.=" ORDER BY ID OFFSET ".$pag." ROWS FETCH NEXT 25 ROWS ONLY;";
 		// print_r($sql);die();
 		$stmt = sqlsrv_query($cid, $sql);
 		if( $stmt === false)  
