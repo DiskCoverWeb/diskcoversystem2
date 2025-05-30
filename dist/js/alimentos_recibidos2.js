@@ -226,7 +226,8 @@
       $('#txt_tipo').val(data.Actividad); // save selected id to input
       $('#txt_cant').val(parseFloat(data.TOTAL).toFixed(2)); // save selected id to input
       $('#txt_comentario').val(data.Mensaje); // save selected id to input
-      $('#txt_ejec').val(data.Cod_Ejec); // save selected id to input
+
+      $('#txt_tipoCompra').val(data.Cod_C); // save selected id to input
 
       $('#txt_contra_cta').val(data.Cta_Haber); // save selected id to input
       $('#txt_cta_inv').val(data.Cta_Debe); // save selected id to input
@@ -235,6 +236,9 @@
       $('#txt_TipoSubMod').val(data.Giro_No)
       $('#txt_responsable').val(data.Responsable);
       $('#txt_comentario2').val(data.Llamadas);
+
+      $('#txt_ejec').val(data.Cod_Ejec); // save selected id to input
+      
       // if(data.Giro_No!='R')
       // {
       // 	$('#btn_cantidad').prop('disabled',false);

@@ -604,6 +604,7 @@ class alimentos_recibidosC
 	   SetAdoFields('Codigo_P',$parametro['txt_codigo_p']);
 	   SetAdoFields('Codigo_Dr',$parametro['ddl_sucursales']);
 	   SetAdoFields('Tipo_Empaque',$parametro['txt_paquetes']);
+	   SetAdoFields('Cmds',$parametro['txt_tipoCompra']);
 	   $resp = SetAdoUpdate();
 
 

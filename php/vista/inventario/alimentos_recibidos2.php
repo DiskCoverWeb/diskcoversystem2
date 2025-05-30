@@ -131,6 +131,8 @@
               <label for="txt_comentario" class="col-lg-6 col-sm-4 px-0 col-form-label text-end"><b>COMENTARIO RECEPCION:</b></label>
               <div class="col-lg-6 col-sm-8 text-center">
                 <textarea id="txt_comentario" name="txt_comentario" rows="4" disabled class="form-control form-control-sm"></textarea>
+
+                  <input type="hidden" name="txt_tipoCompra" id="txt_tipoCompra" class="form-control form-control-sm"  readonly>
               </div>
             </div>      
         </div>  
