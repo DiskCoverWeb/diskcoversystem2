@@ -218,8 +218,12 @@
                          <div class="row">
                             <div class="col-6">
                                 <label for="nivelEscolar"><b>Nivel escolar</b></label>
-                                <input class="form-control form-control-sm" type="text" name="nivelEscolar"
-                                        id="nivelEscolar" placeholder="Nivel de escolaridad">
+                                <select class="form-select form-select-sm" id="nivelEscolar" name="nivelEscolar">
+                                    <option value="">Seleccione</option>
+                                </select>
+
+                               <!--  <input class="form-control form-control-sm" type="text" name="nivelEscolar"
+                                        id="nivelEscolar" placeholder="Nivel de escolaridad"> -->
                                 
                             </div>  
                              <div class="col-6">

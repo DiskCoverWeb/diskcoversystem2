@@ -27,6 +27,15 @@ if (isset($_GET['BeneficiarioPickFac'])) {
     echo json_encode($controlador->BeneficiarioPickFac($query, $fecha));
 }
 
+if (isset($_GET['BeneficiarioPickFacFam'])) {
+    $fecha = $_GET['fecha'];
+    $query = '';
+    if (isset($_GET['query'])) {
+        $query = $_GET['query'];
+    }
+    echo json_encode($controlador->BeneficiarioPickFacFam($query, $fecha));
+}
+
 if(isset($_GET['datosExtra'])){
     $parametros = $_POST['param'];
     echo json_encode($controlador->datosExtra($parametros));
@@ -75,6 +84,11 @@ if(isset($_GET['GuardarPicking'])){
 if(isset($_GET['eliminarPickingAsig'])){
     $parametros = $_POST['parametros'];
     echo json_encode($controlador->eliminarPickingAsig($parametros));
+}
+
+if(isset($_GET['eliminarPickingAsigfam'])){
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->eliminarPickingAsigfam($parametros));
 }
 
 
@@ -158,6 +172,42 @@ class asignacion_pickingC
         }
         return $lista;
     }
+
+
+    function BeneficiarioPickFacFam($query, $fecha)
+    {
+
+        $datos = $this->modelo->tipoBeneficiarioPickFacFam($query, $fecha);
+
+        // print_r($datos);die();
+        $lista = array();
+        $diaActual =  BuscardiasSemana(date('w'));
+        $diaActual = $diaActual[1]+1;
+        if($diaActual>6)
+        {
+            $diaActual = 0;
+        }   
+
+        foreach ($datos as $key => $value) {
+            // $dia = BuscardiasSemana($value['Dia_Ent']);
+
+            // $value['Dia_Ent']  = $dia[0];
+            // if($diaActual==$dia[1])
+            // {
+            //     //buscamos si el usuario ya genero en este dia pedidos para facturar
+                // $datos1 = $this->modelo->cargar_asignacion($value['Codigo'],$value['No_Hab'],'F',$fecha);
+                // if(count($datos1)==0)
+                // {
+
+             $lista[] = array('id'=>$value['Orden_No'].'-'.$value['No_Hab'],'text'=>$value['familia'].' - '.$value['grupo'].' ( '.$value['TipoEntega'].')','data'=>$value); 
+
+                   // $lista[] = array('id'=>$value['Codigo'].'-'.$value['No_Hab'].'-'.$value['Orden_No'],'text'=>$value['Proceso'].' ('.$value['Tipo Asignacion'].')','data'=>$value); 
+                // }    
+            // }    
+        }
+        return $lista;
+    }
+
 
 
 
@@ -439,6 +489,15 @@ class asignacion_pickingC
         $beneficiario = $data[0];
         $tipo = $data[1]; 
         return $this->modelo->delete_lineas($parametros['fecha'],$beneficiario,$tipo);
+    }
+
+    function eliminarPickingAsigfam($parametros)
+    {
+
+        $data = explode('-', $parametros['idBeneficiario']);
+        $orden = $data[0];
+        $tipo = $data[1]; 
+        return $this->modelo->delete_lineasFam($orden,$tipo);
     }
 
     function GuardarPicking($parametros)

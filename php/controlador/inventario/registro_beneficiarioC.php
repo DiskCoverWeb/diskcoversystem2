@@ -1268,6 +1268,7 @@ class registro_beneficiarioC
         $Programas = array();
         $Grupo = array();
         $EstadoCivil = array();
+        $EscolaridadPrincipal = array();
         $cliente = $this->modelo->LlenarSelectRucCliente(false,$codigo);
         $cliente_datos_extra = $this->modelo->llenarCamposInfoAdd($codigo);
         // print_r($cliente);die();
@@ -1313,6 +1314,15 @@ class registro_beneficiarioC
                 if(count($EstadoCivil)>0)
                 {
                     $EstadoCivil = $EstadoCivil[0];
+                 // print_r($Estado_Beneficiario);die();
+                }
+            }
+
+             if($cliente['Casilla']!='.' && $cliente['Casilla']!=''){
+                $EscolaridadPrincipal = $this->modelo->nivel_escolaridad($cliente['Casilla']);
+                if(count($EscolaridadPrincipal)>0)
+                {
+                    $EscolaridadPrincipal = $EscolaridadPrincipal[0];
                  // print_r($Estado_Beneficiario);die();
                 }
             }
@@ -1382,6 +1392,7 @@ class registro_beneficiarioC
                     'Programas'=>$Programas,
                     'Grupo'=>$Grupo,
                     'EstadoCivil'=>$EstadoCivil,
+                    'Escolaridad'=>$EscolaridadPrincipal,
                 );
 
         return $data;

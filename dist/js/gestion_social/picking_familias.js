@@ -15,7 +15,7 @@ $(document).ready(function () {
         // $('#diaEntr').val(datos.Dia_Ent.toUpperCase());//Dia de Entrega
         // $('#frecuencia').val(datos.Frecuencia);//Frecuencia
         // $('#tipoBenef').val(datos.TipoBene);//Tipo de Beneficiario
-        // $('#totalPersAten').val(datos.No_Soc);//Total, Personas Atendidas
+        $('#totalPersAten').val(datos.NoGrupoInt);//Total, Personas Atendidas
         // $('#tipoPobl').val(datos.Area);//Tipo de Poblacion
         // $('#acciSoci').val(datos.AccionSocial);//Accion Social
         // $('#vuln').val(datos.vulnerabilidad);//Vulnerabilidad
@@ -24,7 +24,7 @@ $(document).ready(function () {
         // $('#CantGlobDist').val(datos.Descuento);//Cantidad global a distribuir
         // $('#infoNutr').val(datos.InfoNutri);
         // $('#comeGeneAsign').val(datos.Ruta);
-        // $('#txt_responsable').val(datos.Nombre_Completo)
+        $('#txt_responsable').val(datos.Nombre_Completo)
         cargarOrden(datos);
         cargar_asignacion();
 

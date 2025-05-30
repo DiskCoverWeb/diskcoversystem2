@@ -110,6 +110,40 @@ class asignacion_pickingM
         }
     }
 
+     function tipoBeneficiarioPickFacFam($codigo = '', $fecha = '')
+    {
+        $sql = "SELECT DISTINCT  Orden_No,CodigoB,CP.Proceso as grupo,DF.CodigoL,CP2.Proceso as familia,DF.No_Hab,CP3.Proceso as TipoEntega,DF.T  
+            FROM Detalle_Factura DF
+            INNER JOIN Accesos A on DF.CodigoU = A.Codigo
+            INNER JOIN Clientes C on DF.CodigoC = C.Codigo
+            LEFT JOIN Catalogo_Proceso CP ON DF.CodigoB = CP.Cmds 
+            LEFT JOIN Catalogo_Proceso CP2 ON DF.CodigoL = CP2.Cmds 
+            INNER JOIN Catalogo_Proceso CP3 on DF.No_Hab = CP3.ID 
+            WHERE DF.Item = '".$_SESSION['INGRESO']['item']."'
+            AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+            if($fecha)
+            {
+                $sql.=" AND DF.Fecha = '".$fecha."'";
+            }else{
+                $sql.=" AND DF.Fecha = '".date('Y-m-d')."'";
+            }
+            if($codigo)
+            {
+                $sql.=" AND C.Cliente like '%".$codigo."%'";
+            }
+            $sql.=" AND DF.TC = 'OF'
+            AND (DF.T = 'K' OR DF.T = 'KF' )
+            AND CP.Item = DF.Item ";     
+
+            // print_r($sql);die();   
+
+        try {
+            return $this->db->datos($sql);
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+    }
+
     public function datosExtra($consulta)
     {
         $sql = "SELECT Proceso, Cmds, TP, Color 
@@ -284,6 +318,25 @@ class asignacion_pickingM
                 AND No_Hab = '".$tipo."'";
 
         // print_r($sql);die();
+        return $this->db->String_Sql($sql);
+    }
+
+    function delete_lineasFam($codigoC,$tipo)
+    {
+        $sql = "DELETE FROM Detalle_Factura
+                WHERE  Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+                AND Item = '".$_SESSION['INGRESO']['item']."' 
+                AND T = 'K' 
+                AND Orden_No = '".$codigoC."' 
+                AND No_Hab = '".$tipo."'";
+        $this->db->String_Sql($sql);
+
+        $sql = "DELETE FROM Trans_Comision
+                WHERE  Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+                AND Item = '".$_SESSION['INGRESO']['item']."' 
+                AND T = 'P' 
+                AND Orden_No = '".$codigoC."' 
+                AND Cta = '".$tipo."'";
         return $this->db->String_Sql($sql);
     }
 }

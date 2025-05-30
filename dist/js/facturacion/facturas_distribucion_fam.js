@@ -1,10 +1,13 @@
 	var ListaIntegrantesXProducto = {};
+	var ListaAbonos = {};
 	$(document).ready(function () {
 		 autocomplete_pedidos();
 		 DCLineasNDU(); 
 		 serie();
 		 DCLineas(); 
 		 DCPorcenIvaFD()
+		 DCBanco()
+		 DCEfectivo();
 
 
 		 $('#ddl_pedidos').on('select2:select', function (e) {
@@ -404,17 +407,18 @@
 						<td>
 							<input type="" id="txt_total_cp_`+item.Codigo+`" name ="" class="form-control form-control-sm" value="0" readonly>
 						</td>
+						<td class="text-center">
+							<button type="button" class="btn" onclick="validarProductos('`+item.Codigo+`')">
+                            	<img id="img_tipoBene" src="../../img/png/cantidad_global.png" style="width: 32px;">
+                            </button>    
+						</td>
 						<td>
 							<div class="input-group">
 								<input type="" readonly="" id="txt_abono_cp_`+item.Codigo+`" name ="" class="form-control form-control-sm" value="0" >
 								<button class="btn btn-light border border-1 btn-sm" onclick="modal_forma_pago('`+item.Codigo+`')">Forma de pago</button>
 							</div>
 						</td>
-						<td class="text-center">
-							<button type="button" class="btn" onclick="validarProductos('`+item.Codigo+`')">
-                            	<img id="img_tipoBene" src="../../img/png/cantidad_global.png" style="width: 32px;">
-                            </button>    
-						</td>
+						
 					</tr>`;
 				})
 
@@ -469,7 +473,7 @@
 
 		$('#txt_cant_cp_'+codigoC).val(valor_entre.toFixed(2))
 		$('#txt_total_cp_'+codigoC).val(total_entre.toFixed(2));
-		$('#txt_abono_cp_'+codigoC).val(total_entre.toFixed(2));
+		// $('#txt_abono_cp_'+codigoC).val(total_entre.toFixed(2));
 		// console.log(codigoC)
 		// console.log(productos);
 		// console.log(ListaIntegrantesXProducto)
@@ -526,23 +530,8 @@
 			return false;
 		}
 
-		var ListaAbonos = {};
-		$('.class_integrante').each(function() {
-		    const checkbox = $(this);
-		    const isChecked = checkbox.prop('checked'); 
-		    if (isChecked) {
-		    	valor = $('#txt_cant_cp_'+checkbox[0].value).val();
-		    	valorT = $('#txt_abono_cp_'+checkbox[0].value).val();
-		    	if(valor==0)
-		    	{
-		    		Swal.fire("Producto no asignado para :"+checkbox[0].value,"Seleccione producto ó elimine de listado de integrantes","error")
-		    		return false;
-		    	}
-		    	ListaAbonos[checkbox[0].value] = {'abono':valorT,'cliente':checkbox[0].value}
-		    }
-		});
 		var integrantes = JSON.stringify(ListaIntegrantesXProducto);
-		var ListaAbonos = JSON.stringify(ListaAbonos);
+		var ListaAbonosInte = JSON.stringify(ListaAbonos);
 		// console.log(integrantes)
 
 		// console.log(ListaAbonos)
@@ -555,7 +544,7 @@
 			'fechaPick': $('#MBFechaChek').val(),
 			'fecha': $('#MBFecha').val(),
 			'integrantes':integrantes,
-			'Abonointegrantes':ListaAbonos,
+			'Abonointegrantes':ListaAbonosInte,
 
 			'TxtEfectivo': $('#btnToggleInfoEfectivo').attr('stateval')=="1" ? $('#TxtEfectivo').val() : 0.00,
 			'TextFacturaNo': $('#TextFacturaNo').val(),
@@ -651,18 +640,92 @@
 
 	}
 
+	function DCBanco() {
+		// alert('das');
+		$('#DCBanco').select2({
+			placeholder: 'Seleccione un banco',
+			dropdownParent: $('#modalInfoFactura'),
+			width: '100%',
+			ajax: {
+				url: '../controlador/facturacion/facturas_distribucionC.php?DCBanco=true',
+				dataType: 'json',
+				delay: 250,
+				processResults: function (data) {
 
-	
+					return {
+						results: data
+					};
+				},
+				cache: true
+			}
+		});
+	}
 
+	function DCEfectivo() {
+		// alert('das');
+		$('#DCEfectivo').select2({
+			placeholder: 'Seleccione cuenta',
+			dropdownParent: $('#modalInfoFactura'),
+			width: '100%',
+			ajax: {
+				url: '../controlador/facturacion/facturas_distribucion_famC.php?DCEfectivo=true',
+				dataType: 'json',
+				delay: 250,
+				processResults: function (data) {
+					return {
+						results: data
+					};
+				},
+				cache: true
+			}
+		});
+	}
 
+	function guardarAbonos()
+	{
+		beneficiario = $('#txtBeneficiarioAbono').val();
+		ctaEfectivo = $('#DCEfectivo').val();
+		valorEfectivo = $('#TxtEfectivo').val();
 
+		ctaBancos = $('#DCBanco').val();
+		documento = $('#TextCheqNo').val();
+		nombreBanco = $('#TextBanco').val();
+		valorBanco = $('#TextCheque').val();
 
+		ListaAbonos[beneficiario] = 
+		{
+			'ctaEfectivo': ctaEfectivo,
+			'valorEfectivo': valorEfectivo,
+			'ctaBancos':ctaBancos,
+			'documento': documento,
+			'nombreBanco':nombreBanco,
+			'valorBanco':valorBanco
+		};
 
+		total = parseFloat(valorEfectivo)+parseFloat(valorBanco);
 
-	// ====================================================================================================================
+		$('#txt_abono_cp_'+beneficiario).val(total.toFixed(2))
+		$('#modalInfoFactura').modal('hide')
 
+		limpiarAbonos();
+	}
 
-	
+	 function limpiarAbonos()
+	{
+		$('#txtBeneficiarioAbono').val('');
+		$('#DCEfectivo').val(null).trigger('change');
+		$('#TxtEfectivo').val('0');
+
+		$('#DCBanco').val(null).trigger('change');
+		$('#TextCheqNo').val('.');
+		$('#TextBanco').val('.');
+		$('#TextCheque').val(0);
+
+		 $('#btnToggleInfoEfectivo').attr('stateval','0')
+		 $('#btnToggleInfoBanco').attr('stateval','1')
+		 toggleInfoEfectivo()
+		 toggleInfoBanco();
+	}
 	
 	function toggleInfoEfectivo(){
 		let btn = $('#btnToggleInfoEfectivo');
@@ -705,6 +768,63 @@
 			$('#TextCheque').val(0);
 		}
 	}
+
+	function modal_forma_pago(codigo)
+	{
+		if($('#txt_total_cp_'+codigo).val()!=0)
+		{
+			$('#txtBeneficiarioAbono').val(codigo);
+			$('#modalInfoFactura').modal('show')
+			apagar = $('#txt_total_cp_'+codigo).val();
+			$('#LabelTotal').val(apagar);
+		}else
+		{
+			Swal.fire('Seleccione productos','El total de productos no puede ser cero ( 0 )','info');
+		}
+	}
+
+	function quitar_de_facturar()
+	{
+		pedido = $('#ddl_pedidos').val();
+		if(pedido=='' || pedido==null || pedido==undefined)
+		{
+			Swal.fire("Seleccione Un pedido","","info");
+			return false;
+		}else
+		{
+			var parametros = 
+			{
+				'orden': $('#ddl_pedidos').val(),
+			}
+			$.ajax({
+				type: "POST",
+				url: '../controlador/facturacion/facturas_distribucion_famC.php?quitar_de_facturar=true',
+				data: { parametros: parametros },
+				dataType: 'json',
+				success: function (data) {
+					if(data==1)
+					{
+						location.reload();
+					}
+				}
+			});
+
+		}
+	}
+
+
+
+
+
+	
+
+
+
+
+
+
+	// ====================================================================================================================
+
 
 
 	
@@ -1363,26 +1483,6 @@
 		});
 	}
 
-	function DCBanco() {
-		// alert('das');
-		$('#DCBanco').select2({
-			placeholder: 'Seleccione un banco',
-			dropdownParent: $('#modalInfoFactura'),
-			width: '100%',
-			ajax: {
-				url: '../controlador/facturacion/facturas_distribucion_famC.php?DCBanco=true',
-				dataType: 'json',
-				delay: 250,
-				processResults: function (data) {
-
-					return {
-						results: data
-					};
-				},
-				cache: true
-			}
-		});
-	}
 
 
 	
@@ -2059,7 +2159,3 @@
 		}
 	}
 
-	function modal_forma_pago(codigo)
-	{
-		$('#modalInfoFactura').modal('show')
-	}

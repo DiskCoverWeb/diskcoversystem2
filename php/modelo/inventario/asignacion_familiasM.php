@@ -53,8 +53,9 @@ class asignacion_familiasM
 
     function listaAsignacionUnicos($orden=false,$T=false,$tipo=false,$fecha=false,$grupo = false)
     {
-         $sql = "SELECT Orden_No,No_Hab,Fecha,CodigoL,CP.Proceso as 'Programa',CodigoB,CP1.Proceso as 'Grupo'
+         $sql = "SELECT Orden_No,No_Hab,Fecha,CodigoL,CP.Proceso as 'Programa',CodigoB,CP1.Proceso as 'Grupo',CodigoU,A.Nombre_Completo
                 FROM Detalle_Factura DF
+                INNER JOIN Accesos A on DF.CodigoU = A.Codigo 
                 INNER JOIN Catalogo_Proceso CP ON DF.CodigoL = CP.Cmds
                 INNER JOIN Catalogo_Proceso CP1 ON DF.CodigoB = CP1.Cmds
                 WHERE DF.Item = '".$_SESSION['INGRESO']['item']."' 
@@ -81,7 +82,7 @@ class asignacion_familiasM
                     $sql.=" AND CodigoB = '".$grupo."'";
                 }                
                 $sql.= ' AND DF.Item = CP.Item
-                Group by Orden_No,No_Hab,Fecha,CodigoL,CP.Proceso,CodigoB,CP1.Proceso';
+                Group by Orden_No,No_Hab,Fecha,CodigoL,CP.Proceso,CodigoB,CP1.Proceso,CodigoU,A.Nombre_Completo';
                 // print_r($sql);die();
         try{
             return $this->db->datos($sql);
@@ -155,6 +156,16 @@ class asignacion_familiasM
                 WHERE TP = 'TIPOASIG' 
                 AND Item='".$_SESSION['INGRESO']['item']."' ";
         return $this->db->datos($sql);    
+    }
+
+    function integrantes_Grupo($grupo)
+    {
+        $sql = "SELECT ".Full_Fields('Clientes')."
+              FROM Clientes
+              WHERE Grupo = '".$grupo."'";
+
+              // print_r($sql);die();
+        return $this->db->datos($sql);
     }
 
 

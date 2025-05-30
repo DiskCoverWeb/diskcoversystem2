@@ -71,6 +71,8 @@ class asignacion_familiasC
         $datos = $this->modelo->listaAsignacionUnicos(false,'K');
         $lista = array();
         foreach ($datos as $key => $value) {
+            $integrantes = $this->modelo->integrantes_Grupo($value['CodigoB']);
+            $value['NoGrupoInt'] = count($integrantes);
             $lista[] = array('text' =>$value['Orden_No'] ,'id'=>$value['Orden_No'].'-'.$value['No_Hab'],'data'=>$value );
         }
         return $lista;
@@ -97,9 +99,9 @@ class asignacion_familiasC
         SetAdoFields("Codigo",$parametros['Codigo']);
         SetAdoFields("Producto",$parametros['Producto']);
         SetAdoFields("Cantidad",$parametros['CantidadCp']);
-        SetAdoFields("Cant_Hab",$parametros['Cantidad']);
-        SetAdoFields("Precio",number_format($producto['datos']['PVP'],2,'','.'));
-        SetAdoFields("Total",number_format($producto['datos']['PVP']*$parametros['Cantidad'],2,'','.'));
+        SetAdoFields("Cant_Hab",number_format($parametros['Cantidad'],2,'.',''));
+        SetAdoFields("Precio",number_format($producto['datos']['PVP'],2,'.',''));
+        SetAdoFields("Total",number_format($producto['datos']['PVP']*$parametros['Cantidad'],2,'.',''));
         SetAdoFields("Fecha",$parametros['FechaAte']);
         SetAdoFields("Item",$_SESSION['INGRESO']['item']);
         SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);

@@ -110,10 +110,14 @@ if (isset ($_GET['tipo'])) {
 				<div class="col-sm-12 pb-2">
 					<div class="row">
 						<div class="col-sm-4">
-							<b>Pedido</b>					
-							<select class="form-select form-select-sm" id="ddl_pedidos" name="ddl_pedidos">
-								<option value="">Seleccione Prog</option>
-							</select>
+							<b>Pedido</b>	
+							<div class="d-flex align-items-center">
+								<select class="form-select form-select-sm" id="ddl_pedidos" name="ddl_pedidos">
+									<option value="">Seleccione Prog</option>
+								</select>		
+								<button class="btn btn-danger btn-sm pe-0 ps-1" onclick="quitar_de_facturar()"><i class="bx bx-x"></i></button>						
+							</div>				
+							
 						</div>
 						<div class="col-sm-4">
 							<b>Programa</b>				
@@ -309,8 +313,8 @@ if (isset ($_GET['tipo'])) {
                                 <th>CEDULA</th>
                                 <th>CANT ENTR</th>
                                 <th>TOTAL</th>
-                                <th>APORTE</th>
                                 <th>PRODUCTO</th>
+                                <th>APORTE</th>
 	                        </thead>
 	                        <tbody id="tbl_integrantes"></tbody>
 	                    </table>
@@ -363,7 +367,7 @@ if (isset ($_GET['tipo'])) {
 
 
 
-<div id="modalInfoFactura" class="modal fade">
+<div id="modalInfoFactura" class="modal fade"  role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header bg-primary">
@@ -450,7 +454,7 @@ if (isset ($_GET['tipo'])) {
 								<b>CUENTA</b>
 							</div>
 							<div class="col-sm-7">
-								<select class="form-select form-select-sm" id="">
+								<select class="form-select form-select-sm" id="DCEfectivo" name="DCEfectivo">
 									<option>Seleccion opciones</option>
 								</select>
 							</div>
@@ -512,19 +516,15 @@ if (isset ($_GET['tipo'])) {
 						</div>
 					</div>
 					<div class="row" id="bouche_banco_input" style="margin:10px 0;display:none;">
-						
 							<b>ADJUNTAR BOUCHE:</b>
 							<input type="file" class="form-control" id="archivoAdd" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
-						
 					</div>
-					
-					
-					
-
+					<input type="hidden" name="txtBeneficiarioAbono" id="txtBeneficiarioAbono">
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success" data-bs-dismiss="modal" id="btnAceptarInfoGavetas">Aceptar</button>
+				<button type="button" class="btn btn-success btn-sm" onclick="guardarAbonos()">Aceptar</button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal" id="btnAceptarInfoGavetas">Cancelar</button>
 				<!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetInputsGavetas()">Cancelar</button> -->
 			</div>
 		</div>

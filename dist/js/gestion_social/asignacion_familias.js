@@ -437,3 +437,83 @@ function guardar()
         }
     });
 }
+
+function lista_picking()
+{
+    lista_picking_all();
+    $('#modal_lista_picking').modal('show');
+}
+
+function lista_picking_all()
+{
+     $.ajax({
+        url: '../controlador/inventario/asignacion_pickingC.php?BeneficiarioPickFacFam=true&fecha='+$('#txtFechaAsign').val(),
+        type: 'POST',
+        dataType: 'json',
+        // data: { param: param },
+        success: function (data) {
+            tr = '';
+            data.forEach(function(item,i){
+                console.log(item)
+                tr+=`<tr>
+                        <td>`+item.text+`</td>
+                        <td>`;
+                        if(item.data.T =='K')
+                        {
+                            tr+=`<button class="btn btn-danger btn-sm"><i class="bx bx-trash" onclick="eliminar_picking_fam('`+item.id+`')"></i></button></td>`;
+                        }
+                    tr+=`</tr>`
+            })
+            $('#tbl_body_asignacion').html(tr);
+          console.log(data);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+function eliminar_picking_fam(id)
+{
+     Swal.fire({
+      title: "Esta seguro de eliminar este registro",
+      text: "",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si!'
+    }).then((result) => {
+      if (result.value) {
+        eliminar_picking_all_fam(id)        
+      }
+    });
+}
+
+function eliminar_picking_all_fam(id)
+{
+    var parametros = 
+    {
+        'idBeneficiario':id,
+        'fecha':$('#txtFechaAsign').val(),
+    }
+      $.ajax({
+        url: '../controlador/inventario/asignacion_pickingC.php?eliminarPickingAsigfam=true',
+        type: 'POST',
+        dataType: 'json',
+        data: {parametros:parametros},
+        success: function (data) {
+            if(data==1)
+            {
+                Swal.fire("Registro eliminado","","success").then(function()
+                {
+                    lista_picking_all();
+                })
+            }
+          
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}

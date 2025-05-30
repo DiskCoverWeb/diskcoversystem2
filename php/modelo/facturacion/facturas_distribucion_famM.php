@@ -187,6 +187,22 @@ class facturas_distribucion_famM
         return $this->db->datos($sql);
     }
 
+    function DCEfectivo($query)
+    {
+         $sql = "SELECT Codigo +Space(2)+Cuenta As NomCuenta,Codigo 
+       FROM Catalogo_Cuentas 
+       WHERE TC IN ('BA','CJ','TJ') 
+       AND DG = 'D' 
+       AND Item = '" . $_SESSION['INGRESO']['item'] . "'
+       AND Periodo =  '" . $_SESSION['INGRESO']['periodo'] . "' ";
+        if ($query) {
+          $sql .= " AND Cuenta LIKE '%" . $query . "%'";
+        }
+        $sql .= " ORDER BY Codigo ";
+        return $this->db->datos($sql);
+
+    }
+
 
 
 

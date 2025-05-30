@@ -44,6 +44,20 @@ if (isset($_GET['finalizarFactura'])) {
 	echo json_encode($controlador->finalizarFactura($parametros));
 }
 
+if (isset($_GET['DCEfectivo'])) {
+	$query = '';
+	if (isset($_GET['q'])) {
+		$query = $_GET['q'];
+	}
+	echo json_encode($controlador->DCEfectivo($query));
+}
+
+if (isset($_GET['quitar_de_facturar'])) {
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->quitar_de_facturar($parametros));
+}
+
+
 
 class facturas_distribucion_fam
 {
@@ -131,8 +145,6 @@ class facturas_distribucion_fam
 			$datosTick['CI'] = $key;
 			$lineas = $value;
 			$Ln_No = 1;
-			$datosFA['TxtEfectivo'] = $abonos[$key]['abono'];
-			$datosTick['TxtEfectivo'] = $abonos[$key]['abono'];
 			// print_r($cliente);die();
 			// $datosFA['T'] = $cliente['TB'];
 			foreach ($lineas as $key2 => $value2) {
@@ -164,18 +176,24 @@ class facturas_distribucion_fam
 	        	}
 			}
 
-			$datosFA['TextBanco'] = 0;
-			$datosFA['TextCheqNo'] = 0;
-			$datosFA['DCBancoC'] = '';
+
+			$datosFA['TxtEfectivo'] = $abonos[$key]['valorEfectivo'];
+			$datosFA['TextBanco'] = $abonos[$key]['documento'];
+			$datosFA['TextCheqNo'] =  $abonos[$key]['ctaBancos'];
+			$datosFA['DCBancoC'] =  $abonos[$key]['ctaBancos'];
 			$datosFA['CodDoc'] = '01';
-			$datosFA['valorBan'] = 0;
+			$datosFA['valorBan'] =  $abonos[$key]['valorBanco'];
 			$datosFA['PorcIva'] = $parametros['PorcIva'];
 
 
 
 			$factura =  $this->GenerarFacturaUni($datosFA);
 
+			// print_r($factura);
+			// die();
+
 			$datosTick['FacturaNo'] = $factura['factura'];
+			$datosTick['TxtEfectivo'] =0;
 			$datosTick['TextBanco'] = 0;
 			$datosTick['TextCheqNo'] = 0;
 			$datosTick['DCBancoC'] = '';
@@ -732,6 +750,28 @@ class facturas_distribucion_fam
 		SetAdoFieldsWhere('Orden_No',$parametros['orden']);
 		return  SetAdoUpdateGeneric();
 		    
+	}
+	function DCEfectivo($query)
+	{
+		$datos = $this->modelo->DCEfectivo($query);
+		// print_r($datos);die();
+		foreach ($datos as $key => $value) {
+			$res[] = array('id' => $value['Codigo'], 'text' => $value['NomCuenta']);
+		}
+		return $res;
+	}
+
+	function quitar_de_facturar($parametros)
+	{
+		SetAdoAddNew("Detalle_Factura");
+		SetAdoFields("T",'K');
+		SetAdoFieldsWhere('Orden_No',$parametros['orden']);
+		SetAdoUpdateGeneric();
+
+		SetAdoAddNew("Trans_Comision");
+		SetAdoFields("T",'P');
+		SetAdoFieldsWhere('Orden_No',$parametros['orden']);
+		return SetAdoUpdateGeneric();
 	}
 
 

@@ -2761,7 +2761,8 @@ function CargarEstilo()
         case '93.02':
             $('.campoSocial').hide();
             $('.campoVoluntario').hide();
-            $('.campoFamilia').show();
+            $('.campoFamilia').show();            
+            nivel_escolaridadprincipal();
             // $('.campoVolNo').show();
             break;
         case '93.03':
@@ -3137,6 +3138,28 @@ function estado_civil()
         }
     });
 }
+function nivel_escolaridadprincipal()
+{
+    $('#nivelEscolar').select2({
+        placeholder: 'nivel escolaridad',
+        width:'100%',
+        // dropdownParent: $('#modalEstructuraFam'),
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?nivel_escolaridad=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+
+}
+
 function nivel_escolaridad()
 {
     $('#nuevoNivelEscolaridad').select2({
@@ -3384,13 +3407,17 @@ function llenarCamposInfo(datos) {
             if(datos.EstadoCivil){
                 $('#estadoCivil').append($('<option>',{value: datos.EstadoCivil.Codigo, text: datos.EstadoCivil.Descripcion,selected: true }));
             }
+
+            if(datos.Escolaridad){
+                $('#nivelEscolar').append($('<option>',{value: datos.Escolaridad.Codigo, text: datos.Escolaridad.Descripcion,selected: true }));
+            }
+
             //----------- datos de familias --------------//
 
             $('#cedula').val(datos.cliente.CI_RUC);
             $('#edad').val(datos.cliente.Dosis);
             $('#telefonoFam').val(datos.cliente.Telefono);
             $('#ocupacion').val(datos.cliente.Profesion);
-            $('#nivelEscolar').val(datos.cliente.Casilla);
             $('#estadoCivil').val(datos.cliente.Est_Civil);
             $('#pregunta').val(datos.cliente.Contacto);
             //----------- datos de familia --------------//
