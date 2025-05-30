@@ -227,7 +227,7 @@ switch ($_SESSION['INGRESO']['modulo_']) {
       </div>
      
       <!-- /.box-footer -->
-    </form>
+      </form>
       
     </div>    
   </div>

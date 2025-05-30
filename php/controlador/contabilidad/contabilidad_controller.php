@@ -643,7 +643,7 @@ function sp_proceso_balance_pdf($parametros)
 			$fechafin = $parametros['hasta'];
 
 			//formateo de datos.
-			$datos['datos'] = datosGenericos($datos['datos']);
+			$datos['datos'] = FormatearNumeros($datos['datos']);
 			ImprimirBalanceComprobacion($datos, $parametros['tipo_b'], $fechafin, $fechaini, $titulo);
 		}else
 		{
@@ -756,7 +756,7 @@ function sp_proceso_balance_pdf_situacion($parametros)
 			$datos = $modelo->listar_tipo_balanceSQl_pdf($parametros['balMes'],$parametros['tipo_b'],$parametros['tipo_p'],true);
 			$campos = explode(',',trim($datos['campos']));
 				$ali =array();
-			$datos['datos'] = datosGenericos($datos['datos']);
+			$datos['datos'] = FormatearNumeros($datos['datos']);
 			imprimirEstadoResultado($datos, $parametros['tipo_b'], $parametros['hasta']);
 			/*$medi =array();
 			

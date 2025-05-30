@@ -288,7 +288,7 @@ class diario_generalC
 			$parametros['CheckNum']);
 	
 		$temp='';
-		$datos = datosGenericos($datos, false);
+		$datos = FormatearNumeros($datos, false);
 		$total_debe= 0;
 		$total_haber = 0;	
 		$tablaHTML = array();
@@ -426,7 +426,7 @@ class diario_generalC
 			$parametros['CheckUsuario'],
 			$parametros['CheckNum']);
 
-		$datos = datosGenericos($datos);
+		$datos = FormatearNumeros($datos);
 			$tablaHTML=''; 
 		$temp='';
 		$total_debe= 0;

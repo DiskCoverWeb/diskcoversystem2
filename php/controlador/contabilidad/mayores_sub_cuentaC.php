@@ -101,7 +101,7 @@ class mayores_sub_cuentaC
 	function reporte_pdf($parametros)
 	{
 			$datos = $this->modelo->Consultar_Un_Submodulo_datos($parametros);
-			$datos['datos'] = datosGenericos($datos['datos']);
+			$datos['datos'] = FormatearNumeros($datos['datos']);
 			$datos1 = $datos;
 
 			$temp = '';

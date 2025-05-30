@@ -89,7 +89,7 @@ class mayor_auxiliarC
 	
 
   		$datos = $this->modelo->ListarMayoresAux($parametros['OpcUno'],$parametros['PorConceptos'],$parametros['txt_CtaI'],$parametros['txt_CtaF'],$desde,$hasta,$parametros['DCCtas'],$parametros['CheckAgencia'],$parametros['DCAgencia'],$parametros['CheckUsu'],$parametros['DCUsuario'], $soloMayorDatos = true);
-		$datos = datosGenericos($datos);
+		$datos = FormatearNumeros($datos);
        if($sub != 'false')
        {       	
   		$submodulo = $this->modelo->consultatr_submodulos($desde,$hasta,$parametros['CheckAgencia'],$parametros['DCAgencia'],$parametros['CheckUsu'],$parametros['DCUsuario']);

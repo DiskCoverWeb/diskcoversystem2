@@ -77,7 +77,7 @@ class libro_bancoC
 		$hasta = str_replace('-','',$parametros['hasta']);
 
   	$datos = $this->modelo->consultar_banco_($desde,$hasta,$parametros['CheckAgencia'],$parametros['DCAgencia'],$parametros['CheckUsu'],$parametros['DCUsuario'],$parametros['DCCtas'], true);
-	$datos = datosGenericos($datos);
+	$datos = FormatearNumeros($datos);
 		$titulo = 'L I B R O    B A N C O';
 		$sizetable =7;
 		$mostrar = TRUE;

@@ -36,7 +36,7 @@ function DGCostos(todas=false)
                 }, 
                 orderable: false,
                 className: 'text-center'
-               }, 
+              }, 
               { data: 'Cta', className: "text-center" }, 
               { data: 'Cuenta', className: "text-center" }, 
               { data: 'Detalle', className: "text-center" }, 
@@ -170,7 +170,7 @@ function insertar()
       Swal.fire({
         title: 'Esta seguro de Inserta en la cuenta! '+cta_n+" El centro de costo: "+sub_n,
         text: '',
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -194,7 +194,7 @@ function eliminar(id)
       Swal.fire({
         title: 'Esta seguro de eliminar!',
         text: 'Este registro sera eliminado',
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
