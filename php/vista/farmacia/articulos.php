@@ -256,20 +256,20 @@
         <div class="row">
           <div class="col-sm-6">
               <b>Familiar</b>
-            <div class="input-group">   
+            <div class="d-flex align-items-center">   
               <select id="ddl_familia_modal" name="ddl_familia_modal" class="form-select form-select-sm" onchange="familia_modal()">
                  <option value="">seleccione familia</option>
               </select>
-                  <button type="button" class="btn btn-success btn-sm" onclick="$('#modal_nueva_familia').modal('show')"><i class="fa fa-plus"></i></button>
+              <button type="button" class="btn btn-success btn-sm p-1" onclick="$('#modal_nueva_familia').modal('show')"><i class="bx bx-plus me-0"></i></button>
             </div>   
           </div>
           <div class="col-sm-6"> 
                 <b>Cuenta Inv</b> <br>             
-              <div class="input-group" style="display: flex;">   
-                <select class="form-control form-control-sm"  name="ddl_cta_inv" id="ddl_cta_inv"></select>
-                  <span class="">
-                    <button type="button" class="btn btn-info btn-flat btn-xs" onclick="limpiar_cta('ddl_cta_inv')"><i class="fa fa-close"></i></button>
-                  </span>
+              <div class="d-flex align-items-center">   
+                <select class="form-select form-select-sm"  name="ddl_cta_inv" id="ddl_cta_inv">
+                  <option value="">Seleccione</option>
+                </select>
+                <button type="button" class="btn btn-danger btn-sm p-1" onclick="limpiar_cta('ddl_cta_inv')"><i class="bx bx-x me-0"></i></button>
               </div>
           </div> 
         </div>
@@ -284,23 +284,23 @@
           </div>
         </div>
         <div class="row">        
-          <div class="col-sm-2">
+          <div class="col-sm-4">
              <b>Max</b>
             <input type="text" id="txt_max" name="txt_max" class="form-control form-control-sm">              
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-4">
              <b>Min</b>
             <input type="text" id="txt_min" name="txt_min" class="form-control form-control-sm">              
           </div> 
-          <div class="col-sm-2">
+          <div class="col-sm-4">
             <b>Unid Med.</b>
             <input type="text" id="txt_uni" name="txt_uni" class="form-control form-control-sm">              
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-6">
              <b>Cod Barras</b>
             <input type="text" name="txt_cod_barras" class="form-control form-control-sm">              
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-6">
              <b>Reg. Sanitario</b>
             <input type="text" name="txt_reg_sanitario" id="txt_reg_sanitario" class="form-control form-control-sm">              
           </div>              
@@ -308,40 +308,32 @@
         <div class="row">
             <div class="col-sm-6">
               <b>Cuenta Costo venta</b>
-               <div class="input-group" style="display:flex;">   
+               <div class="d-flex align-items-center">   
                 <select class="form-control"  name="ddl_cta_CV" id="ddl_cta_CV" ></select>
-                    <span>
-                      <button type="button" class="btn btn-info btn-flat btn-xs" onclick="limpiar_cta('ddl_cta_CV')"><i class="fa fa-close"></i></button>
-                    </span>
+                <button type="button" class="btn btn-danger btn-sm p-1" onclick="limpiar_cta('ddl_cta_CV')"><i class="bx bx-x me-0"></i></button>
                </div>    
             </div>  
             <div class="col-sm-6">           
                <b>Cuenta Ventas</b><br>
-                <div class="input-group" style="display:flex;">      
+                <div class="d-flex align-items-center">      
                 <select class="form-control" name="ddl_cta_venta" id="ddl_cta_venta"></select>
-                    <span>
-                      <button type="button" class="btn btn-info btn-flat btn-xs" onclick="limpiar_cta('ddl_cta_venta')"><i class="fa fa-close"></i></button>
-                    </span>
+                <button type="button" class="btn btn-danger btn-xs p-1" onclick="limpiar_cta('ddl_cta_venta')"><i class="bx bx-x me-0"></i></button>
                </div>   
             </div>         
         </div>
         <div class="row">
           <div class="col-sm-6">
             <b>Cuenta Ventas 0</b>
-             <div class="input-group" style="display:flex;">   
+             <div class="d-flex align-items-center">   
                 <select class="form-control" name="ddl_cta_ventas_0" id="ddl_cta_ventas_0"></select>
-                    <span>
-                      <button type="button" class="btn btn-info btn-flat btn-xs" onclick="limpiar_cta('ddl_cta_ventas_0')"><i class="fa fa-close"></i></button>
-                    </span>
-               </div>   
+                <button type="button" class="btn btn-danger btn-sm p-1" onclick="limpiar_cta('ddl_cta_ventas_0')"><i class="bx bx-x me-0"></i></button>
+              </div>   
           </div>  
           <div class="col-sm-6">
             <b>Cuenta Ventas Anti</b>  
-             <div class="input-group" style="display:flex;">     
+             <div class="d-flex align-items-center">     
                 <select class="form-control"  name="ddl_cta_vnt_anti" id="ddl_cta_vnt_anti"></select>
-                    <span>
-                      <button type="button" class="btn btn-info btn-flat btn-xs"  onclick="limpiar_cta('ddl_cta_vnt_anti')"><i class="fa fa-close"></i></button>
-                    </span>
+                <button type="button" class="btn btn-danger btn-sm p-1"  onclick="limpiar_cta('ddl_cta_vnt_anti')"><i class="bx bx-x me-0"></i></button>
                </div>          
             </div>
         </div>
@@ -349,7 +341,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" onclick="guardar_producto()">Guardar</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -381,13 +373,13 @@
       </div>
       <div class="modal-footer">
         <!-- <button type="button" class="btn btn-primary" onclick="guardar_proveedor()">Guardar</button> -->
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal">cerrar</button>
       </div>
     </div>
   </div>
 </div>
 
-<div id="modal_nueva_familia" class="modal fade" role="dialog">
+<div id="modal_nueva_familia" class="modal fade" role="dialog" aria-bs-labelledby="exampleModalLabel" data-bs-backdrop="static">
   <div class="modal-dialog modal-centered modal-sm">
     <!-- Modal content-->
     <div class="modal-content">
@@ -408,7 +400,7 @@
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" onclick="guardar_familia()">Guardar</button>
-        <button type="button" class="btn btn-default" onclick="$('#modal_nueva_familia').modal('hide')">Cancelar</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="$('#modal_nueva_familia').modal('hide')">Cancelar</button>
       </div>
     </div>
   </div>

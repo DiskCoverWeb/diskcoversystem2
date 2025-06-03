@@ -125,7 +125,8 @@
 
   function autocoplet_cta_inv(){
       $('#ddl_cta_inv').select2({
-        width: '86%',
+        width: '86%',        
+        dropdownParent: $('#Nuevo_producto'),
         placeholder: 'Seleccione cuenta Inventario',
         ajax: {
           url:   "../controlador/farmacia/articulosC.php?cuenta_asignar='1'",
@@ -143,8 +144,9 @@
   }
 
     function autocoplet_cta_CV(){
-      $('#ddl_cta_CV').select2({
-        width: '86%',
+      $('#ddl_cta_CV').select2({        
+        width: '86%',        
+        dropdownParent: $('#Nuevo_producto'),
         placeholder: 'Seleccione cuenta Inventario',
         ajax: {
           url:   "../controlador/farmacia/articulosC.php?cuenta_asignar='5','9'",
@@ -163,7 +165,8 @@
 
     function autocoplet_cta_ventas(){
       $('#ddl_cta_venta').select2({
-        width: '86%',
+        width: '86%',        
+        dropdownParent: $('#Nuevo_producto'),
         placeholder: 'Seleccione cuenta Inventario',
         ajax: {
           url:   "../controlador/farmacia/articulosC.php?cuenta_asignar='4'",
@@ -182,7 +185,8 @@
 
     function autocoplet_cta_vnt_0(){
       $('#ddl_cta_ventas_0').select2({
-        width: '86%',
+        width: '86%',        
+        dropdownParent: $('#Nuevo_producto'),
         placeholder: 'Seleccione cuenta Inventario',
         ajax: {
           url:   "../controlador/farmacia/articulosC.php?cuenta_asignar='4'",
@@ -201,8 +205,9 @@
 
     function autocoplet_cta_vnt_ant(){
       $('#ddl_cta_vnt_anti').select2({
-        width: '86%',
+        width: '86%',        
         placeholder: 'Seleccione cuenta Inventario',
+        dropdownParent: $('#Nuevo_producto'),
         ajax: {
           url:   "../controlador/farmacia/articulosC.php?cuenta_asignar='4'",
           dataType: 'json',
@@ -222,6 +227,7 @@
   function autocoplet_fami_modal(){
       $('#ddl_familia_modal').select2({
         placeholder: 'Seleccione una familia',
+        dropdownParent: $('#Nuevo_producto'),
         width:'100%',
         ajax: {
           url:   '../controlador/farmacia/articulosC.php?familias=true',
@@ -241,6 +247,7 @@
   function autocoplet_cta(){
       $('#ddl_cta').select2({
         placeholder: 'Seleccione una familia',
+        dropdownParent: $('#Nuevo_producto'),
         ajax: {
           url:   '../controlador/farmacia/articulosC.php?cuenta=true',
           dataType: 'json',

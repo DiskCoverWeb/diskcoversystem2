@@ -53,12 +53,13 @@ class reportes_descargos_procesadosM
 		// " AND CP.CodigoU = '".$_SESSION['INGRESO']['CodigoU']."';";
 
 		$sql.=" GROUP BY CP.Numero,CP.Fecha,Concepto,Monto_Total,Cliente,TK.Centro_Costo ";
+		$datos = $this->conn->datos($sql);
 
 		// print_r($sql);die();
-	    $botones[0] = array('boton'=>'Ver detalle','icono'=>'<i class="fa fa-reorder"></i>', 'tipo'=>'primary', 'id'=>'Numero');
-	    $botones[1] = array('boton'=>'Ver Comprobante','icono'=>'<i class="fa fa-eye"></i>', 'tipo'=>'default', 'id'=>'Numero');
+	    // $botones[0] = array('boton'=>'Ver detalle','icono'=>'<i class="fa fa-reorder"></i>', 'tipo'=>'primary', 'id'=>'Numero');
+	    // $botones[1] = array('boton'=>'Ver Comprobante','icono'=>'<i class="fa fa-eye"></i>', 'tipo'=>'default', 'id'=>'Numero');
 		//$num_reg = array('0','100','cargar_pedidos()');
-	    $datos = grilla_generica_new($sql,'Comprobantes CP',$id_tabla=false,false,$botones,false,$imagen=false,1,1,1,300,2,$num_reg=false,false);
+	    // $datos = grilla_generica_new($sql,'Comprobantes CP',$id_tabla=false,false,$botones,false,$imagen=false,1,1,1,300,2,$num_reg=false,false);
       
         return $datos;
 

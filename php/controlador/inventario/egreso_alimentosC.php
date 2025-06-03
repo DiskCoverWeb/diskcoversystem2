@@ -185,9 +185,10 @@ class egreso_alimentosC
 	    SetAdoFields('Codigo_Tra',$parametros['area']);	
 	    SetAdoFields('Modelo',$parametros['motivo']);	
 	    SetAdoFields('Detalle',$parametros['detalle']);	
+	    SetAdoFields('Cmds',$data['Cmds']);	
 
 	    SetAdoFields('Valor_Total',number_format(floatval($data['Valor_Unitario'])*floatval($parametros['cantidad']),2,'.',''));	
-	     SetAdoFields('Total',number_format(floatval($data['Valor_Unitario'])*floatval($parametros['cantidad']),2,'.',''));	
+	    SetAdoFields('Total',number_format(floatval($data['Valor_Unitario'])*floatval($parametros['cantidad']),2,'.',''));	
 	    SetAdoFields('Periodo',$_SESSION['INGRESO']['periodo']);	
 	    SetAdoFields('Item',$_SESSION['INGRESO']['item']);			
 	    SetAdoFields('CodigoU',$_SESSION['INGRESO']['CodigoU']);		

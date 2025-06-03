@@ -45,16 +45,11 @@ class farmacia_internaM
 		}
 		$sql.="GROUP BY Numero,Codigo_P,Factura,Serie_No,Fecha_DUI,Cliente
 		ORDER BY Fecha_DUI DESC";
-		// $sql.=' OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;';
-
-		// $reg = array(0,100);
-		// print_r($sql);die();
-
-	    $botones[0] = array('boton'=>'Ver detalle', 'icono'=>'<i class="fa fa-eye"></i>', 'tipo'=>'default', 'id'=>'1,Factura,Comprobante' );
-		$tbl = grilla_generica_new($sql,'Trans_Kardex T ',$id_tabla='tbl_ingresos',null,$botones,false,false,1,1,1,500,2,false);
-		// print_r($tbl);die();
+		
 		$datos = $this->conn->datos($sql);
-		return array('tbl'=>$tbl,'datos'=>$datos);
+
+		return $datos;
+		// return array('tbl'=>$tbl,'datos'=>$datos);
 	}
 
 
@@ -81,10 +76,12 @@ class farmacia_internaM
 // 
 		// print_r($sql);die();
 
-        $tbl = grilla_generica_new($sql,'Catalogo_Productos',$id_tabla='tbl_pro',null,$botones=false,false,false,1,1,1,500,2,false);
+        // $tbl = grilla_generica_new($sql,'Catalogo_Productos',$id_tabla='tbl_pro',null,$botones=false,false,false,1,1,1,500,2,false);
 		// print_r($tbl);die();
 		$datos = $this->conn->datos($sql);
-		return array('tbl'=>$tbl,'datos'=>$datos);
+
+		return $datos;
+		// return array('tbl'=>$tbl,'datos'=>$datos);
 	}
 
 
@@ -178,10 +175,12 @@ class farmacia_internaM
 		// $sql.=" OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;";
 		
 		// print_r($sql);die();
-		 $botones[0] = array('boton'=>'Ver pedido', 'icono'=>'<i class="fa fa-eye"></i>', 'tipo'=>'default', 'id'=>'4,Orden_No,comprobante' );
-		$tbl = grilla_generica_new($sql,' Asiento_K A','tbl_pedi',false,$botones,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,500);
+		//  $botones[0] = array('boton'=>'Ver pedido', 'icono'=>'<i class="fa fa-eye"></i>', 'tipo'=>'default', 'id'=>'4,Orden_No,comprobante' );
+		// $tbl = grilla_generica_new($sql,' Asiento_K A','tbl_pedi',false,$botones,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,500);
 		$datos = $this->conn->datos($sql);
-       return array('tbl'=>$tbl,'datos'=>$datos) ;
+       // return array('tbl'=>$tbl,'datos'=>$datos) ;
+
+		return $datos;
 	}
 
 
@@ -223,12 +222,12 @@ class farmacia_internaM
 
 		$sql.="GROUP BY T.Fecha,CP.Producto,Cliente,CI_RUC,C.Matricula,Centro_Costo,Numero,Salida
 		ORDER BY T.Fecha DESC ";
-		 $sql.=" OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;";
 		 // print_r($sql);die();
-		$tbl = grilla_generica_new($sql,' Trans_Kardex T','tbl_medi',false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,500);
+		// $tbl = grilla_generica_new($sql,' Trans_Kardex T','tbl_medi',false,$botones=false,$check=false,$imagen=false,$border=1,$sombreado=1,$head_fijo=1,500);
 		$datos = $this->conn->datos($sql);
+		return $datos;
 		 // print_r($datos);die();
-       return array('tbl'=>$tbl,'datos'=>$datos) ;
+       // return array('tbl'=>$tbl,'datos'=>$datos) ;
 	}
 
 	function costo_producto($Codigo_Inv)

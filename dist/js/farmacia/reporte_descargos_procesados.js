@@ -1,45 +1,65 @@
-  var tbl_pedidos_all = null;
-
+  var tbl_devoluciones = null;
   $( document ).ready(function() {
-    // cargar_pedidos();
+    cargar_pedidos();
     cargar_ficha();
     autocoplet_paci();
     autocoplet_area();
-    autocoplet_area_filtro();
-    autocoplet_desc();
+    autocoplet_area();
     // cargar_ficha();
-
   });
 
-    function autocoplet_desc(){
-      $('#ddl_articulo').select2({
-        placeholder: 'Escriba Descripcion',
-        width:'85%',
-        ajax: {
-          url:   '../controlador/farmacia/ingreso_descargosC.php?producto=true&tipo=desc',
-          dataType: 'json',
-          delay: 250,
-          processResults: function (data) {
-            // console.log(data);
-            return {
-              results: data
-            };
-          },
-          cache: true
+  function cargar_pedidos22(f='')
+  {
+     var paginacion = 
+    {
+      '0':$('#pag').val(),
+      '1':$('#ddl_reg').val(),
+      '2':'cargar_pedidos',
+    }
+    $('#txt_tipo_filtro').val(f);
+    var ruc = ci;
+    var nom = $('#txt_query').val();
+    var ci = ruc.substring(0,10);
+    var desde=$('#txt_desde').val();
+      var  parametros = 
+      { 
+        'codigo':ci,
+        'nom':$('#txt_nombre').val(),
+        'query':nom,
+        'tipo':$('input:radio[name=rbl_buscar]:checked').val(),
+        'desde':desde,
+        'hasta':$('#txt_hasta').val(),
+        'busfe':f,
+        'area':$('#ddl_areas').val(),
+      }    
+     // console.log(parametros);
+     $.ajax({
+      data:  {parametros:parametros,paginacion:paginacion},
+      url:   '../controlador/farmacia/reporte_descargos_procesadosC.php?cargar_pedidos=true',
+      type:  'post',
+      dataType: 'json',
+        beforeSend: function () {   
+          var spiner = '<img src="../../img/gif/loader4.1.gif" width="20%">';   
+          $('#tbl_body').html(spiner);
+         },
+      success:  function (response) { 
+        if(response)
+        {
+          $('#tbl_body').html(response.tabla);
         }
-      });
-   
+      }
+    });
   }
 
   function cargar_pedidos(f='')
   {
-    if(tbl_pedidos_all!=null)
+       if(tbl_devoluciones!=null)
     {
-    if ($.fn.DataTable.isDataTable('#tbl_descargos')) {
-      $('#tbl_descargos').DataTable().destroy();
+      if ($.fn.DataTable.isDataTable('#tbl_body')) {
+        $('#tbl_body').DataTable().destroy();
+      }
     }
-  }
-    tbl_pedidos_all = $('#tbl_descargos').DataTable({
+    tbl_devoluciones = $('#tbl_devoluciones').DataTable({
           scrollX: true,
           searching: false,
           responsive: false,
@@ -50,130 +70,63 @@
           url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
         },
         ajax: {
-          url:   '../controlador/farmacia/descargosC.php?cargar_pedidos=true',
+          url:   '../controlador/farmacia/reporte_descargos_procesadosC.php?cargar_pedidos=true',
           type: 'POST',  // Cambia el método a POST   
           data: function(d) {
-              $('#txt_tipo_filtro').val(f);
-              var nom = $('#txt_query').val();
-              var ciCli = ci.substring(0,10);
-              var desde=$('#txt_desde').val();
+             $('#txt_tipo_filtro').val(f);
+            var ruc = ci;
+            var nom = $('#txt_query').val();
+            var ci = ruc.substring(0,10);
+            var desde=$('#txt_desde').val();
               var  parametros = 
               { 
-                'codigo':ciCli,
+                'codigo':ci,
                 'nom':$('#txt_nombre').val(),
                 'query':nom,
                 'tipo':$('input:radio[name=rbl_buscar]:checked').val(),
                 'desde':desde,
                 'hasta':$('#txt_hasta').val(),
                 'busfe':f,
-                'area':$('#ddl_areas_filtro').val(),
-                'arti':$('#ddl_articulo').val(),
-                'nega':$('#rbl_negativos').prop('checked'),
+                'area':$('#ddl_areas').val(),
               }    
+            
               return { parametros: parametros };
           },   
-          dataSrc: '',             
+          dataSrc: function(json) {
+            // console.LOG(json)
+            // $('#lineas').val(json.lineas)
+            // return json.tr;
+          }             
         },
          scrollX: true,  // Habilitar desplazamiento horizontal
-     
+         columnDefs: [
+           { width: "150px", targets: 1 },  // Ajusta la columna 0 (la primera)
+          { width: "200px", targets: 2 }  // Ajusta la columna 0 (la primera)
+          ],     
         columns: [
           { data: null,
-            render: function(data, type, item,meta) {
-              return (meta.row + 1);   
-                           
-            }
-          },
-          { data:'ORDEN'},
-          { data:null,
             render: function(data, type, item) {
-              return item.negativo+' '+item.nombre 
+             return `
+                    <button class="btn btn-danger btn-sm p-1" title="Ver detalle" onclick="Ver_detalle('${item.Numero}')">
+                        <span class="bx bx-trash me-0"></span>
+                    </button>
+                   <button class="btn btn-danger btn-sm p-1" title="Ver detalle" onclick="Ver_Comprobante('${item.Numero}')">
+                        <span class="bx bx-trash me-0"></span>
+                    </button>`;
             }
           },
-          { data:'subcta'},
-          { data:'importe'},
+          { data:'Numero'},
           { data: null,
             render: function(data, type, item) {
-              return formatoDate(data.Fecha_Fab.date)      
+              return formatoDate(data.Fecha.date)      
             }
           },
-          { data: null,
-            render: function(data, type, item) {
-              return `E`;   
-                           
-            }
-          },
-          { data:  null,
-            render: function(data, type, item) {
-              return `<a href="../vista/inicio.php?mod=`+ModuloActual+`&acc=ingresar_descargos&num_ped=${item.ORDEN}&area=${item.area}-${item.Detalle}&cod=${item.his}" class="btn btn-sm btn-primary" title="Editar pedido">
-                        <span class="bx bx-pencil"></span>
-                      </a>
-                      <button class="btn btn-sm btn-danger" onclick="eliminar_pedido('${item.ORDEN}','${item.area}')">
-                          <span class="bx bx-trash"></span>
-                      </button>`;   
-                           
-            }
-
-          },
-         
-          
+          { data:'Concepto'},
+          { data:'Monto_Total'},
+          { data:'Cliente'},
+          { data:'Area'},    
         ],
       });
-
-    // if ($.fn.DataTable.isDataTable('#tbl_descargos')) {
-    //   $('#tbl_descargos').DataTable().destroy();
-    // }
-    // $('#txt_tipo_filtro').val(f);
-    // // var ruc = ci;
-    // var nom = $('#txt_query').val();
-    // var ciCli = ci.substring(0,10);
-    // var desde=$('#txt_desde').val();
-    //   var  parametros = 
-    //   { 
-    //     'codigo':ciCli,
-    //     'nom':$('#txt_nombre').val(),
-    //     'query':nom,
-    //     'tipo':$('input:radio[name=rbl_buscar]:checked').val(),
-    //     'desde':desde,
-    //     'hasta':$('#txt_hasta').val(),
-    //     'busfe':f,
-    //     'area':$('#ddl_areas_filtro').val(),
-    //     'arti':$('#ddl_articulo').val(),
-    //     'nega':$('#rbl_negativos').prop('checked'),
-    //   }    
-    //  // console.log(parametros);
-    //  $.ajax({
-    //   data:  {parametros:parametros},
-    //   url:   '../controlador/farmacia/descargosC.php?cargar_pedidos=true',
-    //   type:  'post',
-    //   dataType: 'json',
-    //   // beforeSend: function () {
-    //   //           $("#tbl_body").html('<tr class="text-center"><td colspan="7"><img src="../../img/gif/loader4.1.gif" width="25%"></td></tr>');
-    //   //        },
-    //   success:  function (response) { 
-    //     if(response)
-    //     {
-    //       $('#tbl_body').html(response.tabla);
-    //       $('#tbl_descargos').DataTable({
-    //           scrollX: true,
-    //           scrollCollapse: true, 
-    //           searching: false,
-    //           responsive: false,
-    //           paging: false,   
-    //           info: false,   
-    //           autoWidth: false,  
-    //           order: [[1, 'asc']], // Ordenar por la segunda columna
-    //           language: {
-    //           url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-    //           },
-    //           initComplete: function() {
-    //               // Ajustar columnas después de la inicialización
-    //               this.api().columns.adjust().draw();
-    //           }
-    //         });
-
-    //     }
-    //   }
-    // });
   }
 
    function cargar_pedidos_detalle(f='')
@@ -187,28 +140,31 @@
 
       $('#titulo_detalle').text('');
     }
-    // var ruc = '<?php echo $ci; ?>';
+    var ruc = '<?php echo $ci; ?>';
     var nom = $('#txt_query').val();
-    var ciCli = ci.substring(0,10);
+    var ci = ruc.substring(0,10);
     var desde=$('#txt_desde').val();
       var  parametros = 
       { 
-        'codigo':ciCli,
+        'codigo':ci,
         'nom':$('#txt_nombre').val(),
         'query':nom,
         'tipo':$('input:radio[name=rbl_buscar]:checked').val(),
         'desde':desde,
         'hasta':$('#txt_hasta').val(),
-        'area':$('#txt_area').val(),
-        'arti':$('#ddl_articulo').val(),
         'busfe':f,
       }    
      // console.log(parametros);
+
      $.ajax({
       data:  {parametros:parametros},
-      url:   '../controlador/farmacia/descargosC.php?tabla_detalles=true',
+      url:   '../controlador/farmacia/reporte_descargos_procesadosC.php?tabla_detalles=true',
       type:  'post',
       dataType: 'json',
+       beforeSend: function () {   
+          var spiner = '<div class="text-center"><img src="../../img/gif/loader4.1.gif" width="20%"> </div>';   
+          $('#tbl_detalle').html(spiner);
+         },
       success:  function (response) { 
         console.log(response);
         if(response)
@@ -232,6 +188,7 @@
       url:   '../controlador/farmacia/descargosC.php?pedido=true',
       type:  'post',
       dataType: 'json',
+
       success:  function (response) { 
         
           console.log(response);
@@ -245,8 +202,7 @@
             cargar_pedidos();
           }else
           {
-            mod = ModuloActual;
-            var url = "../vista/inicio.php?mod="+mod+"&acc=vis_descargos&acc1=Visualizar%20descargos&b=1&po=subcu&cod="+response[0].ORDEN+"&ci="+ci;
+            var url = "../vista/farmacia.php?mod=Farmacia&acc=vis_descargos&acc1=Visualizar%20descargos&b=1&po=subcu&cod="+response[0].ORDEN+"&ci="+ci;
             $(location).attr('href',url);
           }
         }
@@ -261,12 +217,11 @@
     var pro = $('#txt_procedimiento').val();
     if(cod_cli!='' && area !='' && pro!='')
     {
-       mod = ModuloActual;
-      var href="../vista/inicio.php?mod="+mod+"&acc=ingresar_descargos&acc1=Ingresar%20Descargos&b=1&po=subcu&cod="+cod_cli+"&area="+area+"-"+$('#txt_procedimiento').val()+"#";
+      var href="../vista/farmacia.php?mod=Farmacia&acc=ingresar_descargos&acc1=Ingresar%20Descargos&b=1&po=subcu&cod="+cod_cli+"&area="+area+"-"+$('#txt_procedimiento').val()+"#";
       $(location).attr('href',href);
     }else
     {
-      Swal.fire('Paciente, procedimiento o Area no seleccionada.','','info');
+      Swal.fire('','Paciente, procedimiento o Area no seleccionada.','info');
     }
   }
 
@@ -292,30 +247,12 @@
 
   function autocoplet_area(){
       $('#ddl_areas').select2({
-        placeholder: 'Seleccione una Area de descargo',
+        placeholder: 'Seleccione Area',
+        width:'80%',
         ajax: {
           url:   '../controlador/farmacia/descargosC.php?areas=true',
           dataType: 'json',
-          delay: 250,
-          processResults: function (data) {
-            console.log(data);
-            return {
-              results: data
-            };
-          },
-          cache: true
-        }
-      });
-   
-  }
-
-   function autocoplet_area_filtro(){
-      $('#ddl_areas_filtro').select2({
-        placeholder: 'Seleccione una Area de descargo',
-        width:'86%',
-        ajax: {
-          url:   '../controlador/farmacia/descargosC.php?areas=true',
-          dataType: 'json',
+          width:'90px',
           delay: 250,
           processResults: function (data) {
             console.log(data);
@@ -351,7 +288,7 @@
           Swal.fire({
             title: 'Este Paciente no tiene Historial!',
             text: "Desea actualizar el numero de historial clinico?",
-            icon: 'warning',
+            type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
@@ -380,8 +317,8 @@
 
   function limpiar()
   {
-    mod = ModuloActual;
-    var href="../vista/inicio.php?mod="+mod+"&acc=vis_descargos&acc1=Visualizar%20descargos&b=1&po=subcu#";
+    
+    var href="../vista/farmacia.php?mod=Farmacia&acc=vis_descargos&acc1=Visualizar%20descargos&b=1&po=subcu#";
     $(location).attr('href',href);
     $('#txt_query').val('');
     $("#ddl_paciente").empty();
@@ -395,7 +332,7 @@
     var ci = $('#ddl_paciente').val();
     if(num_hi=='')
     {
-      Swal.fire('Ingrese un numero de historial.','','info');
+      Swal.fire('','Ingrese un numero de historial.','info');
       return false;
     }
     $('#txt_codigo').val(num_hi);
@@ -407,18 +344,17 @@
      // console.log(parametros);
      $.ajax({
       data:  {parametros:parametros},
-      url:   '../controlador/farmacia/descargosC.php?actualizar_his=true',
+      url:   '../controlador/farmacia/reporte_descargos_procesadosC.php?actualizar_his=true',
       type:  'post',
       dataType: 'json',
       success:  function (response) { 
         if(response==1)
         {
-           mod = ModuloActual;
-           var href="../vista/inicio.php?mod="+mod+"&acc=vis_descargos&acc1=Visualizar%20descargos&b=1&po=subcu&cod="+num_hi+"&ci="+ci+"#";
+           var href="../vista/farmacia.php?mod=Farmacia&acc=vis_descargos&acc1=Visualizar%20descargos&b=1&po=subcu&cod="+num_hi+"&ci="+ci+"#";
            $(location).attr('href',href);
         }else if(response == -2)
         {
-           Swal.fire('Numero ingresado ya esta registrado.','','info');
+           Swal.fire('','Numero ingresado ya esta registrado.','info');
         }
       }
     });
@@ -432,7 +368,7 @@
     Swal.fire({
       title: 'Quiere eliminar este registro?',
       text: "Esta seguro de eliminar este registro!",
-      icon: 'warning',
+      type: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -446,7 +382,7 @@
             }
              $.ajax({
               data:  {parametros:parametros},
-              url:   '../controlador/farmacia/descargosC.php?eli_pedido=true',
+              url:   '../controlador/farmacia/reporte_descargos_procesadosC.php?eli_pedido=true',
               type:  'post',
               dataType: 'json',
               success:  function (response) { 
@@ -461,7 +397,24 @@
   }
 function reporte_pdf()
 {
-   var url = '../controlador/farmacia/descargosC.php?imprimir_pdf=true&';
+   var url = '../controlador/farmacia/reporte_descargos_procesadosC.php?imprimir_pdf=true&';
+   var datos =  $("#filtro_bus").serialize();
+    window.open(url+datos, '_blank');
+     // $.ajax({
+     //     data:  {datos:datos},
+     //     url:   url,
+     //     type:  'post',
+     //     dataType: 'json',
+     //     success:  function (response) {  
+          
+     //      } 
+     //   });
+
+}
+
+function formatoEgreso()
+{
+   var url = '../controlador/farmacia/reporte_descargos_procesadosC.php?formatoEgreso=true&';
    var datos =  $("#filtro_bus").serialize();
     window.open(url+datos, '_blank');
      $.ajax({
@@ -478,7 +431,7 @@ function reporte_pdf()
 
 function reporte_excel()
 {
-   var url = '../controlador/farmacia/descargosC.php?imprimir_excel=true&';
+   var url = '../controlador/farmacia/reporte_descargos_procesadosC.php?imprimir_excel=true&';
    var datos =  $("#filtro_bus").serialize();
     window.open(url+datos, '_blank');
      // $.ajax({
@@ -493,54 +446,14 @@ function reporte_excel()
 
 }
 
-function reporte_excel_nega()
+
+function Ver_Comprobante(comprobante)
 {
-   var url = '../controlador/farmacia/descargosC.php?imprimir_excel_nega=true&';
-   var datos =  $("#filtro_bus").serialize();
-    window.open(url+datos, '_blank');
-     $.ajax({
-         data:  {datos:datos},
-         url:   url,
-         type:  'post',
-         dataType: 'json',
-         success:  function (response) {  
-          
-          } 
-       });
-
+    url='../controlador/farmacia/reporte_descargos_procesadosC.php?Ver_comprobante=true&comprobante='+comprobante;
+    window.open(url, '_blank');
 }
-
-function reporte_pdf_nega()
+function Ver_detalle(comprobante)
 {
-   var url = '../controlador/farmacia/descargosC.php?imprimir_pdf_nega=true&';
-   var datos =  $("#filtro_bus").serialize();
-    window.open(url+datos, '_blank');
-     $.ajax({
-         data:  {datos:datos},
-         url:   url,
-         type:  'post',
-         dataType: 'json',
-         success:  function (response) {  
-          
-          } 
-       });
-
+    url='../vista/farmacia.php?mod=28&acc=facturacion_insumos&acc1=Utilidad insumos&b=1&po=subcu&comprobante='+comprobante;
+    window.open(url, '_blank');
 }
-
- function mayorizar_inventario()
-  {
-    $('#myModal_espera').modal('show');
-     $.ajax({
-      // data:  {parametros:parametros},
-      url:   '../controlador/farmacia/ingreso_descargosC.php?mayorizar=true',
-      type:  'post',
-      dataType: 'json',
-      success:  function (response) { 
-        console.log(response);
-        $('#myModal_espera').modal('hide');
-        Swal.fire('Mayorizacion completada','','success');
-      
-      }
-    });
-  }
-

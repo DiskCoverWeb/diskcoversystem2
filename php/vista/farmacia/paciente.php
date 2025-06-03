@@ -12,16 +12,16 @@
 </div>
 <div class="row row-cols-auto  mb-2">
 	<div class="btn-group">
-	    <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0].'#');?>" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
+	    <a  href="<?php $ruta = explode('&' ,$_SERVER['REQUEST_URI']); print_r($ruta[0]);?>" title="Salir de modulo" class="btn btn-outline-secondary btn-sm">
             <img src="../../img/png/salire.png">
         </a>
-        <a href="./farmacia.php?mod=28&acc=pacientes&acc1=Visualizar%20paciente&b=1&po=subcu#" type="button" class="btn btn-outline-secondary btn-sm" id="imprimir_pdf" title="Pacientes">
+        <a href="./inicio.php?mod=28&acc=pacientes" type="button" class="btn btn-outline-secondary btn-sm" id="imprimir_pdf" title="Pacientes">
             <img src="../../img/png/pacientes.png">
         </a>           
-       <a href="./farmacia.php?mod=28&acc=vis_descargos&acc1=Visualizar%20descargos&b=1&po=subcu#" type="button" class="btn btn-outline-secondary btn-sm" id="imprimir_excel" title="Descargos">
+       <a href="./inicio.php?mod=28&acc=vis_descargos" type="button" class="btn btn-outline-secondary btn-sm" id="imprimir_excel" title="Descargos">
             <img src="../../img/png/descargos.png">
        </a>         
-       <a href="./farmacia.php?mod=28&acc=articulos&acc1=Visualizar%20articulos&b=1&po=subcu#" title="Ingresar Articulosr"  class="btn btn-outline-secondary btn-sm" onclick="">
+       <a href="./inicio.php?mod=28&acc=articulos" title="Ingresar Articulosr"  class="btn btn-outline-secondary btn-sm" onclick="">
             <img src="../../img/png/articulos.png" >
        </a>   
  	</div>

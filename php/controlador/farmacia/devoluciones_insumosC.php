@@ -278,8 +278,8 @@ class devoluciones_insumosC
 
 	function lista_devoluciones_x_departamento($comprobante){
 		$datos = $this->modelo->lista_devoluciones_x_departamento($comprobante);
-		$li = count($datos['datos']);
-		return array('tr'=>$datos['tabla'],'lineas'=>$li);
+		$li = count($datos);
+		return array('tr'=>$datos,'lineas'=>$li);
 	}
 
 	function eliminar_linea_devo($parametros)

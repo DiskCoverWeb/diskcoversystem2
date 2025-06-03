@@ -40,13 +40,13 @@
             <li><a href="#" class="dropdown-item" onclick="reporte_excel_nega()"> Descargos en Negativos</a></li>
           </ul>
       </div>
-      <a href="./farmacia.php?mod=28&acc=pacientes&acc1=Visualizar%20paciente&b=1&po=subcu#" type="button" class="btn btn-outline-secondary btn-sm" id="imprimir_pdf" title="Pacientes">
+      <a href="./inicio.php?mod=28&acc=pacientes" type="button" class="btn btn-outline-secondary btn-sm" id="imprimir_pdf" title="Pacientes">
         <img src="../../img/png/pacientes.png">
       </a>   
-      <a href="./farmacia.php?mod=28&acc=vis_descargos&acc1=Visualizar%20descargos&b=1&po=subcu#" type="button" class="btn btn-outline-secondary btn-sm" id="imprimir_excel" title="Descargos">
+      <a href="./inicio.php?mod=28&acc=vis_descargos" type="button" class="btn btn-outline-secondary btn-sm" id="imprimir_excel" title="Descargos">
             <img src="../../img/png/descargos.png">
       </a>
-      <a href="./farmacia.php?mod=28&acc=articulos&acc1=Visualizar%20articulos&b=1&po=subcu#" title="Ingresar Articulosr"  class="btn btn-outline-secondary btn-sm">
+      <a href="./inicio.php?mod=28&acc=articulos" title="Ingresar Articulosr"  class="btn btn-outline-secondary btn-sm">
         <img src="../../img/png/articulos.png" >
       </a>
       <button title="Mayorizar Articulos"  class="btn btn-outline-secondary btn-sm"onclick="mayorizar_inventario()">
@@ -69,7 +69,7 @@
                 <select class="form-control form-control-sm" id="ddl_paciente" onchange="buscar_cod()">
                   <option value="">Seleccione paciente</option>
                 </select>
-                <button class="btn btn-outline-secondary btn-sm"><i class="bx bx-search me-0"></i></button>
+                <button class="btn btn-outline-secondary btn-sm p-0"><i class="bx bx-search me-0"></i></button>
             </div>
           </div>  
         </div>
@@ -122,7 +122,7 @@
                 <select class="form-select form-select-sm" id="ddl_areas_filtro" name="ddl_areas_filtro" onchange="cargar_pedidos();">
                   <option value="">Seleccione area de ingreso</option>
                 </select> 
-                <button type="button" class="btn-outline-danger btn ms-1 p-0" onclick="$('#ddl_areas_filtro').val(null).trigger('change');"><i class="bx bx-x me-0"></i></button> 
+                <button type="button" class="btn-outline-danger btn btn-sm p-1" onclick="$('#ddl_areas_filtro').val(null).trigger('change');"><i class="bx bx-x me-0"></i></button> 
               </div>
             </div>
         </div>

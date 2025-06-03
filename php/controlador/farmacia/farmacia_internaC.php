@@ -29,8 +29,8 @@ if(isset($_GET['cargar_pedidos']))
 if(isset($_GET['descargos_medicamentos']))
 {	
 	$parametros = $_POST['parametros'];
-	$paginacion = $_POST['paginacion'];
-	echo json_encode($controlador->descargos_medicamentos($parametros,$paginacion));
+	// $paginacion = $_POST['paginacion'];
+	echo json_encode($controlador->descargos_medicamentos($parametros));
 }
 
 if(isset($_GET['imprimir_pdf']))
@@ -94,7 +94,7 @@ class farmacia_internaC
 	    }
 		// print_r($parametros);die();
 		$datos = $this->modelo->tabla_ingresos($pro[2],$parametros['comprobante'],$parametros['factura'],$parametros['serie']);
-		return $datos['tbl'];
+		return $datos;
 	}
 
 	function tabla_catalogo($parametros)
@@ -111,25 +111,27 @@ class farmacia_internaC
 			$query = $q[0];
 		}
 		$datos = $this->modelo->tabla_catalogo($query,$parametros['tipo']);
+
+		// return $datos;
 		$tr='';
-		foreach ($datos['datos'] as $key => $value) {
+		foreach ($datos as $key => $value) {
 			// print_r($value);die();
 			$tra = $this->modelo->costo_producto_comprobante($value['Codigo']);
 			$ad = $this->modelo->fecha_cantidad_ultimo_ingreso($value['Codigo']);
+			$datos[$key]['Existencia'] =  0;
+			$datos[$key]['Valor_Unitario'] = 0;
+			$datos[$key]['Fecha'] =  '';
+			$datos[$key]['Entrada'] =  0;
 			if(count($tra)>0 && count($ad)>0)
 			{
-				// print_r($ad);die();
-			$tr.='<tr>
-			<td>'.$value['Codigo'].'</td>
-			<td>'.$value['Producto'].'</td>
-			<td>'.$tra[0]['Existencia'].'</td>
-			<td>'.number_format($ad[0]['Valor_Unitario'],2).'</td>
-			<td>'.$ad[0]['Fecha']->format('Y-m-d').'</td>
-			<td>'.$ad[0]['Entrada'].'</td>
-			</tr>';			
+
+				$datos[$key]['Existencia'] =  $tra[0]['Existencia'];
+				$datos[$key]['Fecha'] =  $ad[0]['Fecha']->format('Y-m-d');
+				$datos[$key]['Entrada'] =  $ad[0]['Entrada'];
+				$datos[$key]['Valor_Unitario'] = number_format($ad[0]['Valor_Unitario'],2,'.','');
 		   }
 		}
-		return $tr;
+		return $datos;
 	}
 
 	function tabla_catalogo_bodega($parametros)
@@ -194,15 +196,15 @@ class farmacia_internaC
 
 	}
 
-    function descargos_medicamentos($parametros,$paginacion)
+    function descargos_medicamentos($parametros)
     {
     	// print_r($parametros);die();
     	$resp = $this->modelo->descargos_medicamentos($parametros['medicamento'],$parametros['nom'],$parametros['ci'],$parametros['depar'],$parametros['desde'],$parametros['hasta'],$parametros['busfe']);
     	$total_consumido = 0;
-    	foreach ($resp['datos'] as $key => $value) {
+    	foreach ($resp as $key => $value) {
     		$total_consumido+=$value['Cantidad'];
     	}
-    	$resp['Total_consumido'] = $total_consumido;
+    	// $resp['Total_consumido'] = $total_consumido;
     	return $resp;
     }
     function reporte_pdf($parametros)
@@ -313,7 +315,7 @@ class farmacia_internaC
 		             $tablaHTML[0]['datos']=array('<b>Fecha','<b>Producto','<b>Cliente','<b>Cedula','<b>Matricula','<b>Departamento');
 		             $tablaHTML[0]['borde'] =1;
 		             $pos = 1;
-	    		foreach ($datos['datos'] as $key => $value) {
+	    		foreach ($datos as $key => $value) {
 	    			 $tablaHTML[$pos]['medidas']=$tablaHTML[0]['medidas'];
 		             $tablaHTML[$pos]['alineado']=$tablaHTML[0]['alineado'];
 		             $tablaHTML[$pos]['datos']=array($value['Fecha']->format('Y-m-d'),$value['Producto'],$value['Cliente'],$value['Cedula'],$value['Matricula'],$value['Departamento']);
@@ -576,7 +578,7 @@ class farmacia_internaC
 		             $tablaHTML[0]['tipo'] ='C';
 		             $pos = 1;
 		             $total = 0;
-	    		foreach ($datos['datos'] as $key => $value) {
+	    		foreach ($datos as $key => $value) {
 	    			 $tablaHTML[$pos]['medidas']=$tablaHTML[0]['medidas'];
 		             $tablaHTML[$pos]['datos']=array($value['Fecha']->format('Y-m-d'),$value['Producto'],$value['Cliente'],$value['Cedula'],$value['Matricula'],$value['Departamento'],$value['Cantidad']);
 		             $tablaHTML[$pos]['tipo'] ='N';
@@ -668,8 +670,8 @@ class farmacia_internaC
     		<td>'.$value['Fecha']->format('Y-m-d').'</td>
     		<td>'.$value['Producto'].'</td>
     		<td>'.$value['Entrada'].'</td>
-    		<td>'.$value['Valor_Unitario'].'</td>
-    		<td>'.$value['Valor_Total'].'</td>
+    		<td>'.number_format($value['Valor_Unitario'],2,'.','').'</td>
+    		<td>'.number_format($value['Valor_Total'],2,'.','').'</td>
     		</tr>';
     		$total+=$value['Valor_Total'];
     	}

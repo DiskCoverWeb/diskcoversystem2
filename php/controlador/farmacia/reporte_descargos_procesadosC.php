@@ -9,8 +9,7 @@ $controlador = new reportes_descargos_procesadosC();
 if(isset($_GET['cargar_pedidos']))
 {
 	$parametros = $_POST['parametros'];
-	$paginacion = $_POST['paginacion'];
-	echo json_encode($controlador->cargar_pedidos($parametros,$paginacion));
+	echo json_encode($controlador->cargar_pedidos($parametros));
 }
 if(isset($_GET['tabla_detalles']))
 {
@@ -67,11 +66,11 @@ class reportes_descargos_procesadosC
 
 	
 
-	function cargar_pedidos($parametros,$paginacion)
+	function cargar_pedidos($parametros)
 	{
 		// print_r($parametros);die();
-		$datos = $this->modelo->cargar_comprobantes($parametros['query'],$parametros['desde'],$parametros['hasta'],$parametros['busfe'],$paginacion,$parametros['area']);
-		return $tabla = array('num_lin'=>0,'tabla'=>$datos);
+		$datos = $this->modelo->cargar_comprobantes($parametros['query'],$parametros['desde'],$parametros['hasta'],$parametros['busfe'],false,$parametros['area']);
+		return $datos;
 		// print_r($datos);die();
 		$tr='';
 		// print_r($datos);die();
