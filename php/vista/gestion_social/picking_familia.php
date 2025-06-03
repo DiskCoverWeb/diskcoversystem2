@@ -175,6 +175,10 @@
 							<b>Ubicacion</b>
 							<input type="" name="txt_ubicacion" id="txt_ubicacion" class="form-control form-control-sm" placeholder="Proveedor / Donante" readonly>		     							
 						</div>
+						<div class="col-lg-9 col-md-8 col-sm-12" style="display:none;">
+							<b>cmds</b>
+							<input type="" name="txt_cmds" id="txt_cmds" class="form-control form-control-sm" readonly>		     							
+						</div>
 						<div class="col-lg-3 col-md-6 col-sm-6 p-0">
 							<br> 
 							<button class="btn btn-light align-items-center justify-content-center" type="button" id="btn_alto_stock" style="display:none;">

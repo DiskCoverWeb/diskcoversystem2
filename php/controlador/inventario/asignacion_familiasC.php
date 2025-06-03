@@ -1,3 +1,4 @@
+
 <?php
  // DESARROLLADOR     : Javier Farinango
  // FECHA CREACION    : 02/04/2025
@@ -107,6 +108,9 @@ class asignacion_familiasC
         SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
         SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
         SetAdoFields("No_Hab",$parametros['asignacion']);
+
+        SetAdoFields("No_Hab",$parametros['asignacion']);
+        
         SetAdoFields("Orden_No",str_replace('.',"_",$parametros['grupo']).'_'.str_replace('-',"", $parametros['FechaAte']));
         
         return SetAdoUpdate();

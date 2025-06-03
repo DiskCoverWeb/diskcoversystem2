@@ -3340,6 +3340,7 @@ function llenarCamposInfo(datos) {
     $('#CalleS').val(datos.cliente.DireccionT);
     $('#Referencia').val(datos.cliente.Referencia);
     $('#txt_codigo').val(datos.cliente.Codigo);
+    $('#fechaDesviculacion').val(formatoDate(datos.cliente.Fecha_Bloq.date));
 
     switch(datos['Tipo_Beneficiario']['Cmds'])
     {
@@ -3416,6 +3417,7 @@ function llenarCamposInfo(datos) {
 
             $('#cedula').val(datos.cliente.CI_RUC);
             $('#edad').val(datos.cliente.Dosis);
+            $('#emailFam').val(datos.cliente.Email);
             $('#telefonoFam').val(datos.cliente.Telefono);
             $('#ocupacion').val(datos.cliente.Profesion);
             $('#estadoCivil').val(datos.cliente.Est_Civil);

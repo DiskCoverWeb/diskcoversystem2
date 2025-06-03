@@ -274,7 +274,7 @@ function validar_codigo()
             }else{
 
                 data = data.producto[0];
-                // console.log(data);
+                console.log(data);
                 if(data!=undefined)
                 {
                     $('#txt_id').val(data.Codigo_Inv)
@@ -285,6 +285,7 @@ function validar_codigo()
                     $('#txt_unidad').val(data.Unidad)
                     $('#txt_fecha_exp').val(formatoDate(data.Fecha.date));
                     $('#txt_codBarras').val(data.Codigo_Barra)
+                    $('#txt_cmds').val(data.Cmds);
 
                     var fecha1 = new Date();
                     var fecha2 = new Date(formatoDate(data.Fecha_Exp.date));
@@ -361,6 +362,7 @@ function agregar_picking()
     'codigoProducto':$('#txt_codigo').val(),
     'id':$('#txt_codigo').val(),
     'codBarras':$('#txt_codBarras').val(),
+    'cmds':$('#txt_cmds').val(),
     }
     $.ajax({
         type: "POST",

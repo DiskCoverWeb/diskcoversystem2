@@ -958,7 +958,7 @@ class registro_beneficiarioC
     function editarAccionSocial($dato,$datosdir)
     {
 
-        // print_r($dato);
+        // print_r($dato);die();
         // print_r($datosdir);die();
 
         $CI_RUC = $this->sri->quitar_carac($dato['txt_ci']);
@@ -982,6 +982,13 @@ class registro_beneficiarioC
         SetAdoFields('Direccion', $datosdir['CalleP']);
         SetAdoFields('DireccionT', $datosdir['CalleS']);
         SetAdoFields('Referencia', $datosdir['Referencia']);
+        if($dato['fechaDesviculacion']!='')
+        {
+            SetAdoFields('Fecha_Bloq', $dato['fechaDesviculacion']);
+        }else
+        {
+            SetAdoFields('Fecha_Bloq','.');
+        }
 
         if($dato["select_93"]=="93.01")
         {
@@ -1013,6 +1020,7 @@ class registro_beneficiarioC
             SetAdoFields('Dosis', $dato['edad']);
             SetAdoFields('Grupo', $dato['grupo']);
             SetAdoFields('Cod_Ejec', $dato['select_85']);
+            SetAdoFields('Email', $dato['emailFam']);
             // SetAdoFields('Sexo', $dato['sexo']);
         }
 

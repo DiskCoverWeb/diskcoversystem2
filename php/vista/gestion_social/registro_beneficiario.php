@@ -113,6 +113,10 @@
                         <label for="fechaIngreso"><b>Fecha de ingreso</b></label>
                         <input type="date" id="fechaIngreso" class="form-control form-control-sm" readonly>                       
                     </div>
+                    <div class="col-lg-2">
+                        <label for="fechaIngreso"><b>Fecha desvinculacion</b></label>
+                        <input type="date" id="fechaDesviculacion" name="fechaDesviculacion" class="form-control form-control-sm">                       
+                    </div>
                 </div> 
                 <div class="row campoSocial">
                     <div class="col-lg-4">
@@ -215,7 +219,11 @@
                                 <input class="form-control form-control-sm" type="text" name="telefonoFam" id="telefonoFam" placeholder="Teléfono">
                             </div>                           
                         </div>
-                         <div class="row">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="email"><b>Email</b></label>
+                                <input class="form-control form-control-sm" type="text" name="emailFam" id="emailFam" placeholder="Email">
+                            </div> 
                             <div class="col-6">
                                 <label for="nivelEscolar"><b>Nivel escolar</b></label>
                                 <select class="form-select form-select-sm" id="nivelEscolar" name="nivelEscolar">
@@ -225,7 +233,11 @@
                                <!--  <input class="form-control form-control-sm" type="text" name="nivelEscolar"
                                         id="nivelEscolar" placeholder="Nivel de escolaridad"> -->
                                 
-                            </div>  
+                            </div>                             
+                        </div>
+
+                         <div class="row">
+                            
                              <div class="col-6">
                                 <label for="pregunta" style="display: block;"><b>¿Cómo se enteró del BAQ</b>?</label>
                                 <input class="form-control form-control-sm" type="text" name="pregunta" id="pregunta"
@@ -255,7 +267,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="email"><b>Email</b></label>
-                                <input class="form-control form-control-sm" type="text" name="email" id="email" placeholder="Email">                                
+                                <input class="form-control form-control-sm" type="text" name="email" id="email" placeholder="Email">
                             </div>
                             <div class="col-6">
                                 <label for="telefono"><b>Teléfono 1</b></label>
