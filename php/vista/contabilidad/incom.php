@@ -11,10 +11,6 @@
       background-color: #CFE9EF;  color: #444;  border-color: #ddd;  border-bottom-left-radius: 5px;  border-top-left-radius:  5px;}
     #select2-cuentar-results .select2-results__option {   white-space: pre;  }
 
-    .select2.select2-container {
-      width: 300px !important;
-    }
-
     .select2-selection__rendered {
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -53,6 +49,7 @@ $_SESSION['INGRESO']['modulo_'] = $_GET['mod'];
 <script src="../../dist/js/contabilidad/incom.js"></script>
 <script type="text/javascript">
 var Trans_No = 1; var Ln_No = 1; var Ret_No = 1; var LnSC_No = 1;
+var Cuenta = "";
 function Form_Activate()
 { 
     var ModificarComp = '<?php echo $ModificarComp; ?>';
@@ -231,6 +228,11 @@ function Form_Activate()
       }
     });
 
+    $('#cuentar').on('change', function() { 
+      var cuentaSeleccionadaTexto = $(this).find('option:selected').text(); 
+      Cuenta = cuentaSeleccionadaTexto.replace(/^(\S+)\s+.*?-\s*(.+)$/, "$1 - $2"); 
+    });
+
     //modal_CC aca realizamos saltos para CC
     $(document).on('keydown', '#modal_CC td.editable-decimal', function(event){
       if(event.key === 'Enter'){
@@ -238,12 +240,12 @@ function Form_Activate()
         var editables = $('#modal_CC td.editable-decimal');
         var currentIndex = editables.index(this);
         var nextIndex = currentIndex + 1;
-        if (nextIndex >= editables.lenght){
+        if (nextIndex >= editables.length){
           nextIndex = 0;
         }
         editables.eq(nextIndex).focus();
       }
-    })
+    });
 
     $(document).on('input', 'td.editable-decimal', function() {
         var text = $(this).text();
@@ -285,6 +287,8 @@ function Form_Activate()
             $("#cuentar").empty();
         }
     });
+
+
 
   });
 
@@ -546,7 +550,7 @@ function validar_comprobante()
                    <div class="input-group-addon form-control-sm p-2 text-box">
                      <b>FECHA:</b>
                    </div>
-                   <input type="date" class="form-control form-control-sm" name="fecha1" id="fecha1" placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' maxlength='10' size='15' onblur="validar_fecha();fecha_valida(this)">
+                   <input type="date" class="form-control form-control-sm" name="fecha1" id="fecha1" placeholder="01/01/2019" value='<?php echo date('Y-m-d') ?>' size='15' onblur="validar_fecha();fecha_valida(this)">
                  </div>
             <!-- </div> -->
           </div>

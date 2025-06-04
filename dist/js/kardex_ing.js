@@ -235,8 +235,8 @@ function ddl_DCDctoModif() {
 
 function ddl_DCPorcenIva(fecha) {
   // console.log(fecha);
- 	var opcion = '<option value="I">Iva</option>';
   var ini = Ini_Iva;
+  var opcion;
  	var parametros = 
  	{
  		'fecha':fecha,
@@ -249,18 +249,20 @@ function ddl_DCPorcenIva(fecha) {
         success:  function (response) {
         	// console.log(response);
         	$.each(response,function(i,item){            
-        		opcion+='<option value="'+item.Codigo+'">'+item.Porc+'</option>';
+        		opcion+='<option value="'+item.Porc+'">'+item.Porc+'</option>';
         	})
         	$('#DCPorcenIva').html(opcion);
           $('#DCPorcenIva').val(ini);
-                    // console.log(response);
+          $('#DCPorcenIva').prop('selectedIndex', 0);
+          cambio_tarifa(response[0].Porc);
+
       }
     }); 
 }
 
 function ddl_DCPorcenIce(fecha) {
- 	var opcion = '<option value="0">ICE</option>';
   var ini ='';
+  var opcion;
  	var parametros = 
  	{
  		'fecha':fecha,
@@ -1600,3 +1602,12 @@ function validar_base_impo()
       }
     });
   }
+
+function cambio_tarifa(opcion){
+  if (opcion instanceof HTMLSelectElement) {
+  // Si es un select, obtenemos el texto visible de la opción seleccionada
+  opcion = $(opcion).find('option:selected').text();
+  }
+  let tarifa_label = ("Tarifa "+opcion);
+  $('#tarifa_porc').text(tarifa_label);
+}

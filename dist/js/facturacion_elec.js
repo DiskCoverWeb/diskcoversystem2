@@ -1098,9 +1098,22 @@ function cerrar_modal_cambio_nombre() {
 
 }
 
-function mostara_observacion() {
-    var op = $('#rbl_obs').prop('checked');
-    $('#modal_obs').modal('show');
+function mostara_observacion(opcion) {
+    if(opcion===1){
+        if($('#rbl_obs').is(':checked')){
+            $('#modal_obs').modal('show');
+        } else {
+            txt='';
+        }
+        var op = $('#rbl_obs').prop('checked');
+    } else if (opcion===2){
+        if($('#rbl_obs1').is(':checked')){
+            $('#modal_obs1').modal('show');
+        } else {
+            txt1='';
+        }
+    }
+    add_observaciones();
 }
 
 function ddl_DCTipoPago() {

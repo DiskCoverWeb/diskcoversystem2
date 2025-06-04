@@ -7,20 +7,22 @@
   if(isset($_GET['tipoc'])){  $tipoc = $_GET['tipoc']; }
   if(isset($_GET['fecha'])){  $fecha = $_GET['fecha']; }
  ?>
- <style type="text/css">
-   .ui-helper-hidden-accessible {
-          display: none;
-      }
- </style>
+  <style type="text/css">
+    .ui-helper-hidden-accessible {
+            display: none;
+        }
+  </style>
 
  <script type="text/javascript">
 $(document).ready(function () {
     limpiar_asiento_sc();
     var tc = '<?php echo $tc; ?>';
+    var Cuenta = "";
     titulos(tc);
 //     cargar_tablas_sc();
     carga_ddl();
     cargar_submodulos()
+    mostrarCuenta(parent.Cuenta);
 
     $("#ddl_aux").on("focus", function() {
       $(this).autocomplete("search",'%'); 
@@ -63,9 +65,6 @@ $(document).ready(function () {
             return false;
         },
     });
-
-
-
 
     $('#ddl_subcta').on('select2:select', function (e) {
       // console.log(e)
@@ -141,6 +140,10 @@ $(document).ready(function () {
 //         });
 
 //     }
+
+  function mostrarCuenta(valor){
+    $('#Cuenta_C').html(valor);
+  }
 
   function cargar_tablas_sc()
   {
@@ -522,19 +525,23 @@ $(document).ready(function () {
     <div class="card-body">
        <div class="row">
           <div class="col-sm-4">
-            <b id="titulo">Sub cuenta por cobrar</b>
+            <b id="titulo" class="">Sub cuenta por cobrar</b>
             <select class="form-control input-sm" id="ddl_subcta" >
               <option value="">Seleccione una sub cuenta</option>
             </select> 
-           
           </div>
           <div class="col-sm-2">
-            <b>Fecha Venc</b>
-            <input type="date" name="txt_fecha_ven" id="txt_fecha_ven" class="form-control input-sm" value="<?php echo date('Y-m-d');?>">
           </div>
-        <div class="col-sm-1" style=" padding: 0px;">
+          <div class="col-sm-6">
+            <b class="text-danger" id="Cuenta_C">Cuenta seleccionada</b>
+          </div>
+          <div class="col-sm-2 offset-sm-4">
+            <b>Fecha Venc</b>
+            <input type="date" name="txt_fecha_ven" id="txt_fecha_ven" class="form-control form-control-sm" value="<?php echo date('Y-m-d');?>">
+          </div>
+          <div class="col-sm-1" style=" padding: 0px;">
             <b>Serie</b>
-            <input type="input" name="txt_serie" id="txt_serie" class="form-control input-sm" value="" placeholder="001001">
+            <input type="input" name="txt_serie" id="txt_serie" class="form-control form-control-sm" value="" placeholder="001001">
           </div>
           <div class="col-sm-2">
             <b>Factura No</b>
@@ -542,11 +549,11 @@ $(document).ready(function () {
           </div>
           <div class="col-sm-1">
             <b>Meses</b>
-            <input type="text" name="txt_mes" id="txt_mes" class="form-control input-sm" value="0" onkeyup="solo_numeros(this)">
+            <input type="text" name="txt_mes" id="txt_mes" class="form-control form-control-sm" value="0" onkeyup="solo_numeros(this)">
           </div>
           <div class="col-sm-2">
             <b>Valor M/N</b>
-            <input type="text" name="txt_valor" id="txt_valor" class="form-control input-sm" value="0" onblur="agregar_sc()" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)">
+            <input type="text" name="txt_valor" id="txt_valor" class="form-control form-control-sm" value="0" onblur="agregar_sc()" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)">
           </div>
         </div>
           <div class="row">

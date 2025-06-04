@@ -261,6 +261,7 @@ function cargar_cuenta()
 {
   $('#cuentar').select2({
     placeholder: 'Seleccione cuenta',
+    dropdownAutoWidth: true,
     ajax: {
       url:   '../controlador/contabilidad/incomC.php?cuentasTodos=true',
       data: function (term, page) { return {q: term,  tip:$('#codigo').val()}},

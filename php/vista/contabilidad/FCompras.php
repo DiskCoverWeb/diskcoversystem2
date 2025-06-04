@@ -274,12 +274,12 @@ if(isset($_GET['fec']))
                                 <input type="text" name="" class="form-control form-control-sm text-right" value="0.00" id="TxtBaseImpo"  autocomplete="off"  onblur="base_impo_cal();validar_float(this,2)" onkeyup="validar_numeros_decimal(this)">
                               </div>
                               <div class="col-sm-1 ps-2 pe-2">
-                                <b>Tarifa 12</b>
+                                <b id="tarifa_porc">Tarifa -</b>
                                 <input type="text" name="" class="form-control form-control-sm text-right" value="0.00" id="TxtBaseImpoGrav"  autocomplete="off"  onblur="base_impo_cal();validar_float(this,2)" onkeyup="validar_numeros_decimal(this)">
                               </div>
                               <div class="col-sm-2">
                                 <b>Valor ICE</b>
-                                <input type="text" name="" class="form-control form-control-sm  text-right" value="0.00"  id="TxtBaseImpoIce"  onblur="validar_float(this,2)" autocomplete="off" onkeyup="validar_numeros_decimal(this)">
+                                <input type="text" name="" class="form-control form-control-sm  text-right" value="0.00"  id="TxtBaseImpoIce"  onblur="validar_float(this,2); calcular_iva(); calcular_ice();" autocomplete="off" onkeyup="validar_numeros_decimal(this)">
                               </div>  
                             </div>                          
                           </div>
@@ -300,7 +300,6 @@ if(isset($_GET['fec']))
                             </div>
                             <div class="col-sm-3">
                               <select class="form-select" id="DCPorcenIva" onchange="calcular_iva()" onblur="calcular_iva();calcular_ice();">
-                                  <option value="I">Iva</option>
                               </select>
                             </div>
                             <div class="col-sm-3">
@@ -316,7 +315,6 @@ if(isset($_GET['fec']))
                             </div>
                             <div class="col-sm-3">
                               <select class="form-select" id="DCPorcenIce" onchange="calcular_ice()" onblur="calcular_iva();calcular_ice();">
-                                  <option value="0">ICE</option>
                               </select>
                             </div>
                             <div class="col-sm-3">

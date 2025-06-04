@@ -36,9 +36,9 @@ $mail = new PHPMailer(true);
     $mail->SMTPAuth = true;
     $mail->Username = 'admin';
     $mail->Password = 'Admin@2023';
-    $mail->SMTPSecure = false; // Dejar en blanco para 'tls'
+    $mail->SMTPSecure = 'tls'; // Dejar en blanco para 'tls'
     $mail->SMTPAutoTLS = true; // Desactivar el inicio automático de TLS
-    $mail->Port = 143;
+    $mail->Port = 587;
 
    
 
