@@ -6,6 +6,7 @@ $(document).ready(function () {
     $('.campoSocial').hide();
     $('.campoFamilia').hide();
     $('.campoVoluntario').hide();
+    $('.campoAliados').hide();
 
     var fechaActual = new Date().toISOString().split('T')[0];
     $('#fechaIngreso').val(fechaActual);
@@ -1495,6 +1496,10 @@ $('#btnMostrarDir').click(function () {
     $('#modalBtnDir').modal('show');
 });
 
+$('#btnInfoAliado').click(function () {
+    $('#modalsBtnpAliado').modal('show');
+});
+
 //direccion
 $('#btnGuardarDir').click(function () {
     $('#modalBtnDir').modal('hide');
@@ -2422,8 +2427,12 @@ var userAuth = false;
             $("#mostrarOrgSocialAdd").css("display", "none");
             break;
         case '93.03':
+
             break;
         case '93.04':
+             $("#mostrarFamiliasAdd").css("display", "none");
+             $("#mostrarAliadosAdd").css("display", "block");
+             $("#mostrarOrgSocialAdd").css("display", "none");
             break;
         default:
             Swal.fire("Error", "Tipo de Beneficiario no ha sido seleccionado.", "error").then(function(){
@@ -2755,12 +2764,12 @@ function CargarEstilo()
         case '93.01':
             $('.campoSocial').show();
             $('.campoFamilia').hide();
-            $('.campoVoluntario').hide();
+            $('.campoAliados').hide();
             // $('.campoVolNo').show();
             break;
         case '93.02':
             $('.campoSocial').hide();
-            $('.campoVoluntario').hide();
+            $('.campoAliados').hide();
             $('.campoFamilia').show();            
             nivel_escolaridadprincipal();
             // $('.campoVolNo').show();
@@ -2769,12 +2778,12 @@ function CargarEstilo()
             $('.campoSocial').hide();
             $('.campoFamilia').hide();
             // $('.campoVolNo').hide();
-            $('.campoVoluntario').show();
+            $('.campoAliados').hide();
             break;
         case '93.04':
             $('.campoSocial').hide();
             $('.campoFamilia').hide();
-            $('.campoVoluntario').hide();
+            $('.campoAliados').show();
             break;
         default:
             $('.campoSocial').hide();
@@ -3340,7 +3349,10 @@ function llenarCamposInfo(datos) {
     $('#CalleS').val(datos.cliente.DireccionT);
     $('#Referencia').val(datos.cliente.Referencia);
     $('#txt_codigo').val(datos.cliente.Codigo);
-    $('#fechaDesviculacion').val(formatoDate(datos.cliente.Fecha_Bloq.date));
+    if(datos.cliente.Fecha_Bloq!=null)
+    {
+        $('#fechaDesviculacion').val(formatoDate(datos.cliente.Fecha_Bloq.date));
+    }
 
     switch(datos['Tipo_Beneficiario']['Cmds'])
     {

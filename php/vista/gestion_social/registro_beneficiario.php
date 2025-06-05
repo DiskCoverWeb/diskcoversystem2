@@ -163,7 +163,7 @@
                     </div>
                 </div>
                 <div class="row">
-                     <div class="col-lg-9 campoFamilia">
+                    <div class="col-lg-9 campoFamilia">
                         <div class="row">
                             <div class="col-lg-5">
                                 <div class="row">
@@ -245,6 +245,50 @@
                             </div>                           
                         </div>         
                     </div>
+                    <div class="col-lg-9 campoAliados">
+                        <div class="row">
+                            <div class="col-4">
+                                <b>Cedula</b>
+                                <input type="" name="txt_cedulaAli" id="txt_cedulaAli" class="form-control form-control-sm">
+                            </div>    
+                            <div class="col-sm-4">
+                                <b>Telefono</b>
+                                <input type="" name="txt_telefonoAli" id="txt_telefonoAli" class="form-control form-control-sm">
+                            </div>    
+                            <div class="col-sm-4">
+                                <b>Email</b>
+                                <input type="" name="txt_emailAli" id="txt_emailAli" class="form-control form-control-sm">
+                            </div>         
+                             <div class="col-sm-4">
+                               <div class="row">
+                                    <div class="col-3">
+                                        <img src="../../img/png/calendario2.png" width="60" height="60">
+                                    </div>
+                                    <div class="col-9">
+                                         <label for="diaEntregaAli"><b>Fecha de entrega</b></label>
+                                        <select class="form-select form-select-sm" name="diaEntregaAli" id="diaEntregaAli"></select>
+                                    </div>
+                                </div>
+                            </div>         
+                             <div class="col-sm-3">
+                                <b>Frecuencia</b>
+                                <select class="form-select form-select-sm">
+                                    <option value="">Seleccione opcion</option>
+                                </select>
+                            </div>         
+                             <div class="col-sm-4">
+                               <div class="row">
+                                    <div class="col-3">
+                                        <img src="../../img/png/reloj.png" width="55" height="55">                                
+                                    </div>         
+                                    <div class="col-9">
+                                        <label for="horaEntregaAli"><b>Hora de visita</b></label>
+                                        <input type="time" name="horaEntregaAli" id="horaEntregaAli" class="form-control form-control-sm">                                
+                                    </div>                   
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
                      <div class="col-lg-3 text-center">
                         <div class="row ">
                             <div class="col-lg-12 mb-3" id="btnMostrarDir" style="cursor:pointer">
@@ -257,6 +301,11 @@
                                 <img src="../../img/png/infoUser.png" width="60" height="60" title="INFORMACIÓN DEL USUARIO" class="icon">
                                 <br>      
                                 <label><b>Información del usuario</b></label>                          
+                            </div>
+                             <div class="col-lg-12 mb-3 campoAliados" id="btnInfoAliado" style="cursor:pointer">
+                                <img src="../../img/png/tipo_producto.png" width="60" height="60" title="Tipo de producto" class="icon">
+                                <br>      
+                                <label><b>Tipo de producto</b></label>                          
                             </div>
                             
                         </div>
@@ -286,7 +335,6 @@
                             </div> 
                         </div>
                     </div>
-                    
                 </div>
                 <div class="row" style="margin: 10px; display: flex; justify-content: center;">
                     <div class="col-sm-12 campoVoluntario">
@@ -455,7 +503,16 @@
                     </div>
                 </div>
             </div>
-            <div id="mostrarVoluntariosAdd" class="accordion-body"  style="background-color:#fffacd;"></div>
+            <div id="mostrarAliadosAdd" class="accordion-body"  style="background-color:#fffacd;">
+                <div class="row text-center">
+                    <div class="col-lg-6">
+                        <img src="../../img/png/animales.png" width="80" height="80" title="ANIMALES Y REQUERIMIENTOS ALIMENTICIOS" class="icon">
+                    </div>  
+                     <div class="col-lg-6">
+                        <img src="../../img/png/clip.png" width="80" height="80" title="ARCHIVO ADJUNTO" class="icon">
+                    </div>                    
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -104,8 +104,6 @@ class facturas_distribucion_fam
 
 	}
 
-
-
 	function GenerarFactura($parametros)
 	{
 		// print_r($parametros);die();

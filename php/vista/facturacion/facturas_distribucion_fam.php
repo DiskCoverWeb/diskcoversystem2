@@ -323,6 +323,7 @@ if (isset ($_GET['tipo'])) {
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary"  onclick="Generar_factura()">Generar Facturas</button>
+				<button type="button" class="btn btn-warning"  onclick="finalizar_factura()">Finalizar pedidos</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 			</div>
 		</div>

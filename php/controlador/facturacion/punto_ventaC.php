@@ -305,7 +305,7 @@ class punto_ventaC
 		if (isset($parametros['electronico'])) {
 			$electronico = $parametros['electronico'];
 		}
-		$Porc_Iva = floatval($parametros['PorcIva']/100);
+		$Porc_Iva = floatval(floatval($parametros['PorcIva'])/100);
 		$TextVUnit = $parametros['TextVUnit'];
 		$TextCant = $parametros['TextCant'];
 		$TipoFactura = $parametros['TC'];

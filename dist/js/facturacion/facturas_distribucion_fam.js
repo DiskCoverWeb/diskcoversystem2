@@ -521,6 +521,42 @@
 
 	}
 
+	function finalizar_factura()
+	{
+			var parametros =
+		{
+			'programa': $('#ddl_programas').val(),
+			'grupo': $('#ddl_grupos').val(),
+			'orden': $('#ddl_pedidos').val(),
+			'fechaPick': $('#MBFechaChek').val(),
+			'fecha': $('#MBFecha').val(),
+		}
+
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucion_famC.php?finalizarFactura=true',
+			data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+				console.log(data);
+				
+
+				if(data==1)
+				{
+					Swal.fire("Factura Finalizada","","success").then(function(){
+						// editar para que no aparesca la factura 
+						finalizarFactura()
+						// mostrar los tiquets y facturas  
+					})
+				}
+
+			},
+		    error: function(error){
+		      console.error("Error revisar: ", error);
+		    }
+		});
+	}
+
 	function Generar_factura()
 	{
 
@@ -585,7 +621,7 @@
 				{
 					Swal.fire("Factura Generada","","success").then(function(){
 						// editar para que no aparesca la factura 
-						finalizarFactura()
+						// finalizarFactura()
 						// mostrar los tiquets y facturas  
 					})
 				}
