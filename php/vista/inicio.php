@@ -504,6 +504,9 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'picking_familia':
 					require_once("gestion_social/picking_familia.php");
 					break;
+				case 'picking_productoresAli':
+					require_once("gestion_social/picking_productoresAli.php");
+					break;
 				case 'picking_org':
 					require_once("inventario/asignacion_picking.php");
 					break;

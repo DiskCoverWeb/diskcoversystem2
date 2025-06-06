@@ -2658,6 +2658,7 @@ $(document).ready(function () {
     ddl_estados();
     Tipo_Entrega();
     Frecuencia()
+    FrecuenciaAli();
     Accion_Social()
     Vulnerabilidad()
     Tipo_Atencion()
@@ -2665,7 +2666,8 @@ $(document).ready(function () {
     estado_civilPrincipal()
 
      $('#select_93').on('select2:select', function (e) {
-        var data = e.params.data.data;        
+        var data = e.params.data.data;      
+        console.log(data);  
         $('#select_CxClabel').text(data.DC)        
         $('#select_CxC').val(data.DC)        
         $("#img_Tipo_Donacion").attr("src", "../../img/png/"+data.DC.toLowerCase()+'.png');
@@ -2923,6 +2925,26 @@ function Tipo_Entrega()
 function Frecuencia()
 {
     $('#select_86').select2({
+        placeholder: 'Seleccione Frecuencia',
+        width:'100%',
+        ajax: {
+            url:   '../controlador/inventario/registro_beneficiarioC.php?Frecuencia=true',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+            // console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
+}
+
+function FrecuenciaAli()
+{
+    $('#ddl_frecuenciaAli').select2({
         placeholder: 'Seleccione Frecuencia',
         width:'100%',
         ajax: {
@@ -3456,6 +3478,23 @@ function llenarCamposInfo(datos) {
             llenarCamposExtructuraFami(datos.cliente.Codigo);
 
             break;
+         case "93.04":
+             if(datos.Frecuencia){
+                $('#ddl_frecuenciaAli').append($('<option>',{value: datos.Frecuencia.Cmds, text: datos.Frecuencia.Proceso,selected: true }));
+            }
+             if (datos.cliente.Dia_Ent == '.') {
+                $('#diaEntregaAli').val($('#diaEntrega option:first').val());
+            } else {
+                $('#diaEntregaAli').val(datos.cliente.Dia_Ent);
+            }
+            if (/^\d{2}:\d{2}$/.test(datos.cliente.Hora_Ent)) {
+                $('#horaEntregaAli').val(datos.cliente.Hora_Ent);
+            }
+
+            $('#txt_emailAli').val(datos.cliente.Email);
+            $('#txt_telefonoAli').val(datos.cliente.Telefono);
+
+            break;
         default:
             break;
     }
@@ -3474,10 +3513,12 @@ function LlenarSelectDiaEntrega() {
         success: function (datos) {
             $('#diaEntregac').append('<option value="" disabled selected>Seleccione una opción</option>');
             $('#diaEntrega').append('<option value="" disabled selected>Seleccione una opción</option>');
+            $('#diaEntregaAli').append('<option value="" disabled selected>Seleccione una opción</option>');
 
             $.each(datos, function (index, opcion) {
                 $('#diaEntregac').append('<option value="' + opcion['Dia_Mes_C'] + '">' + opcion['Dia_Mes'] + '</option>');
                 $('#diaEntrega').append('<option value="' + opcion['Dia_Mes_C'] + '">' + opcion['Dia_Mes'] + '</option>');
+                $('#diaEntregaAli').append('<option value="' + opcion['Dia_Mes_C'] + '">' + opcion['Dia_Mes'] + '</option>');
             });
         }
     });
@@ -3610,6 +3651,16 @@ function guardar_registros()
                 'dataD':dataD,
                 'data_info':data_info_user,
                 'estru_fam':integrantes
+            }
+            break;
+        case '93.04':
+            // data_info_user = $('#form_info_usuario').serialize();
+            parametros = 
+            {
+                'data':data,
+                'dataD':dataD,
+                // 'data_info':data_info_user,
+                // 'estru_fam':integrantes
             }
             break;
         default:

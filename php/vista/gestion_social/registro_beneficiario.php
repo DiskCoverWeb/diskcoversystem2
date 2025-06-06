@@ -247,17 +247,13 @@
                     </div>
                     <div class="col-lg-9 campoAliados">
                         <div class="row">
-                            <div class="col-4">
-                                <b>Cedula</b>
-                                <input type="" name="txt_cedulaAli" id="txt_cedulaAli" class="form-control form-control-sm">
-                            </div>    
                             <div class="col-sm-4">
                                 <b>Telefono</b>
-                                <input type="" name="txt_telefonoAli" id="txt_telefonoAli" class="form-control form-control-sm">
+                                <input type="" name="txt_telefonoAli" id="txt_telefonoAli" class="form-control form-control-sm" placeholder="0999999999 / 0222222222">
                             </div>    
                             <div class="col-sm-4">
                                 <b>Email</b>
-                                <input type="" name="txt_emailAli" id="txt_emailAli" class="form-control form-control-sm">
+                                <input type="" name="txt_emailAli" id="txt_emailAli" class="form-control form-control-sm" placeholder="example@example.com">
                             </div>         
                              <div class="col-sm-4">
                                <div class="row">
@@ -272,7 +268,7 @@
                             </div>         
                              <div class="col-sm-3">
                                 <b>Frecuencia</b>
-                                <select class="form-select form-select-sm">
+                                <select class="form-select form-select-sm" name="ddl_frecuenciaAli" id="ddl_frecuenciaAli">
                                     <option value="">Seleccione opcion</option>
                                 </select>
                             </div>         

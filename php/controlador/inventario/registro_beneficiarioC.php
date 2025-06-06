@@ -945,7 +945,22 @@ class registro_beneficiarioC
                 // print_r($data);
                 // print_r($direccion);
                 // print_r($data_info_user);die();           
-                break;            
+                break;   
+            case '93.04':
+
+                // parse_str($parametros['data_info'],$data_info_user);
+                $this->editarAccionSocial($data,$direccion);
+                $this->editarAccionSocialExtras($data,$data_info_user);
+                // if(isset($parametros['estru_fam']))
+                // {
+                //     $this->editarEstructuraFamiliar($parametros['estru_fam'],$data);
+                // }
+
+                // print_r($data);
+                // print_r($direccion);
+                // die();
+                // print_r($data_info_user);die();           
+                break;              
             default:
                 // code...
                 break;
@@ -1021,6 +1036,19 @@ class registro_beneficiarioC
             SetAdoFields('Grupo', $dato['grupo']);
             SetAdoFields('Cod_Ejec', $dato['select_85']);
             SetAdoFields('Email', $dato['emailFam']);
+            // SetAdoFields('Sexo', $dato['sexo']);
+        }
+
+        if($dato["select_93"]=="93.04")
+         {
+            // para productores aliados
+            SetAdoFields('Hora_Ent',$dato['horaEntregaAli']);
+            if(isset($dato['diaEntregaAli']))
+            {
+                SetAdoFields('Dia_Ent',  $dato['diaEntregaAli']);
+            }
+            SetAdoFields('Telefono', $dato['txt_telefonoAli']); 
+            SetAdoFields('Email', $dato['txt_emailAli']);
             // SetAdoFields('Sexo', $dato['sexo']);
         }
 
@@ -1103,6 +1131,25 @@ class registro_beneficiarioC
 
             
             }
+
+            //para productores aliados
+             if($datos['select_93']=='93.04')
+            {
+                
+                // SetAdoFields('Dia_Ent', $datos['diaEntregaAli']);
+                // SetAdoFields('Hora_Ent', $datos['horaEntregaAli']);
+                if(isset($datos['ddl_frecuenciaAli']))
+                {
+                    SetAdoFields('Envio_No', $datos['ddl_frecuenciaAli']);
+                }
+                if(isset($datos['NombreArchivo'])  && $datos['NombreArchivo']!='') {
+
+                    SetAdoFields('Evidencias',"Evidencias, '" . $datos['NombreArchivo'] . "'");
+                }
+            }
+
+
+
 
             if($datosExtra==0)
             {
