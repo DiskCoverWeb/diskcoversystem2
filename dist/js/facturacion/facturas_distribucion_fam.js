@@ -3,7 +3,7 @@
 	$(document).ready(function () {
 		 autocomplete_pedidos();
 		 DCLineasNDU(); 
-		 serie();
+		 // serie();
 		 DCLineas(); 
 		 DCPorcenIvaFD()
 		 DCBanco()

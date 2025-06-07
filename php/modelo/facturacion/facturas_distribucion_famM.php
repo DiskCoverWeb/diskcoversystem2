@@ -203,6 +203,31 @@ class facturas_distribucion_famM
 
     }
 
+    function AdoLinea($parametros){
+        $sql = "SELECT CxC, Codigo, Autorizacion, Fact, Serie
+                FROM Catalogo_Lineas
+                WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+                AND Periodo = '" . $_SESSION['INGRESO']['periodo'] . "'
+                AND Fact = '" . $parametros['TipoFactura'] . /*"'
+                AND Serie = '" . $parametros['SerieFactura'] . */"'
+                AND TL <> 0
+                ORDER BY Codigo";
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+    
+  function ActualizarCodigoFactura($SQLs,$num)
+  {
+        $Strgs = "UPDATE Codigos 
+                SET Numero = $num+1
+                WHERE Concepto = '".$SQLs."'
+                AND Periodo = '" .$_SESSION['INGRESO']['periodo']."' 
+                AND Item = '".$_SESSION['INGRESO']['item']. "' ";
+                // print_r($Strgs);
+      return $this->db->String_Sql($Strgs);
+  }
+
 
 
 

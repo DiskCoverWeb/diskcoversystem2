@@ -991,6 +991,17 @@ class facturas_distribucionM
     return $this->db->datos($sql);
   }
 
+  function ActualizarCodigoFactura($SQLs,$num)
+  {
+        $Strgs = "UPDATE Codigos 
+                SET Numero = $num+1
+                WHERE Concepto = '".$SQLs."'
+                AND Periodo = '" .$_SESSION['INGRESO']['periodo']."' 
+                AND Item = '".$_SESSION['INGRESO']['item']. "' ";
+                // print_r($Strgs);
+      return $this->db->String_Sql($Strgs);
+  }
+
 
 
 

@@ -631,7 +631,7 @@ var valTC = 'FA';
 						allowOutsideClick: false,
 					});
 				}
-				$('#LblSerie').text(data.SerieFactura);
+				$('#LblSerie').text(data.Serie);
 				$('#TextFacturaNo').val(data.NumComp);
 				$('#Cta_CxP').val(data.Cta_Cobrar);
 				$('#Autorizacion').val(data.Autorizacion);

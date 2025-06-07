@@ -118,11 +118,11 @@ class facturas_distribucion_fam
 
 		$FechaTexto =  $parametros['fecha'];
 		$datosFA['TC'] = $parametros['TipoFactura'];
-		$datosFA['Serie'] = $parametros['SerieFA'];
+		$datosFA['Serie'] = $parametros['Serie'];
 
 		$datosTick['TC'] = $parametros['TipoNDU'];
 		$datosTick['Serie'] = $parametros['Serie'];
-		$datosFA['FacturaNo'] = $parametros['TextFacturaNo'];
+		$datosFA['FacturaNo'] = $parametros['TextNDUNo'];
 
 		$CodigoL = '.';
 		$CodigoL2 = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
@@ -181,8 +181,10 @@ class facturas_distribucion_fam
 			$datosFA['DCBancoC'] =  $abonos[$key]['ctaBancos'];
 			$datosFA['CodDoc'] = '01';
 			$datosFA['valorBan'] =  $abonos[$key]['valorBanco'];
-			$datosFA['PorcIva'] = $parametros['PorcIva'];
+			$datosFA['PorcIva'] = trim($parametros['PorcIva']);
 
+
+			// print_r($datosFA);die();
 
 
 			$factura =  $this->GenerarFacturaUni($datosFA);
@@ -190,7 +192,7 @@ class facturas_distribucion_fam
 			// print_r($factura);
 			// die();
 
-			$datosTick['FacturaNo'] = $factura['factura'];
+			$datosTick['FacturaNo'] = $parametros['TextNDUNo'];
 			$datosTick['TxtEfectivo'] =0;
 			$datosTick['TextBanco'] = 0;
 			$datosTick['TextCheqNo'] = 0;
@@ -359,6 +361,8 @@ class facturas_distribucion_fam
 			// $FA['Observacion'] = $parametros['TxtObservacion'];
 
 			// print_r($FA);die();
+			
+			$FA['FacturaNo'] = $parametros['FacturaNo'];
 			$FA['CodigoC'] = $cliente['CodigoC'];
 			$FA['codigoCliente'] = $cliente['CodigoC'];
 			$FA['TextCI'] = $parametros['CI'];
@@ -503,10 +507,16 @@ class facturas_distribucion_fam
 			$FA['Nuevo_Doc'] = True;
 			$FA['Saldo_MN'] = $Saldo;
 
-			if($FA['TC']=='FA')
+			if($FA['TC']=='NDU')
 			{
 				$Factura_No = ReadSetDataNum($FA['TC'] . "_SERIE_" . $FA['Serie'], True, True);
-			}else{ $Factura_No = $FA['FacturaNo']; }
+			}else{ 
+				$Factura_No = $FA['FacturaNo']; 
+				$this->modelo->ActualizarCodigoFactura($FA['TC'] . "_SERIE_" . $FA['Serie'],$Factura_No);
+
+				}
+
+
 			$FA['Factura'] = $Factura_No;
 			$FA['FacturaNo'] = $Factura_No;
 			$TipoFactura = $FA['TC'];
@@ -717,28 +727,24 @@ class facturas_distribucion_fam
 
     function SerieNDU($parametros)
 	{
-
-		// print_r($parametros);die();
-		$emision = date('Y-m-d');
-		$vencimiento = date('Y-m-d');
-		// busca serie de empresa
-			// busca serie de usuario
-			$serie = $this->modelo->getSerieUsuario($_SESSION['INGRESO']['CodigoU']);
-			// print_r($serie);die();
-			if (count($serie) > 0 && isset($serie[0]['Serie_FA'])) {
-				$serie = $serie[0]['Serie_FA'];
-			}
-			// busca en catalogo de lineas si no en existe o es punto
-			if ($serie == '.') {
-				$datos = $this->modelo->getCatalogoLineas13($emision, $vencimiento,$parametros['TC'] );
-				$serie = $datos[0]['Serie'];
-			}
-		
-		$NumComp = ReadSetDataNum($parametros['TC'] . "_SERIE_" . $serie, True, False);
-
-		$res = array('serie' => $serie, 'NumCom' => generaCeros($NumComp, 9));
-
-		return $res;
+		$parametros['TipoFactura'] = $parametros['TC'];
+		$datosAdoLinea = $this->modelo->AdoLinea($parametros);
+		// print_r($datosAdoLinea);die();
+		$mensaje = "";
+		if (count($datosAdoLinea) > 0) {
+			$CodigoL = $datosAdoLinea[0]['Codigo'];
+			$Cta_Cobrar = $datosAdoLinea[0]['CxC'];
+			$Autorizacion = $datosAdoLinea[0]['Autorizacion'];
+			$TC = $datosAdoLinea[0]['Fact'];
+			$serie = $datosAdoLinea[0]['Serie'];
+		} else {
+			$mensaje = "Falta Organizar la CxC en Puntos de Venta.
+						Salga de este proceso y llame al su técnico
+						o al Contador de su Organizacion.";
+						return $mensaje;
+		}
+		$NumComp = ReadSetDataNum("NDU_SERIE_" . $serie, false, False);
+		return array('mensaje' => $mensaje, 'serie' => $serie, 'NumCom' => generaCeros($NumComp, 9), 'CodigoL' => $CodigoL, 'Cta_Cobrar' => $Cta_Cobrar, 'Autorizacion' => $Autorizacion);
 	}
 
 	function finalizarFactura($parametros)

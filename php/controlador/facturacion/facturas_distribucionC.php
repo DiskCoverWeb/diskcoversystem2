@@ -959,9 +959,11 @@ class facturas_distribucion
 			}
 		}
 		$parametros['SerieFactura'] = $serie;*/
+		// print_r($parametros);die();
 
-		$serie_fa = $_SESSION['INGRESO']['Serie_FA'];
+		// $serie_fa = $_SESSION['INGRESO']['Serie_FA'];
 		$datosAdoLinea = $this->modelo->AdoLinea($parametros);
+		// print_r($datosAdoLinea);die();
 		$mensaje = "";
 		if (count($datosAdoLinea) > 0) {
 			$CodigoL = $datosAdoLinea[0]['Codigo'];
@@ -973,9 +975,10 @@ class facturas_distribucion
 			$mensaje = "Falta Organizar la CxC en Puntos de Venta.
 						Salga de este proceso y llame al su técnico
 						o al Contador de su Organizacion.";
+						return $mensaje;
 		}
-		$NumComp = ReadSetDataNum("FA_SERIE_" . $serie_fa, false, False);
-		return array('mensaje' => $mensaje, 'SerieFactura' => $serie, 'NumComp' => generaCeros($NumComp, 9), 'CodigoL' => $CodigoL, 'Cta_Cobrar' => $Cta_Cobrar, 'Autorizacion' => $Autorizacion);
+		$NumComp = ReadSetDataNum("NDO_SERIE_" . $serie, false, False);
+		return array('mensaje' => $mensaje, 'Serie' => $serie, 'NumComp' => generaCeros($NumComp, 9), 'CodigoL' => $CodigoL, 'Cta_Cobrar' => $Cta_Cobrar, 'Autorizacion' => $Autorizacion);
 	}
 
 	function AdoAuxCatalogoProductos()
@@ -1612,15 +1615,16 @@ class facturas_distribucion
 		$params = array('beneficiario'=>$parametros['CodigoCliente'],'fecha'=>$parametros['MBFecha']);
 		$lineas_fac = $this->modelo->ConsultarProductos($params);
 
-		if($_SESSION['INGRESO']['Serie_FA']=='.')
+		if($parametros['Serie']=='.')
 		{
 			return array('respuesta'=>'-999');
 		}
 
 		// print_r($lineas_fac);die();
 
-		$numFac = ReadSetDataNum("FA_SERIE_".$_SESSION['INGRESO']['Serie_FA'],true,true);
-		$this->sri->Actualizar_factura($parametros['CI'],$numFac,strval($_SESSION['INGRESO']['Serie_FA']));
+		$numFac = ReadSetDataNum("NDO_SERIE_".$parametros['Serie'],true,true);
+		$this->modelo->ActualizarCodigoFactura("FA_SERIE_".$parametros['Serie'],$numFac);
+		$this->sri->Actualizar_factura($parametros['CI'],$numFac,strval($parametros['Serie']));
 
 		// FechaValida MBFecha
 		$FechaTexto = $parametros['MBFecha'];
@@ -1642,7 +1646,7 @@ class facturas_distribucion
 				$FA['TC'] = $parametros['TC'];
 				
 				$FA['Serie'] = $parametros['Serie'];				
-				$FA['Serie_FA'] = $_SESSION['INGRESO']['Serie_FA'];
+				// $FA['Serie_FA'] = $_SESSION['INGRESO']['Serie_FA'];
 				$FA['TextFacturaNo'] = $numFac;
 				$FA['Cta_CxP'] = $parametros['Cta_Cobrar'];
 				$FA['Autorizacion'] = $parametros['Autorizacion'];
@@ -1697,7 +1701,7 @@ class facturas_distribucion
 
 	function generar_factura_FA($FA, $res){
 		$FA['TC'] = 'FA';
-		$FA['Serie'] = $FA['Serie_FA'];
+		$FA['Serie'] = $FA['Serie'];
 		$params = array(
 			'TextVUnit' => $FA['FATextVUnit'],
 			'VTotal' => $FA['FAVTotal'],
@@ -1711,7 +1715,7 @@ class facturas_distribucion
 			'CodBod' => '',
 			'TextServicios' => '.',
 			'TextVDescto' => '0',
-			'Serie' => $FA['Serie_FA'],
+			'Serie' => $FA['Serie'],
 			'tipoTC' => '.',
 		);
 		$this->IngresarAsientoF($params);
