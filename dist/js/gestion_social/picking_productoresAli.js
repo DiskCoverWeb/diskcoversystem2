@@ -85,7 +85,7 @@ $(document).ready(function () {
         console.log(data.data);
         tipoCompra(data.data)
         listaAsignacion();
-        llenarCamposPoblacion(data.data.Codigo);
+        // llenarCamposPoblacion(data.data.Codigo);
 
     });
 
@@ -100,6 +100,11 @@ $(document).ready(function () {
     });
 
 });
+
+function add_beneficiario(){
+    $('#modal_addBeneficiario').modal('show');
+
+}
 
 
 function initPAge()
@@ -127,7 +132,7 @@ function beneficiario() {
     $('#beneficiario').select2({
         placeholder: 'Beneficiario',
         ajax: {
-            url: '../controlador/inventario/asignacion_osC.php?Beneficiario=true',
+            url: '../controlador/inventario/picking_productoresAliC.php?Beneficiario=true',
             dataType: 'json',
             delay: 250,
             data: function (params) {
@@ -151,7 +156,7 @@ function beneficiario_new() {
         dropdownParent: $('#modal_addBeneficiario'),
         placeholder: 'Beneficiario',
         ajax: {
-            url: '../controlador/inventario/asignacion_osC.php?Beneficiario_new=true',
+            url: '../controlador/inventario/picking_productoresAliC.php?Beneficiario_new=true',
             dataType: 'json',
             dropdownParent: $('#modal_addBeneficiario'),
             delay: 250,
@@ -381,7 +386,7 @@ function tipoCompra(benefi)
 }
 
 function llenarDatos(datos) {
-    // console.log(datos);
+    console.log(datos);
         // await tipoCompra();
     
     // $('#beneficiario').val(datos.Beneficiario);

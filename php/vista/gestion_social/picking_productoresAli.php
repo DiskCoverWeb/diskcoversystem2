@@ -34,11 +34,6 @@
             }
         });
     }
-
-    function add_beneficiario(){
-        $('#modal_addBeneficiario').modal('show');
-
-    }
 </script>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
@@ -317,4 +312,28 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="modal_addBeneficiario" class="modal fade myModalNuevoCliente"  role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Agregar Beneficiario</h4>
+              <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" style="background: antiquewhite;">
+            <div class="row">
+                <div class="col-sm-12">
+                    <b>Beneficiario / Usuario</b>
+                    
+                    <select name="beneficiario_new" id="beneficiario_new" class="form-select form-select-sm" style="width:100%"></select>
+                </div>
+            </div>                       
+          </div>
+          <div class="modal-footer" style="background-color:antiquewhite;">
+              <button type="button" class="btn btn-primary" onclick="asignar_beneficiario()">Asignar Beneficiario</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+      </div>
+  </div>
 </div>
