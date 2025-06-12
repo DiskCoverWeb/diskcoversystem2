@@ -6,35 +6,6 @@
     DESCIPCION : Interfaz de modulo Gestion Social/Registro Beneficiario
  -->
 <script src="../../dist/js/gestion_social/picking_productoresAli.js"></script>
-<script type="text/javascript">
-    function guardar()
-    {
-        ben = $('#beneficiario').val();
-        distribuir = $('#CantGlobDist').val();
-        if(ben=='' || ben==null){Swal.fire("","Seleccione un Beneficiario","info");return false;}
-        if(distribuir==0 || distribuir==''){ Swal.fire("","No se a agregado nigun grupo de producto","info");return false;}
-        var parametros = {
-            'beneficiario':ben,
-            'fecha':$('#fechAten').val(),
-            'comentario':$('#comeGeneAsig').val(),
-        }
-         $.ajax({
-            url: '../controlador/inventario/asignacion_osC.php?GuardarAsignacion=true',
-            type: 'post',
-            dataType: 'json',
-            data: { parametros: parametros },
-            success: function (datos) {
-                if(datos==1)
-                {
-                    Swal.fire("Asignacion Guardada","","success").then(function(){
-                        location.reload();
-                    });
-                }
-
-            }
-        });
-    }
-</script>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
     <div class="ps-3">
@@ -84,7 +55,7 @@
                     </div>
                     <div class="col-lg-4 col-md-8 col-sm-12">
                         <div class="d-flex align-items-center input-group-sm">
-                            <select name="beneficiario" id="beneficiario" class="form-select form-select-sm" onchange="listaAsignacion()"></select>
+                            <select name="beneficiario" id="beneficiario" class="form-select form-select-sm" onchange="cargar_asignacion()"></select>
                              <button type="button" title="Agregar beneficiario"  class="btn btn-success btn-sm" onclick="add_beneficiario()">
                                 <i class="fa fa-plus m-0" style="font-size:8pt;"></i>
                             </button>
@@ -241,7 +212,6 @@
                         </div>  
                     </div>
                 </div>
-            
             </div>
             <div class="row">
                 <div class="col-sm-1 pe-0">
@@ -255,7 +225,7 @@
                     <input type="number" name="cant" id="cant" class="form-control form-control-sm">
                 </div>
                 <div class="offset-sm-6 col-sm-3 g-2 d-flex justify-content-end align-items-end">
-                    <button class="btn btn-primary btn-sm me-2 px-3" onclick="agregar_picking()" style="width: fit-content; height: fit-content;">Ingreso</button>
+                    <button  type="button" class="btn btn-primary btn-sm me-2 px-3" onclick="agregar_picking()" style="width: fit-content; height: fit-content;">Ingreso</button>
                     <button class="btn btn-primary btn-sm px-3" onclick="limpiar();" style="width: fit-content; height: fit-content;">Borrar</button>
                 </div>
             </div>

@@ -1,10 +1,4 @@
-// window.addEventListener('beforeunload', function (e) {
-//     // Mensaje personalizado (no será visible en la mayoría de los navegadores)
-//     const message = "¿Estás seguro de que deseas abandonar la página?";
-//     e.preventDefault();
-//     e.returnValue = message;
-//     return message;
-// });
+var tbl_picking_os = null;
 function eliminarTildes(cadena) {
     return cadena.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }   
@@ -79,12 +73,13 @@ $(document).ready(function () {
 
     // beneficiario();
     beneficiario_new();
+    grupoProducto(); 
     // tipoCompra();
     $('#beneficiario').on('select2:select', function (e) {
         var data = e.params.data;//Datos beneficiario seleccionado
         console.log(data.data);
         tipoCompra(data.data)
-        listaAsignacion();
+        // listaAsignacion();
         // llenarCamposPoblacion(data.data.Codigo);
 
     });
@@ -304,7 +299,8 @@ function agregar() {
         success: function (data) {
             if(data==1)
             {
-                listaAsignacion();
+                // listaAsignacion();
+                cargar_asignacion();
                 limpiar();
             }else if(data=="-2")
             {
@@ -347,14 +343,14 @@ function onclicktipoCompra()
     $('#modal_tipoCompra').modal('show');
 }
 
-function tipoCompra(benefi)
+function tipoCompra()
 {
     $.ajax({
-        url: '../controlador/inventario/asignacion_osC.php?tipo_asignacion=true',
+        url: '../controlador/inventario/picking_productoresAliC.php?tipo_asignacion=true',
         type: 'POST',
         dataType: 'json',
         // data: { param: datos },
-    success: function (data) {
+        success: function (data) {
 
         console.log(data);
 
@@ -371,9 +367,7 @@ function tipoCompra(benefi)
         })
 
         $('#tipoCompra').html(op); 
-        $('#pnl_tipo_empaque').html(option);   
-
-        llenarDatos(benefi);
+        // $('#pnl_tipo_empaque').html(option);   
 
 
             // llenarComboList(data,'tipoCompra');
@@ -392,10 +386,10 @@ function llenarDatos(datos) {
     // $('#beneficiario').val(datos.Beneficiario);
     // $('#fechAten').val(datos.Fecha_Atencion);//Fecha de Atencion
     $('#tipoEstado').val(datos.Estado);//Tipo de Estado
-    $('#tipoEntrega').val(datos.TipoEntega);//Tipo de Entrega
-    $('#horaEntrega').val(datos.Hora); //Hora de Entrega
-    // $('#diaEntr').val(datos.Dia_Entrega.toUpperCase());//Dia de Entrega
+    $('#horaEntrega').val(datos.Hora_Ent); //Hora de Entrega
     $('#frecuencia').val(datos.Frecuencia);//Frecuencia
+    $('#tipoEntrega').val(datos.TipoEntega);//Tipo de Entrega
+    // $('#diaEntr').val(datos.Dia_Entrega.toUpperCase());//Dia de Entrega
     $('#tipoBenef').val(datos.TipoBene);//Tipo de Beneficiario
     $('#totalPersAten').val(datos.No_Soc);//Total, Personas Atendidas
     $('#tipoPobl').val(datos.Area);//Tipo de Poblacion
@@ -445,102 +439,102 @@ function datosExtras(param) {
 }
 
 
-function listaAsignacion() {
-    tbl_asignacion_os.destroy();
+// function listaAsignacion() {
+//     tbl_asignacion_os.destroy();
 
-    tbl_asignacion_os = $('#tbl_asignacion_os').DataTable({
-        // responsive: true,
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-        },
-        /*columnDefs: [
-            { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
-        ],*/
-        ajax: {
-            url: '../controlador/inventario/asignacion_osC.php?listaAsignacion=true',
-            type: 'POST',  // Cambia el método a POST    
-            data: function(d) {
-                /*var parametros = {
-                  'codigoCliente': '',
-                    'tamanioTblBody': altoContTbl <= 25 ? 0 : altoContTbl - 12,
-                };*/
-                var param = {
-                    'beneficiario':$('#beneficiario').val(),
-                }
-                return { param: param };
-            },              
-              dataSrc: function(json) {
+//     tbl_asignacion_os = $('#tbl_asignacion_os').DataTable({
+//         // responsive: true,
+//         language: {
+//             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+//         },
+//         /*columnDefs: [
+//             { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
+//         ],*/
+//         ajax: {
+//             url: '../controlador/inventario/asignacion_osC.php?listaAsignacion=true',
+//             type: 'POST',  // Cambia el método a POST    
+//             data: function(d) {
+//                 /*var parametros = {
+//                   'codigoCliente': '',
+//                     'tamanioTblBody': altoContTbl <= 25 ? 0 : altoContTbl - 12,
+//                 };*/
+//                 var param = {
+//                     'beneficiario':$('#beneficiario').val(),
+//                 }
+//                 return { param: param };
+//             },              
+//               dataSrc: function(json) {
               
-                // var diff = parseFloat(json.cantidad);
-                // if(diff < 0)
-                // {
-                //   diff = diff*(-1);
-                // }
-                // $('#txt_primera_vez').val(json.primera_vez);
+//                 // var diff = parseFloat(json.cantidad);
+//                 // if(diff < 0)
+//                 // {
+//                 //   diff = diff*(-1);
+//                 // }
+//                 // $('#txt_primera_vez').val(json.primera_vez);
 
-                // var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
-                // var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
-                // var total_pedido = $('#txt_cant').val();
-                // var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
+//                 // var ingresados_en_pedidos =  $('#txt_cant_total_pedido').val();
+//                 // var ingresados_en_kardex =  $('#txt_cant_total').val(diff);
+//                 // var total_pedido = $('#txt_cant').val();
+//                 // var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
 
-                let cantidad = parseFloat(json.cantidad);
+//                 let cantidad = parseFloat(json.cantidad);
 
-                $('#CantGlobDist').val(parseFloat(cantidad).toFixed(2));
+//                 $('#CantGlobDist').val(parseFloat(cantidad).toFixed(2));
 
-                // console.log(json);
+//                 // console.log(json);
 
-                // Devolver solo la parte de la tabla para DataTables
-                return json.tabla;
-            }        
-        },
-          //scrollX: true,  // Habilitar desplazamiento horizontal
-            paging:false,
-            searching:false,
-            info:false,
-            scrollY: 330,
-            scrollCollapse: true,
-        columns: [
-            { data: null, // Columna autoincremental
-                render: function (data, type, row, meta) {
-                    return meta.row + 1; // meta.row es el índice de la fila
-                }
-            },
+//                 // Devolver solo la parte de la tabla para DataTables
+//                 return json.tabla;
+//             }        
+//         },
+//           //scrollX: true,  // Habilitar desplazamiento horizontal
+//             paging:false,
+//             searching:false,
+//             info:false,
+//             scrollY: 330,
+//             scrollCollapse: true,
+//         columns: [
+//             { data: null, // Columna autoincremental
+//                 render: function (data, type, row, meta) {
+//                     return meta.row + 1; // meta.row es el índice de la fila
+//                 }
+//             },
 
-            // { data: null,
-            //     render: function(data, type, item) {
-            //         return `<button type="button" class="btn btn-sm btn-danger" onclick="Eliminar_linea('${item.A_No}','${item.CODIGO}')" title="Eliminar linea"><i class="bx bx-trash"></i></button>`;
-            //     } 
-            // },
-            { data: 'Producto'},
-            { data: 'Cantidad',  
-                render: function(data, type, item) {
-                    return data ? parseFloat(data) : '';
-                }
-            },
-            { data: 'Procedencia' },
-            { data: null,
-                render: function(data, type, item) {
-                    return `<button type="button" class="btn btn-sm btn-danger" onclick="eliminar_linea('${item.ID}')" title="Eliminar linea"><i class="bx bx-trash"></i></button>`;
-                } 
-            }
-        ]
-    });
+//             // { data: null,
+//             //     render: function(data, type, item) {
+//             //         return `<button type="button" class="btn btn-sm btn-danger" onclick="Eliminar_linea('${item.A_No}','${item.CODIGO}')" title="Eliminar linea"><i class="bx bx-trash"></i></button>`;
+//             //     } 
+//             // },
+//             { data: 'Producto'},
+//             { data: 'Cantidad',  
+//                 render: function(data, type, item) {
+//                     return data ? parseFloat(data) : '';
+//                 }
+//             },
+//             { data: 'Procedencia' },
+//             { data: null,
+//                 render: function(data, type, item) {
+//                     return `<button type="button" class="btn btn-sm btn-danger" onclick="eliminar_linea('${item.ID}')" title="Eliminar linea"><i class="bx bx-trash"></i></button>`;
+//                 } 
+//             }
+//         ]
+//     });
 
     
-    // $.ajax({
-    //     url: '../controlador/inventario/asignacion_osC.php?listaAsignacion=true',
-    //     type: 'POST',
-    //     dataType: 'json',
-    //     data: { param: param },
-    //     success: function (data) {
-    //         $('#tbl_body').html(data.tabla);
-    //         $('#CantGlobDist').val(data.cantidad);
-    //     },
-    //     error: function (error) {
-    //         console.log(error);
-    //     }
-    // });
-}
+//     // $.ajax({
+//     //     url: '../controlador/inventario/asignacion_osC.php?listaAsignacion=true',
+//     //     type: 'POST',
+//     //     dataType: 'json',
+//     //     data: { param: param },
+//     //     success: function (data) {
+//     //         $('#tbl_body').html(data.tabla);
+//     //         $('#CantGlobDist').val(data.cantidad);
+//     //     },
+//     //     error: function (error) {
+//     //         console.log(error);
+//     //     }
+//     // });
+// }
 
 /**
  * Relaciona las listas de datos
@@ -597,7 +591,7 @@ function eliminarLinea(id)
         success:  function (response) { 
             if(response==1)
             {
-            Swal.fire( '','Registro eliminado','success').then(function(){ listaAsignacion();});
+            Swal.fire( '','Registro eliminado','success').then(function(){ cargar_asignacion();});
             }
 
         }
@@ -920,6 +914,327 @@ function eliminar_picking_all(id)
                 })
             }
           
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+function grupoProducto() {
+    $.ajax({
+        url: '../controlador/inventario/picking_productoresAliC.php?grupoProducto=true',
+        type: 'POST',
+        dataType: 'json',
+        // data: { param: param },
+        success: function (data) {
+            llenarComboList(data,'ddlgrupoProducto');
+            cargarProductosGrupo() 
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+function cargarProductosGrupo() {
+    grupo = $('#ddlgrupoProducto').val();
+    // console.log('ss');
+    $('#txt_codigo').select2({
+    placeholder: 'Seleccione una beneficiario',
+    width:'100%',
+    ajax: {
+    url: '../controlador/inventario/picking_productoresAliC.php?cargarProductosGrupo=true',   
+    dataType: 'json',
+    delay: 250, 
+    data: function (params) {
+        return {
+            query: params.term,
+            grupo: grupo,
+        }
+    },
+    processResults: function (data) {
+        return {
+          results: data.map(function (item) {
+            return {
+              id: item.id,
+              text: '<div style="background:'+item.fondo+'"><span style="color:'+item.texto+';font-weight: bold;">' + item.text + '</span></div>',
+              data : item.data,
+            };
+          })
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function (markup) {
+      return markup;
+    }
+  });
+}
+
+function validar_codigo()
+{
+    codigo = $('#txt_codigo').val();
+    if(codigo=='')
+    {
+        return false;
+    }
+    grupo = $('#ddlgrupoProducto').val();
+    var parametros = {
+    'codigo':codigo,
+    'grupo':grupo,
+    }
+    $.ajax({
+        type: "POST",
+        url:   '../controlador/inventario/asignacion_pickingC.php?buscar_producto=true',
+            data:{parametros:parametros},
+        dataType:'json',
+        success: function(data)
+        {
+            if(data.validado_grupo==0)
+            {
+                Swal.fire("Codigo Ingresado no pertenece al grupo de produto","","error").then(function(){
+                    $('#txt_codigo').val("");
+
+                });
+            }else{
+
+                data = data.producto[0];
+                 console.log(data);
+                if(data!=undefined)
+                {
+                    $('#txt_id').val(data.Codigo_Inv)
+                    $('#txt_ubicacion').val(data.ubicacion)
+                    $('#txt_donante').val(data.Cliente)
+                    // $('#txt_grupo').val(data.Producto)
+                    $('#txt_stock').val(data.Entrada)
+                    $('#txt_unidad').val(data.Unidad)
+                    $('#txt_fecha_exp').val(formatoDate(data.Fecha.date));
+
+                    var fecha1 = new Date();
+                    var fecha2 = new Date(formatoDate(data.Fecha_Exp.date));
+                    var diferenciaEnMilisegundos = fecha2 - fecha1;
+                    var diferenciaEnDias = ((diferenciaEnMilisegundos/ 1000)/86400);
+                    diferenciaEnDias = parseInt(diferenciaEnDias);
+
+                    if(diferenciaEnDias<0)
+                    {
+                         $('#btn_expired').css('display','initial');
+                         $('#txt_fecha_exp').css('color','red');
+                         $('#img_por_expirar').attr('src','../../img/gif/expired_titi2.gif');
+                         $('#btn_titulo').text('Expirado')
+                         $('#txt_fecha_exp').css('background','#ffff');
+                    }else if(diferenciaEnDias<=10 && diferenciaEnDias>0){
+                         $('#btn_expired').css('display','initial');
+                         $('#txt_fecha_exp').css('color','#e9bd11');
+                         $('#img_por_expirar').attr('src','../../img/gif/expired_titi.gif');
+                         $('#btn_titulo').text('Por Expirar')
+                         $('#txt_fecha_exp').css('background','#a6a5a5');
+                    }else
+                    {
+                        $('#btn_expired').css('display','none');
+                        $('#txt_fecha_exp').css('color','#000000');
+                        $('#img_por_expirar').attr('src','../../img/png/expired.png');
+                        $('#txt_fecha_exp').css('background','#ffff');
+                    }
+
+
+                }else
+                {
+                    Swal.fire("Codigo de producto no encontrado","","info");
+                    limpiar_data();
+                }
+            }
+        }
+    });
+}
+
+function agregar_picking()
+{
+    stock = $('#txt_stock').val();
+    cant =$('#cant').val();
+
+    if($('#beneficiario').val()=='' || $('#beneficiario').val()==null)
+    {
+        Swal.fire("Seleccione una Beneficiario valida","","info");
+        return false;
+    }
+    if($('#txt_id').val()=='' || $('#txt_id').val()== null || $('#txt_id').val()=='0')
+    {
+        Swal.fire("Seleccione una producto","","info");
+        return false;
+    }
+    if($('#cant').val()=='' || $('#cant').val()== null || $('#cant').val()=='0')
+    {
+        Swal.fire("Seleccione una cantidad valida","","info");
+        return false;
+    }
+    
+    if(parseFloat(cant)>parseFloat(stock))
+    {
+        Swal.fire("Cantidad Supera al stock","","info");
+        return false;
+    }
+
+
+    var parametros = {
+    'beneficiario':$('#beneficiario').val(),
+    'CodigoInv':$('#txt_id').val(),
+    'Cantidad':$('#cant').val(),
+    'FechaAte':$('#fechAten').val(),
+    'codigoProducto':$('#txt_codigo').val(),
+    'asignacion':$('#tipoCompra').val(),
+    'id':$('#txt_codigo').val(),
+    }
+    $.ajax({
+        type: "POST",
+        url:   '../controlador/inventario/picking_productoresAliC.php?agregar_picking=true',
+            data:{parametros:parametros},
+        dataType:'json',
+        success: function(data)
+        {
+            if(data==1)
+            {
+                Swal.fire("Producto agregado","","success")
+                cargar_asignacion();
+            }else if(data==-2)
+            {
+                Swal.fire("El producto no se puede ingresar por que supera el total de Grupo","","error")
+            }
+            console.log(data);
+        }
+    });
+}
+
+function cargar_asignacion()
+{
+    if ($.fn.DataTable.isDataTable('#tbl_picking_os')) {
+          $('#tbl_picking_os').DataTable().destroy();
+    }
+
+    tbl_picking_os = $('#tbl_picking_os').DataTable({
+        // responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+        },
+        /*columnDefs: [
+            { targets: [8,9,10,11,12,13], className: 'text-end' } // Alinea las columnas 0, 2 y 4 a la derecha
+        ],*/
+        ajax: {
+            url: '../controlador/inventario/picking_productoresAliC.php?cargar_asignacion=true',
+            type: 'POST',  // Cambia el método a POST    
+            data: function(d) {
+                /*var parametros = {
+                  'codigoCliente': '',
+                    'tamanioTblBody': altoContTbl <= 25 ? 0 : altoContTbl - 12,
+                };*/
+                var param = {
+                    'beneficiario':$('#beneficiario').val(),
+                    'FechaAte':$('#fechAten').val(),
+                    'asignacion':$('#tipoCompra').val(),
+                }
+                return { parametros: param };
+            },              
+              dataSrc: function(json) {
+              
+                var to = parseFloat( $('#txt_total').val());
+                var ing = parseFloat(json.total);
+                // console.log(to);
+                // console.log(ing);
+
+                
+                //$('#txt_total_ing').val(to-ing);
+                $('#txt_total_ing').val(to-ing);
+                
+                // Devolver solo la parte de la tabla para DataTables
+                return json.tabla;
+            }        
+        },
+          //scrollX: true,  // Habilitar desplazamiento horizontal
+            paging:false,
+            searching:false,
+            info:false,
+            scrollY: 330,
+            scrollCollapse: true,
+        columns: [
+            { data: null,
+                render: function(data, type, item) {
+                    return `<button type="button" class="btn btn-sm btn-danger" onclick="eliminarlinea('${item.ID}')" title="Eliminar linea"><i class="bx bx-trash"></i></button>`;
+                } 
+            },
+            
+            { data: 'Fecha.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Fecha_C.date',  
+                render: function(data, type, item) {
+                    return data ? new Date(data).toLocaleDateString() : '';
+                }
+            },
+            { data: 'Producto' },
+            { data: 'Codigo_Barra' },
+            { data: 'Nombre_Completo' },
+            { data: 'Total' },
+            
+            
+        ]
+    });
+
+}
+
+function eliminarlinea(id)
+{
+    Swal.fire({
+        title: 'Esta seguro?',
+        text: "Esta usted seguro de que quiere borrar este registro!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si!'
+        }).then((result) => {
+            if (result.value==true) {
+            Eliminar(id);
+            }
+        })
+}
+
+function Eliminar(id)
+{       
+    var parametros = {
+    'id':id,
+    }
+    $.ajax({
+        type: "POST",
+        url:   '../controlador/inventario/asignacion_pickingC.php?eliminarLinea=true',
+            data:{parametros:parametros},
+        dataType:'json',
+        success: function(data)
+        {
+            cargar_asignacion();                
+        }
+    });
+}
+
+function guardar() 
+{
+    var parametros = {
+        'beneficiario':$('#beneficiario').val(),
+        'FechaAte':$('#fechAten').val(),
+        'asignacion':$('#tipoCompra').val(),
+    }
+    $.ajax({
+        url: '../controlador/inventario/picking_productoresAliC.php?GuardarPicking=true',
+        type: 'POST',
+        dataType: 'json',
+        data: { parametros: parametros },
+        success: function (data) {
+            Swal.fire("Picking Guardado","","success").then(function (){
+                location.reload();
+            })
         },
         error: function (error) {
             console.log(error);

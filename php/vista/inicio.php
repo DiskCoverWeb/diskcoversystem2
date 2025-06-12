@@ -185,14 +185,16 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 					
 				//Facturacion -> Archivo -> Facturacion de Distribucion
 				case 'factura_distribucion':
-				require_once("facturacion/facturas_distribucion.php");
-				break;
+					require_once("facturacion/facturas_distribucion.php");
+					break;
 
 				//Facturacion -> Archivo -> Facturacion de Distribucion Familias
 				case 'factura_distribucion_fam':
-				require_once("facturacion/facturas_distribucion_fam.php");
-				break;
-					
+					require_once("facturacion/facturas_distribucion_fam.php");
+					break;
+				case 'factura_productoresAli':
+					require_once("facturacion/facturacion_productoresAli.php");
+					break;					
 				//Facturacion -> Archivo -> Punto de venta
 				case 'punto_venta':
 				require_once("facturacion/punto_venta.php");
