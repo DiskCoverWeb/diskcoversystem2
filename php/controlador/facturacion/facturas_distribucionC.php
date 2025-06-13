@@ -1092,6 +1092,8 @@ class facturas_distribucion
 	function IngresarAsientoF($parametros)
 	{
 		// print_r($parametros);
+
+		// print_r($parametros);die();
 		$electronico = 0;
 		if (isset($parametros['electronico'])) {
 			$electronico = $parametros['electronico'];
@@ -1144,7 +1146,7 @@ class facturas_distribucion
 			$Real3 = 0;
 			if (is_numeric($TextVUnit) and is_numeric($TextCant)) {
 				// 'If Val(TextVUnit) = 0 Then TextVUnit = "0.01"
-				if (intval($TextCant) == 0) {
+				if (floatval($TextCant) == 0) {
 					$TextCant = "1";
 				}
 				/*if ($parametros['opc'] == 'OpcMult') {
@@ -1209,7 +1211,7 @@ class facturas_distribucion
 					SetAdoFields('CODIGO_L', $CodigoL);
 					SetAdoFields('PRODUCTO', $articulo['Producto']);
 					SetAdoFields('Tipo_Hab', substr($TxtDocumentos, 0, 40));
-					SetAdoFields('CANT', number_format(floatval($TextCant), 2, '.', ''));
+					SetAdoFields('CANT', number_format($TextCant, 2, '.',''));
 					SetAdoFields('PRECIO', number_format($TextVUnit, $_SESSION['INGRESO']['Dec_PVP'], '.', ''));
 					SetAdoFields('TOTAL', $Real1);
 					SetAdoFields('Total_IVA', $Real3);
@@ -1248,7 +1250,6 @@ class facturas_distribucion
 	}
 	function actualizarAsientoF($parametros)
 	{
-		// print_r($parametros);die();
 		$electronico = 0;
 		if (isset($parametros['electronico'])) {
 			$electronico = $parametros['electronico'];
