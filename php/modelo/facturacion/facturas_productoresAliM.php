@@ -44,6 +44,7 @@ class facturas_productoresAliM
               AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
               AND CP.Item = TC.Item
               AND CP.Periodo = TC.Periodo
+              AND TC.TP= '.'
               AND  Orden_No = '".$orden."'";
               if($id)
               {
