@@ -183,7 +183,7 @@ if (isset ($_GET['tipo'])) {
 				<div class="col-sm-12">
 					<div class="input-group input-group-sm">
 						<label for="txtRecalcular" class="input-group-text"><b>Valor a Recalcular</b></label>
-						<input type="text" class="form-control form-control-sm" name="txtRecalcular" id="txtRecalcular" value="" onchange="recalcularLineaFact()" disabled>
+						<input type="text" class="form-control form-control-sm" name="txtRecalcular" id="txtRecalcular" value="" onchange="recalcularLineaFact()" >
 					</div>
 				</div>
 			</div>
@@ -192,7 +192,7 @@ if (isset ($_GET['tipo'])) {
 </div>
 
 
-<div class="row">
+<div class="row mb-4">
 	<div class="col-sm-12">
 		<div class="row text-center" style="padding-bottom:10px;height:250px;overflow-y:auto;">
 			<div class="col-sm-12" id="tbl_DGAsientoF">
@@ -220,7 +220,6 @@ if (isset ($_GET['tipo'])) {
 				<button class="btn btn-outline-primary border border-1 btn-sm" onclick="$('#modalInfoFactura').modal('show')">Seleccionar métodos de pago</button>
 				<div class="row">
 					<div class="col-sm-6">
-						<br>
 						<b>Total Factura</b>
 					</div>
 					<div class="col-sm-6">
@@ -389,6 +388,16 @@ if (isset ($_GET['tipo'])) {
 					<div id="campos_fact_efectivo" style="display:block;">
 						<div class="row">
 							<div class="col-sm-5">
+								<b>CUENTA</b>
+							</div>
+							<div class="col-sm-7">
+								<select class="form-select form-select-sm" id="DCEfectivo" name="DCEfectivo">
+									<option>Seleccion opciones</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-5">
 								<b>EFECTIVO</b>
 							</div>
 							<div class="col-sm-7">
@@ -398,6 +407,7 @@ if (isset ($_GET['tipo'])) {
 						</div>
 					</div>
 					<div id="campos_fact_banco" style="display:none;">
+						<hr>
 						<div class="row">
 							<div class="col-sm-5">
 								<b>CUENTA DEL BANCO</b>
@@ -434,6 +444,7 @@ if (isset ($_GET['tipo'])) {
 						</div>
 					</div>
 					<div class="row">
+						<hr>
 						<div class="col-sm-5">
 							<b>CAMBIO</b>
 						</div>

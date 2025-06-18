@@ -53,13 +53,15 @@
 
   function cargar_pedidos(f='')
   {
-       if(tbl_devoluciones!=null)
+
+    $('#txt_tipo_filtro').val(f);
+    if(tbl_devoluciones!=null)
     {
       if ($.fn.DataTable.isDataTable('#tbl_body')) {
         $('#tbl_body').DataTable().destroy();
       }
     }
-    tbl_devoluciones = $('#tbl_devoluciones').DataTable({
+    tbl_devoluciones = $('#tbl_body').DataTable({
           scrollX: true,
           searching: false,
           responsive: false,
@@ -73,14 +75,13 @@
           url:   '../controlador/farmacia/reporte_descargos_procesadosC.php?cargar_pedidos=true',
           type: 'POST',  // Cambia el método a POST   
           data: function(d) {
-             $('#txt_tipo_filtro').val(f);
-            var ruc = ci;
+            var ci_ruc = ci;
             var nom = $('#txt_query').val();
-            var ci = ruc.substring(0,10);
+            var cedula = ci_ruc.substring(0,10);
             var desde=$('#txt_desde').val();
               var  parametros = 
               { 
-                'codigo':ci,
+                'codigo':cedula,
                 'nom':$('#txt_nombre').val(),
                 'query':nom,
                 'tipo':$('input:radio[name=rbl_buscar]:checked').val(),
@@ -95,7 +96,7 @@
           dataSrc: function(json) {
             // console.LOG(json)
             // $('#lineas').val(json.lineas)
-            // return json.tr;
+            return json;
           }             
         },
          scrollX: true,  // Habilitar desplazamiento horizontal
@@ -107,11 +108,11 @@
           { data: null,
             render: function(data, type, item) {
              return `
-                    <button class="btn btn-danger btn-sm p-1" title="Ver detalle" onclick="Ver_detalle('${item.Numero}')">
-                        <span class="bx bx-trash me-0"></span>
+                    <button class="btn btn-primary btn-sm p-1" title="Ver detalle" onclick="Ver_detalle('${item.Numero}')">
+                        <span class="bx bx-list-ul me-0"></span>
                     </button>
-                   <button class="btn btn-danger btn-sm p-1" title="Ver detalle" onclick="Ver_Comprobante('${item.Numero}')">
-                        <span class="bx bx-trash me-0"></span>
+                   <button class="btn btn-default btn-sm p-1" title="Ver detalle" onclick="Ver_Comprobante('${item.Numero}')">
+                        <span class="bx bx-show me-0"></span>
                     </button>`;
             }
           },
@@ -454,6 +455,6 @@ function Ver_Comprobante(comprobante)
 }
 function Ver_detalle(comprobante)
 {
-    url='../vista/farmacia.php?mod=28&acc=facturacion_insumos&acc1=Utilidad insumos&b=1&po=subcu&comprobante='+comprobante;
+    url='../vista/inicio.php?mod=28&acc=facturacion_insumos&comprobante='+comprobante;
     window.open(url, '_blank');
 }

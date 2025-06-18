@@ -105,7 +105,7 @@ $cod = ''; $ci =''; if(isset($_GET['cod'])){$cod = $_GET['cod'];} if(isset($_GET
                     <th>Numero</th>
                     <th>Fecha</th>
                     <th>Concepto</th>
-                    <th>Monto_Total</th>
+                    <th>Monto Total</th>
                     <th>Cliente</th>
                     <th>Area</th>
                   </thead>

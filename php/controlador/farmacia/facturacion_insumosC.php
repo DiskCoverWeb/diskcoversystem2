@@ -98,11 +98,11 @@ class facturacion_insumosC
 			  			<td width="'.dimenciones_tabl(strlen($value['Producto'])).'">'.$value['Producto'].'</td>
 			  			<td width="'.dimenciones_tabl(strlen($value['Salida'])).'">'.$value['Salida'].'</td>
 			  			<td width="'.dimenciones_tabl(strlen('Valor_Unitario')).'" class="text-right">'.number_format($value['Valor_Unitario'],2).'</td>
-			  			<td width="'. dimenciones_tabl(strlen('Precio Total')).'"><input class="form-control input-sm text-right" id="txt_to_'.$key.'" value="'.number_format($value['Valor_Total'],2).'"  readonly></td>
-        			<td  width="'.dimenciones_tabl(strlen('% Utilidad')).'"><input class="form-control input-sm text-right" id="txt_porcentaje_'.$key.'"  value="'.$uti.'" onblur="calcular(\''.$key.'\')"></td>
-        			<td width="'.dimenciones_tabl(strlen('Valor utilidad')).'"><input class="form-control input-sm text-right" id="txt_valor_'.$key.'" value="'.$valor.'"   readonly></td>
-        			<td width="'.dimenciones_tabl(strlen('Gran total')).'"><input class="form-control input-sm text-right" id="txt_gran_t_'.$key.'" value="'.$gran.'" onblur="calcular_uti(\''.$key.'\')"></td>
-        			<td><button onclick="guardar_uti(\''.$value['ID'].'\',\''.$key.'\')" id="btn_linea_'.$key.'" class="btn btn-primary"><i class="fa-icon fa fa-save"></i></button></td>
+			  			<td width="'. dimenciones_tabl(strlen('Precio Total')).'"><input class="form-control form-control-sm text-right" id="txt_to_'.$key.'" value="'.number_format($value['Valor_Total'],2).'"  readonly></td>
+        			<td  width="'.dimenciones_tabl(strlen('% Utilidad')).'"><input class="form-control form-control-sm text-right" id="txt_porcentaje_'.$key.'"  value="'.$uti.'" onblur="calcular(\''.$key.'\')"></td>
+        			<td width="'.dimenciones_tabl(strlen('Valor utilidad')).'"><input class="form-control form-control-sm text-right" id="txt_valor_'.$key.'" value="'.$valor.'"   readonly></td>
+        			<td width="'.dimenciones_tabl(strlen('Gran total')).'"><input class="form-control form-control-sm text-right" id="txt_gran_t_'.$key.'" value="'.$gran.'" onblur="calcular_uti(\''.$key.'\')"></td>
+        			<td><button onclick="guardar_uti(\''.$value['ID'].'\',\''.$key.'\')" id="btn_linea_'.$key.'" class="btn btn-primary btn-sm"><i class="fa-icon fa fa-save me-0"></i></button></td>
         		</tr>';
         	$tot+=$gran;
 		}

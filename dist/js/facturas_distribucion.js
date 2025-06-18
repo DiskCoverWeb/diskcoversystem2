@@ -1193,7 +1193,7 @@ var valTC = 'FA';
 			{
 				//'opc': $('input[name="radio_conve"]:checked').val(),
 				'TextVUnit': fila[4].children[0].children[0].value,
-				'TextCant': fila[3].children[0].children[0].value,
+				'TextCant': parseFloat(fila[3].children[0].children[0].value),
 				'TC': tc,
 				'TxtDocumentos': '.',
 				'Codigo': fila[7].textContent,
@@ -1309,7 +1309,6 @@ var valTC = 'FA';
 				}
 			}
 		});
-
 	}
 	function tipo_documento() {
 		/*var tc = $('#DCLinea').val();

@@ -743,7 +743,7 @@ class facturas_distribucion_fam
 						o al Contador de su Organizacion.";
 						return $mensaje;
 		}
-		$NumComp = ReadSetDataNum("NDU_SERIE_" . $serie, false, False);
+		$NumComp = ReadSetDataNum($parametros['TC']."_SERIE_" . $serie, false, False);
 		return array('mensaje' => $mensaje, 'serie' => $serie, 'NumCom' => generaCeros($NumComp, 9), 'CodigoL' => $CodigoL, 'Cta_Cobrar' => $Cta_Cobrar, 'Autorizacion' => $Autorizacion);
 	}
 

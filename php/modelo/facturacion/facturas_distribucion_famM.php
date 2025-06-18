@@ -227,11 +227,6 @@ class facturas_distribucion_famM
                 // print_r($Strgs);
       return $this->db->String_Sql($Strgs);
   }
-
-
-
-
-
 }
 
 ?>
