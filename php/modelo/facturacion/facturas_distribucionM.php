@@ -21,7 +21,7 @@ class facturas_distribucionM
 
   function ConsultarProductos($params,$id = false){
     
-    $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU,Cta
+    $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU,Cta,Orden_No
             FROM Trans_Comision TC 
             INNER JOIN Accesos A ON TC.CodigoU = A.Codigo 
             WHERE CodigoC = '".$params['beneficiario']."' 
@@ -37,6 +37,30 @@ class facturas_distribucionM
     //print_r($sql);die();
     return $this->db->datos($sql);
   }
+
+   function pedido_seleccionado($params,$id=false)
+    {
+      // print_r($params);die();
+      $sql = "SELECT CP.Producto,Nombre_Completo,TC.Periodo, TC.T, TC.TC, Cta, TC.Fecha, Fecha_C, CodigoC, TC.TP, Numero, TC.Factura, TC.Codigo_Inv, Total, Porc, Valor_Pagar, TC.Item, TC.CodigoU, TC.X, CodBodega, TC.ID, Orden_No, Fecha_A, TC.Codigo_Barra,CP.PVP
+              FROM            Trans_Comision TC
+              inner join Accesos A on TC.CodigoU = A.Codigo
+              INNER JOIN Catalogo_Productos CP on TC.Codigo_Inv = CP.Codigo_Inv
+              WHERE  TC.Item = '".$_SESSION['INGRESO']['item']."'
+              AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+              AND TC.CodigoC = '".$params['beneficiario']."' 
+              AND CP.Item = TC.Item
+              AND CP.Periodo = TC.Periodo
+              AND TC.Fecha = '".$params['fecha']."' 
+              AND TC.T='F'";
+              if($id)
+              {
+                $sql.=" AND TC.ID = '".$id."'";
+              }
+              // print_r($sql);die();
+
+      return $this->db->datos($sql);
+    }
+
   function ConsultarAF($inv, $codl, $prod, $codcl, $serie){
     
     $sql = "SELECT *
@@ -273,7 +297,7 @@ class facturas_distribucionM
 
   function Listar_Clientes_PV($query, $parametros)
   {
-    $sql = "SELECT Cliente, Codigo, CI_RUC,TD,Grupo,Email,C.T,Direccion,DirNumero,Calificacion 
+    $sql = "SELECT Cliente, Codigo, CI_RUC,TD,Grupo,Email,C.T,Direccion,DirNumero,Calificacion,Orden_No 
                 FROM Trans_Comision TC 
                 INNER JOIN Clientes C ON TC.CodigoC = C.Codigo 
                 WHERE TC.T = 'F' 
@@ -294,7 +318,7 @@ class facturas_distribucionM
       $sql .= "AND Calificacion = '".$parametros['donacion']."'";
     }
 
-    $sql .= "GROUP BY Cliente, Codigo, CI_RUC,TD,Grupo,Email,C.T,Direccion,DirNumero,Calificacion";
+    $sql .= "GROUP BY Cliente, Codigo, CI_RUC,TD,Grupo,Email,C.T,Direccion,DirNumero,Calificacion,Orden_No";
     // $sql.=" UNION 
     // SELECT Cliente,Codigo,CI_RUC,TD,Grupo,Email,T 
     // FROM Clientes 
@@ -1000,6 +1024,34 @@ class facturas_distribucionM
                 AND Item = '".$_SESSION['INGRESO']['item']. "' ";
                 // print_r($Strgs);
       return $this->db->String_Sql($Strgs);
+  }
+
+  function DeleteAsientoF($pedido)
+  {
+      $sql = "DELETE FROM Asiento_F
+              WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+              AND Orden_No = '".$pedido."'";
+              // print_r($sql);die();
+      return $this->db->String_Sql($sql);
+  }
+
+   function detalle_Factura($TC,$serie,$factura)
+  {
+    $sql1 = "SELECT DF.*,CP.*,DF.Cantidad as Cant,DF.TC as DFTC,DF.Factura as FACT,C.Cliente  
+        FROM Detalle_Factura As DF,Catalogo_Productos As CP,Clientes C 
+        WHERE DF.Factura = ".$factura." 
+        AND DF.TC = '".$TC."' 
+        AND DF.Serie = '".$serie."' 
+        AND DF.Item = '".$_SESSION['INGRESO']['item']."' 
+        AND DF.Periodo = '".$_SESSION['INGRESO']['periodo']. "' 
+        AND DF.Item = CP.Item 
+        AND DF.Periodo = CP.Periodo 
+        AND DF.Codigo = CP.Codigo_Inv
+        AND DF.CodigoC = C.Codigo";
+
+        // print_r($sql1);die();
+
+      return $this->db->datos($sql1);    
   }
 
 

@@ -6411,6 +6411,7 @@ function  Leer_Datos_Cliente_FA($Codigo_CIRUC_Cliente)
 
          if(count($Cliente) > 0)
           {
+           $TFA['CodigoC'] = $Cliente[0]["Codigo"];
            $TFA['Cliente'] = $Cliente[0]["Cliente"];
            $TFA['CI_RUC'] = $Cliente[0]["CI_RUC"];
            $TFA['TD'] = $Cliente[0]["TD"];

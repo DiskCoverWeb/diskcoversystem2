@@ -1,7 +1,8 @@
 <!--
 	AUTOR DE RUTINA	: Teddy Moreira
 	FECHA CREACION : 19/06/2024
-	FECHA MODIFICACION : 16/01/2025
+	FECHA MODIFICACION : 14/06/2025
+	MODIFICADO	: Javier farinango
 	DESCIPCION : Interfaz de modulo Facturacion/Facturas Distribucion
 -->
 <?php date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//print_r($_SESSION['INGRESO']);die();
@@ -13,14 +14,9 @@ if (isset ($_GET['tipo'])) {
 // print_r($_SESSION['INGRESO']);
 ?>
 
-<script src="../../dist/js/facturas_distribucion.js">
-	
+<script src="../../dist/js/facturacion/facturas_distribucion.js"></script>
+<!-- <script src="../../dist/js/facturas_distribucion.js"></script> -->
 
-
-</script>
-<style>
-	
-</style>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
 	<div class="breadcrumb-title pe-3"><?php echo $NombreModulo; ?></div>
 	<div class="ps-3">
@@ -95,7 +91,7 @@ if (isset ($_GET['tipo'])) {
 				</div>
 				<div class="col-sm-8 pb-2">
 					<div class="input-group input-group-sm">
-						<label for="TextFacturaNo" class="input-group-text"><b id="Label1">FACTURA No.</b></label>
+						<label for="TextFacturaNo" class="input-group-text"><b id="Label1">NOTA DE DONACION ORGANIZACION No.</b></label>
 						<span class="input-group-text" id="LblSerie"><b></b></span>
 						<input type="" class="form-control form-control-sm" id="TextFacturaNo" name="TextFacturaNo" readonly>
 					</div>
@@ -119,6 +115,7 @@ if (isset ($_GET['tipo'])) {
 						</span>
 					</div> -->
 					<input type="hidden" name="codigoCliente" id="codigoCliente" class="form-control input-xs">
+					<input type="hidden" name="txt_pedido" id="txt_pedido" class="form-control input-xs">
 					<input type="hidden" name="LblT" id="LblT" class="form-control input-xs">
 					<input type="hidden" name="txt_fecha_ing" id="txt_fecha_ing" class="form-control input-xs">
 				</div>
@@ -225,7 +222,7 @@ if (isset ($_GET['tipo'])) {
 					<div class="col-sm-3">
 						<div class="input-group input-group-sm">
 							<label for="txtRecalcular" class="input-group-text"><b>Valor a Recalcular</b></label>
-							<input type="text" class="form-control form-control-sm" name="txtRecalcular" id="txtRecalcular" value="" onchange="recalcularLineaFact()" disabled>
+							<input type="text" class="form-control form-control-sm" name="txtRecalcular" id="txtRecalcular" value="" onchange="recalcularLineaFact()">
 						</div>
 					</div>
 				</div>
@@ -248,12 +245,8 @@ if (isset ($_GET['tipo'])) {
 							<th>Cantidad (<span id="tablaProdCU">.</span>)</th> <!-- TODO: (Kg) dinámico -->
 							<th>Costo unitario P.V.P</th>
 							<th>Costo total</th>
-							<th style="display:none">CodBodega</th>
-							<th style="display:none">Cod_Inv</th>
-							<th>Recalcular</th>
+							<th>Recalcular <br> <input type="checkbox" id="rbl_recalcular_all" onclick="recalcular_all()"></th>
 							<th>Cheking</th>
-							<!-- <th>Modificar</th> -->
-							<th style="display:none">CodigoU</th>
 						</tr>
 					</thead>
 					<tbody id="cuerpoTablaDistri"></tbody>
@@ -454,67 +447,48 @@ if (isset ($_GET['tipo'])) {
 						<button class="col-auto btn btn-light border border-1 btn-block" id="btnToggleInfoBanco" stateval="0" onclick="toggleInfoBanco()">BANCO</button>
 						
 					</div>
-					<div id="campos_fact_efectivo" style="display:block;">
-						<div class="row">
-							<div class="col-sm-5">
-								<b>EFECTIVO</b>
-							</div>
-							<div class="col-sm-7">
-								<input type="text" name="TxtEfectivo" id="TxtEfectivo" class="form-control form-control-sm text-end"
-									value="0.00" onblur="calcular_pago()">
-							</div>
-						</div>
+					<div class="row" id="campos_fact_efectivo" style="display:block;">
+						<div class="input-group mb-3 input-group-sm "> 
+							<span class="input-group-text" id="basic-addon3"><b>EFECTIVO</b></span>
+							<input type="text" name="TxtEfectivo" id="TxtEfectivo" class="form-control form-control-sm text-end"
+								value="0.00" onblur="calcular_pago()">
+						</div>						
 					</div>
-					<div id="campos_fact_banco" style="display:none;">
-						<div class="row">
-							<div class="col-sm-5">
-								<b>CUENTA DEL BANCO</b>
-								
-							</div>
-							<div class="col-sm-7">
-								<select class="form-select form-select-sm select2" id="DCBanco" name="DCBanco">
-									<option value="">Seleccione Banco</option>
-								</select>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-5">
-								<b>Documento</b>
-							</div>
-							<div class="col-sm-7">
-								<input type="text" name="TextCheqNo" id="TextCheqNo" class="form-control form-control-sm" value=".">
-							</div>
-						</div>
-						<div class="row">
+					<div class="row" id="campos_fact_banco" style="display:none;">
+						<hr>
+						<!-- <div class="row">  -->
 							<div class="col-sm-12">
-								<b>NOMBRE DEL BANCO</b>
-								<input type="text" name="TextBanco" id="TextBanco" class="form-control form-control-sm" value=".">
+								<b>CUENTA DEL BANCO</b>
+								<select class="form-select form-select-sm" id="DCBanco" name="DCBanco">
+									<option value="">Seleccione Banco</option>
+								</select>								
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-5">
-								<b>VALOR BANCO</b>
-							</div>
-							<div class="col-sm-7">
-								<input type="text" name="TextCheque" id="TextCheque" class="form-control form-control-sm text-end"
-									value="0.00" onblur="calcular_pago()">
-							</div>
-						</div>
+						<!-- </div>	 -->
+						<div class="input-group input-group-sm "> 
+							<span class="input-group-text" id="basic-addon3"><b>Documento</b></span>
+							<input type="text" name="TextCheqNo" id="TextCheqNo" class="form-control form-control-sm" value=".">
+						</div>	
+						<div class="input-group input-group-sm "> 
+							<span class="input-group-text" id="basic-addon3"><b>NOMBRE DEL BANCO</b></span>
+							<input type="text" name="TextBanco" id="TextBanco" class="form-control form-control-sm" value=".">
+						</div>	
+						<div class="input-group mb-3 input-group-sm "> 
+							<span class="input-group-text" id="basic-addon3"><b>VALOR BANCO</b></span>
+							<input type="text" name="TextCheque" id="TextCheque" class="form-control form-control-sm text-end"
+							value="0.00" onblur="calcular_pago()">
+						</div>	
 					</div>
 					<div class="row">
-						<div class="col-sm-5">
-							<b>CAMBIO</b>
-						</div>
-						<div class="col-sm-7">
+						<hr>
+						<div class="input-group mb-3 input-group-sm "> 
+							<span class="input-group-text" id="basic-addon3"><b>CAMBIO</b></span>
 							<input type="text" name="LblCambio" id="LblCambio" class="form-control form-control-sm text-end"
 								style="color: red;" value="0.00" readonly>
-						</div>
+						</div>	
 					</div>
 					<div class="row" id="bouche_banco_input" style="margin:10px 0;display:none;">
-						
 							<b>ADJUNTAR BOUCHE:</b>
 							<input type="file" class="form-control" id="archivoAdd" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
-						
 					</div>
 					
 					

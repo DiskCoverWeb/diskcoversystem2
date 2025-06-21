@@ -180,6 +180,7 @@ class facturas_productoresAliC
 			SetAdoFields('Serie',$value['Serie']);			
 			SetAdoFields('CodigoL', $value['CodigoL']);
 			SetAdoFields('Detalle', 'FA:'.$value['Cliente']);
+			SetAdoFields('Cmds', $value['No_Hab']);
 			SetAdoFields('Item',$_SESSION['INGRESO']['item']);
 			SetAdoFields('Periodo',$_SESSION['INGRESO']['periodo']);
 			SetAdoFields('CodigoU',$_SESSION['INGRESO']['CodigoU']);
