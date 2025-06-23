@@ -306,7 +306,7 @@ class almacenamiento_bodegaC
 				SetAdoAddNew('Trans_Kardex');
 				SetAdoFields('CodBodega',$parametros['bodegas']);	
 				SetAdoFields('Fecha_DUI',date('Y-m-d'));	
-				SetAdoFields('T',"E");		
+				SetAdoFields('T',"N");		
 				SetAdoFieldsWhere('ID',$tipo[0]);
 				return SetAdoUpdateGeneric();
 
@@ -316,7 +316,7 @@ class almacenamiento_bodegaC
 				SetAdoAddNew('Trans_Kardex');
 				SetAdoFields('CodBodega',$parametros['bodegas']);	
 				SetAdoFields('Fecha_DUI',date('Y-m-d'));	
-				SetAdoFields('T',"E");		
+				SetAdoFields('T',"N");		
 				SetAdoFieldsWhere('ID',$id);
 				return SetAdoUpdateGeneric();
 			}

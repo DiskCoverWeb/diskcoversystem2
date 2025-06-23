@@ -88,7 +88,8 @@ class reubicarC
 	{
 		// print_r($parametros);die();
 		SetAdoAddNew('Trans_Kardex');
-		SetAdoFields('CodBodega',$parametros['codigo']);		
+		SetAdoFields('CodBodega',$parametros['codigo']);	
+		SetAdoFields('T','N');		
 		SetAdoFieldsWhere('ID',$parametros['id']);
 		return SetAdoUpdateGeneric();
 	}
