@@ -372,6 +372,7 @@ class almacenamiento_bodegaC
 			   SetAdoFields('Tipo_Empaque',$producto[0]['Tipo_Empaque']);
 			   SetAdoFields('Cmds',$producto[0]['Cmds']);
 			   SetAdoFields('Numero',$producto[0]['Numero']);
+			   SetAdoFields('TP',$producto[0]['TP']);
 			   SetAdoFields('T',"N");		
 			   SetAdoUpdate();
 			}
