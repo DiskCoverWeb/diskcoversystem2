@@ -387,18 +387,37 @@ class lista_facturasC
 	}
 	function ver_fac($cod, $ser, $ci, $per, $auto, $tc, $descargar = true)
 	{
-		
+		$autorizacion = $auto;
+
+		//nota de ndo
 		$FA = array(
 			'Factura' => $cod,
 			'Serie' => $ser,
 			'Autorizacion' => $auto,
 			'TC' => $tc
 		);
+
+		// detalles de factura
+		$FA2 = array(
+			'Factura' => $cod,
+			'Serie' => $ser,
+			'TC' => 'FA'
+		);
+
+
 		$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
 		$TFA['CLAVE'] = '.';
 		$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
 
-		$abonos = $this->modelo->trans_abonos($TFA['factura'][0]['Factura'],$TFA['factura'][0]['Serie'],$TFA['factura'][0]['CodigoC'],$TFA['factura'][0]['Autorizacion']);
+		// print_r($TFA);die();
+
+		$TFA2 = Imprimir_Punto_Venta_Grafico_datos($FA2);
+		if(isset($TFA2['factura'][0]['Autorizacion']))
+		{
+			$autorizacion = $TFA2['factura'][0]['Autorizacion'];
+		}
+
+		$abonos = $this->modelo->trans_abonos($TFA['factura'][0]['Factura'],$TFA['factura'][0]['Serie'],$TFA['factura'][0]['CodigoC'],$autorizacion);
 
 
 		$ticket = $this->pdf->Imprimir_Punto_Venta($TFA,$abonos);

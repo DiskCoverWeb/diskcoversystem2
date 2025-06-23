@@ -8731,7 +8731,7 @@ function  Imprimir_Punto_Venta_Grafico_datos($TFA)
    // print_r($sql);
    $datos = $conn->datos($sql);
    // print_r($datos);die();
-   if(is_numeric($TFA['Autorizacion'])){
+   if( isset($TFA['Autorizacion']) && is_numeric($TFA['Autorizacion'])){
       $Ambiente = substr($datos[0]['Clave_Acceso'], 23, 1);
      // 'Generacion Codigo de Barras
       // PathCodigoBarra = RutaSysBases & "\TEMP" & TFA.ClaveAcceso & ".jpg";
