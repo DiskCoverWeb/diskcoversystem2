@@ -414,6 +414,7 @@ function DCLineas() {
 			llenarComboList(data, 'DCLineas');
 			//$('#Cod_CxC').val(data[0].nombre);  //FA
 			//Lineas_De_CxC();
+			$('#DCLineas').val('F001003X');
 		}
 	});
 }
