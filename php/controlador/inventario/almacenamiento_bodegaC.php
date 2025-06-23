@@ -342,7 +342,7 @@ class almacenamiento_bodegaC
 			    SetAdoFields('Entrada',$value['cantidad']);
 			    SetAdoFields('Valor_Total',number_format($producto[0]['Valor_Unitario']*$value['cantidad'],2,'.','')); 
 			    SetAdoFields('Fecha_DUI',date('Y-m-d'));	   
-				SetAdoFields('T',"E");		
+				SetAdoFields('T',"N");		
 				SetAdoFieldsWhere('ID',$id);
 				SetAdoUpdateGeneric();
 
@@ -370,7 +370,7 @@ class almacenamiento_bodegaC
 			   SetAdoFields('Codigo_P',$producto[0]['Codigo_P']);
 			   SetAdoFields('Codigo_Dr',$producto[0]['Codigo_Dr']);
 			   SetAdoFields('Tipo_Empaque',$producto[0]['Tipo_Empaque']);
-			   SetAdoFields('T',"E");		
+			   SetAdoFields('T',"N");		
 			   SetAdoUpdate();
 			}
 		}	
