@@ -305,6 +305,7 @@ class facturas_distribucionM
                 AND TC.Fecha = '".$parametros['fecha']."'
                 AND Cliente <> '.' 
                 AND TC = '.' 
+                AND TP = '.' 
                 AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
                 AND Item = '".$_SESSION['INGRESO']['item']."'";
     if (!is_numeric($query)) {
