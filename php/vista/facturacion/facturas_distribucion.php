@@ -449,6 +449,12 @@ if (isset ($_GET['tipo'])) {
 					</div>
 					<div class="row" id="campos_fact_efectivo" style="display:block;">
 						<div class="input-group mb-3 input-group-sm "> 
+							<b>CUENTA</b>
+							<select class="form-select form-select-sm" id="DCEfectivo" name="DCEfectivo">
+								<option>Seleccion opciones</option>
+							</select>
+						</div>	
+						<div class="input-group mb-3 input-group-sm "> 
 							<span class="input-group-text" id="basic-addon3"><b>EFECTIVO</b></span>
 							<input type="text" name="TxtEfectivo" id="TxtEfectivo" class="form-control form-control-sm text-end"
 								value="0.00" onblur="calcular_pago()">

@@ -1626,6 +1626,8 @@ class facturas_distribucion
 		{
 			$Factura_No = ReadSetDataNum($parametros['TC'] . "_SERIE_" . $parametros['serie'], True, true);
 		}
+
+		
 		//genera en asientosF para FACTURA
 		$producto = Leer_Codigo_Inv('FA.99',date('Y-m-d'));
 		if($producto['respueta']!='1')
@@ -1667,7 +1669,6 @@ class facturas_distribucion
 			
 			$this->modelo->ActualizarCodigoFactura($parametros['TC'] . "_SERIE_" . $parametros['serie'],$Factura_No);
 		// }
-
 
 		//genera en asientosF para NPA
 		$this->modelo->DeleteAsientoF($parametros['pedido']);
@@ -1787,7 +1788,7 @@ class facturas_distribucion
 			$FA['TextCheqNo'] = $parametros['TextCheqNo'];
 			$FA['DCBancoC'] = $parametros['DCBancoC'];
 			// $FA['T'] = $parametros['T'];
-			// $FA['CodDoc'] = $parametros['CodDoc'];
+			$FA['CtaEfectivo'] = $parametros['DCEfectivo'];
 			$FA['valorBan'] = $parametros['valorBanco'];
 			$FA['TxtEfectivo'] = $parametros['valorEfectivo'];
 			$FA['Cod_CxC'] = $datos[0]['Codigo'];
@@ -1897,7 +1898,7 @@ class facturas_distribucion
 				$TA['TP'] = $TipoFactura;
 				$TA['Fecha'] = $FechaTexto;
 				$TA['Cta_CxP'] = $FA['Cta_CxP'];
-				$TA['Cta'] = $_SESSION['SETEOS']['Cta_CajaG'];
+				$TA['Cta'] = $FA['CtaEfectivo']; //$_SESSION['SETEOS']['Cta_CajaG'];
 				$TA['Banco'] = "EFECTIVO MN";
 				$TA['Cheque'] = generaCeros($FA['Factura'], 8);
 				$TA['Factura'] = $FA['Factura'];

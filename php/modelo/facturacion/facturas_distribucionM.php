@@ -43,7 +43,7 @@ class facturas_distribucionM
     return $this->db->datos($sql);
   }
 
-   function pedido_seleccionado($params,$id=false)
+   function pedido_seleccionado($params,$id=false,$orden=false)
     {
       // print_r($params);die();
       $sql = "SELECT CP.Producto,Nombre_Completo,TC.Periodo, TC.T, TC.TC, Cta, TC.Fecha, Fecha_C, CodigoC, TC.TP, Numero, TC.Factura, TC.Codigo_Inv, Total, Porc, Valor_Pagar, TC.Item, TC.CodigoU, TC.X, CodBodega, TC.ID, Orden_No, Fecha_A, TC.Codigo_Barra,CP.PVP,TC.Cmds
@@ -55,8 +55,12 @@ class facturas_distribucionM
               AND TC.CodigoC = '".$params['beneficiario']."' 
               AND CP.Item = TC.Item
               AND CP.Periodo = TC.Periodo
-              AND TC.Fecha = '".$params['fecha']."' 
+              AND TC.Fecha <= '".$params['fecha']."' 
               AND TC.T='F'";
+              if($orden)
+              {
+                $sql.=" AND TC.Orden_No = '".$orden."'";
+              }
               if($id)
               {
                 $sql.=" AND TC.ID = '".$id."'";

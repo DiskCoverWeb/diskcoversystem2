@@ -7,8 +7,11 @@ $(document).ready(function () {
 	DCPorcenIvaFD();
 	DCBanco();
 
+	DCEfectivo();
+
 	construirTablaGavetas();
 	construirTablaEvalFundaciones();
+
 
 })
 
@@ -915,6 +918,7 @@ function generar_factura()
 		'ctaEfectivo':$('#DCEfectivo').val(),
 		'valorEfectivo':$('#TxtEfectivo').val(),
 		'DCBancoC':$('#DCBanco').val(),
+		'DCEfectivo':$('#DCEfectivo').val(),
 		'TextCheqNo':$('#TextCheqNo').val(),
 		'TextBanco':$('#TextBanco').val(),
 		'valorBanco':$('#TextCheque').val(),
@@ -1025,3 +1029,29 @@ function Ver_nd(id,serie,ci,aut,tc)
 	};
 	iframeWindow.print();
 }
+
+
+
+	function DCEfectivo() {
+		// alert('das');
+		$('#DCEfectivo').select2({
+			placeholder: 'Seleccione cuenta',
+			dropdownParent: $('#modalInfoFactura'),
+			width: '100%',
+			ajax: {
+				url: '../controlador/facturacion/facturas_distribucion_famC.php?DCEfectivo=true',
+				dataType: 'json',
+				delay: 250,
+				processResults: function (data) {
+					return {
+						results: data
+					};
+				},
+				cache: true
+			}
+		});
+
+
+        $('#DCEfectivo').append($('<option>',{value:'1.1.01.01.04', text: '1.1.01.01.04 Caja Fundaciones',selected: true }));
+	}
+

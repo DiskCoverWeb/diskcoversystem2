@@ -5,39 +5,39 @@
     <razonSocial>FUNDACION DE AYUDA SOCIAL BANCO DE ALIMENTOS</razonSocial>
     <nombreComercial>BANCO DE ALIMENTOS QUITO</nombreComercial>
     <ruc>1791921429001</ruc>
-    <claveAcceso>2306202501179192142900120010030000001751234567815</claveAcceso>
+    <claveAcceso>2506202501179192142900120010030000001861234567814</claveAcceso>
     <codDoc>01</codDoc>
     <estab>001</estab>
     <ptoEmi>003</ptoEmi>
-    <secuencial>000000175</secuencial>
+    <secuencial>000000186</secuencial>
     <dirMatriz>Av Pedro Vicente Maldonado S15238 y Balzar</dirMatriz>
     <agenteRetencion>1</agenteRetencion>
   </infoTributaria>
   <infoFactura>
-    <fechaEmision>23/06/2025</fechaEmision>
+    <fechaEmision>25/06/2025</fechaEmision>
     <dirEstablecimiento>Av Pedro Vicente Maldonado S15238 y Balzar</dirEstablecimiento>
     <obligadoContabilidad>SI</obligadoContabilidad>
     <tipoIdentificacionComprador>04</tipoIdentificacionComprador>
-    <razonSocialComprador>PRISMANET PROFESIONAL SA</razonSocialComprador>
-    <identificacionComprador>1792164710001</identificacionComprador>
-    <totalSinImpuestos>0.80</totalSinImpuestos>
+    <razonSocialComprador>CF PARROQUIA SANTIAGO DE CHILLOGALLO</razonSocialComprador>
+    <identificacionComprador>1792334829001</identificacionComprador>
+    <totalSinImpuestos>40.00</totalSinImpuestos>
     <totalDescuento>0.00</totalDescuento>
     <totalConImpuestos>
       <totalImpuesto>
         <codigo>2</codigo>
         <codigoPorcentaje>0</codigoPorcentaje>
         <descuentoAdicional>0.00</descuentoAdicional>
-        <baseImponible>0.80</baseImponible>
+        <baseImponible>40.00</baseImponible>
         <valor>0.00</valor>
       </totalImpuesto>
     </totalConImpuestos>
     <propina>0.00</propina>
-    <importeTotal>0.80</importeTotal>
+    <importeTotal>40.00</importeTotal>
     <moneda>DOLAR</moneda>
     <pagos>
       <pago>
         <formaPago>01</formaPago>
-        <total>0.80</total>
+        <total>40.00</total>
       </pago>
     </pagos>
   </infoFactura>
@@ -47,59 +47,58 @@
       <descripcion>DONACION OS</descripcion>
       <unidadMedida>DOLAR</unidadMedida>
       <cantidad>1.000000</cantidad>
-      <precioUnitario>0.800000</precioUnitario>
+      <precioUnitario>40.000000</precioUnitario>
       <descuento>0.00</descuento>
-      <precioTotalSinImpuesto>0.80</precioTotalSinImpuesto>
+      <precioTotalSinImpuesto>40.00</precioTotalSinImpuesto>
       <impuestos>
         <impuesto>
           <codigo>2</codigo>
           <codigoPorcentaje>0</codigoPorcentaje>
           <tarifa>0</tarifa>
-          <baseImponible>0.80</baseImponible>
+          <baseImponible>40.00</baseImponible>
           <valor>0.00</valor>
         </impuesto>
       </impuestos>
     </detalle>
   </detalles>
   <infoAdicional>
-    <campoAdicional nombre="Direccion">CALLE ATACAMES N23226 Y AV LA GASCA</campoAdicional>
-    <campoAdicional nombre="Telefono">0999654196</campoAdicional>
-    <campoAdicional nombre="Email">diskcoversystem@msncom</campoAdicional>
-    <campoAdicional nombre="Email2">diskcoversystem@msncom</campoAdicional>
-    <campoAdicional nombre="Referencia">Martha Lucas Cevallos</campoAdicional>
+    <campoAdicional nombre="Direccion">SAN MARCOS</campoAdicional>
+    <campoAdicional nombre="Telefono">997679330</campoAdicional>
+    <campoAdicional nombre="Email">isabelceve@gmailcom</campoAdicional>
+    <campoAdicional nombre="Referencia">Hermana Maurin </campoAdicional>
     <campoAdicional nombre="tipoContribuyente">Contribuyente Regimen General</campoAdicional>
     <campoAdicional nombre="seriePuntoEmision">001003</campoAdicional>
     <campoAdicional nombre="PlacaVehiculo">.</campoAdicional>
     <campoAdicional nombre="CtaEstablecimiento">.</campoAdicional>
   </infoAdicional>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature275131">
-<ds:SignedInfo Id="Signature-SignedInfo286876">
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature475920">
+<ds:SignedInfo Id="Signature-SignedInfo183568">
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-<ds:Reference Id="SignedPropertiesID631011" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature275131-SignedProperties295885">
+<ds:Reference Id="SignedPropertiesID130717" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature475920-SignedProperties822933">
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>P7aKbBgJziGzFq7/7xfVNK1/EPo=</ds:DigestValue>
+<ds:DigestValue>OQ0zqHtDfOHCCmsn9lCsV4l3180=</ds:DigestValue>
 </ds:Reference>
-<ds:Reference URI="#Certificate1610665">
+<ds:Reference URI="#Certificate1539623">
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>1qmueiOpoqpnjgxzLN4b1BPoIxo=</ds:DigestValue>
+<ds:DigestValue>JqwmggindpxtDahH9Joy6yLeg9s=</ds:DigestValue>
 </ds:Reference>
-<ds:Reference Id="Reference-ID-509431" URI="#comprobante">
+<ds:Reference Id="Reference-ID-237798" URI="#comprobante">
 <ds:Transforms>
 <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>TaiCW2nJlnuavOx6UvXY2eBonZw=</ds:DigestValue>
+<ds:DigestValue>yXB2RRamymBksqIj3K1AFlXh8n4=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
-<ds:SignatureValue Id="SignatureValue357414">
-twv679Ix4hMjNwoDI0RZzCXRN5Rd6M4y4/YIHZkKzKLtqP8IOkQe2T2qEAOMRI8tcrfLOBboXNH7
-dNEWq5n/A3EYWwe11mf0XeBiDREYxSENYWZ43K8HTzhAYJiE+OqCP3YcKRqa84ls/9ZAiE0/hAfz
-e+oatzx+8rpu6wFn2sIkjhxMZXBEJvkWC1eXAhM348d6lXUeLjs+RESAaa9Iig5i5DZRxkbqAn53
-uqBsING70r/nbL3OgPqvAX17cL+XKB9RrX6hiTIyPCIbudR1yTdBAQATE/76PfZb7Cgj8QroZg9L
-BpnPf2Zx8Ofuf1gFqtBSpWLOm8Ziye4msgqqww==
+<ds:SignatureValue Id="SignatureValue361210">
+axUOoMqT8Tp3be6b34WHlqucnIPf0epRgmfzTsDOfC1MkI+BFAQY8RWRbm9r3dRQZA24c+lEllfc
+OnREZDr138eXuo4ofTAILYAg0+JjAQY9OdhqR373txlVDU3BmIJJa7ZyrkH3oXaBA0/P5Wau5ZAd
+RMVfePxc3fpmjj23YbR3s3Y13tZw5+VwRyuJsO4pSR4Wof1jGGEDINmDtOHMMaDu9XAQaqPdm2Nt
+Vhk0F86VhSrOxCqk4WPCij1OO5vlQIMml82r+2yXfZ2wm0DzfE/EGF125yv3EL8LKaEeCHDt931e
+jUcSzAmreEVhRiKbvBKa/6sFgGzgeZylY/hE/w==
 </ds:SignatureValue>
-<ds:KeyInfo Id="Certificate1610665">
+<ds:KeyInfo Id="Certificate1539623">
 <ds:X509Data>
 <ds:X509Certificate>
 MIIMXTCCCkWgAwIBAgIEZ0vkhTANBgkqhkiG9w0BAQsFADCBmTELMAkGA1UEBhMCRUMxHTAbBgNV
@@ -173,4 +172,4 @@ NwmnNuRTTAsTH//5ef7QMEISp6H1KY/AHCZTxQ==
 </ds:RSAKeyValue>
 </ds:KeyValue>
 </ds:KeyInfo>
-<ds:Object Id="Signature275131-Object1028584"><etsi:QualifyingProperties Target="#Signature275131"><etsi:SignedProperties Id="Signature275131-SignedProperties295885"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-06-23T17:22:39-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>atN02GwnTlkJqIE+JQlMC8wBo50=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-2 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 2,C=EC</ds:X509IssuerName><ds:X509SerialNumber>1733026949</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-509431"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature></factura>
+<ds:Object Id="Signature475920-Object457116"><etsi:QualifyingProperties Target="#Signature475920"><etsi:SignedProperties Id="Signature475920-SignedProperties822933"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-06-25T12:35:59-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>atN02GwnTlkJqIE+JQlMC8wBo50=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-2 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 2,C=EC</ds:X509IssuerName><ds:X509SerialNumber>1733026949</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-237798"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature></factura>
