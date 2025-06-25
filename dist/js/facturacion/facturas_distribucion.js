@@ -1055,3 +1055,46 @@ function Ver_nd(id,serie,ci,aut,tc)
         $('#DCEfectivo').append($('<option>',{value:'1.1.01.01.04', text: '1.1.01.01.04 Caja Fundaciones',selected: true }));
 	}
 
+
+	function guardar_bouche(){
+		//$('#myModal_espera').modal('show');
+		let formData = new FormData();
+		formData.append('file', $('#archivoAdd')[0].files[0]);
+		formData.append('n_factura', $('#TextFacturaNo').val());
+		formData.append('serie', $('#LblSerie').text());
+		formData.append('fecha', $('#MBFecha').val().replaceAll('-',''));
+
+		$.ajax({
+			type: 'POST',
+			url: '../controlador/facturacion/facturas_distribucionC.php?GuardarBouche=true',
+			processData: false,
+			contentType: false,
+			data: formData,
+			dataType: 'json',
+			success: function (respuesta) {
+				if(respuesta['res'] == 1){
+					/*let ruta = '../../TEMP/catalogo_procesos/' + respuesta['imagen'];
+					$('#picture').val(respuesta['imagen'].split('.')[0]);
+					$('#imageElement').prop('src',ruta);*/
+					docbouche = respuesta['documento'];
+					generar_factura();
+				}else{
+					setTimeout(()=>{
+						$('#myModal_espera').modal('hide');
+					}, 1000)
+					/*$('#picture').val(".");
+					$('#imageElement').prop('src','');
+					Swal.fire("Error", "Hubo un problema al mostrar la imagen", "error");*/
+					Swal.fire('Error al subir archivo', '', 'error');
+				}
+			},
+			error: function (error) {
+				/*$('#myModal_espera').modal('hide');
+				$('#picture').val(".");
+				$('#imagenPicker').val('');
+				$('#imageElement').prop('src','');*/
+				Swal.fire("Error al procesar el archivo", "Error: " + error, "error");
+			}
+		});
+	}
+
