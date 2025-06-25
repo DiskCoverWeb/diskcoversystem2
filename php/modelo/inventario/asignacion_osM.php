@@ -245,6 +245,13 @@ class asignacion_osM
 
     }
 
+    function buscarAsignacionPrevia($orden)
+    {
+        $sql = "SELECT COUNT(*) as ingresado FROM Detalle_Factura WHERE Orden_No = '".$orden."'";
+        return $this->db->datos($sql);
+
+    }
+
 
 
 

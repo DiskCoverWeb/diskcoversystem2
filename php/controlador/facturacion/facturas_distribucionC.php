@@ -2208,6 +2208,16 @@ class facturas_distribucion
         SetAdoFieldsWhere('CodigoC',$parametros['beneficiario']);  
         SetAdoFieldsWhere('Fecha',$parametros['fecha']);  
         //SetAdoFieldsWhere('Cta',$parametros['tipo']);  
+        SetAdoUpdateGeneric();
+
+
+        SetAdoAddNew('Detalle_Factura');
+        SetAdoFields('T','K');      
+       
+        //SetAdoFieldsWhere('CodigoU',$_SESSION['INGRESO']['CodigoU']); //Se elimino la linea porque solo guardaba los productos del picking del ultimo usuario
+        SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
+        SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']); 
+        SetAdoFieldsWhere('Orden_No',$parametros['orden']); 
         return SetAdoUpdateGeneric();
     }
 

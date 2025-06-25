@@ -325,6 +325,12 @@ class asignacion_osC
         if(count($datos)==0)
         {
             // print_r($parametros);die();
+            $order = $parametros['beneficiarioCodigo'].''.str_replace('-',"", $parametros['FechaAte']);
+
+            $data = $this->modelo->buscarAsignacionPrevia($order);
+            if($data[0]['ingresado']>0){$order = $order.$data[0]['ingresado'];}
+
+            // print_r($order);die();
             SetAdoAddNew("Detalle_Factura");
             SetAdoFields("TC","OP");
             SetAdoFields("CodigoC",$parametros['beneficiarioCodigo']);
@@ -339,7 +345,7 @@ class asignacion_osC
             SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
             SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
             SetAdoFields("No_Hab",$parametros['asignacion']);
-            SetAdoFields("Orden_No",$parametros['beneficiarioCodigo'].''.str_replace('-',"", $parametros['FechaAte']));
+            SetAdoFields("Orden_No",$order);
             
             return SetAdoUpdate();
         }else
@@ -352,9 +358,7 @@ class asignacion_osC
     {
 
         $producto = Leer_Codigo_Inv($parametros['Codigo'],$parametros['FechaAte']);
-
-
-        print_r($parametros);die();
+        // print_r($parametros);die();
         SetAdoAddNew("Detalle_Factura");
         SetAdoFields("TC","OP");
         SetAdoFields("CodigoC",$parametros['beneficiarioCodigo']);
