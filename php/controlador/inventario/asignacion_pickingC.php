@@ -218,7 +218,7 @@ class asignacion_pickingC
         $tr = '';
         $cantidad = 0;
         $res = array();
-        $datos = $this->modelo->listaAsignacion($parametros['beneficiario'],'K',false,$parametros['tipo'],$parametros['fecha']);
+        $datos = $this->modelo->listaAsignacion($parametros['beneficiario'],'K',false,$parametros['tipo'],$parametros['fecha'],$parametros['orden']);
 
         $detalle = '';
         $ddlGrupoPro = '';
@@ -227,7 +227,7 @@ class asignacion_pickingC
         // print_r($datos);die();
         foreach ($datos as $key => $value) {
             $cant = $value['Cantidad']; 
-            $cant_ing = $this->modelo->total_ingresados($parametros['beneficiario'],$value['Codigo'],$value['No_Hab'],$value['Fecha']->format('Y-m-d'));
+            $cant_ing = $this->modelo->total_ingresados($parametros['beneficiario'],$value['Codigo'],$value['No_Hab'],$value['Fecha']->format('Y-m-d'),$parametros['orden']);
             if($cant_ing[0]['Total']!=''){ 
                 $c = ($value['Cantidad']-$cant_ing[0]['Total']);
                 $cant = $c;
@@ -379,11 +379,11 @@ class asignacion_pickingC
          $bode = $this->egresos->buscar_producto(false,$parametros['codigoProducto']);
 
         // cantidad ingresada
-        $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsign']);
+        $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsign'],$Beneficiario[2]);
         $cant_ing = $cant_ing[0]['Total'];
 
         // cantida que se pide
-        $stock = $this->modelo->listaAsignacion($Beneficiario[0],$T=false,$parametros['CodigoInv'],$Beneficiario[1]);
+        $stock = $this->modelo->listaAsignacion($Beneficiario[0],$T=false,$parametros['CodigoInv'],$Beneficiario[1],$Beneficiario[2]);
         if(isset($stock[0]['Cantidad']))
         {
             $stock = $stock[0]['Cantidad'];

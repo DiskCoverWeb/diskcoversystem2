@@ -158,7 +158,7 @@ class asignacion_pickingM
         }
     }
 
-    function listaAsignacion($beneficiario,$T=false,$tipo=false,$tipoVenta=false,$fecha=false)
+    function listaAsignacion($beneficiario,$T=false,$tipo=false,$tipoVenta=false,$fecha=false,$orden=false)
     {
          $sql = "SELECT ".Full_Fields("Detalle_Factura")."
                 FROM Detalle_Factura
@@ -167,6 +167,10 @@ class asignacion_pickingM
                 AND CodigoC = '".$beneficiario."'
                 AND Fecha =  '".$fecha."'
                 AND Factura =  '0'";
+                if($orden)
+                {
+                    $sql.=" AND Orden_No = '".$orden."'";
+                }
                 if($T)
                 {
                     $sql.="AND T = '".$T."'";
@@ -213,7 +217,7 @@ class asignacion_pickingM
         return $this->db->datos($sql);    
     }
 
-    function total_ingresados($bene,$tipo,$tipoventa,$fecha)
+    function total_ingresados($bene,$tipo,$tipoventa,$fecha,$orden)
     {
         $sql = "SELECT SUM(TC.Total) as Total
                 FROM Trans_Comision TC
@@ -222,7 +226,8 @@ class asignacion_pickingM
                 AND Codigo_Inv = '".$tipo."'
                 AND Cta = '".$tipoventa."'
                 AND T = 'P'
-                AND Fecha >= '".$fecha."' ";
+                AND Fecha >= '".$fecha."' 
+                AND Orden_No  = '".$orden."'";
 
                 // print_r($sql);die();
         return $this->db->datos($sql);   

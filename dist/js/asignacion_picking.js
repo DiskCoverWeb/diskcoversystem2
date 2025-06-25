@@ -74,6 +74,7 @@ function cargarOrden() {
         'beneficiario':beneficiario[0],
         'tipo':beneficiario[1],
         'fecha':$('#txtFechaAsign').val(),
+        'orden':beneficiario[2],
     }
     $.ajax({
         url: '../controlador/inventario/asignacion_pickingC.php?cargarOrden=true',
