@@ -435,12 +435,13 @@ class asignacion_pickingC
     function cargar_asignacion($parametros)
     {        
         $Beneficiario = explode('-',$parametros['beneficiario']);
-        $datos = $this->modelo->cargar_asignacion($Beneficiario[0],$Beneficiario[1],'P',$parametros["FechaAte"]);
+        $datos = $this->modelo->cargar_asignacion($Beneficiario[0],$Beneficiario[1],'P',$parametros["FechaAte"],$Beneficiario[2]);
         $tbl = '';
         $total = 0;
+        // print_r('ss');die();
         foreach ($datos as $key => $value) {
 
-            $producto = $this->modelo->lineasKArdex($value['Codigo_Barra']);   
+            $producto = $this->modelo->lineasKArdex($value['CodBodega']);   
             // print_r($producto);die();        
             $datos[$key]['Producto'] = $producto[0]['Producto'];
             $datos[$key]['Codigo_Barra'] = $producto[0]['Codigo_Barra'];
