@@ -379,11 +379,14 @@ class asignacion_pickingC
          $bode = $this->egresos->buscar_producto(false,$parametros['codigoProducto']);
 
         // cantidad ingresada
+         // print_r('ddd');die();
         $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsign'],$Beneficiario[2]);
         $cant_ing = $cant_ing[0]['Total'];
 
         // cantida que se pide
-        $stock = $this->modelo->listaAsignacion($Beneficiario[0],$T=false,$parametros['CodigoInv'],$Beneficiario[1],$Beneficiario[2]);
+
+         // print_r('ddd');die();
+        $stock = $this->modelo->listaAsignacion($Beneficiario[0],$T=false,$parametros['CodigoInv'],$Beneficiario[1],false,$Beneficiario[2]);
         if(isset($stock[0]['Cantidad']))
         {
             $stock = $stock[0]['Cantidad'];
@@ -397,7 +400,7 @@ class asignacion_pickingC
         // print_r($cant_ing);
         // print_r('-'.$stock);
         
-        // print_r($bode);
+        // print_r($parametros);
         // die();
         if($cant_ing<=$stock)
         {
