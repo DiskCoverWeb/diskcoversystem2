@@ -441,7 +441,7 @@ class asignacion_pickingC
         // print_r('ss');die();
         foreach ($datos as $key => $value) {
 
-            $producto = $this->modelo->lineasKArdex($value['CodBodega']);   
+            $producto = $this->modelo->lineasKArdex($value['Codigo_Barra']);   
             // print_r($producto);die();        
             $datos[$key]['Producto'] = $producto[0]['Producto'];
             $datos[$key]['Codigo_Barra'] = $producto[0]['Codigo_Barra'];
