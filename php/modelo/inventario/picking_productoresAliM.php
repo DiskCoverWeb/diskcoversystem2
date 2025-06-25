@@ -107,7 +107,7 @@ class picking_productoresAliM
             AND TK.Orden_No <> '.'
             AND TK.Orden_No <> '0.'
             AND TK.CodBodega <> '-1'
-            AND TK.T = 'E'";
+            AND TK.T = 'N'";
             if($bodega)
             {
                 $sql.=" AND CodBodega = '".$bodega."'";

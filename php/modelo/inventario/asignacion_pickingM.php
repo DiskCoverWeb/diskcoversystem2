@@ -196,16 +196,18 @@ class asignacion_pickingM
 
     function cargar_asignacion($bene,$tipo,$T,$fecha=false)
     {
-        $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,T
+        $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,T,Codigo_Barra
                 FROM Trans_Comision TC
                 INNER JOIN Accesos A ON TC.CodigoU = A.Codigo
-                WHERE CodigoC = '".$bene."'
-                AND Cta = '".$tipo."'
-                AND T = '".$T."'";
+                WHERE Item = '".$_SESSION['INGRESO']['item']."'
+                AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+                AND TC.CodigoC = '".$bene."'
+                AND TC.Cta = '".$tipo."'
+                AND TC.T = '".$T."'";
                 if($fecha)
                 {
                     //fecha_A es la fecha de asignacion
-                    $sql.=" AND Fecha_A = '".$fecha."'";
+                    $sql.=" AND TC.Fecha_A = '".$fecha."'";
                 }
                 // print_r($sql);die();
         return $this->db->datos($sql);    
@@ -271,7 +273,7 @@ class asignacion_pickingM
             AND TK.Orden_No <> '.'
             AND TK.Orden_No <> '0.'
             AND TK.CodBodega <> '-1'
-            AND TK.T = 'E'";
+            AND TK.T = 'N'";
             if($bodega)
             {
                 $sql.=" AND CodBodega = '".$bodega."'";
@@ -338,5 +340,17 @@ class asignacion_pickingM
                 AND Orden_No = '".$codigoC."' 
                 AND Cta = '".$tipo."'";
         return $this->db->String_Sql($sql);
+    }
+
+    function buscar_trans_kardex($id)
+    {
+         $sql ="SELECT * FROM Trans_kardex WHERE 
+         Periodo = '".$_SESSION['INGRESO']['periodo']."'
+         AND Item = '".$_SESSION['INGRESO']['item']."'
+         AND ID = '".$id."'";
+               // print_r($sql);die();
+
+        return $this->db->datos($sql);   
+
     }
 }

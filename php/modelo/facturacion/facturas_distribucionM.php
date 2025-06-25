@@ -29,19 +29,20 @@ class facturas_distribucionM
             AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
             AND TC.Fecha = '".$params['fecha']."' 
             AND TC.T='F'
-            AND TC.TC = '.'";
+            AND TC.TC = '.'
+            AND TP='.'";
             if($id)
             {
                $sql.=" AND TC.ID = '".$id."' ";
             }
-    //print_r($sql);die();
+    // print_r($sql);die();
     return $this->db->datos($sql);
   }
 
    function pedido_seleccionado($params,$id=false)
     {
       // print_r($params);die();
-      $sql = "SELECT CP.Producto,Nombre_Completo,TC.Periodo, TC.T, TC.TC, Cta, TC.Fecha, Fecha_C, CodigoC, TC.TP, Numero, TC.Factura, TC.Codigo_Inv, Total, Porc, Valor_Pagar, TC.Item, TC.CodigoU, TC.X, CodBodega, TC.ID, Orden_No, Fecha_A, TC.Codigo_Barra,CP.PVP
+      $sql = "SELECT CP.Producto,Nombre_Completo,TC.Periodo, TC.T, TC.TC, Cta, TC.Fecha, Fecha_C, CodigoC, TC.TP, Numero, TC.Factura, TC.Codigo_Inv, Total, Porc, Valor_Pagar, TC.Item, TC.CodigoU, TC.X, CodBodega, TC.ID, Orden_No, Fecha_A, TC.Codigo_Barra,CP.PVP,TC.Cmds
               FROM            Trans_Comision TC
               inner join Accesos A on TC.CodigoU = A.Codigo
               INNER JOIN Catalogo_Productos CP on TC.Codigo_Inv = CP.Codigo_Inv
@@ -1038,7 +1039,7 @@ class facturas_distribucionM
 
    function detalle_Factura($TC,$serie,$factura)
   {
-    $sql1 = "SELECT DF.*,CP.*,DF.Cantidad as Cant,DF.TC as DFTC,DF.Factura as FACT,C.Cliente  
+    $sql1 = "SELECT DF.*,CP.*,DF.Cantidad as Cant,DF.TC as DFTC,DF.Factura as FACT,C.Cliente,DF.Cmds as DFCMDS,DF.Codigo_Barra,DF.ID as DFID  
         FROM Detalle_Factura As DF,Catalogo_Productos As CP,Clientes C 
         WHERE DF.Factura = ".$factura." 
         AND DF.TC = '".$TC."' 

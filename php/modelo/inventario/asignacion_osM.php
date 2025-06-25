@@ -103,7 +103,9 @@ class asignacion_osM
                 if($tipo)
                 {
                     $sql.=" AND No_Hab = '".$tipo."'";
-                }                
+                }              
+
+                // print_r($sql);die();  
         try{
             return $this->db->datos($sql);
         }catch(Exception $e){
@@ -123,7 +125,8 @@ class asignacion_osM
                 FROM Detalle_Factura
                 WHERE Item = '".$_SESSION['INGRESO']['item']."' 
                 AND Periodo='".$_SESSION['INGRESO']['periodo']."' 
-                AND CodigoC = '".$beneficiario."' ";
+                AND CodigoC = '".$beneficiario."' 
+                AND T = '.'";
                 if($fecha)
                 {
                     $sql.="AND Fecha = '".$fecha."' ";

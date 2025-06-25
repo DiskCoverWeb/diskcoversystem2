@@ -1680,12 +1680,14 @@ class facturas_distribucion
 			SetAdoFields('Orden_No', $linea_pedido[0]['Orden_No']);
 			SetAdoFields('CodigoU', $linea_pedido[0]['CodigoU']);
 			SetAdoFields('HABIT', $linea_pedido[0]['Cta']);
-			SetAdoFields('CodBod', $linea_pedido[0]['CodBodega']);
+			SetAdoFields('CodBod', $linea_pedido[0]['CodBodega']);			
+			SetAdoFields('COD_BAR', $linea_pedido[0]['Codigo_Barra']);
 			SetAdoFields('A_No', ($key+1));
 			SetAdoFields('CANT', $linea_pedido[0]['Total']);
 			SetAdoFields('PRECIO', $value['pvp']);
 			SetAdoFields('TOTAL', $value['total']);
 			SetAdoFields('Serie',$parametros['serie']);
+			SetAdoFields('Cmds',$linea_pedido[0]['Cmds']);
 			SetAdoFields('Item',$_SESSION['INGRESO']['item']);
 			SetAdoUpdate();
 		}
@@ -1700,7 +1702,8 @@ class facturas_distribucion
 			SetAdoAddNew('Trans_Kardex');
 			SetAdoFields('Codigo_P', $value['CodigoC']);
 			SetAdoFields('Codigo_Inv', $value['Codigo']);
-			SetAdoFields('Codigo_Barra', $value['CodBodega']);
+			SetAdoFields('Codigo_Barra', $value['Codigo_Barra']);
+			SetAdoFields('CodBodega', $value['CodBodega']);
 			SetAdoFields('TP','CD');
 			SetAdoFields('Salida', $value['Cant']);
 			SetAdoFields('Valor_Unitario', $value['Precio']);
@@ -1715,11 +1718,19 @@ class facturas_distribucion
 			SetAdoFields('Serie',$value['Serie']);			
 			SetAdoFields('CodigoL', $value['CodigoL']);
 			SetAdoFields('Detalle', 'FA:'.$value['Cliente']);
-			SetAdoFields('Cmds', $value['No_Hab']);
+			SetAdoFields('Cmds', $value['DFCMDS']);
+
+			SetAdoFields('T','N');
 			SetAdoFields('Item',$_SESSION['INGRESO']['item']);
 			SetAdoFields('Periodo',$_SESSION['INGRESO']['periodo']);
 			SetAdoFields('CodigoU',$_SESSION['INGRESO']['CodigoU']);
 			SetAdoUpdate();
+
+			SetAdoAddNew('Detalle_Factura');
+			SetAdoFields('T','P');
+			SetAdoFieldsWhere('ID', $value['DFID']);
+			SetAdoUpdateGeneric();
+
 		}
 
 

@@ -402,7 +402,9 @@ class asignacion_pickingC
         if($cant_ing<=$stock)
         {
 
+            $linea_kardex = $this->modelo->buscar_trans_kardex($parametros['codigoProducto']);
             $producto = Leer_Codigo_Inv($parametros['CodigoInv'],$parametros['FechaAte']);
+
             SetAdoAddNew("Trans_Comision");
             SetAdoFields("CodigoC",$Beneficiario[0]);
             SetAdoFields("Cta",$Beneficiario[1]);
@@ -411,11 +413,13 @@ class asignacion_pickingC
             SetAdoFields("Fecha",$parametros['FechaAte']);
             SetAdoFields("Fecha_A",$parametros['FechaAsign']);
             SetAdoFields("Fecha_C",date('Y-m-d'));      
-            SetAdoFields("CodBodega",$bode[0]['Codigo_Barra']);        
+            SetAdoFields("CodBodega",$linea_kardex[0]['CodBodega']);   
+            SetAdoFields("Codigo_Barra",$bode[0]['Codigo_Barra']);        
             SetAdoFields("Item",$_SESSION['INGRESO']['item']);
             SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
             SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
             SetAdoFields("T","P");
+            SetAdoFields("Cmds",$linea_kardex[0]['Cmds']);
             SetAdoFields("Orden_No",$Beneficiario[2]);
             
             return SetAdoUpdate();
@@ -436,7 +440,7 @@ class asignacion_pickingC
         $total = 0;
         foreach ($datos as $key => $value) {
 
-            $producto = $this->modelo->lineasKArdex($value['CodBodega']);   
+            $producto = $this->modelo->lineasKArdex($value['Codigo_Barra']);   
             // print_r($producto);die();        
             $datos[$key]['Producto'] = $producto[0]['Producto'];
             $datos[$key]['Codigo_Barra'] = $producto[0]['Codigo_Barra'];

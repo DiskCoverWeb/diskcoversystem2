@@ -58,7 +58,7 @@ class egreso_alimentosM
 			AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
 			AND TK.Item = CP.Item
 			AND TK.Periodo = CP.Periodo
-			AND TK.T ='E' ";
+			AND TK.T ='N' ";
 			if($query)
 			{
 				$sql.=" AND TK.Codigo_Barra='".$query."'";

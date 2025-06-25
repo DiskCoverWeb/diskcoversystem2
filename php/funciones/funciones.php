@@ -6827,6 +6827,8 @@ function Grabar_Factura1($TFA,$VerFactura = false, $NoRegTrans = false)
              SetAdoFields("Modelo",$value["Modelo"]);
              SetAdoFields("Serie_No",$value["Serie_No"]);
              SetAdoFields("Costo",$value["COSTO"]);
+             SetAdoFields("Cmds",$value["Cmds"]);
+             SetAdoFields("T",'P');
 
              SetAdoUpdate(); 
                              
