@@ -280,7 +280,8 @@ class facturas_distribucion
 	}
 
 	function ConsultarProductos($params){
-		$datos = $this->modelo->ConsultarProductos($params);
+		// print_r($params);die();
+		$datos = $this->modelo->ConsultarProductos($params,false,$params['orden']);
 		$res = array();
 		if(count($datos) > 0){
 			$contenido = array();

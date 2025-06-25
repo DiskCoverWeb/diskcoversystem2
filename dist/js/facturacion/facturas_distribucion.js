@@ -110,7 +110,8 @@ function cargarRegistrosProductos(){
 	let codigoC = $('#codigoCliente').val();
 	let parametros = {
 		'beneficiario': codigoC,
-		'fecha': $('#MBFecha').val()
+		'fecha': $('#MBFecha').val(),
+		'orden':$('#txt_pedido').val(),
 	}
 	$.ajax({
 		type: "POST",
@@ -137,7 +138,7 @@ function cargarRegistrosProductos(){
 					let totalProducto =parseFloat(item['Detalles']['Total'])*parseFloat(item['Productos']['PVP']);
 
 					tr+=`<tr `+color+` class="asignTablaDistri">
-							<td>`+item['Detalles']['CodBodega']+`</td>
+							<td>`+item['Detalles']['Codigo_Barra']+`</td>
 							<td>`+item['Detalles']['Nombre_Completo']+`</td>
 							<td>`+item['Productos']['Producto']+`</td>
 							<td><input id="txt_cant_`+item['Detalles']['ID']+`" class="form-control form-control-sm" onchange="modificarLineaFac(`+item['Detalles']['ID']+`)" style="max-width:95px;" value="`+item['Detalles']['Total']+`"></td>
