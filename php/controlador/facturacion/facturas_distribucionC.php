@@ -1654,8 +1654,8 @@ class facturas_distribucion
 			SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
 			SetAdoFields('A_No', 1);
 			SetAdoFields('CANT', 1);
-			SetAdoFields('PRECIO',$total);
-			SetAdoFields('TOTAL', $total);
+			SetAdoFields('PRECIO', number_format($total,$_SESSION['INGRESO']['Dec_PVP'],'.','');
+			SetAdoFields('TOTAL', number_format($total,2,'.','');
 			SetAdoFields('Serie',$parametros['serie']);
 			SetAdoFields('Item',$_SESSION['INGRESO']['item']);
 			SetAdoUpdate();
@@ -1686,8 +1686,8 @@ class facturas_distribucion
 			SetAdoFields('COD_BAR', $linea_pedido[0]['Codigo_Barra']);
 			SetAdoFields('A_No', ($key+1));
 			SetAdoFields('CANT', $linea_pedido[0]['Total']);
-			SetAdoFields('PRECIO', $value['pvp']);
-			SetAdoFields('TOTAL', $value['total']);
+			SetAdoFields('PRECIO', number_format($value['pvp'],$_SESSION['INGRESO']['Dec_PVP'],'.',''));
+			SetAdoFields('TOTAL',number_format($value['total'],2,'.',''));
 			SetAdoFields('Serie',$parametros['serie']);
 			SetAdoFields('Cmds',$linea_pedido[0]['Cmds']);
 			SetAdoFields('Item',$_SESSION['INGRESO']['item']);
@@ -1708,11 +1708,11 @@ class facturas_distribucion
 			SetAdoFields('CodBodega', $value['CodBodega']);
 			SetAdoFields('TP','CD');
 			SetAdoFields('Salida', $value['Cant']);
-			SetAdoFields('Valor_Unitario', $value['Precio']);
-			SetAdoFields('PVP', $value['Precio']);
-			SetAdoFields('Valor_Total',$value['Total']);
-			SetAdoFields('Total', $value['Total']);
-			SetAdoFields('Costo', $value['Precio']);
+			SetAdoFields('Valor_Unitario', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_PVP']));
+			SetAdoFields('PVP', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_PVP']));
+			SetAdoFields('Valor_Total',number_format($value['Total'],2,'.','');
+			SetAdoFields('Total', number_format($value['Total'],2,'.','');
+			SetAdoFields('Costo', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_Costo'],'.','.'));
 			SetAdoFields('Cta_Inv', $value['Cta_Inventario']);
 			SetAdoFields('Contra_Cta', $value['Cta_Costo_Venta']);
 			SetAdoFields('TC', $value['DFTC']);

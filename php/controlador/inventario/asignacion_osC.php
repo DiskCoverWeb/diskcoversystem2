@@ -338,7 +338,7 @@ class asignacion_osC
             SetAdoFields("Codigo",$parametros['Codigo']);
             SetAdoFields("Producto",$parametros['Producto']);
             SetAdoFields("Cantidad",$parametros['Cantidad']);
-            SetAdoFields("Precio",number_format($producto['datos']['PVP'],2,'','.'));
+            SetAdoFields("Precio",number_format($producto['datos']['PVP'],$_SESSION['INGRESO']['Dec_PVP'],'','.'));
             SetAdoFields("Total",number_format($producto['datos']['PVP']*$parametros['Cantidad'],2,'','.'));
             SetAdoFields("Fecha",$parametros['FechaAte']);
             SetAdoFields("Item",$_SESSION['INGRESO']['item']);
@@ -366,7 +366,7 @@ class asignacion_osC
         SetAdoFields("Codigo",$parametros['Codigo']);
         SetAdoFields("Producto",$parametros['Producto']);
         SetAdoFields("Cantidad",$parametros['Cantidad']);
-        SetAdoFields("Precio",number_format($producto['datos']['PVP'],2,'','.'));
+        SetAdoFields("Precio",number_format($producto['datos']['PVP'],$_SESSION['INGRESO']['Dec_PVP'],'','.'));
         SetAdoFields("Total",number_format($producto['datos']['PVP']*$parametros['Cantidad'],2,'','.'));
         SetAdoFields("Fecha",$parametros['FechaAte']);
         SetAdoFields("Item",$_SESSION['INGRESO']['item']);
