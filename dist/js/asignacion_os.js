@@ -479,6 +479,7 @@ function listaAsignacion() {
                 // var faltantes = parseFloat(total_pedido)-parseFloat(json.cant_total);
 
                 let cantidad = parseFloat(json.cantidad);
+                $('#txt_orden').val(json.orden);
 
                 $('#CantGlobDist').val(parseFloat(cantidad).toFixed(2));
 

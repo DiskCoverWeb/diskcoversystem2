@@ -265,6 +265,11 @@ if(isset($_GET["buscar_linea"]))
 	echo json_encode($controlador->buscar_linea($parametros));
 }
 
+if(isset($_GET["ListaFacturas"]))
+{	
+	echo json_encode($controlador->ListaFacturas());
+}
+
 class facturas_distribucion
 {
 	private $modelo;
@@ -1609,6 +1614,9 @@ class facturas_distribucion
 	//funcion que se ejecuta en punto de venta en facturacion
 	function generar_factura($parametros)
 	{
+		// print_r($parametros);die();
+		// $Factura_No = $parametros['NoFactura'];
+		// $parametros['FacturaNo'] = $Factura_No;
 		$Factura_No = 1;
 		$lineas =  json_decode($parametros['lineas'], true);
 		// print_r($lineas);DIE();
@@ -1621,6 +1629,8 @@ class facturas_distribucion
 			SetAdoFieldsWhere('ID', $value['id']);
 			SetAdoUpdateGeneric();
 		}
+
+		// die();
 
 		if($parametros['TC']=='NDO')
 		{
@@ -1654,8 +1664,8 @@ class facturas_distribucion
 			SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
 			SetAdoFields('A_No', 1);
 			SetAdoFields('CANT', 1);
-			SetAdoFields('PRECIO', number_format($total,$_SESSION['INGRESO']['Dec_PVP'],'.','');
-			SetAdoFields('TOTAL', number_format($total,2,'.','');
+			SetAdoFields('PRECIO', number_format($total,$_SESSION['INGRESO']['Dec_PVP'],'.',''));
+			SetAdoFields('TOTAL', number_format($total,2,'.',''));
 			SetAdoFields('Serie',$parametros['serie']);
 			SetAdoFields('Item',$_SESSION['INGRESO']['item']);
 			SetAdoUpdate();
@@ -1670,6 +1680,8 @@ class facturas_distribucion
 			$this->modelo->ActualizarCodigoFactura($parametros['TC'] . "_SERIE_" . $parametros['serie'],$Factura_No);
 		// }
 
+			// die();
+
 		//genera en asientosF para NPA
 		$this->modelo->DeleteAsientoF($parametros['pedido']);
 		foreach ($lineas as $key => $value) {
@@ -1680,7 +1692,7 @@ class facturas_distribucion
 			SetAdoFields('CODIGO', $linea_pedido[0]['Codigo_Inv']);
 			SetAdoFields('PRODUCTO', $linea_pedido[0]['Producto']);
 			SetAdoFields('Orden_No', $linea_pedido[0]['Orden_No']);
-			SetAdoFields('CodigoU', $linea_pedido[0]['CodigoU']);
+			SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
 			SetAdoFields('HABIT', $linea_pedido[0]['Cta']);
 			SetAdoFields('CodBod', $linea_pedido[0]['CodBodega']);			
 			SetAdoFields('COD_BAR', $linea_pedido[0]['Codigo_Barra']);
@@ -1710,8 +1722,8 @@ class facturas_distribucion
 			SetAdoFields('Salida', $value['Cant']);
 			SetAdoFields('Valor_Unitario', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_PVP']));
 			SetAdoFields('PVP', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_PVP']));
-			SetAdoFields('Valor_Total',number_format($value['Total'],2,'.','');
-			SetAdoFields('Total', number_format($value['Total'],2,'.','');
+			SetAdoFields('Valor_Total',number_format($value['Total'],2,'.',''));
+			SetAdoFields('Total', number_format($value['Total'],2,'.',''));
 			SetAdoFields('Costo', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_Costo'],'.','.'));
 			SetAdoFields('Cta_Inv', $value['Cta_Inventario']);
 			SetAdoFields('Contra_Cta', $value['Cta_Costo_Venta']);
@@ -2226,6 +2238,11 @@ class facturas_distribucion
 		$datos = $this->modelo->pedido_seleccionado($parametros,$parametros['id']);
 		return $datos;
 		// print_r($datos);die();
+	}
+
+	function ListaFacturas()
+	{
+		return $this->modelo->ListaFacturas();
 	}
 
 }

@@ -245,11 +245,31 @@ class asignacion_osM
 
     }
 
-    function buscarAsignacionPrevia($orden)
+    function buscarAsignacionPrevia($orden,$beneficiario,$fecha,$TC,$tipo)
     {
-        $sql = "SELECT COUNT(*) as ingresado FROM Detalle_Factura WHERE Orden_No = '".$orden."'";
-        return $this->db->datos($sql);
+        $sql = "SELECT Orden_No
+        FROM Detalle_Factura 
+        WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+        AND Periodo='".$_SESSION['INGRESO']['periodo']."' 
+        AND CodigoC = '".$beneficiario."' 
+        AND T = 'KF'";
+        if($fecha)
+        {
+            $sql.="AND Fecha = '".$fecha."' ";
+        }
+        if($TC)
+        {
+            $sql.="AND TC = '".$TC."'";
+        }
+        if($tipo)
+        {
+            $sql.=" AND No_Hab = '".$tipo."'";
+        } 
 
+        $sql.= "order By ID desc";
+
+        // print_r($sql);die();     
+        return $this->db->datos($sql);
     }
 
 

@@ -1064,6 +1064,31 @@ class facturas_distribucionM
       return $this->db->datos($sql1);    
   }
 
+  function ListaFacturas()
+  {
+    $sql = "SELECT * 
+        FROM Facturas 
+        WHERE  Item = '".$_SESSION['INGRESO']['item']."' 
+        AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+        AND (TC = 'FA' OR TC = 'NDO') 
+        AND (Serie = '001003') order by ID DESC";
+    return $this->db->datos($sql);         
+  }
+
+  function lista()
+  {
+      $sql = "SELECT Top 10 *,C.Cliente 
+              FROM Facturas  F
+              inner join Clientes C on F.CodigoC = C.Codigo
+              WHERE  Item = '".$_SESSION['INGRESO']['item']."' 
+              AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+              AND (TC = 'FA' ) 
+              AND (Serie = '001003')
+              order by F.ID DESC";
+    return $this->db->datos($sql);       
+
+  }
+
 
 
 

@@ -96,6 +96,7 @@ function cargarOrden() {
 
 
 function cargarProductosGrupo() {
+    $('#txt_codigo').empty();
     grupo = $('#ddlgrupoProducto').val();
     // console.log('ss');
     $('#txt_codigo').select2({
@@ -301,6 +302,7 @@ function agregar_picking()
             if(data==1)
             {
                 Swal.fire("Producto agregado","","success")
+                $('#txt_codigo').empty();
                 cargar_asignacion();
             }else if(data==-2)
             {

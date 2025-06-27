@@ -386,7 +386,7 @@ class asignacion_pickingC
         // cantida que se pide
 
          // print_r('ddd');die();
-        $stock = $this->modelo->listaAsignacion($Beneficiario[0],$T=false,$parametros['CodigoInv'],$Beneficiario[1],false,$Beneficiario[2]);
+        $stock = $this->modelo->listaAsignacion($Beneficiario[0],$T=false,$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsign'],$Beneficiario[2]);
         if(isset($stock[0]['Cantidad']))
         {
             $stock = $stock[0]['Cantidad'];
@@ -398,7 +398,7 @@ class asignacion_pickingC
 
 
         // print_r($cant_ing);
-        // print_r('-'.$stock);
+        // print_r($stock);
         
         // print_r($parametros);
         // die();

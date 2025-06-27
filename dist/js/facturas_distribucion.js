@@ -2297,3 +2297,9 @@ function tipo_facturacion(valor)
 			Swal.fire('Ingrese o Seleccione una bodega', '', 'info').then(function () { $('#TextFacturaNo').focus() });
 		}
 	}
+
+
+	function ListaFacturas()
+	{
+		$('#myModal_listaFacturas').modal('show');
+	}

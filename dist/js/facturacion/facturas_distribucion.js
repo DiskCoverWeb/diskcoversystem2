@@ -1156,3 +1156,17 @@ function Ver_nd(id,serie,ci,aut,tc)
         }
 	}
 
+	function ListaFacturas()
+	{
+		$('#myModal_listaFacturas').modal('show');
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucionC.php?ListaFacturas=true',
+			// data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+				
+				$('#tbl_lista_facturas').html(tr);
+			}
+		});
+	}

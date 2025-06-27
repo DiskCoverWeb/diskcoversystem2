@@ -17,6 +17,7 @@
             'beneficiario':ben,
             'fecha':$('#fechAten').val(),
             'comentario':$('#comeGeneAsig').val(),
+            'orden':$('#txt_orden').val(),
         }
          $.ajax({
             url: '../controlador/inventario/asignacion_osC.php?GuardarAsignacion=true',
@@ -229,6 +230,7 @@
                             <div class="col-sm-6">
                                 <textarea name="infoNutr" id="infoNutr" rows="3" class="form-control form-control-sm" placeholder="">
                                 </textarea>
+                                <input id="txt_orden" id="txt_orden" type="hidden">
                                 
                             </div>
                         </div>

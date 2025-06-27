@@ -41,9 +41,14 @@ if (isset ($_GET['tipo'])) {
 				<!--<a title="BOUCHE" class="btn btn-outline-secondary" onclick="$('#modalBoucher').modal('show');">
 					<img src="../../img/png/adjuntar-archivo.png" height="32px">
 				</a>-->
+
+				<button title="Generar NDO" class="btn btn-outline-secondary" onclick="ListaFacturas()">
+					<img src="../../img/png/facturar.png" height="32px">
+				</button>
 				<button title="IMPRIMIR NOTA DE DONACIÓN" id="imprimir_nd" class="btn btn-outline-secondary" onclick="imprimirNotaDonacion()" disabled>
 					<img src="../../img/png/paper.png" height="32px">
 				</button>
+
 				<button title="FACTURAR" class="btn btn-outline-secondary" onclick="generar()">
 					<img src="../../img/png/facturar.png" height="32px">
 				</button>
@@ -554,6 +559,40 @@ if (isset ($_GET['tipo'])) {
 				<input type="text" name="TxtRifaD" id="TxtRifaD" class="form-control form-control-sm" value="0">
 				<b>Hasta:</b>
 				<input type="text" name="TxtRifaH" id="TxtRifaH" class="form-control form-control-sm" value="0">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-light border border-1" data-bs-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-primary" onclick="Command2_Click();">Aceptar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div id="myModal_listaFacturas" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-primary">
+				<h4 class="modal-title text-white">Facturas recientes</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-sm-12">
+						<table>
+							<thead>
+								<th>Beneficiario</th>
+								<th>Factura</th>
+								<th>Serie</th>
+								<th>Total</th>
+								<th></th>
+							</thead>
+							<tbody id="tbl_lista_facturas">
+								
+							</tbody>
+						</table>						
+					</div>					
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-light border border-1" data-bs-dismiss="modal">Cerrar</button>

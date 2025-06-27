@@ -300,6 +300,11 @@ class asignacion_osC
         $cantidad = 0;
         $res = array();
         $datos = $this->modelo->listaAsignacion($parametros['beneficiario'],'.');
+        $orden = '.';
+        if(isset($datos[0]['Orden_No']))
+        {
+            $orden = $datos[0]['Orden_No'];
+        }
         foreach ($datos as $key => $value) {
             $tr.='<tr>
                     <td>'.($key+1).'</td>
@@ -311,7 +316,7 @@ class asignacion_osC
                 $cantidad+= number_format($value['Cantidad'],2,'.','');
         }
 
-        $res = array('tabla'=>$datos,'cantidad'=>$cantidad);
+        $res = array('tabla'=>$datos,'cantidad'=>$cantidad,'orden'=>$orden);
 
         return $res;
         // print_r($datos);die();
@@ -327,8 +332,19 @@ class asignacion_osC
             // print_r($parametros);die();
             $order = $parametros['beneficiarioCodigo'].''.str_replace('-',"", $parametros['FechaAte']);
 
-            $data = $this->modelo->buscarAsignacionPrevia($order);
-            if($data[0]['ingresado']>0){$order = $order.$data[0]['ingresado'];}
+            $data = $this->modelo->buscarAsignacionPrevia($order,$parametros['beneficiarioCodigo'],$parametros['FechaAte'],'OP',$parametros['asignacion']);
+            if(isset($data[0]['Orden_No']) && $data[0]['Orden_No']>0)
+                {
+                    if(strlen($data[0]['Orden_No'])==18)
+                    {
+                        $order = $order.'1';
+                    }else
+                    {
+                        $ultimo = substr($data[0]['Orden_No'],-1,1);
+                        $digito = $ultimo+1;
+                        $order = $order.$digito;
+                    }
+                }
 
             // print_r($order);die();
             SetAdoAddNew("Detalle_Factura");
@@ -434,6 +450,8 @@ class asignacion_osC
         SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']); 
         SetAdoFieldsWhere('CodigoC',$parametros['beneficiario']);  
         SetAdoFieldsWhere('Fecha',$parametros['fecha']);  
+        SetAdoFieldsWhere('Orden_No',$parametros['orden']);  
+
         return SetAdoUpdateGeneric();
     }
 
