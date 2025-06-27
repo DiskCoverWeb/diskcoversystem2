@@ -348,7 +348,8 @@ function cargar_asignacion()
 
                 
                 //$('#txt_total_ing').val(to-ing);
-                $('#txt_total_ing').val(to-ing);
+                var gran_dif = to-ing;
+                $('#txt_total_ing').val(gran_dif.toFixed(2));
                 
                 // Devolver solo la parte de la tabla para DataTables
                 return json.tabla;
