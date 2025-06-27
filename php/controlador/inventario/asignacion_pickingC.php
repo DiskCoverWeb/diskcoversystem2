@@ -465,7 +465,7 @@ class asignacion_pickingC
         // print_r($datos);die();
 
 
-        return array('tabla'=>$datos,'total'=>$total);
+        return array('tabla'=>$datos,'total'=>number_format($total,2,'.',''));
     }
 /*
     function llenarCamposPoblacion($parametros)
