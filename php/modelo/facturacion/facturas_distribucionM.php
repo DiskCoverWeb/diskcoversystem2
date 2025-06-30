@@ -1045,7 +1045,7 @@ class facturas_distribucionM
       return $this->db->String_Sql($sql);
   }
 
-   function detalle_Factura($TC,$serie,$factura)
+   function detalle_Factura($TC,$serie,$factura,$codigoC = false)
   {
     $sql1 = "SELECT DF.*,CP.*,DF.Cantidad as Cant,DF.TC as DFTC,DF.Factura as FACT,C.Cliente,DF.Cmds as DFCMDS,DF.Codigo_Barra,DF.ID as DFID  
         FROM Detalle_Factura As DF,Catalogo_Productos As CP,Clientes C 
@@ -1053,7 +1053,12 @@ class facturas_distribucionM
         AND DF.TC = '".$TC."' 
         AND DF.Serie = '".$serie."' 
         AND DF.Item = '".$_SESSION['INGRESO']['item']."' 
-        AND DF.Periodo = '".$_SESSION['INGRESO']['periodo']. "' 
+        AND DF.Periodo = '".$_SESSION['INGRESO']['periodo']. "' ";
+        if($codigoC)
+        {
+          $sql1.=" AND CodigoC = '".$codigoC."'";
+        }
+        $sql1.="
         AND DF.Item = CP.Item 
         AND DF.Periodo = CP.Periodo 
         AND DF.Codigo = CP.Codigo_Inv
@@ -1064,28 +1069,68 @@ class facturas_distribucionM
       return $this->db->datos($sql1);    
   }
 
-  function ListaFacturas()
+  function ListaFacturas($factura,$serie)
   {
     $sql = "SELECT * 
         FROM Facturas 
         WHERE  Item = '".$_SESSION['INGRESO']['item']."' 
         AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
-        AND (TC = 'FA' OR TC = 'NDO') 
-        AND (Serie = '001003') order by ID DESC";
+        AND (TC = 'FA' OR TC = 'NDO')
+        AND Factura = '".$factura."' 
+        AND (Serie = '".$serie."') order by ID DESC";
+        // print_r($sql);die();
     return $this->db->datos($sql);         
   }
 
-  function lista()
+  function ListaNdo($factura,$serie,$beneficiario=false)
   {
-      $sql = "SELECT Top 10 *,C.Cliente 
+    $sql = "SELECT * 
+        FROM Facturas 
+        WHERE  Item = '".$_SESSION['INGRESO']['item']."' 
+        AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+        AND (TC = 'NDO')
+        AND Factura = '".$factura."' 
+        AND (Serie = '".$serie."') ";
+        if($beneficiario){
+          $sql.="  ANd CodigoC = '".$beneficiario."'";
+        }
+        $sql.=" order by ID DESC";
+        // print_r($sql);die();
+    return $this->db->datos($sql);         
+  }
+
+  function listaFacturasGeneradas($fecha)
+  {
+      $sql = "SELECT  F.*,C.Cliente 
               FROM Facturas  F
               inner join Clientes C on F.CodigoC = C.Codigo
               WHERE  Item = '".$_SESSION['INGRESO']['item']."' 
               AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
               AND (TC = 'FA' ) 
               AND (Serie = '001003')
+              AND F.Fecha = '".$fecha."'
               order by F.ID DESC";
     return $this->db->datos($sql);       
+
+  }
+
+
+  function lista_trasn_Kardex($serie,$factura,$CodigoC,$codigoBarras)
+  {
+      $sql = "SELECT ".Full_Fields('Trans_Kardex')."  
+              FROM Trans_Kardex 
+              where Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+              AND Item = '".$_SESSION['INGRESO']['item']."' 
+              AND Factura = '".$factura."' 
+              AND Serie = '".$serie."' 
+              and Codigo_P = '".$CodigoC."'";
+              if($codigoBarras)
+              {
+                $sql.="AND Codigo_Barra = '".$codigoBarras."'";
+              }
+
+              // print_r($sql);die();
+      return $this->db->datos($sql);   
 
   }
 

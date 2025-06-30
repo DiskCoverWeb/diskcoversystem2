@@ -267,8 +267,16 @@ if(isset($_GET["buscar_linea"]))
 
 if(isset($_GET["ListaFacturas"]))
 {	
-	echo json_encode($controlador->ListaFacturas());
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->ListaFacturas($parametros));
 }
+
+if(isset($_GET["cuadrarNdo"]))
+{	
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->cuadrarNdo($parametros));
+}
+
 
 class facturas_distribucion
 {
@@ -1699,7 +1707,7 @@ class facturas_distribucion
 			SetAdoFields('A_No', ($key+1));
 			SetAdoFields('CANT', $linea_pedido[0]['Total']);
 			SetAdoFields('PRECIO', number_format($value['pvp'],$_SESSION['INGRESO']['Dec_PVP'],'.',''));
-			SetAdoFields('TOTAL',number_format($value['total'],2,'.',''));
+			SetAdoFields('TOTAL',number_format($value['total'],4,'.',''));
 			SetAdoFields('Serie',$parametros['serie']);
 			SetAdoFields('Cmds',$linea_pedido[0]['Cmds']);
 			SetAdoFields('Item',$_SESSION['INGRESO']['item']);
@@ -1722,8 +1730,8 @@ class facturas_distribucion
 			SetAdoFields('Salida', $value['Cant']);
 			SetAdoFields('Valor_Unitario', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_PVP']));
 			SetAdoFields('PVP', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_PVP']));
-			SetAdoFields('Valor_Total',number_format($value['Total'],2,'.',''));
-			SetAdoFields('Total', number_format($value['Total'],2,'.',''));
+			SetAdoFields('Valor_Total',number_format($value['Total'],4,'.',''));
+			SetAdoFields('Total', number_format($value['Total'],4,'.',''));
 			SetAdoFields('Costo', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_Costo'],'.','.'));
 			SetAdoFields('Cta_Inv', $value['Cta_Inventario']);
 			SetAdoFields('Contra_Cta', $value['Cta_Costo_Venta']);
@@ -2240,9 +2248,75 @@ class facturas_distribucion
 		// print_r($datos);die();
 	}
 
-	function ListaFacturas()
+	function ListaFacturas($parametros)
 	{
-		return $this->modelo->ListaFacturas();
+		$tr = '';
+		$FA = $this->modelo->listaFacturasGeneradas($parametros['fecha']);
+		foreach ($FA as $key => $value) {
+			$data = $this->modelo->ListaFacturas($value['Factura'],$value['Serie']);
+			if(count($data)==2)
+			{
+				$dataNDO = $this->modelo->ListaNdo($value['Factura'],$value['Serie']);
+				if(number_format($data[0]['Total_MN'],2,'.','') == number_format($data[1]['Total_MN'],2,'.',''))
+				{
+					$tr.='<tr><td>'.$value['Cliente'].'</td><td>'.$value['Factura'].'</td><td>'.$value['Serie'].'</td><td>'.$value['Total_MN'].'</td><td>'.$dataNDO[0]['Total_MN'].'</td><td></td></tr>';
+				}else
+				{
+					$tr.='<tr><td>'.$value['Cliente'].'</td><td>'.$value['Factura'].'</td><td>'.$value['Serie'].'</td><td>'.$value['Total_MN'].'<td>'.$dataNDO[0]['Total_MN'].'</td></td><td><button class="btn btn-sm btn-primary" onclick="cuadrarNdo(\''.$value['Factura'].'\',\''.$value['Serie'].'\',\''.$value['CodigoC'].'\')"><i class="bx bx-x"></i>No cuadra</button></td></tr>';
+				}
+			}else
+			{
+				$tr.='<tr><td>'.$value['Cliente'].'</td><td>'.$value['Factura'].'</td><td>'.$value['Serie'].'</td><td>'.$value['Total_MN'].'</td><td><button class="btn btn-sm btn-primary"><i class="bx bx-show-alt"></i> Sin Ndo</button></td></tr>';
+			}
+		}
+
+		return $tr;
+	}
+
+
+	function cuadrarNdo($parametros)
+	{
+
+		$datos = $this->modelo->detalle_Factura('NDO',$parametros['serie'],$parametros['factura'],$parametros['CodigoC']);
+		$total_NDO = 0;
+		foreach ($datos as $key => $value) {
+
+			$inv = $this->modelo->lista_trasn_Kardex($parametros['serie'],$parametros['factura'],$parametros['CodigoC'],$value['Codigo_Barra']);
+
+
+			$total = $value['Cant']*$value['Precio'];
+
+			// print_r($value);die();
+			// print_r($total);die();
+			SetAdoAddNew('Detalle_Factura');		
+			SetAdoFields('Total',number_format($total,4,'.',''));
+			SetAdoFieldsWhere('ID', $value['DFID']);		
+			SetAdoUpdateGeneric();
+
+			SetAdoAddNew('Trans_Kardex');		
+			SetAdoFields('Total',number_format($total,4,'.',''));
+			SetAdoFields('Valor_Total',number_format($total,4,'.',''));
+			SetAdoFieldsWhere('ID', $inv[0]['ID']);		
+			SetAdoUpdateGeneric();
+
+			$total_NDO+= $total;
+		}
+
+		$factura_ndo = $this->modelo->ListaNdo($parametros['factura'],$parametros['serie'],$parametros['CodigoC']);
+		if(count($factura_ndo)>0)
+		{
+
+			// print_r($total_NDO);die();
+			$total_NDO = redondear_justo($total_NDO);
+			// print_r($total_NDO);die();
+			SetAdoAddNew('Facturas');		
+			SetAdoFields('Total_MN',$total_NDO);
+			SetAdoFields('SubTotal',$total_NDO);
+			SetAdoFields('Sin_IVA',$total_NDO);
+
+			SetAdoFieldsWhere('ID', $factura_ndo[0]['ID']);
+			return SetAdoUpdateGeneric();
+		}
 	}
 
 }

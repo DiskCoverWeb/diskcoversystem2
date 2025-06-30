@@ -2303,3 +2303,23 @@ function tipo_facturacion(valor)
 	{
 		$('#myModal_listaFacturas').modal('show');
 	}
+
+	function cuadrarNdo(factura,serie)
+	{
+		var parametros = 
+		{
+			'factura':factura,
+			'serie':serie,
+		}
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturar_pensionC.php?cuadrarNdo=true',
+			data: {parametros,parametros},
+			dataType: 'json',
+			success: function (data) {
+				
+				console.log(data);
+			}
+		});
+
+	}

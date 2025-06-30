@@ -1159,14 +1159,42 @@ function Ver_nd(id,serie,ci,aut,tc)
 	function ListaFacturas()
 	{
 		$('#myModal_listaFacturas').modal('show');
+		var parametros = 
+		{
+			'fecha':$('#txt_date_facturas').val(),
+		}
 		$.ajax({
 			type: "POST",
 			url: '../controlador/facturacion/facturas_distribucionC.php?ListaFacturas=true',
-			// data: { parametros: parametros },
+			data: { parametros: parametros },
 			dataType: 'json',
 			success: function (data) {
 				
-				$('#tbl_lista_facturas').html(tr);
+				$('#tbl_lista_facturas').html(data);
 			}
 		});
+	}
+
+	function cuadrarNdo(factura,serie,beneficiario)
+	{
+		var parametros = 
+		{
+			'factura':factura,
+			'serie':serie,
+			'CodigoC':beneficiario,
+		}
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucionC.php?cuadrarNdo=true',
+			data: {parametros,parametros},
+			dataType: 'json',
+			success: function (data) {
+				if(data==1)
+				{
+					ListaFacturas();
+				}
+				
+			}
+		});
+
 	}

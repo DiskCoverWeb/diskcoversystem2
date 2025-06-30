@@ -571,7 +571,7 @@ if (isset ($_GET['tipo'])) {
 
 
 <div id="myModal_listaFacturas" class="modal fade" role="dialog">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header bg-primary">
 				<h4 class="modal-title text-white">Facturas recientes</h4>
@@ -579,12 +579,16 @@ if (isset ($_GET['tipo'])) {
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-sm-12">
-						<table>
+						<input type="date" name="txt_date_facturas" id="txt_date_facturas" value="<?php echo date('Y-m-d'); ?>" onchange="ListaFacturas()">
+					</div>
+					<div class="col-sm-12">
+						<table class="table table-sm table-hover">
 							<thead>
 								<th>Beneficiario</th>
 								<th>Factura</th>
 								<th>Serie</th>
-								<th>Total</th>
+								<th>Total FA</th>
+								<th>Total NDO</th>
 								<th></th>
 							</thead>
 							<tbody id="tbl_lista_facturas">

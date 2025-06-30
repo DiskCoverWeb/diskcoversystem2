@@ -13882,4 +13882,24 @@ function conversionToString($dato): string {
     return $pdf->Imprimir_Nota_Inventario($DatosNotaInventario);
   }
 
+  function redondear_justo($valor) {
+     $valorStr = number_format((float)$valor, 10, '.', ''); // precisión alta para evitar errores
+    list($entero, $decimales) = explode('.', $valorStr . '.00');
+
+    // Tomar sólo los dos primeros decimales, completar con ceros si faltan
+    $dosDecimales = substr($decimales . '00', 0, 2);
+    $dosDecimalesInt = intval($dosDecimales);
+
+    if ($dosDecimalesInt >= 50) {
+        // Redondear al siguiente entero
+        $resultado = ceil((float)$valor);
+    } else {
+        // Truncar a entero
+        $resultado = floor((float)$valor);
+    }
+
+    // Siempre mostrar con dos decimales
+    return number_format($resultado, 2, '.', '');
+}
+
 ?>
