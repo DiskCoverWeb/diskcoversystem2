@@ -1177,6 +1177,7 @@ function Ver_nd(id,serie,ci,aut,tc)
 
 	function cuadrarNdo(factura,serie,beneficiario)
 	{
+		$('#myModal_espera').modal('show');
 		var parametros = 
 		{
 			'factura':factura,
@@ -1189,6 +1190,8 @@ function Ver_nd(id,serie,ci,aut,tc)
 			data: {parametros,parametros},
 			dataType: 'json',
 			success: function (data) {
+
+				$('#myModal_espera').modal('hide');
 				if(data==1)
 				{
 					ListaFacturas();
