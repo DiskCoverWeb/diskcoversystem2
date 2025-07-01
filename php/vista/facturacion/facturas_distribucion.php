@@ -488,6 +488,10 @@ if (isset ($_GET['tipo'])) {
 							<input type="text" name="TextCheque" id="TextCheque" class="form-control form-control-sm text-end"
 							value="0.00" onblur="calcular_pago()">
 						</div>
+						<div class="row" id="bouche_banco_input">
+							<b>ADJUNTAR BOUCHE:</b>
+							<input type="file" class="form-control" id="archivoAdd" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
+						</div>
 						<label><input type="checkbox" name="cbx_banco_2" id="cbx_banco_2" onchange="view_banco()"> Nueva cuenta banco</label>
 					</div>
 					<div class="row" id="campos_fact_banco_2" style="display:none;">
@@ -513,6 +517,10 @@ if (isset ($_GET['tipo'])) {
 							<input type="text" name="TextCheque2" id="TextCheque2" class="form-control form-control-sm text-end"
 							value="0.00" onblur="calcular_pago()">
 						</div>	
+						<div class="row" id="bouche_banco_input2">
+						<b>ADJUNTAR BOUCHE 2:</b>
+						<input type="file" class="form-control" id="archivoAdd2" accept=".pdf,.jpg,.png" onchange="agregarArchivo2()">
+					</div>
 					</div>
 					<div class="row">
 						<hr>
@@ -522,14 +530,8 @@ if (isset ($_GET['tipo'])) {
 								style="color: red;" value="0.00" readonly>
 						</div>	
 					</div>
-					<div class="row" id="bouche_banco_input" style="margin:10px 0;display:none;">
-							<b>ADJUNTAR BOUCHE:</b>
-							<input type="file" class="form-control" id="archivoAdd" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
-					</div>
-					<div class="row" id="bouche_banco_input" style="margin:10px 0;display:none;">
-							<b>ADJUNTAR BOUCHE 2:</b>
-							<input type="file" class="form-control" id="archivoAdd2" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
-					</div>
+					
+				
 					
 					
 					

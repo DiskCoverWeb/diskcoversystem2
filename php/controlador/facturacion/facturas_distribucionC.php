@@ -62,7 +62,7 @@ if(isset($_GET['GuardarBouche'])){
     }
      $uploadfile_temporal=$file['file']['tmp_name'];
      $tipo = explode('/', $file['file']['type']);
-	 $nom_archivo = $_POST['fecha'].$_POST['n_factura'].$_POST['serie'];
+	 $nom_archivo = $_POST['fecha'].$_POST['n_factura'].$_POST['serie'].date('YmdHis');
      $nombre = $_SESSION['INGRESO']['item'].'_'.$nom_archivo.'_pago.'.$tipo[1];
     // print_r($file);print_r($post);die();
      $nuevo_nom=$ruta.$nombre;
