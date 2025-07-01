@@ -6,6 +6,7 @@ $(document).ready(function () {
 	DCLineas()
 	DCPorcenIvaFD();
 	DCBanco();
+	DCBanco2();
 
 	DCEfectivo();
 
@@ -415,12 +416,32 @@ function DCLineas() {
 		data: { parametros: parametros },
 		dataType: 'json',
 		success: function (data) {
-			llenarComboList(data, 'DCLineas');
+			console.log(data);
+			var opcion = '';
+			data.forEach(function(item,i){
+				opcion+="<option value='"+item.codigo+"' data-caja='"+item.caja+"'>"+item.nombre+"</option>"
+			})
+			// llenarComboList(data, 'DCLineas');
 			//$('#Cod_CxC').val(data[0].nombre);  //FA
 			//Lineas_De_CxC();
+			$('#DCLineas').html(opcion);
 			$('#DCLineas').val('F001003X');
 		}
 	});
+}
+
+function cta_caja()
+{
+	const select = document.getElementById('DCLineas');
+	const selectedOption = select.options[select.selectedIndex];
+	const cta = selectedOption.getAttribute('data-caja');
+	if(cta=='0')
+	{
+		$('#pnl_cta_caja').removeClass("d-none")
+	}else
+	{
+		$('#pnl_cta_caja').addClass("d-none")
+	}
 }
 function DCPorcenIvaFD() {
 	
@@ -447,6 +468,7 @@ function toggleInfoBanco(){
 	let btn = $('#btnToggleInfoBanco');
 	if(btn.attr('stateval') == "1"){
 		$('#campos_fact_banco').hide();
+		// $('#campos_fact_banco_2').hide();
 		$('#bouche_banco_input').hide();
 		btn.addClass('btn-light');
 		btn.addClass('border');
@@ -455,6 +477,7 @@ function toggleInfoBanco(){
 		btn.attr('stateval', '0');
 	}else{
 		$('#campos_fact_banco').show();
+		// $('#campos_fact_banco_2').show();
 		$('#bouche_banco_input').show();
 		btn.addClass('btn-primary');
 		btn.removeClass('btn-light');
@@ -521,6 +544,27 @@ function DCBanco() {
 		}
 	});
 }
+
+function DCBanco2() {
+	// alert('das');
+	$('#DCBanco2').select2({
+		placeholder: 'Seleccione un banco',
+		dropdownParent: $('#modalInfoFactura'),
+		width: '100%',
+		ajax: {
+			url: '../controlador/facturacion/facturas_distribucionC.php?DCBanco=true',
+			dataType: 'json',
+			delay: 250,
+			processResults: function (data) {
+
+				return {
+					results: data
+				};
+			},
+			cache: true
+		}
+	});
+}
 function calcular_pago() {
 
 	var valBanco = $('#TextCheque').val();
@@ -538,6 +582,8 @@ function calcular_pago() {
 	var Total_Factura = parseFloat($('#LabelTotalME').val());
 	var Total_Factura2 = parseFloat($('#LabelTotal').val());
 	var Total_banco = $('#btnToggleInfoBanco').attr('stateval') == "1" ? parseFloat($('#TextCheque').val()) : 0.00;
+	var Total_banco2 = $('#btnToggleInfoBanco').attr('stateval') == "1" ? parseFloat($('#TextCheque2').val()) : 0.00;
+
 	if (cotizacion > 0) {
 		if (parseFloat(efectivo) > 0) {
 			var ca = efectivo - Total_Factura + Total_banco;
@@ -545,8 +591,8 @@ function calcular_pago() {
 			$('#btn_g').focus();
 		}
 	} else {
-		if (efectivo > 0 || Total_banco > 0) {
-			var ca = (parseFloat(efectivo)-parseFloat(Total_Factura2)+parseFloat(Total_banco));
+		if (efectivo > 0 || Total_banco > 0 || Total_banco > 0) {
+			var ca = (parseFloat(efectivo)-parseFloat(Total_Factura2)+parseFloat(Total_banco)+parseFloat(Total_banco2));
 			if(ca.toFixed(2) != 0)
 			{
 				$('#LblCambio').val(ca.toFixed(2));
@@ -753,8 +799,8 @@ function validar_pago()
 	var total = parseFloat($('#LabelTotal').val()).toFixed(4);
 	var efectivo = parseFloat($('#TxtEfectivo').val()).toFixed(4);
 	var banco = parseFloat($('#TextCheque').val()).toFixed(4);
-
-	total_abono = parseFloat(efectivo)+parseFloat(banco);
+	var banco2 = parseFloat($('#TextCheque2').val()).toFixed(4);
+	total_abono = parseFloat(efectivo)+parseFloat(banco)+parseFloat(banco2);
 	
 	if(total_abono<total)
 	{
@@ -905,6 +951,15 @@ function generar_factura()
 		lineas.push({'id':item,'cant':cant,'pvp':pvp,'total':total})
 	})
 
+	const select = document.getElementById('DCLineas');
+	const selectedOption = select.options[select.selectedIndex];
+	const cta = selectedOption.getAttribute('data-caja');
+	if(cta=="0")
+	{
+		cta = $('#DCEfectivo').val();
+	}
+
+
 	console.log(lineas);
 
 	var parametros = {
@@ -918,12 +973,19 @@ function generar_factura()
 		'ctaEfectivo':$('#DCEfectivo').val(),
 		'valorEfectivo':$('#TxtEfectivo').val(),
 		'DCBancoC':$('#DCBanco').val(),
-		'DCEfectivo':$('#DCEfectivo').val(),
+		'DCEfectivo':cta,
 		'TextCheqNo':$('#TextCheqNo').val(),
 		'TextBanco':$('#TextBanco').val(),
 		'valorBanco':$('#TextCheque').val(),
 		'PorcIva':$('#DCPorcenIVA').val(),
 		'CI':$('#LblRUC').val(),
+		'cbxBanco':$('#cbx_banco_2').prop('checked'),
+		'DCBancoC2':$('#DCBanco2').val(),
+		'TextCheqNo2':$('#TextCheqNo2').val(),
+		'TextBanco2':$('#TextBanco2').val(),
+		'valorBanco2':$('#TextCheque2').val(),
+
+
 	}
 	$('#myModal_espera').modal('show');
 	$.ajax({
@@ -1200,4 +1262,15 @@ function Ver_nd(id,serie,ci,aut,tc)
 			}
 		});
 
+	}
+
+	function view_banco()
+	{
+		if($('#cbx_banco_2').prop('checked'))
+		{
+			$('#campos_fact_banco_2').show()
+		}else
+		{
+			$('#campos_fact_banco_2').hide()			
+		}
 	}

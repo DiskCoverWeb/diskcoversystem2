@@ -112,7 +112,7 @@ class facturas_distribucionM
 
   function DCLinea($TC, $Fecha, $Codigo = false)
   {
-    $sql = "SELECT Codigo, Concepto, CxC, Serie, Autorizacion 
+    $sql = "SELECT Codigo, Concepto, CxC, Serie, Autorizacion,Caja_Efectivo 
       FROM Catalogo_Lineas 
       WHERE TL <> 0 
       AND Item = '" . $_SESSION['INGRESO']['item'] . "' 

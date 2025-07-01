@@ -371,7 +371,7 @@ if (isset ($_GET['tipo'])) {
 	</div>
 </div>
 
-<div id="modalInfoFactura" class="modal fade">
+<div id="modalInfoFactura" class="modal fade" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header bg-primary">
@@ -386,8 +386,8 @@ if (isset ($_GET['tipo'])) {
 							<b>Cuenta x Cobrar</b>
 						</div>
 						<div class="col-sm-7">
-							<select class="form-select form-select-sm" id="DCLineas" name="DCLineas"
-								>
+							<input type="hidden" name="" id="">
+							<select class="form-select form-select-sm" id="DCLineas" name="DCLineas" onchange="cta_caja()">
 								<option value="">Seleccione</option>
 							</select>
 						</div>
@@ -453,7 +453,7 @@ if (isset ($_GET['tipo'])) {
 						
 					</div>
 					<div class="row" id="campos_fact_efectivo" style="display:block;">
-						<div class="input-group mb-3 input-group-sm "> 
+						<div class="input-group mb-3 input-group-sm d-none" id="pnl_cta_caja"> 
 							<b>CUENTA</b>
 							<select class="form-select form-select-sm" id="DCEfectivo" name="DCEfectivo">
 								<option>Seleccion opciones</option>
@@ -487,6 +487,31 @@ if (isset ($_GET['tipo'])) {
 							<span class="input-group-text" id="basic-addon3"><b>VALOR BANCO</b></span>
 							<input type="text" name="TextCheque" id="TextCheque" class="form-control form-control-sm text-end"
 							value="0.00" onblur="calcular_pago()">
+						</div>
+						<label><input type="checkbox" name="cbx_banco_2" id="cbx_banco_2" onchange="view_banco()"> Nueva cuenta banco</label>
+					</div>
+					<div class="row" id="campos_fact_banco_2" style="display:none;">
+						<hr>
+						<!-- <div class="row">  -->
+							<div class="col-sm-12">
+								<b>CUENTA DEL BANCO 2</b>
+								<select class="form-select form-select-sm" id="DCBanco2" name="DCBanco2">
+									<option value="">Seleccione Banco</option>
+								</select>								
+							</div>
+						<!-- </div>	 -->
+						<div class="input-group input-group-sm "> 
+							<span class="input-group-text" id="basic-addon3"><b>Documento</b></span>
+							<input type="text" name="TextCheqNo2" id="TextCheqNo2" class="form-control form-control-sm" value=".">
+						</div>	
+						<div class="input-group input-group-sm "> 
+							<span class="input-group-text" id="basic-addon3"><b>NOMBRE DEL BANCO</b></span>
+							<input type="text" name="TextBanco2" id="TextBanco2" class="form-control form-control-sm" value=".">
+						</div>	
+						<div class="input-group mb-3 input-group-sm "> 
+							<span class="input-group-text" id="basic-addon3"><b>VALOR BANCO</b></span>
+							<input type="text" name="TextCheque2" id="TextCheque2" class="form-control form-control-sm text-end"
+							value="0.00" onblur="calcular_pago()">
 						</div>	
 					</div>
 					<div class="row">
@@ -500,6 +525,10 @@ if (isset ($_GET['tipo'])) {
 					<div class="row" id="bouche_banco_input" style="margin:10px 0;display:none;">
 							<b>ADJUNTAR BOUCHE:</b>
 							<input type="file" class="form-control" id="archivoAdd" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
+					</div>
+					<div class="row" id="bouche_banco_input" style="margin:10px 0;display:none;">
+							<b>ADJUNTAR BOUCHE 2:</b>
+							<input type="file" class="form-control" id="archivoAdd2" accept=".pdf,.jpg,.png" onchange="agregarArchivo()">
 					</div>
 					
 					

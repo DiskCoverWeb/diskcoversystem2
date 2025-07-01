@@ -413,8 +413,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 	}
 
 
-	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
-
+	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";		
 		$ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Recibo_No']."<b></td></tr>";
 
 		// $ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja ."0000</b></td></tr>";
@@ -438,7 +437,12 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 		}
 
 		$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
-		$ticket.="<tr><td colspan='3'>Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d').' - EFECTIVO MN - '.str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).' - Por USD '.number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')."</td></tr>";
+		foreach ($filasTA as $key => $value) {
+			// print_r($value);die();
+			$ticket.="<tr><td colspan='3'>Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d').' - '.$value['Banco'].' - '.str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).' - Por USD '.number_format((float)$value['Abono'], 2, '.', '')."</td></tr>";
+		}
+
+		// $ticket.="<tr><td colspan='3'>Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d').' - EFECTIVO MN - '.str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).' - Por USD '.number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')."</td></tr>";
 		$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
 
 		$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";

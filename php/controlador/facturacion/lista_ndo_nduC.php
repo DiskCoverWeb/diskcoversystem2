@@ -419,6 +419,7 @@ class lista_facturasC
 
 		$abonos = $this->modelo->trans_abonos($TFA['factura'][0]['Factura'],$TFA['factura'][0]['Serie'],$TFA['factura'][0]['CodigoC'],$autorizacion);
 
+		// print_r($abonos);die();
 
 		$ticket = $this->pdf->Imprimir_Punto_Venta($TFA,$abonos);
 		return $ticket;

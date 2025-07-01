@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.1.0">
+  <infoTributaria>
+    <ambiente>2</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>FUNDACION DE AYUDA SOCIAL BANCO DE ALIMENTOS</razonSocial>
+    <nombreComercial>BANCO DE ALIMENTOS QUITO</nombreComercial>
+    <ruc>1791921429001</ruc>
+    <claveAcceso>0107202501179192142900120010030000002721234567812</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>003</ptoEmi>
+    <secuencial>000000272</secuencial>
+    <dirMatriz>Av Pedro Vicente Maldonado S15238 y Balzar</dirMatriz>
+    <agenteRetencion>1</agenteRetencion>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>01/07/2025</fechaEmision>
+    <dirEstablecimiento>Av Pedro Vicente Maldonado S15238 y Balzar</dirEstablecimiento>
+    <obligadoContabilidad>SI</obligadoContabilidad>
+    <tipoIdentificacionComprador>07</tipoIdentificacionComprador>
+    <razonSocialComprador>CONSUMIDOR FINAL</razonSocialComprador>
+    <identificacionComprador>9999999999999</identificacionComprador>
+    <totalSinImpuestos>0.80</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>0</codigoPorcentaje>
+        <descuentoAdicional>0.00</descuentoAdicional>
+        <baseImponible>0.80</baseImponible>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>0.80</importeTotal>
+    <moneda>DOLAR</moneda>
+    <pagos>
+      <pago>
+        <formaPago>01</formaPago>
+        <total>0.80</total>
+      </pago>
+    </pagos>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>FA.99</codigoPrincipal>
+      <descripcion>DONACION OS</descripcion>
+      <unidadMedida>DOLAR</unidadMedida>
+      <cantidad>1.000000</cantidad>
+      <precioUnitario>0.800000</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>0.80</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <tarifa>0</tarifa>
+          <baseImponible>0.80</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Beneficiario">PRISMANET PROFESIONAL SA</campoAdicional>
+    <campoAdicional nombre="Ubicacion">001</campoAdicional>
+    <campoAdicional nombre="Direccion">CALLE ATACAMES N23226 Y AV LA GASCA</campoAdicional>
+    <campoAdicional nombre="Telefono">0999654196</campoAdicional>
+    <campoAdicional nombre="Email">diskcoversystem@msncom</campoAdicional>
+    <campoAdicional nombre="Email2">diskcoversystem@msncom</campoAdicional>
+    <campoAdicional nombre="Referencia">Martha Lucas Cevallos</campoAdicional>
+    <campoAdicional nombre="tipoContribuyente">Contribuyente Regimen General</campoAdicional>
+    <campoAdicional nombre="seriePuntoEmision">001003</campoAdicional>
+    <campoAdicional nombre="PlacaVehiculo">.</campoAdicional>
+    <campoAdicional nombre="CtaEstablecimiento">.</campoAdicional>
+  </infoAdicional>
+</factura>

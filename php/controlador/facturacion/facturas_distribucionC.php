@@ -329,7 +329,7 @@ class facturas_distribucion
       $datos = $this->modelo->DCLinea($parametros['TC'], $parametros['Fecha']);
       $lis = array();
       foreach ($datos as $key => $value) {
-         $lis[] = array('codigo' => $value['Codigo'], 'nombre' => $value['Concepto']);
+         $lis[] = array('codigo' => $value['Codigo'], 'nombre' => $value['Concepto'],'caja'=>$value['Caja_Efectivo']);
       }
       return $lis;
    }
@@ -1813,6 +1813,17 @@ class facturas_distribucion
 			$FA['TxtEfectivo'] = $parametros['valorEfectivo'];
 			$FA['Cod_CxC'] = $datos[0]['Codigo'];
 			$FA['Remision'] = 0;
+			$FA['Banco2'] = $parametros['cbxBanco'];
+
+			if($FA['Banco2']=='true')
+			{
+				$FA['TextBanco2'] = $parametros['TextBanco2'];
+				$FA['TextCheqNo2'] = $parametros['TextCheqNo2'];
+				$FA['DCBancoC2'] = $parametros['DCBancoC2'];
+				$FA['valorBan2'] = $parametros['valorBanco2'];
+			
+			}
+
 			if (isset($parametros['tipo_pago'])) {
 				$FA['Tipo_Pago'] = $parametros['tipo_pago'];
 			} else {
@@ -1948,6 +1959,24 @@ class facturas_distribucion
 				// print_r($TA);die();
 				Grabar_Abonos($TA);
 				// print_r($TA);die();
+
+				if($FA['Banco2']=='true')
+				{
+					$TA['T'] = G_NORMAL;
+					$TA['TP'] = $TipoFactura;
+					$TA['Fecha'] = $FechaTexto;
+					$TA['Cta'] = $FA['DCBancoC2'];
+					$TA['Cta_CxP'] = $FA['Cta_CxP'];
+					$TA['Banco'] = $FA['TextBanco2'];
+					$TA['Cheque'] = $FA['TextCheqNo2'];
+					$TA['Factura'] = $Factura_No; //pendiente
+					if(isset($FA['Comprobante'])){$TA['Comprobante'] = $FA['Comprobante'];}
+					$Total_Bancos = 0;
+					$TA['Abono'] = $FA['valorBan2'];
+					// print_r($TA);die();
+					Grabar_Abonos($TA);
+				
+				}
 
 
 
