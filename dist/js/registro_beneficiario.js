@@ -3045,7 +3045,7 @@ function Programa()
 
 function grupos()
 {
-    programa = $('#select_85').val();
+    var programa = $('#select_85').val();
     $('#grupo').select2({
         placeholder: 'Seleccione una beneficiario',
         width:'100%',
@@ -3437,7 +3437,10 @@ function llenarCamposInfo(datos) {
                 $('#select_85').append($('<option>',{value: datos.Programas.Cmds, text: datos.Programas.Proceso,selected: true }));
             }
             if(datos.Grupo){
+                grupos();                
                 $('#grupo').append($('<option>',{value: datos.Grupo.Cmds, text: datos.Grupo.Proceso,selected: true }));
+                // grupos();
+
             }
             if(datos.EstadoCivil){
                 $('#estadoCivil').append($('<option>',{value: datos.EstadoCivil.Codigo, text: datos.EstadoCivil.Descripcion,selected: true }));
