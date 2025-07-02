@@ -161,7 +161,12 @@ class egreso_alimentosC
 
 	function buscar_producto($parametros)
 	{
+		// print_r($parametros);die();
 		$datos = $this->modelo->buscar_producto($parametros['codigo']);
+		$data = costo_venta($datos[0]['Codigo_Inv'],$parametros['codigo']);
+		// print_r($data);die();
+		$datos = array('datos'=>$datos,'stock'=>$data[0]['Existencia']);
+
 		return $datos;
 	}
 

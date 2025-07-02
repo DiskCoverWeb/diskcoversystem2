@@ -362,17 +362,22 @@ function buscar_producto()
 	   url:   '../controlador/inventario/egreso_alimentosC.php?buscar_producto=true',
 		 data:{parametros:parametros},
 	   dataType:'json',
-		success: function(data)
+		success: function(response)
 		{
-			if(data.length>0)
+			if(response.datos.length>0)
 			{
-				data = data[0];
+
+				console.log(response);
+
+				data = response.datos[0];
+				stock = response.stock;
+
 
 				$('#txt_id').val(data.ID)
 				$('#txt_cod_producto').val(data.Codigo_Barra)
 				$('#txt_donante').val(data.Cliente)
 				$('#txt_grupo').val(data.Producto)
-				$('#txt_stock').val(data.Entrada)
+				$('#txt_stock').val(stock.toFixed(2))
 				$('#txt_unidad').val(data.Unidad)
 			}else
 			{

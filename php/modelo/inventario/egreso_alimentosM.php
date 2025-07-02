@@ -71,6 +71,7 @@ class egreso_alimentosM
 			{
 				$sql.=" CP.Codigo_Inv = '".$grupo."'";
 			}
+			
 			// print_r($sql);die();
 		return $this->db->datos($sql);
 	}

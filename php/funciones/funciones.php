@@ -6005,7 +6005,7 @@ function LeerCta($CodigoCta ) //optimizado
   }
 }
 
-function costo_venta($codigo_inv)  // optimizado
+function costo_venta($codigo_inv,$codigoBarras=false)  // optimizado
   {
     $conn = new db();
     $sql = "SELECT  SUM(Entrada-Salida) as 'Existencia' 
@@ -6015,6 +6015,10 @@ function costo_venta($codigo_inv)  // optimizado
     AND Item = '".$_SESSION['INGRESO']['item']."'
     AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
     AND T <> 'A'";
+    if($codigoBarras)
+      {
+        $sql.=" AND Codigo_Barra='".$codigoBarras."'";
+      }
     // print_r($sql);die();
     $datos = $conn->datos($sql);
     return $datos;
