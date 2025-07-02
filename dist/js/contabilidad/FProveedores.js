@@ -29,6 +29,16 @@ $( document ).ready(function() {
             $('#txt_ejec').val(ui.item.Cod_Ejec)
             $('#CParteR').val(ui.item.Parte_Relacionada)
 
+            if(ui.item.facturar==0)
+            {
+                $('#rbl_facturar').prop('checked',false);
+            }else
+            {
+                $('#rbl_facturar').prop('checked',true);
+            }
+
+
+
             $("#txt_actividad option").filter(function() {
                 return $(this).text() === ui.item.Actividad;
             }).prop('selected', true);
@@ -77,6 +87,13 @@ $( document ).ready(function() {
             $('#txt_email').val(ui.item.email); // save selected id to input
             $('#txt_email2').val(ui.item.email2); // save selected id to input
             $('#txt_ejec').val(ui.item.Cod_Ejec)
+            if(ui.item.facturar==0)
+            {
+                $('#rbl_facturar').prop('checked',false);
+            }else
+            {
+                $('#rbl_facturar').prop('checked',true);
+            }
 
               $("#txt_actividad option").filter(function() {
                 return $(this).text() === ui.item.Actividad;

@@ -60,10 +60,14 @@
                             </div>          
                         </div>
                         <div class="row">
-                            <div class="col-sm-12 col-xs-12">
-                            <b>Direccion</b>
-                            <input type="text" id="txt_direccion" name="txt_direccion" class="form-control form-control-sm"  onkeyup="mayusculasevent(this)">  
-                            </div>        
+                            <div class="col-sm-8 col-xs-12">
+                                <b>Direccion</b>
+                                <input type="text" id="txt_direccion" name="txt_direccion" class="form-control form-control-sm"  onkeyup="mayusculasevent(this)">  
+                            </div>     
+                            <div class="col-sm-4">
+                                <br>
+                                <label> <input type="checkbox" name="rbl_facturar" id="rbl_facturar"> Para Facturar</label>
+                            </div>   
                         </div>
                         <div class="row">
                             <div class="col-sm-8 col-xs-8">

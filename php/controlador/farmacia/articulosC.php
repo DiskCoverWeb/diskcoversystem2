@@ -483,13 +483,18 @@ class articulosC
 	function Ingresar_proveedor($parametros)
 	{
 
+		// print_r($parametros);die();
 		$codigo = Digito_Verificador($parametros['txt_ruc']);
 		// print_r($codigo);die();
 		$existe = $this->modelo->clientes_all(false,$codigo['Codigo_RUC_CI']);
 		$cli = '';
 		
 		    SetAdoAddNew("Clientes"); 
-		    SetAdoFields('FA','1');
+		    SetAdoFields('FA','0');
+		    if(isset($parametros['rbl_facturar']) && $parametros['rbl_facturar']=='on')
+		    {
+		    	SetAdoFields('FA','1');
+		    }
 		    SetAdoFields('T','N');
 		    SetAdoFields('Codigo',$codigo['Codigo_RUC_CI']);
 		    SetAdoFields('Cliente',$parametros['txt_nombre_prove']);
@@ -502,7 +507,9 @@ class articulosC
 		    SetAdoFields('Cod_Ejec',$parametros['txt_ejec']);
 		    SetAdoFields('Tipo_Pasaporte',$parametros['CTipoProv']);
 		    SetAdoFields('Parte_Relacionada',$parametros['CParteR']);
-		if(empty($existe))
+
+		    // print_r($existe);die();
+		if(count($existe)==0)
 		{			
 		    SetAdoFields('Fecha',strval(date('Y-m-d')));
 		    $cli = SetAdoUpdate();
@@ -512,8 +519,9 @@ class articulosC
 		}
 
 		 $exist = $this->modelo->catalogo_Cxcxp($codigo['Codigo_RUC_CI']);
+		 // print_r($exist);die();
 
-		 if(empty($exist))
+		 if(count($exist)==0)
 		 {
 		    SetAdoAddNew("Catalogo_CxCxP"); 
 		    SetAdoFields('Codigo',$codigo['Codigo_RUC_CI']);
@@ -1044,7 +1052,7 @@ function eliminar_factura($parametros)
 		// print_r($datos);die();
 		$result = array();
 		foreach ($datos as $key => $value) {
-			 $result[] = array("value"=>$value['ID'],"label"=>$value['Cliente'],'dir'=>$value['Direccion'],'tel'=>$value['Telefono'],'email'=>$value['Email'],'email2'=>$value['Email2'],'CI'=>$value['CI_RUC'],'Actividad'=>$value['Actividad'],'Cod_Ejec'=>$value['Cod_Ejec'],'Parte_Relacionada'=>$value['Parte_Relacionada'],'Tipo_Pasaporte'=>$value['Tipo_Pasaporte']);
+			 $result[] = array("value"=>$value['ID'],"label"=>$value['Cliente'],'dir'=>$value['Direccion'],'tel'=>$value['Telefono'],'email'=>$value['Email'],'email2'=>$value['Email2'],'CI'=>$value['CI_RUC'],'Actividad'=>$value['Actividad'],'Cod_Ejec'=>$value['Cod_Ejec'],'Parte_Relacionada'=>$value['Parte_Relacionada'],'Tipo_Pasaporte'=>$value['Tipo_Pasaporte'],'facturar'=>$value['FA']);
 		}
 		return $result;
 	}
@@ -1055,7 +1063,7 @@ function eliminar_factura($parametros)
 		// print_r($datos);die();
 		$result = array();
 		foreach ($datos as $key => $value) {
-			 $result[] = array("value"=>$value['ID'],"label"=>$value['CI_RUC'],'dir'=>$value['Direccion'],'tel'=>$value['Telefono'],'email'=>$value['Email'],'email2'=>$value['Email2'],'Nombre'=>$value['Cliente'],'Actividad'=>$value['Actividad'],'Cod_Ejec'=>$value['Cod_Ejec'],'Parte_Relacionada'=>$value['Parte_Relacionada'],'Tipo_Pasaporte'=>$value['Tipo_Pasaporte']);
+			 $result[] = array("value"=>$value['ID'],"label"=>$value['CI_RUC'],'dir'=>$value['Direccion'],'tel'=>$value['Telefono'],'email'=>$value['Email'],'email2'=>$value['Email2'],'Nombre'=>$value['Cliente'],'Actividad'=>$value['Actividad'],'Cod_Ejec'=>$value['Cod_Ejec'],'Parte_Relacionada'=>$value['Parte_Relacionada'],'Tipo_Pasaporte'=>$value['Tipo_Pasaporte'],'facturar'=>$value['FA']);
 		}
 		return $result;
 	}
