@@ -155,14 +155,15 @@ class registro_beneficiarioM
 
     function llenarCamposInfoAdd($valor)
     {
-        $sql = "SELECT TOP 1 CodigoA AS CodigoA2, Dia_Ent AS Dia_Ent2, Hora_Ent AS Hora_Ent2,
+        $sql = "SELECT ID,CodigoA AS CodigoA2, Dia_Ent AS Dia_Ent2, Hora_Ent AS Hora_Ent2,
                     Envio_No, No_Soc, Area, Acreditacion, Tipo_Dato,
                     Cod_Fam, Evidencias, Observaciones, Item, Etapa_Procesal,CodigoB,Num,Credito_No,Cuenta_No,Etapa_Procesal,No_Juicio,Causa,Sujeto_Procesal,Agente_Fiscal,Instruccion_Fiscal
                 FROM  Clientes_Datos_Extras
-                WHERE Codigo = '" . $valor . "' 
+                WHERE Item = '".$_SESSION['INGRESO']['item']."'
+                AND Codigo = '" . $valor . "' 
                 ORDER BY Fecha_Registro DESC";
                 // AND Acreditacion = '92.02'  esto se quito del where ojo 
-                //print_r($sql);die();
+                // print_r($sql);die();
         $resultado = $this->db->datos($sql);
         if (!empty($resultado)) {
             return $resultado[0];

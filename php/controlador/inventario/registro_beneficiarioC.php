@@ -8,7 +8,8 @@
  * DESCIPCION : Clase controlador para Agencia
  */
 
-include (dirname(__DIR__, 2) . '/modelo/inventario/registro_beneficiarioM.php');
+require_once (dirname(__DIR__, 2) . '/modelo/inventario/registro_beneficiarioM.php');
+require_once (dirname(__DIR__,2).'/modelo/farmacia/articulosM.php');
 
 $controlador = new registro_beneficiarioC();
 
@@ -464,11 +465,13 @@ class registro_beneficiarioC
 {
     private $modelo;
     private $sri;
+    private $articulos;
 
     function __construct()
     {
         $this->modelo = new registro_beneficiarioM();
         $this->sri = new autorizacion_sri();
+        $this->articulos = new articulosM();
     }
 
     function LlenarTblPoblacion()
@@ -978,6 +981,11 @@ class registro_beneficiarioC
 
         $CI_RUC = $this->sri->quitar_carac($dato['txt_ci']);
         $codigos = Digito_verificador($CI_RUC);
+        $existe = $this->articulos->clientes_all(false,$dato['txt_ci']);
+        if($dato['txt_id']=='' && count($existe)>0)
+        {
+            $dato['txt_id']=$existe[0]['ID'];
+        }
 
         // print_r($codigos);die();
         SetAdoAddNew("Clientes");
@@ -1066,7 +1074,7 @@ class registro_beneficiarioC
     {
         $cliente = $this->modelo->LlenarSelectRucCliente($query=false,$codigo=false,$datos['txt_ci']);
         $datosExtra = $this->modelo->llenarCamposInfoAdd($cliente[0]['Codigo']);
-        // print_r($datos);
+        // print_r($datos);die();
         // print_r($datosExtra);
         // print_r($cliente);die();
 
@@ -1151,13 +1159,13 @@ class registro_beneficiarioC
 
 
 
-            if($datosExtra==0)
+            if(count($datosExtra)==0)
             {
                 SetAdoUpdate();                
             }else
             {
                 //SetAdoFieldsWhere('Item', $_SESSION['INGRESO']['item']);
-                SetAdoFieldsWhere('Codigo', $cliente[0]['Codigo']);
+                SetAdoFieldsWhere('ID',$datos['txt_id_datos_extra']);
                 SetAdoUpdateGeneric();
             }
         }else

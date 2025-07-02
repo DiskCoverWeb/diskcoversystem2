@@ -51,6 +51,7 @@
         <div id="collapseOne" class="accordion-collapse collapse show">
             <div class="accordion-body" style="background-color:#fffacd;">
                 <input type="hidden" name="txt_id" id="txt_id">
+                <input type="hidden" name="txt_id_datos_extra" id="txt_id_datos_extra">
                 <div class="row">
                     <div class="col-lg-3">
                         <b>CI / RUC </b>
@@ -499,7 +500,7 @@
                     </div>
                 </div>
             </div>
-            <div id="mostrarAliadosAdd" class="accordion-body"  style="background-color:#fffacd;">
+            <div id="mostrarAliadosAdd" class="accordion-body"  style="background-color:#fffacd;display: none;">
                 <div class="row text-center">
                     <div class="col-lg-6">
                         <img src="../../img/png/animales.png" width="80" height="80" title="ANIMALES Y REQUERIMIENTOS ALIMENTICIOS" class="icon">

@@ -3301,6 +3301,7 @@ function tipo_discapacidad()
 function llenarCamposInfo(datos) {
 
     //console.log(datos);
+     $('#txt_id_datos_extra').val(datos.cliente_datos_extra.ID);
     actualizarEstilo(datos.Tipo_Beneficiario.Color)
     nombre = datos.cliente.label.split(" ");
     //para familias
