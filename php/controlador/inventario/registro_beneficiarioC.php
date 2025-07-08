@@ -992,6 +992,7 @@ class registro_beneficiarioC
         SetAdoFields('CI_RUC', $dato['txt_ci']);        
         SetAdoFields('TD', $dato['txt_td']);      
         SetAdoFields('Codigo',$codigos['Codigo_RUC_CI']);
+        SetAdoFields('T','N');
 
         SetAdoFields('Actividad', $dato['select_93']);
         SetAdoFields('TB', $dato['select_93']);
