@@ -165,11 +165,11 @@ class registro_beneficiarioM
                 // AND Acreditacion = '92.02'  esto se quito del where ojo 
                 // print_r($sql);die();
         $resultado = $this->db->datos($sql);
-        if (!empty($resultado)) {
-            return $resultado[0];
-        } else {
-            return 0;
-        }
+        // if (!empty($resultado)) {
+            return $resultado;
+        // } else {
+            // return 0;
+        // }
     }
 
 
