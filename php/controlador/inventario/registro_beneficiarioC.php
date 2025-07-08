@@ -997,8 +997,14 @@ class registro_beneficiarioC
         SetAdoFields('TB', $dato['select_93']);
         SetAdoFields('Calificacion', $dato['select_CxC']);
         SetAdoFields('CodigoA', $dato['select_87']);
-        SetAdoFields('Prov', $datosdir['select_prov']);
-        SetAdoFields('Ciudad', $datosdir['select_ciud']);
+        if(isset($datosdir['select_prov']))
+        {
+            SetAdoFields('Prov', $datosdir['select_prov']);
+        }
+        if(isset($datosdir['select_ciud']))
+        {
+            SetAdoFields('Ciudad', $datosdir['select_ciud']);
+        }
         SetAdoFields('Canton', $datosdir['Canton']);
         SetAdoFields('Parroquia', $datosdir['Parroquia']);
         SetAdoFields('Barrio', $datosdir['Barrio']);
