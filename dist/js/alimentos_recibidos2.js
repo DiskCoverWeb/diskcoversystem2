@@ -1317,6 +1317,7 @@ function autocoplet_ingreso()
       $("#txt_unidad").val('');
       $("#txt_grupo").val('');
       $("#txt_fecha_exp").val('');
+      $('#txt_tipoCompra').val('');
 
 
      if(tpd=='R')

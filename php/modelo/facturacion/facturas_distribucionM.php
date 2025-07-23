@@ -1134,6 +1134,30 @@ class facturas_distribucionM
 
   }
 
+  function ConsultarProductosNdo($params,$id = false,$orden=false){
+    
+    $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,CodigoC,TC.Codigo_Inv,TC.CodigoU,Cta,Orden_No,TC.Codigo_Barra
+            FROM Trans_Comision TC 
+            INNER JOIN Accesos A ON TC.CodigoU = A.Codigo 
+            WHERE CodigoC = '".$params['beneficiario']."' 
+            AND TC.Item = '".$_SESSION['INGRESO']['item']."' 
+            AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+            AND TC.Fecha = '".$params['fecha']."' 
+            AND TC.T='F'
+            AND TC.TC = '.'
+            AND TP='F'";
+            if($orden)
+            {
+              $sql.=" AND TC.Orden_No = '".$orden."' ";
+            }
+            if($id)
+            {
+               $sql.=" AND TC.ID = '".$id."' ";
+            }
+    // print_r($sql);die();
+    return $this->db->datos($sql);
+  }
+
 
 
 

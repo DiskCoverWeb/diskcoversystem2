@@ -1,6 +1,7 @@
 <?php
 require_once(dirname(__DIR__,2).'/modelo/inventario/solicitud_materialM.php');
 require_once(dirname(__DIR__,3).'/lib/fpdf/cabecera_pdf.php');
+require_once(dirname(__DIR__,3).'/lib/phpmailer/enviar_emails.php');
 
 $controlador = new solicitud_materialC();
 
@@ -70,6 +71,11 @@ if(isset($_GET['pedidos_contratista']))
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->pedidos_contratista($parametros));
 }
+if(isset($_GET['EliminarSolicitud']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->EliminarSolicitud($parametros));
+}
 
 
 if(isset($_GET['envio_pedidos_contratista']))
@@ -107,11 +113,16 @@ if(isset($_GET['grabar_solicitud_proveedor']))
 if(isset($_GET['pedido_solicitados_proveedor']))
 {
 	$query = '';
+	$parametros = '';
 	if(isset($_GET['q']))
 	{
 		$query = $_GET['q'];
 	}
-	echo json_encode($controlador->pedido_solicitados_proveedor($query));
+	if(isset($_POST['parametros']))
+	{
+		$parametros = $_POST['parametros'];
+	}
+	echo json_encode($controlador->pedido_solicitados_proveedor($query,$parametros));
 }
 
 
@@ -228,7 +239,7 @@ if(isset($_GET['lista_provee']))
 
 if(isset($_GET['guardar_seleccion_proveedor']))
 {
-	$parametros = $_POST['parametros'];
+	$parametros = $_POST;
 	echo json_encode($controlador->guardar_seleccion_proveedor($parametros));
 }
 
@@ -238,6 +249,17 @@ if(isset($_GET['grabar_compra_pedido']))
 	echo json_encode($controlador->grabar_compra_pedido($parametros));
 }
 
+if(isset($_GET['AddProveedorExta']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->AddProveedorExta($parametros));
+}
+if(isset($_GET['eliminar_prove']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->eliminar_prove($parametros));
+}
+
 
 
 
@@ -245,21 +267,34 @@ if(isset($_GET['grabar_compra_pedido']))
 class solicitud_materialC
 {
     private $modelo;
+    private $email;
 
     function __construct()
     {
         $this->modelo = new solicitud_materialM();
+        $this->email = new enviar_emails();
     }
 
     function autocomplet_producto($fami,$query)
 	{
 		// print_r($fami);die();
-		$datos = $this->modelo->cargar_productos($fami,$query);
+		$datos = $this->modelo->cargar_productos(false,$query);
 		// print_r($datos);die();
 		$productos = array();
 		foreach ($datos as $key => $value) {			
 			// $costo =  $this->ing_descargos->costo_venta($value['Codigo_Inv']);
 			// $costoTrans = $this->ing_descargos->costo_producto($value['Codigo_Inv']);
+			$codInv = explode('.',$value['Codigo_Inv']);
+			$codFam = $codInv[0].'.'.$codInv[1];
+			$familia = $this->modelo->cargar_familia($codFam,false);
+			$value['familia']  = '';
+			$value['codfamilia'] = '';
+			if(count($familia)>0)
+			{
+				$value['familia'] = $familia[0]['Producto'];
+				$value['codfamilia'] = $familia[0]['Codigo_Inv'];
+			}
+			// print_r($familia);die();
 
 			$FechaInventario = date('Y-m-d');
 		 	$CodBodega = '01';
@@ -341,12 +376,14 @@ class solicitud_materialC
 		        SetAdoFields("Fecha",$parametros['fecha']);
 		        SetAdoFields("Fecha_Ent",$parametros['fechaEnt']);
 		        SetAdoFields("Producto",$articulo['Producto']);
-		        SetAdoFields("Cantidad",$parametros['cantidad']);
+		        SetAdoFields("Cantidad",$parametros['cantidad']);        	
+		        SetAdoFields("Cantidad_Total",$parametros['cantidad']);
 		        SetAdoFields("Precio",$parametros['costo']);
-		        SetAdoFields("TC",'P');
+		        SetAdoFields("TC",'P');		        
 		        SetAdoFields("Total",$parametros['total']);
 		        SetAdoFields("Item",$_SESSION['INGRESO']['item']);
 		        SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+		        SetAdoFields("Codigo_Sup",$_SESSION['INGRESO']['CodigoU']);
 		        SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
 		        SetAdoFields("Comentario",$parametros['obs']);
 		        SetAdoFields("CodMarca",$parametros['marca']);
@@ -383,21 +420,22 @@ class solicitud_materialC
 					<td>'.($key+1).'</td>
 					<td>'.$value['Codigo_Inv'].'</td>
 					<td>'.$value['Producto'].'</td>
-					<td>'.$value['Cantidad'].'</td>
+					<td>'.$value['Cantidad_Total'].'</td>
+					<td>'.$value['Unidad'].'</td>
 					<td>'.$value['Precio'].'</td>
+					<td>'.($value['Precio']*$value['Cantidad_Total']).'</td>
 					<td>'.$value['Marca'].'</td>
 					<td>'.$value['Fecha']->format('Y-m-d').'</td>
 					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>
-					<td>'.$value['Total'].'</td>
 					<td>'.$value['Comentario'].'</td>
 					<td>
-						<button class="btn btn-sm btn-danger" onclick="eliminar_linea(\''.$value['ID'].'\')"><i class="fa fa fa-trash"></i></button>
+						<button class="btn btn-sm btn-danger" onclick="eliminar_linea(\''.$value['ID'].'\')"><i class="fa fa fa-trash me-0"></i></button>
 					</td>
 				</tr>';
 				$total+=$value['Total'];
 		}
 
-		$tr.='<tr><td colspan="6"></td><td><b>TOTAL</b></td><td><b>'.$total.'</b></td><td></td><td></td></tr>';
+		$tr.='<tr><td colspan="5"></td><td><b>TOTAL</b></td><td><b>'.$total.'</b></td><td></td><td></td><td></td></tr>';
 
 
 		return $tr;
@@ -410,20 +448,27 @@ class solicitud_materialC
 		$total = 0;
 		foreach ($datos as $key => $value) {
 			$tr.='<tr>
+					<td><button class="btn btn-danger btn-sm" onclick="eliminar_solicitud(\''.$value['Orden_No'].'\')"><i class="fa fa-trash me-0"></i></button></td>
 					<td>'.($key+1).'</td>
 					<td><a href="inicio.php?mod='.$_SESSION['INGRESO']['modulo_'].'&acc=aprobacion_solicitud&orden='.$value['Orden_No'].'">'.$value['Cliente'].'</a></td>
 					<td>'.$value['Orden_No'].'</td>					
 					<td>'.$value['Fecha']->format('Y-m-d').'</td>
-					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>
 					<td>'.$value['Total'].'</td>					
 					<td>
-						<button type="button" class="btn btn-sm btn-default" onclick="imprimir_pdf(\''.$value['Orden_No'].'\')" ><i class="fa fa-file-pdf-o"></i></butto>
-						<button type="button" class="btn btn-sm btn-default" onclick="imprimir_excel(\''.$value['Orden_No'].'\')" ><i class="fa fa-file-excel-o"></i></butto>
+						<button type="button" class="btn btn-sm btn-default" onclick="imprimir_pdf(\''.$value['Orden_No'].'\')" title="Descargar detalle pedido pdf"><i class="fa fa-file-pdf"></i></butto>
+						<button type="button" class="btn btn-sm btn-default" onclick="imprimir_excel(\''.$value['Orden_No'].'\')" title="Descargar detalle pedido excel"><i class="fa fa-file-excel"></i></butto>
 					</td>					
 				</tr>';
 				$total+=$value['Total'];
 		}
 		return $tr;
+	}
+
+	function EliminarSolicitud($parametros)
+	{
+		$tc = false;
+		if(isset($parametros['tipo'])){$tc = $parametros['tipo'];}
+		return $this->modelo->EliminarSolicitud($parametros['orden'],$tc);
 	}
 
 
@@ -449,7 +494,8 @@ class solicitud_materialC
 		foreach ($datos as $key => $value) {
 
 			SetAdoAddNew("Trans_Pedidos");          
-        	SetAdoFields("Orden_No",$codigo);     
+        	SetAdoFields("Orden_No",$codigo);       
+        	SetAdoFields("Fecha",date('Y-m-d'));     
         	SetAdoFields("TC",'S');
 
         	SetAdoFieldsWhere('ID',$value['ID']);
@@ -597,27 +643,69 @@ class solicitud_materialC
 	{
 		// print_r($parametros);die();
 		$datos = $this->modelo->lineas_pedido_solicitados($parametros['orden']);
+
 		$tr = '';
 		foreach ($datos as $key => $value) {
+			$producto_inv = Leer_Codigo_Inv($value['Codigo_Inv'],"");
+			$Stock = 0;
+			if($producto_inv['respueta']==1)
+			{
+				$Stock = $producto_inv['datos']['Stock'];
+			}
 			$tr.='<tr>
+					<td>
+						<button type="button" class="btn btn-sm btn-primary" onclick="guardar_linea_aprobacion(\''.$value['ID'].'\')" title="Guardar Cantidad" ><i class="fa fa fa-save me-0"></i></button>
+						<button type="button" class="btn btn-sm btn-danger" onclick="eliminar_linea(\''.$value['ID'].'\')" title="Eliminar linea" ><i class="fa fa fa-trash me-0"></i></button>
+						
+					</td>
+					<td><input type="checkbox" name="rbl_a_'.$value['ID'].'"  id="rbl_a_'.$value['ID'].'"></td>
 					<td>'.($key+1).'</td>
 					<td>'.$value['Codigo_Inv'].'</td>
 					<td>'.$value['Producto'].'</td>
-					<td width="20px"><input type="text" id="txt_cant_'.$value['ID'].'" name="txt_cant_'.$value['ID'].'" value="'.$value['Cantidad'].'" class="form-control input-sm"></td>
-					<td>'.$value['Precio'].'</td>
-					<td>'.$value['Fecha']->format('Y-m-d').'</td>
-					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>					
+					<td>'.$value['Cantidad_Total'].'</td>
+					<td>'.$Stock.'</td>
+					<td width="20px">
+					<input type="text" id="txt_cant_'.$value['ID'].'" name="txt_cant_'.$value['ID'].'" value="'.$value['Cantidad'].'" class="form-control form-control-sm"></td>
+					<td>'.$value['Unidad'].'</td>
+					<td>'.$value['Precio'].'</td>				
 					<td>'.$value['Total'].'</td>				
+					<td>'.$value['Fecha']->format('Y-m-d').'</td>
+					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>	
 					<td>'.$value['Comentario'].'</td>
-					<td><input type="checkbox" name="rbl_a_'.$value['ID'].'"  id="rbl_a_'.$value['ID'].'"></td>
-					<td>
-						<button type="button" class="btn btn-sm btn-primary" onclick="guardar_linea_aprobacion(\''.$value['ID'].'\')"><i class="fa fa fa-save"></i></button>
-						<button class="btn btn-sm btn-danger" onclick="eliminar_linea(\''.$value['ID'].'\')"><i class="fa fa fa-trash"></i></button>
-						
-					</td>
+					
 				</tr>';
 		}
 		return $tr;
+	}
+
+	function AddProveedorExta($parametros)
+	{
+		$linea = $this->modelo->Trans_Pedidos($parametros['linea'],false,false);
+		//$proveedores = Leer_Datos_Clientes($parametros['proveedor'],true,false,false);
+
+		$datos = $this->modelo->proveedores_seleccionados_x_producto($linea[0]['Codigo_Inv'],$linea[0]['Orden_No'],$parametros['proveedor']);
+
+		if(count($datos)==0)
+		{
+			SetAdoAddNew("Trans_Ticket");
+	        SetAdoFields("Codigo_Inv",$linea[0]['Codigo_Inv']);
+	        SetAdoFields("Fecha",$linea[0]['Fecha']);
+	        SetAdoFields("Producto",$linea[0]['Producto']);
+	        SetAdoFields("Cantidad",$linea[0]['Cantidad']);
+	        SetAdoFields("Precio",$linea[0]['Precio']);
+	        SetAdoFields("CodigoC",$parametros['proveedor']);
+	        SetAdoFields("Total", $linea[0]['Total']);
+	        SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+	        SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+	        SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+	        SetAdoFields("Orden_No",$linea[0]['Orden_No']);				
+			SetAdoUpdate();
+
+			return 1;
+		}else
+		{
+			return -2;
+		}
 	}
 
 
@@ -631,8 +719,8 @@ class solicitud_materialC
 		foreach ($datos as $key => $value) {
 			
 			SetAdoAddNew("Trans_Pedidos");         
-        	SetAdoFields("TC",'E');
-
+        	SetAdoFields("TC",'E');       
+        	SetAdoFields("Fecha_Aprob",date('Y-m-d'));
         	SetAdoFieldsWhere('ID',$value['ID']);
         	SetAdoUpdateGeneric();
 		}
@@ -645,7 +733,7 @@ class solicitud_materialC
 
 			SetAdoAddNew("Trans_Pedidos");         
         	SetAdoFields("Opc1",true);
-
+        	SetAdoFields("Fecha_Aprob",date('Y-m-d'));
         	SetAdoFieldsWhere('ID',$id);
         	SetAdoUpdateGeneric();		
 
@@ -882,11 +970,16 @@ class solicitud_materialC
 					<td><a href="inicio.php?mod='.$_SESSION['INGRESO']['modulo_'].'&acc=solicitud_proveedor&orden='.$value['Orden_No'].'">'.$value['Cliente'].'</a></td>
 					<td>'.$value['Orden_No'].'</td>					
 					<td>'.$value['Fecha']->format('Y-m-d').'</td>
-					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>
 					<td>'.$value['Total'].'</td>	
 					<td>
-						<button type="button" class="btn btn-sm btn-primary" onclick="imprimir_pdf(\''.$value['Orden_No'].'\')" ><i class="fa fa-file-pdf-o"></i></butto>
-						<button type="button" class="btn btn-sm btn-default" onclick="imprimir_excel(\''.$value['Orden_No'].'\')" ><i class="fa fa-file-excel-o"></i></butto>
+					<div class="input-group-btn">
+						<button type="button" class="btn btn-sm btn-danger" title="Eliminar pedido" onclick="eliminar_solicitud(\''.$value['Orden_No'].'\')"><i class="fa fa-trash me-0"></i></butto>
+						<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Informe</button>
+						<ul class="dropdown-menu dropdown-menu-end">
+							<li><a class="dropdown-item" href="#" onclick="imprimir_pdf(\''.$value['Orden_No'].'\')"> <i class="fa fa-file-pdf-o"></i>PDF</a></li>
+							<li><a class="dropdown-item" href="#" onclick="imprimir_excel(\''.$value['Orden_No'].'\')"><i class="fa fa-file-excel-o"></i> Excel</a></li>
+						</ul>
+					</div>
 					</td>						
 				</tr>';
 				$total+=$value['Total'];
@@ -895,9 +988,16 @@ class solicitud_materialC
 	}
 
 
-	function pedido_solicitados_proveedor($query)
+	function pedido_solicitados_proveedor($query,$parametros)
 	{
-		$datos = $this->modelo->envio_pedidos_contratista($query);
+		$orden=false;
+		if($parametros!='')
+		{
+			$orden = $parametros['orden'];
+		}
+
+		// print_r($parametros);die();
+		$datos = $this->modelo->envio_pedidos_contratista($orden,$query);
 		// $lista = array();
 		// foreach ($datos as $key => $value) {
 		// 	$lista[] = array('id'=>$value['Orden_No'],'text'=>$value['Nombre_Completo'].' -- '.$value['Orden_No'],'data'=>$value);
@@ -934,18 +1034,24 @@ class solicitud_materialC
 					<td>'.$value['Codigo_Inv'].'</td>
 					<td>'.$value['Producto'].'</td>
 					<td>'.$value['Cantidad'].'</td>
-					<td>'.$value['Precio'].'</td>
-					<td>'.$value['Fecha']->format('Y-m-d').'</td>
-					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>					
+					<td>'.$value['Unidad'].'</td>
+					<td>'.$value['Precio'].'</td>				
 					<td>'.$value['Total'].'</td>
+					<td>'.$value['Fecha']->format('Y-m-d').'</td>
+					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>	
 					<td>'.$value['Comentario'].'</td>
-					<td width="28%">
-					<select class="form-control select2_prove" id="ddl_selector_'.$value['ID'].'" onclick="llenarProveedores(\'ddl_selector_'.$value['ID'].'\')" name="ddl_selector_'.$value['ID'].'[]" multiple="multiple" row="2">
-							<option disabled value="">Seleccione proveedor</option>
-						</select>
-
+					<td width="150px">
+						<div class="input-group margin">
+							<div class="input-group-btn">
+								<button type="button" class="btn btn-sm btn-primary" onclick="addCliente();lineaSolProv('.$value['ID'].')"><i class="fa fa-user-plus me-0"></i></button>
+							</div>
+							<select class="form-select select2_prove" id="ddl_selector_'.$value['ID'].'" onclick="llenarProveedores(\'ddl_selector_'.$value['ID'].'\')" name="ddl_selector_'.$value['ID'].'[]" multiple="multiple">
+								<option disabled value="">Seleccione proveedor</option>
+							</select>
+						</div>
 					</td>
-				<!---	<td>
+					<!---
+					<td>
 						<button class="btn btn-sm btn-primary" onclick="eliminar_linea(\''.$value['ID'].'\')"><i class="fa fa fa-save"></i></button>
 					</td>
 					-->
@@ -961,35 +1067,37 @@ class solicitud_materialC
 
 			//id de el producto
 			$id = str_replace('ddl_selector_', "", $key);
-			$linea = $this->modelo->Trans_Pedidos($id,false,false);			
-			$linea = $linea[0];
-			// print_r($id);die();
+			if ($key !== $id) {
+				$linea = $this->modelo->Trans_Pedidos($id,false,false);			
+				$linea = $linea[0];
+				// print_r($id);die();
 
-			foreach ($value as $key2 => $value2) {
-				// recorro todo los proveedores seleccionados
-				// print_r($value2);die();
+				foreach ($value as $key2 => $value2) {
+					// recorro todo los proveedores seleccionados
+					// print_r($value);die();
 
-				SetAdoAddNew("Trans_Ticket");
-		        SetAdoFields("Codigo_Inv",$linea['Codigo_Inv']);
-		        SetAdoFields("Fecha",$linea['Fecha']);
-		        SetAdoFields("Producto",$linea['Producto']);
-		        SetAdoFields("Cantidad",$linea['Cantidad']);
-		        SetAdoFields("Precio",$linea['Precio']);
-		        SetAdoFields("CodigoC",$value2);
-		        SetAdoFields("Total", $linea['Total']);
-		        SetAdoFields("Item",$_SESSION['INGRESO']['item']);
-		        SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
-		        SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
-		        SetAdoFields("Orden_No",$linea['Orden_No']);				
-				SetAdoUpdate();
+					SetAdoAddNew("Trans_Ticket");
+			        SetAdoFields("Codigo_Inv",$linea['Codigo_Inv']);
+			        SetAdoFields("Fecha",$linea['Fecha']);
+			        SetAdoFields("Producto",$linea['Producto']);
+			        SetAdoFields("Cantidad",$linea['Cantidad']);
+			        SetAdoFields("Precio",$linea['Precio']);
+			        SetAdoFields("CodigoC",$value2);
+			        SetAdoFields("Total", $linea['Total']);
+			        SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+			        SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+			        SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+			        SetAdoFields("Orden_No",$linea['Orden_No']);				
+					SetAdoUpdate();
 
 
-				SetAdoAddNew("Trans_Pedidos");         
-	        	SetAdoFields("TC",'T');
+					SetAdoAddNew("Trans_Pedidos");         
+		        	SetAdoFields("TC",'T');
 
-	        	SetAdoFieldsWhere('ID',$id);
-	        	SetAdoUpdateGeneric();	        					
+		        	SetAdoFieldsWhere('ID',$id);
+		        	SetAdoUpdateGeneric();	        					
 
+				}
 			}
 			// print_r($linea);die();
 			// foreach ($value as $key2 => $value2) {
@@ -1019,11 +1127,23 @@ class solicitud_materialC
 					<td><a href="inicio.php?mod='.$_SESSION['INGRESO']['modulo_'].'&acc=aprobar_proveedor&orden='.$value['Orden_No'].'">'.$value['Cliente'].'</a></td>
 					<td>'.$value['Orden_No'].'</td>					
 					<td>'.$value['Fecha']->format('Y-m-d').'</td>
-					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>
 					<td>'.$value['Total'].'</td>
 					<td>
+
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-sm btn-danger" title="Eliminar pedido" onclick="eliminar_solicitud(\''.$value['Orden_No'].'\')"><i class="fa fa-trash me-0"></i></butto>
+							<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Informe</button>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="#" onclick="imprimir_pdf(\''.$value['Orden_No'].'\')"> <i class="fa fa-file-pdf-o"></i>PDF</a></li>
+								<li><a class="dropdown-item" href="#" onclick="imprimir_excel(\''.$value['Orden_No'].'\')"><i class="fa fa-file-excel-o"></i> Excel</a></li>
+							</ul>
+						</div>
+
+<!--
 						<button type="button" class="btn btn-sm btn-default" onclick="imprimir_pdf(\''.$value['Orden_No'].'\')" ><i class="fa fa-file-pdf-o"></i></butto>
 						<button type="button" class="btn btn-sm btn-default" onclick="imprimir_excel(\''.$value['Orden_No'].'\')" ><i class="fa fa-file-excel-o"></i></butto>
+
+						-->
 						
 					</td>						
 				</tr>';
@@ -1079,20 +1199,26 @@ class solicitud_materialC
 					<td>'.$value['Codigo_Inv'].'</td>
 					<td>'.$value['Producto'].'</td>
 					<td>'.$value['Cantidad'].'</td>
+					<td>'.$value['Unidad'].'</td>
 					<td>'.$value['Precio'].'</td>
+					<td>'.$value['Total'].'</td>
 					<td>'.$value['Fecha']->format('Y-m-d').'</td>
 					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>
-					<td>'.$value['Total'].'</td>
 					<td>'.$value['Comentario'].'</td>
 					<td width="28%">
-						<div class="input-group input-group-sm">
+						<div class="d-flex align-items-center">
 							<select class="form-control select2_prove" id="ddl_selector_'.$value['ID'].'" name="ddl_selector_'.$value['ID'].'[]" multiple="multiple" row="2" disabled >
 								'.$op.'
 							</select>
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-sm btn-primary" onclick="addCliente()"><i class="fa fa-user-plus"></i></button>
+							';
+							if($value['CodigoC']=='.')
+							{
+							 $tr.='<span class="input-group-btn">
+								<button type="button" class="btn btn-sm btn-primary" onclick="addCliente();lineaSolProv('.$value['ID'].')"><i class="fa fa-user-plus"></i></button>
 							</span>
-						</div>
+							';
+							}
+						$tr.='</div>
 					</td>
 
 					<!---
@@ -1105,17 +1231,37 @@ class solicitud_materialC
 
 					-->
 					<td>
-						<button class="btn btn-sm btn-primary" type="button" onclick="mostrar_proveedor(\''.$value['ID'].'\',\''.$value['Codigo_Inv'].'\',\''.$value['Orden_No'].'\')"><i class="fa fa fa-user"></i> Seleccionar proveedor</button>';
+						';
 						if($value['CodigoC']!='.')
 						{	$prov = $this->modelo->proveedores($query=false,$value['CodigoC']);
+							if(count($prov)>0)
+							{
 							// print_r($prov);die();
-							$tr.='<label> Proveedor :<br>'.$prov[0]['Cliente'].' Asignado </label>';
+								$tr.='<label> Proveedor:<br>'.$prov[0]['Cliente'].' Asignado </label>
+								<br><button class="btn-xs btn-danger" type="button" onclick="eliminar_seleccion('.$value['ID'].')"><i class="fa fa-trash"></i> Eliminar Seleccionar</button>';
+							}else
+							{
+								$datos = Leer_Datos_Clientes($value['CodigoC'],$Por_Codigo=true,false,false);
+								$tr.="<label style='color: red;'>".$datos['Cliente']." no esta asignado a CxCxP </label>";
+							}
+						}else
+						{
+							$tr.='<button class="btn btn-sm btn-primary" type="button" onclick="mostrar_proveedor(\''.$value['ID'].'\',\''.$value['Codigo_Inv'].'\',\''.$value['Orden_No'].'\',\''.$value['Cantidad'].'\')"><i class="fa fa fa-user"></i> Seleccionar proveedor</button>';
 						}
 						$tr.='
 					</td>
 				</tr>';
+				// print_r($tr);die();
 		}
 		return $tr;
+	}
+
+	function eliminar_prove($parametros)
+	{
+		SetAdoAddNew("Trans_Pedidos");               
+    	SetAdoFields("CodigoC",'.');
+    	SetAdoFieldsWhere('ID',$parametros['id']);
+    	return SetAdoUpdateGeneric();
 	}
 
 	function imprimir_pdf_proveedor($orden)
@@ -1314,12 +1460,34 @@ class solicitud_materialC
 	function lista_provee($parametros)
 	{
 		// print_r($parametros);die();
-		$data = $this->modelo->proveedores_seleccionados_x_producto($parametros['codigo'],$parametros['orden']);
+		$select = $this->modelo->lineas_pedido_aprobacion_solicitados_proveedor(false,false,$parametros['id']);
+		// print_r($select);die();
+		$data = $this->modelo->proveedores_seleccionados_x_producto($parametros['codigo'],$parametros['orden'],false,$select[0]['Cantidad']);
 		$lista = '';
+		$id = '';
 		foreach ($data as $key => $value) {
-			$lista.='<option value="'.$value['CodigoC'].'">'.$value['Cliente'].'</option>';
+			$id.=$value['IDT'].',';
+			$lista.='<tr>
+				<td>
+					'.$value['Cliente'].'
+					<input type="hidden" class="form-control form-control-sm" name="txt_codigoC_'.$value['IDT'].'" id="txt_codigoC_'.$value['IDT'].'" value="'.$value['CodigoC'].'">
+					<input type="hidden" class="form-control form-control-sm" name="txt_idProv_'.$value['IDT'].'" id="txt_idProv_'.$value['IDT'].'" value="'.$value['IDT'].'">
+				</td>
+				<td>					
+	                  <input type="text" class="form-control form-control-sm" name="txt_cantidad_prov_'.$value['IDT'].'" id="txt_cantidad_prov_'.$value['IDT'].'" value="0">
+				</td>
+				<td>
+					<input type="text" class="form-control form-control-sm" value="'.$value['Precio'].'" name="txt_costoAnt" id="txt_costoAnt" readonly>
+				</td>
+				<td>
+	                  <input type="text" class="form-control form-control-sm" name="txt_costoAct_'.$value['IDT'].'" id="txt_costoAct_'.$value['IDT'].'" value="0">
+	             </td>
+			</tr>';
 		}
-		return array('option'=>$lista,'CostoTotal'=>$data[0]['Total']);
+		$id = substr($id,0,-1);
+		$lista.="<tr><td>Total</td><td><label id='lbl_total_linea'>".$data[0]['Cantidad']."</label></td><td></td></tr>";
+
+		return array('option'=>$lista,'CostoTotal'=>$data[0]['Total'],'idProve'=>$id);
 
 		// print_r($data);die();
 	}
@@ -1329,13 +1497,93 @@ class solicitud_materialC
 	{
 		// print_r($parametros);die();
 
-		SetAdoAddNew("Trans_Pedidos");         
-    	// SetAdoFields("TC",'B');  //BUY compra en ingles        
-    	SetAdoFields("CodigoC",$parametros['CodigoC']);
-    	SetAdoFields("HABIT",$parametros['costo']);
+		$lineas = array();
+		$cant_total = 0;
+		$precio_colocado = 1;
+		$proveedores = explode(',',$parametros['txt_id_prove']);
+		foreach ($proveedores as $key => $value) {
+			$cant_total+= floatval($parametros['txt_cantidad_prov_'.$value]);	
+			if($cant_total<=$parametros['total'])
+			{
 
-    	SetAdoFieldsWhere('ID',$parametros['idProducto'] );
-    	return  SetAdoUpdateGeneric();	      
+				if($parametros['txt_cantidad_prov_'.$value]!=0 && $parametros['txt_cantidad_prov_'.$value]!='' && $parametros['txt_costoAct_'.$value]!='' && $parametros['txt_costoAct_'.$value]!=0)
+				{
+					$lineas[$key]['cantidad'] = $parametros['txt_cantidad_prov_'.$value];	
+					$lineas[$key]['costo'] = $parametros['txt_costoAct_'.$value];	
+					$lineas[$key]['CodigoC'] = $parametros['txt_codigoC_'.$value];	
+				}else if ($parametros['txt_cantidad_prov_'.$value]!=0 && $parametros['txt_cantidad_prov_'.$value]!='' && ($parametros['txt_costoAct_'.$value]=='' || $parametros['txt_costoAct_'.$value]==0)) {
+					return -3;
+				}
+			}else
+			{
+				return -2;
+			}
+		}
+
+		if($cant_total!=$parametros['total'])
+		{
+			return -2;
+		}
+
+		// reindexa
+		$lineas = array_values($lineas);
+
+		// print_r($lineas);die();
+		$linea_org = $this->modelo->lineas_pedido_aprobacion_solicitados_proveedor(false,false,$parametros['txt_id_linea']);
+
+		// print_r($linea_org);die();
+
+		foreach ($lineas as $key => $value) {
+			if($key==0)
+			{
+				SetAdoAddNew("Trans_Pedidos");         
+		    	// SetAdoFields("TC",'B');  //BUY compra en ingles        
+		    	SetAdoFields("CodigoC",$value['CodigoC']);
+		    	SetAdoFields("Costo_Original",$value['costo']);
+		    	SetAdoFields("Cantidad",$value['cantidad']);
+		    	SetAdoFields("Total_Original",($value['cantidad']*$value['costo']));
+		    	SetAdoFields("Total",($value['cantidad']*$value['costo']));
+		    	SetAdoFields("Cantidad_Total",$value['cantidad']);
+		    	SetAdoFieldsWhere('ID',$parametros['txt_id_linea']);
+		    	SetAdoUpdateGeneric();	      
+			}else
+			{
+				SetAdoAddNew("Trans_Pedidos");
+		        SetAdoFields("Codigo_Inv",$linea_org[0]['Codigo_Inv']);
+		        SetAdoFields("Fecha",$linea_org[0]['Fecha']);
+		        SetAdoFields("Fecha_Ent",$linea_org[0]['Fecha_Ent']);
+		        SetAdoFields("Producto",$linea_org[0]['Producto']);
+		        SetAdoFields("Cantidad",$value['cantidad']);
+		        SetAdoFields("Precio",$linea_org[0]['Precio']);
+		        SetAdoFields("Costo_Original",$value['costo']);
+		        SetAdoFields("TC",'T');
+		    	SetAdoFields("Total",($value['cantidad']*$linea_org[0]['Precio']));
+		    	SetAdoFields("Total_Original",($value['cantidad']*$value['costo']));
+		        SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+		        SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+		        SetAdoFields("CodigoU",$linea_org[0]['CodigoU']);
+		        SetAdoFields("Comentario",$linea_org[0]['Comentario']);
+		        SetAdoFields("CodMarca",$linea_org[0]['CodMarca']);     
+		    	SetAdoFields("CodigoC",$value['CodigoC']);    
+		    	SetAdoFields("Orden_No",$linea_org[0]['Orden_No']);
+		    	SetAdoFields("Cantidad_Total",$value['cantidad']);
+				SetAdoUpdate();
+			}
+		}
+
+
+		return 1;
+		
+
+		print_r($lineas);die();
+
+		// SetAdoAddNew("Trans_Pedidos");         
+    	// // SetAdoFields("TC",'B');  //BUY compra en ingles        
+    	// SetAdoFields("CodigoC",$parametros['CodigoC']);
+    	// SetAdoFields("HABIT",$parametros['costo']);
+
+    	// SetAdoFieldsWhere('ID',$parametros['idProducto'] );
+    	// return  SetAdoUpdateGeneric();	      
 
 	}
 
@@ -1343,24 +1591,33 @@ class solicitud_materialC
 	{
 
 		$lineas = $this->modelo->lineas_pedido_aprobacion_solicitados_proveedor($parametros['orden']);
-		foreach ($lineas as $key => $value) {
-			if($value['CodigoC']=='.')
-			{
-				return -2;
-			}
-		}
-
 		foreach ($lineas as $key2 => $value2) {
-			// print_r($value);die();
-			SetAdoAddNew("Trans_Pedidos");         
-	    	SetAdoFields("TC",'B');  //BUY compra en ingles    
-	    	SetAdoFieldsWhere('ID',$value2['ID'] );
-
-	    	SetAdoUpdateGeneric();	      
+			if($value2['CodigoC']!='.')
+			{
+				// print_r($value);die();
+				SetAdoAddNew("Trans_Pedidos");         
+		    	SetAdoFields("TC",'B');  //BUY compra en ingles  
+		    	SetAdoFields("Fecha_Provee",'B');  //BUY compra en ingles    
+		    	SetAdoFieldsWhere('ID',$value2['ID'] );
+		    	SetAdoUpdateGeneric();
+		    	$this->enviar_email($value2['CodigoC']);	   
+	    	}   
 		}
 
 		return 1;
 
+	}
+
+
+	function enviar_email($proveedor)
+	{
+		$cliente = Leer_Datos_Clientes($proveedor,true,false,false);
+		// print_r($cliente);die();
+		$res = $this->email->enviar_email_generico(false, 
+			$cliente['Email'].';'.$_SESSION['INGRESO']['Email'], 
+			$cuerpo_correo = "Solicitud de Compra", 
+			$titulo_correo = "Solicitud de compra", $HTML = false);
+		// print_r($res);die();
 	}
 	
 

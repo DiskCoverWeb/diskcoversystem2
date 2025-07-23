@@ -2283,6 +2283,7 @@ class facturas_distribucion
 		$FA = $this->modelo->listaFacturasGeneradas($parametros['fecha']);
 		foreach ($FA as $key => $value) {
 			$data = $this->modelo->ListaFacturas($value['Factura'],$value['Serie']);
+			
 			if(count($data)==2)
 			{
 				$dataNDO = $this->modelo->ListaNdo($value['Factura'],$value['Serie']);
@@ -2292,6 +2293,7 @@ class facturas_distribucion
 				}else
 				{
 					$tr.='<tr><td>'.$value['Cliente'].'</td><td>'.$value['Factura'].'</td><td>'.$value['Serie'].'</td><td>'.$value['Total_MN'].'<td>'.$dataNDO[0]['Total_MN'].'</td></td><td><button class="btn btn-sm btn-primary" onclick="cuadrarNdo(\''.$value['Factura'].'\',\''.$value['Serie'].'\',\''.$value['CodigoC'].'\')"><i class="bx bx-x"></i>No cuadra</button></td></tr>';
+					
 				}
 			}else
 			{
@@ -2315,7 +2317,7 @@ class facturas_distribucion
 
 			$total = $value['Cant']*$value['Precio'];
 
-			// print_r($value);die();
+			// print_r($inv);die();
 			// print_r($total);die();
 			SetAdoAddNew('Detalle_Factura');		
 			SetAdoFields('Total',number_format($total,4,'.',''));
@@ -2323,6 +2325,8 @@ class facturas_distribucion
 			SetAdoUpdateGeneric();
 
 			SetAdoAddNew('Trans_Kardex');		
+			SetAdoFields('Valor_Unitario',number_format($value['Precio'],4,'.',''));
+			SetAdoFields('PVP',number_format($value['Precio'],4,'.',''));
 			SetAdoFields('Total',number_format($total,4,'.',''));
 			SetAdoFields('Valor_Total',number_format($total,4,'.',''));
 			SetAdoFieldsWhere('ID', $inv[0]['ID']);		

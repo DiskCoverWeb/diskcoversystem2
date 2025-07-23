@@ -1397,8 +1397,11 @@ class registro_beneficiarioC
                 }
             }
         }
-        if($cliente_datos_extra!=0)
+        // print_r($cliente_datos_extra);die();
+        if(count($cliente_datos_extra)!=0)
         {
+            $cliente_datos_extra = $cliente_datos_extra[0];
+
             if($cliente_datos_extra['CodigoA2']!='.' && $cliente_datos_extra['CodigoA2']!=''){
                 $Tipo_Entrega = $this->modelo->Tipo_Entrega($cliente_datos_extra['CodigoA2']);
                 if(count($Tipo_Entrega)>0)

@@ -191,7 +191,7 @@ class egreso_alimentosC
 	    SetAdoFields('Modelo',$parametros['motivo']);	
 	    SetAdoFields('Detalle',$parametros['detalle']);	
 	    SetAdoFields('Cmds',$data['Cmds']);	
-	    SetAdoFields('Numero',-1);	
+	    SetAdoFields('Numero',0);	
 
 	    SetAdoFields('Valor_Total',number_format(floatval($data['Valor_Unitario'])*floatval($parametros['cantidad']),2,'.',''));	
 	    SetAdoFields('Total',number_format(floatval($data['Valor_Unitario'])*floatval($parametros['cantidad']),2,'.',''));	
