@@ -6116,6 +6116,12 @@ function FormatearNumeros($data, $SuprZero=true){
   return $data;
 }
 
+function FormatearFecha($fecha, $formatEnt ,$formatSal='Y/m/d'){
+  $fechaini = DateTime::createFromFormat($formatEnt, $fecha); 
+  $fecha = $fechaini->format($formatSal);
+  return $fecha;
+}
+
 function tablaGenerica($data){
   $tablaHtml = '
   <table>
@@ -8223,15 +8229,17 @@ function BuscardiasSemana($query)
   return $result;
 }
 
-function UltimoDiaMes($FechaStr)
+function UltimoDiaMes($FechaStr, $formato_salida="d/m/Y")
 {
+  /*
   $vFechaStr = $FechaStr;
   $f = explode('/', $vFechaStr);
   if(checkdate($f[0], $f[1], $f[2])==false) {$vFechaStr = date('Y-m-d');}
-  if($vFechaStr == "00/00/0000"){$vFechaStr = date('Y-m-d');}
-  $Vmes = date("m",  strtotime($vFechaStr));
-  $Vanio = date("Y", strtotime( $vFechaStr));
-  $vDia = 31;
+  if($vFechaStr == "00/00/0000"){$vFechaStr = date('Y-m-d');}*/
+  $Vmes = date("m",  strtotime($FechaStr));
+  $Vanio = date("Y", strtotime($FechaStr));
+
+  //$vDia = date("d",  strtotime($FechaStr));
   switch ($Vmes) {
     case '4':
     case '6':
@@ -8243,9 +8251,13 @@ function UltimoDiaMes($FechaStr)
        $vDia = 28;
          if ($Vanio % 4 == 0){$vDia = 29;}
       break;
+    default: 
+       $vDia = 31;  
   }
  
-  return generaCeros($vDia,2)."/".generaCeros($Vmes,2)."/".generaCeros($Vanio,4);
+  $fecha = generaCeros($vDia,2)."/".generaCeros($Vmes,2)."/".generaCeros($Vanio,4);
+  $date = DateTime::createFromFormat('d/m/Y', $fecha);
+  return $date->format($formato_salida);
 }
 
 function UltimoDiaMes2($FechaStr, $formato_salida='d/m/Y', $formato_entrada='d/m/Y')
@@ -13906,4 +13918,7 @@ function conversionToString($dato): string {
     return number_format($resultado, 2, '.', '');
 }
 
+  function DiaMes($fecha){
+    return date("d", strtotime($fecha)); 
+  }
 ?>

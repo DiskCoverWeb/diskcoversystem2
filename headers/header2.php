@@ -191,7 +191,7 @@ function estado_licencia($f3)
 										  <a href="javascript:;">
 											<div class="app-box text-center">
 											  <div class="app-icon">
-												  <img src="../../assets/images/app/slack.png" width="30" alt="">
+												  <img src="" width="30" alt="">
 											  </div>
 											  <div class="app-name">
 												  <p class="mb-0 mt-1">Slack</p>

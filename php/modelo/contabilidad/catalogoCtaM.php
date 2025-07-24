@@ -44,6 +44,7 @@ class catalogoCtaM
        $sql.='ORDER BY Codigo';
 
        $result = $this->conn->datos($sql);
+	   $result = FormatearNumeros($result, false);
 	   if($reporte_Excel==false)
 	   {
 	   	  return $result;

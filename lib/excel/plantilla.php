@@ -1,4 +1,6 @@
 <?php
+
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 // @session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -19,7 +21,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
-// use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 // use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 // use PhpOffice\PhpSpreadsheet\Style\Font;
@@ -84,6 +86,8 @@ function excel_generico($titulo,$datos=false,$url=false)
 	if(!$url){
 	$url = 	dirname(__DIR__,2).'/TEMP/EMPRESA_'.$_SESSION['INGRESO']['item'].'/';  
 	}  
+
+	$etiquetas = [];
 	
 	$spreadsheet = new Spreadsheet();
 	$sheet = $spreadsheet->getActiveSheet();
@@ -224,13 +228,17 @@ function excel_generico($titulo,$datos=false,$url=false)
 		}
 
 		foreach ($datos as $key => $value) {
-			// print_r($value);die();
-
-					$tipo  = '';
+			//print_r($value);die();
+			
+			//Extracción de etiquetas.
+			if ($key == 0){
+				$etiquetas = array_map('strtolower',$value['datos']);
+			}
+			$tipo  = '';
 			if(isset($value['tipo']))
 			{
 					$tipo = $value['tipo'];
-				}
+			}
 			if(isset($value['unir'])){
 				foreach ($value['unir'] as $key => $value3) {
 					 $can_cel = strlen($value3); if($can_cel>2){$fin = substr($value3,-1); $inicio = substr($value3,0,1);}else{ $fin = substr($value3,1);$inicio = substr($value3,0,-1); } }	
@@ -243,9 +251,27 @@ function excel_generico($titulo,$datos=false,$url=false)
 				// $ali = $value['alineado'][$key1];
 				// if($ali=='C'){$style = $centrar;}else if ($ali=='R') {$style = $derecha;}
 				$sheet->getColumnDimension($let)->setWidth($value['medidas'][$key1]);
-				
-				$sheet->setCellValue($let.''.$num, $value1);			    	
-			    
+				//$sheet->setCellValue($let.''.$num, $value1);	
+				//Para la primera fila (etiquetas o cabeceras de la tabla)
+				if($key == 0){
+					$sheet->setCellValueExplicit($let.''.$num, $value1, DataType::TYPE_STRING);
+				}
+				else/*Para las demás filas (datos) */ {
+					if(is_numeric($value1)){
+						if ((strpos($etiquetas[$key1], 'codigo') === false  && strpos($etiquetas[$key1], 'cta') === false) && (strpos($value1, '.')) !== false ){
+							$sheet->setCellValue($let.''.$num, $value1);
+
+							// Aplicar formato numérico con 2 decimales
+							$sheet->getStyle($let.''.$num)
+								->getNumberFormat()
+								->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+						} else {
+							$sheet->setCellValueExplicit($let.''.$num, $value1, DataType::TYPE_STRING);
+						}
+					} else {
+						$sheet->setCellValueExplicit($let.''.$num, $value1, DataType::TYPE_STRING);
+					}
+				}
 				if($tipo=='C')
 				{
 					$sheet->getStyle($let.''.$num)->applyFromArray($estilo_cabecera);

@@ -60,7 +60,7 @@
 											<div class="col-12 mb-0">
 												<label for="inputChoosePassword" class="form-label">Contraseña</label>
 												<div class="input-group" id="show_hide_password">
-													<input type="password" class="form-control border-end-0" name="txt_contra" id="txt_contra"  value="12345678" placeholder="Enter Password" autocomplete="current-password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
+													<input type="password" class="form-control border-end-0" name="txt_contra" id="txt_contra" placeholder="Enter Password" autocomplete="current-password"> <a href="javascript:;" class="input-group-text bg-transparent border-start-0"><i class='bx bx-hide'></i></a>
 												</div>
 											</div>
 												<div id="form_cartera" style="display:none">

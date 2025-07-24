@@ -890,24 +890,38 @@ class niveles_seguriC
 		$tbl2 = '';
 		$modulos = $this->modelo->modulos_todo();
 		$empresas = $this->modelo->empresas($entidad);
+		//print_r($empresas); die();
 		$empresas_unicas = filtra_datos_unico_array($empresas, 'id');
 		$usuarios_reg = $this->modelo->usuarios_registrados_entidad($entidad);
 		$mensaje = '';
 		$count_emp = 0;
-
+		$items_repetidos_array = [];
+		$items_repetidos = 0;
 		//validando que los items sean unicos
 		foreach ($empresas_unicas as $key => $value2) {
 			// $item_temp = $value2['id'];
 			foreach ($empresas as $key3 => $value3) {
 				if($value2['id']==$value3['id'])
 				{
-					$count_emp++;		
+					if($value2['text']!==$value3['text']){
+						$items_repetidos_array[$items_repetidos]['id'] =  $value3['id'];
+						$items_repetidos_array[$items_repetidos]['text'] =  $value3['text'];
+						$items_repetidos++;
+
+						$items_repetidos_array[$items_repetidos]['id'] =  $value2['id'];
+						$items_repetidos_array[$items_repetidos]['text'] =  $value2['text'];
+						$items_repetidos++;
+					}
+					$count_emp++;
 				}
 			}
 			$count_emp = $count_emp-1;
 			if($count_emp>=1)
 			{
-				$mensaje.='Item de empresa:<br> '.$value2['id'].' '.$value2['text'].' Veces Repetido: '.$count_emp.'<br>';
+				$mensaje = '';
+				foreach($items_repetidos_array as $key => $empresa){
+					$mensaje.= 'Empresa: '.$empresa['text'].'=> Item: '.$empresa['id']."<br>";
+				};
 				$count_emp = 0;
 			}
 		}

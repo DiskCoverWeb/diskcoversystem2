@@ -474,10 +474,10 @@ ORDER BY Acceso_Sucursales.Item,Empresa";
 
    function exportar_excel_diario($FechaIni,$FechaFin,$DCAgencia,$DCUsuario,$TextNumNo,$TextNumNo1,$OpcCI,$OpcCE,$OpcCD,$OpcND,$OpcNC,$OpcA,$CheckAgencia,$CheckUsuario,$CheckNum)
   {    
-      $result = $this->cargar_consulta_libro($FechaIni,$FechaFin,$DCAgencia,$DCUsuario,$TextNumNo,$TextNumNo1,$OpcCI,$OpcCE,$OpcCD,$OpcND,$OpcNC,$OpcA,$CheckAgencia,$CheckUsuario,$CheckNum);
-
+    $result = $this->cargar_consulta_libro($FechaIni,$FechaFin,$DCAgencia,$DCUsuario,$TextNumNo,$TextNumNo1,$OpcCI,$OpcCE,$OpcCD,$OpcND,$OpcNC,$OpcA,$CheckAgencia,$CheckUsuario,$CheckNum);
+    $result = FormatearNumeros($result, false);
     $b = 1;
-    $titulo='D I A R I O   G E N E R A R';
+    $titulo='D I A R I O   G E N E R A L';
      $tablaHTML =array();
      $tablaHTML[0]['medidas']=array(20,50,18,18,20,20);
      $tablaHTML[0]['datos']=array('COMPROB','CONCEPTO','CODIGO','CUENTA','DEBE','HABER');
@@ -504,9 +504,10 @@ ORDER BY Acceso_Sucursales.Item,Empresa";
 
   function exportar_excel_libro($FechaIni,$FechaFin,$DCAgencia,$DCUsuario,$TextNumNo,$TextNumNo1,$OpcCI,$OpcCE,$OpcCD,$OpcND,$OpcNC,$OpcA,$CheckAgencia,$CheckUsuario,$CheckNum)
   {    
-     $datosub_m = $this->cargar_consulta_submodulo_datos($FechaIni,$FechaFin,$DCAgencia,$DCUsuario,$TextNumNo,$TextNumNo1,$OpcCI,$OpcCE,$OpcCD,$OpcND,$OpcNC,$OpcA,$CheckAgencia,$CheckUsuario,$CheckNum);
-      $result = $this->cargar_consulta_libro($FechaIni,$FechaFin,$DCAgencia,$DCUsuario,$TextNumNo,$TextNumNo1,$OpcCI,$OpcCE,$OpcCD,$OpcND,$OpcNC,$OpcA,$CheckAgencia,$CheckUsuario,$CheckNum);
-
+    $datosub_m = $this->cargar_consulta_submodulo_datos($FechaIni,$FechaFin,$DCAgencia,$DCUsuario,$TextNumNo,$TextNumNo1,$OpcCI,$OpcCE,$OpcCD,$OpcND,$OpcNC,$OpcA,$CheckAgencia,$CheckUsuario,$CheckNum);
+    $result = $this->cargar_consulta_libro($FechaIni,$FechaFin,$DCAgencia,$DCUsuario,$TextNumNo,$TextNumNo1,$OpcCI,$OpcCE,$OpcCD,$OpcND,$OpcNC,$OpcA,$CheckAgencia,$CheckUsuario,$CheckNum);
+    $result = FormatearNumeros($result, false);
+    $datosub_m = FormatearNumeros($datosub_m, false);
      $b = 1;
 // print_r($datosub_m);die();
 

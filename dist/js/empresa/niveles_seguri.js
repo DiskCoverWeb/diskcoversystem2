@@ -176,7 +176,7 @@ let listado_empresas = [];
 
   function usuario()
   {
-      $('#myModal_espera').modal('show'); 
+      ShowModalEspera(); 
     	var parametros ={
     		'entidad':$('#ddl_entidad').val(),
     		'usuario':$('#ddl_usuarios').val(),
@@ -233,7 +233,7 @@ let listado_empresas = [];
             $('#serie').val(response[0].Serie_FA);
     			 }
 
-            $('#myModal_espera').modal('hide'); 
+            HideModalEspera(); 
 
            setTimeout('usuario_empresa()',2000);
     		}
@@ -258,26 +258,21 @@ let listado_empresas = [];
   	autocmpletar_usuario();
   	let entidad = $('#ddl_entidad').val();
     // alert(entidad);
-    // $('#myModal_espera').modal('show');
+    // ShowModalEspera();
   	$.ajax({
     		 data:  {entidad:entidad},
     		url:   '../controlador/empresa/niveles_seguriC.php?empresas=true',
     		type:  'post',
     		dataType: 'json',
     		// beforeSend: function () { 
-    		//   $('#myModal_espera').modal('show'); 
+    		//   ShowModalEspera(); 
     		// },
     		success:  function (response) { 
           // console.log(response);
           listado_empresas = [];
            if(response.alerta!='')
            {
-            Swal.fire({
-                title: response.alerta,
-                text:'Esto podria ocasionar problemas futuros',
-                icon:'info',
-                width: 600,
-              })
+            Swal.fire('Advertencia, item duplicado', response.alerta+'\nEsto podría causar problemas','info');
              // Swal.fire(,'s','info');
            }
 
@@ -293,7 +288,7 @@ let listado_empresas = [];
           
             var enti = $('#ddl_entidad').val();
             $('#lbl_enti').text(enti);
-    			 	$('#myModal_espera').modal('hide');				
+    			 	HideModalEspera();				
     				$('#tbl_modulos').html(response.tbl);
             $('#usuarios_tbl').html(response.usuarios); 
             $('#ddl_empresa_puntoEmi').html(opPuntoEmi); 
@@ -382,7 +377,7 @@ function guardar()
     		type:  'post',
     		dataType: 'json',
     		beforeSend: function () { 
-    		 $('#myModal_espera').modal('show'); 
+    		 ShowModalEspera(); 
     		},
     		success:  function (response) { 
           // console.log(response);
@@ -413,17 +408,17 @@ function guardar()
     			// 			showConfirmButton: true
     			// 			//timer: 2500
     			// 			});
-    			// 		$('#myModal_espera').modal('hide'); 
+    			// 		HideModalEspera(); 
           //     $('#rbl_all').prop('checked',false); 
     			// 		//buscar_permisos();
     			// 	}else if(response== -1)
           //   {
-              $('#myModal_espera').modal('hide'); 
+              HideModalEspera(); 
           //     Swal.fire('No se pudo crear el usuario para SQLServer','Pongace en contacto con el administrador del sistema, su base no esta actualizada o no tiene las credenciales correctas','error');
           //   }
     		},
           error: function (error) {
-            $('#myModal_espera').modal('hide');
+            HideModalEspera();
             // console.error('Error en numero_comprobante:', error);
             // Puedes manejar el error aquí si es necesario
           },
@@ -443,7 +438,7 @@ function guardar()
     		type:  'post',
     		dataType: 'json',
     		beforeSend: function () { 
-    		  $('#myModal_espera').modal('show'); 
+    		  ShowModalEspera(); 
     		},
     		success:  function (response) { 
     			if(response == 1)
@@ -455,7 +450,7 @@ function guardar()
     						showConfirmButton: true
     						//timer: 2500
     						});
-    					$('#myModal_espera').modal('hide'); 
+    					HideModalEspera(); 
     			 	
     			 }
           else if(response == -1){
@@ -465,7 +460,7 @@ function guardar()
               text: 'Sucedión un error de conexión. Intentelo más tarde',
               showConfirmButton: true
             });
-            $('#myModal_espera').modal('hide');
+            HideModalEspera();
           }
           else {
             Swal.fire({
@@ -474,7 +469,7 @@ function guardar()
               text: 'Sucedión un error en el proceso. Intentelo nuevamente',
               showConfirmButton: true
             });
-            $('#myModal_espera').modal('hide');
+            HideModalEspera();
           }
     		}
     	});
@@ -493,7 +488,7 @@ function guardar()
         type:  'post',
         dataType: 'json',
         beforeSend: function () { 
-          $('#myModal_espera').modal('show'); 
+          ShowModalEspera(); 
         },
         success:  function (response) { 
           if(response == 1)
@@ -505,7 +500,7 @@ function guardar()
                 showConfirmButton: true
                 //timer: 2500
                 });
-              $('#myModal_espera').modal('hide'); 
+              HideModalEspera(); 
             
            }
         }
@@ -598,13 +593,13 @@ function guardar()
         type:  'post',
         dataType: 'json',
         beforeSend: function () { 
-          // $('#myModal_espera').modal('show'); 
+          // ShowModalEspera(); 
         },
         success:  function (response) { 
           if (response == 1)
            {
 
-          $('#myModal_espera').modal('hide'); 
+          HideModalEspera(); 
          
              Swal.fire({
                  icon: 'success',
@@ -615,7 +610,7 @@ function guardar()
            }else if(response == -2)
            {
 
-          $('#myModal_espera').modal('hide'); 
+          HideModalEspera(); 
             Swal.fire({
               icon: 'info',
               title: 'Usuario y Clave existente!',
@@ -625,7 +620,7 @@ function guardar()
            else if(response == -3)
            {
 
-          $('#myModal_espera').modal('hide'); 
+          HideModalEspera(); 
             Swal.fire({
               icon: 'info',
               title: 'Nuevo Usuario no registrar en base de datos de la entidad!',
@@ -634,7 +629,7 @@ function guardar()
            }else
            {
 
-          $('#myModal_espera').modal('hide'); 
+          HideModalEspera(); 
              Swal.fire({
               icon: 'error',
               title: 'Surgio un problema intente mas tarde!',
@@ -666,7 +661,7 @@ function guardar()
         type:  'post',
         dataType: 'json',
         beforeSend: function () { 
-          $('#myModal_espera').modal('show'); 
+          ShowModalEspera(); 
           $('#list_empre').html('<tr class="text-center"><td colspan="6"> No encontrado... </td></tr>');
           $('#txt_enti').val('');
         },
@@ -680,7 +675,7 @@ function guardar()
                 showConfirmButton: true
                 //timer: 2500
                 });
-              $('#myModal_espera').modal('hide'); 
+              HideModalEspera(); 
             
            }else
            {
@@ -700,7 +695,7 @@ function guardar()
             });
 
            $('#list_empre').html(empresa);
-             $('#myModal_espera').modal('hide'); 
+             HideModalEspera(); 
            }
         }
       });
@@ -724,13 +719,13 @@ function marcar_all(item)
         type:  'post',
         dataType: 'json',
         beforeSend: function () { 
-          $('#myModal_espera').modal('show'); 
+          ShowModalEspera(); 
         },
         success:  function (response) { 
           if(response == 1)
            {  
              usuario_empresa();
-            $('#myModal_espera').modal('hide');             
+            HideModalEspera();             
            }
         }
       });
@@ -768,13 +763,13 @@ console.log($('#ddl_usuarios').val());
         type:  'post',
         dataType: 'json',
         beforeSend: function () { 
-          // $('#myModal_espera').modal('show'); 
+          // ShowModalEspera(); 
         },
         success:  function (response) { 
           if(response == 1)
            {
               usuario_empresa();
-              // $('#myModal_espera').modal('hide');      
+              // HideModalEspera();      
             
            }
         }
@@ -813,7 +808,7 @@ if($('#rbl_'+modulo).prop('checked'))
 }
 
 /*return false;
-  $('#myModal_espera').modal('show');
+  ShowModalEspera();
 var entidad = $('#ddl_entidad').val();
   var parametros = 
   {
@@ -829,14 +824,14 @@ var entidad = $('#ddl_entidad').val();
         type:  'post',
         dataType: 'json',
         beforeSend: function () { 
-          // $('#myModal_espera').modal('show'); 
+          // ShowModalEspera(); 
         },
         success:  function (response) { 
           if(response == 1)
            {
               usuario_empresa();
               buscar_permisos();
-              $('#myModal_espera').modal('hide');      
+              HideModalEspera();      
             
            }
         }
@@ -879,14 +874,14 @@ function confirmar_email()
         type:  'post',
         dataType: 'json',
         // beforeSend: function () { 
-        //   $('#myModal_espera').modal('show'); 
+        //   ShowModalEspera(); 
         // },
         success:  function (response) { 
           $('#mymodal_email').modal('show');
           $('#div_email').html(response);
           console.log(response);
          
-           // $('#myModal_espera').modal('hide');
+           // HideModalEspera();
         }
       }); 
 
@@ -917,7 +912,7 @@ function enviar_email()
         type:  'post',
         dataType: 'json',
         beforeSend: function () { 
-          $('#myModal_espera').modal('show');
+          ShowModalEspera();
           console.log("enviando email"); 
         },
         success:  function (response) { 
@@ -932,7 +927,7 @@ function enviar_email()
              Swal.fire('No se pudo enviar el correo','Asegurese que el correo o las credenciales SMTP sean correctos','error');
            }
 
-           $('#myModal_espera').modal('hide');
+           HideModalEspera();
            $('#mymodal_email').modal('hide');
         }
       }); 
@@ -957,7 +952,7 @@ function enviar_email_masivo()
         type:  'post',
         dataType: 'json',
         beforeSend: function () { 
-          $('#myModal_espera').modal('show'); 
+          ShowModalEspera(); 
         },
         success:  function (response) { 
           console.log(response);
@@ -968,7 +963,7 @@ function enviar_email_masivo()
           {
             Swal.fire('Puede ser que algunos usuarios no hayan recibido sus credenciales','info');
           }
-          $('#myModal_espera').modal('hide');
+          HideModalEspera();
         }
     }); 
 }
@@ -1054,7 +1049,7 @@ function EditUsuario()
 
 function buscarPuntoVenta(item)
 {
-  // $('#myModal_espera').modal('show');
+  // ShowModalEspera();
   var id = $('#txt_id_usu').val();
   var enti =$('#ddl_entidad').val();
   var parametros = 
@@ -1070,7 +1065,7 @@ function buscarPuntoVenta(item)
       type:  'post',
       dataType: 'json',       
       success:  function (response) { 
-        $('#myModal_espera').modal('hide');
+        HideModalEspera();
         console.log(response);
          //SRI
 

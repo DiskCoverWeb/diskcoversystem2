@@ -423,7 +423,6 @@ $(document).ready(function()
 
 
     $('#descargar_excel').click(function(){
-
     if($('#reporte_tipo').val()==1)
     {
             var url ='../../lib/fpdf/reportes_Saldo_fac_subMod.php?excel_submodulo_mes=true&tipocuenta='+$('#tipo_cuenta').val()+'&ChecksubCta='+$("#ChecksubCta").is(':checked')+'&CheqCta='+$("#CheqCta").is(':checked')+'&fechaini='+$('#txt_desde').val()+'&fechafin='+$('#txt_hasta').val()+'&Cta='+$('#select_cuenta').val();

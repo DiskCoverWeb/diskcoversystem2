@@ -80,7 +80,7 @@ class catalogoCtaC
 		
 
 		// $this->pdf->cabecera_reporte_MC('PLAN DE CUENTAS',$tablaHTML,$contenido=false,$image=false,'','',9,true,25);
-		$this->pdf->cabecera_reporte_MC($titulo=false,$tablaHTML,$contenido=false,$image=false,$Fechaini=false,$Fechafin=false,false,true,25,'P');
+		$this->pdf->cabecera_reporte_MC('PLAN DE CUENTAS',$tablaHTML,$contenido=false,$image=false,$Fechaini=false,$Fechafin=false,false,true,25,'P');
 
 	}
 }

@@ -81,16 +81,6 @@ function tipo_balance()
     });
 }
 
-function DataTableColums(firstRow){
-    if(!firstRow) return [];
-
-    return Object.keys(firstRow).map(function(key){
-        return {
-            data: key, 
-            title: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, '')
-        };
-    });
-}
 
 function cargar_balance_consolidado(type){
     if ($.fn.DataTable.isDataTable('#tbl_datos')) {

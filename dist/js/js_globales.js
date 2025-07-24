@@ -220,9 +220,7 @@ function generar_ceros(num,cant)
 
 function fecha_valida(campo)
 {
-	// console.log(campo.id);
 	valor = $('#'+campo.id).val();
-	console.log(valor)
 	if(campo=='' || campo==undefined || valor=='' || valor==undefined)  
 	{
 		// alert('Fecha no valida');
@@ -232,9 +230,18 @@ function fecha_valida(campo)
 	}
 }
 
+function fecha_valida_valor(valor){
+  if (!valor) return { valido: false, mensaje: "Fecha vacía o no seleccionada." };
 
- function validar_numeros_decimal(campo) 
- {
+  const fecha = new Date(valor);
+  if (isNaN(fecha)) return { valido: false, mensaje: "Formato de fecha no válido." };
+
+  return { valido: true };
+}
+
+
+function validar_numeros_decimal(campo) 
+{
  	contador = 0;
  	valor = $('#'+campo.id).val();
  	valor = valor.replace(',','.')
@@ -252,7 +259,7 @@ function fecha_valida(campo)
       	new_val = new_val.substr(0,new_val.length-1);
       }
       $('#'+campo.id).val(new_val);
- }
+}
 
 
 function validar_float(campo,decimales)
@@ -706,7 +713,9 @@ function alignEnd(row, data){
 		if(!keylower.startsWith("codigo") && keylower != "cta"){ 
 			if (typeof value === "string" && /^-?\d+\.\d+$/.test(value)){
 				$('td', row).eq(colIndex).addClass('text-end');
-			}
+			} else if (typeof value === "number" && Number.isFinite(value) && !Number.isInteger(value)){
+        $('td', row).eq(colIndex).addClass('text-end');
+      }
 		}
 	});
 } 
@@ -863,4 +872,27 @@ function addCliente() {
     $("#myModal").modal("show");
     var src = "../vista/modales.php?FCliente=true";
     $('#FCliente').attr('src', src).show();
+}
+
+function ShowModalEspera(){
+  $('#myModal_espera').modal('show');
+}
+
+function HideModalEspera(){
+  setTimeout(()=>{
+    $('#myModal_espera').modal('hide');
+  }, 500);
+}
+
+function openModal(text, tipo) {
+    //j = JSON, s = String.  
+    if(tipo = 'j'){
+          let textTemp = JSON.stringify(text);
+     } else {
+          let textTemp = text;
+     }
+     let textTemp = JSON.stringify(text);
+     textTemp = textTemp.replace("{", "");
+     textTemp = textTemp.replace("}", "");
+     Swal.fire('Prueba de Escritorio', '<div>'+textTemp+'</div>', 'info');
 }

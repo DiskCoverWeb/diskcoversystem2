@@ -368,7 +368,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 								</div>
 								<div class="col-sm-4">
 									<label>PROVINCIA</label>
-									<select class="form-select form-select-sm  id="prov" name="prov" onchange="ciudad_l(this.value)">
+									<select class="form-select form-select-sm"  id="prov" name="prov" onchange="ciudad_l(this.value)">
 										<option value="">Seleccione una provincia</option>		                           
 									</select>
 								</div>

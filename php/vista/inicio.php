@@ -629,6 +629,17 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'migrar_esquemas':
 					require_once('migracion/migrar_esquemas.php');
 					break;
+
+				/**************************************ROL PAGOS***************************************/
+				//Rol Pagos -> Archivo -> Registro de empleados
+				case 'registro_empleados':
+					require_once('rol_pagos/registro_empleados.php');
+					break;
+				
+				//Rol Pagos -> Archivo -> Registro horas trabajadas.
+				case 'registro_horas_laboradas':
+					require_once('rol_pagos/registro_horas_laboradas.php');
+					break;
 	
 				default:
 					echo "<div class='box-body'><img src='../../img/404.png' width='100%'></div>";

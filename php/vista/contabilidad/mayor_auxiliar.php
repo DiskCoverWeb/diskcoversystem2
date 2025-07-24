@@ -34,8 +34,8 @@
 			<img src="../../img/png/table_excel.png">
 			</button>
 			<ul class="dropdown-menu">
-			<li><a href="#" id="imprimir_excel">Impresion normal</a></li>
-			<li><a href="#" id="imprimir_excel_2">Por Sub Modulo / Centro de costos</a></li>
+			<li><a class="dropdown-item" href="#" id="imprimir_excel">Impresion normal</a></li>
+			<li><a class="dropdown-item" href="#" id="imprimir_excel_2">Por Sub Modulo / Centro de costos</a></li>
 			</ul>            	
 			<button title="Consultar Varios Mayor Auxiliar"  class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" onclick="consultar_datos(false,Individual);">
 				<img src="../../img/png/es.png" >

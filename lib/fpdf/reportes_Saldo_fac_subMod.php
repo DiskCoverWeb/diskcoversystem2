@@ -150,11 +150,10 @@ class Reporte_subModulo
 		$tablaHTML[0]['medidas']=array(51,10,25,60);
 		$tablaHTML[0]['datos']=array('PROVEEDOR','MES','VALOR POR MES','CATEGORIA');
 		$tablaHTML[0]['tipo'] ='C';
-
 		$pos = 1;
 		$bene = '';
 		$total = 0;
-		foreach ($datos as $key => $value) {
+		foreach ($datos['data'] as $key => $value) {
 			
 			if($value['Anio']!='TOTAL')
 			{

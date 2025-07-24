@@ -73,8 +73,25 @@ class cambioeM
 	function editar_datos_empresaMYSQL($parametros)
 	{
 		$img = '.';
-		
-		$sql = "UPDATE lista_empresas set 
+
+		$sql = "UPDATE lista_empresas SET";
+		if(isset($parametros['Estado']))	{$sql .= " Estado='".$parametros['Estado']."',";}
+		if(isset($parametros['Mensaje']))	{$sql .= " Mensaje='".$parametros['Mensaje']."',";}
+		if(isset($parametros['FechaCE']))	{$sql .= " Fecha_CE='".$parametros['FechaCE']."',";}
+		if(isset($parametros['Servidor']))	{$sql .= " IP_VPN_RUTA='".$parametros['Servidor']."',";}
+		if(isset($parametros['Base']))		{$sql .= " Base_Datos='".$parametros['Base']."',";}
+		if(isset($parametros['Usuario']))	{$sql .= " Usuario_DB='".$parametros['Usuario']."',";}
+		if(isset($parametros['Clave']))		{$sql .= " contrasena_DB='".$parametros['Clave']."',";}
+		if(isset($parametros['Motor']))		{$sql .= " Tipo_Base='".$parametros['Motor']."',";}
+		if(isset($parametros['Puerto']))	{$sql .= " Puerto='".$parametros['Puerto']."',";}
+		if(isset($parametros['FechaR']))	{$sql .= " Fecha='".$parametros['FechaR']."',";}
+		if(isset($parametros['FechaDB']))	{$sql .= " Fecha_DB='".$parametros['FechaDB']."',";}
+		if(isset($parametros['FechaP12']))	{$sql .= " Fecha_P12='".$parametros['FechaP12']."',";}
+		if(isset($parametros['Plan']))		{$sql .= " Tipo_Plan='".$parametros['Plan']."',";}
+
+		$sql = substr($sql, 0, -1);
+
+		/*$sql = "UPDATE lista_empresas set 
 		Estado='".$parametros['Estado']."',
 		Mensaje='".$parametros['Mensaje']."',
 		Fecha_CE='".$parametros['FechaCE']."' ,
@@ -87,7 +104,7 @@ class cambioeM
 	    Fecha='".$parametros['FechaR']."',
 	    Fecha_DB='".$parametros['FechaDB']."',
 	    Fecha_P12='".$parametros['FechaP12']."', 
-	    Tipo_Plan='".$parametros['Plan']."' ";
+	    Tipo_Plan='".$parametros['Plan']."' ";*/
 	    if(isset($parametros['ddl_img']) && $parametros['ddl_img']!='')
 	    { 
 	    	$logo = explode('.',$parametros['ddl_img']); $img = $logo[0];
@@ -111,7 +128,7 @@ class cambioeM
 	    	if($em[0]['IP_VPN_RUTA']!='.' && $em[0]['IP_VPN_RUTA']!='')
 	    	{
 	            $conn = $this->db->modulos_sql_server($em[0]['IP_VPN_RUTA'],$em[0]['Usuario_DB'],$em[0]['Contrasena_DB'],$em[0]['Base_Datos'],$em[0]['Puerto']);
-	            //print_r($conn);die();
+	            // print_r($conn);die();
 	            // validamos si se conecto 
 	            if($conn!=-1)
 	            {
@@ -317,7 +334,6 @@ class cambioeM
 	}
 	function guardar_masivo($parametros)
 	{
-		
 		$sql = "UPDATE lista_empresas SET";
 		if(isset($parametros['FechaR'])){
 			$sql .= " Fecha='".$parametros['FechaR']."',";
@@ -332,13 +348,13 @@ class cambioeM
 		$sql = substr($sql, 0, -1);
 
 		$sql .= " WHERE ID_Empresa='".$parametros['entidad']."'";
-		
-		//$sql = "UPDATE lista_empresas set Fecha='".$parametros['FechaR']."' , Fecha_VPN='".$parametros['FechaV']."' , Fecha_CE='".$parametros['Fecha']."'  
-		//WHERE ID_Empresa='".$parametros['entidad']."'";
+
+		/*$sql = "UPDATE lista_empresas set Fecha='".$parametros['FechaR']."' , Fecha_VPN='".$parametros['FechaV']."' , Fecha_CE='".$parametros['Fecha']."'  
+		WHERE ID_Empresa='".$parametros['entidad']."'";*/
 
 		$em = $this->entidad($query=false,$parametros['entidad'],$ciudad=false);
 		// print_r($em);die();
-		if(count($em)>0)
+		if(count($em)>0 && isset($parametros['Fecha']))
 		{
 			foreach ($em as $key => $value) {
 				if($value['IP_VPN_RUTA']!='.' && $value['IP_VPN_RUTA']!='')
@@ -347,13 +363,13 @@ class cambioeM
 		            // print_r($conn);die();
 		            if($conn!=-1)
 		            {
-		            	$fe =  date("Y-m-d",strtotime($parametros['FechaCE']."- 1 year"));
+		            	$fe =  date("Y-m-d",strtotime($parametros['Fecha']."- 1 year"));
 		            	$sql2 = "UPDATE Catalogo_Lineas 
-			    		SET Vencimiento = '".$parametros['FechaCE']."',Fecha = '".$fe."' 
+			    		SET Vencimiento = '".$parametros['Fecha']."',Fecha = '".$fe."' 
 			    		WHERE Item = '".$value['Item']."' AND Periodo = '.'  AND TL <> 0 AND len(Autorizacion)>=13";
 
 			    		// print_r($sql2);die();
-			    		$sql3 = "UPDATE Empresas SET Fecha_CE = '".$parametros['FechaCE']."' WHERE Item='".$value['Item']."'";
+			    		$sql3 = "UPDATE Empresas SET Fecha_CE = '".$parametros['Fecha']."' WHERE Item='".$value['Item']."'";
 
 		    		// print_r($sql3);
 
@@ -426,7 +442,6 @@ class cambioeM
 
 		return $this->db->String_Sql($sql,'MYSQL');
 	}
-
 
 	function asignar_clave($parametros)
 	{
@@ -535,12 +550,12 @@ class cambioeM
 	   $sql="SELECT * 
         	FROM Catalogo_Lineas 
         	WHERE Item = '".$item."' 
-        	AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-        	AND TL <> 0 ";
+        	AND Periodo = '".$_SESSION['INGRESO']['periodo']."'";
         	if($id)
         	{
         		$sql.=" AND ID = '".$id."'"; 
         	}
+		$sql.=" ORDER BY Autorizacion";
        	// print_r($sql);die();
        	//return $this->db->datos($sql);
 		return $this->db->consulta_datos_db_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
@@ -549,10 +564,10 @@ class cambioeM
 	function nivel1($entidad, $item)
 	{
 		$conn_sql = $this->empresas_datos($entidad,$item);
-		$sql= "SELECT DISTINCT Autorizacion FROM Catalogo_Lineas
+		$sql= "SELECT Autorizacion FROM Catalogo_Lineas
 			WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-			AND  Item = '$item' 
-			AND TL <> 0";
+			AND  Item = '$item'
+			GROUP BY Autorizacion";
 		//print_r($sql);die();
        	//return $this->db->datos($sql);
 		return $this->db->consulta_datos_db_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
@@ -562,11 +577,11 @@ class cambioeM
 	function nivel2($entidad, $item, $autorizacion)
 	{
 		$conn_sql = $this->empresas_datos($entidad,$item);
-		$sql= "SELECT DISTINCT Serie FROM Catalogo_Lineas
+		$sql= "SELECT Serie FROM Catalogo_Lineas
 		WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."' 
 		AND Item = '".$item."' 
 		AND Autorizacion = '".$autorizacion."'
-		AND TL <> 0";
+		GROUP BY Serie";
        	//return $this->db->datos($sql);
 		return $this->db->consulta_datos_db_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
 	}
@@ -574,12 +589,12 @@ class cambioeM
 	function nivel3($entidad, $item, $autorizacion,$serie)
 	{
 		$conn_sql = $this->empresas_datos($entidad,$item);
-		$sql="SELECT DISTINCT Fact FROM Catalogo_Lineas
+		$sql="SELECT Fact FROM Catalogo_Lineas
 			WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."' 
 			AND Item = '".$item."' 
 			AND Autorizacion = '".$autorizacion."'
 			AND Serie = '".$serie."'
-			AND TL <> 0";
+			GROUP BY Fact";
        	//return $this->db->datos($sql);
 		return $this->db->consulta_datos_db_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
 	}
@@ -592,7 +607,6 @@ class cambioeM
 			AND Item = '".$item."' 
 			AND Autorizacion = '".$autorizacion."'
 			AND Serie = '".$serie."'
-			AND TL <> 0
 			AND Fact = '".$fact."'";
        	//return $this->db->datos($sql);
 		return $this->db->consulta_datos_db_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
@@ -605,8 +619,7 @@ class cambioeM
       		FROM Catalogo_Lineas
       		WHERE Codigo = '".$codigo."'
       		AND Item = '".$item."' 
-      		AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-      		AND TL <> 0 ";      		
+      		AND Periodo = '".$_SESSION['INGRESO']['periodo']."'";      		
        	//return $this->db->datos($sql);
 		//print_r($sql."\n");
 		return $this->db->consulta_datos_db_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
@@ -619,10 +632,32 @@ class cambioeM
               FROM Catalogo_Lineas 
               WHERE Codigo = '".$Codigo."' 
               AND Item = '".$item."' 
-              AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-              AND TL <> 0";
+              AND Periodo = '".$_SESSION['INGRESO']['periodo']."'";
         //return $this->db->String_Sql($sql);
 		//print_r($sql."\n");
+		return $this->db->ejecutar_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
+	}
+
+	function elimina_linea_det($item, $entidad, $Factura, $Autorizacion, $Serie, $Codigo)
+	{
+		$conn_sql = $this->empresas_datos($entidad,$item);
+		$sql= "DELETE 
+              FROM Catalogo_Lineas 
+              WHERE Autorizacion = '".$Autorizacion."'";
+
+		if($Serie){
+			$sql .= " AND Serie = '".$Serie."'";
+		}
+		if($Factura){
+			$sql .= " AND Fact = '".$Factura."'";
+		}
+		if($Codigo){
+			$sql .= " AND Codigo = '".$Codigo."'";
+		}
+		$sql .= " AND Item = '".$item."' 
+			AND Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+        //return $this->db->String_Sql($sql);
+		//print_r($sql);die();
 		return $this->db->ejecutar_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
 	}
 
@@ -702,23 +737,50 @@ class cambioeM
 		if($actualizar){
 			$sql = "UPDATE ".$tabla." SET ";
 
+			$sql2 = "SELECT TOP 1 * FROM ".$tabla;
+			if(count($where)>0){
+				$arrWhere2 = array();
+				foreach($where as $key => $value){
+					array_push($arrWhere2, $key."=".$value);
+				}
+				$whereJoin2 = join(", ", $arrWhere2);
+			}
+			$sql2 .= " WHERE " . $whereJoin2;
+			$datos = $this->db->consulta_datos_db_sql_terceros($sql2,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
+			//print_r($datos);
+			/*$datos[0]["Vencimiento"] = $datos[0]["Vencimiento"]->format('Y-m-d');
+			$datos[0]["Fecha"] = $datos[0]["Fecha"]->format('Y-m-d');*/
 			$arrCampos = array();
 			foreach($campos as $key => $value){
-				array_push($arrCampos, $key."=".$value);
-			}
-			$camposJoin = join(", ", $arrCampos);
-			$sql .= $camposJoin . " WHERE ";
-
-			$whereJoin = '';
-			if(count($where)>0){
-				$arrWhere = array();
-				foreach($where as $key => $value){
-					array_push($arrWhere, $key."=".$value);
+				if(count($datos)>0){
+					$valStr = (substr($value,0,1) == "'" && substr($value,-1) == "'") ? substr($value,1,-1) : $value;
+					$datos[0][$key] = is_a($datos[0][$key], 'DateTime') ? $datos[0][$key]->format('Y-m-d') : $datos[0][$key];
+					
+					if($datos[0][$key] != $valStr){
+						array_push($arrCampos, $key."=".$value);
+					}
+				}else{
+					array_push($arrCampos, $key."=".$value);;
 				}
-				$whereJoin = join(", ", $arrWhere);
 			}
 
-			$sql .= $whereJoin;
+			if(count($arrCampos) > 0){
+				$camposJoin = join(", ", $arrCampos);
+				$sql .= $camposJoin . " WHERE ";
+	
+				$whereJoin = '';
+				if(count($where)>0){
+					$arrWhere = array();
+					foreach($where as $key => $value){
+						array_push($arrWhere, $key."=".$value);
+					}
+					$whereJoin = join(", ", $arrWhere);
+				}
+	
+				$sql .= $whereJoin;
+			}else{
+				return 1;
+			}
 		}else{
 			$sql = "INSERT INTO ".$tabla." ";
 
@@ -736,8 +798,19 @@ class cambioeM
 			$valuesJoin = join(", ", $arrValues);
 			$sql .= "(" . $valuesJoin . ")";
 		}
-		//print_r($sql."\n");
-		return $this->db->ejecutar_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
+		//print_r($sql."\n");die();
+		$this->db->ejecutar_sql_terceros($sql,$conn_sql[0]['host'],$conn_sql[0]['usu'],$conn_sql[0]['pass'],$conn_sql[0]['base'],$conn_sql[0]['Puerto']);
+		
+		// ELIMINAR NULOS EN BASE DE DATOS DE TERCEROS
+		$server=''.$conn_sql[0]['host'].', '.$conn_sql[0]['Puerto'];
+		$connectionInfo = array("Database"=>$conn_sql[0]['base'], "UID" => $conn_sql[0]['usu'],"PWD" => $conn_sql[0]['pass'],"CharacterSet" => "UTF-8");
+		$parametros_sp = array(
+			array(&$tabla, SQLSRV_PARAM_IN),
+		  );
+		$sql_sp = "EXEC sp_Eliminar_Nulos @NombreTabla= ?";
+	  	$cid = sqlsrv_connect($server, $connectionInfo); //returns false
+		$stmt = sqlsrv_prepare($cid, $sql_sp, $parametros_sp);
+	  	$res = sqlsrv_execute($stmt);
 	}
 
 }

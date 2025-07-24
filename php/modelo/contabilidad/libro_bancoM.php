@@ -196,7 +196,6 @@ include(dirname(__DIR__,2).'/db/variables_globales.php');//
    $desde = str_replace('-','',$parametros['desde']);
 	 $hasta = str_replace('-','',$parametros['hasta']);
 	 $result = $this->consultar_banco_($desde,$hasta,$parametros['CheckAgencia'],$parametros['DCAgencia'],$parametros['CheckUsu'],$parametros['DCUsuario'],$parametros['DCCtas'], true);
-
     $b = 1;
     $titulo='L I B R O   B A N C O';
      $tablaHTML =array();
