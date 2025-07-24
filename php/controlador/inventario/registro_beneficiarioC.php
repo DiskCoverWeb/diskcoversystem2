@@ -1096,8 +1096,14 @@ class registro_beneficiarioC
                 {
                     SetAdoFields('CodigoA', $datos['select_88']);
                 }
-                SetAdoFields('Dia_Ent', $datos['diaEntregac']);
-                SetAdoFields('Hora_Ent', $datos['horaEntregac']);
+
+                if(isset($datos['diaEntregac'])){
+                    SetAdoFields('Dia_Ent', $datos['diaEntregac']);
+                }
+
+                if(isset($datos['horaEntregac'])){
+                    SetAdoFields('Hora_Ent', $datos['horaEntregac']);
+                }
                 if(isset($datos['select_86']))
                 {
                     SetAdoFields('Envio_No', $datos['select_86']);

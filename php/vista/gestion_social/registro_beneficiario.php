@@ -54,7 +54,7 @@
                 <input type="hidden" name="txt_id_datos_extra" id="txt_id_datos_extra">
                 <div class="row">
                     <div class="col-lg-3">
-                        <b>CI / RUC </b>
+                        <b>CI / RUC <span style="color: red;">*</span></b>
                         <div class="input-group">
                             <button type="button" class="btn btn-success btn-sm p-0" id="btn_nuevo_cli" onclick="validarRucYValidarSriC()" title="Nuevo cliente">
                                 <img src="../../img/png/SRIlogo.png" style="width: 45px;"  id="validarSRI" title="VALIDAR RUC">
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                      <div class="col-lg-5">
-                        <b>Nombre del Beneficiario/Usuario </b>
+                        <b>Nombre del Beneficiario/Usuario <span style="color: red;">*</span></b>
                         <div class="input-group">
                             <input type="text" name="cliente" id="cliente" class="form-control form-control-sm">
                             <!-- <button class="btn-sm btn btn-primary"><i class="bx bx-search"></i></button> -->
@@ -80,7 +80,7 @@
                                  <img id="img_Tipo_Beneficiario" src="../../img/png/previnculacion.png"alt="user avatar" width="55" height="55">                                
                             </div>
                             <div class="col-sm-9">
-                                <label for="select_93"><b>Tipo de Beneficiario</b></label>
+                                <label for="select_93"><b>Tipo de Beneficiario<span style="color: red;">*</span></b></label>
                                 <select class="form-select" name="select_93" id="select_93"></select>                                
                             </div>                            
                         </div>
@@ -105,7 +105,7 @@
                                   <img id="img_estado_beneficiario" src="../../img/png/previnculacion.png"alt="user avatar" width="55" height="55">                      
                             </div>
                             <div class="col-lg-9">
-                                <label for="select_87"><b>Estado</b></label>
+                                <label for="select_87"><b>Estado</b><span style="color: red;">*</span></label>
                                 <select class="form-select form-select-sm" name="select_87" id="select_87"></select>                                
                             </div>                            
                         </div> 
@@ -121,23 +121,23 @@
                 </div> 
                 <div class="row campoSocial">
                     <div class="col-lg-4">
-                        <label for="nombreRepre" style="display: block;"><b>Nombre Representante Legal</b></label>
+                        <label for="nombreRepre" style="display: block;"><b>Nombre Representante Legal</b><span style="color: red;">*</span></label>
                         <input class="form-control form-control-sm" type="text" name="nombreRepre" id="nombreRepre" placeholder="Nombre Representante">                        
                     </div>
                     <div class="col-lg-4">
-                        <label for="ciRepre" style="display: block;"><b>CI Representante Legal</b></label>
+                        <label for="ciRepre" style="display: block;"><b>CI Representante Legal</b><span style="color: red;">*</span></label>
                         <input class="form-control form-control-sm" type="text" name="ciRepre" id="ciRepre" placeholder="CI Representante">                        
                     </div>
                     <div class="col-lg-4">
-                        <label for="telfRepre"><b>Teléfono Representante Legal</b></label>
+                        <label for="telfRepre"><b>Teléfono Representante Legal</b><span style="color: red;">*</span></label>
                         <input class="form-control form-control-sm" type="text" name="telfRepre" id="telfRepre" placeholder="Representante legal">                        
                     </div>
                     <div class="col-lg-3">
-                        <label for="contacto"><b>Contacto/Encargado</b></label>
+                        <label for="contacto"><b>Contacto/Encargado</b><span style="color: red;">*</span></label>
                         <input class="form-control form-control-sm" type="text" name="contacto" id="contacto" placeholder="Contacto">                        
                     </div>
                     <div class="col-lg-3">
-                        <label for="cargo"><b>Cargo</b></label>
+                        <label for="cargo"><b>Cargo</b><span style="color: red;">*</span></label>
                         <input class="form-control form-control-sm" type="text" name="cargo" id="cargo" placeholder="Profesión">                        
                     </div>
                     <div class="col-lg-3">
@@ -146,7 +146,7 @@
                                 <img src="../../img/png/calendario2.png" width="60" height="60">
                             </div>
                             <div class="col-9">
-                                 <label for="diaEntrega"><b>Día Entrega visita</b></label>
+                                 <label for="diaEntrega"><b>Día Entrega visita</b><span style="color: red;">*</span></label>
                                 <select class="form-select form-select-sm" name="diaEntrega" id="diaEntrega"></select>
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                                 <img src="../../img/png/reloj.png" width="55" height="55">                                
                             </div>         
                             <div class="col-9">
-                                <label for="horaEntrega"><b>Hora de visita</b></label>
+                                <label for="horaEntrega"><b>Hora de visita</b><span style="color: red;">*</span></label>
                                 <input type="time" name="horaEntrega" id="horaEntrega" class="form-control form-control-sm">                                
                             </div>                   
                         </div>
@@ -312,11 +312,11 @@
                     <div class="col-lg-6 campoSocial">
                         <div class="row">
                             <div class="col-6">
-                                <label for="email"><b>Email</b></label>
+                                <label for="email"><b>Email</b><span style="color: red;">*</span></label>
                                 <input class="form-control form-control-sm" type="text" name="email" id="email" placeholder="Email">
                             </div>
                             <div class="col-6">
-                                <label for="telefono"><b>Teléfono 1</b></label>
+                                <label for="telefono"><b>Teléfono 1</b><span style="color: red;">*</span></label>
                                 <input class="form-control form-control-sm" type="text" name="telefono" id="telefono"
                                     placeholder="Teléfono ">
                             </div>
