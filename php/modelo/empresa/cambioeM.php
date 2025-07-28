@@ -21,7 +21,6 @@ class cambioeM
 			  FROM lista_empresas
 			  WHERE ID_Empresa = '".$IDempresa."' group by Ciudad";
 	    return $this->db->datos($sql,'MYSQL');
-
 	}
 
 	function entidad($query=false,$IDempresa="",$ciudad=false)
@@ -75,19 +74,25 @@ class cambioeM
 		$img = '.';
 
 		$sql = "UPDATE lista_empresas SET";
-		if(isset($parametros['Estado']))	{$sql .= " Estado='".$parametros['Estado']."',";}
-		if(isset($parametros['Mensaje']))	{$sql .= " Mensaje='".$parametros['Mensaje']."',";}
-		if(isset($parametros['FechaCE']))	{$sql .= " Fecha_CE='".$parametros['FechaCE']."',";}
-		if(isset($parametros['Servidor']))	{$sql .= " IP_VPN_RUTA='".$parametros['Servidor']."',";}
-		if(isset($parametros['Base']))		{$sql .= " Base_Datos='".$parametros['Base']."',";}
-		if(isset($parametros['Usuario']))	{$sql .= " Usuario_DB='".$parametros['Usuario']."',";}
-		if(isset($parametros['Clave']))		{$sql .= " contrasena_DB='".$parametros['Clave']."',";}
-		if(isset($parametros['Motor']))		{$sql .= " Tipo_Base='".$parametros['Motor']."',";}
-		if(isset($parametros['Puerto']))	{$sql .= " Puerto='".$parametros['Puerto']."',";}
-		if(isset($parametros['FechaR']))	{$sql .= " Fecha='".$parametros['FechaR']."',";}
-		if(isset($parametros['FechaDB']))	{$sql .= " Fecha_DB='".$parametros['FechaDB']."',";}
-		if(isset($parametros['FechaP12']))	{$sql .= " Fecha_P12='".$parametros['FechaP12']."',";}
-		if(isset($parametros['Plan']))		{$sql .= " Tipo_Plan='".$parametros['Plan']."',";}
+		if(isset($parametros['Estado']))				{$sql .= " Estado='".$parametros['Estado']."',";}
+		if(isset($parametros['Mensaje']))				{$sql .= " Mensaje='".$parametros['Mensaje']."',";}
+		if(isset($parametros['FechaCE']))				{$sql .= " Fecha_CE='".$parametros['FechaCE']."',";}
+		if(isset($parametros['Servidor']))				{$sql .= " IP_VPN_RUTA='".$parametros['Servidor']."',";}
+		if(isset($parametros['Base']))					{$sql .= " Base_Datos='".$parametros['Base']."',";}
+		if(isset($parametros['Usuario']))				{$sql .= " Usuario_DB='".$parametros['Usuario']."',";}
+		if(isset($parametros['Clave']))					{$sql .= " contrasena_DB='".$parametros['Clave']."',";}
+		if(isset($parametros['Motor']))					{$sql .= " Tipo_Base='".$parametros['Motor']."',";}
+		if(isset($parametros['Puerto']))				{$sql .= " Puerto='".$parametros['Puerto']."',";}
+		if(isset($parametros['FechaR']))				{$sql .= " Fecha='".$parametros['FechaR']."',";}
+		if(isset($parametros['FechaDB']))				{$sql .= " Fecha_DB='".$parametros['FechaDB']."',";}
+		if(isset($parametros['FechaP12']))				{$sql .= " Fecha_P12='".$parametros['FechaP12']."',";}
+		if(isset($parametros['TxtEmpresa']))			{$sql .= " Empresa='".$parametros['TxtEmpresa']."',";}
+		if(isset($parametros['TxtRazonSocial']))		{$sql .= " Razon_Social='".$parametros['TxtRazonSocial']."',";}
+		if(isset($parametros['TxtRepresentanteLegal']))	{$sql .= " Gerente='".$parametros['TxtRepresentanteLegal']."',";}
+		if(isset($parametros['TxtNombConta']))			{$sql .= " Contador='".$parametros['TxtNombConta']."',";}
+		if(isset($parametros['TxtRucConta']))			{$sql .= " RUC_Contador='".$parametros['TxtRucConta']."',";}
+		if(isset($parametros['ciu']))					{$sql .= " Ciudad='".$parametros['ciu']."',";}
+		if(isset($parametros['Plan']))					{$sql .= " Tipo_Plan='".$parametros['Plan']."',";}
 
 		$sql = substr($sql, 0, -1);
 
@@ -113,7 +118,7 @@ class cambioeM
 
 		$sql.=" WHERE ID='".$parametros['empresas']."' ";	  
 
-	    // print_r($sql);die();  
+	    //print_r($sql);die();  
 	    return $this->db->String_Sql($sql,'MYSQL');
 	    // print_r($parametros);die();
 	}

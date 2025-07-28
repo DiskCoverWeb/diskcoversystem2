@@ -309,7 +309,7 @@
 </div>
 
 <div id="myModal_ruc" class="modal fade" data-bs-keyboard="false" data-bs-backdrop="static">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
@@ -322,7 +322,7 @@
             <button type="button" class="btn btn-primary" onclick="buscar_empresa_ruc()">Buscar</button>
           </div>          
         </div>
-        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;>
+        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
           <table class="table table-hover">
             <thead>
               <th></th>
@@ -352,7 +352,7 @@
 
 
 <div id="mymodal_user" class="modal fade" data-bs-keyboard="false" data-bs-backdrop="static">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
