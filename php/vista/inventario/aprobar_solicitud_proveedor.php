@@ -90,7 +90,7 @@ if(isset($_GET['orden']))
                       <th>Observacion</th>
                       <th width="28%">Proveedores proforma</th>
                       <th width="28%">Proveedor Seleccionado</th>
-                      <!-- <th></th> -->
+                      <th></th>
                     </thead>
                     <tbody id="tbl_body">
                     

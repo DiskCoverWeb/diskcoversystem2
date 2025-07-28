@@ -364,7 +364,7 @@
                                     title="CALENDARIO ASIGNACION">                                
                             </div>
                             <div class="col-9">
-                                <b>Día Entrega en BAQ</b>
+                                <b>Día Entrega en BAQ<span style="color:red;">*</span></b>
                                 <select class="form-select form-select-sm" name="diaEntregac" id="diaEntregac"></select>
                             </div>
                         </div>
@@ -375,7 +375,7 @@
                                 <img src="../../img/png/reloj.png" width="55" height="55">
                             </div>
                             <div class="col-9">
-                                <b>Hora Entrega en BAQ</b>
+                                <b>Hora Entrega en BAQ <span style="color:red;">*</span></b>
                                 <input type="time" name="horaEntregac" id="horaEntregac" class="form-control form-control-sm">                               
                             </div>                            
                         </div>

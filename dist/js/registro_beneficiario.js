@@ -3646,6 +3646,27 @@ function guardar_registros()
                 'dataD':dataD,
                 'poblacion':poblacion,
             }
+
+             if($('#txt_ci').val()=='' ||
+            $('#cliente').val()=='' ||
+            $('#select_93').val()=='' ||
+            $('#select_87').val()=='' ||
+            $('#nombreRepre').val()=='' ||
+            $('#ciRepre').val()=='' ||
+            $('#telfRepre').val()=='' ||
+            $('#contacto').val()=='' ||
+            $('#cargo').val()=='' ||
+            $('#diaEntrega').val()=='' ||
+            $('#horaEntrega').val()=='' ||
+            $('#email').val()=='' ||
+            $('#telefono').val()=='' ||
+            $('#diaEntregac').val()=='' ||
+            $('#horaEntregac').val()=='')
+            {
+                Swal.fire("No se pudo guardar","Llene todo los campos obligatorios de informacion general e informacion Adicional","error")
+                return false;
+            }
+
             break;
         case '93.02':
             data_info_user = $('#form_info_usuario').serialize();
@@ -3677,18 +3698,25 @@ function guardar_registros()
         break;
     }
 
+    $('#myModal_espera').modal('show');
       $.ajax({
         url: '../controlador/inventario/registro_beneficiarioC.php?guardarAsignacion1=true',
         type: 'post',
         dataType: 'json',
         data: { parametros: parametros },
         success: function (datos) {
+            $('#myModal_espera').modal('hide');
             if(datos==1)
             {
                 Swal.fire("Datos Guardados Correctamente","","success").then(function(){
                     location.reload();
                 })
             }
+        },
+        error: function(error){
+
+            $('#myModal_espera').modal('hide');
+             Swal.fire("No se pudo guardar","Consulte con el distribuidor de servicio","error")
         }
     })
 }

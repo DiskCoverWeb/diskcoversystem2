@@ -66,7 +66,8 @@
   // } 
 
   function lineas_pedido_aprobacion_solicitados_proveedor(orden)
-  {     
+  {  
+      
       var parametros = 
       {
         'orden':orden,
@@ -76,7 +77,8 @@
           type:  'post',
           data: {parametros:parametros},
           dataType: 'json',
-          success:  function (response) {           
+          success:  function (response) {   
+            console.log(response)
              $('#tbl_body').html(response);     
 
                  $('.select2_prove').select2({
@@ -95,6 +97,8 @@
                       cache: true
                     }
                   });
+
+           
 
              $('#tbl_lista_solicitud').DataTable({
               scrollX: true,
@@ -125,7 +129,7 @@
       Swal.fire({
         title: 'Esta seguro?',
         text: "Esta usted seguro de que quiere borrar este registro!",
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -328,7 +332,7 @@
     Swal.fire({
         title: 'Esta seguro?',
         text: "Esta usted seguro de que quiere eliminar el proveedor!",
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -355,8 +359,12 @@
           success:  function (response) {
             if(response==1)
             {
-               Swal.fire("Proveedor eliminado","","success");
+               Swal.fire("Proveedor eliminado","","success").then(function(){
+               
                lineas_pedido_aprobacion_solicitados_proveedor(orden)
+
+               });
+                
             }
           
           }

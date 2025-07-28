@@ -1238,7 +1238,7 @@ class solicitud_materialC
 							{
 							// print_r($prov);die();
 								$tr.='<label> Proveedor:<br>'.$prov[0]['Cliente'].' Asignado </label>
-								<br><button class="btn-xs btn-danger" type="button" onclick="eliminar_seleccion('.$value['ID'].')"><i class="fa fa-trash"></i> Eliminar Seleccionar</button>';
+								<br><button class="btn btn-sm btn-danger" type="button" onclick="eliminar_seleccion('.$value['ID'].')"><i class="fa fa-trash"></i> Eliminar Seleccionar</button>';
 							}else
 							{
 								$datos = Leer_Datos_Clientes($value['CodigoC'],$Por_Codigo=true,false,false);

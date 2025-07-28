@@ -1118,7 +1118,10 @@ class registro_beneficiarioC
                 {
                     SetAdoFields('Tipo_Dato', $datos['select_90']);
                 }
-                SetAdoFields('Cod_Fam', $datos['select_89']);
+                if(isset($datos['select_89']))
+                {
+                    SetAdoFields('Cod_Fam', $datos['select_89']);
+                }
                 SetAdoFields('Observaciones', $datos['infoNut']);
                 if(isset($datos['NombreArchivo'])  && $datos['NombreArchivo']!='') {
 
