@@ -3398,6 +3398,13 @@ function llenarCamposInfo(datos) {
 
             $('#nombreRepre').val(datos.cliente.Representante);
             $('#ciRepre').val(datos.cliente.CI_RUC_R);
+            if(datos.cliente.TD!='' && datos.cliente.TD!='.')
+            {
+                $('#txt_td').val(datos.cliente.TD);
+            }else
+            {
+                validar_registro()
+            }
             $('#telfRepre').val(datos.cliente.Telefono_R);
             $('#contacto').val(datos.cliente.Contacto);
             $('#cargo').val(datos.cliente.Profesion);
