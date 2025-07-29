@@ -1818,9 +1818,9 @@ function abrirModal(valor) {
 
 //btn icono RUC
 function validarRucYValidarSriC() {
-    var ruc = $('#txt_ci').text();
+    var ruc = $('#txt_ci').val();
     if (ruc) {
-        validar_sriC(ruc);
+        validar_sri_registro(ruc);
     } else {
         Swal.fire({
             title: 'Por favor, seleccione un RUC',
@@ -3602,6 +3602,7 @@ function validar_registro()
             $("#myModal_espera").modal('hide');
 
       } else {
+        $('#cliente').val("");
         codigo();
       }
 
@@ -4013,3 +4014,53 @@ $("#tablaIntegrantes").on("click", ".btn-editar", function () {
     integrantes.splice(index, 1);
     actualizarTabla();
 });
+
+function validar_sri_registro(ci)
+  {
+    $('#myModal_espera').modal('show');
+    $.ajax({
+    data: {ci,ci},
+    url: '../controlador/modalesC.php?validar_sri_cliente=true',
+    type: 'POST',
+    dataType: 'json',
+    success: function(response) {
+      $('#myModal_espera').modal('hide');
+      if(response.res=='1')
+        {
+          if(response.data){
+            if ($('#cliente').length > 0) {
+              if($('#cliente').val()!='' && $('#cliente').val()!=response.data.RazonSocial){
+                Swal.fire({
+                  html: `ESTE RUC ESTA ASIGNADO A:<br>${$('#cliente').val()}<br>
+                  LA INFORMACION CORRECTA DEL R.U.C. ES:<br>
+                  ${response.data.RazonSocial} <br>
+                  ¿Desea actualizar el campo Apellidos y cliente?`,
+                  type: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  cancelButtonText: 'No.',
+                  confirmButtonText: 'Si'
+                }).then((result) => {
+                  $('#cliente').val(response.data.RazonSocial);
+                  $("#BtnGuardarClienteFCliente").focus()
+                })
+              }else{
+                $('#cliente').val(response.data.RazonSocial);
+              }
+            }else
+            {
+                console.log(response.data);
+                $('#cliente').val(response.data.RazonSocial);
+            }
+          }
+        }else
+        {
+          $('.LblSRI').html('');
+          Swal.fire(response.msg,'','info')
+        }
+
+      }
+    });
+
+  }
