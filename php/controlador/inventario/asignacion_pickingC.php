@@ -511,6 +511,14 @@ class asignacion_pickingC
     function GuardarPicking($parametros)
     {
         // print_r($parametros);die();
+
+        SetAdoAddNew('Cliente');
+        SetAdoFields('FA',1);      
+        SetAdoFields('Calificacion','NDO');  
+        SetAdoFieldsWhere('Codigo',$parametros['beneficiario']);     
+        SetAdoUpdateGeneric(); 
+
+
         SetAdoAddNew('Trans_Comision');
         SetAdoFields('T','F');      
         SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
