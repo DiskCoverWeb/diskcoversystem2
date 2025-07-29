@@ -512,8 +512,8 @@ class asignacion_pickingC
     {
         // print_r($parametros);die();
 
-        SetAdoAddNew('Cliente');
-        SetAdoFields('FA',1);      
+        SetAdoAddNew('Clientes');
+        SetAdoFields('FA',True);      
         SetAdoFields('Calificacion','NDO');  
         SetAdoFieldsWhere('Codigo',$parametros['beneficiario']);     
         SetAdoUpdateGeneric(); 
