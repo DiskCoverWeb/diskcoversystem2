@@ -3720,6 +3720,9 @@ function guardar_registros()
                 Swal.fire("Datos Guardados Correctamente","","success").then(function(){
                     location.reload();
                 })
+            }else if(datos==-4)
+            {
+                Swal.fire("No se pudo guardar","El nombre ya esta registrado","info")
             }
         },
         error: function(error){
@@ -4035,7 +4038,7 @@ function validar_sri_registro(ci)
                   LA INFORMACION CORRECTA DEL R.U.C. ES:<br>
                   ${response.data.RazonSocial} <br>
                   ¿Desea actualizar el campo Apellidos y cliente?`,
-                  type: 'warning',
+                  icon: 'warning',
                   showCancelButton: true,
                   confirmButtonColor: '#3085d6',
                   cancelButtonColor: '#d33',

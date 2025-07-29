@@ -931,9 +931,12 @@ class registro_beneficiarioC
             case '93.01':
             $poblacion = $parametros['poblacion'];
 
-                $this->editarAccionSocial($data,$direccion);
-                $this->editarAccionSocialExtras($data);
-                $this->editarTipoPoblacion($data,$poblacion);
+                $respuesta = $this->editarAccionSocial($data,$direccion);
+                if($respuesta!='-4')
+                {
+                    $this->editarAccionSocialExtras($data);
+                    $this->editarTipoPoblacion($data,$poblacion);
+                }
                 break;
              case '93.02':
 
@@ -981,7 +984,16 @@ class registro_beneficiarioC
 
         $CI_RUC = $this->sri->quitar_carac($dato['txt_ci']);
         $codigos = Digito_verificador($CI_RUC);
-        $existe = $this->articulos->clientes_all(false,$dato['txt_ci']);
+        $existe = $this->articulos->clientes_all(false,false,false,$dato['txt_ci']);
+        // print_r($existe);die();
+        if(count($existe)==0)
+        {
+            $existe = $this->articulos->clientes_all($dato['cliente']);
+            if(count($existe)>0)
+            {
+                return -4;
+            }
+        }
         if($dato['txt_id']=='' && count($existe)>0)
         {
             $dato['txt_id']=$existe[0]['ID'];
@@ -1023,7 +1035,7 @@ class registro_beneficiarioC
         if($dato["select_93"]=="93.01")
         {
          // para organizacion social datos unicos   
-            SetAdoFields('Cliente', $dato['cliente']);
+            SetAdoFields('Cliente', strtoupper($dato['cliente']));
             SetAdoFields('Contacto', $dato['contacto']);
             SetAdoFields('Profesion', $dato['cargo']);
             SetAdoFields('Email', $dato['email']);
@@ -1035,7 +1047,7 @@ class registro_beneficiarioC
             {
                 SetAdoFields('Dia_Ent',  $dato['diaEntrega']);
             }
-            SetAdoFields('Representante', $dato['nombreRepre']);
+            SetAdoFields('Representante',strtoupper($dato['nombreRepre']));
             SetAdoFields('CI_RUC_R', $dato['ciRepre']);
             SetAdoFields('Telefono_R', $dato['telfRepre']);
          }
@@ -1070,10 +1082,10 @@ class registro_beneficiarioC
         if($dato['txt_id']!='')
         {
             SetAdoFieldsWhere('ID', $dato['txt_id']);
-            SetAdoUpdateGeneric();
+            return SetAdoUpdateGeneric();
         }else
         {
-            SetAdoUpdate();  
+           return SetAdoUpdate();  
         }
     }
 
