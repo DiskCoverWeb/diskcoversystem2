@@ -3403,7 +3403,8 @@ function llenarCamposInfo(datos) {
                 $('#txt_td').val(datos.cliente.TD);
             }else
             {
-                validar_registro()
+                // validar_registro()
+                codigo();
             }
             $('#telfRepre').val(datos.cliente.Telefono_R);
             $('#contacto').val(datos.cliente.Contacto);
