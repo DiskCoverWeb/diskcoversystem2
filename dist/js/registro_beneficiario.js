@@ -3723,6 +3723,7 @@ function guardar_registros()
             }else if(datos==-4)
             {
                 Swal.fire("No se pudo guardar","El nombre ya esta registrado","info")
+                setTimeout(() => { $('#myModal_espera').modal('hide');  }, 1000);
             }
         },
         error: function(error){
