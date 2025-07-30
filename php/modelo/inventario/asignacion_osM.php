@@ -17,23 +17,10 @@ class asignacion_osM
 
     public function tipoBeneficiario($query = '',$estado = '1',$dia=false)
     {
-        $sql = "SELECT DISTINCT TOP 100 C.Codigo, C.CodigoA,CP5.Proceso AS 'Estado', C.Cliente, C.CI_RUC, CD.Fecha_Registro, CD.Envio_No,CP3.Proceso as 'Frecuencia',CD.CodigoA as CodigoACD,CP4.Proceso as'TipoEntega' ,CD.Beneficiario, CD.No_Soc, CD.Area, CD.Acreditacion,CP1.Proceso as 'AccionSocial', CD.Tipo, CD.Cod_Fam,CP2.Proceso as 'TipoAtencion', CD.Salario, CD.Descuento, CD.Evidencias, CD.Item,C.Actividad,CP.Proceso as 'TipoBene',CP.Color,CP.Picture,CD.Hora_Ent as 'Hora',CD.Tipo_Dato as 'CodVulnera',CP6.Proceso AS 'vulnerabilidad',CD.Hora_Ent,C.Dia_Ent,C.Estado as 'ClienteEstado' 
+        $sql = "SELECT top 30 C.Codigo, C.CodigoA,C.Cliente,C.CI_RUC,C.Estado as 'ClienteEstado',C.Dia_Ent,C.Actividad
             FROM Clientes as C 
-            INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo 
-            LEFT JOIN Catalogo_Proceso CP ON C.Actividad = CP.Cmds 
-            LEFT JOIN Catalogo_Proceso CP1 ON CD.Acreditacion = CP1.Cmds 
-            LEFT JOIN Catalogo_Proceso CP2 ON CD.Cod_Fam = CP2.Cmds 
-            LEFT JOIN Catalogo_Proceso CP3 ON CD.Envio_No = CP3.Cmds 
-            LEFT JOIN Catalogo_Proceso CP4 ON CD.CodigoA = CP4.Cmds 
-            LEFT JOIN Catalogo_Proceso CP5 ON C.CodigoA = CP5.Cmds 
-            LEFT JOIN Catalogo_Proceso CP6 ON CD.Tipo_Dato= CP6.Cmds 
-            WHERE CD.Item = '" . $_SESSION['INGRESO']['item'] . "'
-            AND CD.Item = CP.Item 
-            AND CD.Item = CP1.Item 
-            AND CD.Item = CP2.Item 
-            AND CD.Item = CP3.Item 
-            AND CD.Item = CP4.Item  
-            AND CD.Item = CP5.Item";
+            LEFT JOIN Clientes_Datos_Extras  CD ON C.Codigo = CD.Codigo 
+            WHERE CD.Item = '" . $_SESSION['INGRESO']['item'] . "' ";
         if ($query != '') {
             if (!is_numeric($query)) {
                 $sql .= " AND C.Cliente LIKE '%" . $query . "%'";
@@ -56,9 +43,7 @@ class asignacion_osM
         }
 
 
-        
-
-        $sql .= " ORDER BY C.Cliente";
+        $sql .= " group by C.Codigo, C.CodigoA,C.Cliente,C.CI_RUC,C.Estado,C.Dia_Ent,C.Actividad ORDER BY C.Cliente";
 
         // print_r($sql);die();
         try {
@@ -272,6 +257,106 @@ class asignacion_osM
         return $this->db->datos($sql);
     }
 
+    function estado($codigo)
+    {
+        $sql = "SELECT CP5.Proceso AS 'Estado',CD.Fecha_Registro, CD.Envio_No ,CD.CodigoA as CodigoACD,CD.Beneficiario, CD.No_Soc, CD.Area, CD.Acreditacion, CD.Tipo, CD.Cod_Fam, CD.Salario, CD.Descuento, CD.Evidencias, CD.Item,CD.Hora_Ent as 'Hora',CD.Tipo_Dato as 'CodVulnera',CD.Hora_Ent
+                FROM Clientes C 
+                INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo 
+                LEFT JOIN Catalogo_Proceso CP5 ON C.CodigoA = CP5.Cmds 
+                WHERE  CD.Item = '" . $_SESSION['INGRESO']['item'] . "'
+                AND CD.Codigo = '".$codigo."'
+                AND Tipo_Dato <> 'EVALUACI'";
+
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+    function Frecuencia($codigo)
+    {
+        $sql = "SELECT CP3.Proceso as 'Frecuencia'
+                FROM Clientes C 
+                INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo 
+                LEFT JOIN Catalogo_Proceso CP3 ON CD.Envio_No = CP3.Cmds 
+                WHERE  CD.Item = '" . $_SESSION['INGRESO']['item'] . "'
+                AND CD.Codigo = '".$codigo."'
+                AND  CD.Envio_No <> '.'
+                AND Tipo_Dato <> 'EVALUACI'";
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+    function TipoEntega($codigo)
+    {
+        $sql = "SELECT CP4.Proceso as'TipoEntega'
+                FROM Clientes C 
+                INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo 
+                LEFT JOIN Catalogo_Proceso CP4 ON CD.CodigoA = CP4.Cmds 
+                WHERE  CD.Item = '" . $_SESSION['INGRESO']['item'] . "'
+                AND CD.Codigo = '".$codigo."'
+                AND CD.CodigoA <> '.'
+                AND Tipo_Dato <> 'EVALUACI'";
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+    function AccionSocial($codigo)
+    {
+        $sql = "SELECT CP1.Proceso as 'AccionSocial'
+                FROM Clientes C 
+                INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo
+                LEFT JOIN Catalogo_Proceso CP1 ON CD.Acreditacion = CP1.Cmds 
+                WHERE  CD.Item = '" . $_SESSION['INGRESO']['item'] . "'
+                AND CD.Codigo = '".$codigo."'
+                AND CD.Acreditacion  <> '.'
+                AND Tipo_Dato <> 'EVALUACI'";
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+    function TipoAtencion($codigo)
+    {
+        $sql = "SELECT CP2.Proceso as 'TipoAtencion'
+                FROM Clientes C 
+                INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo
+                LEFT JOIN Catalogo_Proceso CP2 ON CD.Cod_Fam = CP2.Cmds 
+                WHERE  CD.Item = '" . $_SESSION['INGRESO']['item'] . "'
+                AND CD.Codigo = '".$codigo."'
+                AND  CD.Cod_Fam <> '.'
+                AND Tipo_Dato <> 'EVALUACI'";
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+    function vulnerabilidad($codigo)
+    {
+        $sql = "SELECT CP6.Proceso AS 'vulnerabilidad' 
+                FROM Clientes C 
+                INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo
+                LEFT JOIN Catalogo_Proceso CP6 ON CD.Tipo_Dato= CP6.Cmds 
+                WHERE  CD.Item = '" . $_SESSION['INGRESO']['item'] . "'
+                AND CD.Codigo = '".$codigo."'
+                AND CD.Tipo_Dato <> '.'
+                AND Tipo_Dato <> 'EVALUACI'";
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+    function TipoBene($codigo)
+    {
+        $sql = "SELECT CP.Proceso as 'TipoBene',CP.Color,CP.Picture
+                FROM Clientes C 
+                INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo
+                LEFT JOIN Catalogo_Proceso CP ON C.Actividad = CP.Cmds 
+                WHERE  CD.Item = '" . $_SESSION['INGRESO']['item'] . "'
+                AND CD.Codigo = '".$codigo."'
+                AND C.Actividad <> '.'
+                AND Tipo_Dato <> 'EVALUACI'";
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+
+ 
 
 
 

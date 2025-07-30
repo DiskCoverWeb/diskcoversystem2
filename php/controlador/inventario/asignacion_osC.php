@@ -187,16 +187,134 @@ class asignacion_osC
             $cant_asig = $this->modelo->tipo_asignacion();
             $cant_asig = count($cant_asig);
             foreach ($datos as $key => $value) {
+
+                $data = $this->cargar_datos($value['Codigo']);
+                $value1 = array_merge($value,$data);
+
                 $asignacionesLis =$this->modelo->asignaciones_hechas($value['Codigo']);                
                 $asignaciones = count($asignacionesLis);               
                     // print_r($dia);die();
                     $value['asignaciones_hechas'] =  $asignacionesLis;
-                    $res[] = array( 'id' => $value['Codigo'],'text' => $value['Cliente'],'data'=>$value);
+                    $res[] = array( 'id' => $value['Codigo'],'text' => $value['Cliente'],'data'=>$value1);
             
             }
 
             return $res;
         
+    }
+
+    function cargar_datos($codigo)
+    {
+        $estado = '.';
+        $Fecha_Registro = '.';
+        $Envio_No ='.';
+        $CodigoACD ='.';
+        $Beneficiario ='.';
+        $No_Soc = '.';
+        $Area = '.';
+        $Acreditacion ='.';
+        $Tipo = '.';
+        $Cod_Fam ='.';
+        $Salario ='.';
+        $Descuento ='.';
+        $Evidencias = '.';
+        $Item ='.';
+        $Hora ='.';
+        $CodVulnera = '.';
+        $Hora_Ent = '.';
+        $frecuencia = '.';
+        $TipoEntega = '.';
+        $AccionSocial = '.';
+        $TipoAtencion = '.';
+        $vulnerabilidad = '.';
+        $TipoBene = '.';
+        $Color = '.';
+        $Picture = '.';
+
+
+        $estado = $this->modelo->estado($codigo);
+        if(count($estado)>0)
+        {
+            $Fecha_Registro = $estado[0]['Fecha_Registro']->format('Y-m-d');
+            $Envio_No = $estado[0]['Envio_No'];
+            $CodigoACD = $estado[0]['CodigoACD'];
+            $Beneficiario = $estado[0]['Beneficiario'];
+            $No_Soc = $estado[0]['No_Soc'];
+            $Area = $estado[0]['Area'];
+            $Acreditacion = $estado[0]['Acreditacion'];
+            $Tipo = $estado[0]['Tipo'];
+            $Cod_Fam = $estado[0]['Cod_Fam'];
+            $Salario = $estado[0]['Salario'];
+            $Descuento = $estado[0]['Descuento'];
+            $Evidencias = $estado[0]['Evidencias'];
+            $Item = $estado[0]['Item'];
+            $Hora = $estado[0]['Hora'];
+            $CodVulnera = $estado[0]['CodVulnera'];
+            $Hora_Ent = $estado[0]['Hora_Ent'];
+            $estado =  $estado[0]['Estado'];
+        }
+        $frecuencia = $this->modelo->Frecuencia($codigo);
+        if(count($frecuencia)>0)
+        {
+            $frecuencia = $frecuencia[0]['Frecuencia'];
+        }
+        $TipoEntega = $this->modelo->TipoEntega($codigo);
+        if(count($TipoEntega)>0)
+        {
+            $TipoEntega = $TipoEntega[0]['TipoEntega'];
+        }
+        $AccionSocial = $this->modelo->AccionSocial($codigo);
+        if(count($AccionSocial)>0)
+        {
+             $AccionSocial =  $AccionSocial[0]['AccionSocial'];
+        }
+        $TipoAtencion = $this->modelo->TipoAtencion($codigo);
+        if(count($TipoAtencion)>0)
+        {
+            $TipoAtencion = $TipoAtencion[0]['TipoAtencion'];
+        }
+        $vulnerabilidad = $this->modelo->vulnerabilidad($codigo);
+        if(count($vulnerabilidad)>0)
+        {
+            $vulnerabilidad = $vulnerabilidad[0]['vulnerabilidad'];
+        }
+        $TipoBene = $this->modelo->TipoBene($codigo);
+        if(count($TipoBene)>0)
+        {
+            $Color = $TipoBene[0]['Color'];
+            $Picture = $TipoBene[0]['Picture'];
+            $TipoBene = $TipoBene[0]['TipoBene'];
+        }
+
+       
+        $data = array('Estado'=>$estado,
+                    'Fecha_Registro'=>$Fecha_Registro,
+                    'Envio_No'=>$Envio_No ,
+                    'CodigoACD'=>$CodigoACD ,
+                    'Beneficiario'=>$Beneficiario ,
+                    'No_Soc'=>$No_Soc,
+                    'Area'=>$Area,
+                    'Acreditacion'=>$Acreditacion ,
+                    'Tipo'=>$Tipo,
+                    'Cod_Fam'=>$Cod_Fam,
+                    'Salario'=>$Salario,
+                    'Descuento'=>$Descuento,
+                    'Evidencias'=>$Evidencias,
+                    'Item'=>$Item,
+                    'Hora'=>$Hora,
+                    'CodVulnera'=>$CodVulnera,
+                     'Hora_Ent'=>$Hora_Ent,
+                     'Frecuencia'=>$frecuencia,
+                     'TipoEntega'=>$TipoEntega,
+                     'AccionSocial'=>$AccionSocial,
+                     'TipoAtencion'=>$TipoAtencion,
+                     'Vulnerabilidad'=>$vulnerabilidad,
+                     'TipoBene'=>$TipoBene,
+                     'Color'=>$Color,
+                     'Picture'=>$Picture,
+                    );        
+        return $data;
+
     }
 
     function AddBeneficiario($query)

@@ -1818,6 +1818,7 @@ function abrirModal(valor) {
 
 //btn icono RUC
 function validarRucYValidarSriC() {
+    limpiar_info_general();
     var ruc = $('#txt_ci').val();
     if (ruc) {
         validar_sri_registro(ruc);
@@ -3603,6 +3604,7 @@ function validar_registro()
 
       } else {
         $('#cliente').val("");
+        limpiar_info_general();
         codigo();
       }
 
@@ -4068,3 +4070,23 @@ function validar_sri_registro(ci)
     });
 
   }
+
+
+function limpiar_info_general()
+{
+    $('#cliente').val('');
+    $('#select_93').empty();
+    $('#select_87').empty();
+    $('#nombreRepre').val('');
+    $('#ciRepre').val('');
+    $('#telfRepre').val('');
+    $('#contacto').val('');
+    $('#cargo').val('');
+    $('#diaEntrega').val('');
+    $('#horaEntrega').val('');
+    $('#email').val('');
+    $('#telefono').val('');
+    $('#diaEntregac').val('');
+    $('#horaEntregac').val('');
+    
+}
