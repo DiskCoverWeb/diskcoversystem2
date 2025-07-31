@@ -125,12 +125,14 @@ class asignacion_pickingC
         }   
 
     	foreach ($datos as $key => $value) {
-            $dia = BuscardiasSemana($value['Dia_Ent']);
-            
+
+            // print_r($value);
+            // $dia = BuscardiasSemana($value['Dia_Ent']);
+            // $value['Dia_Ent']  = $dia[0];
+
             $data = $this->cargar_datos($value['Codigo']);
             $value1 = array_merge($value,$data);
 
-            $value['Dia_Ent']  = $dia[0];
             // if($diaActual==$dia[1])
             // {
             //     //buscamos si el usuario ya genero en este dia pedidos para facturar
