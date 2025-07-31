@@ -16,50 +16,80 @@ class asignacion_pickingM
 
     function tipoBeneficiario($codigo = '', $fecha = '')
     {
-        $sql = "SELECT DISTINCT DF.Ruta,No_Hab,C.Codigo, C.CodigoA,CP5.Proceso AS 'Estado', C.Cliente, C.CI_RUC, CD.Fecha_Registro, CD.Envio_No,CP3.Proceso as 'Frecuencia',CD.CodigoA as CodigoACD,CP4.Proceso as'TipoEntega' ,CD.Beneficiario, CD.No_Soc, CD.Area, CD.Acreditacion,CP1.Proceso as 'AccionSocial', CD.Tipo, CD.Cod_Fam,CP2.Proceso as 'TipoAtencion', CD.Salario, CD.Descuento, CD.Evidencias, CD.Item,C.Actividad,CP.Proceso as 'TipoBene',CP.Color,CP.Picture,CD.Hora_Ent as 'Hora',CD.Tipo_Dato as 'CodVulnera',CP6.Proceso AS 'vulnerabilidad',CD.Observaciones,CD.Hora_Ent,CD.Dia_Ent,CP7.Proceso as 'Tipo Asignacion',DF.CodigoU,A.Nombre_Completo,DF.Orden_No 
-            FROM Detalle_Factura DF
-            INNER JOIN Accesos A on DF.CodigoU = A.Codigo
-            INNER JOIN Clientes C on DF.CodigoC = C.Codigo
+        // $sql = "SELECT DISTINCT DF.Ruta,No_Hab,C.Codigo, C.CodigoA,CP5.Proceso AS 'Estado', C.Cliente, C.CI_RUC, CD.Fecha_Registro, CD.Envio_No,CP3.Proceso as 'Frecuencia',CD.CodigoA as CodigoACD,CP4.Proceso as'TipoEntega' ,CD.Beneficiario, CD.No_Soc, CD.Area, CD.Acreditacion,CP1.Proceso as 'AccionSocial', CD.Tipo, CD.Cod_Fam,CP2.Proceso as 'TipoAtencion', CD.Salario, CD.Descuento, CD.Evidencias, CD.Item,C.Actividad,CP.Proceso as 'TipoBene',CP.Color,CP.Picture,CD.Hora_Ent as 'Hora',CD.Tipo_Dato as 'CodVulnera',CP6.Proceso AS 'vulnerabilidad',CD.Observaciones,CD.Hora_Ent,CD.Dia_Ent,CP7.Proceso as 'Tipo Asignacion',DF.CodigoU,A.Nombre_Completo,DF.Orden_No 
+        //     FROM Detalle_Factura DF
+        //     INNER JOIN Accesos A on DF.CodigoU = A.Codigo
+        //     INNER JOIN Clientes C on DF.CodigoC = C.Codigo
+        //     INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo 
+        //     LEFT JOIN Catalogo_Proceso CP ON C.Actividad = CP.Cmds 
+        //     LEFT JOIN Catalogo_Proceso CP1 ON CD.Acreditacion = CP1.Cmds 
+        //     LEFT JOIN Catalogo_Proceso CP2 ON CD.Cod_Fam = CP2.Cmds 
+        //     LEFT JOIN Catalogo_Proceso CP3 ON CD.Envio_No = CP3.Cmds 
+        //     LEFT JOIN Catalogo_Proceso CP4 ON CD.CodigoA = CP4.Cmds 
+        //     LEFT JOIN Catalogo_Proceso CP5 ON C.CodigoA = CP5.Cmds 
+        //     LEFT JOIN Catalogo_Proceso CP6 ON CD.Tipo_Dato= CP6.Cmds 
+        //     LEFT JOIN Catalogo_Proceso CP7 ON DF.No_Hab= CP7.Cmds 
+		// 	WHERE DF.Item = '".$_SESSION['INGRESO']['item']."'
+		// 	AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+		// 	if($fecha)
+		// 	{
+		// 		$sql.=" AND DF.Fecha = '".$fecha."'";
+		// 	}else{
+		// 		$sql.=" AND DF.Fecha = '".date('Y-m-d')."'";
+        //     }
+		// 	if($codigo)
+		// 	{
+		// 		$sql.=" AND C.Cliente like '%".$codigo."%'";
+		// 	}
+		// 	$sql.=" AND DF.TC = 'OP'
+		// 	AND DF.T = 'K'
+        //     AND DF.Item = CD.Item
+        //     AND CD.Item = CP.Item 
+        //     AND CD.Item = CP1.Item 
+        //     AND CD.Item = CP2.Item 
+        //     AND CD.Item = CP3.Item 
+        //     AND CD.Item = CP4.Item  
+        //     AND CD.Item = CP5.Item  
+        //     AND CD.Item = CP6.Item  
+        //     AND CD.Item = CP7.Item";     
+
+        //     print_r($sql);die();   
+
+        // try {
+        //     return $this->db->datos($sql);
+        // } catch (Exception $e) {
+        //     throw new Exception($e);
+        // }
+
+        $sql = "SELECT DISTINCT DF.Ruta,No_Hab,C.Codigo, C.CodigoA, C.Cliente, C.CI_RUC, CD.Fecha_Registro, CD.Envio_No,CD.CodigoA as CodigoACD,CD.Beneficiario, CD.No_Soc, CD.Area, CD.Acreditacion, CD.Tipo, 
+            CD.Cod_Fam,CD.Salario, CD.Descuento, CD.Evidencias, 
+            CD.Item,C.Actividad,CD.Hora_Ent as 'Hora',
+            CD.Tipo_Dato as 'CodVulnera',CD.Observaciones,CD.Hora_Ent,CD.Dia_Ent,
+            CP7.Proceso as 'Tipo Asignacion',DF.CodigoU,A.Nombre_Completo,DF.Orden_No 
+            FROM Detalle_Factura DF 
+            INNER JOIN Accesos A on DF.CodigoU = A.Codigo 
+            INNER JOIN Clientes C on DF.CodigoC = C.Codigo 
             INNER JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo 
-            LEFT JOIN Catalogo_Proceso CP ON C.Actividad = CP.Cmds 
-            LEFT JOIN Catalogo_Proceso CP1 ON CD.Acreditacion = CP1.Cmds 
-            LEFT JOIN Catalogo_Proceso CP2 ON CD.Cod_Fam = CP2.Cmds 
-            LEFT JOIN Catalogo_Proceso CP3 ON CD.Envio_No = CP3.Cmds 
-            LEFT JOIN Catalogo_Proceso CP4 ON CD.CodigoA = CP4.Cmds 
-            LEFT JOIN Catalogo_Proceso CP5 ON C.CodigoA = CP5.Cmds 
-            LEFT JOIN Catalogo_Proceso CP6 ON CD.Tipo_Dato= CP6.Cmds 
-            LEFT JOIN Catalogo_Proceso CP7 ON DF.No_Hab= CP7.Cmds 
-			WHERE DF.Item = '".$_SESSION['INGRESO']['item']."'
-			AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
-			if($fecha)
-			{
-				$sql.=" AND DF.Fecha = '".$fecha."'";
-			}else{
-				$sql.=" AND DF.Fecha = '".date('Y-m-d')."'";
-            }
-			if($codigo)
-			{
-				$sql.=" AND C.Cliente like '%".$codigo."%'";
-			}
-			$sql.=" AND DF.TC = 'OP'
-			AND DF.T = 'K'
-            AND DF.Item = CD.Item
-            AND CD.Item = CP.Item 
-            AND CD.Item = CP1.Item 
-            AND CD.Item = CP2.Item 
-            AND CD.Item = CP3.Item 
-            AND CD.Item = CP4.Item  
-            AND CD.Item = CP5.Item  
-            AND CD.Item = CP6.Item  
-            AND CD.Item = CP7.Item";     
-
-            // print_r($sql);die();   
-
-        try {
+            LEFT JOIN Catalogo_Proceso CP7 ON DF.No_Hab= CP7.Cmds   
+            WHERE DF.Item = '".$_SESSION['INGRESO']['item']."'
+            AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+            AND CD.Tipo_Dato <> 'EVALUACI'";
+             if($fecha)
+             {
+                 $sql.=" AND DF.Fecha = '".$fecha."'";
+             }else{
+                 $sql.=" AND DF.Fecha = '".date('Y-m-d')."'";
+                }
+             if($codigo)
+             {
+                 $sql.=" AND C.Cliente like '%".$codigo."%'";
+             }
+                 $sql.=" AND DF.TC = 'OP'
+                 AND DF.T = 'K'
+                 AND DF.Item = CD.Item 
+                 AND CD.Item = CP7.Item"; 
+                 // print_r($sql);die();
             return $this->db->datos($sql);
-        } catch (Exception $e) {
-            throw new Exception($e);
-        }
     }
 
     function tipoBeneficiarioPickFac($codigo = '', $fecha = '')
