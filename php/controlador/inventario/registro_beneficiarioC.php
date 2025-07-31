@@ -1193,7 +1193,7 @@ class registro_beneficiarioC
             }else
             {
                 //SetAdoFieldsWhere('Item', $_SESSION['INGRESO']['item']);
-                SetAdoFieldsWhere('ID',$datos['txt_id_datos_extra']);
+                SetAdoFieldsWhere('ID',$datosExtra[0]['ID']);
                 SetAdoUpdateGeneric();
             }
         }else
