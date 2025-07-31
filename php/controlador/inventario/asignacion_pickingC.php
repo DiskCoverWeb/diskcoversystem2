@@ -127,8 +127,11 @@ class asignacion_pickingC
     	foreach ($datos as $key => $value) {
 
             // print_r($value);
-            // $dia = BuscardiasSemana($value['Dia_Ent']);
-            // $value['Dia_Ent']  = $dia[0];
+            if($value['Dia_Ent']!='.' && $value['Dia_Ent']!='')
+            {
+                $dia = BuscardiasSemana($value['Dia_Ent']);
+                $value['Dia_Ent']  = $dia[0];
+            }
 
             $data = $this->cargar_datos($value['Codigo']);
             $value1 = array_merge($value,$data);
