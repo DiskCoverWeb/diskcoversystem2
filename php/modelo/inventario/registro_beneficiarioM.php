@@ -161,6 +161,7 @@ class registro_beneficiarioM
                 FROM  Clientes_Datos_Extras
                 WHERE Item = '".$_SESSION['INGRESO']['item']."'
                 AND Codigo = '" . $valor . "' 
+                AND LEN(Dia_Ent)=3
                 ORDER BY Fecha_Registro DESC";
                 // AND Acreditacion = '92.02'  esto se quito del where ojo 
                 // print_r($sql);die();
