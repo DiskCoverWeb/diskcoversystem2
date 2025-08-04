@@ -718,6 +718,32 @@ class alimentos_recibidosM
     
 	}
 
+	function existe_codigoBarras_transKarder($orden=false,$codigoInv=false,$codbarras = false)
+	{
+		$sql = "SELECT Codigo_Barra
+				FROM Trans_Kardex
+				WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'
+				AND Item = '".$_SESSION['INGRESO']['item']."' 
+				AND Entrada > 0
+				AND Salida = 0";
+				if($orden)
+				{
+					$sql.=" AND Orden_No = '".$orden."'";
+				}
+				if($codigoInv)
+				{
+					$sql.=" AND Codigo_Inv = '".$codigoInv."'";
+				}
+				if($codbarras)
+				{
+					$sql.=" AND Codigo_Barra = '".$codbarras."'";
+				}
+
+				$sql.=" ORDER BY ID DESC";
+				// print_r($sql);die();
+		return $this->db->datos($sql);
+	}
+
 
 }
 ?>

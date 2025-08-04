@@ -202,14 +202,14 @@
 
   function imprimir_pdf()
   { 
-    var orden = '<?php echo $orden; ?>';
-    window.open('../controlador/inventario/solicitud_materialC.php?imprimir_pdf_proveedor=true&orden_pdf='+orden,'_blank');
+    var orden_p = orden;
+    window.open('../controlador/inventario/solicitud_materialC.php?imprimir_pdf_proveedor=true&orden_pdf='+orden_p,'_blank');
   }
   function imprimir_excel()
   {
 
-    var orden = '<?php echo $orden; ?>';
-    window.open('../controlador/inventario/solicitud_materialC.php?imprimir_excel_proveedor=true&orden_pdf='+orden,'_blank');
+    var orden_p = orden;
+    window.open('../controlador/inventario/solicitud_materialC.php?imprimir_excel_proveedor=true&orden_pdf='+orden_p,'_blank');
   }
 
   function mostrar_proveedor(id,codigo,orden,cantidad)

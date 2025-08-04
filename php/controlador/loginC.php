@@ -424,6 +424,7 @@ class loginC
 	    $_SESSION['SETEOS']['Cta_Proveedores'] = "0";
 	    $_SESSION['SETEOS']['Cta_Anticipos'] = "0";    
 	    $_SESSION['SETEOS']['Cta_Ret_Egreso'] = "0";
+    	$_SESSION['SETEOS']['Cta_Provision_Compras'] = "0";
 	    // 	// ' Consultamos las cuentas de la tabla
 	    $datos = $this->modelo->SeteoCta();
 
@@ -584,6 +585,9 @@ class loginC
 	                case 'Cta_Ret_Egreso':
 	                     $_SESSION['SETEOS']['Cta_Ret_Egreso'] = $value['Codigo'];
 	                    break;
+	                case 'Cta_Provision_Compras':
+                    	 $_SESSION['SETEOS']['Cta_Provision_Compras'] = $value['Codigo'];
+                    	break;
 	                case "Inv_Promedio":
 	                    if ($value['Codigo'] == "TRUE") {
 	                        $_SESSION['SETEOS']['Inv_Promedio'] = True;

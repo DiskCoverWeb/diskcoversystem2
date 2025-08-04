@@ -578,7 +578,19 @@ class alimentos_recibidosC
 	   		$num = intval($num)+1;
 	   	}
 
-	   	// print_r($num);die();
+	   	$existe_codigo = true;
+	   	$codigo_barras = $parametro['txt_codigo'].'-'.$producto[0]['Item_Banco'].'-'.generaCeros($num,3);
+	   	while ($existe_codigo) {
+	   		$codigo_barras = $parametro['txt_codigo'].'-'.$producto[0]['Item_Banco'].'-'.generaCeros($num,3);
+	   		$en_transKardex = $this->modelo->existe_codigoBarras_transKarder($num_ped,$parametro['txt_referencia'],$codigo_barras);
+	   		if(count($en_transKardex)==0)
+	   		{
+	   			$existe_codigo = false;
+	   		}
+	   		$num = $num+1;
+	   	}
+
+
 	   $referencia = $parametro['txt_referencia'];
 	   SetAdoAddNew("Trans_Kardex"); 		
 	   SetAdoFields('Codigo_Inv',$referencia);
@@ -597,7 +609,7 @@ class alimentos_recibidosC
 	   SetAdoFields('CANTIDAD',$parametro['txt_cantidad']);
 	   SetAdoFields('Valor_Unitario',number_format($producto[0]['PVP'],$_SESSION['INGRESO']['Dec_PVP'],'.',''));
 	   // SetAdoFields('DH',2);
-	   SetAdoFields('Codigo_Barra',$parametro['txt_codigo'].'-'.$producto[0]['Item_Banco'].'-'.generaCeros($num,3));
+	   SetAdoFields('Codigo_Barra',$codigo_barras);
 	   SetAdoFields('CodBodega',-1);
 
 	   SetAdoFields('Contra_Cta',$parametro['txt_contra_cta']);
