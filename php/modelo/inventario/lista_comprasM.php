@@ -16,7 +16,7 @@ class lista_comprasM
 
 	function pedidos_compra_contratista($orden=false,$id=false,$fecha=false,$contratista=false)
 	{
-		$sql = "SELECT  TP.Fecha,TP.Fecha_Ent,Orden_No,SUM(Total) as Total,Cliente
+		$sql = "SELECT  TP.Fecha,Orden_No,SUM(Total) as Total,Cliente
 				FROM Trans_Pedidos TP
 				inner Join Clientes C on TP.CodigoU = C.Codigo
 				WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'
@@ -35,7 +35,8 @@ class lista_comprasM
 					$sql.=" AND Cliente like '%".$contratista."%' ";
 				}		
 
-				$sql.=" Group by TP.Fecha,TP.Fecha_Ent,Orden_No,Cliente";
+				$sql.=" Group by TP.Fecha,Orden_No,Cliente ORDER BY FECHA";
+				// print_r($sql);die();
 		$datos = $this->conn->datos($sql);
        	return $datos;
 	}
@@ -68,7 +69,7 @@ class lista_comprasM
 
 	function lineas_compras_solicitados($orden=false,$id=false,$codigoC=false)
 	{
-		$sql = "SELECT TP.Periodo, TP.Fecha, Codigo_Inv, Hora, Producto, Cantidad, Precio, Total, Total_IVA, No_Hab, Cta_Venta, TP.Item, TP.CodigoU, Orden_No, Cta_Venta_0, TC, Factura, Autorizacion, Serie, Codigo_Sup, CodigoC, Opc1, Opc2, Opc3, TP.Estado, HABIT, TP.X, TP.ID, Fecha_Ent, CodMarca, Comentario,Marca,C.Cliente as 'proveedor' 
+		$sql = "SELECT TP.Periodo, TP.Fecha, Codigo_Inv, Hora, Producto, Cantidad, Precio, Total, Total_IVA, No_Hab, Cta_Venta, TP.Item, TP.CodigoU, Orden_No, Cta_Venta_0, TC, Factura, Autorizacion, Serie, Codigo_Sup, CodigoC, Opc1, Opc2, Opc3, TP.Estado, HABIT, TP.X, TP.ID, Fecha_Ent, CodMarca, Comentario,Marca,C.Cliente as 'proveedor',Total_Original,Costo_Original 
 		FROM Trans_Pedidos TP
 		inner join Catalogo_Marcas CM on TP.CodMarca = CM.CodMar
 		inner join Clientes C on TP.CodigoC = C.Codigo
@@ -100,7 +101,7 @@ class lista_comprasM
 
 	function lineas_compras_solicitados_proveedores($orden=false,$id=false,$codigoC=false)
 	{
-		$sql = "SELECT CodigoC,Cliente,SUM(Total) as Total
+		$sql = "SELECT CodigoC,Cliente,SUM(Total_Original) as Total
 		FROM Trans_Pedidos TP
 		inner join Clientes C on TP.CodigoC = C.Codigo
 		WHERE TP.Periodo =  '".$_SESSION['INGRESO']['periodo']."'
@@ -200,6 +201,11 @@ class lista_comprasM
 	function generar_asientos_SC($parametros)
 	{
 		// $cid = $this->conn;
+		$serie = '001001';
+		if(isset($parametros['serie']))
+		{
+			$serie = $parametros['serie'];
+		}
 		if($parametros['t']=='P' OR $parametros['t']=='C')
 		{
 			$sql=" SELECT codigo FROM clientes WHERE CI_RUC='".$parametros['sub']."' ";
@@ -259,31 +265,54 @@ class lista_comprasM
 		}
 		if($parametros['mes']==0)
 		{
-			$sql="INSERT INTO Asiento_SC(Codigo ,Beneficiario,Factura ,Prima,DH,Valor,Valor_ME
-           ,Detalle_SubCta,FECHA_V,TC,Cta,TM,T_No,SC_No
-           ,Fecha_D ,Fecha_H,Bloquear,Item,CodigoU)
-			VALUES
-           ('".$cod."'
-           ,'".$parametros['sub2']."'
-           ,'".$fact2."'
-           ,0
-           ,'".$parametros['tic']."'
-           ,".$parametros['valorn']."
-           ,0
-           ,'".$parametros['Trans']."'
-           ,'".$fecha_actual."'
-           ,'".$parametros['t']."'
-           ,'".$parametros['co']."'
-           ,".$parametros['moneda']."
-           ,".$parametros['T_N']."
-           ,".$SC_No."
-           ,null
-           ,null
-           ,0
-           ,'".$_SESSION['INGRESO']['item']."'
-           ,'".$_SESSION['INGRESO']['CodigoU']."')";
 
-           $this->conn->String_Sql($sql);
+			SetAdoAddNew("Asiento_SC");
+	        SetAdoFields("Codigo",$cod);
+	        SetAdoFields("Beneficiario",substr($parametros['sub2'],0,50));
+	        SetAdoFields("Factura",$fact2);
+	        SetAdoFields("Serie",$serie);
+	        SetAdoFields("Prima",'0');
+	        SetAdoFields("DH",$parametros['tic']);
+	        SetAdoFields("Valor",$parametros['valorn']);
+	        SetAdoFields("Valor_ME",0);
+	        SetAdoFields("Detalle_SubCta",$parametros['Trans']);
+	        SetAdoFields("FECHA_V",$fecha_actual);
+	        SetAdoFields("TC",$parametros['t']);
+	        SetAdoFields("Cta",$parametros['co']);
+	        SetAdoFields("TM",$parametros['moneda']);
+	        SetAdoFields("T_No",$parametros['T_N']);
+	        SetAdoFields("SC_No",$SC_No);
+	        SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+	        SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+			SetAdoUpdate();
+
+		// 	$sql="INSERT INTO Asiento_SC(Codigo ,Beneficiario,Factura ,Prima,DH,Valor,Valor_ME
+           // ,Detalle_SubCta,FECHA_V,TC,Cta,TM,T_No,SC_No
+           // ,Fecha_D ,Fecha_H,Bloquear,Item,CodigoU)
+		// 	VALUES
+           // ('".$cod."'
+           // ,'".$parametros['sub2']."'
+           // ,'".$fact2."'
+           // ,0
+           // ,'".$parametros['tic']."'
+           // ,".$parametros['valorn']."
+           // ,0
+           // ,'".$parametros['Trans']."'
+           // ,'".$fecha_actual."'
+           // ,'".$parametros['t']."'
+           // ,'".$parametros['co']."'
+           // ,".$parametros['moneda']."
+           // ,".$parametros['T_N']."
+           // ,".$SC_No."
+           // ,null
+           // ,null
+           // ,0
+           // ,'".$_SESSION['INGRESO']['item']."'
+           // ,'".$_SESSION['INGRESO']['CodigoU']."')";
+
+           // // print_r($sql);die();
+
+           // $this->conn->String_Sql($sql);
 		 
 		}
 		else
@@ -478,7 +507,7 @@ class lista_comprasM
 	function datos_asiento_debe_trans($orden,$codigo)
 	{
       	// 'LISTA DE CODIGO DE ANEXOS
-	     $sql = "SELECT SUM(Total) as 'total','' as 'cuenta',CodigoC as 'SUBCTA',Fecha as 'fecha',TC 
+	     $sql = "SELECT SUM(Total_Original) as 'total','' as 'cuenta',CodigoC as 'SUBCTA',Fecha as 'fecha',TC 
 	     FROM Trans_Pedidos  
 	     WHERE Item = '".$_SESSION['INGRESO']['item']."' 
 	     AND Orden_No = '".$orden."' 
@@ -491,12 +520,12 @@ class lista_comprasM
 	function datos_asiento_haber_trans($orden,$codigo)
 	{
     // 'LISTA DE CODIGO DE ANEXOS
-     $sql = "SELECT SUM(Total) as 'total',Codigo_Inv as 'cuenta',Fecha as 'fecha',TC 
+     $sql = "SELECT SUM(Total_Original) as 'total',Cta_Venta_0 as 'cuenta',Fecha as 'fecha',TC 
              FROM Trans_Pedidos  
              WHERE Item = '".$_SESSION['INGRESO']['item']."' 
              AND Orden_No = '".$orden."'
              AND CodigoC = '".$codigo."' ";              
-        $sql.=" GROUP BY Orden_No,Codigo_Inv,Fecha,TC";
+        $sql.=" GROUP BY Orden_No,Cta_Venta_0,Fecha,TC";
           // print_r($sql);die();
         return $this->conn->datos($sql);
   
@@ -519,23 +548,22 @@ class lista_comprasM
 	          // print_r($sql);
 	     return $this->conn->datos($sql);
 	}
-	function datos_comprobante()
+	function datos_comprobante($t_no=99)
 	{
 		// $cid = $this->conn;
 		$sql="SELECT  ".Full_Fields("Asiento")."  
 		FROM Asiento 
 		WHERE CodigoU='".$_SESSION['INGRESO']['CodigoU']."' 
 		AND Item='".$_SESSION['INGRESO']['item']."' 
-		AND T_No = '99'";
+		AND T_No = '".$t_no."'";
 		// print_r($sql);die();
 		return $this->conn->datos($sql);
 	
 	}
 
-	function eliminar_asiento_K($orden,$CodigoPrv)
+	function update_asiento_K($orden,$CodigoPrv,$numero)
 	{
-		$sql = "DELETE   
-				FROM Trans_Pedidos  
+		$sql = "UPDATE Trans_Pedidos  SET Fecha_Ent = '".date('Y-m-d')."' ,TC='N',Numero = '".$numero."'
 				WHERE Item = '".$_SESSION['INGRESO']['item']."' 
 				AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
 	     		AND Orden_No = '".$orden."' 
@@ -544,10 +572,14 @@ class lista_comprasM
 	    return $this->conn->String_Sql($sql);
 
 	}
-	function eliminar_asiento()
+	function eliminar_asiento($T_no)
 	{
 		 $cid=$this->conn;
-		$sql = "DELETE Asiento WHERE Item='".$_SESSION['INGRESO']['item']."' AND CodigoU='".$_SESSION['INGRESO']['Id']."' AND T_No ='".$_SESSION['INGRESO']['modulo_']."'";
+		$sql = "DELETE Asiento 
+		WHERE Item='".$_SESSION['INGRESO']['item']."' 
+		AND CodigoU='".$_SESSION['INGRESO']['CodigoU']."' 
+		AND T_No ='".$T_no."'";
+		// print_r($sql);die();
 		
 		return $this->conn->String_Sql($sql);
 
@@ -557,9 +589,19 @@ class lista_comprasM
 	{
 		 $cid=$this->conn;
 		$sql = "DELETE Asiento_SC WHERE Item='".$_SESSION['INGRESO']['item']."' AND CodigoU='".$_SESSION['INGRESO']['CodigoU']."' AND Factura ='".$orden."' ";
-		
-	return $this->conn->String_Sql($sql);
+		return $this->conn->String_Sql($sql);
 
+	}
+
+
+	function numeroFactura($fecha)
+	{
+		$sql = "SELECT count(*) as num
+				FROM Trans_SubCtas
+				WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+				AND Periodo='".$_SESSION['INGRESO']['periodo']."' 
+				AND Fecha = '".$fecha."'";
+		return $this->conn->datos($sql);
 	}
 
 

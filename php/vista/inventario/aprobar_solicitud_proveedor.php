@@ -15,6 +15,11 @@ if(isset($_GET['orden']))
     }  
   })
 </script>
+<style>
+  .select2-selection__choice {
+    display: block !important;
+  }
+</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
 <script type="text/javascript" src="../../dist/js/inventario/aprobar_solicitud_proveedor.js"></script>
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -90,7 +95,6 @@ if(isset($_GET['orden']))
                       <th>Observacion</th>
                       <th width="28%">Proveedores proforma</th>
                       <th width="28%">Proveedor Seleccionado</th>
-                      <th></th>
                     </thead>
                     <tbody id="tbl_body">
                     
@@ -138,7 +142,7 @@ if(isset($_GET['orden']))
             </div>
              <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="guardar_seleccion_proveedor()">Guardar</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

@@ -1,4 +1,11 @@
-<?php date_default_timezone_set('America/Guayaquil'); ?> 
+<?php date_default_timezone_set('America/Guayaquil'); 
+function isMobileDevice() {
+    return (
+       isset($_SERVER['HTTP_USER_AGENT']) &&
+        preg_match('/(android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini)/i', $_SERVER['HTTP_USER_AGENT'])
+    );
+}
+?> 
 <script src="../../dist/js/qrCode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script type="text/javascript">
@@ -136,10 +143,12 @@
 								</form>
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-12">
+								<?php if (isMobileDevice()) { ?>
 								<button type="button" id="btn_photoupload" class="btn btn-light" onclick="$('#modal_camara').modal('show')">
 									<img src="../../img/png/camara.png" style="width:20%">
 									Adjuntar por cámara
 								</button>
+							<?php } ?>
 								<br>
 								<div id="photoupload_span" style="display: none;">
 									<span><a href="#" class="text-secondary-emphasis" onclick="$('#modal_foto').modal('show');" style="text-decoration: underline;">Ver foto</a></span>

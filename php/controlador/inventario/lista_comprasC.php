@@ -52,6 +52,12 @@ if(isset($_GET['grabar_kardex']))
 	echo json_encode($controlador->grabar_kardex($parametros));
 }
 
+if(isset($_GET['grabar_kardex_indi']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->grabar_kardex($parametros));
+}
+
 /**
  * 
  */
@@ -78,7 +84,6 @@ class lista_comprasC
 					<td><a href="inicio.php?mod='.$_SESSION['INGRESO']['modulo_'].'&acc=detalle_compra&orden='.$value['Orden_No'].'">'.$value['Cliente'].'</a></td>
 					<td>'.$value['Orden_No'].'</td>					
 					<td>'.$value['Fecha']->format('Y-m-d').'</td>
-					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>
 					<td>'.$value['Total'].'</td>					
 					<td>
 						<button type="button" class="btn btn-sm btn-default" onclick="imprimir_pdf(\''.$value['Orden_No'].'\')" ><i class="fa fa-file-pdf-o"></i></butto>
@@ -102,24 +107,47 @@ class lista_comprasC
 		$datos = $this->modelo->lineas_compras_solicitados_proveedores($parametros['orden']);
 		$tr = '';
 		foreach ($datos as $key => $value) {
-			$tr.='<tr><td colspan="9"><b>'.$value['Cliente'].'</b></td></tr>';
+			$tr.='<table class="table">
+			<thead>
+			 <tr><td colspan="10"><b>'.$value['Cliente'].'</b></td><td class="text-end"><button type="button" class="btn btn-sm btn-primary" onclick="comprobante_individual(\''.$parametros['orden'].'\',\''.$value['CodigoC'].'\')"><i class="fa fa-bill"></i>Generar comprobante</button></td></tr>
+			 </thead>
+            <thead>
+              <th>item</th>
+              <th>Codigo</th>
+              <th>Producto</th>
+              <th>Cantidad</th>              
+              <th>Costo Ref</th>
+              <th>Total Ref</th>           
+              <th>Costo</th>
+              <th>Total</th>
+              <th>Fecha Solicitud</th>
+              <th>Fecha Entrega</th>
+              <th colspan="2">Proveedor</th>
+            </thead>
+            <tbody>';
 			$lineas = $this->modelo->lineas_compras_solicitados($parametros['orden'],false,$value['CodigoC']);
 			$total_prov = 0;
+			$total_prov_org = 0;
 			foreach ($lineas as $key2 => $value2) {
+				if($value2['Costo_Original']=='' || $value2['Costo_Original']==null){$value2['Costo_Original'] = 0;}
+				if($value2['Total_Original']=='' || $value2['Total_Original']==null){$value2['Total_Original'] = 0;}
 				$total_prov = $total_prov+number_format($value2['Total'],2,'.','');
+				$total_prov_org = $total_prov_org+number_format($value2['Total_Original'],2,'.','');
 				$tr.='<tr>
 					<td>'.($key2+1).'</td>
 					<td>'.$value2['Codigo_Inv'].'</td>
 					<td>'.$value2['Producto'].'</td>
 					<td width="20px">'.$value2['Cantidad'].'</td>
-					<td>'.number_format($value2['Precio'],$_SESSION['INGRESO']['Dec_PVP'],'.','').'</td>
+					<td>'.number_format($value2['Precio'],$_SESSION['INGRESO']['Dec_PVP'],'.','').'</td>		
+					<td>'.number_format($value2['Total'],2,'.','').'</td>	
+					<td>'.number_format($value2['Costo_Original'],$_SESSION['INGRESO']['Dec_PVP'],'.','').'</td>		
+					<td>'.number_format($value2['Total_Original'],2,'.','').'</td>	
 					<td>'.$value2['Fecha']->format('Y-m-d').'</td>
-					<td>'.$value2['Fecha_Ent']->format('Y-m-d').'</td>					
-					<td>'.number_format($value2['Total'],2,'.','').'</td>				
-					<td>'.$value2['proveedor'].'</td>					
+					<td>'.$value2['Fecha_Ent']->format('Y-m-d').'</td>						
+					<td colspan="2">'.$value2['proveedor'].'</td>					
 				</tr>';
 			}			
-			$tr.='<tr><td colspan="6"></td><td>TOTAL</td><td><b>'.$total_prov.'</b></td><td></td></tr>';			
+			$tr.='<tr><td colspan="4"></td><td><b>TOTAL REF</b></td><td><b>'.$total_prov.'</b></td><td></td><td><b>'.$total_prov_org.'</b></td><td colspan="3"></td></tr></tbody></table>';			
 		}
 		return $tr;
 	}
@@ -282,25 +310,48 @@ class lista_comprasC
 
 	function grabar_kardex($parametros)
 	{
-		
-		$cta = LeerCta('2.1.05.01.12');
+		// print_r($_SESSION['SETEOS']['Cta_Provision_Compras']);die();
+		$t_no = $_SESSION['INGRESO']['modulo_'];
+		if(isset($parametros['T_No']))
+		{
+			$t_no = $parametros['T_No'];
+		}
+		$cta = LeerCta($_SESSION['SETEOS']['Cta_Provision_Compras']);
 		$msj = '';
 		if(count($cta)==0)
 		{
 			SetAdoAddNew("Catalogo_Cuentas");
 		    SetAdoFields("TC","P");
-		    SetAdoFields("Cta","2.1.05.01.12");
+		    SetAdoFields("Cta",$_SESSION['SETEOS']['Cta_Provision_Compras']);
 		    SetAdoFields("Cuenta","PROVISION COMPRAS INVENTARIO");
 		    SetAdoFields("Item",$_SESSION['INGRESO']['item']);
 		    SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
-			SetAdoUpdate();
-			$cta[0]['Codigo'] = "2.1.05.01.12";
-			$cta[0]['Cuenta'] = "PROVISION COMPRAS INVENTARIO";
-			$cta[0]['SubCta'] = "P";
+				SetAdoUpdate();
+				$cta[0]['Codigo'] = $_SESSION['SETEOS']['Cta_Provision_Compras'];
+				$cta[0]['Cuenta'] = "PROVISION COMPRAS INVENTARIO";
+				$cta[0]['SubCta'] = "P";
 		}
 
+		$prove = false;
+		if(isset($parametros['proveedor']))
+		{
+			$prove = $parametros['proveedor'];
+		}
+
+		// esto sirve solo para este proceso que no viene de asientos_K /coloca cta de inventario donde falte
+		$this->validar_cta_inventario($parametros);
+
 		$orden = $parametros['orden'];
-		$provedor = $this->modelo->lineas_compras_solicitados_proveedores($parametros['orden']);
+		$provedor = $this->modelo->lineas_compras_solicitados_proveedores($parametros['orden'],false,$prove);
+		$fecha = date('Y-m-d');
+		$numOrde = $this->modelo->numeroFactura($fecha);
+		$numeroSubCta =date('ymd').'01';
+		if(count($numOrde)>0 && $numOrde[0]['num']!=0)
+		{
+			 $numeroSubCta = date('ymd').generaCeros($numOrde[0]['num']+1,2);
+		}
+
+		// print_r($numeroSubCta);die();
 		foreach ($provedor as $key => $value) 
 		{
 			$nombre = $value['Cliente'];
@@ -316,24 +367,25 @@ class lista_comprasC
 		                    'ru'=> '',
 		                    'co'=> $cta[0]['Codigo'],// codigo de cuenta cc
 		                    'tip'=>$cta[0]['SubCta'],//tipo de cuenta(CE,CD,..--) biene de catalogo subcuentas TC
-		                    'tic'=> 1, //debito o credito (1 o 2);
+		                    'tic'=> 2, //debito o credito (1 o 2);
 		                    'sub'=> $value['CodigoC'], //Codigo se trae catalogo subcuenta
-		                    'sub2'=>$cta[0]['Cuenta'],//nombre del beneficiario
+		                    'sub2'=>$value['Cliente'],//nombre del beneficiario
 		                    'fecha_sc'=> date('Y-m-d'), //fecha 
-		                    'fac2'=>0,
+		                    'fac2'=>intval($numeroSubCta),
 		                    'mes'=> 0,
 		                    'valorn'=> round($value['Total'],2),//valor de sub cuenta 
 		                    'moneda'=> 1, /// moneda 1
-		                    'Trans'=>$value['Cliente'],//detalle que se trae del asiento
-		                    'T_N'=> '99',
-		                    't'=> $sub[0]['TC'],                        
+		                    'Trans'=>$cta[0]['Cuenta'].' Orden '.$parametros['orden'], //detalle que se trae del asiento
+		                    'T_N'=> $t_no,
+		                    't'=> $sub[0]['TC'],       
+		                    'serie'=> '999999',                      
 		                  );
-						// print_r($parametros);die();
+						// print_r($parametros_SC);die();
 		             $this->modelo->generar_asientos_SC($parametros_SC);
 
+// print_r('expression');die();
 
-
-		   	//ingreso asiento debe
+		   	//ingreso asiento haber
 					$asiento_debe = $this->modelo->datos_asiento_debe_trans($parametros['orden'],$value['CodigoC']);
 					// print_r($asiento_debe);die();
 					$fecha = $asiento_debe[0]['fecha']->format('Y-m-d');		
@@ -342,7 +394,35 @@ class lista_comprasC
 						// print_r($value);die();
 						$cuenta = $this->modelo->catalogo_cuentas($cta[0]['Codigo']);		
 							$parametros_debe = array(
-							  "va" =>round($value2['total'],2),//valor que se trae del otal sumado
+							  "va" =>$value2['total'],//valor que se trae del otal sumado
+			                  "dconcepto1" =>$cuenta[0]['Cuenta'].' Orden '.$parametros['orden'],
+			                  "codigo" => $cuenta[0]['Codigo'], // cuenta de codigo de 
+			                  "cuenta" => $cuenta[0]['Cuenta'], // detalle de cuenta;
+			                  "efectivo_as" =>$value2['fecha']->format('Y-m-d'), // observacion si TC de catalogo de cuenta
+			                  "chq_as" => 0,
+			                  "moneda" => 1,
+			                  "tipo_cue" => 2,
+			                  "cotizacion" => 0,
+			                  "con" => 0,// depende de moneda
+			                  "t_no" =>$t_no,
+			                  "codigoc"=>$value['CodigoC'],
+			                  "beneficiario"=>$nombre
+						);
+							// print_r($parametros_debe);die();
+						 ingresar_asientos($parametros_debe);
+					}
+
+
+
+	        // asiento para el debe
+					$asiento_haber  = $this->modelo->datos_asiento_haber_trans($parametros['orden'],$value['CodigoC']);
+					// print_r($asiento_haber);die();
+					foreach ($asiento_haber as $key2 => $value2) {
+						// $inv = $this->modelo->catalogo_cuentas_cta_inv($value2['cuenta']);	
+						$cuenta = $this->modelo->catalogo_cuentas($value2['cuenta']);		
+						// print_r($cuenta);die();	
+							$parametros_haber = array(
+			                  "va" =>$value2['total'],//valor que se trae del otal sumado
 			                  "dconcepto1" =>$cuenta[0]['Cuenta'],
 			                  "codigo" => $cuenta[0]['Codigo'], // cuenta de codigo de 
 			                  "cuenta" => $cuenta[0]['Cuenta'], // detalle de cuenta;
@@ -352,47 +432,30 @@ class lista_comprasC
 			                  "tipo_cue" => 1,
 			                  "cotizacion" => 0,
 			                  "con" => 0,// depende de moneda
-			                  "t_no" => '99',
-						);
-						 ingresar_asientos($parametros_debe);
-					}
-
-	        // asiento para el haber
-					$asiento_haber  = $this->modelo->datos_asiento_haber_trans($parametros['orden'],$value['CodigoC']);
-					// print_r($asiento_haber);die();
-					foreach ($asiento_haber as $key2 => $value2) {
-						$inv = $this->modelo->catalogo_cuentas_cta_inv($value2['cuenta']);	
-						$cuenta = $this->modelo->catalogo_cuentas($inv[0]['Cta_Inventario']);		
-						// print_r($cuenta);die();	
-							$parametros_haber = array(
-			                  "va" =>round($value2['total'],2),//valor que se trae del otal sumado
-			                  "dconcepto1" =>$cuenta[0]['Cuenta'],
-			                  "codigo" => $inv[0]['Cta_Inventario'], // cuenta de codigo de 
-			                  "cuenta" => $cuenta[0]['Cuenta'], // detalle de cuenta;
-			                  "efectivo_as" =>$value2['fecha']->format('Y-m-d'), // observacion si TC de catalogo de cuenta
-			                  "chq_as" => 0,
-			                  "moneda" => 1,
-			                  "tipo_cue" => 2,
-			                  "cotizacion" => 0,
-			                  "con" => 0,// depende de moneda
-			                  "t_no" => '99',
+			                  "t_no" => 	$t_no,
+			                  "codigoc"=>$value['CodigoC'],
+			                  "beneficiario"=>$nombre
 			                );
 
 			                // print_r($parametros_haber);die();
 			             ingresar_asientos($parametros_haber);
 					}
 
+					// print_r('exist');die();
 				// Ingreso de comprobante
 					// print_r($fecha);die();
 						$num_comprobante = numero_comprobante1('Diario',true,true,$fecha);
 						// print_r($num_comprobante);die();
-					    $dat_comprobantes = $this->modelo->datos_comprobante();
-					    $debe = 0;
+					    $dat_comprobantes = $this->modelo->datos_comprobante($t_no);
+					  $debe = 0;
 						$haber = 0;
 						foreach ($dat_comprobantes as $key => $value3) {
 							$debe+=$value3['DEBE'];
 							$haber+=$value3['HABER'];
 						}
+						// print_r($dat_comprobantes);die();
+						$debe = number_format($debe,2,'.','');
+						$haber = number_format($haber,2,'.','');
 						// print_r($debe.'-'.$haber);die();
 						if(strval($debe)==strval($haber))
 						{
@@ -405,25 +468,28 @@ class lista_comprasC
 				        	        'concepto'=>'Entrada de inventario  '.$nombre.' con CI: '.$ruc.' el dia '.$fecha, //detalle de la transaccion realida
 				        	        'totalh'=> round($haber,2), //total del haber
 				        	        'num_com'=> '.'.date('Y', strtotime($fecha)).'-'.$num_comprobante, // codigo de comprobante de esta forma 2019-9000002
+				        	        't_no'=>$t_no,
 				        	        );
 								 // print_r($parametro_comprobante);die();
 				               	$resp = $this->ingDescargos->generar_comprobantes($parametro_comprobante);
 				                // $cod = explode('-',$num_comprobante);
 				                // die();
+				                // print_r($resp);die();
 				                if($resp==$num_comprobante)
                 				{
 				                	if($this->ingresar_trans_kardex_entrada($orden,$num_comprobante,$fecha,$ruc,$nombre)==1)
 				                	{
 				                		// hasta aqui 
 				                		// print_r('ingreso kardex'.$num_comprobante);die();
-				                		$resp = $this->modelo->eliminar_asiento_K($parametros['orden'],$value['CodigoC']);
+				                		$resp = $this->modelo->update_asiento_K($parametros['orden'],$value['CodigoC'],$num_comprobante);
 				                		if($resp==1)
 				                		{
-				                			$this->modelo->eliminar_asiento();
-				                			// $this->ingDescargos->eliminar_aiseto_sc($orden);                			
-				                			mayorizar_inventario_sp();
+				                			$this->modelo->eliminar_asiento($t_no);
+				                			$orden = date('Ymd');
+				                			$this->modelo->eliminar_asiento_sc($orden);                			
+				                			//mayorizar_inventario_sp();
 				                			// return array('resp'=>1,'com'=>$num_comprobante);
-				                			$msj.= 'comprobante '.$num_comprobante.' Generado <br>';
+				                			$msj.= $num_comprobante;
 				                		}else
 				                		{
 				                			return array('resp'=>-1,'com'=>'No se pudo eliminar asiento_K');
@@ -435,27 +501,46 @@ class lista_comprasC
 				                }else
 				                {
 
-				                			$this->modelo->eliminar_asiento();
+				                			$this->modelo->eliminar_asiento($t_no);
 							     // $this->modelo->eliminar_aiseto_sc($orden);
 				        	        return array('resp'=>-1,'com'=>$resp);
 				                }
 							}else
 							{
-				                			$this->modelo->eliminar_asiento();
+				                			$this->modelo->eliminar_asiento($t_no);
 								// $this->modelo->eliminar_aiseto_sc($fecha);
 								return array('resp'=>-1,'com'=>'No coinciden','debe'=>$debe,'haber'=>$haber);
 							}
 						}else
 						{
 								// print_r($debe."-".$haber); 
-								 return array('resp'=>-1,'com'=>'Los resultados son 0');
+									$this->modelo->eliminar_asiento($t_no);
+								 return array('resp'=>-1,'com'=>'Los resultados son debe '.$debe."- haber: ".$haber);
 						}
 						
 					// print_r($value);die();
+						// print_r($value);
+						// print_r($msj);die();
 				}
 
 				return array('resp'=>1,'com'=>$msj);
 
+	}
+
+	function validar_cta_inventario($parametros)
+	{
+		// print_r($parametros);die();
+		$lineas = $this->modelo->lineas_compras_solicitados($parametros['orden'],false,false);
+		foreach ($lineas as $key => $value) {
+			if($value['Cta_Venta_0']== '.' || $value['Cta_Venta_0']== '')
+			{
+				$inv = $this->modelo->catalogo_cuentas_cta_inv($value['Codigo_Inv']);
+					SetAdoAddNew("Trans_Pedidos"); 		
+			    SetAdoFields('Cta_Venta_0',$inv[0]['Cta_Inventario']); 
+			    SetAdoFieldsWhere('ID',$value['ID']);
+			    SetAdoUpdateGeneric();
+			}
+		}
 	}
 
 	function ingresar_trans_kardex_entrada($orden,$comprobante,$fechaC,$CodigoPrv,$nombre)
@@ -484,15 +569,15 @@ class lista_comprasC
 			    SetAdoFields('Numero',$comprobante);  
 			    SetAdoFields('T','N'); 
 			    SetAdoFields('TP','CD'); 
-			    SetAdoFields('Codigo_P',$_SESSION['INGRESO']['CodigoU']); 
+			    SetAdoFields('Codigo_P',$CodigoPrv); 
 			    SetAdoFields('Cta_Inv',$Cta_Inventario); 
 			    SetAdoFields('Contra_Cta',$cta[0]['Codigo']); 
 			    SetAdoFields('Periodo',$_SESSION['INGRESO']['periodo']); 
 			    SetAdoFields('Entrada',$value['Cantidad']); 
-			    SetAdoFields('Valor_Unitario',number_format($value['Precio'],$_SESSION['INGRESO']['Dec_PVP'],'.','')); 
-			    SetAdoFields('Valor_Total',number_format($value['Total'],2)); 
-			    SetAdoFields('Costo',number_format($value['Precio'],2)); 
-			    SetAdoFields('Total',number_format($value['Total'],2));
+			    SetAdoFields('Valor_Unitario',number_format($value['Costo_Original'],$_SESSION['INGRESO']['Dec_PVP'],'.','')); 
+			    SetAdoFields('Valor_Total',number_format($value['Total_Original'],2)); 
+			    SetAdoFields('Costo',number_format($value['Costo_Original'],2)); 
+			    SetAdoFields('Total',number_format($value['Total_Original'],2));
 			    if($stock>0)
 			    {
 			    	SetAdoFields('Existencia',number_format($stock,2)+floatval($value['Cantidad']));
@@ -501,10 +586,13 @@ class lista_comprasC
 			    {
 			    	SetAdoFields('Existencia',floatval($value['Cantidad']));
 			    }
+
+			    SetAdoFields('Codigo_Dr',$value['Codigo_Sup']);
 			    SetAdoFields('CodigoU',$_SESSION['INGRESO']['CodigoU']);
 			    SetAdoFields('Item',$_SESSION['INGRESO']['item']);
 			    SetAdoFields('CodBodega','01');
-			    // SetAdoFields('CodigoL',$value['SUBCTA']);
+			    SetAdoFields('Orden_No',$orden);
+			    SetAdoFields('Serie_No','999999');
 			    SetAdoFields('Detalle','Entrada de inventario por '.$nombre.' de la factura '.$orden.' el dia '.$fechaC);
 			    SetAdoFields('Fecha_Exp',$value['Fecha_Ent']->format('Y-m-d'));
 			    SetAdoFields('Fecha_Fab',$value['Fecha_Ent']->format('Y-m-d'));

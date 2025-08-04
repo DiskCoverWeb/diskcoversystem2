@@ -17,6 +17,11 @@ if(isset($_GET['orden']))
 
   })
 </script>
+<style>
+  .select2-selection__choice {
+    display: block !important;
+  }
+</style>
 <?php date_default_timezone_set('America/Guayaquil'); ?>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>

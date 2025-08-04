@@ -1041,11 +1041,9 @@ class solicitud_materialC
 					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>	
 					<td>'.$value['Comentario'].'</td>
 					<td width="150px">
-						<div class="input-group margin">
-							<div class="input-group-btn">
+						<div class="d-flex align-items-center">
 								<button type="button" class="btn btn-sm btn-primary" onclick="addCliente();lineaSolProv('.$value['ID'].')"><i class="fa fa-user-plus me-0"></i></button>
-							</div>
-							<select class="form-select select2_prove" id="ddl_selector_'.$value['ID'].'" onclick="llenarProveedores(\'ddl_selector_'.$value['ID'].'\')" name="ddl_selector_'.$value['ID'].'[]" multiple="multiple">
+							<select class="form-select select2_prove" id="ddl_selector_'.$value['ID'].'" onclick="llenarProveedores(\'ddl_selector_'.$value['ID'].'\')" name="ddl_selector_'.$value['ID'].'[]" multiple="multiple" >
 								<option disabled value="">Seleccione proveedor</option>
 							</select>
 						</div>
@@ -1221,15 +1219,6 @@ class solicitud_materialC
 						$tr.='</div>
 					</td>
 
-					<!---
-					<td width="28%">
-					<select class="form-control select2_prove" id="ddl_proveedor_'.$value['ID'].'" name="ddl_proveedor_'.$value['ID'].'">
-							'.$op.'
-						</select>
-
-					</td>
-
-					-->
 					<td>
 						';
 						if($value['CodigoC']!='.')

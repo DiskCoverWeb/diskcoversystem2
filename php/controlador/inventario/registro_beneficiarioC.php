@@ -1348,6 +1348,7 @@ class registro_beneficiarioC
 
     function datosClienteaAll($codigo)
     {
+        // print_r($codigo);die();
         $Tipo_Beneficiario = array();
         $tipoDonacion = array();
         $Estado_Beneficiario = array();

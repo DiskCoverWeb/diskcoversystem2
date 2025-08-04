@@ -70,7 +70,7 @@
                      <div class="col-lg-5">
                         <b>Nombre del Beneficiario/Usuario <span style="color: red;">*</span></b>
                         <div class="input-group">
-                            <input type="text" name="cliente" id="cliente" class="form-control form-control-sm">
+                            <input type="text" name="cliente" id="cliente" class="form-control form-control-sm" onblur="validar_nombre()">
                             <!-- <button class="btn-sm btn btn-primary"><i class="bx bx-search"></i></button> -->
                         </div>
                     </div>

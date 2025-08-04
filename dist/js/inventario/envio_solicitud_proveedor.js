@@ -39,6 +39,7 @@
 
                  $('.select2_prove').select2({
                       placeholder: 'Seleccione',
+                      dropdownAutoWidth: true,
                       width:'200px',
                       ajax: {
                           url:   '../controlador/inventario/solicitud_materialC.php?lista_proveedores=true',

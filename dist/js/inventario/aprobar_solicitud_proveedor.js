@@ -67,7 +67,7 @@
 
   function lineas_pedido_aprobacion_solicitados_proveedor(orden)
   {  
-      
+   
       var parametros = 
       {
         'orden':orden,
@@ -79,6 +79,8 @@
           dataType: 'json',
           success:  function (response) {   
             console.log(response)
+            
+
              $('#tbl_body').html(response);     
 
                  $('.select2_prove').select2({
@@ -100,23 +102,24 @@
 
            
 
-             $('#tbl_lista_solicitud').DataTable({
-              scrollX: true,
-              scrollCollapse: true, 
-              searching: false,
-              responsive: false,
-              paging: false,   
-              info: false,   
-              autoWidth: false,  
-              order: [[1, 'asc']], // Ordenar por la segunda columna
-              language: {
-              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-              },
-              initComplete: function() {
-                  // Ajustar columnas después de la inicialización
-                  this.api().columns.adjust().draw();
-              }
-            });               
+            if (!$.fn.DataTable.isDataTable('#tbl_lista_solicitud')) {
+                $('#tbl_lista_solicitud').DataTable({
+                    scrollX: true,
+                    scrollCollapse: true,
+                    searching: false,
+                    responsive: false,
+                    paging: false,
+                    info: false,
+                    autoWidth: false,
+                    order: [[1, 'asc']],
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+                    },
+                    initComplete: function () {
+                        this.api().columns.adjust().draw();
+                    }
+                });
+            }
 
         
           }
@@ -242,10 +245,10 @@
       });
   }
 
-  function guardar_seleccion_proveedor(codigo,orden)
+  function guardar_seleccion_proveedor()
   {
     // costo = $('#txt_costoAct').val()
-    var ord = '<?php echo $orden; ?>';
+    var ord = orden;
     // if(costo=='')
     // {
 
@@ -266,9 +269,11 @@
           success:  function (response) {
               if(response==1)
               {
-                Swal.fire("Proveedor Asignado","","success")
-                $('#myModal_provedor').modal('hide');               
+                Swal.fire("Proveedor Asignado","","success").then(function(){
+
                 lineas_pedido_aprobacion_solicitados_proveedor(ord)
+                })
+                $('#myModal_provedor').modal('hide');               
               }
               if(response==-2)
               {
@@ -346,7 +351,7 @@
 
   function eliminar_prove(id)
   {
-     var orden = '<?php echo $orden; ?>';
+     var orden_pe = orden;
     var parametros = 
       {
         'id': id,
@@ -361,7 +366,7 @@
             {
                Swal.fire("Proveedor eliminado","","success").then(function(){
                
-               lineas_pedido_aprobacion_solicitados_proveedor(orden)
+               lineas_pedido_aprobacion_solicitados_proveedor(orden_pe)
 
                });
                 
