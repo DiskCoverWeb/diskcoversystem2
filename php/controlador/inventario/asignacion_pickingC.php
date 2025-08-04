@@ -381,10 +381,23 @@ class asignacion_pickingC
                         <input type="text" class="form-control form-control-sm" value="'.$value['Procedencia'].'">
                     </div>                               
                 </div>';
-            $ddlGrupoPro.= '<option value="'.$value['Codigo'].'" >'.$value['Producto'].'</option>';
+            $GrupoProducto[] = array('codigo'=>$value['Codigo'],'Producto'=>$value['Producto']);
             $total =  $total+number_format($value['Cantidad'],2,'.','');
             $ctotal =  $ctotal+number_format($cant,2,'.','');
         }
+
+        $filtrados = [];
+        $nombresVistos = [];
+
+        foreach ($GrupoProducto as $item) {
+            if (!in_array($item['Producto'], $nombresVistos)) {
+                $filtrados[] = $item;
+                $nombresVistos[] = $item['Producto'];
+            }
+        }
+
+        // print_r($filtrados);die();
+
         $detalle.='<div class="row">                                    
                     <div class="col-sm-3 text-end">
                         <label><b>Total</b></label>
@@ -400,6 +413,10 @@ class asignacion_pickingC
                     <div class="col-sm-6">                      
                     </div>                     
                 </div>';
+            foreach ($filtrados as $key => $value) {
+                $ddlGrupoPro.= '<option value="'.$value['codigo'].'" >'.$value['Producto'].'</option>';
+            }
+
 
         $res = array('detalle'=>$detalle,'ddl'=>$ddlGrupoPro,'total'=>$total);
 
