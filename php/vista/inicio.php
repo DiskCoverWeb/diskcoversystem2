@@ -580,6 +580,18 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'auditoria':
 					require_once("auditoria/modulo_auditoria.php");
 					break;
+				case 'constructora_detalle':
+					require_once("inventario/reporte_constructora_detalle.php");
+					break;
+				case 'constructora_orden':
+					require_once("inventario/reporte_constructora_orden.php");
+					break;
+				case 'constructora_historico':
+					require_once("inventario/reporte_constructora_historial.php");
+					break;
+				case 'constructora_tiempos':
+					require_once("inventario/reporte_constructora_tiempos.php");
+					break;
 	
 				//MODALES
 				case 'FSubCtas':
