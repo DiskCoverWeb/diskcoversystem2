@@ -381,7 +381,7 @@ function tipoCompra(benefi)
 }
 
 function llenarDatos(datos) {
-    // console.log(datos);
+    console.log(datos);
         // await tipoCompra();
     
     // $('#beneficiario').val(datos.Beneficiario);
@@ -427,7 +427,7 @@ function datosExtras(param) {
                     $('#' + tmp[i].inputname).val(tmp[i].Proceso);
                     if (tmp[i].Color != '.') {
                         const color = tmp[i].Color.substring(4);
-                        console.log(color);
+                        // console.log(color);
                         $('#rowGeneral').css('background-color', '#' + color);
                     }
                 }
@@ -616,7 +616,7 @@ function buscar_producto(codigo)
             {
                 $('#stock').val(data.datos.Stock);
             }
-            console.log(data);
+            // console.log(data);
         }
     });
 }
@@ -642,7 +642,7 @@ function llenarCamposPoblacion(Codigo) {
                 });
 
                 // dibujar();
-                console.log(valoresFilas)
+                // console.log(valoresFilas)
 
                 $('#totalPersonas').val(total_global);
             }

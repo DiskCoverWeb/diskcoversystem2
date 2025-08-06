@@ -194,10 +194,12 @@ class asignacion_osC
                 $asignacionesLis =$this->modelo->asignaciones_hechas($value['Codigo']);                
                 $asignaciones = count($asignacionesLis);               
                     // print_r($dia);die();
-                    $value['asignaciones_hechas'] =  $asignacionesLis;
+                    $value1['asignaciones_hechas'] =  $asignacionesLis;
                     $res[] = array( 'id' => $value['Codigo'],'text' => $value['Cliente'],'data'=>$value1);
             
             }
+
+            // print_r($res);die();
 
             return $res;
         
