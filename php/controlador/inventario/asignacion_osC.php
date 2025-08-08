@@ -452,6 +452,8 @@ class asignacion_osC
             // print_r($parametros);die();
             $order = $parametros['beneficiarioCodigo'].''.str_replace('-',"", $parametros['FechaAte']);
 
+            // print_r($order);die();
+
             $data = $this->modelo->buscarAsignacionPrevia($order,$parametros['beneficiarioCodigo'],$parametros['FechaAte'],'OP',$parametros['asignacion']);
             if(isset($data[0]['Orden_No']) && $data[0]['Orden_No']>0)
                 {

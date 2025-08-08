@@ -519,6 +519,22 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'egreso_alimento2':
 					require_once("inventario/egreso_alimento2.php");
 					break;
+				case 'material_bodega':
+					require_once("inventario/solicitud_material_bodega.php");
+					break;
+				case 'ListadoSolicitudesBodega':
+					require_once("inventario/listado_solicitudes_Bodega.php");
+					break;	
+				case 'DetalleSolicitudesBodega':
+					require_once("inventario/solicitud_material_bodega_detalle.php");
+					break;
+				case 'DetalleSolicitudesBodegaCheck':
+					require_once("inventario/solicitud_material_bodega_detalle_check.php");
+					break;		
+				case 'checkAprobacion':
+					require_once("inventario/solicitud_material_bodega_check.php");
+					break;	
+
 	
 				//Gestion Social -> egreso de Productos -> registro beneficiarios
 				case 'registro_beneficiario':

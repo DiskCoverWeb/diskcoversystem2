@@ -13,7 +13,38 @@ if (isset ($_GET['tipo'])) {
 
 // print_r($_SESSION['INGRESO']);
 ?>
+<script>
+	// function enviaremail()  
+	//   { 
 
+
+	//           const xhr = new XMLHttpRequest();
+	//           // const url =  'https://erp.diskcoversystem.com/~diskcover/lib/phpmailer/EnvioEmailvisual.php?EnviarVisual';
+	//           const url =  '../../lib/phpmailer/EnvioEmailvisual.php?EnviarVisual';
+
+	//           xhr.open('POST', url, true);
+	//           xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+	//           xhr.onreadystatechange = function () {
+	//             if (xhr.readyState === 4 && xhr.status === 200) {
+	//               console.log('Respuesta:', xhr.responseText);
+	//             }
+	//           };
+
+	//            const params = `from=admin@imap.diskcoversystem.com
+	//           								&fromName=CORREO DESDE 192.168.20.3 RELAYHOST IMAP <admin@imap.diskcoversystem.com>
+	//                           &to=javier.farinango92@gmail.com
+	//                           &body=javier.farinango91@gmail.com
+	//                           &subject=hola email como estas
+	//                           &HTML=1
+	//                           &Archivo=ANEXO_1.pdf
+	//                           &reply=
+	//                           &replyName=
+	//                           &debug=0`;
+
+	//           xhr.send(params);
+	//   }
+</script>
 <script src="../../dist/js/facturacion/facturas_distribucion.js"></script>
 <!-- <script src="../../dist/js/facturas_distribucion.js"></script> -->
 
@@ -43,13 +74,17 @@ if (isset ($_GET['tipo'])) {
 				</a>-->
 
 				<button title="Generar NDO" class="btn btn-outline-secondary" onclick="ListaFacturas()">
-					<img src="../../img/png/facturar.png" height="32px">
+					<img src="../../img/png/ndo.png" height="32px">
 				</button>
 				<button title="IMPRIMIR NOTA DE DONACIÓN" id="imprimir_nd" class="btn btn-outline-secondary" onclick="imprimirNotaDonacion()" disabled>
 					<img src="../../img/png/paper.png" height="32px">
 				</button>
 
 				<button title="FACTURAR" class="btn btn-outline-secondary" onclick="generar()">
+					<img src="../../img/png/facturar.png" height="32px">
+				</button>
+
+				<button title="FACTURAR" class="btn btn-outline-secondary" onclick="enviaremail()">
 					<img src="../../img/png/facturar.png" height="32px">
 				</button>
 			

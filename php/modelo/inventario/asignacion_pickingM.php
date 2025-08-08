@@ -203,7 +203,7 @@ class asignacion_pickingM
                 {
                     $sql.=" AND No_Hab = '".$tipoVenta."'";
                 }
-                // print_r($sql);die();
+                print_r($sql);die();
         try{
             return $this->db->datos($sql);
         }catch(Exception $e){

@@ -44,7 +44,7 @@ class modalesM
 		    		$sql.=" AND CI_RUC LIKE '".$ci."%' ";
 		    	}
 		    }	
-		$sql.=" ORDER BY Cliente OFFSET 0 ROWS FETCH NEXT 25 ROWS ONLY;";
+		$sql.=" ORDER BY C.ID";
 
 		// print_r($sql);die();
 		$datos = $this->db->datos($sql);

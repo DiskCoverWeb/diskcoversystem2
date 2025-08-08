@@ -1013,6 +1013,9 @@ function generar_factura()
 				}).then(function () {
 						
 						// imprimir baucher	
+					  	nombre_pdf = [data.pdf+'.pdf'];
+                    	clave_Acceso = [data.clave+'.xml'];
+						enviar_email_comprobantes(nombre_pdf,clave_Acceso);
 						var  id = data.factura
 						var serie =   $('#LblSerie').text(); //data[0].serie
 						var ci =  data.codigoc
@@ -1323,5 +1326,36 @@ function Ver_nd(id,serie,ci,aut,tc)
 		}else
 		{
 			$('#campos_fact_banco_2').hide()			
+		}
+	}
+
+
+	function enviar_email_comprobantes(nombre_pdf,clave_Acceso)
+	{
+		if($('#Lblemail').val()!=""){
+		    $('#myModal_envio_Email').modal('show');
+		    var parametros = {
+		        'clave':clave_Acceso,
+		        'pdf':nombre_pdf,
+		        'correo':$('#Lblemail').val(),
+		    }
+		    $.ajax({
+		        type: "POST",
+		        url: '../controlador/facturacion/punto_ventaC.php?enviar_email_comprobantes=true',
+		        data: {
+		            parametros: parametros
+		        },
+		        dataType: 'json',
+		        success: function(data) {
+		            console.log(data);
+		            $('#myModal_envio_Email').modal('hide');        
+		            if(data==1)
+		            {
+		                Swal.fire('Email enviado','','success').then(function(){
+		                    location.reload();
+		                });
+		            }   
+		        }
+		    });
 		}
 	}
