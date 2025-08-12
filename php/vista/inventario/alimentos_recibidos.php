@@ -45,8 +45,9 @@
 												<img src="../../img/png/donacion2.png"/></button>
 									</div>
 									<div class="col-lg-9 col-md-10 col-sm-10">
-									  <b>Detalle de ingreso</b>
+									  <b><i class="fadeIn animated bx bx-info-circle" style="font-size:12pt;" title="Si la organizacion social no aparece verifique que este ingresada o actualizada de manera correcta"></i>Detalle de ingreso</b>
 									  <div class="d-flex align-items-center input-group-sm">
+
 									    <select class="form-select form-select-sm" name="txt_donante" id="txt_donante" onchange="option_select2()">
 									      <option value="">Seleccione</option>
 									    </select>
