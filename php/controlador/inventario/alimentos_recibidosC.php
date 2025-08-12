@@ -94,7 +94,7 @@ if(isset($_GET['autoincrementable']))
 	// $num = $controlador->autoincrementable($parametros);
 	$dia = date('Ymd');
 	// print_r($parametros);die();
-	$numero_secuencial = numero_comprobante1("Ingreso_".$dia,$_SESSION['INGRESO']['item'],$incrementa=false,date('Y-m-d'));
+	$numero_secuencial = numero_comprobante1("Ingreso_".$dia,$_SESSION['INGRESO']['item'],true,date('Y-m-d'));
 	$num = $parametros['codigo'].'-'.date('ymd').'-'.generaCeros(intval($numero_secuencial),3);
 	echo json_encode($num);
 }
@@ -350,7 +350,7 @@ class alimentos_recibidosC
 		// die();
 
 		$dia = date('Ymd');
-		$numero_secuencial = numero_comprobante1("Ingreso_".$dia,$_SESSION['INGRESO']['item'],$incrementa=true,date('Y-m-d'));
+		$numero_secuencial = numero_comprobante1("Ingreso_".$dia,$_SESSION['INGRESO']['item'],true,date('Y-m-d'));
 		$parametros['fecha'] = $parametros['txt_fecha'];
 		$codigo = $empresa[0].'-'.date('ymd').'-'.generaCeros(intval($numero_secuencial),3);
 
