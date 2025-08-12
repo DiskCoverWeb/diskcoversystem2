@@ -42,7 +42,8 @@ class alimentos_recibidosM
         AND C.Codigo<>'.'
         AND LEN(C.Cod_Ejec)<=5
         AND C.Cod_Ejec <> '.'
-        AND C.Codigo = CP.Codigo";
+        AND C.Codigo = CP.Codigo
+        AND C.Actividad = '93.01'";
         if($query)
         {
         	$sql.=" AND C.Cliente like '%".$query."%'";
@@ -188,6 +189,7 @@ class alimentos_recibidosM
 		{
 			$sql.= " AND TC.Fecha_P =  '".$fecha."'";
 		}
+		// print_r($sql);die();
 		return $this->db->datos($sql);
 	}
 	function buscar_transCorreos_contabilizadios($cod=false,$fecha=false)
