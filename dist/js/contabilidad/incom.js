@@ -253,6 +253,7 @@ function comprobantes(tp, callback)
     },
     error: function(error){
       console.error("No se logro realizar la solicitud: ", error);
+      $("#myModal_espera").modal("hide");
     }
   }); 
 }

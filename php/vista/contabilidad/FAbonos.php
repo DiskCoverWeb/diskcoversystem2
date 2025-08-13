@@ -86,6 +86,7 @@
 					<div class="input-group input-group-sm">
 						<label for="DCSerie" class="input-group-text">Serie.</label>
 						<select class="form-select" id="DCSerie" name="DCSerie" onblur="DCFactura_()">
+							<option value="">Seleccione</option>
 						</select>
 					</div>
 				</div>
@@ -93,6 +94,7 @@
 					<div class="input-group input-group-sm">
 						<label for="DCFactura" class="input-group-text" id="Label2" name="Label2">No.</label>
 						<select class="form-select" id="DCFactura" name="DCFactura" onblur="DCAutorizacionF();DCFactura1()">
+							<option value="">Seleccione</option>
 						</select>
 					</div>
 				</div>
@@ -150,6 +152,7 @@
 				<div class="col-sm-12 col-10 input-group input-group-sm">
 					<label for="DCAutorizacion" class="input-group-text">Autorizacion.</label>
 					<select class="form-select" id="DCAutorizacion" name="DCAutorizacion">
+						<option value="">Seleccione</option>
 						<!--<option value="" selected disabled>Seleccione un vendedor</option>-->
 					</select>
 				</div>
@@ -214,6 +217,7 @@
 							<select class="form-select form-select-sm" id="DCRetIBienes" name="DCRetIBienes"
 								onchange="$('#DCRetIBienesNom').val($('#DCRetIBienes option:selected').text())"
 								placeholder="Retencion en bienes">
+								<option value="">Seleccione</option>
 							</select>
 						</div>
 						<div class="col-sm-1" style="padding:0px">
@@ -291,11 +295,13 @@
 						<div class="col-sm-4 col-7">
 							<label for="DCRetFuente" class="col-form-label pb-0">RETENCION EN LA FUENTE</label>
 							<select class="form-select form-select-sm" id="DCRetFuente" name="DCRetFuente">
+								<option value="">Seleccione</option>
 							</select>
 						</div>
 						<div class="col-sm-2 col-3" style="padding: 0;">
 							<label for="DCCodRet" class="col-form-label pb-0">CODIGO</label>
 							<select class="form-select form-select-sm" id="DCCodRet" name="DCCodRet">
+								<option value="">Selecciones</option>
 							</select>
 						</div>
 						<div class="col-sm-1 col-2" style="padding-right: 0;">
@@ -331,6 +337,7 @@
 							<input type="hidden" name="DCBancoNom" id="DCBancoNom">
 							<select class="form-select form-select-sm" id="DCBanco" name="DCBanco"
 								onchange="$('#DCBancoNom').val($('#DCBanco option:selected').text())">
+								<option value="">Seleccione</option>
 							</select>
 						</div>
 						<div class="col-sm-1 col-3" style="padding:0;">
@@ -419,6 +426,7 @@
 							<div class="col-12">
 								<label for="DCVendedor" class="col-form-label pb-0">Vendedor</label>
 								<select class="form-select" id="DCVendedor" name="DCVendedor">
+									<option value="">Seleccione</option>
 									<!--<option value="" selected disabled>Seleccione un vendedor</option>-->
 								</select>
 								

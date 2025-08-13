@@ -348,7 +348,7 @@ function guardar_abonos() {
 	Swal.fire({
 		title: 'Esta Seguro que desea grabar estos pagos.',
 		text: '',
-		type: 'warning',
+		icon: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#3085d6',
 		cancelButtonColor: '#d33',
@@ -361,6 +361,7 @@ function guardar_abonos() {
 }
 
 function Grabar_abonos() {
+	$("#myModal_espera").modal("show");
 	var datos = $('#form_abonos').serialize();
 	var fac = $('#DCSerie').val() + '-' + $('#DCFactura').val();
 	$.ajax({
@@ -369,12 +370,17 @@ function Grabar_abonos() {
 		data: datos,
 		dataType: 'json',
 		success: function (data) {
+			$("#myModal_espera").modal("hide");
 			Swal.fire('Abono Guardado', '', 'success').then(function () {
 				var url_compro = '../../TEMP/' + data.TJ + '.pdf';
 				window.open(url_compro, '_blank');
 				cerrar_modal();
 			})
-		}
+		},
+		Error: function(error){
+	      // console.error("No se logro realizar la solicitud: ", error);
+	      $("#myModal_espera").modal("hide");
+	    }
 	});
 
 }
