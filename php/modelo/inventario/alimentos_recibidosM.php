@@ -42,8 +42,9 @@ class alimentos_recibidosM
         AND C.Codigo<>'.'
         AND LEN(C.Cod_Ejec)<=5
         AND C.Cod_Ejec <> '.'
-        AND C.Codigo = CP.Codigo
-        AND C.Actividad = '93.01'";
+        AND C.Codigo = CP.Codigo";
+        
+        // AND C.Actividad = '93.01'
         if($query)
         {
         	$sql.=" AND C.Cliente like '%".$query."%'";

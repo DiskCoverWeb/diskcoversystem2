@@ -153,16 +153,24 @@ class registro_beneficiarioM
         }
     }
 
-    function llenarCamposInfoAdd($valor)
+    function llenarCamposInfoAdd($valor,$tipo_beneficiario)
     {
         $sql = "SELECT ID,CodigoA AS CodigoA2, Dia_Ent AS Dia_Ent2, Hora_Ent AS Hora_Ent2,
                     Envio_No, No_Soc, Area, Acreditacion, Tipo_Dato,
                     Cod_Fam, Evidencias, Observaciones, Item, Etapa_Procesal,CodigoB,Num,Credito_No,Cuenta_No,Etapa_Procesal,No_Juicio,Causa,Sujeto_Procesal,Agente_Fiscal,Instruccion_Fiscal
                 FROM  Clientes_Datos_Extras
                 WHERE Item = '".$_SESSION['INGRESO']['item']."'
-                AND Codigo = '" . $valor . "' 
-                AND LEN(Dia_Ent)=3
-                ORDER BY Fecha_Registro DESC";
+                AND Codigo = '" . $valor . "' ";
+                if($tipo_beneficiario=='93.01')
+                {
+                    $sql.="AND LEN(Dia_Ent)=3";
+                }
+
+                if($tipo_beneficiario=='93.02')
+                {
+                    $sql.="AND LEN(CodigoB)=5";
+                }
+                $sql.="ORDER BY Fecha_Registro DESC";
                 // AND Acreditacion = '92.02'  esto se quito del where ojo 
                 // print_r($sql);die();
         $resultado = $this->db->datos($sql);

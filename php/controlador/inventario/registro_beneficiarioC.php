@@ -1061,7 +1061,7 @@ class registro_beneficiarioC
             SetAdoFields('Est_Civil', $dato['estadoCivil']);
             SetAdoFields('Dosis', $dato['edad']);
             SetAdoFields('Grupo', $dato['grupo']);
-            SetAdoFields('Cod_Ejec', $dato['select_85']);
+            SetAdoFields('Prog_Cmds', $dato['select_85']);  
             SetAdoFields('Email', $dato['emailFam']);
             // SetAdoFields('Sexo', $dato['sexo']);
         }
@@ -1092,7 +1092,7 @@ class registro_beneficiarioC
     function editarAccionSocialExtras($datos,$user_info = false)
     {
         $cliente = $this->modelo->LlenarSelectRucCliente($query=false,$codigo=false,$datos['txt_ci']);
-        $datosExtra = $this->modelo->llenarCamposInfoAdd($cliente[0]['Codigo']);
+        $datosExtra = $this->modelo->llenarCamposInfoAdd($cliente[0]['Codigo'],$datos['select_93']);
         // print_r($datos);die();
         // print_r($datosExtra);
         // print_r($cliente);die();
@@ -1362,7 +1362,7 @@ class registro_beneficiarioC
         $EstadoCivil = array();
         $EscolaridadPrincipal = array();
         $cliente = $this->modelo->LlenarSelectRucCliente(false,$codigo);
-        $cliente_datos_extra = $this->modelo->llenarCamposInfoAdd($codigo);
+        $cliente_datos_extra = $this->modelo->llenarCamposInfoAdd($codigo,$cliente[0]['Actividad']);
         // print_r($cliente);die();
          // print_r($cliente_datos_extra);
         if(count($cliente)>0)
@@ -1494,7 +1494,7 @@ class registro_beneficiarioC
 
     }
 
-    // ================================================================ familias ================================================
+    // =========================================================== familias ==========================================
 
     function parentesco($query)
     {
