@@ -391,7 +391,7 @@ function verificar_cuenta()
               '<td>'+item.CANT_ES+'</td>'+
               '<td>'+item.Cuenta+'</td>'+
               '<td>'+item.Detalle+'</td>'+
-              '<td><button onclick="eliminar(\''+i+'\')" class="btn btn-danger btn-sm" title="Eliminar"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>'+
+              '<td><button onclick="eliminar(\''+i+'\')" class="btn btn-danger btn-sm" title="Eliminar"><i class="bx bx-trash me-0"></i></button></td>'+
               '</tr>';
             
               
@@ -405,7 +405,7 @@ function verificar_cuenta()
 
   function Guardar(id='')
   {
-    marca = '<?php echo $marca; ?>'
+    _marca = marca;
     if(nuevaTabla === true){
       cargar_tabla();
     }else{
@@ -418,7 +418,7 @@ function verificar_cuenta()
           Swal.fire('Seleccione producto','','info');
           return false;
         }
-        if(marca!='01' && marca!='' && $('#txt_obs_').val()=='')
+        if(_marca!='01' && _marca!='' && $('#txt_obs_').val()=='')
         {
           Swal.fire('Agrege una observacion','','info');
           return false;
@@ -507,7 +507,7 @@ function validar_entrada()
     Swal.fire({
   title: 'Quiere eliminar linea?',
   text: "Esta seguro d eliminar linea!",
-  type: 'warning',
+  icon: 'warning',
   showCancelButton: true,
   confirmButtonColor: '#3085d6',
   cancelButtonColor: '#d33',

@@ -42,8 +42,9 @@ class alimentos_recibidosM
         AND C.Codigo<>'.'
         AND LEN(C.Cod_Ejec)<=5
         AND C.Cod_Ejec <> '.'
-        AND C.Codigo = CP.Codigo";
-        
+        AND C.Codigo = CP.Codigo
+        AND FA = 0";
+
         // AND C.Actividad = '93.01'
         if($query)
         {

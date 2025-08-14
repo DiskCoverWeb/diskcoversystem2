@@ -118,6 +118,11 @@
                         <label for="fechaIngreso"><b>Fecha desvinculacion</b></label>
                         <input type="date" id="fechaDesviculacion" name="fechaDesviculacion" class="form-control form-control-sm">                       
                     </div>
+                    <div class="col-lg-2">
+                        <br>
+                        <label><input type="checkbox" name="rbl_facturar" id="rbl_facturar" checked> Para Facturar</label>
+                                              
+                    </div>
                 </div> 
                 <div class="row campoSocial">
                     <div class="col-lg-4">

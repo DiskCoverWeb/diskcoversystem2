@@ -17,7 +17,6 @@ require_once(dirname(__DIR__,1)."/db/db1.php");
 require_once(dirname(__DIR__,1)."/db/variables_globales.php");
 require_once(dirname(__DIR__,1)."/comprobantes/SRI/autorizar_sri.php");
 require_once(dirname(__DIR__,2) . "/lib/phpmailer/enviar_emails.php");
-//require_once("../../lib/fpdf/fpdf.php");
 
 if(isset($_POST['RUC']) AND !isset($_POST['submitweb'])) 
 {
@@ -8205,8 +8204,8 @@ function Imprimir_Comprobante_Caja($FTA)
 
 function Imprimir_Recibo_Caja($TRecibo)
 {
+  require_once(dirname(__DIR__,2)."/lib/fpdf/cabecera_pdf.php");
   $pdf = new cabecera_pdf();
-
 }
 
 function BuscardiasSemana($query)

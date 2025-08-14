@@ -200,7 +200,8 @@ if(isset($_GET['proyecto'])){$proye=$_GET['proyecto'];}
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary btn-sm" onclick="generar_proyecto()">Aceptar</button> 
-        <a href="../vista/inventario.php?mod=03" class="btn btn-default">Cerrar</a>
+        <a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
+						  print_r($ruta[0]); ?>" class="btn btn-default">Cerrar</a>
       </div>
     </div>
 

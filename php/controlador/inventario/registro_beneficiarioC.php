@@ -985,6 +985,7 @@ class registro_beneficiarioC
         $CI_RUC = $this->sri->quitar_carac($dato['txt_ci']);
         $codigos = Digito_verificador($CI_RUC);
         $existe = $this->articulos->clientes_all(false,false,false,$dato['txt_ci']);
+        $fa = false;
         // print_r($existe);die();
         if(count($existe)==0)
         {
@@ -1024,6 +1025,13 @@ class registro_beneficiarioC
         SetAdoFields('Direccion', $datosdir['CalleP']);
         SetAdoFields('DireccionT', $datosdir['CalleS']);
         SetAdoFields('Referencia', $datosdir['Referencia']);
+        if(isset($parametros['rbl_facturar']))
+        {
+            $fa = true;
+        }
+
+        SetAdoFields('FA',$fa);        
+
         if($dato['fechaDesviculacion']!='')
         {
             SetAdoFields('Fecha_Bloq', $dato['fechaDesviculacion']);

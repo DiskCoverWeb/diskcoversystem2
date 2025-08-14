@@ -453,7 +453,7 @@
 						<label for="TextCajaMN" class="col-6 col-form-label"><b>Caja MN.</b></label>
 						<div class="col-6">
 							<input type="text" name="TextCajaMN" id="TextCajaMN"
-								class="form-control text-end" placeholder="00000000" value="0.00">
+								class="form-control text-end" placeholder="00000000" value="0.00" onblur="Calculo_Saldo()" >
 						</div>
 					</div>
 					<div class="row pb-1 border-1">
