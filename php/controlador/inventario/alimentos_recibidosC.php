@@ -608,7 +608,7 @@ class alimentos_recibidosC
 	   SetAdoFields('Valor_Total',number_format($producto[0]['PVP']*$parametro['txt_cantidad'],2,'.',''));
 	   SetAdoFields('CANTIDAD',$parametro['txt_cantidad']);
 	   SetAdoFields('Valor_Unitario',number_format($producto[0]['PVP'],$_SESSION['INGRESO']['Dec_PVP'],'.',''));
-	   // SetAdoFields('DH',2);
+	   SetAdoFields('TP',".");
 	   SetAdoFields('Codigo_Barra',$codigo_barras);
 	   SetAdoFields('CodBodega',-1);
 
