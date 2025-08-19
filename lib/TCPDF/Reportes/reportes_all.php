@@ -99,7 +99,7 @@ class MYPDF extends TCPDF
 	$this->SetXY(14,27);
 	$this->SetFont('helvetica', 'B', 8);
 	if ($_SESSION['INGRESO']['Nombre_Comercial'] == $_SESSION['INGRESO']['Razon_Social']) {
-		$this->MultiCell(55, 2, '[DEFAULT] '.$_SESSION['INGRESO']['Razon_Social'], $border, '', 0, 1, '', '', true);
+		$this->MultiCell(84, 2, ''.$_SESSION['INGRESO']['Razon_Social'], $border, '', 0, 1, '', '', true);
 
 	} else {
 		//razon social
