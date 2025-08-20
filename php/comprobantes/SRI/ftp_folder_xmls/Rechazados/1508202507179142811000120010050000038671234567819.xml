@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><comprobanteRetencion id="comprobante" version="2.0.0">
+	<infoTributaria>
+		<ambiente>2</ambiente>
+		<tipoEmision>1</tipoEmision>
+		<razonSocial>Unidad Educativa Julio Pierregrosse</razonSocial>
+		<nombreComercial>CONGREGACION ESCLAVAS DEL DIVINO CORAZON</nombreComercial>
+		<ruc>1791428110001</ruc>
+		<claveAcceso>1508202507179142811000120010050000038671234567819</claveAcceso>
+		<codDoc>07</codDoc>
+		<estab>001</estab>
+		<ptoEmi>005</ptoEmi>
+		<secuencial>000003867</secuencial>
+		<dirMatriz>Manta-san Mateo (500m Del Hotel Barbasquillo)</dirMatriz>
+		<agenteRetencion>1</agenteRetencion>
+	</infoTributaria>
+	<infoCompRetencion>
+		<fechaEmision>15/08/2025</fechaEmision>
+		<dirEstablecimiento>Manta-san Mateo (500m Del Hotel Barbasquillo)</dirEstablecimiento>
+		<obligadoContabilidad>SI</obligadoContabilidad>
+		<tipoIdentificacionSujetoRetenido>04</tipoIdentificacionSujetoRetenido>
+		<parteRel>NO</parteRel>
+		<razonSocialSujetoRetenido>ZURIDIST CIA. LTDA.</razonSocialSujetoRetenido>
+		<identificacionSujetoRetenido>1391700822001</identificacionSujetoRetenido>
+		<periodoFiscal>08/2025</periodoFiscal>
+	</infoCompRetencion>
+	<docsSustento>
+		<docSustento>
+			<codSustento>02</codSustento>
+			<codDocSustento>01</codDocSustento>
+			<numDocSustento>007001000303224</numDocSustento>
+			<fechaEmisionDocSustento>12/08/2025</fechaEmisionDocSustento>
+			<fechaRegistroContable>12/08/2025</fechaRegistroContable>
+			<numAutDocSustento>1208202501139170082200120070010003032243032249919</numAutDocSustento>
+			<pagoLocExt>01</pagoLocExt>
+			<totalSinImpuestos>11.44</totalSinImpuestos>
+			<importeTotal>13.16</importeTotal>
+			<impuestosDocSustento>
+				<impuestoDocSustento>
+					<codImpuestoDocSustento>2</codImpuestoDocSustento>
+					<codigoPorcentaje>4</codigoPorcentaje>
+					<baseImponible>11.44</baseImponible>
+					<tarifa>0</tarifa>
+					<valorImpuesto>1.72</valorImpuesto>
+				</impuestoDocSustento>
+			</impuestosDocSustento>
+			<retenciones>
+				<retencion>
+					<codigo>1</codigo>
+					<codigoRetencion>312</codigoRetencion>
+					<baseImponible>11.44</baseImponible>
+					<porcentajeRetener>1.75</porcentajeRetener>
+					<valorRetenido>0.20</valorRetenido>
+				</retencion>
+			</retenciones>
+			<pagos>
+				<pago>
+					<formaPago>01</formaPago>
+					<total>13.16</total>
+				</pago>
+			</pagos>
+		</docSustento>
+	</docsSustento>
+	<infoAdicional>
+		<campoAdicional nombre="Direccion">MANABI MANTA VIA BARBASQUILLO CDLA MANTA 2000</campoAdicional>
+		<campoAdicional nombre="Telefono">052924431</campoAdicional>
+		<campoAdicional nombre="Email">gpvr09@yahoo.es</campoAdicional>
+		<campoAdicional nombre="Comprobante No">CE-0008000040</campoAdicional>
+		<campoAdicional nombre="Agente de Retencion">No. Resolucion: 1</campoAdicional>
+	</infoAdicional>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature162924">
+<ds:SignedInfo Id="Signature-SignedInfo605149">
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<ds:Reference Id="SignedPropertiesID287268" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature162924-SignedProperties812284">
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>36P+/03XCRvHu9nuhDWbRWM1vCA=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#Certificate1781360">
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>Oz4/p3+XcpGfoe/GShTZQ4MvZ74=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="Reference-ID-549732" URI="#comprobante">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>VhTzjhbG27t7ZsGym0/B6Ia/NUI=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="SignatureValue1003749">
+B5ZvZKjOXpjxa3by2Ntx/PDtjjdPA94w+9q7TDtEvzX9Tck8MHYPNd8yvZRVHPGy684NyGJz1Czy
+CUQcMJWNN3hTifZVR6ID/yB0nEogCOg42+AzZrwU2cdXOGnOTx9Z22UiXd+JIDzrJf9/mPupUgs6
+j/N7wrsAavxPvSnnvtR7hkwlEvYLt5dM80MqL26+rP6hb/6SZH0lYsIJj/9Qpej0YkoNeRDxovzo
++nOSJV+571nI75AvYYdffeK+svPRW2FbwJDhoR7QrDtWHxLQ3R9hjVZjbWs96WlaTojA8YyQ0i4N
+up3f5buFfTDcxxpC2a5PP+voWt0rxg15EcTHoA==
+</ds:SignatureValue>
+<ds:KeyInfo Id="Certificate1781360">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIK4jCCCMqgAwIBAgIEcFwvkjANBgkqhkiG9w0BAQsFADCBmTELMAkGA1UEBhMCRUMxHTAbBgNV
+BAoMFFNFQ1VSSVRZIERBVEEgUy5BLiAyMTAwLgYDVQQLDCdFTlRJREFEIERFIENFUlRJRklDQUNJ
+T04gREUgSU5GT1JNQUNJT04xOTA3BgNVBAMMMEFVVE9SSURBRCBERSBDRVJUSUZJQ0FDSU9OIFNV
+QkNBLTIgU0VDVVJJVFkgREFUQTAeFw0yNTA1MjgxMjQxNTJaFw0yODA1MjcxMjQxNTJaMIGrMSkw
+JwYDVQQDDCBBWlVDRU5BIExPVVJERVMgQUxNRUlEQSBDRVZBTExPUzEgMB4GA1UEBRMXMTMwNDE0
+NzI0MC0yODA1MjUwNzUxNDIxMDAuBgNVBAsMJ0VOVElEQUQgREUgQ0VSVElGSUNBQ0lPTiBERSBJ
+TkZPUk1BQ0lPTjEdMBsGA1UECgwUU0VDVVJJVFkgREFUQSBTLkEuIDIxCzAJBgNVBAYTAkVDMIIB
+IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvV91ObBQ4AE225lT9iVirVvl2aKtYHCuoI/4
+zsSoiA0OP8vrHyoETYo2q2oCdV4/tycGcSVkGmUbq6h2QDZxaL+xniLWaaPtVxMrPz6DEcPnWUyX
+XLD50xWhk8Sv36oeYZDNqygL6nU/NjdWfvKMfcSIZK80SIWAjQcpDld6S3B/jbiUkc1WywwGdsZI
+kcsdkYRh3eNv0jX4oEpiaEknLOqITDRHmyqiUmkIe9Vja5LhgHrwuVHgIfeiDS2XkFuxM5HmwVab
+Zm/SygxTFl38KAF79k5VCjg+r8UDeWBaBvFq7mToEKu+W2BOySdqiJXyCg0lmYIL37Tcg+sg/lFM
+OQIDAQABo4IGHDCCBhgwDAYDVR0TAQH/BAIwADAfBgNVHSMEGDAWgBSMusoRV3glgB1rCktVv42u
+Yt29jzBZBggrBgEFBQcBAQRNMEswSQYIKwYBBQUHMAGGPWh0dHA6Ly9vY3NwZ3cuc2VjdXJpdHlk
+YXRhLm5ldC5lYy9lamJjYS9wdWJsaWN3ZWIvc3RhdHVzL29jc3AwJAYDVR0RBB0wG4EZbG91cmRl
+c19hbG1laWRhQHlhaG9vLmNvbTCCARUGA1UdIASCAQwwggEIMGIGCisGAQQBgqZyAgkwVDBSBggr
+BgEFBQcCAjBGHkQAQwBlAHIAdABpAGYAaQBjAGEAZABvACAAZABlACAAUgBlAHAAcgBlAHMAZQBu
+AHQAYQBuAHQAZQAgAEwAZQBnAGEAbDCBoQYKKwYBBAGCpnICAzCBkjCBjwYIKwYBBQUHAgEWgYJo
+dHRwczovL3d3dy5zZWN1cml0eWRhdGEubmV0LmVjL3dwLWNvbnRlbnQvZG93bmxvYWRzL05vcm1h
+dGl2YXMvUF9kZV9DZXJ0aWZpY2Fkb3MvUG9saXRpY2FzIGRlIENlcnRpZmljYWRvIFJlcHJlc2Vu
+dGFudGUgTGVnYWwucGRmMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDCCAg8GA1UdHwSC
+AgYwggICMIHeoDqgOIY2aHR0cDovL2NybDEuc2VjdXJpdHlkYXRhLm5ldC5lYy9zdWJjYTJjcmwx
+L2NybGZpbGUuY3JsooGfpIGcMIGZMTkwNwYDVQQDDDBBVVRPUklEQUQgREUgQ0VSVElGSUNBQ0lP
+TiBTVUJDQS0yIFNFQ1VSSVRZIERBVEExMDAuBgNVBAsMJ0VOVElEQUQgREUgQ0VSVElGSUNBQ0lP
+TiBERSBJTkZPUk1BQ0lPTjEdMBsGA1UECgwUU0VDVVJJVFkgREFUQSBTLkEuIDIxCzAJBgNVBAYT
+AkVDMDygOqA4hjZodHRwOi8vY3JsMi5zZWN1cml0eWRhdGEubmV0LmVjL3N1YmNhMmNybDIvY3Js
+ZmlsZS5jcmwwgeCggd2ggdqGgddodHRwczovL3BvcnRhbC1vcGVyYWRvcjIuc2VjdXJpdHlkYXRh
+Lm5ldC5lYy9lamJjYS9wdWJsaWN3ZWIvd2ViZGlzdC9jZXJ0ZGlzdD9jbWQ9Y3JsJmlzc3Vlcj1D
+Tj1BVVRPUklEQUQgREUgQ0VSVElGSUNBQ0lPTiBTVUJDQS0yIFNFQ1VSSVRZIERBVEEsT1U9RU5U
+SURBRCBERSBDRVJUSUZJQ0FDSU9OIERFIElORk9STUFDSU9OLE89U0VDVVJJVFkgREFUQSBTLkEu
+IDIsQz1FQzAdBgNVHQ4EFgQU0aS916ocSnOh42gMNKo01P4Y9FcwKwYDVR0QBCQwIoAPMjAyNTA1
+MjgxMjQxNTJagQ8yMDI4MDUyNzEyNDE1MlowCwYDVR0PBAQDAgXgMBcGCisGAQQBgqZyAwUECQwH
+UkVDVE9SQTAaBgorBgEEAYKmcgMBBAwMCjEzMDQxNDcyNDAwFQYKKwYBBAGCpnIDCQQHDAVNQU5U
+QTARBgorBgEEAYKmcgMiBAMMAS4wPQYKKwYBBAGCpnIDBwQvDC1DQUxMRSAxMiBBViA1MSBTIE4g
+WSBBTlRJR1VBIFZJQSBCQVJCQVNRVUlMTE8wHwYKKwYBBAGCpnIDAgQRDA9BWlVDRU5BIExPVVJE
+RVMwHwYKKwYBBAGCpnIDIAQRDA8wMDQwMDEwMDAxNDgxMTEwEwYKKwYBBAGCpnIDIQQFDANQRlgw
+FwYKKwYBBAGCpnIDDAQJDAdFQ1VBRE9SMBcGCisGAQQBgqZyAwMECQwHQUxNRUlEQTAzBgorBgEE
+AYKmcgMKBCUMI1VOSURBRCBFRFVDQVRJVkEgSlVMSU8gUElFUlJFR1JPU1NFMB0GCisGAQQBgqZy
+AwsEDwwNMTc5MTQyODExMDAwMTARBgorBgEEAYKmcgMdBAMMAS4wGAYKKwYBBAGCpnIDBAQKDAhD
+RVZBTExPUzAaBgorBgEEAYKmcgMIBAwMCjA5ODI0NzQyNDcwDQYJKoZIhvcNAQELBQADggIBAFXT
+LLwL8ledUZuezY6/+7K/XO92dZozu6N+SNWxQcnPMQ+kXiWSUusQhPVyxaNAXwWO93m+hehInHPL
+9ZLmwOrqrc6vxWj0MqCfR98pKMrJGpMzhZTvL1ILUGu98cGg4UXrI5W+OR/qWcrLnIRVjb3AYfpb
+BtulmRdO1rj6shpL2VqJTO85f8ve+6yNg0SYoAE85RJTrXPVYcdWU844VPhE0ncqEBzTX4OMTUg5
+s3lFnm/pmxRW50TCnvWxSpMFI5+sFP9+BcxKXXiprW7hBy4IP6zByrH6fh45GO9QbtwPHsOwsGJK
+HC9kgLG4l/+FP+D3tvMcHc19dtuRybptvaYnnBSatUlw89HFU/MTsvQcClJwzbu43uXJXHo4LH57
+nPMPKZ5C8pz8kc7/34qCR8jigTjMc690aLbIz/2AqhIVr6gXbn/vZ4iH1bnM26S2P6rRiVI88n0A
+x5n576fbxAa59pDRKC1u3uAQlO4pak7Wj0tstCT5YCxdHQw4TS7mIc629LC1LfI+dEL0W/NPQRO0
+6EMtryMCXBJEOQOJDKIv0G+n3pucWZ6ZhdDgdy3M+ZzvyI66x2MV/4iqP0LXMx+dQ8GUswanYVJT
+qexye7k3SHsFCP6rr43cwpPVYy2UcViYkOVKeDwwgVlbw7Co/JiXewFkifrz9/JYbFqr1Y/t
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+vV91ObBQ4AE225lT9iVirVvl2aKtYHCuoI/4zsSoiA0OP8vrHyoETYo2q2oCdV4/tycGcSVkGmUb
+q6h2QDZxaL+xniLWaaPtVxMrPz6DEcPnWUyXXLD50xWhk8Sv36oeYZDNqygL6nU/NjdWfvKMfcSI
+ZK80SIWAjQcpDld6S3B/jbiUkc1WywwGdsZIkcsdkYRh3eNv0jX4oEpiaEknLOqITDRHmyqiUmkI
+e9Vja5LhgHrwuVHgIfeiDS2XkFuxM5HmwVabZm/SygxTFl38KAF79k5VCjg+r8UDeWBaBvFq7mTo
+EKu+W2BOySdqiJXyCg0lmYIL37Tcg+sg/lFMOQ==
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+</ds:KeyInfo>
+<ds:Object Id="Signature162924-Object303220"><etsi:QualifyingProperties Target="#Signature162924"><etsi:SignedProperties Id="Signature162924-SignedProperties812284"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-08-19T14:24:47-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>To1XxeVDqftz8tJiCFriTHs6IuM=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-2 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 2,C=EC</ds:X509IssuerName><ds:X509SerialNumber>1885089682</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-549732"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature><ns2:respuestaSolicitud xmlns:ns2="http://ec.gob.sri.ws.recepcion">
+    <estado>DEVUELTA</estado>
+    <comprobantes>
+        <comprobante>
+            <claveAcceso>1508202507179142811000120010050000038671234567819</claveAcceso>
+            <mensajes>
+                <mensaje>
+                    <identificador>45</identificador>
+                    <mensaje>ERROR SECUENCIAL REGISTRADO</mensaje>
+                    <tipo>ERROR</tipo>
+                </mensaje>
+            </mensajes>
+        </comprobante>
+    </comprobantes>
+</ns2:respuestaSolicitud></comprobanteRetencion>
