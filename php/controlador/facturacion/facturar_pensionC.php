@@ -377,6 +377,7 @@ class facturar_pensionC
     if($serie!='.'){
       // si hay serie busco en catalogo lineas
       $datos = $this->facturacion->getCatalogoLineas($emision,$vencimiento,$serie,$tipo);
+      // print_r($datos);die();
       if(count($datos)==0)
       {
         return array();
