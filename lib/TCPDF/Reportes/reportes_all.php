@@ -352,7 +352,21 @@ class reportes_all
 	$pdf->SetX($cuardo_3_X);
 	$row_1 = 120;
 	$posicion_row  = $pdf->GetY();
-	$pdf->MultiCell($row_1, 4,'Dirección:'. $datos[0]['Direccion_RS'], $border, '', 0, 1, '', '', true);
+
+	if($datos[0]['Direccion_RS']!='.')
+	{
+		$pdf->MultiCell($row_1, 4,'Dirección: '. $datos[0]['Direccion_RS'], $border, '', 0, 1, '', '', true);
+	}else
+	{
+		if($educativo[0]['Direccion']!='.')
+		{
+			$pdf->MultiCell($row_1, 4,'Dirección: '. $educativo[0]['Direccion'], $border, '', 0, 1, '', '', true);	
+		}else
+		{
+			$pdf->MultiCell($row_1, 4,'Dirección: .', $border, '', 0, 1, '', '', true);	
+		}	
+
+	}
 	$pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
 	$pdf->MultiCell(($medita_total_3-$row_1)/2, 4,'Fecha emisión: ' . $datos[0]['Fecha']->format('Y-m-d'), $border, '', 0, 1, '', '', true);
 	$pdf->SetXY($cuardo_3_X+$row_1+($medita_total_3-$row_1)/2,$posicion_row);
