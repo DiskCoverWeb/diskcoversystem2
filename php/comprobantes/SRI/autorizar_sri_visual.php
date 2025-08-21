@@ -145,20 +145,6 @@ class autoriza_sri
 			   				$this->subirftp($xml);
 				   			return $mensaje;
 				   		}
-
-			   		// }else 
-			   		// {	
-			   		// 	// print_r($xml);die();		
-			   		// 	if($validar_autorizado==1)
-			   		// 	{
-			   		// 		// $this->deleteFolder($temp_file);
-			   		// 		$this->subirftp($xml);
-			   		// 		return "Autorizado";
-			   		// 	}else{   		 
-			   		// 		$this->subirftp($xml);
-			   		// 		return $validar_autorizado;
-			   		// 	}
-			   		// }
             }
           }
 
@@ -335,9 +321,9 @@ class autoriza_sri
     // 2 para devueltas
     function comprobar_xml_sri($clave_acceso,$link_autorizacion)
     {
-    	$comprobar_sri = dirname(__DIR__).'\\SRI\\firmar\\JavClientSri.jar';
-    	$url_autorizado= dirname(__DIR__).'\\SRI\\ftp_folder_xmls\\Autorizados/';
- 	    $url_No_autorizados = dirname(__DIR__).'\\SRI\\ftp_folder_xmls\\No_autorizados/';
+    	$comprobar_sri = dirname(__DIR__).'/SRI/firmar/JavClientSri.jar';
+    	$url_autorizado= dirname(__DIR__).'/SRI/ftp_folder_xmls/Autorizados/';
+ 	    $url_No_autorizados = dirname(__DIR__).'/SRI/ftp_folder_xmls/No_autorizados/';
 
  	    $comprobado = true;
  	    $output = '';
