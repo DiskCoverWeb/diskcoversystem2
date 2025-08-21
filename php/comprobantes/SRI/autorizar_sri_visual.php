@@ -115,7 +115,7 @@ class autoriza_sri
 				   		if($enviar_sri[0]==1)
 				   		{
 				   		 	//una vez enviado comprobamos el estado de la factura
-			   		 		sleep(3);
+			   		 		sleep(7);
 			   		 		// print_r("expression");die();
 			   		 		$resp =  $this->comprobar_xml_sri($xml,$this->linkSriAutorizacion);
 			   		 		// print_r($resp);die();
@@ -588,7 +588,7 @@ class autoriza_sri
 
 		$temp_file = $dire.'ftp_folder_xmls/No_autorizados/'.$xml;
 		if(file_exists($temp_file)){ unlink($temp_file);}
-		
+
 		$temp_fileF = $dire.'ftp_folder_xmls/Generados/'.$xml;
 		if(file_exists($temp_file)){ unlink($temp_file);}
 
