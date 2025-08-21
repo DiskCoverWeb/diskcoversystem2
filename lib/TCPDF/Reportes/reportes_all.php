@@ -128,7 +128,15 @@ class MYPDF extends TCPDF
 		if ($suc != '001' && count($this->sucursal) > 0 && $this->sucursal[0]['Nombre_Establecimiento'] != '.' && $this->sucursal[0]['Nombre_Establecimiento'] != '') {
 			$this->SetX(14);
 			$this->MultiCell(84, 2,'Direccion de establecimiento / Sucursal', $border, '', 0, 1, '', '', true);
-			$this->MultiCell(84, 2,$this->sucursal[0]['Direccion_Establecimiento'], $border, '', 0, 1, '', '', true);
+			if(strlen($this->sucursal[0]['Direccion_Establecimiento'])>50)
+			{
+				$this->SetFont('helvetica', '', 6);
+				$this->MultiCell(85, 2,$this->sucursal[0]['Direccion_Establecimiento'], $border, '', 0, 1, '', '', true);
+				$this->SetFont('helvetica', '', 6);
+			}else
+			{
+				$this->SetFont('helvetica', '', 6);
+			}
 		}
 	}
 
@@ -684,7 +692,7 @@ class reportes_all
 
 	if (!empty($sucursal) && count($sucursal) > 0 && $suc != '001' && strlen($sucursal[0]['RUC_Establecimiento']) == 13) {
 		$tbl.= 'Establecimiento: ' . $datos[0]['Serie'].'<br>';
-		$pdf->Row($arr, 10);
+		// $pdf->Row($arr, 10);
 
 		if ($sucursal[0]['Nombre_Establecimiento'] != '.' && $sucursal[0]['Nombre_Establecimiento'] != '') {
 			$tbl.= $sucursal[0]['Nombre_Establecimiento'].'<br>';
@@ -694,7 +702,7 @@ class reportes_all
 		}
 		if ($sucursal[0]['Telefono_Estab'] != '.' && $sucursal[0]['Telefono_Estab'] != '') {
 			$tbl.= 'Telefono establecimiento: ' . $sucursal[0]['Telefono_Estab'].'<br>';
-			$pdf->Row($arr, 10);
+			// $pdf->Row($arr, 10);
 		}
 		if ($sucursal[0]['Email_Establecimiento'] != '.' && $sucursal[0]['Email_Establecimiento'] != '') {
 			$tbl.= 'Email establecimiento: ' . $sucursal[0]['Email_Establecimiento'].'<br>';
