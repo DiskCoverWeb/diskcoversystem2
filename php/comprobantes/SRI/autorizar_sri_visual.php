@@ -49,8 +49,8 @@ class autoriza_sri
 		$this->iv = base64_decode("C9fBxl1EWtYTL1/M8jfstw==");
 		// $this->conn = new Conectar();
 		$this->db = new db();
-		$this->rutaJava8  = "";
-		// $this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
+		// $this->rutaJava8  = "";
+		$this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
 	}
 
 
@@ -86,7 +86,6 @@ class autoriza_sri
               	// print_r($xml);die();
 
               	 $validar_autorizado = $this->comprobar_xml_sri($xml,$this->linkSriAutorizacion);
-              	 // print_r($validar_autorizado);die();
               	 if($validar_autorizado[0] == 1)
 		   	 		{
 		   	 			$this->subirftp($xml);
@@ -476,7 +475,7 @@ class autoriza_sri
 				$nombre_file = dirname(__DIR__)."/SRI/ftp_folder_xmls/No_autorizados/".$archivo; 
 				if(!file_exists($nombre_file))
 				{
-					echo "No subido";
+					echo "Archivo no encontrado en local";
 				}
 			}
 
@@ -575,16 +574,23 @@ class autoriza_sri
 
 	function borrar_xml_file($xml)
 	{
-		$temp_file = 'ftp_folder_xmls/Enviados/'.$xml;
-		unlink($temp_file);
-		$temp_file = 'ftp_folder_xmls/Firmados/'.$xml;
-		unlink($temp_file);
-		$temp_file = 'ftp_folder_xmls/Rechazados/'.$xml;
-		unlink($temp_file);
-		$temp_file = 'ftp_folder_xmls/No_autorizados/'.$xml;
-		unlink($temp_file);
-		$temp_fileF = 'ftp_folder_xmls/Generados/'.$xml;
-		unlink($temp_file);
+		$xml = $xml.".xml";
+		$dire = dirname(__DIR__).'/SRI/';
+
+		$temp_file = $dire.'ftp_folder_xmls/Enviados/'.$xml;
+		if(file_exists($temp_file)){	unlink($temp_file);}
+
+		$temp_file = $dire.'ftp_folder_xmls/Firmados/'.$xml;
+		if(file_exists($temp_file)){ unlink($temp_file);}
+
+		$temp_file = $dire.'ftp_folder_xmls/Rechazados/'.$xml;
+		if(file_exists($temp_file)){ unlink($temp_file);}
+
+		$temp_file = $dire.'ftp_folder_xmls/No_autorizados/'.$xml;
+		if(file_exists($temp_file)){ unlink($temp_file);}
+		
+		$temp_fileF = $dire.'ftp_folder_xmls/Generados/'.$xml;
+		if(file_exists($temp_file)){ unlink($temp_file);}
 
 	}
 
