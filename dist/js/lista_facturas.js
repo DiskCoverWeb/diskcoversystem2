@@ -99,20 +99,16 @@ $(document).ready(function()
              url:   '../controlador/facturacion/lista_facturasC.php?validar=true',
              type:  'post',
              dataType: 'json',
-             success:  function (response) {
+             success:   function (response) {
              if(response == 1)
              {
-             	$('#myModal_espera').modal('show');
-             	tbl_facturas_all.ajax.reload(function() {
-                  // Cerrar el modal después de que se hayan recargado los datos
-                  setTimeout(()=>{
-                    $('#myModal_espera').modal('hide');
-                  }, 500)
-              }, false);
-             	tbl_facturas_autorizadas.ajax.reload(null, false);
-             	tbl_facturas_Noautorizadas.ajax.reload(null, false);
-              // cargar_registrosAu(1);
-              // cargar_registrosAu(2);
+             	
+
+             tbl_facturas();
+             tbl_facturas_auto();
+             tbl_facturas_Noauto();
+
+              
              }else
              {
              	Swal.fire('Clave incorrecta.','Asegurese de que su clave sea correcta','error');
@@ -538,13 +534,13 @@ function enviar_email_comprobantes(nombre_pdf,clave_Acceso,email)
     if(periodo!='.')
     {
        $('#txt_desde').val(year+'-01-01');
-       $('#txt_hasta').val(year+'-12-31');
+       $('#txt_hasta').val(year+'-01-31');
     }else
     {
        year = new Date().getFullYear();
       // console.log(currentTime);
       $('#txt_desde').val(year+'-01-01');
-      $('#txt_hasta').val(year+'-12-31');
+      $('#txt_hasta').val(year+'-01-31');
     }
  }
 
@@ -853,3 +849,204 @@ function modal_email_fac(factura,serie,codigoc,emails)
         });
 
     }
+
+
+var tbl_facturas_all; 
+    function tbl_facturas()
+    {
+
+    $('#myModal_espera').modal('show');
+
+       if ($.fn.DataTable.isDataTable('#tbl_facturas')) {
+        $('#tbl_facturas').DataTable().destroy();
+      }
+
+       tbl_facturas_all = $('#tbl_facturas').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url: '../controlador/facturacion/lista_facturasC.php?tabla=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {
+                      ci: $('#ddl_cliente').val(),
+                      per: $('#ddl_periodo').val(),
+                      desde: $('#txt_desde').val(),
+                      hasta: $('#txt_hasta').val(),
+                      tipo: TipoGlobal,
+                      serie: $('#DCLinea').val()
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',             
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+              {
+                data: null,
+                render: function(data, type, row){
+                  return data[0] || '';
+                },
+                title: "Acciones"
+              },
+              { data: 'T' },
+              { data: 'Cliente' },
+              { data: 'TC' },
+              { data: 'Serie' },
+              { data: 'Autorizacion' },
+              { data: 'Factura' },
+              { data: 'Fecha.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'SubTotal' },
+              { data: 'Con_IVA' },
+              { data: 'IVA' },
+              { data: 'Descuentos' },
+              { data: 'Total' },
+              { data: 'Saldo' },
+              { data: 'RUC_CI' },
+              { data: 'TB' }
+          ],
+          order: [
+              [1, 'asc']
+          ],
+    initComplete: function(settings, json) {
+      $('#myModal_espera').modal('hide'); // 👈 Se ejecuta cuando ya terminó de cargar
+    }
+      });
+    }
+var tbl_facturas_autorizadas;
+    function tbl_facturas_auto()
+    {
+
+       if ($.fn.DataTable.isDataTable('#tbl_tablaAu')) {
+        $('#tbl_tablaAu').DataTable().destroy();
+      }
+
+      tbl_facturas_autorizadas = $('#tbl_tablaAu').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url: '../controlador/facturacion/lista_facturasC.php?tablaAu=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {
+                      ci: $('#ddl_cliente').val(),
+                      per: $('#ddl_periodo').val(),
+                      desde: $('#txt_desde').val(),
+                      hasta: $('#txt_hasta').val(),
+                      tipo: TipoGlobal,
+                      serie: $('#DCLinea').val(),
+                      auto:1
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',             
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+              {
+                data: null,
+                render: function(data, type, row){
+                  return data[0] || '';
+                },
+                title: "Acciones"
+              },
+              { data: 'T' },
+              { data: 'Cliente' },
+              { data: 'TC' },
+              { data: 'Serie' },
+              { data: 'Autorizacion' },
+              { data: 'Factura' },
+              { data: 'Fecha.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'SubTotal' },
+              { data: 'Con_IVA' },
+              { data: 'IVA' },
+              { data: 'Descuentos' },
+              { data: 'Total' },
+              { data: 'Saldo' },
+              { data: 'RUC_CI' },
+              { data: 'TB' }
+          ],
+          order: [
+              [1, 'asc']
+          ]
+      });
+
+  }
+var tbl_facturas_Noautorizadas;
+  function tbl_facturas_Noauto()
+  {
+    if ($.fn.DataTable.isDataTable('#tbl_tablaNoAu')) {
+        $('#tbl_tablaNoAu').DataTable().destroy();
+      }
+      tbl_facturas_Noautorizadas = $('#tbl_tablaNoAu').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url: '../controlador/facturacion/lista_facturasC.php?tablaAu=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {
+                      ci: $('#ddl_cliente').val(),
+                      per: $('#ddl_periodo').val(),
+                      desde: $('#txt_desde').val(),
+                      hasta: $('#txt_hasta').val(),
+                      tipo: TipoGlobal,
+                      serie: $('#DCLinea').val(),
+                      auto:2
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',             
+          },
+           scrollX: true,  // Habilitar desplazamiento horizontal
+   
+          columns: [
+              {
+                data: null,
+                render: function(data, type, row){
+                  return data[0] || '';
+                },
+                title: "Acciones"
+              },
+              { data: 'T' },
+              { data: 'Cliente' },
+              { data: 'TC' },
+              { data: 'Serie' },
+              { data: 'Autorizacion' },
+              { data: 'Factura' },
+              { data: 'Fecha.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'SubTotal' },
+              { data: 'Con_IVA' },
+              { data: 'IVA' },
+              { data: 'Descuentos' },
+              { data: 'Total' },
+              { data: 'Saldo' },
+              { data: 'RUC_CI' },
+              { data: 'TB' }
+          ],
+          order: [
+              [1, 'asc']
+          ],
+          dom:'t'
+      });
+}
