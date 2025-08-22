@@ -258,7 +258,7 @@ function excel_generico($titulo,$datos=false,$url=false)
 				}
 				else/*Para las demás filas (datos) */ {
 					if(is_numeric($value1)){
-						if ((strpos($etiquetas[$key1], 'codigo') === false  && strpos($etiquetas[$key1], 'cta') === false) && (strpos($value1, '.')) !== false ){
+						if (isset($etiquetas[$key1]) && (strpos($etiquetas[$key1], 'codigo') === false  && strpos($etiquetas[$key1], 'cta') === false) && (strpos($value1, '.')) !== false ){
 							$sheet->setCellValue($let.''.$num, $value1);
 
 							// Aplicar formato numérico con 2 decimales
