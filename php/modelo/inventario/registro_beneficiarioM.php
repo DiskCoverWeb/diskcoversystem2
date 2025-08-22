@@ -116,7 +116,7 @@ class registro_beneficiarioM
         $sql = "SELECT TOP 100 Cliente as label, CI_RUC as value, ".Full_Fields("Clientes")."
                 FROM Clientes
                 WHERE Cliente <> '.'
-                AND FA = 1";
+                ";
                 if($query)
                 {
                     if (!is_numeric($query)) {
