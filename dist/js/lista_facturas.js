@@ -915,9 +915,9 @@ var tbl_facturas_all;
           order: [
               [1, 'asc']
           ],
-    initComplete: function(settings, json) {
-      $('#myModal_espera').modal('hide'); // 👈 Se ejecuta cuando ya terminó de cargar
-    }
+          initComplete: function(settings, json) {
+            setTimeout(()=>{  $('#myModal_espera').modal('hide'); }, 500)
+          }
       });
     }
 var tbl_facturas_autorizadas;
