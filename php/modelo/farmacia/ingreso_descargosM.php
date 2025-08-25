@@ -777,7 +777,7 @@ class ingreso_descargosM
 					
 				
 				$sql="SELECT  Codigo,Beneficiario,Factura,Prima,DH,Valor ,Valor_ME,Detalle_SubCta,FECHA_V ,TC,Cta,TM
-				,T_No,SC_No,Fecha_D,Fecha_H,Bloquear,Item,CodigoU
+				,T_No,SC_No,Fecha_D,Fecha_H,Bloquear,Item,CodigoU,Serie
 				FROM Asiento_SC
 				WHERE 
 					Item = '".$_SESSION['INGRESO']['item']."' 
@@ -823,6 +823,7 @@ class ingreso_descargosM
 					   	SetAdoFields('CodigoU',$_SESSION['INGRESO']['CodigoU']); 		
 					   	SetAdoFields('Periodo',$_SESSION['INGRESO']['periodo']); 		
 					   	SetAdoFields('Item',$_SESSION['INGRESO']['item']); 	
+					   	SetAdoFields('Serie',$value['Serie']); 	
 
 					   	SetAdoUpdate();
 
