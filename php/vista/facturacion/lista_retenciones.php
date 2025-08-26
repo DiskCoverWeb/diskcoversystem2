@@ -51,7 +51,7 @@ $(document).ready(function(){
                                 <a href="#" class="dropdown-item" onclick="descargar_ret('${item.SecRetencion}','${item.Serie_Retencion}','${item.Numero}')"><i class="bx bx-download"></i> Descargar Retencion</a>
                             </li>`;
                   
-                    if (item.ExisteSerie =='Si'  && item.Autorizacion_NC.length == 13) 
+                    if (item.ExisteSerie =='Si'  && item.AutRetencion.length == 13) 
                     {
                         options+=`<li>
                           <a href="#" class="dropdown-item" onclick="autorizar('${item.SecRetencion}','${item.Serie_Retencion}','${formatoDate(item.Fecha.date)}')" ><i class="bx bx-paper-plane"></i>Autorizar</a>
