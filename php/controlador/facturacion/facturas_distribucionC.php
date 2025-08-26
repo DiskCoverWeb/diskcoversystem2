@@ -2141,7 +2141,7 @@ class facturas_distribucion
 			SetAdoFields('Costo', number_format($value['Precio'], 2, '.', ''));
 			SetAdoFields('Total', number_format($value['Total'], 2, '.', ''));
 			SetAdoFields('Existencia', number_format(($cant[2]), 2, '.', '') - number_format(($value['Cantidad']), 2, '.', ''));
-			SetAdoFields('CodBodega', '01');
+			SetAdoFields('CodBodega', $value['CodBodega']);
 			SetAdoFields('Detalle', 'Salida de inventario (' . $TipoFactura . ') para ' . $nombre . ' con CI: ' . $ruc . ' el dia ' . $fechaC);
 			SetAdoFields('Procesado', 0);
 			SetAdoFields('Total_IVA', number_format($value['Total_IVA'], 2, '.', ''));

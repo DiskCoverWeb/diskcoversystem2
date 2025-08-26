@@ -471,6 +471,7 @@ class asignacion_osC
             // print_r($order);die();
             SetAdoAddNew("Detalle_Factura");
             SetAdoFields("TC","OP");
+            SetAdoFields("Factura","-1");
             SetAdoFields("CodigoC",$parametros['beneficiarioCodigo']);
             SetAdoFields("Procedencia",$parametros['Comentario']);
             SetAdoFields("Codigo",$parametros['Codigo']);
@@ -483,7 +484,7 @@ class asignacion_osC
             SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
             SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
             SetAdoFields("No_Hab",$parametros['asignacion']);
-            SetAdoFields("Orden_No",$order);
+            SetAdoFields("Orden_No",$order);  
             
             return SetAdoUpdate();
         }else

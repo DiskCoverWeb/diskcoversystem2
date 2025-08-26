@@ -5,7 +5,13 @@ $(document).ready(function(){
 })
 
 function cargar_registros()
-{   
+{ 
+      if($('#ddl_cliente').val()=="")
+      {
+        Swal.fire("Seleccione una Nombre","","info");
+         return false;
+      }
+
    	 $('#myModal_espera').modal('show');
 
       // Recargar los datos de la tabla
@@ -70,7 +76,7 @@ function catalogoLineas(){
           data.forEach(function(item,i){
             serie = item.id.split(' ');
             serie = serie[1];
-             $("#DCLinea").append('<option value="' + item.id +" "+item.text+ ' ">' + serie + '</option>');
+             $("#DCLinea").append('<option value="'+serie+'">' + serie + '</option>');
 
             // console.log(item);
              // console.log(i);

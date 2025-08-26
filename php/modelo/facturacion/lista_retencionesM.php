@@ -41,7 +41,7 @@ class lista_retencionesM
        $sql.="ORDER BY Serie_R,SecRetencion DESC "; 
 		$sql.=" OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;";   
 	    // // print_r($_SESSION['INGRESO']);
-		// print_r($sql);die();    
+		 // print_r($sql);die();    
 		return $this->db->datos($sql);
 
 	       // return $datos;

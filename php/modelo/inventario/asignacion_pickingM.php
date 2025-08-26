@@ -186,7 +186,7 @@ class asignacion_pickingM
                 AND Periodo='".$_SESSION['INGRESO']['periodo']."'
                 AND CodigoC = '".$beneficiario."'
                 AND Fecha =  '".$fecha."'
-                AND Factura =  '0'";
+                AND Factura =  '-1'";
                 if($orden)
                 {
                     $sql.=" AND Orden_No = '".$orden."'";
