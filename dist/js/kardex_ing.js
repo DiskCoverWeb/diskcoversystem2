@@ -485,8 +485,8 @@ function DCBenef_LostFocus(bene,cta,contr)
              $("#si_no").val(response.si_no); 
              // ddl_DCTipoComprobante();
             }
-         
-    $('#myModal_espera').modal('hide');
+
+         setTimeout(()=>{ $('#myModal_espera').modal('hide'); }, 1000);
       }
     });  
 }
@@ -608,7 +608,7 @@ function grabacion()
                  grabar_comprobante()
               }else
               {
-                $('#myModal_espera').modal('hide');
+                setTimeout(()=>{ $('#myModal_espera').modal('hide'); }, 1000);
                  window.parent.postMessage('closeModalG', '*');
               }
                
@@ -727,7 +727,8 @@ function grabar_comprobante()
                   // }        
 
 
-        $('#myModal_espera').modal('hide');
+         setTimeout(()=>{ $('#myModal_espera').modal('hide'); }, 1000);
+
 
           },
             error: function (error) {
@@ -754,7 +755,9 @@ function eliminar_todo_asisntoB()
         success:  function (response) { 
         if(response == 1)
         {
-          $('#myModal_espera').modal('hide');
+
+         setTimeout(()=>{ $('#myModal_espera').modal('hide'); }, 1000);
+          // $('#myModal_espera').modal('hide');
         } 
       }
     });
