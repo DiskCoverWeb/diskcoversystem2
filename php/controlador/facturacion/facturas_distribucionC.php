@@ -1726,7 +1726,7 @@ class facturas_distribucion
 			SetAdoFields('Codigo_Inv', $value['Codigo']);
 			SetAdoFields('Codigo_Barra', $value['Codigo_Barra']);
 			SetAdoFields('CodBodega', $value['CodBodega']);
-			SetAdoFields('TP','CD');
+			SetAdoFields('TP','.');
 			SetAdoFields('Salida', $value['Cant']);
 			SetAdoFields('Valor_Unitario', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_PVP']));
 			SetAdoFields('PVP', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_PVP']));
