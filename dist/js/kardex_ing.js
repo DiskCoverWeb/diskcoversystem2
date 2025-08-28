@@ -822,9 +822,13 @@ function cargar_grilla()
             {
               tbl_retencion.destroy();
 
+               // if ($.fn.DataTable.isDataTable('#tbl_retencion')) {
+               //      $('#tbl_retencion').DataTable().destroy();
+               //  }
+
               tbl_retencion = $('#tbl_retencion').DataTable({
                 searching: false,
-                responsive: true,
+                // responsive: true,
                 paging: false,   
                 info: false,   
                 autoWidth: false,   
@@ -846,7 +850,7 @@ function cargar_grilla()
                       }
                   }
                 ],
-                data: response.tbl,
+                data: response.tbl.data,
                 scrollY: '250px',
                 scrollX: true, 
                 scrollCollapse: true,
