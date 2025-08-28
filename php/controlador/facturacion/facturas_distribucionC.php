@@ -1739,8 +1739,9 @@ class facturas_distribucion
 			SetAdoFields('Factura', $value['FACT']);
 			SetAdoFields('Serie',$value['Serie']);			
 			SetAdoFields('CodigoL', $value['CodigoL']);
-			SetAdoFields('Detalle', 'FA:'.$value['Cliente']);
+			// SetAdoFields('Detalle', 'FA:'.$value['Cliente']);
 			SetAdoFields('Cmds', $value['DFCMDS']);
+			SetAdoFields('Detalle','NDO:'.$value['Cliente']);
 
 			SetAdoFields('T','N');
 			SetAdoFields('Item',$_SESSION['INGRESO']['item']);

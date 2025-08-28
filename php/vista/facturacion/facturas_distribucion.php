@@ -84,9 +84,9 @@ if (isset ($_GET['tipo'])) {
 					<img src="../../img/png/facturar.png" height="32px">
 				</button>
 
-				<button title="FACTURAR" class="btn btn-outline-secondary" onclick="enviaremail()">
+			<!-- 	<button title="FACTURAR" class="btn btn-outline-secondary" onclick="enviaremail()">
 					<img src="../../img/png/facturar.png" height="32px">
-				</button>
+				</button> -->
 			
 			</div>
 			<div class="row row-cols-auto col-10 d-flex justify-content-end">
