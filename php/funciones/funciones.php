@@ -6405,6 +6405,8 @@ function  Leer_Datos_Cliente_FA($Codigo_CIRUC_Cliente)
     $datos = Leer_Datos_Cliente_SP($Codigo_CIRUC_Cliente);
     $TFA['CodigoC'] = $Codigo_CIRUC_Cliente;
 
+    // print_r($datos);die();
+
      $Cliente = json_decode("[".$datos."]", true);
      if (json_last_error() !== JSON_ERROR_NONE) {
           die('Error al decodificar JSON: ' . json_last_error_msg());
@@ -9060,7 +9062,7 @@ function Validar_Porc_IVA($FechaIVA)
 
 function Porcentajes_IVA($Fecha,$porcentaje=false,$codPorce=false){
   $conn = new db();
-  $sql = "SELECT Codigo,Porc as codigo,Porc as nombre,Codigo,Porc, Fecha_Inicio, Fecha_Final, ICE, IVA, ID
+  $sql = "SELECT Porc as codigo,Porc as Codigo,Porc as nombre,Codigo,Porc, Fecha_Inicio, Fecha_Final, ICE, IVA, ID
           FROM Tabla_Por_ICE_IVA
           WHERE IVA <> 0 
           AND Fecha_Inicio <= '" . $Fecha . " ' 
@@ -9075,7 +9077,7 @@ function Porcentajes_IVA($Fecha,$porcentaje=false,$codPorce=false){
           }
   $sql.="ORDER BY Porc DESC";
 
-              //print_r($sql);die();
+              // print_r($sql);die();
   return $conn->datos($sql);
   
 }

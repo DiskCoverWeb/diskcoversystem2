@@ -249,7 +249,7 @@ function ddl_DCPorcenIva(fecha) {
         success:  function (response) {
         	// console.log(response);
         	$.each(response,function(i,item){            
-        		opcion+='<option value="'+item.Porc+'">'+item.Porc+'</option>';
+        		opcion+='<option value="'+item.Codigo+'">'+item.Porc+'</option>';
         	})
         	$('#DCPorcenIva').html(opcion);
           $('#DCPorcenIva').val(ini);
@@ -892,7 +892,8 @@ function cargar_grilla()
 
 function calcular_iva()
 {
-  var iva = $('#DCPorcenIva').val();
+  var iva = $('#DCPorcenIva  option:selected').text();
+  // console.log(iva)
   var Total_IVA = $('#TxtBaseImpoGrav').val();
   if(iva != 'I')
   {

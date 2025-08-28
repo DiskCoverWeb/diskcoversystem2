@@ -469,7 +469,7 @@ function Eliminar(A_no, cod) {
     Swal.fire({
         title: 'Esta seguro?',
         text: "Esta usted seguro de eliminar este registro!",
-        type: 'warning',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -955,7 +955,7 @@ function Re_imprimir(fac,serie,ci,tc)
      var html='<iframe style="width:100%; height:50vw;" src="'+url+'&pdf=no" frameborder="0" allowfullscreen id="re_ticket"></iframe>';
     $('#re_frame').html(html);
      Swal.fire({
-        type: 'success',
+        icon: 'success',
         title: 'Factura Procesada y Autorizada',
         confirmButtonText: 'Ok!',
         allowOutsideClick: false,
@@ -1056,7 +1056,7 @@ function catalogoLineas() {
                 }
             } else {
                 Swal.fire({
-                    type: 'info',
+                    icon: 'info',
                     title: 'Usted no tiene un punto de emsion asignado  o esta mal configurado, contacte con la administracion del sistema',
                     text: '',
                     allowOutsideClick: false,
@@ -1314,3 +1314,27 @@ function cambiar_iva(valor)
 }
 
 //fin guia de remision
+
+
+function enviaremail()   //funcion para enviarlo por javascript
+  { 
+
+
+          const xhr = new XMLHttpRequest();
+          const url =  'https://erp.diskcoversystem.com/php/comprobantes/SRI/autorizar_sri_visual.php?AutorizarXMLOnline=true';
+            // const url =  '../../php/comprobantes/SRI/autorizar_sri_visual.php?AutorizarXMLOnline=true';
+
+
+          xhr.open('POST', url, true);
+          xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              console.log('Respuesta:', xhr.responseText);
+            }
+          };
+
+           const params = `XML=2008202507179280254700120010020000068401234567818.xml&RUTA=BROODBOETIEK_S_A_2024_03_28_2.p12&PASS=Jurgen2024`;
+
+          xhr.send(params);
+  }

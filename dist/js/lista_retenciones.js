@@ -100,7 +100,7 @@ function catalogoLineas(){
 
   function autorizar(factura,serie,fecha)
   { 
-    // $('#myModal_espera').modal('show');
+    $('#myModal_espera').modal('show');
     var parametros = 
     {
       'Retencion':factura,
@@ -141,7 +141,7 @@ function catalogoLineas(){
           }else
           {
 
-            Swal.fire(data.text,'XML DEVUELTO','error').then(function(){ 
+            Swal.fire('XML DEVUELTO',data.text[3],'error').then(function(){ 
               // var url=  '../../TEMP/'+data.pdf+'.pdf';    window.open(url, '_blank');             
             }); 
           }
@@ -160,7 +160,7 @@ function catalogoLineas(){
         {
            Swal.fire('Revise CI_RUC de factura en base','Cliente no encontrado','info');
          }else{
-          Swal.fire('XML devuelto por:'+data.text,'','error');  
+          Swal.fire('XML devuelto por:',data.text[3],'error');  
         }
       }
 
