@@ -699,7 +699,7 @@ class egreso_alimentosC
 		   	SetAdoFields('T','N');
 		   	SetAdoFields('Numero',$comprobante);
 		   	// SetAdoFields('Detalle','Salida inventario prueba');
-		   	SetAdoFields('TP','CD');
+		   	SetAdoFields('TP','.');
 		   	SetAdoFieldsWhere('ID',$value['ID']);
 		  	SetAdoUpdateGeneric();
 		}
