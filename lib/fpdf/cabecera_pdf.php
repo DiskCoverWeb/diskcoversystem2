@@ -697,7 +697,7 @@ class cabecera_pdf
 
 		$pdf->SetFont('Arial','B',7);
 		$pdf->Cell(36,0,'');
-		$iva = floatval($info['PorcIva']) . "%";
+		$iva = number_format((floatval($info['factura'][0]['Porc_IVA'])*100),0,'','') . "%";
 		$pdf->Cell(20,0,'I.V.A. ' . $iva);
 		$pdf->SetFont('Arial','',7);
 		$pdf->Cell(10,0,number_format($info['factura'][0]['IVA'],2,'.',''),0,0,'R');
