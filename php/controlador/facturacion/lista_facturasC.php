@@ -556,8 +556,9 @@ class lista_facturasC
 
 	function imprimir_excel_fac($parametros)
 	{
-		$serie = explode(' ', $parametros['DCLinea']);
-		$serie = $serie[1];
+		// print_r($parametros);die();
+		// $serie = explode(' ', $parametros['DCLinea']);
+		$serie = $parametros['DCLinea'];
 		$codigo = $parametros['ddl_cliente'];
 		$tbl = $this->modelo->facturas_emitidas_tabla($codigo, $parametros['ddl_periodo'], $parametros['txt_desde'], $parametros['txt_hasta'], $serie);
 

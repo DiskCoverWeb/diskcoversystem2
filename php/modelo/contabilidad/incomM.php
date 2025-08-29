@@ -1482,13 +1482,10 @@ class incomM
 	  
 	  $tipo_con = Tipo_Contribuyente_SP_MYSQL($_SESSION['INGRESO']['RUC']);
 
-		if(count($datos)>0 && count($tipo_con)>0)
-			{
-				$datos_fac['Tipo_contribuyente'] = $tipo_con;
-			}
+	  // print_r($tipo_con);die();
+	
 
-
-	   // print_r($TFA);die();
+	   // print_r($datos);die();
 
    // 'Determinamos el Tipo de Comprobante
     $sql = "SELECT Tipo_Comprobante_Codigo, Descripcion 
@@ -1525,8 +1522,14 @@ class incomM
 			    $resultado[] = array_merge($value, $TFA);
 			}
 		$datos = $resultado;
+		if(count($datos)>0 && count($tipo_con)>0)
+		{
+			$datos['Tipo_contribuyente'] = $tipo_con;
+		}
+
  		$datos[0]['TC'] = 'RE';
     $sucursal = $this->catalogo_lineas('RE',$serie);
+    // print_r($datos);die();
 	  $this->reportes->imprimirDocEle_ret($datos,$datos2,'Retencion',$imp,$sucursal);
 
 	}	

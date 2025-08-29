@@ -61,6 +61,7 @@ class MYPDF extends TCPDF
 		$i = 0;
 		$agente = '';
 		$rimpe = '';
+		// print_r($this->datos);die();
 		if (isset($this->datos['Tipo_contribuyente']) && count($this->datos['Tipo_contribuyente']) > 0) {
 			// print_r($this->datos['Tipo_contribuyente']);die();
 			$agente = $this->datos['Tipo_contribuyente']['@Agente'];
@@ -170,6 +171,7 @@ class MYPDF extends TCPDF
 	$this->MultiCell(53, 2,'R.U.C. ' . $_SESSION['INGRESO']['RUC'], $border, '', 0, 1, '', '', true);
 
 	// /-----------------------------------------------------------------------------
+	// print_r($agente);die();
 	 if ($agente != '' && $agente != '.') {	
 		$this->SetX($cuardo_2_X); 	
 		$this->SetFont('helvetica', 'B', 7);
@@ -184,18 +186,23 @@ class MYPDF extends TCPDF
 	switch ($this->datos[0]['TC']) {
 		case 'LC':
 			$this->MultiCell($row_col, 2,'Liquidacion compra No.', $border, '', 0, 1, '', '', true);
+			$documento = $this->datos[0]['Factura'];
 			break;
 		case 'FA':
 			$this->MultiCell($row_col, 2,'Factura No.', $border, '', 0, 1, '', '', true);
+			$documento = $this->datos[0]['Factura'];
 			break;
 		case 'GR':
 			$this->MultiCell($row_col, 2,'Guia de Remision No.', $border, '', 0, 1, '', '', true);
+			$documento = $this->datos[0]['Factura'];
 			break;
 		case 'RE':
 			$this->MultiCell($row_col, 2,'Retencion No.', $border, '', 0, 1, '', '', true);
+			$documento = $this->datos[0]['SecRetencion'];
 			break;
 		case 'LC':
 			$this->MultiCell($row_col, 2,'Liquidacion compra No.', $border, '', 0, 1, '', '', true);
+			$documento = $this->datos[0]['Factura'];
 			break;
 		
 		default:
@@ -268,8 +275,10 @@ class MYPDF extends TCPDF
 	//NUMERO DE FACTURA
 	$this->SetX($cuardo_2_X+$row_col); 	
 	$this->SetFont('helvetica', '', 9);
-	$this->writeHTMLCell(33, 5,'', '','<span style="color:red">'.substr($this->datos[0]['Serie'], 0, 3) . '-' .substr($this->datos[0]['Serie'], 3, 6). '-' . generaCeros($this->datos[0]['Factura'], 9).'</span>', $border, 1, false, true, '', false);
-	
+	$this->writeHTMLCell(33, 5,'', '','<span style="color:red">'.substr($this->datos[0]['Serie'], 0, 3) .''.substr($this->datos[0]['Serie'], 3, 6). '-' . generaCeros($documento, 9).'</span>', $border, 1, false, true, '', false);
+	// print_r($this->datos[0]);die();
+
+
 	$this->SetFont('helvetica', '', 8);
 	// fecha y hora	
 	$this->SetX($cuardo_2_X+$row_col); 
@@ -1292,7 +1301,8 @@ function imprimirDocEle_guia($datos, $detalle, $educativo, $matri = false, $nomb
 
 function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = false,$sucursal = array())
 {
-	// print_r($datos);die();
+	// print_r($detalle);
+		// print_r($datos);die();
 		$border = 0;
 		$punto = substr($datos[0]['Serie_Retencion'], 3, 6);
 		$suc = substr($datos[0]['Serie_Retencion'], 0, 3);
