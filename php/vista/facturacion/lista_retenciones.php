@@ -6,7 +6,13 @@ $tipo='';
 $(document).ready(function(){
 
       tbl_retenciones_all = $('#tbl_retenciones').DataTable({
-          // responsive: true,
+
+              scrollX: true,
+              searching: false,
+              responsive: false,
+          // paging: false,   
+              info: false,   
+              autoWidth: false,  
           language: {
               url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
           },
@@ -56,9 +62,9 @@ $(document).ready(function(){
                         options+=`<li>
                           <a href="#" class="dropdown-item" onclick="autorizar('${item.SecRetencion}','${item.Serie_Retencion}','${formatoDate(item.Fecha.date)}')" ><i class="bx bx-paper-plane"></i>Autorizar</a>
                           </li>`;
-                    }else
+                    }else if(item.ExisteSerie =='No'  && item.AutRetencion.length == 13)
                     {
-                       options+=`<li><a href="#"  class="dropdown-item btn-danger"><i class="fa fa-info"></i>Para autorizar Asigne en catalo de lineas la serie: ${item.Serie_Retencion}</a></li>`;
+                       options+=`<li><a href="#"  class="dropdown-item btn-danger"><i class="fa fa-info"></i> Para autorizar Asigne en catalo de lineas la serie: ${item.Serie_Retencion}</a></li>`;
 
                     }
                     
@@ -179,7 +185,7 @@ $(document).ready(function(){
 <div class="row mt-2">
     <div class="card">
       <div class="card-body">
-        <table class="table text-sm" style="width: 100%;" id="tbl_retenciones">
+        <table class="table text-sm" id="tbl_retenciones">
           <thead>
             <th></th>
             <th>T</th>          
