@@ -174,7 +174,7 @@ class lista_facturasC
 		// print_r($parametros);die();
 		$codigo = $parametros['ci'];
 
-		$tbl = $this->modelo->facturas_emitidas_tabla($codigo, $parametros['per'], $parametros['desde'], $parametros['hasta'], $parametros['serie'], $autorizados);
+		$tbl = $this->modelo->facturas_emitidas_tabla($codigo, $parametros['per'],$parametros['desde'], $parametros['hasta'], $parametros['serie'], $autorizados);
 		$tr = '';
 
 
@@ -860,11 +860,11 @@ class lista_facturasC
 		} else {
 			try {
 				if (json_encode($resp) == false) { //si retorna false puede ser por la codificación debido a caracteres especiales, como tildes.
-					$rep = mb_convert_encoding($rep, 'UTF-8');
+					$resp = mb_convert_encoding($rep, 'UTF-8');
 				}
 			} catch (Exception $e) {
 			}
-			return array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep, 'clave' => $clave);
+			return array('respuesta' => -1, 'pdf' => $imp, 'text' => $resp, 'clave' => $clave);
 		}
 
 		// return $res;

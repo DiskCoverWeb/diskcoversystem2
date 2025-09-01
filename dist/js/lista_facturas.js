@@ -328,8 +328,11 @@ $(document).ready(function()
             Swal.fire({
              icon: 'error',
              title: 'XML DEVUELTO',
-             html: `<div style="width: 100%; color:black;font-weight: 400;font-size: 1.525em;">${data.text}</div>`
+             html: `<div style="width: 100%; color:black;font-weight: 400;font-size: 1.525em;">${data.text[3]}</div>`
+           }).then(function (){
+              tipo_error_sri(data.clave);
            });
+
           }
       }else if(data.respuesta==2)
       {
@@ -534,13 +537,13 @@ function enviar_email_comprobantes(nombre_pdf,clave_Acceso,email)
     if(periodo!='.')
     {
        $('#txt_desde').val(year+'-01-01');
-       $('#txt_hasta').val(year+'-01-31');
+       $('#txt_hasta').val(year+'-01-30');
     }else
     {
        year = new Date().getFullYear();
       // console.log(currentTime);
       $('#txt_desde').val(year+'-01-01');
-      $('#txt_hasta').val(year+'-01-31');
+      $('#txt_hasta').val(year+'-01-30');
     }
  }
 
