@@ -674,11 +674,11 @@ function generar_factura() {
                     msj = "Factura Procesada y Autorizada";
                     nombre_pdf = [data.Factura['pdf']+'.pdf'];
                     clave_Acceso = [data.Factura[1]+'.xml'];
-                    enviar_email_comprobantes(nombre_pdf,clave_Acceso);
 
                     Swal.fire(msj,"","success").then(function(){
                                 var url = '../../TEMP/' + data.Factura['pdf'] + '.pdf';
                                 window.open(url, '_blank'); 
+                                enviar_email_comprobantes(nombre_pdf,clave_Acceso);
                                 location.reload();
                     })
                 }else
