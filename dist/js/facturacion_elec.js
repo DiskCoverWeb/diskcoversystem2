@@ -752,7 +752,7 @@ function generar_factura() {
                     enviar_email_comprobantes(nombre_pdf,clave_Acceso);   
                     location.reload();      
                 })
-            }else if(data.Factura[0] == -1)
+            }else if(data.Factura[0] == -1 || data.Factura[0] == 0)
             {
 
                 //factura si gia de remision 
