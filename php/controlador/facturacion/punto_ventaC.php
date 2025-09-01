@@ -903,13 +903,20 @@ class punto_ventaC
 
 					} else {
 
-							$rep['rodillo'] = $_SESSION['INGRESO']['Impresora_Rodillo'];
-							$rep['pdf'] = $imp; 
-							$rep['respuesta_guia'] = $rep1;
-							$rep['pdf_guia'] = $imp_guia;
-							$rep['clave_guia'] = $clave_guia;
+							// $rep['rodillo'] = $_SESSION['INGRESO']['Impresora_Rodillo'];
+							// $rep['pdf'] = $imp; 
+							// $rep['respuesta_guia'] = $rep1;
+							// $rep['pdf_guia'] = $imp_guia;
+							// $rep['clave_guia'] = $clave_guia;
 
-							return $rep; 
+							$respuesta_facturacion['impresion_rodillo'] = $_SESSION['INGRESO']['Impresora_Rodillo'];
+							$rep['pdf'] = $imp;
+							$respuesta_facturacion['Factura'] = $rep;
+							if(count($rep1)>0){	$rep1['pdf_guia'] = $imp_guia;}
+							$respuesta_facturacion['Guia_remision'] = $rep1;
+
+
+							return $respuesta_facturacion; 
 
 						// array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep, 'clave' => $clave, 'respuesta_guia' => $rep1, 'pdf_guia' => $imp_guia, 'clave_guia' => $clave_guia, 'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
 					}
