@@ -335,8 +335,8 @@ class reportes_all
 		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
 		// set some language-dependent strings (optional)
-		if (@file_exists(dirname(__FILE__).'/lang/spa.php')) {
-			require_once(dirname(__FILE__).'/lang/spa.php');
+		if (file_exists(dirname(__FILE__).'/lang/spa.php')) {
+			require(dirname(__FILE__).'/lang/spa.php');
 			$pdf->setLanguageArray($l);
 		}
 
@@ -992,8 +992,8 @@ function imprimirDocEle_guia($datos, $detalle, $educativo, $matri = false, $nomb
 		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
 		// set some language-dependent strings (optional)
-		if (@file_exists(dirname(__FILE__).'/lang/spa.php')) {
-			require_once(dirname(__FILE__).'/lang/spa.php');
+		if (file_exists(dirname(__FILE__).'/lang/spa.php')) {
+			require(dirname(__FILE__).'/lang/spa.php');
 			$pdf->setLanguageArray($l);
 		}
 
@@ -1291,8 +1291,7 @@ function imprimirDocEle_guia($datos, $detalle, $educativo, $matri = false, $nomb
 		$pdf->Output('Guia_remision_'.$datos[0]['Serie_GR'] . '-' . generaCeros($datos[0]['Remision'], 7).'.pdf', 'I');
 	}
 	if ($imp1 == 1) {
-		$pdf->Output('F', dirname(__DIR__, 3) . '/TEMP/' . $datos[0]['Serie_GR'] . '-' . generaCeros($datos[0]['Remision'], 7) . '.pdf');
-
+		$pdf->Output(dirname(__DIR__, 3) .'/TEMP/'.$datos[0]['Serie_GR'].'-'.generaCeros($datos[0]['Remision'], 7) . '.pdf','F');
 		// $pdf->Output('TEMP/'.$nombre.'.pdf','F'); 
 	}
 }
