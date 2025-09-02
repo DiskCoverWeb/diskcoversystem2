@@ -555,7 +555,8 @@ class alimentos_recibidosC
 		// print_r($parametro);die();
 	   // SetAdoAddNew("Trans_Kardex");
 
-		// print_r($parametro);die();
+		// print_r($parametro);
+		// die();
 
 
 	   $num_ped = $parametro['txt_codigo']; 	

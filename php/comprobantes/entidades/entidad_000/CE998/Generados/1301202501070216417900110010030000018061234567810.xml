@@ -6,11 +6,11 @@
     <razonSocial>VACA PRIETO WALTER JALIL</razonSocial>
     <nombreComercial>EMPRESA PARA DESARROLLO</nombreComercial>
     <ruc>0702164179001</ruc>
-    <claveAcceso>1301202501070216417900110010030000018021234567819</claveAcceso>
+    <claveAcceso>1301202501070216417900110010030000018061234567810</claveAcceso>
     <codDoc>01</codDoc>
     <estab>001</estab>
     <ptoEmi>003</ptoEmi>
-    <secuencial>000001802</secuencial>
+    <secuencial>000001806</secuencial>
     <dirMatriz>Desarrollo para programacion de DiskCover System</dirMatriz>
   </infoTributaria>
   <infoFactura>
@@ -44,7 +44,7 @@
   <detalles>
     <detalle>
       <codigoPrincipal>01.02</codigoPrincipal>
-      <descripcion>Pension Basica  undefined  undefined, 2025: Febrero </descripcion>
+      <descripcion>Pension Basica  undefined  undefined, 2025: Abril </descripcion>
       <unidadMedida>DOLAR</unidadMedida>
       <cantidad>1.000000</cantidad>
       <precioUnitario>15.000000</precioUnitario>

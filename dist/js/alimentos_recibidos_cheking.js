@@ -81,12 +81,15 @@ $(document).ready(function () {
               },
               { data: null,
                 render: function(data, type, item) {
-                    return `<input class="form-control form-control-sm"  id="txt_pvp_linea_${data.ID}" name="txt_pvp_linea_${data.ID}" onchange="recalcular('${data.ID}')" value="${data.Valor_Unitario}">`;
+                    return `<input class="form-control form-control-sm"  id="txt_pvp_linea_${data.ID}" name="txt_pvp_linea_${data.ID}" onblur="recalcular('${data.ID}')" value="${data.Valor_Unitario}">`;
                 }      
               },
-              { data: 'Valor_Total',
+              { data: null,
                 render: function(data, type, item) {
-                    return data ? parseFloat(data).toFixed(4) : '0.0000';
+                   var _total = parseFloat(data.Valor_Total).toFixed(4)
+                   return `<input class="form-control form-control-sm"  id="txt_total_linea_${data.ID}" name="txt_total_linea_${data.ID}" onblur="recalcular_total('${data.ID}')" value="${_total}">`;
+              
+
                 }      
               },
               { data: null,
@@ -413,7 +416,6 @@ function getFilaDT(tabla, id){
 function recalcular(id)
 {
   const indiceFila = getFilaDT(tbl_pedidos_all, id);
-
   var pvp =  $('#txt_pvp_linea_'+id).val();
   var cant =  tbl_pedidos_all.row(indiceFila).data().Entrada;
   var total = parseFloat(cant)* parseFloat(pvp);
@@ -421,7 +423,24 @@ function recalcular(id)
   console.log(cant);
   console.log(pvp);
   tbl_pedidos_all.cell(indiceFila,6).data(total.toFixed(4)).draw()
-  //$('#txt_total_linea_'+id).val(total.toFixed(4));
+  $('#txt_total_linea_'+id).val(total.toFixed(4));
+  editar_precio(id);
+  
+}
+
+function recalcular_total(id)
+{
+  const indiceFila = getFilaDT(tbl_pedidos_all, id);
+  var total =  $('#txt_total_linea_'+id).val();
+  var cant =  tbl_pedidos_all.row(indiceFila).data().Entrada;
+  var pvp = parseFloat(total)/ parseFloat(cant);
+  console.log(total);
+  console.log(cant);
+  console.log(pvp);
+  tbl_pedidos_all.cell(indiceFila,5).data(pvp.toFixed(4)).draw()
+  $('#txt_pvp_linea_'+id).val(pvp.toFixed(4));
+   editar_precio(id);
+  
 }
 
 function editar_precio(id)
@@ -433,7 +452,7 @@ function editar_precio(id)
       {
           'id':id,
           'pvp':$('#txt_pvp_linea_'+id).val(),
-          'total':parseFloat(tbl_pedidos_all.cell(indiceFila,6).data()),
+          'total':$('#txt_total_linea_'+id).val(),
       }
       $.ajax({
         type: "POST",

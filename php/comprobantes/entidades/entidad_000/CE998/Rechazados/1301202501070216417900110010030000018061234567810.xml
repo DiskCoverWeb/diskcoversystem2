@@ -5,11 +5,11 @@
     <razonSocial>VACA PRIETO WALTER JALIL</razonSocial>
     <nombreComercial>EMPRESA PARA DESARROLLO</nombreComercial>
     <ruc>0702164179001</ruc>
-    <claveAcceso>1301202501070216417900110010030000018021234567819</claveAcceso>
+    <claveAcceso>1301202501070216417900110010030000018061234567810</claveAcceso>
     <codDoc>01</codDoc>
     <estab>001</estab>
     <ptoEmi>003</ptoEmi>
-    <secuencial>000001802</secuencial>
+    <secuencial>000001806</secuencial>
     <dirMatriz>Desarrollo para programacion de DiskCover System</dirMatriz>
   </infoTributaria>
   <infoFactura>
@@ -43,7 +43,7 @@
   <detalles>
     <detalle>
       <codigoPrincipal>01.02</codigoPrincipal>
-      <descripcion>Pension Basica  undefined  undefined, 2025: Febrero </descripcion>
+      <descripcion>Pension Basica  undefined  undefined, 2025: Abril </descripcion>
       <unidadMedida>DOLAR</unidadMedida>
       <cantidad>1.000000</cantidad>
       <precioUnitario>15.000000</precioUnitario>
@@ -71,34 +71,34 @@
     <campoAdicional nombre="PlacaVehiculo">.</campoAdicional>
     <campoAdicional nombre="CtaEstablecimiento">.</campoAdicional>
   </infoAdicional>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature174156">
-<ds:SignedInfo Id="Signature-SignedInfo141140">
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature752750">
+<ds:SignedInfo Id="Signature-SignedInfo216210">
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-<ds:Reference Id="SignedPropertiesID933602" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature174156-SignedProperties731729">
+<ds:Reference Id="SignedPropertiesID611134" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature752750-SignedProperties8843">
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>0d9M0nuYCzNAR6IXN9N2QEnYEiI=</ds:DigestValue>
+<ds:DigestValue>gRMZvblCqw03/iBCDWOnktbIfj8=</ds:DigestValue>
 </ds:Reference>
-<ds:Reference URI="#Certificate1945776">
+<ds:Reference URI="#Certificate1577788">
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>blL3cHKyWdNgZBUc8wnekh8aIrE=</ds:DigestValue>
+<ds:DigestValue>VYL5u7Mnr+VX5btHIZA5ww+dqkA=</ds:DigestValue>
 </ds:Reference>
-<ds:Reference Id="Reference-ID-895993" URI="#comprobante">
+<ds:Reference Id="Reference-ID-859377" URI="#comprobante">
 <ds:Transforms>
 <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>RI4eMuhhKAWVkdPGvV98V6ddB5o=</ds:DigestValue>
+<ds:DigestValue>iDu9jOh/aSfQtpGNFh3StZQmmeU=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
-<ds:SignatureValue Id="SignatureValue510607">
-OVJm3JlKsoMVs7EO3IItSE1t9k1n8bYggajk6TINmbikQAwv39n/rIH4CBUmU6UGU0thKCl7T5f9
-XhYz08/9dM6jpAwqVkA+9qma8JH0c1iuq5qgmjFVj3fFjD20TXd8v7CbBNyuWGNUHOpAz8ICitlF
-nkoxdIqkfuRNa7u+LpxmaT/7Mn1hMosHc04gbWl7WHJtKw9doY/2qtxmL5feh9hCBWZX5g8OpG0w
-ARd6TO2Iy+Dlk47CgOtEPHR97q1dSO+vnUo9l5JvhIxwzx95AR1eT/2C9/OQpla/zhzK7XvftMpv
-MDH6NqRkSgt/RDILxBzXZpin57DOh2mmFfA0OQ==
+<ds:SignatureValue Id="SignatureValue981183">
+di/c/oxG2oj+6ZRo6ab55iLJ+QoYOvIGUfXaWObvOS3uJSR866zq+EIegBFsYBEvajBoiuNpvmV6
+YOBE/cnHUnGb/vy/Rs33GUJ4FpPxs4BcyUq3UbX0jdwPAyJjv9RfxYAMiqKTK6JigbpGW90N6wWL
+zLsojp5da+RUjEQR68kBlzrCh+0OplkAhTE5DTdDb5AyPL+DA4UJ8iHvmbizYfr6+tU0HO5b3l8r
+4Cog136xT1Yf1It3aG8JadFFzvlXwmkP1FWVhq/QfpmJ4xyK1d9FfnJAo9mS/SwnUhMrOxzl1QSS
+b81xf9Ky4Z+ieojTXIuTJPnBYHy12O4A6C3yxw==
 </ds:SignatureValue>
-<ds:KeyInfo Id="Certificate1945776">
+<ds:KeyInfo Id="Certificate1577788">
 <ds:X509Data>
 <ds:X509Certificate>
 MIILkjCCCXqgAwIBAgIEXDrIAjANBgkqhkiG9w0BAQsFADCBmTELMAkGA1UEBhMCRUMxHTAbBgNV
@@ -169,11 +169,11 @@ LRuAVSyi58qyAD0Eu1zLMc3KhEUXoxF7aA8P0w==
 </ds:RSAKeyValue>
 </ds:KeyValue>
 </ds:KeyInfo>
-<ds:Object Id="Signature174156-Object957673"><etsi:QualifyingProperties Target="#Signature174156"><etsi:SignedProperties Id="Signature174156-SignedProperties731729"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-09-01T16:40:48-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>m8okW/lbE8bTuXKKJc3pO5HpQGc=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-1 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 1,C=EC</ds:X509IssuerName><ds:X509SerialNumber>1547356162</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-895993"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature><ns2:respuestaSolicitud xmlns:ns2="http://ec.gob.sri.ws.recepcion">
+<ds:Object Id="Signature752750-Object904196"><etsi:QualifyingProperties Target="#Signature752750"><etsi:SignedProperties Id="Signature752750-SignedProperties8843"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-09-02T14:19:43-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>m8okW/lbE8bTuXKKJc3pO5HpQGc=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-1 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 1,C=EC</ds:X509IssuerName><ds:X509SerialNumber>1547356162</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-859377"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature><ns2:respuestaSolicitud xmlns:ns2="http://ec.gob.sri.ws.recepcion">
     <estado>DEVUELTA</estado>
     <comprobantes>
         <comprobante>
-            <claveAcceso>1301202501070216417900110010030000018021234567819</claveAcceso>
+            <claveAcceso>1301202501070216417900110010030000018061234567810</claveAcceso>
             <mensajes>
                 <mensaje>
                     <identificador>43</identificador>

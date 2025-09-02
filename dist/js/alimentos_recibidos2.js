@@ -54,7 +54,7 @@
       $('#txt_referencia').val(data[0].Codigo_Inv);
       $('#txt_grupo').val(data[0].Item_Banco);
       $('#txt_costo').val(data[0].PVP);
-      $('#txt_cta_inv').val(data[0].Cta_Inventario);
+      // $('#txt_cta_inv').val(data[0].Cta_Inventario);
       $('#txt_TipoSubMod').val(data[0].TDP);
       $('#txt_producto').prop('disabled',true);
       $('#modal_producto').modal('hide');
@@ -95,7 +95,7 @@
       $('#txt_referencia').val(data[0].Codigo_Inv);
       $('#txt_grupo').val(data[0].Item_Banco);
       $('#txt_costo').val(data[0].PVP);
-      $('#txt_cta_inv').val(data[0].Cta_Inventario);
+      // $('#txt_cta_inv').val(data[0].Cta_Inventario);
       $('#txt_TipoSubMod').val(data[0].TDP);
       $('#txt_producto').prop('disabled',true);
       $('#modal_producto').modal('hide');
