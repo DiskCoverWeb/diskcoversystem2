@@ -259,6 +259,11 @@ function agregar_picking()
 {
     stock = $('#txt_stock').val();
     cant =$('#cant').val();
+    if($('#txt_codigo').val()=='' || $('#txt_codigo').val()==null || $('#txt_codigo').val()==undefined)
+    {
+        Swal.fire("Seleccione una producto","","info");
+        return false;
+    }
 
     if($('#beneficiario').val()=='' || $('#beneficiario').val()==null)
     {
@@ -292,6 +297,7 @@ function agregar_picking()
     'codigoProducto':$('#txt_codigo').val(),
     'id':$('#txt_codigo').val(),
     }
+    $('#btn_ingresar').prop('disabled',true);
     $.ajax({
         type: "POST",
         url:   '../controlador/inventario/asignacion_pickingC.php?agregar_picking=true',
@@ -303,11 +309,13 @@ function agregar_picking()
             {
                 Swal.fire("Producto agregado","","success")
                 $('#txt_codigo').empty();
+                $('#txt_id').val("");
                 cargar_asignacion();
             }else if(data==-2)
             {
                 Swal.fire("El producto no se puede ingresar por que supera el total de Grupo","","error")
             }
+            $('#btn_ingresar').prop('disabled',false);
             console.log(data);
         }
     });
