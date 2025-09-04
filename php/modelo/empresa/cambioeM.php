@@ -71,6 +71,7 @@ class cambioeM
 
 	function editar_datos_empresaMYSQL($parametros)
 	{
+		// print_r($parametros);die();
 		$img = '.';
 
 		$sql = "UPDATE lista_empresas SET";
@@ -91,7 +92,7 @@ class cambioeM
 		if(isset($parametros['TxtRepresentanteLegal']))	{$sql .= " Gerente='".$parametros['TxtRepresentanteLegal']."',";}
 		if(isset($parametros['TxtNombConta']))			{$sql .= " Contador='".$parametros['TxtNombConta']."',";}
 		if(isset($parametros['TxtRucConta']))			{$sql .= " RUC_Contador='".$parametros['TxtRucConta']."',";}
-		if(isset($parametros['ciu']))					{$sql .= " Ciudad='".$parametros['ciu']."',";}
+		if(isset($parametros['ddl_ciudad']))			{$sql .= " Ciudad='".$parametros['ddl_ciudad']."',";}
 		if(isset($parametros['Plan']))					{$sql .= " Tipo_Plan='".$parametros['Plan']."',";}
 
 		$sql = substr($sql, 0, -1);
@@ -241,7 +242,7 @@ class cambioeM
 		    		CI_Representante = '".$parametros['TxtCI']."',
 		    		CPais = '".$parametros['ddl_naciones']."',
 		    		CProv = '".$parametros['prov']."',
-		    		Ciudad = '".$parametros['ciu']."',
+		    		Ciudad = '".$parametros['ddl_ciudad']."',
 		    		Direccion = '".$parametros['TxtDirMatriz']."',
 		    		Establecimientos = '".$parametros['TxtEsta']."',
 		    		Telefono1 = '".$parametros['TxtTelefono']."',
