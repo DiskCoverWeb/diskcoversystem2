@@ -406,7 +406,7 @@ class reportes_all
 	}
 	$pdf->MultiCell($row_1, 2,'FORMA DE PAGO: ' . $datos[0]['Tipo_Pago'], $border, '', 0, 1, '', '', true);
 	$pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
-	$pdf->MultiCell(($medita_total_3-$row_1)/2, 3,'MONTO '.$mon.'              ' . number_format($datos[0]['Total_MN'], 2, '.', ','), $border, '', 0, 1, '', '', true);
+	$pdf->MultiCell(($medita_total_3-$row_1)/2, 3,'MONTO '.$mon.'  ' . number_format($datos[0]['Total_MN'], 2, '.', ''), $border, '', 0, 1, '', '', true);
 	$pdf->SetXY($cuardo_3_X+$row_1+($medita_total_3-$row_1)/2,$posicion_row);
 	$pdf->MultiCell(($medita_total_3-$row_1)/2, 3,'Condición de venta: ' . $DiasPago . ' días', $border, '', 0, 1, '', '', true);
 
