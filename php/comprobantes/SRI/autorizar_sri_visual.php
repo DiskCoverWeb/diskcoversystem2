@@ -27,6 +27,13 @@ if(isset($_GET['subirftp']))
 	echo json_decode($controlador->subirftp($xml));
 }
 
+if(isset($_GET['CERecibidos']))
+{
+	$parametros = $_POST;
+	// print_r($parametros);die();
+     echo json_encode($controlador->CERecibidos($parametros));
+}
+
 /**
  * 
  */
@@ -506,6 +513,70 @@ class autoriza_sri
 
 	}
 
+	function subirftpRuta($nombre_file,$ruta_ftp)
+	{
+		$archivo = $nombre_file.'.xml';		
+		$archivo_remoto = '/files/ComprobantesElectronicos/'.$ruta_ftp.'/'.$archivo;
+
+		// print_r($nombre_file);die();
+
+		$nombre_file = dirname(__DIR__)."/SRI/ftp_folder_xmls/Autorizados/".$archivo; 
+		// print_r($nombre_file);die();
+		if(!file_exists($nombre_file))
+		{
+			$archivo_remoto = '/files/ComprobantesElectronicos/No_Autorizados/'.$archivo;
+			$nombre_file = dirname(__DIR__)."/SRI/ftp_folder_xmls/Rechazados/".$archivo; 
+			if(!file_exists($nombre_file))
+			{
+				$nombre_file = dirname(__DIR__)."/SRI/ftp_folder_xmls/No_autorizados/".$archivo; 
+				if(!file_exists($nombre_file))
+				{
+					echo "Archivo no encontrado en local";
+				}
+			}
+
+		}
+
+		// print_r($archivo_remoto."--".$archivo_local);die();
+		// Datos de conexión
+		// print_r($nombre_file);die();
+		$ftp_host = "erp.diskcoversystem.com";
+		$ftp_user = "ftpuser";
+		$ftp_pass = "ftp2023User";
+		$ftp_port = 21; // Cambia al puerto que necesites
+// print_r($nombre_file);die();
+		$archivo_local = $nombre_file;    // Cómo se llamará en el servidor FTP
+
+		// Conectar al servidor FTP
+		// print_r($archivo_remoto."--".$archivo_local);die();
+		$conn_id = ftp_connect($ftp_host);
+
+		if ($conn_id) {
+		    // Autenticarse
+		    if (ftp_login($conn_id, $ftp_user, $ftp_pass)) {
+		        ftp_pasv($conn_id, true); // Modo pasivo recomendado
+
+		        // Subir archivo
+		        if (ftp_put($conn_id, $archivo_remoto, $archivo_local, FTP_BINARY)) {
+		           return 1;
+		        } else {
+		        	return -1;
+		        }
+
+		        // Cerrar conexión
+		        ftp_close($conn_id);
+		    } else {
+		        // echo "Error al iniciar sesión FTP.";
+		        return -2;
+		    }
+		} else {
+		    // echo "No se pudo conectar al servidor FTP.";
+		    return -3;
+		}
+
+	}
+
+
 	function subirftpFirmado($nombre_file)
 	{
 		$archivo = $nombre_file.'.xml';		
@@ -578,6 +649,50 @@ class autoriza_sri
 		$temp_fileF = $dire.'ftp_folder_xmls/Generados/'.$xml;
 		if(file_exists($temp_file)){ unlink($temp_file);}
 
+	}
+
+	function CERecibidos($parametros)
+	{
+		try {
+			$this->crear_carpetas();
+		  	$clave_acceso = $parametros['XML'];
+		  	$xml = substr($clave_acceso,0,-4);
+	      	$ambiente = substr(substr($clave_acceso,0,24),-1,1);
+	      	$this->link_ambientes($ambiente);
+			$validar_autorizado = $this->comprobar_xml_sri($clave_acceso,$this->linkSriAutorizacion);
+			if($validar_autorizado[0]==1)
+			{
+				$this->subirftpRuta($clave_acceso,"ce_recibidos");
+				$temp_file = 'ftp_folder_xmls/';
+				$this->deleteFolder($temp_file);
+
+			}
+			return 1;
+
+		} catch (Exception $e) {
+			return -1;
+		}
+		
+	}
+
+	function crear_carpetas()
+	{
+		$temp_file = 'ftp_folder_xmls/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Autorizados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Enviados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Firmados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Rechazados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/No_autorizados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Enviados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_fileF = 'ftp_folder_xmls/Generados/';
+		if(!file_exists($temp_fileF)){mkdir($temp_fileF, 0777);}
 	}
 
 
