@@ -717,6 +717,7 @@ class lista_facturasC
 			$grupo = '';
 		}
 		$cod = '';
+		$res = array();
 		$datos = $this->modelo->Cliente_facturas($cod, $grupo, $query);
 		if(!$cartera)
 		{
