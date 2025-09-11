@@ -207,7 +207,11 @@ class lista_facturasC
 			$botones[1] = array('boton'=>'modal_email_fac', 'icono'=>'<i class="bx bx-envelope ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=> 'Factura,Serie,CodigoC,Email');
 			$botones[2] = array('boton'=>'descargar_fac', 'icono'=>'<i class="bx bx-download ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=>'Factura,Serie,CodigoC');
 
-			$botones[4] = array('boton'=>'Ver_ndo', 'icono'=>'<i class="bx bx-show-alt ps-1 bx-xs"></i>', 'tipo'=>'warning', 'id'=>'Factura,Serie,CodigoC,Autorizacion,TC');
+			$Autorizacion_ndo = substr($_SESSION['INGRESO']['RUCEnt'], 0,-3);
+			$botones[4] = array('boton'=>'Ver_ndo', 'icono'=>'<i class="bx bx-show-alt ps-1 bx-xs"></i>', 'tipo'=>'warning', 'id'=>'Factura,Serie,CodigoC,'.$Autorizacion_ndo.',NDO');
+
+
+			// print_r();die();
 
 			if($dataTbl['ExisteSerie'] == 'Si' && strlen($dataTbl['Autorizacion']) == 13 && $parametros['tipo'] != '' ){
 				$botones[3] = array('boton'=>'autorizar', 'icono'=>'<i class="bx bx-paper-plane ps-1 bx-xs"></i>','tipo'=>'success','id'=>'TC,Factura,Serie,Fecha');
