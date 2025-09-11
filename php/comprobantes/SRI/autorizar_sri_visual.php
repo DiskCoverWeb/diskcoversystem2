@@ -667,10 +667,10 @@ class autoriza_sri
 				$this->deleteFolder($temp_file);
 
 			}
-			return 1;
+			return 'OK';
 
 		} catch (Exception $e) {
-			return -1;
+			return 'CEI';
 		}
 		
 	}
