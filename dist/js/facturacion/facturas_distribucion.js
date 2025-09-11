@@ -168,9 +168,9 @@ function cargarRegistrosProductos(){
 				if( datos['contenido'][0]['Productos']['Unidad'].toUpperCase()=='KILOS') { unidadProd = 'Kg';}
 				$('#tablaProdCU').text(unidadProd);
 				$('#unidad_dist').val(unidadProd);
-				$('#LabelTotal2').val(tTotalProds.toFixed(4));
-				$('#LabelSubTotal').val(tTotalProds.toFixed(4));
-				$('#LabelTotal').val(tTotalProds.toFixed(4));
+				$('#LabelTotal2').val(tTotalProds.toFixed(2));
+				$('#LabelSubTotal').val(tTotalProds.toFixed(2));
+				$('#LabelTotal').val(tTotalProds.toFixed(2));
 				buscarValoresGavetas();
 
 				$('#cuerpoTablaDistri').html(tr);
