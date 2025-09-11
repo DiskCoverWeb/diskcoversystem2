@@ -509,6 +509,28 @@ class loginM
 		$sql = "UPDATE acceso_usuarios SET Foto='".$img."' WHERE CI_NIC='".$_SESSION['INGRESO']['CodigoU']."'";
 		return $this->db->String_Sql($sql, 'MY SQL');
 	}
+
+	function buscar_cliente_cartera($cartera_usu=false,$cartera_pass=false,$empresa=[])
+	{
+		// print_r($empresa);die();
+		$sql="SELECT Clave,Codigo,* FROM Clientes WHERE T='N' ";
+		if($cartera_pass)
+			{
+				$sql.=" AND Clave = '".$cartera_pass."' ";
+			}
+			if($cartera_usu)
+			{
+				$sql.=" AND CI_RUC= '".$cartera_usu."'";
+			}
+		// print_r($sql);die();
+		$datos = $this->db1->consulta_datos_db_sql_terceros($sql,$empresa[0]['IP_VPN_RUTA'],
+			$empresa[0]['Usuario_DB'],
+			$empresa[0]['Contrasena_DB'],
+			$empresa[0]['Base_Datos'],
+			$empresa[0]['Puerto']);
+		return $datos;
+	}
+
 }
 
 ?>
