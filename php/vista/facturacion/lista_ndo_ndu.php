@@ -276,7 +276,7 @@
         </div>
   </div>
 </div>
-<div id="re_frame" style="display:none;"></div>
+<div id="re_frame" style=""></div>
 
 
 

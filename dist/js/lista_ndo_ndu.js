@@ -910,13 +910,13 @@ function enviar_email_comprobantes(nombre_pdf,clave_Acceso,email)
     if(periodo!='.')
     {
        $('#txt_desde').val(year+'-01-01');
-       $('#txt_hasta').val(year+'-12-31');
+       $('#txt_hasta').val(year+'-12-30');
     }else
     {
        year = new Date().getFullYear();
       // console.log(currentTime);
       $('#txt_desde').val(year+'-01-01');
-      $('#txt_hasta').val(year+'-12-31');
+      $('#txt_hasta').val(year+'-12-30');
     }
  }
 

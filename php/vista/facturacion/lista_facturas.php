@@ -488,6 +488,7 @@
 
 
 
+<div id="re_frame" style=""></div>
 
   <script src="../../dist/js/multipleEmail/utils.js"></script>
   <script src="../../dist/js/multipleEmail/emails-input.js"></script>
