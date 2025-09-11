@@ -134,8 +134,35 @@ class loginC
 				$_SESSION['INGRESO']['CARTERA_PASS'] = $parametro['pass'];
 			}
 
-			// print_r($cliente);die();
-			// print_r($empresa);print_r($cliente);die();
+			if(count($datos)>0)
+			{
+				// variables de entidad y usuario logueado en mysql
+				$_SESSION['INGRESO']['CodigoU'] = $datos[0]['CI_NIC'] ;
+				$_SESSION['INGRESO']['item'] =  $datos[0]['Item'];
+				$_SESSION['INGRESO']['Nombre_Completo']=$datos[0]['Nombre_Usuario'];
+				$_SESSION['autentificado'] = 'VERDADERO';
+				$_SESSION['INGRESO']['IDEntidad'] = $datos[0]['ID_Empresa'];
+				$_SESSION['INGRESO']['Entidad_No'] = $datos[0]['ID_Empresa'];
+				$_SESSION['INGRESO']['Nombre'] = $datos[0]['Nombre_Usuario'];
+				$_SESSION['INGRESO']['Id'] = $datos[0]['CI_NIC'];
+				$_SESSION['INGRESO']['Clave'] = $datos[0]['Clave'];
+				$_SESSION['INGRESO']['Mail'] = $datos[0]['Usuario'];
+				if($datos[0]['Foto']!='.')
+				{
+			      	$_SESSION['INGRESO']['Foto'] = $datos[0]['Foto'];
+		      	}else{
+		      		$_SESSION['INGRESO']['Foto'] = 'ejecutivo.png';
+		      	}
+
+		      	$this->variables_sistema($parametro['entidad'], $parametro['item']);
+
+				return 1;
+			}else
+			{
+				return -1;
+			}
+			
+
 		} else {
 			$datos = $this->modelo->Ingresar($parametro['usuario'], $parametro['pass'], $parametro['entidad'], $parametro['item']);
 			if(count($datos)>0)

@@ -522,6 +522,7 @@ class loginM
 			{
 				$sql.=" AND CI_RUC= '".$cartera_usu."'";
 			}
+		// 	print_r($empresa);
 		// print_r($sql);die();
 		$datos = $this->db->consulta_datos_db_sql_terceros($sql,$empresa[0]['IP_VPN_RUTA'],
 			$empresa[0]['Usuario_DB'],

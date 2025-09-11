@@ -429,9 +429,8 @@ class lista_facturasM
 	   $sql = "SELECT CodigoC as 'Codigo',C.Cliente as 'Cliente',C.CI_RUC,C.Email,C.Direccion,C.Telefono  
 	   FROM Facturas F
 	   INNER JOIN Clientes C ON F.CodigoC = C.Codigo 
-	   AND F.Item = '" . $_SESSION['INGRESO']['item'] . "' 
-	   AND F.Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' 
-	    ";
+	   WHERE F.Item = '" . $_SESSION['INGRESO']['item'] . "' 
+	   AND F.Periodo = '" . $_SESSION['INGRESO']['periodo'] . "' ";
 	   if($cod){
 	   	$sql.=" and C.Codigo= '".$cod."'";
 	   }
@@ -441,7 +440,7 @@ class lista_facturasM
 	   }
 	   if($query)
 	   {
-	   	$sql.=" and C.Cliente +' '+ C.CI_RUC like '%".$query."%'";
+	   	$sql.=" and (C.Cliente like '%".$query."%' OR C.CI_RUC like '%".$query."%')";
 	   }
 	   if($clave)
 	   {
