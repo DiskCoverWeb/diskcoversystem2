@@ -665,12 +665,14 @@ class autoriza_sri
 				$this->subirftpRuta($clave_acceso,"ce_recibidos");
 				$temp_file = 'ftp_folder_xmls/';
 				$this->deleteFolder($temp_file);
-
+				return 'OK';
+			}else
+			{
+				return 'CEI';
 			}
-			return 'OK';
 
 		} catch (Exception $e) {
-			return 'CEI';
+			return 'Error';
 		}
 		
 	}
