@@ -306,7 +306,7 @@ class autorizacion_sri
 	           	 	$_SESSION['INGRESO']['Clave_Certificado'],
 	           	 	$_SESSION['INGRESO']['Ruta_Certificado']);
 	           	 // print($firma);die();
-
+	           	 
 	           	 if($firma==1)
 	           	 {	           	 
 	           	 	
