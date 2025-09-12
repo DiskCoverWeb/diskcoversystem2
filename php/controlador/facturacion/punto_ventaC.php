@@ -844,7 +844,8 @@ class punto_ventaC
 					$rep = $this->sri->Autorizar_factura_o_liquidacion($FA);
 					if($rep[0]=='-1')
 					{
-						return $rep;
+						$respuesta_facturacion['Factura'] = $rep;
+						return $respuesta_facturacion;
 					}
 					$clave = $this->sri->Clave_acceso($TA['Fecha'], '01', $TA['Serie'], $Factura_No);
 					$rep1 = array();
