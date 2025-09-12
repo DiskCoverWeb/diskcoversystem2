@@ -1,6 +1,7 @@
 var valTC = 'FA';
 
 $(document).ready(function () {
+	DCTipoPago();
 	serie();
 	autocomplete_cliente();
 	DCLineas()
@@ -15,6 +16,21 @@ $(document).ready(function () {
 
 
 })
+
+
+function DCTipoPago() {
+
+    $.ajax({
+        type: "POST",
+        url: '../controlador/facturacion/facturarC.php?DCTipoPago=true',
+        //data: {parametros: parametros},
+        dataType: 'json',
+        success: function (data) {
+            llenarComboList(data, 'DCTipoPago');
+        }
+    });
+
+}
 
 function autocomplete_cliente() {
 	$('#DCCliente').select2({
@@ -284,10 +300,10 @@ function recalcular_todo()
 	var total_de_totales = parseFloat(total_total)+parseFloat(total_sin_recalculo);
 
 	console.log(total_de_totales);
-	$('#LabelTotal2').val(total_de_totales.toFixed(4));
+	$('#LabelTotal2').val(total_de_totales.toFixed(2));
 	$('#ADTotal').text(total_de_totales.toFixed(8))
-	$('#LabelSubTotal').val(total_de_totales.toFixed(4));
-	$('#LabelTotal').val(total_de_totales.toFixed(4));
+	$('#LabelSubTotal').val(total_de_totales.toFixed(2));
+	$('#LabelTotal').val(total_de_totales.toFixed(2));
 
 }
 
@@ -990,6 +1006,7 @@ function generar_factura()
 		'TextCheqNo2':$('#TextCheqNo2').val(),
 		'TextBanco2':$('#TextBanco2').val(),
 		'valorBanco2':$('#TextCheque2').val(),
+		'tipo_pago':$('#DCTipoPago').val(),
 
 
 	}

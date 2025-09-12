@@ -186,6 +186,14 @@ if (isset ($_GET['tipo'])) {
 						</select>
 					</div>
 				</div>
+				<div class="col-sm-12">
+					<div class="input-group input-group-sm">
+						<label for="DCTipoPago" class="input-group-text"><b>Tipo de pago</b></label>
+						<select aria-label="DCTipoPago" name="DCTipoPago" id="DCTipoPago" class="form-select form-select-sm">
+							<option value="">Seleccione</option>
+						</select>
+					</div>
+				</div>
 				<!-- <div class="row">
 				</div>
 				<div class="row">
