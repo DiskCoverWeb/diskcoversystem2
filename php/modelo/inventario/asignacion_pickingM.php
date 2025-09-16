@@ -298,13 +298,12 @@ class asignacion_pickingM
             INNER JOIN Catalogo_Productos CP on TK.Codigo_Inv = CP.Codigo_Inv
             where TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
             AND TK.Item = '".$_SESSION['INGRESO']['item']."'
-            AND TK.Item = CP.Item
-            AND TK.Orden_No <> '0'
-            AND TK.Orden_No <> '.'
-            AND TK.Orden_No <> '0.'
+            AND NOT TK.Orden_No in ('0','.','0.')
             AND TK.CodBodega <> '-1'
             AND TK.T = 'N'
-            AND TK.Salida = '0'";
+            AND TK.Salida = 0";
+
+
             if($bodega)
             {
                 $sql.=" AND CodBodega = '".$bodega."'";
@@ -383,5 +382,38 @@ class asignacion_pickingM
 
         return $this->db->datos($sql);   
 
+    }
+
+    function buscar_producto($query=false,$id=false,$grupo=false)
+    {
+        $sql = "SELECT TK.ID,C.Cliente,CP.Producto,CP.Unidad,CP.Cta_Inventario,TK.Codigo_Barra
+            FROM Trans_Kardex TK
+            INNER JOIN Catalogo_Productos CP on TK.Codigo_Inv = CP.Codigo_Inv 
+            INNER JOIN Clientes C on TK.Codigo_P = C.Codigo
+            WHERE TK.Item = '".$_SESSION['INGRESO']['item']."'
+            AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+            AND TK.Item = CP.Item
+            AND TK.Periodo = CP.Periodo
+            AND TK.T ='N' 
+            AND TK.Entrada <> 0
+            AND TK.Codigo_Inv LIKE '02%'
+            AND NOT TK.Orden_No in ('0','.','0.')
+            AND LEN(TK.Codigo_Barra) > 1 
+            AND LEN(TK.CodBodega) > 2";
+            if($query)
+            {
+                $sql.=" AND TK.Codigo_Barra='".$query."'";
+            }
+            if($id)
+            {
+                $sql.=" AND TK.ID='".$id."'";
+            }
+            if($grupo)
+            {
+                $sql.=" AND CP.Codigo_Inv = '".$grupo."'";
+            }
+            
+            // print_r($sql);die();
+        return $this->db->datos($sql);
     }
 }

@@ -457,6 +457,9 @@ class asignacion_pickingC
             $color2 = '#000000';
          $color = '';
         }
+
+        // print_r($tr);die();
+
         return $tr;
         // print_r($datos);die();    
     }
@@ -512,11 +515,19 @@ class asignacion_pickingC
     function agregar_picking($parametros)
     {
 
+        // print_r($parametros);die();
         $Beneficiario = explode('-',$parametros['beneficiario']);
         $stock = 0; 
         // buscar producto bodega
-         $bode = $this->egresos->buscar_producto(false,$parametros['codigoProducto']);
-
+        if($parametros["codigoProducto"]!='' && $parametros["codigoProducto"]!=null)
+        {
+            $bode = $this->modelo->buscar_producto(false,$parametros['codigoProducto']);
+            if(count($bode)==0)
+            {
+                return -4; 
+            }
+        }
+         
         // cantidad ingresada
          // print_r('ddd');die();
         $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsign'],$Beneficiario[2]);
@@ -545,6 +556,10 @@ class asignacion_pickingC
         {
 
             $linea_kardex = $this->modelo->buscar_trans_kardex($parametros['codigoProducto']);
+            if(count($linea_kardex)==0)
+            {
+                return -5;
+            }
             $producto = Leer_Codigo_Inv($parametros['CodigoInv'],$parametros['FechaAte']);
 
             SetAdoAddNew("Trans_Comision");
@@ -561,7 +576,7 @@ class asignacion_pickingC
             SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
             SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
             SetAdoFields("T","P");
-            SetAdoFields("Cmds",$linea_kardex[0]['Cmds']);
+            SetAdoFields("Cmds",$parametros['Cmds']);
             SetAdoFields("Orden_No",$Beneficiario[2]);
             
             return SetAdoUpdate();

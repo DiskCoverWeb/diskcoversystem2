@@ -249,6 +249,10 @@
 					<b>Cantidad</b>
 					<input type="number" name="cant" id="cant" class="form-control form-control-sm">
 				</div>
+				<div class="col-sm-2">
+					<input type="hidden" name="txt_tipoCompra" id="txt_tipoCompra" class="form-control form-control-sm">
+				</div>
+
 				<div class="offset-sm-6 col-sm-3 g-2 d-flex justify-content-end align-items-end">
 					<button class="btn btn-primary btn-sm me-2 px-3" id="btn_ingresar" onclick="agregar_picking()" style="width: fit-content; height: fit-content;">Ingreso</button>
 					<button class="btn btn-primary btn-sm px-3" onclick="limpiar();" style="width: fit-content; height: fit-content;">Borrar</button>

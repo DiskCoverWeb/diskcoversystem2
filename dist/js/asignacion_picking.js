@@ -40,6 +40,13 @@ $(document).ready(function () {
 
     });
 
+    $('#txt_codigo').on('select2:select', function (e) {
+      var data = e.params.data.data;
+      $('#txt_tipoCompra').val(data.Cmds);
+      console.log(data);
+    });
+
+
 })
 
 function beneficiario() {
@@ -296,6 +303,7 @@ function agregar_picking()
     'FechaAsign':$('#txtFechaAsign').val(),
     'codigoProducto':$('#txt_codigo').val(),
     'id':$('#txt_codigo').val(),
+    'Cmds':$('#txt_tipoCompra').val(),
     }
     $('#btn_ingresar').prop('disabled',true);
     $.ajax({
@@ -310,10 +318,17 @@ function agregar_picking()
                 Swal.fire("Producto agregado","","success")
                 $('#txt_codigo').empty();
                 $('#txt_id').val("");
+                $('#txt_tipoCompra').val("");
                 cargar_asignacion();
             }else if(data==-2)
             {
                 Swal.fire("El producto no se puede ingresar por que supera el total de Grupo","","error")
+            }else if(data==-4)
+            {
+                Swal.fire("Producto no encontro bodega","","error")
+            }else if(data==-5)
+            {
+                Swal.fire("Producto no encontro codbarras","","error")
             }
             $('#btn_ingresar').prop('disabled',false);
             console.log(data);
