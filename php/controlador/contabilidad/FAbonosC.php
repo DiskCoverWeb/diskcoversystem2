@@ -445,8 +445,13 @@ class FAbonosC
 		$pdf_compro = '';
 		if($TJ == 1){
 			$pdf_compro = 'COMP_TRANS_'.$_SESSION['INGRESO']['Entidad_No'].$_SESSION['INGRESO']['item']."_".$TA['Serie'].$TA['Factura'];
+		}else
+		{
+			$pdf_compro = "Recibo_No_".generaCeros($TA['Recibo_No'],9);
 		}
-		return array('res'=>Imprimir_Comprobante_Caja($TA), 'TJ' => $pdf_compro);
+		// print_r($TA);die();
+		$respuesta = Imprimir_Comprobante_Caja($TA);
+		return array('res'=>$respuesta, 'TJ' => $pdf_compro);
 	}
 
 

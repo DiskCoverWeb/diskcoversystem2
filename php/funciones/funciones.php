@@ -8197,17 +8197,18 @@ function Imprimir_Comprobante_Caja($FTA)
 
     }
     // print_r($TRecibo);die();    
-    return  Imprimir_Recibo_Caja($TRecibo);
+    return  Imprimir_Recibo_Caja($FTA,$TRecibo,$datos3);
   } 
   return 1;
 }
 
 
 
-function Imprimir_Recibo_Caja($TRecibo)
+function Imprimir_Recibo_Caja($FTA,$TRecibo,$abonos)
 {
-  require_once(dirname(__DIR__,2)."/lib/fpdf/cabecera_pdf.php");
-  $pdf = new cabecera_pdf();
+  require_once(dirname(__DIR__,2)."/lib/TCPDF/Reportes/reportes_all.php");
+  $pdf = new reportes_all();
+  $pdf->Imprimir_Recibo_Caja($FTA,$TRecibo,$abonos);
 }
 
 function BuscardiasSemana($query)

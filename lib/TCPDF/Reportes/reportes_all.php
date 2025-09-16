@@ -1486,6 +1486,196 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 	}
 }
 
+ 	function Imprimir_Recibo_Caja($TFA,$Tipo_Recibo,$abonos)
+ 	{
+
+ 		// print_r($TFA);
+ 		// print_r($Tipo_Recibo);die();
+
+
+ 		$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+		// $pdf->SetearDatos($datos,$sucursal);
+		// remove default header/footer
+		$pdf->setPrintHeader(false);
+		$pdf->setPrintFooter(false);
+		$pdf->setDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+		$pdf->setMargins(13, PDF_MARGIN_TOP, 10);
+		$pdf->setAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+		// set some language-dependent strings (optional)
+		if (@file_exists(dirname(__FILE__).'/lang/spa.php')) {
+			require_once(dirname(__FILE__).'/lang/spa.php');
+			$pdf->setLanguageArray($l);
+		}
+
+
+		$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
+		$ancho_PV = Leer_Campo_Empresa("Cant_Ancho_PV");
+		if($ancho_PV==0)
+		{
+			$ancho_PV = 50;
+		}
+		$Encabezado_PV = Leer_Campo_Empresa("Encabezado_PV");
+
+		if(isset($_SESSION['INGRESO']['Logo_Tipo']))
+		 {
+		   	$logo=$_SESSION['INGRESO']['Logo_Tipo'];
+		   	//si es jpg
+		   	$src = dirname(__DIR__,3).'/img/logotipos/'.$logo.'.jpg'; 
+		   	if(!file_exists($src))
+		   	{
+		   		$src = dirname(__DIR__,3).'/img/logotipos/'.$logo.'.gif'; 
+		   		if(!file_exists($src))
+		   		{
+		   			$src = dirname(__DIR__,3).'/img/logotipos/'.$logo.'.png'; 
+		   			if(!file_exists($src))
+		   			{
+		   				$logo="diskcover_web";
+		                $src= dirname(__DIR__,3).'/img/logotipos/'.$logo.'.gif';
+
+		   			}
+
+		   		}
+
+		   	}
+		}
+
+
+		$pdf->AddPage('P', 'A4');
+
+		$pdf->Ln(3);
+		$pdf->Ln(3);
+		
+		$cuardo_3_X=13;
+		$cuardo_3_Y=55;
+		$medita_total_3 = 190;		
+		$anchoFact = $ancho_PV * 1.75;
+		$borde = 0;
+
+		// if($Grafico_PV){
+			$nuevaAltura = $pdf->GetY();
+			$pdf->Image($src,10,5,70,25);
+			// $pdf->SetY($altoImg + $nuevaAltura);
+		// }
+
+
+
+		$NombreArchivo = "Recibo_No_".generaCeros($Tipo_Recibo['Recibo_No'],9);
+		if($Grafico_PV){
+				$anchoImg = $ancho_PV * 1.75;
+				$altoImg = $anchoFact * 0.38;
+				$nuevaAltura = $pdf->GetY();
+				$pdf->Image($src,0,$nuevaAltura,$anchoImg,$altoImg);
+				$pdf->SetY($altoImg + $nuevaAltura);
+			}
+			if($Encabezado_PV){
+				if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
+				{
+					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],$borde,'L');
+					$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],$borde,'L');
+					//$pdf->Ln(6);
+				}else{
+					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],$borde,'L');
+					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],$borde,'L');
+					$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],$borde,'L');
+				}
+				$pdf->MultiCell($anchoFact,3,'Telefono: '.$_SESSION['INGRESO']['Telefono1']."/".$_SESSION['INGRESO']['FAX'] ,$borde, 'L');
+				$pdf->MultiCell($anchoFact,3,'Direccion: '.$_SESSION['INGRESO']['Direccion'],$borde, 'L');
+				// $pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Ciudad']."- Ecuador",$borde, 'L');
+			}
+
+
+			$pdf->Ln(3);
+			$pdf->Ln(3);
+
+			$anio = date("Y", strtotime($Tipo_Recibo['Fecha']));
+			$numero = $anio."-".generaCeros($Tipo_Recibo['Recibo_No'],9);
+
+			if($Tipo_Recibo['Tipo_Recibo'] = "I"){
+            	$textoReciboCaja = "COMPROBANTE DE INGRESO No. ";
+         	}else{
+            	$textoReciboCaja = "COMPROBANTE DE EGRESO No. ";
+         	}
+			if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+				$textoReciboCaja = "RECIBO CAJA No. ";
+			}
+
+
+			$NombreArchivo = "Recibo_No_".generaCeros($Tipo_Recibo['Recibo_No'],9);
+
+			$pdf->MultiCell($anchoFact,3,$textoReciboCaja.$numero,$borde, 'L');
+
+
+			$pdf->Ln(3);			
+			$pdf->Ln(3);
+
+			$pdf->MultiCell($anchoFact,3,"Fecha: ".$Tipo_Recibo['Fecha'],$borde, 'L');
+			$pdf->MultiCell($anchoFact,3,"Por USD ".$Tipo_Recibo['Total'],$borde,'L');
+			$pdf->MultiCell($anchoFact,3,"La suma de: ".str_pad((int)($Tipo_Recibo['Total']* 100), 2, "0", STR_PAD_LEFT)."/100",$borde,'L');
+
+
+			$pdf->Ln(3);			
+			$pdf->Ln(3);
+			$pdf->MultiCell($anchoFact,3,"--------------------------------------------",$borde, 'L');
+
+			if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+				$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE: DONACION",$borde,'L');
+			}else{
+				$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE:".$Tipo_Recibo['Concepto'],$borde,'L');
+			}
+
+			$pdf->MultiCell($anchoFact,3,"--------------------------------------------",$borde, 'L');
+
+		foreach ($abonos as $key => $value) {
+			// print_r($value);die();
+			$pdf->MultiCell($anchoFact,3,"Fecha: ".$Tipo_Recibo['Fecha'].' - '.$value['Banco'].' - '.str_pad($TFA['Factura'], 7, '0', STR_PAD_LEFT).' - Por USD '.number_format((float)$value['Abono'], 2, '.', ''),$borde,'L');
+		}
+
+
+		$pdf->MultiCell($anchoFact,3,"------------------------------------------------",$borde, 'L');
+
+		$pdf->Ln(3);
+		$pdf->Ln(3);
+		$pdf->Ln(3);
+		$pdf->MultiCell($anchoFact,3, "_____________      _______________",$borde,'C');
+		$pdf->MultiCell($anchoFact,3, "CONFORME      	    PROCESADO",$borde,'C');
+		$pdf->MultiCell($anchoFact,3, "C.I./R.U.C      	  POR ".$_SESSION['INGRESO']['Nombre_Completo'],$borde,'C');
+		$pdf->MultiCell($anchoFact,3,"".$TFA['CI_RUC_Cli']."      ".$_SESSION['INGRESO']['CodigoU'],$borde,'C');
+
+
+
+
+
+		$pdf->Output(dirname(__DIR__,3) . '/TEMP/'.$NombreArchivo.'.pdf','F');
+
+		return 1;
+    //      cPrint.printTexto Ini_X + 5.5, PosLinea, "TOTAL"
+    //      cPrint.printTexto Ini_X + 6.9, PosLinea, "USD"
+    //      cPrint.printVariable Ini_X + 6.2, PosLinea - 0.05, .Total, True, 3
+    //      PosLinea = PosLinea + 0.35
+    //      cPrint.printTexto Ini_X + 5.5, PosLinea, "ABONADO"
+    //      cPrint.printTexto Ini_X + 6.9, PosLinea, "USD"
+    //      cPrint.printVariable Ini_X + 6.2, PosLinea - 0.05, .SubTotal, True, 3
+    //      PosLinea = PosLinea + 0.35
+    //      cPrint.printTexto Ini_X + 5.5, PosLinea, "SALDO"
+    //      cPrint.printTexto Ini_X + 6.9, PosLinea, "USD"
+    //      cPrint.printVariable Ini_X + 6.2, PosLinea - 0.05, .Saldo, True, 3
+    //      PosLinea = PosLinea + 0.8
+    //      cPrint.printLinea Ini_X + 0.1, PosLinea - 0.1, Ini_X + 2, PosLinea - 0.1, Negro
+    //      cPrint.printLinea Ini_X + 3.5, PosLinea - 0.1, Ini_X + 5, PosLinea - 0.1, Negro
+    //      cPrint.printTexto Ini_X + 0.1, PosLinea, "CONFORME"
+    //      cPrint.printTexto Ini_X + 3.5, PosLinea, "PROCESADO"
+    //      PosLinea = PosLinea + 0.3
+    //      cPrint.printTexto Ini_X + 0.1, PosLinea, "C.I./R.U.C."
+    //      cPrint.printTexto Ini_X + 3.5, PosLinea, "POR"
+    //      PosLinea = PosLinea + 0.3
+    //      cPrint.printTexto Ini_X + 0.1, PosLinea, .CI_RUC
+    //      cPrint.printTexto Ini_X + 3.5, PosLinea, .CodUsuario
+
+    // End With
+	}
+
 
 }
 ?>
