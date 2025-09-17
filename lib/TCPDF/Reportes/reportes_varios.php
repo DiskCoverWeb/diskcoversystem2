@@ -296,7 +296,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 					//$pdf->MultiCell($anchoFact,3,.$CodigoN,0,'L');
 				}
 				
-				$PVP = (float)number_format($filasCP[0]['PVP_3'], 2, '.', '') * (float)$value['Cantidad'];
+				$PVP = number_format(floatval($filasCP[0]['PVP_3']), 2, '.', '') * floatval($value['Cantidad']);
 				$Total += $value['Cantidad'];
 				$TotalPVP += $PVP;
 
