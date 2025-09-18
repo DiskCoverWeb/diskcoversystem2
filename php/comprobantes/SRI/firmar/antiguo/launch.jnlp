@@ -18,10 +18,11 @@
         <jar href="lib/gson-2.8.2.jar"/>
     </resources>
     <application-desc main-class="javclientsri.JavClientSri">
-        <argument>2</argument>
-        <argument>1609202501091110030300120010030000011330911100312</argument>
-        <argument>C:\xampp\htdocs\facturacion\php1\comprobantes\entidades\entidad_7\CE7\FACTURAS\Autorizados</argument>
-        <argument>C:\xampp\htdocs\facturacion\php1\comprobantes\entidades\entidad_7\CE7\FACTURAS\No_autorizados</argument>
-        <argument>https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl</argument>
+        <argument>1</argument>
+        <argument>2012202406070216417900110010020000001611234567818</argument>
+        <argument>C:\xampp\htdocs\facturacion\php1\comprobantes\entidades\entidad_7\CE7\FACTURAS\Firmados</argument>
+        <argument>C:\xampp\htdocs\facturacion\php1\comprobantes\entidades\entidad_7\CE7\FACTURAS\Enviados</argument>
+        <argument>C:\xampp\htdocs\facturacion\php1\comprobantes\entidades\entidad_7\CE7\FACTURAS\Rechazados</argument>
+        <argument>https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl</argument>
     </application-desc>
 </jnlp>
