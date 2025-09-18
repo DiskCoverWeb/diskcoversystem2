@@ -301,7 +301,7 @@ function recalcular_todo()
 
 	console.log(total_de_totales);
 	$('#LabelTotal2').val(total_de_totales.toFixed(2));
-	$('#ADTotal').text(total_de_totales.toFixed(8))
+	$('#ADTotal').text(total_de_totales.toFixed(2))
 	$('#LabelSubTotal').val(total_de_totales.toFixed(2));
 	$('#LabelTotal').val(total_de_totales.toFixed(2));
 
