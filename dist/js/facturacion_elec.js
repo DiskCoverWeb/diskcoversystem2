@@ -764,8 +764,12 @@ function generar_factura() {
                 }).then(function() {
                     tipo_error_sri(data.Factura[1])
                 })
+            }else if(data.Factura[0] == -5){
+                 Swal.fire(data.Factura[1],'','error').then(function() {
+                    location.reload();            
+                })
             }else
-             {
+            {
                 Swal.fire('Error inesperado consulte con su proveedor','','error').then(function() {
                     location.reload();            
                 })

@@ -20,6 +20,8 @@ $(document).ready(function () {
           data: function(d) {
               var parametros = {                    
                areas:$('#ddl_areas').val(),
+               desde:$('#txt_desde').val(),
+               hasta:$('#txt_hasta').val(),
               };
               return { parametros: parametros };
           },   
@@ -65,7 +67,7 @@ $(document).ready(function () {
               return `<div class="d-flex align-items-center input-group-sm">
                         ${item.Motivo}
                         <span class="input-group-btn">
-                        <button type="button" class="btn btn-default btn-sm" onclick="modal_motivo('${item.Orden_No}','${item.motivoid}')">
+                        <button type="button" class="btn btn-default btn-sm" onclick="modal_motivo('${item.Orden_No}','${item.motivoid}','${item.TC}')">
                           <img src="../../img/png/transporte_caja.png" style="width:20px">
                         </button>
                         </span>
@@ -95,7 +97,7 @@ $(document).ready(function () {
              render: function(data, type, item) {
               if(item.listo==1)
               {
-                return `<button class="btn btn-primary btn-sm" onclick="guardar('`+item.Orden_No+`')"">Generar Comprobante</button`;  
+                return `<button class="btn btn-primary btn-sm" onclick="guardar('`+item.Orden_No+`','`+item.TC+`')"">Generar Comprobante</button`;  
               }else{ return ''; }                  
             }
           },
@@ -217,14 +219,14 @@ function cambiar_a_reportado()
       }
   });
 }
-function modal_motivo(orden,motivo)
+function modal_motivo(orden,motivo,TC)
 {
   $('#txt_idMotivo').val(motivo);
-   cargar_motivo_lista(orden,motivo);
+   cargar_motivo_lista(orden,motivo,TC);
     $('#myModal_motivo').modal('show');
 }
 
-function cargar_motivo_lista(orden,motivo)
+function cargar_motivo_lista(orden,motivo,TC)
 {
    if ($.fn.DataTable.isDataTable('#txt_motivo_lista')) {
       $('#txt_motivo_lista').DataTable().destroy();
@@ -233,6 +235,7 @@ function cargar_motivo_lista(orden,motivo)
   var parametros = {
       'orden':orden,
       'motivo':motivo,
+      'TC':TC,
   }
    $.ajax({
       type: "POST",
@@ -261,7 +264,8 @@ function cargar_motivo_lista(orden,motivo)
                     }else
                     {                    
                         tr+=`<td><input class="form-check-input" type="checkbox" onclick="cambiar_estado('`+item.ID+`')" id="rbl_`+item.ID+`" name="rbl_`+item.ID+`"></td>`
-                    }                    
+                    }
+                    tr+=`<td>`+item.SubModulo+`</td>`                    
                 tr+=`<td>
                         <button tittle="guardar Costo" class="btn btn-primary btn-sm" onclick="guardar_linea('`+item.ID+`','`+orden+`')"><i class="bx bx-save me-0"></i></button>
                     </td>
@@ -287,6 +291,7 @@ function cargar_motivo_lista(orden,motivo)
             columnDefs: [
                 { targets: 2, width: "200px" },
                 { targets: 3, width: "500px" },
+                { targets: 9, width: "300px" },
             ],
           });
           // Ejecutar en carga y cuando cambia el tamaño de pantalla
@@ -325,6 +330,27 @@ function cargar_motivo_lista(orden,motivo)
     }
 }
 
+function validar_por_submodulo(id)
+{
+  $('#rbl_'+id).prop('checked',true);
+  var submodulo = $('#ddl_subcta_'+id).val();
+  var estado = '0';
+  if($('#rbl_'+id).prop('checked'))
+  {
+    estado = '1';
+  }
+  var parametros = {'id':id,'estado':estado,'subcta':submodulo}
+   $.ajax({
+      type: "POST",
+      url:'../controlador/inventario/egreso_alimentosC.php?cambiar_estado_subcta=true',
+      data:{parametros:parametros},
+     dataType:'json',
+      success: function(data)
+      {
+         lista_egreso_checking()
+      }
+    });
+}
 
 
 function cambiar_estado(id)
@@ -447,22 +473,27 @@ function lista_egreso_checking()
           }
       });
   }
-  function guardar(orden)
+  function guardar(orden,TC)
   {
-
-    subcta = $('#ddl_subcta_'+orden).val();
-    if(subcta=='')
+    subcta = '';
+    if(TC!='P')
     {
-      Swal.fire("Seleccione una cuenta de sub modulo","","error");
-      return false;
+      subcta = $('#ddl_subcta_'+orden).val();
+       if(subcta=='')
+      {
+        Swal.fire("Seleccione una cuenta de sub modulo","","error");
+        return false;
+      }
     }
+   
     parametros = 
     {
       'orden':orden,
       'submodulo':subcta,
+      'TC':TC,
     }
 
-    $('#myModal_espera').modal('show');
+    // $('#myModal_espera').modal('show');
     $.ajax({
       type: "POST",
       url:   '../controlador/inventario/egreso_alimentosC.php?generar_comprobante=true',

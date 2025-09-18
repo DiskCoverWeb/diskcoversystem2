@@ -70,7 +70,7 @@ class egreso_alimentosM
 			}
 			if($grupo)
 			{
-				$sql.=" CP.Codigo_Inv = '".$grupo."'";
+				$sql.=" AND CP.Codigo_Inv = '".$grupo."'";
 			}
 			
 			// print_r($sql);die();
@@ -131,9 +131,10 @@ class egreso_alimentosM
 		return $this->db->String_Sql($sql);
 	}
 
-	function lista_egreso_checking($query=false,$id=false,$area =false,$orden=false)
+	function lista_egreso_checking($query=false,$id=false,$area =false,$orden=false,$desde=false,$hasta=false)
 	{
 		$sql = "SELECT
+				CC.TC,
 				TK.Fecha,
 				TK.Detalle,
 			    TK.Orden_No,
@@ -152,6 +153,7 @@ class egreso_alimentosM
 			INNER JOIN Clientes C1 ON TK.CodigoU = C1.Codigo
 			INNER JOIN Catalogo_Proceso CPO ON TK.Codigo_Tra = CPO.Cmds
 			INNER JOIN Catalogo_Proceso CPO1 ON TK.Modelo = CPO1.Cmds
+			INNER JOIN Catalogo_Cuentas CC ON CPO1.Cta_Debe = CC.Codigo
 			WHERE TK.Item = '".$_SESSION['INGRESO']['item']."'
 			AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
 			AND TK.Item = CP.Item
@@ -173,7 +175,11 @@ class egreso_alimentosM
 			{
 				$sql.=" AND TK.Orden_No ='".$orden."'";
 			}
-			$sql.=" GROUP by Orden_No,TK.Fecha,TK.Detalle,procedencia,CPO.Cmds,CPO1.Cmds ";
+			if($desde!='' && $hasta!='')
+			{
+				$sql.=" AND TK.Fecha between '".$desde."' aND '".$hasta."'";
+			}
+			$sql.=" GROUP by CC.TC,Orden_No,TK.Fecha,TK.Detalle,procedencia,CPO.Cmds,CPO1.Cmds ";
 			// print_r($sql);die();
 		return $this->db->datos($sql);
 	}
@@ -261,7 +267,7 @@ class egreso_alimentosM
 
 	function cargar_motivo_lista($query=false,$id=false,$orden=false,$motivo=false)
 	{		
-		$sql = "SELECT TK.*,C.Cliente,CP.Producto,CP.Unidad 
+		$sql = "SELECT TK.Periodo, TK.T, TK.CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.TP, TK.Numero, TK.Entrada, TK.Salida, TK.Valor_Unitario, TK.Valor_Total, TK.Existencia, TK.Costo, TK.Total, TK.Codigo_P, TK.Descuento, TK.Descuento1, TK.Cta_Inv, TK.Contra_Cta, TK.Orden_No, TK.PVP, TK.Total_IVA, TK.Porc_C, TK.CodigoU, TK.Item, TK.X, TK.Stock_Bod, TK.Unit_Bod, TK.Valor_Bod, TK.Stock_Barra, TK.Costo_Bod, TK.Unit_Barr, TK.Costo_Barr, TK.Valor_Barr, TK.Total_Bod, TK.Total_Barr, TK.Solicitud, TK.CodigoL, TK.Cod_Tarifa, TK.Fecha_DUI, TK.No_Refrendo, DUI, Precio_FOB, Comision, Trans_Unit, TK.Utilidad, Guia_No, CodMarca, Lote_No, TK.Procesado, TK.Codigo_Dr, TK.Codigo_Tra, TK.Fecha_Fab, TK.Fecha_Exp, Modelo, TK.Procedencia, TK.Serie_No, TK.TC, TK.Serie, TK.Factura, TK.Detalle, TK.Centro_Costo, Tipo_Empaque, TK.ID,TK.Cmds,C.Cliente,CP.Producto,CP.Unidad,C.Cliente,CP.Producto,CP.Unidad 
 			FROM Trans_Kardex TK
 			INNER JOIN Catalogo_Productos CP on TK.Codigo_Inv = CP.Codigo_Inv 
 			INNER JOIN Clientes C on TK.Codigo_P = C.Codigo
@@ -370,6 +376,28 @@ class egreso_alimentosM
 	      return $this->db->datos($sql);
  
 	}
+
+	function datos_asiento_debe_trans($orden,$fecha,$diferente=false)
+	{
+      // 'LISTA DE CODIGO DE ANEXOS
+     $sql = "SELECT SUM(VALOR_TOTAL) as 'total',Contra_Cta as 'cuenta',Fecha as 'fecha',TC 
+     FROM Trans_Kardex  
+     WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+     AND Orden_No = '".$orden."' 
+     AND Fecha = '".$fecha."'";
+     if($diferente)
+     {
+     	$diferente = explode(',',$diferente);
+     	foreach ($diferente as $key => $value) {
+     		$sql.=" AND Codigo_Inv <>'".$value."' ";
+     	}
+     }   
+     $sql.=" GROUP BY Orden_No,Contra_Cta,Fecha,TC";
+          // print_r($sql);die();
+     return $this->db->datos($sql);
+  
+	}
+
 	function eliminar_asiento($t_no)
 	{
 		$sql = "DELETE Asiento 

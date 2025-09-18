@@ -909,6 +909,8 @@ class punto_ventaC
 							// $rep['respuesta_guia'] = $rep1;
 							// $rep['pdf_guia'] = $imp_guia;
 							// $rep['clave_guia'] = $clave_guia;
+						if(is_array($rep))
+						{
 
 							$respuesta_facturacion['impresion_rodillo'] = $_SESSION['INGRESO']['Impresora_Rodillo'];
 							$rep['pdf'] = $imp;
@@ -918,6 +920,13 @@ class punto_ventaC
 
 
 							return $respuesta_facturacion; 
+						}else
+						{
+							$respuesta_facturacion['Factura'][0] = -5;
+							$respuesta_facturacion['Factura'][1] = $rep;
+
+							return $respuesta_facturacion; 						
+						}
 
 						// array('respuesta' => -1, 'pdf' => $imp, 'text' => $rep, 'clave' => $clave, 'respuesta_guia' => $rep1, 'pdf_guia' => $imp_guia, 'clave_guia' => $clave_guia, 'rodillo' => $_SESSION['INGRESO']['Impresora_Rodillo']);
 					}

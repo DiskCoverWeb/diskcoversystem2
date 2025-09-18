@@ -107,6 +107,11 @@ if(isset($_GET['eliminar_egreso_check']))
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->eliminar_egreso_check($parametros));
 }
+if(isset($_GET['cambiar_estado_subcta']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->cambiar_estado_subcta($parametros));
+}
 
 /**
  * 
@@ -351,26 +356,48 @@ class egreso_alimentosC
 		}
 		// print_r($parametros);die();
 		$tr = '';
-		$datos = $this->modelo->lista_egreso_checking(false,false,$area);
+		$datos = $this->modelo->lista_egreso_checking(false,false,$area,false,$parametros['desde'],$parametros['hasta']);
 		// print_r($datos);die();
 		foreach ($datos as $key => $value) {
-			$datos[$key]['listo'] = 1;
-			$op='<select class="form-select form-select-sm w-100" id="ddl_subcta_'.$value['Orden_No'].'" name="ddl_subcta_'.$value['Orden_No'].'">
-							<option value="">Seleccione modulo</option>
-							'.$this->catalog_cuentas($value['motivoid']).'
-						</select>
-					</td>
-				</tr>';
-				$datos[$key]['SubModulo'] = $op ;
+			$datos[$key]['listo'] = 1;		
+			$op = "";	
 			$lineas = $this->modelo->cargar_motivo_lista(false,false,$value['Orden_No'],$value['motivoid']);
-			// print_r($lineas);
+
 			foreach ($lineas as $key2 => $value2) {
-				if($value2['Solicitud']=="0")
+				if($value['TC']=='P')
 				{
-					$datos[$key]['listo'] = "0";
-					break;
+					if($value2['Solicitud']=="0" || $value2['Centro_Costo']==".")
+					{
+						$datos[$key]['listo'] = "0";
+						break;
+					}
+				}else
+				{
+					if($value2['Solicitud']=="0")
+					{
+						$datos[$key]['listo'] = "0";
+						break;
+					}
 				}
 			}
+
+			if($value['TC']!='P')
+			{
+				$op='<select class="form-select form-select-sm w-100" id="ddl_subcta_'.$value['Orden_No'].'" name="ddl_subcta_'.$value['Orden_No'].'">
+							<option value="">Seleccione modulo</option>
+							'.$this->catalog_cuentas($value['motivoid']).'
+					</select>';
+
+			}else
+			{
+				if($datos[$key]['listo']!=1)
+				{
+					$op = '<span style="color:red">Seleccione y valide sub modulo por cada item Ingresando en motivo</span>';
+				}
+			}					
+			$datos[$key]['SubModulo'] = $op ;
+			// print_r($lineas);
+			
 		}
 
 		// print_r($datos);die();
@@ -433,6 +460,8 @@ class egreso_alimentosC
 	{
 		$tr='';
 		$datos = $this->modelo->cargar_motivo_lista(false,false,$parametros['orden'],$parametros['motivo']);
+		$op = "";
+		
 		foreach ($datos as $key => $value) {
 			// print_r($value);die();
 			$stock = 0;
@@ -441,6 +470,16 @@ class egreso_alimentosC
 			if($datos_stock['respueta']==1)
 			{
 				$datos[$key]['Stock'] = $datos_stock['datos']['Stock'];
+			}
+			if($parametros['TC'] == 'P')
+			{
+				$datos[$key]['SubModulo'] = '<select class="form-select form-select-sm w-100" id="ddl_subcta_'.$value['ID'].'" name="ddl_subcta_'.$value['ID'].'" onchange="validar_por_submodulo(\''.$value['ID'].'\')">
+							<option value="">Seleccione modulo</option>
+							'.$this->catalog_cuentas($parametros['motivo'],$value['Centro_Costo'].'-'.$value['CodigoL']).'
+						</select>';
+			}else
+			{
+				$datos[$key]['SubModulo'] = '';
 			}
 		}
 
@@ -458,7 +497,21 @@ class egreso_alimentosC
 		// print_r($parametros);die();
 	}
 
-	function catalog_cuentas($motivo)
+	function cambiar_estado_subcta($parametros)
+	{
+		// print_r($parametros);die();
+		$codigoCta = explode("-",$parametros['subcta']);
+		SetAdoAddNew("Trans_Kardex"); 		
+	   	SetAdoFields('Solicitud',$parametros['estado']);
+	   	SetAdoFields('Centro_Costo',$codigoCta[0]);
+	   	SetAdoFields('CodigoL',$codigoCta[1]);
+	   	SetAdoFieldsWhere('ID',$parametros['id']);
+	  	return  SetAdoUpdateGeneric();
+
+		// print_r($parametros);die();
+	}
+
+	function catalog_cuentas($motivo,$subcta='.')
 	{
 		$tr='';				
 		$motivo = $this->modelo->catalogo_procesos(false,$motivo);
@@ -476,7 +529,19 @@ class egreso_alimentosC
 					$datos = $this->modelo->Catalogo_SubCtas($cuenta[0]['SubCta']);
 				}
 				foreach ($datos as $key => $value) {
-					$tr.='<option value="'.$value['Cta'].'-'.$value['Codigo'].'">'.$value['Detalle'].'</option>';
+					if($subcta!='.')
+					{
+						if($value['Cta'].'-'.$value['Codigo']==$subcta)
+						{
+							$tr.='<option value="'.$value['Cta'].'-'.$value['Codigo'].'" selected >'.$value['Detalle'].'</option>';
+
+						}else
+						{
+							$tr.='<option value="'.$value['Cta'].'-'.$value['Codigo'].'">'.$value['Detalle'].'</option>';
+						}
+					}else{
+						$tr.='<option value="'.$value['Cta'].'-'.$value['Codigo'].'">'.$value['Detalle'].'</option>';
+					}
 				}
 			}
 		}
@@ -497,10 +562,6 @@ class egreso_alimentosC
 	{
 		// print_r($parametros);die();
 
-		$datasubCuenta = explode('-',$parametros['submodulo']);
-		$cta_inv = $datasubCuenta[0];
-		$CodigoL = $datasubCuenta[1];
-		$ruc = $CodigoL;
 		$tipo = '';
 		$orden = $this->modelo->lista_egreso_checking(false,false,false,$parametros['orden']);
 
@@ -518,9 +579,17 @@ class egreso_alimentosC
 		}
 
 		SetAdoAddNew("Trans_Kardex"); 		
-	   	SetAdoFields('Contra_Cta',$motivo[0]['Cta_Debe']);
-	   	SetAdoFields('CodigoL',$CodigoL);
-	   	SetAdoFieldsWhere('Orden_No',$parametros['orden']);
+		SetAdoFields('Contra_Cta',$motivo[0]['Cta_Debe']);
+
+		if($parametros['TC']!='P')
+		{
+			$datasubCuenta = explode('-',$parametros['submodulo']);
+			$cta_inv = $datasubCuenta[0];
+			$CodigoL = $datasubCuenta[1];
+			$ruc = $CodigoL;
+		   	SetAdoFields('CodigoL',$CodigoL);
+		}
+		SetAdoFieldsWhere('Orden_No',$parametros['orden']);
 	   	SetAdoFieldsWhere('T','G');
 	  	SetAdoUpdateGeneric();
 
@@ -535,6 +604,8 @@ class egreso_alimentosC
 		// print_r($tipo);die();
 
 		$asientos_SC = $this->modelo->datos_asiento_SC_trans($parametros['orden']);
+
+		// print_r($asientos_SC);die();
 
 		foreach ($asientos_SC as $key => $value) {
 			 $cuenta = $this->modelo->catalogo_cuentas($value['CONTRA_CTA']);
@@ -571,7 +642,7 @@ class egreso_alimentosC
 		// print_r('expression');die();
 
 		//asientos para el debe
-		$asiento_debe = $this->ing_des->datos_asiento_debe_trans($parametros['orden'],$fecha);
+		$asiento_debe = $this->modelo->datos_asiento_debe_trans($parametros['orden'],$fecha);
 		// print_r($asiento_debe);		
 		foreach ($asiento_debe as $key => $value) 
 		{
@@ -685,10 +756,8 @@ class egreso_alimentosC
 	}
 	function ingresar_trans_kardex_salidas($orden,$comprobante,$nombre='')
     {
+    	//funcion que actualiza al momento de generar el comprobante en egresos
 		$datos_K = $this->modelo->cargar_motivo_lista(false,false,$orden);
-		// print_r($datos_K);die();
-		// $comprobante = explode('.',$comprobante);
-		// $comprobante = explode('-',trim($comprobante[1]));
 		$comprobante = $comprobante;
 		$resp = 1;
 		$lista = '';
@@ -699,7 +768,7 @@ class egreso_alimentosC
 		   	SetAdoFields('T','N');
 		   	SetAdoFields('Numero',$comprobante);
 		   	// SetAdoFields('Detalle','Salida inventario prueba');
-		   	SetAdoFields('TP','.');
+		   	SetAdoFields('TP','CD');
 		   	SetAdoFieldsWhere('ID',$value['ID']);
 		  	SetAdoUpdateGeneric();
 		}

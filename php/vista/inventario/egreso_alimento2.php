@@ -62,6 +62,19 @@
 	<div class="card">
 		<div class="card-body">
 			<div class="row">
+				<div class="col-sm-2">
+					<b>Desde</b>
+					<input type="date" name="txt_desde" id="txt_desde" value="<?php echo date('Y-m-d'); ?>">
+				</div>				
+				<div class="col-sm-2">
+					<b>Hasta</b>
+					<input type="date" name="txt_hasta" id="txt_hasta" value="<?php echo date('Y-m-d'); ?>">					
+				</div>
+				<div class="col-sm-8 text-end">
+					<button type="button" onclick="lista_egreso_checking()" class="btn btn-primary btn-sm">Buscar</button>
+				</div>
+			</div>
+			<div class="row">
 				<!-- <div class="col-sm-12"> -->
 					<table class="table-sm table bg-light"  class="display" style="width:100%"  id="tbl_asignados">
 						<thead class="text-center bg-primary text-white">
@@ -146,7 +159,7 @@
 
 
 <div id="myModal_motivo" class="modal fade myModalNuevoCliente" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content" style="background: antiquewhite;">
             <div class="modal-header bg-primary">
 				<h4 class="modal-title text-white">Motivo</h4>
@@ -168,6 +181,7 @@
 	            				<th>Precio / Costo</th>
 	            				<th>Total</th>
 	            				<th>Validado</th>
+	            				<th style="width:300px"></th>
 	            				<th></th>
 	            			</thead>
 	            			<tbody id="tbl_body_motivo" >
