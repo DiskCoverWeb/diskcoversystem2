@@ -175,7 +175,7 @@ function cargarRegistrosProductos(){
 						<td colspan="3"><b>Total</b></td>
 						<td><b>`+cTotalProds+`</b></td>
 						<td></td>
-						<td><b id="ADTotal">`+tTotalProds.toFixed(8)+`</b></td>
+						<td><b id="ADTotal">`+tTotalProds.toFixed(2)+`</b></td>
 						<td colspan="2"></td>
 					</tr>`
 
