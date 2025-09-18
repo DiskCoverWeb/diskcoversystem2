@@ -541,9 +541,12 @@ function enviar_email_comprobantes(nombre_pdf,clave_Acceso,email)
     }else
     {
        year = new Date().getFullYear();
+       mes =  String(new Date().getMonth() + 1).padStart(2, "0");
+       ultimoDia = new Date(year,parseInt(mes), 0).getDate();
+       // console.log(ultimoDia);
       // console.log(currentTime);
-      $('#txt_desde').val(year+'-01-01');
-      $('#txt_hasta').val(year+'-01-30');
+      $('#txt_desde').val(year+'-'+mes+'-01');
+      $('#txt_hasta').val(year+'-'+mes+'-'+ultimoDia);
     }
  }
 
