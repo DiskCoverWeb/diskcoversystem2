@@ -297,9 +297,13 @@ function recalcular_todo()
 		total_total = total_total+valor;
 	})
 
-	var total_de_totales = parseFloat(total_total)+parseFloat(total_sin_recalculo);
+	var total_de_totales_ = parseFloat(total_total)+parseFloat(total_sin_recalculo);
+
+	var total_de_totales = Math.round((total_de_totales_ + Number.EPSILON) * 100) / 100;
+
 
 	console.log(total_de_totales);
+
 	$('#LabelTotal2').val(total_de_totales.toFixed(2));
 	$('#ADTotal').text(total_de_totales.toFixed(2))
 	$('#LabelSubTotal').val(total_de_totales.toFixed(2));
