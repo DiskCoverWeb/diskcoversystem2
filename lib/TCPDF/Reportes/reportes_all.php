@@ -1614,7 +1614,11 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 			$pdf->MultiCell($anchoFact,3,"Por USD ".$Tipo_Recibo['Total'],$borde,'L');
 			$pdf->MultiCell($anchoFact,3,"La suma de: ".str_pad((int)($Tipo_Recibo['Total']* 100), 2, "0", STR_PAD_LEFT)."/100",$borde,'L');
 
-
+			$pdf->Ln(3);			
+			$pdf->Ln(3);
+			$pdf->MultiCell($anchoFact,3,"--------------------------------------------",$borde, 'L');
+			$pdf->MultiCell($anchoFact,3,"Usuario: ".$TFA['Recibi_de'],$borde, 'L');
+			$pdf->MultiCell($anchoFact,3,"NOTA DE DONACION: ".$TFA['Establecimiento'].'-'.$TFA['Emision'].'-'.generaCeros($Tipo_Recibo['Recibo_No'],9),$borde, 'L');
 			$pdf->Ln(3);			
 			$pdf->Ln(3);
 			$pdf->MultiCell($anchoFact,3,"--------------------------------------------",$borde, 'L');
@@ -1638,10 +1642,24 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		$pdf->Ln(3);
 		$pdf->Ln(3);
 		$pdf->Ln(3);
-		$pdf->MultiCell($anchoFact,3, "_____________      _______________",$borde,'C');
-		$pdf->MultiCell($anchoFact,3, "CONFORME      	    PROCESADO",$borde,'C');
-		$pdf->MultiCell($anchoFact,3, "C.I./R.U.C      	  POR ".$_SESSION['INGRESO']['Nombre_Completo'],$borde,'C');
-		$pdf->MultiCell($anchoFact,3,"".$TFA['CI_RUC_Cli']."      ".$_SESSION['INGRESO']['CodigoU'],$borde,'C');
+
+		$y = $pdf->GetY();
+		$pdf->Cell($anchoFact/2,3, "_____________",0,0,'C' );
+		$pdf->Cell($anchoFact/2,3, "_____________",0,0,'C' );
+		$pdf->Ln(6);
+		$pdf->Cell($anchoFact/2,3, "C.I./R.U.C",0,0,'C' );
+		$pdf->Cell($anchoFact/2,3, "POR ".$_SESSION['INGRESO']['Nombre_Completo'],0,0,'C' );
+		$pdf->Ln(6);
+		$pdf->Cell($anchoFact/2,3,$TFA['CI_RUC_Cli'],0,0,'C' );
+		$pdf->Cell($anchoFact/2,3,$_SESSION['INGRESO']['CodigoU'],0,0,'C' );
+
+
+
+
+		// $pdf->MultiCell($anchoFact,3, "_____________      _______________",$borde,'C');
+		// $pdf->MultiCell($anchoFact,3, "CONFORME      	    PROCESADO",$borde,'C');
+		// $pdf->MultiCell($anchoFact,3, "C.I./R.U.C      	  POR ".$_SESSION['INGRESO']['Nombre_Completo'],$borde,'L');
+		// $pdf->MultiCell($anchoFact,3,"".$TFA['CI_RUC_Cli']."      ".$_SESSION['INGRESO']['CodigoU'],$borde,'L');
 
 
 
@@ -1650,30 +1668,6 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		$pdf->Output(dirname(__DIR__,3) . '/TEMP/'.$NombreArchivo.'.pdf','F');
 
 		return 1;
-    //      cPrint.printTexto Ini_X + 5.5, PosLinea, "TOTAL"
-    //      cPrint.printTexto Ini_X + 6.9, PosLinea, "USD"
-    //      cPrint.printVariable Ini_X + 6.2, PosLinea - 0.05, .Total, True, 3
-    //      PosLinea = PosLinea + 0.35
-    //      cPrint.printTexto Ini_X + 5.5, PosLinea, "ABONADO"
-    //      cPrint.printTexto Ini_X + 6.9, PosLinea, "USD"
-    //      cPrint.printVariable Ini_X + 6.2, PosLinea - 0.05, .SubTotal, True, 3
-    //      PosLinea = PosLinea + 0.35
-    //      cPrint.printTexto Ini_X + 5.5, PosLinea, "SALDO"
-    //      cPrint.printTexto Ini_X + 6.9, PosLinea, "USD"
-    //      cPrint.printVariable Ini_X + 6.2, PosLinea - 0.05, .Saldo, True, 3
-    //      PosLinea = PosLinea + 0.8
-    //      cPrint.printLinea Ini_X + 0.1, PosLinea - 0.1, Ini_X + 2, PosLinea - 0.1, Negro
-    //      cPrint.printLinea Ini_X + 3.5, PosLinea - 0.1, Ini_X + 5, PosLinea - 0.1, Negro
-    //      cPrint.printTexto Ini_X + 0.1, PosLinea, "CONFORME"
-    //      cPrint.printTexto Ini_X + 3.5, PosLinea, "PROCESADO"
-    //      PosLinea = PosLinea + 0.3
-    //      cPrint.printTexto Ini_X + 0.1, PosLinea, "C.I./R.U.C."
-    //      cPrint.printTexto Ini_X + 3.5, PosLinea, "POR"
-    //      PosLinea = PosLinea + 0.3
-    //      cPrint.printTexto Ini_X + 0.1, PosLinea, .CI_RUC
-    //      cPrint.printTexto Ini_X + 3.5, PosLinea, .CodUsuario
-
-    // End With
 	}
 
 
