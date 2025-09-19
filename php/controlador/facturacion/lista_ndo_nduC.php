@@ -44,6 +44,10 @@ if (isset($_GET['ver_fac'])) {
 	// print_r('sss');die();
 	echo $controlador->ver_fac($_GET['codigo'], $_GET['ser'], $_GET['ci'], $_GET['per'], $_GET['auto'], $_GET['tc']);
 }
+if (isset($_GET['ver_fac_recibo'])) {
+	// print_r('sss');die();
+	echo $controlador->ver_fac_recibo($_GET['codigo'], $_GET['ser'], $_GET['ci'], $_GET['per'], $_GET['auto'], $_GET['tc']);
+}
 if (isset($_GET['ver_fac_url'])) {
 	// print_r('sss');die();
 	$controlador->ver_fac($_GET['codigo'], $_GET['ser'], $_GET['ci'], $_GET['per'], $_GET['auto'], $_GET['tc'], false);
@@ -422,6 +426,48 @@ class lista_facturasC
 		// print_r($abonos);die();
 
 		$ticket = $this->pdf->Imprimir_Punto_Venta($TFA,$abonos);
+		return $ticket;
+		
+
+	}
+
+	function ver_fac_recibo($cod, $ser, $ci, $per, $auto, $tc, $descargar = true)
+	{
+		$autorizacion = $auto;
+
+		//nota de ndo
+		$FA = array(
+			'Factura' => $cod,
+			'Serie' => $ser,
+			'Autorizacion' => $auto,
+			'TC' => $tc
+		);
+
+		// detalles de factura
+		$FA2 = array(
+			'Factura' => $cod,
+			'Serie' => $ser,
+			'TC' => 'FA'
+		);
+
+
+		$TFA = Imprimir_Punto_Venta_Grafico_datos($FA);
+		$TFA['CLAVE'] = '.';
+		$TFA['PorcIva'] = $_SESSION['INGRESO']['porc'];
+
+		// print_r($TFA);die();
+
+		$TFA2 = Imprimir_Punto_Venta_Grafico_datos($FA2);
+		if(isset($TFA2['factura'][0]['Autorizacion']))
+		{
+			$autorizacion = $TFA2['factura'][0]['Autorizacion'];
+		}
+
+		$abonos = $this->modelo->trans_abonos($TFA['factura'][0]['Factura'],$TFA['factura'][0]['Serie'],$TFA['factura'][0]['CodigoC'],$autorizacion);
+
+		// print_r($abonos);die();
+
+		$ticket = $this->pdf->Imprimir_Punto_Venta_recibo($TFA,$abonos);
 		return $ticket;
 		
 

@@ -1063,7 +1063,7 @@ var tbl_facturas_Noautorizadas;
 
     $('#myModal_espera').show();     
     var peri = $('#ddl_periodo').val();
-    var url = '../controlador/facturacion/lista_ndo_nduC.php?ver_fac=true&codigo='+id+'&ser='+serie+'&ci='+ci+'&per='+peri+'&auto='+aut+'&tc='+tc;
+    var url = '../controlador/facturacion/lista_ndo_nduC.php?ver_fac_recibo=true&codigo='+id+'&ser='+serie+'&ci='+ci+'&per='+peri+'&auto='+aut+'&tc='+tc;
     var html='<iframe style="width: 48mm; height: 100vh; border: none;" src="'+url+'&pdf=no" frameborder="0" allowfullscreen id="re_ticket"></iframe>';
     $('#re_frame').html(html);
     $('#myModal_espera').hide();

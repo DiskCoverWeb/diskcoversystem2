@@ -459,6 +459,175 @@ $ticket.='
 return $ticket;
 }
 
+
+function Imprimir_Punto_Venta_recibo($info,$abonos,$descagar=true,)
+{	
+	$filasTA = $abonos;
+
+	$sql = "SELECT Usuario
+	FROM Accesos 
+	WHERE Codigo = '".$info['lineas'][0]['CodigoU']."'";
+
+	$filasUsuario = $this->db->datos($sql);
+
+
+	$CantBlancos = "";
+	$Grafico_PV = Leer_Campo_Empresa("Grafico_PV");
+	$ancho_PV = Leer_Campo_Empresa("Cant_Ancho_PV");
+	$Encabezado_PV = Leer_Campo_Empresa("Encabezado_PV");
+	
+	$Total = 0;
+	$Total_IVA = 0;
+	$Codigo1 = $info['factura'][0]['CodigoU'];
+	$info['Cliente'] = $info['factura'][0]['Cliente'];
+	$Codigo1 = substr($Codigo1, 0, 4)."X".substr($Codigo1, strlen($Codigo1)-1, 2);
+	$Producto = "";
+	if($ancho_PV < 26){
+		$ancho_PV = 26;
+	}
+	if(isset($_SESSION['INGRESO']['Logo_Tipo']))
+		{
+		$logo=$_SESSION['INGRESO']['Logo_Tipo'];
+		//si es jpg
+		$src = dirname(__DIR__,3).'/img/logotipos/'.$logo.'.jpg'; 
+		if(!file_exists($src))
+		{
+			$src = dirname(__DIR__,3).'/img/logotipos/'.$logo.'.gif'; 
+			if(!file_exists($src))
+			{
+				$src = dirname(__DIR__,3).'/img/logotipos/'.$logo.'.png'; 
+				if(!file_exists($src))
+				{
+					$logo="diskcover_web";
+					$src= dirname(__DIR__,3).'/img/logotipos/'.$logo.'.gif';
+
+				}
+
+			}
+
+		}
+	}
+// print_r($info);die();
+
+$src = str_replace(dirname(__DIR__,3),'', $src);
+
+//3.77 = a 1 pixel
+
+$margenesX = 6;
+$margenesY = 2;
+$anchoFact = $ancho_PV * 1.75;
+$anchoImg = ($ancho_PV * 1.75)*3.77;
+$altoImg = ($anchoFact * 0.38)*3.77;
+
+$ticket  = '
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial;
+            font-size: 12px;
+            width: 60mm;       /* Ancho seguro para 58mm de papel */
+            margin: 0;         /* Elimina márgenes */
+            padding: 5mm;        /* Elimina relleno */
+
+
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Fuerza el ajuste de columnas */
+            white-space: pre-wrap; 
+        }
+        td, th {
+            padding: 2px;
+            word-break: break-word; /* Rompe palabras largas */
+            overflow: hidden;       /* Oculta contenido que exceda */
+        }
+    </style>
+</head>
+<body>
+<pre>
+<table style="font-family: Arial">';
+	
+	if(count($filasTA)>0)
+	{
+	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
+	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
+	$ticket.= '<tr><td colspan="3"><img src="../../../'.$src.'" style="width: 210px; height: '.$altoImg.'px;"></img></td></tr>';
+	if($Encabezado_PV){
+		if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
+		{
+			$ticket.="<tr><td colspan='3'>".$_SESSION['INGRESO']['Razon_Social']."</td></tr>";
+			$ticket.="<tr><td colspan='3'>R.U.C ".$_SESSION['INGRESO']['RUC']."</td></tr>";
+			//$pdf->Ln(6);
+		}else if($info['factura'][0]['TC'] == 'DO' || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
+			
+			$ticket.="<tr><td colspan='3'>R.U.C ".$_SESSION['INGRESO']['RUC']."</td></tr>";
+		}else{
+			$ticket.="<tr><td colspan='3'>".$_SESSION['INGRESO']['Razon_Social']."</td></tr>";
+			$ticket.="<tr><td colspan='3'>".$_SESSION['INGRESO']['Nombre_Comercial']."</td></tr>";
+			$ticket.="<tr><td colspan='3'>R.U.C ".$_SESSION['INGRESO']['RUC']."</td></tr>";
+		}
+		$ticket.="<tr><td colspan='3'>Teléfono: ".$_SESSION['INGRESO']['Telefono1']."</td></tr>";
+		$ticket.="<tr><td colspan='3'>Dirección: ".$_SESSION['INGRESO']['Direccion']."</td></tr>";
+	}
+	$textoReciboCaja = "INGRESO No. ";
+	if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+		$textoReciboCaja = "RECIBO CAJA No. ";
+	}
+
+
+	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";		
+		$ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Recibo_No']."<b></td></tr>";
+
+		// $ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja ."0000</b></td></tr>";
+		$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
+
+		$ticket.="<tr><td colspan='3'>Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d')."</td></tr>";
+		$ticket.="<tr><td colspan='3'>Por USD ".number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')."</td></tr>";
+		$ticket.="<tr><td colspan='3'>La suma de: ".str_pad((int)($info['factura'][0]['Total_MN'] * 100), 2, "0", STR_PAD_LEFT)."/100</td></tr>";
+
+		$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
+		$ticket.="<tr><td colspan='3'>Usuario: ".$info['factura'][0]['Cliente']."</td></tr>";
+		$ticket.="<tr><td colspan='3'>NOTA DE DONACION No. ".$info['factura'][0]['Serie']."-".str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT)."</td></tr>";
+
+		$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
+
+
+		if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+			$ticket.="<tr><td colspan='3'>POR CONCEPTO DE: DONACION</td></tr>";
+		}else{
+			$ticket.="<tr><td colspan='3'>POR CONCEPTO DE:</td></tr>";
+		}
+
+		$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
+		foreach ($filasTA as $key => $value) {
+			// print_r($value);die();
+			$ticket.="<tr><td colspan='3'>Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d').' - '.$value['Banco'].' - '.str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).' - Por USD '.number_format((float)$value['Abono'], 2, '.', '')."</td></tr>";
+		}
+
+		// $ticket.="<tr><td colspan='3'>Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d').' - EFECTIVO MN - '.str_pad($info['factura'][0]['Factura'], 7, '0', STR_PAD_LEFT).' - Por USD '.number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')."</td></tr>";
+		$ticket.="<tr><td colspan='3'>-------------------------------------------------------</td></tr>";
+
+		$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
+		$ticket.="<tr><td colspan='3'>______________          ______________</td></tr>";
+		$ticket.="<tr><td colspan='3'>      Conforme                       Procesado</td></tr>";
+		$ticket.="<tr><td colspan='3'>      C.I./R.U.C                   Por: ".$filasUsuario[0]['Usuario']."</td></tr>";
+		$ticket.="<tr><td colspan='3'> ".$info['factura'][0]['RUC_CI']."               ".$info['factura'][0]['CodigoU']."</td></tr>";
+	}else
+	{
+		$ticket.='<tr><td><h1>SIN RECIBO DE CAJA - SIN ABONOS</h1></td></tr>';
+	}
+$ticket.='
+</table></pre>
+</body>
+</html>';
+
+return $ticket;
+}
+
 function CompilarString($cadSQL, $lString = 0, $quitarPuntos = false)
 {
 	if ($lString > 0) {
