@@ -633,7 +633,7 @@ class egreso_alimentosC
                     'valorn'=> round($value['total'],2),//valor de sub cuenta 
                     'moneda'=> 1, /// moneda 1
                     'Trans'=>$detalle_sc,//detalle que se trae del asiento
-                    'T_N'=> '99',
+                    'T_N'=> '109',
                     't'=> $sub[0]['TC'],                        
                   );
                   $this->ing_des->generar_asientos_SC($dataSub);
@@ -659,7 +659,7 @@ class egreso_alimentosC
                   "tipo_cue" => 1,
                   "cotizacion" => 0,
                   "con" => 0,// depende de moneda
-                  "t_no" => '99',
+                  "t_no" => '109',
 			);
 				 $this->ing_des->ingresar_asientos($parametros_debe);
 		}
@@ -683,7 +683,7 @@ class egreso_alimentosC
                   "tipo_cue" => 2,
                   "cotizacion" => 0,
                   "con" => 0,// depende de moneda
-                  "t_no" => '99',
+                  "t_no" => '109',
                 );
              $re =   $this->ing_des->ingresar_asientos($parametros_haber);
              // print_r($re);
@@ -697,7 +697,7 @@ class egreso_alimentosC
 	 //    $num_comprobante = $this->modelo->numero_comprobante($parametros);
 
 	    $num_comprobante = numero_comprobante1('Diario',true,true,$fecha);
-	    $dat_comprobantes = $this->ing_des->datos_comprobante();
+	    $dat_comprobantes = $this->ing_des->datos_comprobante("109");
 	    $debe = 0;
 		$haber = 0;
 		foreach ($dat_comprobantes as $key => $value) {
@@ -716,6 +716,7 @@ class egreso_alimentosC
         	        'concepto'=>$detalle, //detalle de la transaccion realida
         	        'totalh'=> round($haber,2), //total del haber
         	        'num_com'=> '.'.date('Y', strtotime($fecha)).'-'.$num_comprobante, // codigo de comprobante de esta forma 2019-9000002
+        	        't_no'=>"109"
         	        );
 				 // print_r($nombre);print_r($ruc);print_r($fecha);
 				 // print_r($parametro_comprobante);die();
