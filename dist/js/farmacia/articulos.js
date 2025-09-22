@@ -544,6 +544,11 @@
       Swal.fire('Llene todo los campos.','','info');   
       return false;
     }
+    if($('#txt_num_fac').val()=='0')
+    {
+      Swal.fire('Numero de Factura no debe ser cero.','','info');   
+      return false;
+    }
      var datos =  $("#form_add_producto").serialize();
      $.ajax({
       data:  datos,
