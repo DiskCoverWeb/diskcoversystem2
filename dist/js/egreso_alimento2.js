@@ -103,6 +103,11 @@ $(document).ready(function () {
           },
           
         ],
+        drawCallback: function (settings) {
+          $('.select2_dinamico2').select2({
+            width: 'resolve'
+          });
+        }
       });
 
 })
@@ -297,6 +302,8 @@ function cargar_motivo_lista(orden,motivo,TC)
           // Ejecutar en carga y cuando cambia el tamaño de pantalla
           /*dividirTabla();
           $(window).resize(dividirTabla);*/
+
+            $( '.select2_dinamico' ).select2({dropdownParent: $('#myModal_motivo')});
       }
     });
   }
