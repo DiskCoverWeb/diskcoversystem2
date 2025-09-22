@@ -339,9 +339,10 @@ class articulosC
 
     function cargar_productos($parametros)
     {
-	    	$ordenes = $this->modelo->cargar_productos_pedido_TAB();
-	    	$datos = $this->modelo->cargar_productos_pedido();
-	    	
+	    $ordenes = $this->modelo->cargar_productos_pedido_TAB();
+	    $datos = $this->modelo->cargar_productos_pedido();
+
+	    // print_r($ordenes);die();	
 	    $tab=' <ul class="nav nav-tabs nav-warning">';
 	    $content = '<div class="tab-content">';
 	    	foreach ($ordenes as $key => $value) {
@@ -360,7 +361,7 @@ class articulosC
 
 	    		    $content.='<div id="'.$value['SUBCTA'].'-'.$value['ORDEN'].'" class="tab-pane fade">';
 	    			$tab.='<li class="nav-item">
-	    					<a data-bs-toggle="tab" class="nav-link active" href="#'.$value['SUBCTA'].'-'.$value['ORDEN'].'">'.$prove[0]['Cliente'].' Num Factura: '.$value['ORDEN'].'</a></li>';
+	    					<a data-bs-toggle="tab" class="nav-link" href="#'.$value['SUBCTA'].'-'.$value['ORDEN'].'">'.$prove[0]['Cliente'].' Num Factura: '.$value['ORDEN'].'</a></li>';
 	    		}
 
 	    		    $content.= $this->crear_tabla_datos($value['ORDEN'],$value['SUBCTA']);
