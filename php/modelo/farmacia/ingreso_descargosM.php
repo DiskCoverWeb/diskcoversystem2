@@ -922,10 +922,10 @@ class ingreso_descargosM
 	}
 
 
-	function datos_comprobante()
+	function datos_comprobante($t_no = 99)
 	{
 		// $cid = $this->conn;
-		$sql="SELECT * FROM Asiento WHERE CodigoU='".$_SESSION['INGRESO']['CodigoU']."' AND Item='".$_SESSION['INGRESO']['item']."' AND T_No = '99'";
+		$sql="SELECT * FROM Asiento WHERE CodigoU='".$_SESSION['INGRESO']['CodigoU']."' AND Item='".$_SESSION['INGRESO']['item']."' AND T_No = '".$t_no."'";
 		// print_r($sql);die();
 		return $this->conn1->datos($sql);
 	
