@@ -34,7 +34,7 @@
      
         columns: [
           { data:'ID'},
-          { data:'Codigo'},
+          { data:'Matricula'},
           { data:'Cliente'},
           { data:'CI_RUC'},
           { data:'Telefono'},
