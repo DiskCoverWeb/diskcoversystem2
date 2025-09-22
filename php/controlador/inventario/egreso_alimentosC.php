@@ -383,7 +383,7 @@ class egreso_alimentosC
 
 			if($value['TC']!='P')
 			{
-				$op='<select class="form-select form-select-sm w-100" id="ddl_subcta_'.$value['Orden_No'].'" name="ddl_subcta_'.$value['Orden_No'].'">
+				$op='<select class="form-select form-select-sm w-100 select2_dinamico2" id="ddl_subcta_'.$value['Orden_No'].'" name="ddl_subcta_'.$value['Orden_No'].'">
 							<option value="">Seleccione modulo</option>
 							'.$this->catalog_cuentas($value['motivoid']).'
 					</select>';
@@ -473,7 +473,7 @@ class egreso_alimentosC
 			}
 			if($parametros['TC'] == 'P')
 			{
-				$datos[$key]['SubModulo'] = '<select class="form-select form-select-sm w-100" id="ddl_subcta_'.$value['ID'].'" name="ddl_subcta_'.$value['ID'].'" onchange="validar_por_submodulo(\''.$value['ID'].'\')">
+				$datos[$key]['SubModulo'] = '<select class="form-select form-select-sm w-100 select2_dinamico" id="ddl_subcta_'.$value['ID'].'" name="ddl_subcta_'.$value['ID'].'" onchange="validar_por_submodulo(\''.$value['ID'].'\')">
 							<option value="">Seleccione modulo</option>
 							'.$this->catalog_cuentas($parametros['motivo'],$value['Centro_Costo'].'-'.$value['CodigoL']).'
 						</select>';
