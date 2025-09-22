@@ -1561,7 +1561,7 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		// print_r($Grafico_PV);die();
 
 
-		$pdf->SetFont('helvetica','B',9);
+		$pdf->SetFont('helvetica','',9);
 		$NombreArchivo = "Recibo_No_".generaCeros($Tipo_Recibo['Recibo_No'],9);
 		if($Grafico_PV){
 				$anchoImg = $ancho_PV * 1.75;
