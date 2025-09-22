@@ -1554,20 +1554,21 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		$borde = 0;
 
 		// if($Grafico_PV){
-			$nuevaAltura = $pdf->GetY();
-			$pdf->Image($src,10,5,70,25);
-			// $pdf->SetY($altoImg + $nuevaAltura);
+			// $nuevaAltura = $pdf->GetY();
+			// $pdf->Image($src,10,5,70,25);
 		// }
 
+		// print_r($Grafico_PV);die();
 
 
+		$pdf->SetFont('helvetica','B',9);
 		$NombreArchivo = "Recibo_No_".generaCeros($Tipo_Recibo['Recibo_No'],9);
 		if($Grafico_PV){
 				$anchoImg = $ancho_PV * 1.75;
 				$altoImg = $anchoFact * 0.38;
 				$nuevaAltura = $pdf->GetY();
-				$pdf->Image($src,0,$nuevaAltura,$anchoImg,$altoImg);
-				$pdf->SetY($altoImg + $nuevaAltura);
+				$pdf->Image($src,10,5,70,25);
+				// $pdf->SetY($altoImg + $nuevaAltura);
 			}
 			if($Encabezado_PV){
 				if($_SESSION['INGRESO']['Nombre_Comercial']==$_SESSION['INGRESO']['Razon_Social'])
@@ -1575,6 +1576,8 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],$borde,'L');
 					$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],$borde,'L');
 					//$pdf->Ln(6);
+				}else if($TFA['TP'] == 'DO' || $TFA['TP'] == "NDO" || $TFA['TP'] == "NDU"){
+					$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],$borde,'L');
 				}else{
 					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],$borde,'L');
 					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Nombre_Comercial'],$borde,'L');
@@ -1603,8 +1606,9 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 
 
 			$NombreArchivo = "Recibo_No_".generaCeros($Tipo_Recibo['Recibo_No'],9);
-
+			$pdf->SetFont('helvetica','B',9);
 			$pdf->MultiCell($anchoFact,3,$textoReciboCaja.$numero,$borde, 'L');
+			$pdf->SetFont('helvetica','',9);
 
 
 			$pdf->Ln(3);			
@@ -1614,22 +1618,20 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 			$pdf->MultiCell($anchoFact,3,"Por USD ".$Tipo_Recibo['Total'],$borde,'L');
 			$pdf->MultiCell($anchoFact,3,"La suma de: ".str_pad((int)($Tipo_Recibo['Total']* 100), 2, "0", STR_PAD_LEFT)."/100",$borde,'L');
 
-			$pdf->Ln(3);			
-			$pdf->Ln(3);
-			$pdf->MultiCell($anchoFact,3,"--------------------------------------------",$borde, 'L');
+			$pdf->Ln(3);	
+			$pdf->MultiCell($anchoFact,3,"--------------------------------------------------------------------------------",$borde, 'L');
 			$pdf->MultiCell($anchoFact,3,"Usuario: ".$TFA['Recibi_de'],$borde, 'L');
 			$pdf->MultiCell($anchoFact,3,"NOTA DE DONACION: ".$TFA['Establecimiento'].'-'.$TFA['Emision'].'-'.generaCeros($Tipo_Recibo['Recibo_No'],9),$borde, 'L');
-			$pdf->Ln(3);			
-			$pdf->Ln(3);
-			$pdf->MultiCell($anchoFact,3,"--------------------------------------------",$borde, 'L');
+			$pdf->Ln(3);	
+			$pdf->MultiCell($anchoFact,3,"--------------------------------------------------------------------------------",$borde, 'L');
 
-			if($_SESSION['INGRESO']['IDEntidad'] == '65'){
+			// if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 				$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE: DONACION",$borde,'L');
-			}else{
-				$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE:".$Tipo_Recibo['Concepto'],$borde,'L');
-			}
+			// }else{
+			// 	$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE:".$Tipo_Recibo['Concepto'],$borde,'L');
+			// }
 
-			$pdf->MultiCell($anchoFact,3,"--------------------------------------------",$borde, 'L');
+			$pdf->MultiCell($anchoFact,3,"--------------------------------------------------------------------------------",$borde, 'L');
 
 		foreach ($abonos as $key => $value) {
 			// print_r($value);die();
@@ -1637,7 +1639,7 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		}
 
 
-		$pdf->MultiCell($anchoFact,3,"------------------------------------------------",$borde, 'L');
+		$pdf->MultiCell($anchoFact,3,"--------------------------------------------------------------------------------",$borde, 'L');
 
 		$pdf->Ln(3);
 		$pdf->Ln(3);
