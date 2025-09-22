@@ -293,14 +293,15 @@ class asignacion_pickingM
 
      function lista_stock_ubicado($bodega=false,$cod_barras  =false,$grupo=false)
     {
-        $sql="select TK.*,Producto
+        $sql="select TK.Periodo, TK.T, CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.TP, Numero, Entrada, Salida, Valor_Unitario, TK.Valor_Total, Existencia, TK.Costo, Total, TK.Codigo_P, Descuento, Descuento1, Cta_Inv, Contra_Cta, Orden_No, TK.PVP, Total_IVA, Porc_C, CodigoU, TK.Item, Stock_Bod, Unit_Bod, Valor_Bod, Stock_Barra, Costo_Bod, Unit_Barr, Costo_Barr, Valor_Barr, Total_Bod, Total_Barr, Solicitud, CodigoL, Cod_Tarifa, Fecha_DUI, No_Refrendo, DUI, Precio_FOB, Comision, Trans_Unit, Guia_No, CodMarca, Lote_No, Codigo_Dr, Codigo_Tra, Fecha_Fab, Fecha_Exp, Modelo, Procedencia, Serie_No, TK.TC, Serie, TK.Factura, TK.Detalle, Centro_Costo, Tipo_Empaque, TK.ID, Cmds,Producto
             FROM Trans_Kardex TK
             INNER JOIN Catalogo_Productos CP on TK.Codigo_Inv = CP.Codigo_Inv
             where TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
             AND TK.Item = '".$_SESSION['INGRESO']['item']."'
             AND NOT TK.Orden_No in ('0','.','0.')
             AND TK.CodBodega <> '-1'
-            AND TK.T = 'N'
+            AND TK.T = 'N'            
+            AND CP.Item = TK.Item
             AND TK.Salida = 0";
 
 
