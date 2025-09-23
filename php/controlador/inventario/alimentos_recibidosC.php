@@ -320,6 +320,11 @@ if (isset($_GET['imprimir_pedido'])) {
 	echo json_encode($controlador->imprimir_pedido($parametros));
 }
 
+if (isset($_GET['guardar_costo_new'])) {
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->guardar_costo_new($parametros));
+}
+
 /**
  * 
  */
@@ -1844,6 +1849,22 @@ class alimentos_recibidosC
 		$datos = $this->modelo->detalle_ingreso($parametros['id']);
 		if(count($datos)>0) {$datos[0]['Codigo_qr']=$parametros['codigo'];}
 		$this->reportes->etiqueta_recepcion_BAQ($datos);
+	}
+
+	function guardar_costo_new($parametros)
+	{
+
+    	$datos = $this->modelo->cargar_pedidos_trans($parametros['orden'],false);
+    	foreach ($datos as $key => $value) {
+
+			SetAdoAddNew('Trans_Kardex');
+			SetAdoFields('Valor_Unitario',number_format($parametros['costo'],$_SESSION['INGRESO']['Dec_PVP'],'.',''));		
+			SetAdoFields('Valor_Total',number_format($parametros['costo']*$value['Entrada'],$_SESSION['INGRESO']['Dec_PVP'],'.',''));
+			SetAdoFieldsWhere('ID',$value['ID']);
+			SetAdoUpdateGeneric();
+    	}
+
+    	return 1;
 	}
 
 

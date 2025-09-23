@@ -169,7 +169,7 @@ console.log(data);
           $('#ddl_alimento').append($('<option>',{value: data.Cod_C, text:data.Proceso,selected: true }));
           if(data.Proceso.toUpperCase() =='COMPRAS' || data.Proceso.toUpperCase() =='COMPRA')
         {
-            $('#pnl_factura').css('display','block');
+            $('#pnl_factura').css('display','flex');
         }else
         {
 
@@ -1160,7 +1160,7 @@ var parametros = {
 
 function historia_checking()
 {
-  $('#modal_historial_check').modal('show');
+    $('#modal_historial_check').modal('show');
 
      $.ajax({
       // data:  {parametros,parametros},      
@@ -1212,4 +1212,43 @@ function imprimirIndividualHis(id,num_ped)
 {
    var  url = '../controlador/inventario/alimentos_recibidosC.php?imprimir_etiqueta_ind=true&num_ped='+num_ped+'&id='+id;
     window.open(url, '_blank');
+}
+
+function guardar_costo_new()
+{
+  var codigo = $('#txt_codigo').val();
+  var costo = $('#txt_costo_all').val();
+  if(costo=='' || costo==0)
+  {
+    Swal.fire("Costo invalido","","info");
+    return false;
+  }
+
+
+  if(codigo!="")
+  {
+    var parametros = {
+      'orden':codigo,
+      'costo':costo,
+    }
+
+        $('#myModal_espera').modal('show');     
+     $.ajax({
+      data:  {parametros,parametros},      
+      url: '../controlador/inventario/alimentos_recibidosC.php?guardar_costo_new=true',
+      type:  'post',
+      dataType: 'json',
+      success:  function (response) { 
+        cargar_pedido()
+        $('#myModal_espera').modal('hide');     
+      }, 
+      error: function(xhr, textStatus, error){
+        $('#myModal_espera').modal('hide');           
+      }
+    });
+
+  }else
+  {
+    Swal.fire("Seleccione un codigo de ingreso","","info")
+  }
 }

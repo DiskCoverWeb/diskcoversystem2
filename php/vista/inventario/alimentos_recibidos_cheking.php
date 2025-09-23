@@ -55,7 +55,7 @@
 								<input type="hidden" id="txt_codigo_p" name="txt_codigo_p" readonly>
 								<div class="input-group">
 									<select class="form-select form-select-sm" id="txt_codigo" name="txt_codigo" onchange="cargar_pedido()">
-										<option>Seleccione</option>
+										<option value="">Seleccione</option>
 									</select>
 									<button type="button" class="btn btn-primary btn-sm" style="font-size:8pt;" title="Escanear QR" onclick="escanear_qr()">
 										<i class="fa fa-qrcode" aria-hidden="true" style="font-size:8pt;"></i>
@@ -138,6 +138,15 @@
 								<button type="button" style="display: none;" id="btn_estado_gavetas" class="btn btn-primary btn-sm btn-block" onclick="ver_detalle_gavetas()"> Ver detalle <i class="fa fa-eye"></i></button>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<b>Precio / Costo :</b>				
+								<div class="input-group input-group-sm">
+									<input type="text" name="txt_costo_all" id="txt_costo_all" class="form-control form-control-sm" value="0">
+									<button type="button" class="btn btn-primary btn-sm" style="font-size:8pt;" onclick="guardar_costo_new()"> Asignar a todos</button>									
+								</div>
+							</div>						
+						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="row">							
@@ -178,25 +187,15 @@
 			</div>
 		</div>
 	</div>
-
-
-
-		<div class="row border-1" id="pnl_factura" style="display:none;">
-			<div class="col-sm-7">
-				
-			</div>
+		<div class="row mb-2" id="pnl_factura" style="display:none;">
+			
 			<div class="col-sm-2">
-				<label for="inputEmail3" class="col-sm-3 col-form-label"><b>Gavetas</b></label>
-				<div class="col-sm-6">
-					<input type="text" class="form-control form-control-sm" id="txt_serie" name="txt_serie">	
-				</div>
-				
+				<label for="inputEmail3"><b>Gavetas</b></label>
+				<input type="text" class="form-control form-control-sm" id="txt_serie" name="txt_serie">	
 			</div>
 			<div class="col-sm-3">
-				<label for="inputEmail3" class="col-sm-4 col-form-label"><b>Factura</b></label>
-				<div class="col-sm-8">
-					<input type="text" class="form-control form-control-sm" id="txt_factura" name="txt_factura">	
-				</div>
+				<label><b>Factura</b></label>
+				<input type="text" class="form-control form-control-sm" id="txt_factura" name="txt_factura">	
 				
 			</div>
 		</div>		
