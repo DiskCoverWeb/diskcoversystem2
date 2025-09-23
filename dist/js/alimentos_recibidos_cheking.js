@@ -1240,7 +1240,9 @@ function guardar_costo_new()
       dataType: 'json',
       success:  function (response) { 
         cargar_pedido()
-        $('#myModal_espera').modal('hide');     
+          setTimeout(()=>{
+          $('#myModal_espera').modal('hide');
+        }, 1000); 
       }, 
       error: function(xhr, textStatus, error){
         $('#myModal_espera').modal('hide');           
