@@ -259,9 +259,8 @@ function catalogoLineas() {
         dataType: 'json',
         success: function(data) {
           console.log(data);
-          
-                $('#myModal_espera').modal('hide');
 
+           setTimeout(()=>{$('#myModal_espera').modal('hide'); }, 1000);
           // llenarComboList(data,'DCLineas');
 
 
@@ -297,7 +296,6 @@ function catalogoLineas() {
            numero_autorizacion();
         }
     });
-    $('#myModal_espera').modal('hide');
 }
 
 
