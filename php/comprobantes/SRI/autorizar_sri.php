@@ -588,9 +588,13 @@ class autorizacion_sri
 		$TFA['BASEIMPONIBLE'] = number_format($Total_Con_IVA - $Total_Desc,2,'.','');
 		$TFA['ClaveAcceso_NC'] = $this->Clave_acceso($TFA['Fecha_NC'],'04',$TFA['Serie_NC'],$TFA['Nota_Credito']);
 		$aut = $TFA['ClaveAcceso_NC'];
-		// print_r($TFA);die();
+		// print_r($TFA);
+		// print_r($aut);
+		// die();
 		 $xml = $this->generar_xml_nota_credito($TFA,$AdoDBNC);
 // die();
+		 // print_r($aut);
+		// die();
 		 if($xml==1)
 	       {
 	       	 $firma = $this->firmar_documento(
@@ -3071,9 +3075,10 @@ function generar_xml_retencion($cabecera,$detalle)
 	       	
 	       	if(file_exists($url_generados.$nom_doc.".xml"))
 	       	{
-	       		// print_r("java -jar ".$firmador." ".$nom_doc.".xml ".$url_generados." ".$url_firmados." ".$certificado_1." ".$p12." ".$pass);die();
+	       		$comando = $this->rutaJava8."java -jar ".$firmador." ".$nom_doc.".xml ".$url_generados." ".$url_firmados." ".$certificado_1." ".$p12." ".$pass;
+	       		// print_r($comando);die();
 
-	        	exec("java -jar ".$firmador." ".$nom_doc.".xml ".$url_generados." ".$url_firmados." ".$certificado_1." ".$p12." ".$pass, $f);
+	        	exec($comando, $f);
 
 	        	// print_r($f);die();
 	        	if(count($f)<6 && !empty($f))
@@ -3086,7 +3091,7 @@ function generar_xml_retencion($cabecera,$detalle)
 		        }
 		    }else
 		    {
-		    	$respuesta = 'XML generado no encontrado';
+		    	$respuesta = 'XML generado no encontrado patch:'.$url_generados.$nom_doc.".xml";
 	 			return $respuesta;
 		    }
 	 	   }else

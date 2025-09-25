@@ -343,6 +343,8 @@ class lista_comprasC
 
 		$orden = $parametros['orden'];
 		$provedor = $this->modelo->lineas_compras_solicitados_proveedores($parametros['orden'],false,$prove);
+
+		// print_r($provedor);die();
 		$fecha = date('Y-m-d');
 		$numOrde = $this->modelo->numeroFactura($fecha);
 		$numeroSubCta =date('ymd').'01';

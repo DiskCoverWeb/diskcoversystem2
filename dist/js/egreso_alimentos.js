@@ -163,23 +163,21 @@ function cambiar_estado()
 
 function solucionado()
 {
-
-parametros = 
-{
-  'noti':$("#txt_id_noti").val(),
-}
-$.ajax({
-	type: "POST",
-	  url:   '../controlador/inventario/alimentos_recibidosC.php?cambiar_estado_solucionado=true',
-	  data:{parametros:parametros},
-	  dataType:'json',
-	success: function(data)
-	{       
-	  $('#myModal_notificar').modal('hide');
-	  notificaciones();
-	}
-});   
-
+		parametros = 
+		{
+		  'noti':$("#txt_id_noti").val(),
+		}
+		$.ajax({
+			type: "POST",
+			  url:   '../controlador/inventario/alimentos_recibidosC.php?cambiar_estado_solucionado=true',
+			  data:{parametros:parametros},
+			  dataType:'json',
+			success: function(data)
+			{       
+			  $('#myModal_notificar').modal('hide');
+			  notificaciones();
+			}
+		});
 }
 
 

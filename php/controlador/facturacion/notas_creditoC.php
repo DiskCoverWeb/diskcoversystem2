@@ -175,8 +175,7 @@ class notas_creditoC
 		$Total_Desc = 0;
 		$SubTotal_NC = 0;
 
-		 $table = $this->modelo->cargar_tabla($parametro,$tabla=1);
-		 $totales = $this->modelo->cargar_tabla($parametro);
+		$totales = $this->modelo->cargar_tabla($parametro);
 
 		 foreach ($totales as $key => $value) {
 		 		  if($value["TOTAL_IVA"] > 0 ){
@@ -190,7 +189,7 @@ class notas_creditoC
            $SubTotal_NC = $SubTotal_NC + $value["SUBTOTAL"];
 		 }
 
-		return  array('tabla'=>$table,'TxtIVA'=>$IVA_NC,'TxtConIVA'=>$Total_Con_IVA,'TxtDescuento'=>$Total_Desc2+$Total_Desc,'TxtSinIVA'=>$Total_Sin_IVA,'TxtSaldo'=>$SubTotal_NC,'LblTotalDC'=>$SubTotal_NC+$IVA_NC - ($Total_Desc + $Total_Desc2) );
+		return  array('tabla'=>$totales,'TxtIVA'=>$IVA_NC,'TxtConIVA'=>$Total_Con_IVA,'TxtDescuento'=>$Total_Desc2+$Total_Desc,'TxtSinIVA'=>$Total_Sin_IVA,'TxtSaldo'=>$SubTotal_NC,'LblTotalDC'=>$SubTotal_NC+$IVA_NC - ($Total_Desc + $Total_Desc2) );
 	}
 
 	function Listar_Facturas_Pendientes_NC($q,$serie)
@@ -339,32 +338,37 @@ class notas_creditoC
 		// print_r($parametros);die();
 		$SubTotalDesc = 0;
     	$SubTotalIVA = 0;
-		$SubTotal_NC = $parametros['Saldo'];
-		$IVA_NC = $parametros['IVA'];
-		$Total_Desc = $parametros['Descuento'];
+		$SubTotal_NC = number_format($parametros['Saldo'],2,'.','');
+		$IVA_NC = number_format($parametros['IVA'],2,'.','');
+		$Total_Desc = number_format($parametros['Descuento'],2,'.','');
 
 
 		$lista = $this->modelo->cargar_tabla($parametros,false);
 		$totalAsientosNC = 0;
 		// lineas_factura($parametros['Factura'],$parametros['Serie'],$parametros['TC'],$parametros['Autorizacion']);
 		foreach ($lista as $key => $value) {
-			
 			$totalAsientosNC = $totalAsientosNC + number_format($value['SUBTOTAL']);
 		}
 		
+		$Ln_No  = count($lista)+1;
 
-			$Ln_No  = count($lista)+1;
-		if($parametros['TextCant'] > 0 &&  $parametros['TextVUnit'] > 0 ){
-       $SubTotalDesc = $parametros['TextDesc'];
-       $SubTotal = number_format($parametros['TextCant'] * $parametros['TextVUnit'],2,'.','');
-       $product = Leer_Codigo_Inv($parametros['productos'],$parametros['MBoxFecha']);
-       $BanIVA = $product['datos']['IVA'];
-       if($BanIVA==1 && $parametros['TC'] <> "NV"){ $SubTotalIVA = number_format(($SubTotal-$SubTotalDesc)*$parametros['IVAPor'], 4,'.','');}
-       $Total = $SubTotal_NC + $SubTotal + $IVA_NC + $SubTotalIVA - $SubTotalDesc - $Total_Desc;
-      if($parametros['TotalDC']+$Total > $parametros['TotalFA'] )
+		if($parametros['TextCant'] > 0 &&  $parametros['TextVUnit'] > 0 )
 		{
-			return -4;
-		}
+	       $SubTotalDesc = number_format($parametros['TextDesc'],2,'.','');
+	       $SubTotal = number_format($parametros['TextCant'] * $parametros['TextVUnit'],2,'.','');
+	       $product = Leer_Codigo_Inv($parametros['productos'],$parametros['MBoxFecha']);
+	       $BanIVA = $product['datos']['IVA'];
+       		if($BanIVA==1 && $parametros['TC'] <> "NV")
+       		{ 
+       			$SubTotalIVA = number_format(($SubTotal-$SubTotalDesc)*$parametros['IVAPor'], 4,'.','');
+       		}
+       		$Total = $SubTotal_NC + $SubTotal + $IVA_NC + $SubTotalIVA - $SubTotalDesc - $Total_Desc;
+
+
+      // if(number_format($parametros['TotalDC'],2,'.','.')+number_format($Total,2,'.','') > $parametros['TotalFA'] )
+	// 	{
+	// 		return -4;
+	// 	}
        SetAdoAddNew("Asiento_NC");
        SetAdoFields("CODIGO", $parametros["productos"]);
 			 SetAdoFields("CANT", $parametros["TextCant"]);
@@ -382,7 +386,7 @@ class notas_creditoC
 			 SetAdoFields("Mes_No", date("m", strtotime($parametros["MBoxFecha"])));
 			 SetAdoFields("Mes", MesesLetras(date("m", strtotime($parametros["MBoxFecha"]))));
 			 SetAdoFields("Anio", date("Y", strtotime($parametros["MBoxFecha"])));
-			 SetAdoFields("Porc_IVA", $_SESSION["INGRESO"]["porc"]);
+			 SetAdoFields("Porc_IVA", number_format($_SESSION["INGRESO"]["porc"],2,'.',''));
 			 SetAdoFields("A_No", $Ln_No);
  
 			 if ($product["datos"]["Con_Kardex"]) {
@@ -418,26 +422,29 @@ class notas_creditoC
 		$FA['Nota_Credito'] = $parametros['TextCompRet'];
 		$FA['Autorizacion_NC'] = $parametros['TextBanco'];
 		$FA['Autorizacion'] = $parametros['TxtAutorizacion'];
-    $FA['CodigoC'] = $parametros['DCClientes'];
-    $FA['Cliente'] = $parametros['Cliente'];
-    $cliente_cta =  $this->modelo->Listar_Facturas_Pendientes_NC($parametros['Cliente']);
-    $FA['Cta_CxP'] = $cliente_cta[0]['Cta_CxP'];
-    $FA['Nota'] = $parametros['TxtConcepto'];
+	    $FA['CodigoC'] = $parametros['DCClientes'];
+	    $FA['Cliente'] = $parametros['Cliente'];
+	    // $cliente_cta =  $this->modelo->Listar_Facturas_Pendientes_NC($parametros['Cliente']);
+	    $cliente_cta = $this->modelo->Factura_detalle($parametros['DCFactura'],$parametros['DCSerie'],$parametros['DCTC']);
+	    $FA['Cta_CxP']  = '.';
+	    if(count($cliente_cta)>0){  $FA['Cta_CxP'] = $cliente_cta[0]['Cta_CxP']; }
+	    $FA['Nota'] = $parametros['TxtConcepto'];
 
 		$this->modelo->delete_Detalle_Nota_Credito($FA['Serie_NC'],$FA['Nota_Credito']);
 
 		$FAC = $this->modelo->Factura_detalle($parametros['DCFactura'],$parametros['DCSerie'],$parametros['DCTC']);
-	  $FA['T'] = $FAC[0]["T"];
-    $FA['Fecha'] = $FAC[0]["Fecha"];
-    $FA['Cta_CxP'] = $FAC[0]["Cta_CxP"];
-    $FA['Cod_CxC'] = $FAC[0]["Cod_CxC"];
-    $FA['Porc_IVA'] = $FAC[0]["Porc_IVA"];
-    $FA['Total_MN'] = $FAC[0]["Total_MN"];
-    $FA['Saldo_MN'] = $FAC[0]["Saldo_MN"];
-    $FA['Autorizacion'] = $FAC[0]["Autorizacion"];
-    $FA['Descuento'] = $FAC[0]["Descuento"];
-    $FA['IVA'] = $FAC[0]["IVA"];
-    if($FAC[0]["IVA"] > 0){ $FA['Porc_NC'] = $FAC[0]["Porc_IVA"];}
+	  	$FA['T'] = $FAC[0]["T"];
+	    $FA['Fecha'] = $FAC[0]["Fecha"];
+	    $FA['Cta_CxP'] = $FAC[0]["Cta_CxP"];
+	    $FA['Cod_CxC'] = $FAC[0]["Cod_CxC"];
+	    $FA['Porc_IVA'] = $FAC[0]["Porc_IVA"];
+	    $FA['Total_MN'] = $FAC[0]["Total_MN"];
+	    $FA['Saldo_MN'] = $FAC[0]["Saldo_MN"];
+	    $FA['Autorizacion'] = $FAC[0]["Autorizacion"];
+	    $FA['Descuento'] = $FAC[0]["Descuento"];
+	    $FA['IVA'] = $FAC[0]["IVA"];
+    	
+    	if($FAC[0]["IVA"] > 0){ $FA['Porc_NC'] = $FAC[0]["Porc_IVA"];}
 
 		$MBoxFecha = $parametros['MBoxFecha'];
 
@@ -595,17 +602,30 @@ class notas_creditoC
 		        
 		        $resp = $this->modelo->Actualizar_facturas_trans_abonos($parametros['TxtConcepto'] ,$FA);
 
-
+		        $respuesta_NC = array();
 		        if(($FA['SubTotal_NC'] + $FA['Total_IVA_NC']) > 0 && strLen($FA['Autorizacion_NC']) >= 13)
 		        { 
+		        	$text = "";
+	        	  	$respuesta_NC = $this->sri->SRI_Crear_Clave_Acceso_Nota_Credito($FA); 
 
-		        	  $resp = $this->sri->SRI_Crear_Clave_Acceso_Nota_Credito($FA); 
+	        	  	$clave = $this->sri->Clave_acceso($FA['Fecha_NC'],'04',$FA['Serie_NC'],$FA['Nota_Credito']);	
+	        	  	if(!is_array($respuesta_NC))
+	        	  	{
+	        	  		$texto = $respuesta_NC;
+	        	  		$respuesta_NC[0] = "-1";
+	        	  		$respuesta_NC[1] = $clave;
+	        	  		$respuesta_NC[2] = $texto;
+	        	  		$respuesta_NC[3] = "NOTA DE CREDITO";
+	        	  		$respuesta_NC['pdf'] = $FA['Serie_NC'].'-'.generaCeros($FA['Nota_Credito'],7);
+	        	  	}else{
+		        	  	// crea pdf
+		        	  	$this->modelo->pdf_nota_credito($FA);	  
+		        	  	$respuesta_NC['pdf'] = $FA['Serie_NC'].'-'.generaCeros($FA['Nota_Credito'],7);
+	        	  	      	 
+	        	 	}
 
-		        	  // crea pdf
-		        	  $this->modelo->pdf_nota_credito($FA);
-		        	  $clave = $this->sri->Clave_acceso($FA['Fecha_NC'],'04',$FA['Serie_NC'],$FA['Nota_Credito']);		        	 
-		        	 return array('respuesta'=>$resp,'pdf'=>$FA['Serie_NC'].'-'.generaCeros($FA['Nota_Credito'],7),'clave'=>$clave);
-		  			}
+	        	 	return $respuesta_NC;
+	  			}
 
 			        $Ln_No = 0;
 			        $this->modelo->delete_asientonNC();		
@@ -613,7 +633,14 @@ class notas_creditoC
 			        // hay que generar esta funcion o proceso almacenado        
 			        // Actualizar_Saldos_Facturas_SP($FA['TC'],$FA['Serie'],$FA['Factura']);
 
-			        return array('respuesta'=>1,'pdf'=>$FA['Serie_NC'].'-'.generaCeros($FA['Nota_Credito'],7),'clave'=>'');
+        	  		$respuesta_NC[0] = "1";
+        	  		$respuesta_NC[1] = "";
+        	  		$respuesta_NC[2] = "";
+        	  		$respuesta_NC[3] = "NOTA DE CREDITO";
+        	  		$respuesta_NC['pdf'] = $FA['Serie_NC'].'-'.generaCeros($FA['Nota_Credito'],7);
+
+
+			        return $respuesta_NC;
 
 			        // esto pasasr avista
 			        
@@ -625,7 +652,13 @@ class notas_creditoC
 				    
 			}else
 			{
-				return array('respuesta'=>5);
+				    $respuesta_NC = array();
+					$respuesta_NC[0] = "5";
+        	  		$respuesta_NC[1] = "";
+        	  		$respuesta_NC[2] = "";
+        	  		$respuesta_NC[3] = "NOTA DE CREDITO";
+
+				return $respuesta_NC;
 			}
 	}
 

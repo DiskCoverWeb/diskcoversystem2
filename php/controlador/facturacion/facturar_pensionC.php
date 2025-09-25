@@ -392,7 +392,7 @@ class facturar_pensionC
 
     $catalogo = [];
     foreach ($datos as $value) {
-      $catalogo[] = array('id'=>$value['Fact']." ".$value['Serie']." ".$value['Autorizacion']." ".$value['CxC']." ".$value['Codigo'] ,'text'=>mb_convert_encoding($value['Concepto'],'UTF-8'));
+      $catalogo[] = array('id'=>$value['Fact']." ".$value['Serie']." ".$value['Autorizacion']." ".$value['CxC']." ".$value['Codigo'] ,'text'=>mb_convert_encoding($value['Concepto'],'UTF-8'),'data'=>$value);
     }    
     return $catalogo;
   }
