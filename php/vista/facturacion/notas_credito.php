@@ -3,7 +3,7 @@
     @media only screen and (max-width: 600px) {
     body {
        .detalles_pro {
-            margin-top: 245px;
+            margin-top: 225px;
         }
     }
 }
@@ -12,7 +12,7 @@
 @media only screen and (min-width: 601px) {
     body {
        .detalles_pro {
-            margin-left: 300px; margin-top: 345px;
+            margin-left: 300px; margin-top: 200px;
         }
     }
 }
@@ -274,7 +274,7 @@
 
 
 
-<div class="modal fade " id="cambiar_nombre" role="dialog" data-keyboard="false" data-backdrop="static" tabindex="-1">
+<div class="modal fade " id="cambiar_nombre" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog modal-dialog-centered modal-sm detalles_pro">
         <div class="modal-content">
             <div class="modal-body text-center">
