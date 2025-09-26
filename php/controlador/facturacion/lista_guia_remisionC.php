@@ -568,11 +568,11 @@ QUITO - ECUADOR';
 	    $reg = $this->modelo->cargarLineas($guia,$codigoL);
 	    $total = 0;
 		$iva_total = 0;
-	    foreach ($reg['datos'] as $key => $value) {
+	    foreach ($reg as $key => $value) {
 	      $total+=$value['Total'];
 		  $iva_total+=$value['Total_IVA'];     
 	    }
-	    return array('tbl'=>$reg['tbl'],'total'=>$total, 'iva_total'=>$iva_total);
+	    return array('tabla'=>$reg,'total'=>$total, 'iva_total'=>$iva_total);
 	}
 	function AdoPersonas($query)
   {  
@@ -728,7 +728,27 @@ QUITO - ECUADOR';
 
  				$this->punto_venta->pdf_guia_remision_elec_sin_fac($TFA,$TFA['Autorizacion_GR'],$periodo=false,0,1);
 
- 				return array('resp'=>$respuesta,'clave'=>$ClaveAcceso_GR,'pdf'=>$TFA['Serie_GR'].'-'.generaCeros($TFA['Remision'],7));
+ 				$guia_respuesta = array(
+ 																'0'=>"",
+ 																'1'=>$ClaveAcceso_GR,
+ 																'2'=>"",
+ 																'3'=>"",
+ 																'4'=>'GUIA DE REMISION',
+ 																'pdf'=>$TFA['Serie_GR'].'-'.generaCeros($TFA['Remision'],7)
+ 															);
+
+ 				if(!is_array($respuesta)){
+ 					$guia_respuesta[0] = -1;
+ 					$guia_respuesta[3] = $respuesta; 
+ 				}else
+ 				{
+ 					$respuesta['pdf'] = $TFA['Serie_GR'].'-'.generaCeros($TFA['Remision'],7);
+ 					$guia_respuesta = $respuesta;
+
+ 				}
+
+ 				return $guia_respuesta;
+ 				// array('resp'=>$respuesta,'clave'=>$ClaveAcceso_GR,'pdf'=>$TFA['Serie_GR'].'-'.generaCeros($TFA['Remision'],7));
     	}
     	// else
     	// {

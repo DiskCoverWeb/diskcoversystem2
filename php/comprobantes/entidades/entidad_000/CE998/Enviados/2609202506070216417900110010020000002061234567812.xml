@@ -1,93 +1,84 @@
-<?xml version="1.0" encoding="UTF-8"?><notaCredito id="comprobante" version="1.0.0">
+<?xml version="1.0" encoding="UTF-8"?><guiaRemision id="comprobante" version="1.0.0">
   <infoTributaria>
     <ambiente>1</ambiente>
     <tipoEmision>1</tipoEmision>
     <razonSocial>VACA PRIETO WALTER JALIL</razonSocial>
     <nombreComercial>EMPRESA PARA DESARROLLO</nombreComercial>
     <ruc>0702164179001</ruc>
-    <claveAcceso>2509202504070216417900110010030000001341234567812</claveAcceso>
-    <codDoc>04</codDoc>
+    <claveAcceso>2609202506070216417900110010020000002061234567812</claveAcceso>
+    <codDoc>06</codDoc>
     <estab>001</estab>
-    <ptoEmi>003</ptoEmi>
-    <secuencial>000000134</secuencial>
+    <ptoEmi>002</ptoEmi>
+    <secuencial>000000206</secuencial>
     <dirMatriz>Desarrollo para programacion de DiskCover System</dirMatriz>
   </infoTributaria>
-  <infoNotaCredito>
-    <fechaEmision>25/09/2025</fechaEmision>
-    <dirEstablecimiento>direccion de empresa xyz</dirEstablecimiento>
-    <tipoIdentificacionComprador>05</tipoIdentificacionComprador>
-    <razonSocialComprador>ABDON PASCUAL JIMENEZ VERA</razonSocialComprador>
-    <identificacionComprador>0906562251</identificacionComprador>
+  <infoGuiaRemision>
+    <dirEstablecimiento>DESARROLLO PARA PROGRAMACION DE DISKCOVER SYSTEM</dirEstablecimiento>
+    <dirPartida>24 DE MAYO</dirPartida>
+    <razonSocialTransportista>360ELECTRIC</razonSocialTransportista>
+    <tipoIdentificacionTransportista>04</tipoIdentificacionTransportista>
+    <rucTransportista>1792558662001</rucTransportista>
+    <rise>000</rise>
     <obligadoContabilidad>NO</obligadoContabilidad>
-    <codDocModificado>01</codDocModificado>
-    <numDocModificado>001-001-000000234</numDocModificado>
-    <fechaEmisionDocSustento>12/12/2023</fechaEmisionDocSustento>
-    <totalSinImpuestos>2.00</totalSinImpuestos>
-    <valorModificacion>2.00</valorModificacion>
-    <moneda>DOLAR</moneda>
-    <totalConImpuestos>
-      <totalImpuesto>
-        <codigo>2</codigo>
-        <codigoPorcentaje>3</codigoPorcentaje>
-        <baseImponible>0.00</baseImponible>
-        <valor>0.00</valor>
-      </totalImpuesto>
-    </totalConImpuestos>
-    <motivo>Anulacion por Nota de Credito</motivo>
-  </infoNotaCredito>
-  <detalles>
-    <detalle>
-      <codigoInterno>98.40</codigoInterno>
-      <codigoAdicional>8</codigoAdicional>
-      <descripcion>7 LINEAS</descripcion>
-      <cantidad>1.0000</cantidad>
-      <precioUnitario>2</precioUnitario>
-      <descuento>.0000</descuento>
-      <precioTotalSinImpuesto>2</precioTotalSinImpuesto>
-      <impuestos>
-        <impuesto>
-          <codigo>2</codigo>
-          <codigoPorcentaje>0</codigoPorcentaje>
-          <tarifa>0.00</tarifa>
-          <baseImponible>2</baseImponible>
-          <valor>0.00</valor>
-        </impuesto>
-      </impuestos>
-    </detalle>
-  </detalles>
+    <fechaIniTransporte>26/09/2025</fechaIniTransporte>
+    <fechaFinTransporte>26/09/2025</fechaFinTransporte>
+    <placa>XXX-999</placa>
+  </infoGuiaRemision>
+  <destinatarios>
+    <destinatario>
+      <identificacionDestinatario>AJ14905716</identificacionDestinatario>
+      <razonSocialDestinatario>ABRAHAM CONSTANTE RODRIGUEZ</razonSocialDestinatario>
+      <dirDestinatario>ALFREDO BAQUERIZO MORENO</dirDestinatario>
+      <motivoTraslado>Translado de mercaderia</motivoTraslado>
+      <ruta>De 24 DE MAYO a ALFREDO BAQUERIZO MORENO</ruta>
+      <codDocSustento>00</codDocSustento>
+      <numDocSustento>001-001-000000206</numDocSustento>
+      <numAutDocSustento>0702164179001</numAutDocSustento>
+      <fechaEmisionDocSustento>26/09/2025</fechaEmisionDocSustento>
+      <detalles>
+        <detalle>
+          <codigoInterno>98.22</codigoInterno>
+          <descripcion>1865, 2025: 0909</descripcion>
+          <cantidad>1.0000</cantidad>
+        </detalle>
+      </detalles>
+    </destinatario>
+  </destinatarios>
   <infoAdicional>
-    <campoAdicional nombre="Direccion">GUERRERO DEL FORTIN</campoAdicional>
-    <campoAdicional nombre="Telefono">3067332</campoAdicional>
-    <campoAdicional nombre="Email">evelynjimenez-27@hotmail.com</campoAdicional>
+    <campoAdicional nombre="Direccion">jipiro e4-283</campoAdicional>
+    <campoAdicional nombre="Telefono">0987242579</campoAdicional>
+    <campoAdicional nombre="Email">javier.farinango92@gmail.com</campoAdicional>
+    <campoAdicional nombre="motivoTraslado">ninguna</campoAdicional>
+    <campoAdicional nombre="lugarEntrega">zona azul</campoAdicional>
   </infoAdicional>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature741098">
-<ds:SignedInfo Id="Signature-SignedInfo266964">
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature294871">
+<ds:SignedInfo Id="Signature-SignedInfo512206">
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-<ds:Reference Id="SignedPropertiesID789295" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature741098-SignedProperties599578">
+<ds:Reference Id="SignedPropertiesID484687" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature294871-SignedProperties595799">
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>5yEojuygcZLmS1cOsPrGBycnRMU=</ds:DigestValue>
+<ds:DigestValue>7PsbR16lqXuRfG0Lqmnu86XehDs=</ds:DigestValue>
 </ds:Reference>
-<ds:Reference URI="#Certificate1675954">
+<ds:Reference URI="#Certificate1844872">
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>6Z8kKt3oTKGu069ebfCZY1aTzlY=</ds:DigestValue>
+<ds:DigestValue>qL5cjaSLDi4c9sZKCvp3dfNLjow=</ds:DigestValue>
 </ds:Reference>
-<ds:Reference Id="Reference-ID-699614" URI="#comprobante">
+<ds:Reference Id="Reference-ID-940406" URI="#comprobante">
 <ds:Transforms>
 <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
 </ds:Transforms>
 <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-<ds:DigestValue>H2pQrlv4dkYnGEami49/zMOPiaY=</ds:DigestValue>
+<ds:DigestValue>q22w/Tvg4Em3jAVDfZ17gv5niao=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
-<ds:SignatureValue Id="SignatureValue50266">
-DAO6HCSgsEUI7zAwSlljZ9+e71JORXAATjr6wLHibinjd5XjfUQuXOohfiViGglq9KGAKoOz3TT7
-JEW2SMXz44rkk+P030NLr9/Fa4Sz9x9HTKWGLgJK8OSKqPQXvKwORiGUBUimCgEdcRppI8LhwNet
-C53atYLWb6lYPiPoKeT7t+CcLEmx9Z58xkdHlwPJBWFNid5s7JMLtLJI6mJiNG8vg/meJ7cK1Obk
-WwlaeqVBPFEzQBn6X/+REd0b8YItcCOIF14cb7PokwNbIbmxzXcOAS+brw8M/exTbqVJmgYvULlD
-zQRAtQukmoBmo9aAaT3MZP5xb8fOWXB4f6mC8w==
+<ds:SignatureValue Id="SignatureValue775869">
+sldnqtRwNROfy/jjCoBHF5PsGpN6qds/liH9suTvWTipTd4USvNGlJ9GR9hjLo06phlt55X8t9Wx
+2GxpOkYxAWuia7fbNUDBGWKvYnMDJgU/S/pa2GjuiLiV+7C8WBwQfab+dnYgEk7YGYLvVOEODIIv
+LRCb1ivz0znkVsUd9VOGMHaCJHLJQuiRfj1bMEPCpWYgN82UlW9Xbcj6y0Yst+3Cv+V3N9NVdK6i
+qYHrHTfUI9pziwirGE0tBwap2TvEAJvVa8qLXfxJUpWO3GH75BljrhIgh1kVDYjlCBO/tdW1QNu4
+AaLm5nHoa/c8i2gasAPozpaVzhFnNFyCk/k9Ng==
 </ds:SignatureValue>
-<ds:KeyInfo Id="Certificate1675954">
+<ds:KeyInfo Id="Certificate1844872">
 <ds:X509Data>
 <ds:X509Certificate>
 MIIKqTCCCJGgAwIBAgIIa/rueP0JNVAwDQYJKoZIhvcNAQELBQAwgZkxCzAJBgNVBAYTAkVDMR0w
@@ -153,4 +144,4 @@ DcBlkqpaMZtj0UKuRLqrIzhASehbznDJ4KrRcon2m5saCCOtGCmwdrWTmxq3NTaZgjTHypfXDxAb
 </ds:RSAKeyValue>
 </ds:KeyValue>
 </ds:KeyInfo>
-<ds:Object Id="Signature741098-Object887236"><etsi:QualifyingProperties Target="#Signature741098"><etsi:SignedProperties Id="Signature741098-SignedProperties599578"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-09-25T15:20:54-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>X4y7yfe+O2Qi1y0wgR/X+AWUeCs=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-2 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 2,C=EC</ds:X509IssuerName><ds:X509SerialNumber>7780793509644678480</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-699614"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature></notaCredito>
+<ds:Object Id="Signature294871-Object397130"><etsi:QualifyingProperties Target="#Signature294871"><etsi:SignedProperties Id="Signature294871-SignedProperties595799"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-09-26T16:04:41-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>X4y7yfe+O2Qi1y0wgR/X+AWUeCs=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-2 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 2,C=EC</ds:X509IssuerName><ds:X509SerialNumber>7780793509644678480</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-940406"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature></guiaRemision>

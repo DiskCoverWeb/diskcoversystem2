@@ -185,10 +185,10 @@ $Autorizacion_GR=false,$remision=false,$serie_gr=false)
             }
             $sql.=" ORDER BY ID Desc ";
             // print_r($sql);die();
-            $botones[0] = array('boton'=>'Eliminar', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'ID' );
+            // $botones[0] = array('boton'=>'Eliminar', 'icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>'ID' );
            $datos = $this->db->datos($sql);
-           $stmt =  grilla_generica_new($sql,'Asiento_F','tbl_lineas',false,$botones,false,false,1,1,0,$tamaño_tabla=250,4);
-     return array('tbl'=>$stmt,'datos'=>$datos);
+           // $stmt =  grilla_generica_new($sql,'Asiento_F','tbl_lineas',false,$botones,false,false,1,1,0,$tamaño_tabla=250,4);
+     return $datos;
   }
 
   function limpiarGrid($cod=false,$factura=false,$codigoL=false,$auto=false){

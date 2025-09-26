@@ -183,26 +183,32 @@ class MYPDF extends TCPDF
 	$this->SetFont('helvetica', 'B', 11);
 	$this->SetX($cuardo_2_X);
 	$row_col = 72;
+	$numAutorizacion = "";
 	switch ($this->datos[0]['TC']) {
 		case 'LC':
 			$this->MultiCell($row_col, 2,'Liquidacion compra No.', $border, '', 0, 1, '', '', true);
 			$documento = $this->datos[0]['Factura'];
+			 $numAutorizacion = $this->datos[0]['Clave_Acceso'];
 			break;
 		case 'FA':
 			$this->MultiCell($row_col, 2,'Factura No.', $border, '', 0, 1, '', '', true);
 			$documento = $this->datos[0]['Factura'];
+			 $numAutorizacion = $this->datos[0]['Clave_Acceso'];
 			break;
 		case 'GR':
 			$this->MultiCell($row_col, 2,'Guia de Remision No.', $border, '', 0, 1, '', '', true);
 			$documento = $this->datos[0]['Factura'];
+			 $numAutorizacion = $this->datos[0]['Clave_Acceso_GR'];
 			break;
 		case 'RE':
 			$this->MultiCell($row_col, 2,'Retencion No.', $border, '', 0, 1, '', '', true);
-			$documento = $this->datos[0]['SecRetencion'];
+			$documento = $this->datos[0]['SecRetencion'];			
+			 $numAutorizacion = $this->datos[0]['Clave_Acceso'];
 			break;
 		case 'LC':
 			$this->MultiCell($row_col, 2,'Liquidacion compra No.', $border, '', 0, 1, '', '', true);
-			$documento = $this->datos[0]['Factura'];
+			$documento = $this->datos[0]['Factura'];			
+			 $numAutorizacion = $this->datos[0]['Clave_Acceso'];
 			break;
 		
 		default:
@@ -244,9 +250,10 @@ class MYPDF extends TCPDF
 		$this->SetX($cuardo_2_X);
 		//clave de acceso barcode y numero	
 		if ($this->datos[0]['Clave_Acceso'] != $this->datos[0]['Autorizacion']) {
-			$this->write1DBarcode($this->datos[0]['Autorizacion'], 'C128', '', '', 105, 18, 0.4, $style, 'N');
+			$this->write1DBarcode($numAutorizacion, 'C128', '', '',105, 18, 0.4, $style, 'N');
 		} else if ($this->datos[0]['Clave_Acceso'] > 39) {				
-			$this->write1DBarcode($this->datos[0]['Clave_Acceso'], 'C128', '', '',105, 18, 0.4, $style, 'N');
+			// $this->write1DBarcode($numAutorizacion, 'C128', '', '',105, 18, 0.4, $style, 'N');
+			$this->write1DBarcode($this->datos[0]['Clave_Acceso'], 'C128', '', '', 105, 18, 0.4, $style, 'N');
 		}
 		
 	// fin columna 1

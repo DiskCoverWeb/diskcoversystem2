@@ -1133,18 +1133,19 @@ class autorizacion_sri
 	           	 // print($firma);die();
 	           	 if($firma==1)
 	           	 {
-	           	 	$validar_autorizado = $this->comprobar_xml_sri(
-	           	 		$TFA['ClaveAcceso_GR'],
-	           	 		$this->linkSriAutorizacion);
-	           	 	// print_r($validar_autorizado);die();
-	           	 	if($validar_autorizado == -1)
-			   		 {
+	           	 	// $validar_autorizado = $this->comprobar_xml_sri(
+	           	 	// 	$TFA['ClaveAcceso_GR'],
+	           	 	// 	$this->linkSriAutorizacion);
+	           	 	// // print_r($validar_autorizado);die();
+	           	 	// if($validar_autorizado == -1)
+			   		//  {
 			   		 	$enviar_sri = $this->enviar_xml_sri(
 			   		 		$TFA['ClaveAcceso_GR'],
 			   		 		$this->linkSriRecepcion);
 			   		 	if($enviar_sri==1)
 			   		 	{
 			   		 		//una vez enviado comprobamos el estado de la factura
+			   		 		sleep(3);
 			   		 		$resp =  $this->comprobar_xml_sri($TFA['ClaveAcceso_GR'],$this->linkSriAutorizacion);
 			   		 		if($resp==1)
 			   		 		{
@@ -1158,16 +1159,16 @@ class autorizacion_sri
 			   		 		return $enviar_sri;
 			   		 	}
 
-			   		 }else 
-			   		 {
-			   		 	// print_r('expressiondd');die();
-			   		 	if($validar_autorizado==1)
-			   		 	{
-			   		 		return $this->actualizar_datos_GR($TFA);
-			   		 	}
-			   		 	// RETORNA SI YA ESTA AUTORIZADO O SI FALL LA REVISIO EN EL SRI
-			   			return $validar_autorizado;
-			   		 }
+			   		 // }else 
+			   		 // {
+			   		 // 	// print_r('expressiondd');die();
+			   		 // 	if($validar_autorizado==1)
+			   		 // 	{
+			   		 // 		return $this->actualizar_datos_GR($TFA);
+			   		 // 	}
+			   		 // 	// RETORNA SI YA ESTA AUTORIZADO O SI FALL LA REVISIO EN EL SRI
+			   		// 	return $validar_autorizado;
+			   		 // }
 	           	 }else
 	           	 {
 	           	 	//RETORNA SI FALLA AL FIRMAR EL XML
