@@ -14,7 +14,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 	</div>          
 </div>
 <div class="row mb-2">
-	<div class="col-sm-4">
+	<div class="col-sm-5">
 		<div class=" btn-group">
 			<a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
 				print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
@@ -46,7 +46,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 
 		</div>
 	</div>
-	<div class="col-sm-8">
+	<div class="col-sm-7">
 		<div class="row">
 			<div class="col-sm-2 col-6">
 				<div class="form-check">
@@ -64,9 +64,9 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 					</label>
 				</div>
 			</div>
-			<div class="col-sm-4">
+			<div class="col-sm-3 pe-0">
 				<div class="input-group input-group-sm">
-					<label for="TxtCompra" class="input-group-text"><b>Orden Compra No</b></label>
+					<label for="TxtCompra" class="input-group-text"><b style="font-size:10px">Orden Compra No</b></label>
 					<input type="" aria-label="TxtCompra" name="TxtCompra" id="TxtCompra" class="form-control form-control-sm text-end" value="0">
 				</div>
 			</div>
@@ -75,7 +75,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 					<option value="">Seleccione</option>
 				</select>
 			</div>
-			<div class="col-sm-1">
+			<div class="col-sm-2">
 				<input type="text" name="LabelCodigo" id="LabelCodigo" class="form-control form-control-sm" readonly=""
 					value=".">
 			</div>
@@ -125,7 +125,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 								<select class="form-select form-select-sm" id="DCCliente" name="DCCliente">
 									<option value="">Seleccione</option>
 								</select>
-								<button class="btn btn-primary btn-sm d-flex align-items-center" type="button" onclick="addCliente();"><i
+								<button class="btn btn-primary btn-sm d-flex align-items-center p-0" type="button" onclick="addCliente();"><i
 										class="bx bx-plus"></i></button>
 							</div>
 						</div>
@@ -134,9 +134,9 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 				</div>
 				<div class="col-sm-5">
 					<div class="row">
-						<div class="col-sm-3">
+						<div class="col-sm-3 pe-0">
 							<div class="input-group input-group-sm">
-								<label for="DCPorcenIVA" class="input-group-text"><b>I.V.A:</b></label>
+								<label for="DCPorcenIVA" class="input-group-text"><b>IVA:</b></label>
 								<select aria-label="DCPorcenIVA" name="DCPorcenIVA" id="DCPorcenIVA" class="form-select-sm" onblur="cambiar_iva(this.value)">
 									<option value="">-</option>
 								</select>
@@ -144,7 +144,7 @@ $servicio = $_SESSION['INGRESO']['Servicio'];
 						</div>
 						<div class="col-sm-9">
 							<div class="input-group input-group-sm">
-								<span class="input-group-text text-danger fw-bold" id="label2">0000000000000 NOTA DE VENTA No. 001001-</span>
+								<span class="input-group-text text-danger fw-bold fw-10" style="font-size: 12px;" id="label2">0000000000000 NOTA DE VENTA No. 001001-</span>
 								<input type="text" name="TextFacturaNo" id="TextFacturaNo" class="form-control form-control-sm"
 									value="000000">
 							</div>
