@@ -1583,7 +1583,7 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],$borde,'L');
 					$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],$borde,'L');
 					//$pdf->Ln(6);
-				}else if($TFA['TP'] == 'DO' || $TFA['TP'] == "NDO" || $TFA['TP'] == "NDU"){
+				}else if($TFA['TP'] == 'DO' || $TFA['TP'] == "NDO" || $TFA['TP'] == "NDU" || $TFA['TP'] == "FA"){
 					$pdf->MultiCell($anchoFact,3,'R.U.C '.$_SESSION['INGRESO']['RUC'],$borde,'L');
 				}else{
 					$pdf->MultiCell($anchoFact,3,$_SESSION['INGRESO']['Razon_Social'],$borde,'L');
@@ -1626,11 +1626,11 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 			$pdf->MultiCell($anchoFact,3,"La suma de: ".str_pad((int)($Tipo_Recibo['Total']* 100), 2, "0", STR_PAD_LEFT)."/100",$borde,'L');
 
 			$pdf->Ln(3);	
-			$pdf->MultiCell($anchoFact,3,"--------------------------------------------------------------------------------",$borde, 'L');
+			$pdf->MultiCell($anchoFact,3,"---------------------------------------------------------",$borde, 'L');
 			$pdf->MultiCell($anchoFact,3,"Usuario: ".$TFA['Recibi_de'],$borde, 'L');
-			$pdf->MultiCell($anchoFact,3,"NOTA DE DONACION: ".$TFA['Establecimiento'].'-'.$TFA['Emision'].'-'.generaCeros($Tipo_Recibo['Recibo_No'],9),$borde, 'L');
+			$pdf->MultiCell($anchoFact,3,"NOTA DE DONACION No.".$TFA['Establecimiento'].''.$TFA['Emision'].'-'.generaCeros($Tipo_Recibo['Recibo_No'],9),$borde, 'L');
 			$pdf->Ln(3);	
-			$pdf->MultiCell($anchoFact,3,"--------------------------------------------------------------------------------",$borde, 'L');
+			$pdf->MultiCell($anchoFact,3,"---------------------------------------------------------",$borde, 'L');
 
 			// if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 				$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE: DONACION",$borde,'L');
@@ -1638,7 +1638,7 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 			// 	$pdf->MultiCell($anchoFact,3,"POR CONCEPTO DE:".$Tipo_Recibo['Concepto'],$borde,'L');
 			// }
 
-			$pdf->MultiCell($anchoFact,3,"--------------------------------------------------------------------------------",$borde, 'L');
+			$pdf->MultiCell($anchoFact,3,"---------------------------------------------------------",$borde, 'L');
 
 		foreach ($abonos as $key => $value) {
 			// print_r($value);die();
@@ -1646,7 +1646,7 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		}
 
 
-		$pdf->MultiCell($anchoFact,3,"--------------------------------------------------------------------------------",$borde, 'L');
+		$pdf->MultiCell($anchoFact,3,"---------------------------------------------------------",$borde, 'L');
 
 		$pdf->Ln(3);
 		$pdf->Ln(3);
@@ -1656,9 +1656,12 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		$pdf->Cell($anchoFact/2,3, "_____________",0,0,'C' );
 		$pdf->Cell($anchoFact/2,3, "_____________",0,0,'C' );
 		$pdf->Ln(6);
-		$pdf->Cell($anchoFact/2,3, "C.I./R.U.C",0,0,'C' );
-		$pdf->Cell($anchoFact/2,3, "POR ".$_SESSION['INGRESO']['Nombre_Completo'],0,0,'C' );
+		$pdf->Cell($anchoFact/2,3, "Conforme",0,0,'C' );
+		$pdf->Cell($anchoFact/2,3, "Procesado",0,0,'C' );
 		$pdf->Ln(6);
+		$pdf->Cell($anchoFact/2,3, "C.I./R.U.C",0,0,'C' );
+		$pdf->MultiCell($anchoFact/2,3, "Por ".$_SESSION['INGRESO']['Nombre_Completo'],0,'C');
+		$pdf->Ln(2);
 		$pdf->Cell($anchoFact/2,3,$TFA['CI_RUC_Cli'],0,0,'C' );
 		$pdf->Cell($anchoFact/2,3,$_SESSION['INGRESO']['CodigoU'],0,0,'C' );
 
@@ -1671,12 +1674,9 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		// $pdf->MultiCell($anchoFact,3,"".$TFA['CI_RUC_Cli']."      ".$_SESSION['INGRESO']['CodigoU'],$borde,'L');
 
 
-
-
-
 		$pdf->Output(dirname(__DIR__,3) . '/TEMP/'.$NombreArchivo.'.pdf','F');
-
-		return 1;
+		// $pdf->Output(dirname(__DIR__,3) . '/TEMP/'.$NombreArchivo.'.pdf','I');
+		// return 1;
 	}
 
 

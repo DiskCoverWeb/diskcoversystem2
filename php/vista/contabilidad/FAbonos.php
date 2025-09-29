@@ -497,6 +497,7 @@
 		<!-- <button type="button" class="btn btn-light" data-dismiss="modal">Cerrar</button> --><br> <br>
 		<button class="btn btn-light border border-2" onclick="cerrar_modal();"> <img src="../../img/png/bloqueo.png"><br>
 			Cancelar</button>
+	
 	</div>
 </div>
 <br><br>

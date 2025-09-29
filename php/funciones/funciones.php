@@ -8175,6 +8175,7 @@ function Imprimir_Comprobante_Caja($FTA)
           AND Autorizacion = '".$FTA['Autorizacion']."' 
           AND Factura = ".$FTA['Factura']." 
           AND CodigoC = '".$FTA['CodigoC']."' ";
+          // print_r($sql3);die();
      $datos3 = $comm->datos($sql3);
      if(count($datos3))
      {    
@@ -8196,7 +8197,7 @@ function Imprimir_Comprobante_Caja($FTA)
         if($Saldo_P <> 0){ $TRecibo['Concepto'] = $TRecibo['Concepto']."Saldo Pendiente USD ".number_format($Saldo_P,2,'.',',');}
 
     }
-    // print_r($TRecibo);die();    
+    // print_r($FTA);print_r($datos3);print_r($TRecibo);die();    
     return  Imprimir_Recibo_Caja($FTA,$TRecibo,$datos3);
   } 
   return 1;

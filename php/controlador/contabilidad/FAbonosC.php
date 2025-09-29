@@ -97,6 +97,11 @@ if (isset($_GET['Grabar_abonos'])) {
 	$parametros = $_POST;
 	echo json_encode($controlador->Grabar_abonos($parametros));
 }
+
+if (isset($_GET['ver_pdf'])) {
+	$parametros = $_GET;
+	echo json_encode($controlador->ver_pdf($parametros));
+}
 class FAbonosC
 {
 
@@ -452,6 +457,25 @@ class FAbonosC
 		// print_r($TA);die();
 		$respuesta = Imprimir_Comprobante_Caja($TA);
 		return array('res'=>$respuesta, 'TJ' => $pdf_compro);
+	}
+
+	function ver_pdf_ejemplo()
+	{
+		
+		$TA['TP'] = 'FA';
+		$TA['Serie'] = '001003';
+		$TA['Autorizacion'] = '2909202501179192142900120010030000009921234567813';
+		$TA['Factura'] = '992';
+		$TA['CodigoC'] = '1791961838';
+		$TA['Recibo_No'] = '992';
+		$TA['Fecha'] = '2025-09-29';
+		$TA['CI_RUC_Cli'] ='1791961838';
+		$TA['Recibi_de'] = 'sssssssss asdasd asdas';
+		$TA['Establecimiento'] = '001';
+		$TA['Emision'] = '003';
+
+
+		$respuesta = Imprimir_Comprobante_Caja($TA);
 	}
 
 
