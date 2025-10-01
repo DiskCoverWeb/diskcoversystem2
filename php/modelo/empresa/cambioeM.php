@@ -490,6 +490,13 @@ class cambioeM
 		return $this->db->ejecutar_sql_terceros($sql,$em[0]['IP_VPN_RUTA'],$em[0]['Usuario_DB'],$em[0]['Contrasena_DB'],$em[0]['Base_Datos'],$em[0]['Puerto']);
 	}
 
+	function actualizar_foto_sql($foto,$ruc)
+	{
+		$sql = "UPDATE lista_empresas SET Logo_Tipo = '".$foto."' WHERE RUC_CI_NIC='".$ruc."'";
+		// print_r($sql);die();
+		return $this->db->String_Sql($sql,'MYSQL');
+	}
+
 	function tipoContribuyente($ruc)
 	{
 		$sql = "SELECT * FROM lista_tipo_contribuyente WHERE RUC = '".$ruc."'";

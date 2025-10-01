@@ -141,6 +141,7 @@ function subir_img()
   formData.append('ciudad', $('#ciudad').val());
   formData.append('empresas', $('#empresas').val());
   formData.append('ci_ruc', $('#ci_ruc').val());
+  formData.append('base', $('#txt_sqlserver').val());
 
      $.ajax({
         url: '../controlador/empresa/cambioeC.php?cargar_imagen=true',
@@ -177,6 +178,10 @@ function subir_img()
            setTimeout(()=>{
             $('#myModal_espera').modal('hide');
         }, 2000);
+        },
+        error: function(error){
+          // console.error("No se logro realizar la solicitud: ", error);
+          $("#myModal_espera").modal("hide");
         }
     });
 
@@ -859,7 +864,7 @@ async function datos_empresa()
             $('#tab_3_parte_1').addClass('d-none')      
             $('#tab_3_row_2').addClass('d-none') 
             $('#tab_3_row3_parte1').addClass('d-none')
-            
+
             $('#li_tab5').css('display','none');
             $('#tab_5').removeClass('active');
 
@@ -914,6 +919,12 @@ async function datos_empresa()
              $('#rbl_micro2021').prop('checked',true)
              }
 
+            if(empresa.Logo_Tipo_url!='' && empresa.Logo_Tipo_url!='.')
+            {
+                $('#img_logo').prop('src',empresa.Logo_Tipo_url);
+            }
+            $('#img_foto_name').text(empresa.Logo_Tipo);
+
 
             bloquear_tab_2();
 
@@ -929,6 +940,10 @@ async function datos_empresa()
             $('#li_tab3').removeClass('active');	
             $('#li_tab5').css('display','initial');
             $('#li_tab5').removeClass('active');	
+
+            $('#tab_3_parte_1').removeClass('d-none')      
+            $('#tab_3_row_2').removeClass('d-none') 
+            $('#tab_3_row3_parte1').removeClass('d-none')
         }
 
 

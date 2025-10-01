@@ -254,6 +254,14 @@ class cambioeC
 			$empresaSQL2 = '';
 			$empresaSQL3 = '';
 			$logotipo = '.';
+
+			$src = url_logo($datos[0]['Logo_Tipo']);
+			if($src!='' && $src!='.'){ $patch = explode('/',$src); $partes = count($patch); $img_name = $patch[$partes-1]; }else{$img_name = $datos[0]['Logo_Tipo'].' (NO ENCONTRADO)';}	
+			$rut = dirname(__DIR__,3);
+			$src = str_replace($rut,"../../", $src);
+			$datos[0]['Logo_Tipo_url'] = $src;
+
+
 			if($datos[0]['IP_VPN_RUTA']!='.' && $datos[0]['Base_Datos'] !='.' && $datos[0]['Usuario_DB']!='.' && $datos[0]['Contrasena_DB']!='.' && $datos[0]['Tipo_Base']!='.')
 			{
 				$datosEmp = $this->modelo->datos_sql_terceros($datos[0],$datos[0]['IP_VPN_RUTA'],$datos[0]['Usuario_DB'],$datos[0]['Contrasena_DB'],$datos[0]['Base_Datos'],$datos[0]['Puerto']);
@@ -355,6 +363,7 @@ class cambioeC
 	}
 	function guardar_foto($file,$post)
 	{
+		// print_r($post);die();
 	    $ruta= dirname(__DIR__,3).'/img/logotipos/';//ruta carpeta donde queremos copiar las imágenes
 	    if (!file_exists($ruta)) {
 	       mkdir($ruta, 0777, true);
@@ -373,7 +382,13 @@ class cambioeC
 	         	$em[0]['Contrasena_DB']= $post['Clave'];
 	         	$em[0]['Base_Datos']= $post['Base'];
 	         	$em[0]['Puerto']= $post['Puerto'];
-	         	$r = $this->modelo->actualizar_foto($name[0],$post['ci_ruc'],$em);
+	         	if($post['base']==1)
+	         	{
+	         		$r = $this->modelo->actualizar_foto($name[0],$post['ci_ruc'],$em);
+	         	}else
+	         	{
+	         		$r = $this->modelo->actualizar_foto_sql($name[0],$post['ci_ruc']);
+	         	}
 	         	// print_r($r);die();
 	         	if($r==1)
 	         	{
