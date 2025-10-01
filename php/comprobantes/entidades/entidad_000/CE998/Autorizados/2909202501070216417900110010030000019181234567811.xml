@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><autorizacion>
+  <estado>AUTORIZADO</estado>
+  <numeroAutorizacion>2909202501070216417900110010030000019181234567811</numeroAutorizacion>
+  <fechaAutorizacion>2025-09-29 16:13:53-05:00</fechaAutorizacion>
+  <comprobante><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?><factura id="comprobante" version="1.1.0">
+  <infoTributaria>
+    <ambiente>1</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>VACA PRIETO WALTER JALIL</razonSocial>
+    <nombreComercial>EMPRESA PARA DESARROLLO</nombreComercial>
+    <ruc>0702164179001</ruc>
+    <claveAcceso>2909202501070216417900110010030000019181234567811</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>003</ptoEmi>
+    <secuencial>000001918</secuencial>
+    <dirMatriz>Desarrollo para programacion de DiskCover System</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>29/09/2025</fechaEmision>
+    <dirEstablecimiento>direccion de empresa xyz</dirEstablecimiento>
+    <obligadoContabilidad>NO</obligadoContabilidad>
+    <tipoIdentificacionComprador>05</tipoIdentificacionComprador>
+    <razonSocialComprador>FARINOS JAVIER</razonSocialComprador>
+    <identificacionComprador>1722214507</identificacionComprador>
+    <totalSinImpuestos>40.00</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>0</codigoPorcentaje>
+        <descuentoAdicional>0.00</descuentoAdicional>
+        <baseImponible>40.00</baseImponible>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>4.00</propina>
+    <importeTotal>44.00</importeTotal>
+    <moneda>DOLAR</moneda>
+    <pagos>
+      <pago>
+        <formaPago>01</formaPago>
+        <total>44.00</total>
+      </pago>
+    </pagos>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>98.40</codigoPrincipal>
+      <descripcion>7 LINEASSN: 9901, .: Septiembre </descripcion>
+      <unidadMedida>DOLAR</unidadMedida>
+      <cantidad>2.000000</cantidad>
+      <precioUnitario>20.000000</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>40.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <tarifa>0</tarifa>
+          <baseImponible>40.00</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Direccion">jipiro e4283</campoAdicional>
+    <campoAdicional nombre="Telefono">0987242579</campoAdicional>
+    <campoAdicional nombre="Email">javierfarinango92@gmailcom</campoAdicional>
+    <campoAdicional nombre="tipoContribuyente">Contribuyente Regimen General</campoAdicional>
+    <campoAdicional nombre="seriePuntoEmision">001003</campoAdicional>
+    <campoAdicional nombre="socioRazonSocial">Empresa xyz</campoAdicional>
+    <campoAdicional nombre="socioDireccion">direccion de empresa xyz</campoAdicional>
+    <campoAdicional nombre="PlacaVehiculo">.</campoAdicional>
+    <campoAdicional nombre="CtaEstablecimiento">.</campoAdicional>
+  </infoAdicional>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature343357">
+<ds:SignedInfo Id="Signature-SignedInfo565175">
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<ds:Reference Id="SignedPropertiesID11633" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature343357-SignedProperties601320">
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>iUYWiVd/oK31qvWp1Ke4UG8xnQA=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#Certificate171157">
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>RJvXfuiqrBykD1Q+OLYmP1pmJHo=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="Reference-ID-213332" URI="#comprobante">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>jdq1rTZzeEh/cQr+MsHSRRwsLxE=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="SignatureValue147802">
+EY8T9SxTG5OFXTpMttvwNRMjJ0QWBS/Uzme00Zq/Z9Hk4OmsQlqbqhVF0xdUGM/wBZcMoQ2evYYy
+/mUemKfgN5QOovRjtGh6tMQf7WSfzW9x18lMx4aBf0u/N3Uo7cl0a4rBtpWXkViRKGUPXyzFo5PJ
+/tK8E5zavYKEJz2Wvu1Sugy/5Yoj89hCjiRcQsYTYNadUxtnf+Xx0+PVgmDsIM2Jy7mig7fMe8E0
+eOQvLqkUmFbhoHlbtuGoR7/vnJD9/fMlQ5y2o6jqYEuqh9j+Va0qqbUsHRMvpT5DobdXRa6L2EcK
+f6BIepbLg5kkEMrSQzSakRprtX43JstfEtxi9g==
+</ds:SignatureValue>
+<ds:KeyInfo Id="Certificate171157">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIKqTCCCJGgAwIBAgIIa/rueP0JNVAwDQYJKoZIhvcNAQELBQAwgZkxCzAJBgNVBAYTAkVDMR0w
+GwYDVQQKDBRTRUNVUklUWSBEQVRBIFMuQS4gMjEwMC4GA1UECwwnRU5USURBRCBERSBDRVJUSUZJ
+Q0FDSU9OIERFIElORk9STUFDSU9OMTkwNwYDVQQDDDBBVVRPUklEQUQgREUgQ0VSVElGSUNBQ0lP
+TiBTVUJDQS0yIFNFQ1VSSVRZIERBVEEwHhcNMjUwOTEwMjA0OTI4WhcNMzAwOTEwMjA0OTI4WjCB
+ozEhMB8GA1UEAwwYV0FMVEVSIEpBTElMIFZBQ0EgUFJJRVRPMSAwHgYDVQQFExcwNzAyMTY0MTc5
+LTEwMDkyNTE1NTkxODEwMC4GA1UECwwnRU5USURBRCBERSBDRVJUSUZJQ0FDSU9OIERFIElORk9S
+TUFDSU9OMR0wGwYDVQQKDBRTRUNVUklUWSBEQVRBIFMuQS4gMjELMAkGA1UEBhMCRUMwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC71lodNuLUAzpr63vmxHz6PVf9LuDVe8YqhDch1a8N
+8sr3Qpg+uQylG0qHPchs1YwcNK3YE9uhluLI4WYLYr9qSJ9pn4My8rto3GtHDOr84OdMJNLVuXrJ
+QDwIxD+maoSsbpDz4MqaRm6/OdsuAsSEDXWhSj34CXwUu5EXD0v4ShZgLipatzupdPz9KfsuvP3k
+oBVueIwsJv1W3DPKBvjbQgulTaI1gtGeMRoNwGWSqloxm2PRQq5EuqsjOEBJ6FvOcMngqtFyifab
+mxoII60YKbB2tZObGrc1NpmCNMfKl9cPEBvqCBYgRsGUDf4+B1UEqZdle7tRvilf/3WFW6w7AgMB
+AAGjggXnMIIF4zAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFIy6yhFXeCWAHWsKS1W/ja5i3b2P
+MFkGCCsGAQUFBwEBBE0wSzBJBggrBgEFBQcwAYY9aHR0cDovL29jc3Bndy5zZWN1cml0eWRhdGEu
+bmV0LmVjL2VqYmNhL3B1YmxpY3dlYi9zdGF0dXMvb2NzcDAiBgNVHREEGzAZgRdkaXNrY292ZXJz
+eXN0ZW1AbXNuLmNvbTCCAQYGA1UdIASB/jCB+zBaBgorBgEEAYKmcgIHMEwwSgYIKwYBBQUHAgIw
+Ph48AEMAZQByAHQAaQBmAGkAYwBhAGQAbwAgAGQAZQAgAFAAZQByAHMAbwBuAGEAIABOAGEAdAB1
+AHIAYQBsMIGcBgorBgEEAYKmcgIBMIGNMIGKBggrBgEFBQcCARZ+aHR0cHM6Ly93d3cuc2VjdXJp
+dHlkYXRhLm5ldC5lYy93cC1jb250ZW50L2Rvd25sb2Fkcy9Ob3JtYXRpdmFzL1BfZGVfQ2VydGlm
+aWNhZG9zL1BvbGl0aWNhcyBkZSBDZXJ0aWZpY2FkbyBQZXJzb25hIE5hdHVyYWwucGRmMB0GA1Ud
+JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDCCAg8GA1UdHwSCAgYwggICMIHeoDqgOIY2aHR0cDov
+L2NybDEuc2VjdXJpdHlkYXRhLm5ldC5lYy9zdWJjYTJjcmwxL2NybGZpbGUuY3JsooGfpIGcMIGZ
+MTkwNwYDVQQDDDBBVVRPUklEQUQgREUgQ0VSVElGSUNBQ0lPTiBTVUJDQS0yIFNFQ1VSSVRZIERB
+VEExMDAuBgNVBAsMJ0VOVElEQUQgREUgQ0VSVElGSUNBQ0lPTiBERSBJTkZPUk1BQ0lPTjEdMBsG
+A1UECgwUU0VDVVJJVFkgREFUQSBTLkEuIDIxCzAJBgNVBAYTAkVDMDygOqA4hjZodHRwOi8vY3Js
+Mi5zZWN1cml0eWRhdGEubmV0LmVjL3N1YmNhMmNybDIvY3JsZmlsZS5jcmwwgeCggd2ggdqGgddo
+dHRwczovL3BvcnRhbC1vcGVyYWRvcjIuc2VjdXJpdHlkYXRhLm5ldC5lYy9lamJjYS9wdWJsaWN3
+ZWIvd2ViZGlzdC9jZXJ0ZGlzdD9jbWQ9Y3JsJmlzc3Vlcj1DTj1BVVRPUklEQUQgREUgQ0VSVElG
+SUNBQ0lPTiBTVUJDQS0yIFNFQ1VSSVRZIERBVEEsT1U9RU5USURBRCBERSBDRVJUSUZJQ0FDSU9O
+IERFIElORk9STUFDSU9OLE89U0VDVVJJVFkgREFUQSBTLkEuIDIsQz1FQzAdBgNVHQ4EFgQUTHpI
+KhrF+YtxczvnTzRJX+RXhaIwKwYDVR0QBCQwIoAPMjAyNTA5MTAyMDQ5MjhagQ8yMDMwMDkxMDIw
+NDkyOFowCwYDVR0PBAQDAgXgMBoGCisGAQQBgqZyAwEEDAwKMDcwMjE2NDE3OTAhBgorBgEEAYKm
+cgMJBBMMEUJFTElTQVJJTyBRVUVWRURPMBEGCisGAQQBgqZyAyIEAwwBLjArBgorBgEEAYKmcgMH
+BB0MG0FUQUNBTUVTIE4yMyAyMjYgWSBMQSBHQVNDQTAcBgorBgEEAYKmcgMCBA4MDFdBTFRFUiBK
+QUxJTDAfBgorBgEEAYKmcgMgBBEMDzAwMjAwMTAwMTA2NTMwMDARBgorBgEEAYKmcgMjBAMMAS4w
+EwYKKwYBBAGCpnIDIQQFDANQRlgwFwYKKwYBBAGCpnIDDAQJDAdFQ1VBRE9SMBQGCisGAQQBgqZy
+AwMEBgwEVkFDQTAjBgorBgEEAYKmcgMeBBUME0VNUExFQURPIFBBUlRJQ1VMQVIwHQYKKwYBBAGC
+pnIDCwQPDA0wNzAyMTY0MTc5MDAxMBEGCisGAQQBgqZyAx0EAwwBLjAWBgorBgEEAYKmcgMEBAgM
+BlBSSUVUTzAaBgorBgEEAYKmcgMIBAwMCjA5OTk2NTQxOTYwDQYJKoZIhvcNAQELBQADggIBAJq6
+dQ1InA4mmVJrDG2pix/LmkRcnh24vizjb9ni42YNUXfaVrPH9duUoyz5d9whKkpI8YEaK+3J5a81
+cgfkdq5HvvKdwkNkTwcu4ZvhZvC3r25NCfeJyZjXRM/+UjLaN8j9RfJEZISbonStzXAc0pQHX8To
+3NdbMAeh6Az+pb9wgSASyg1acHB/UykmclAU7InjrUY/ZL9yvgBOevp6vl1c1/GvSWsEyWwoeitO
+WypY9C0JsJ5xedrPAIbkXTBrdTlyRdd1yaiZXAtlbBZqzWh/WV7zeUC1cCahRaaCu3FvAuR4KWwn
+EJ4tkxOqAfOLhu3LKaI42GR5B6lz0nNZnnFPQHUCS9Lut4kxEPNJAYdGK/ciWiajB56i4YwbkjsI
+1637bvqVKKzyUP+EcButL7gkHdVOnPZYnuAn8BN7Ne2XrmeMQVyGgvsE0sYihfpP9/yctvUmzoVZ
+uccR0viVNpV9yBgd8xW7NpdvYaHPyPVIk3eRNc25UR0DTtzhVk8R51G6kX3o8SvlMXHrTE8t5mri
+vdWUCHhB07Vjuq85GphDdsVMEwdG3suuZ650BW8lxKY1oyqnXRZ4J8VzS8nD7uUKCV+kCK7BTaw7
+7pJ8BM2/4B18mfdmrSPIKeD8dJRBoRs/5+8hx0CXhmRjfJ3um7drEiygPatJO89n7Ocg4NEJ
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+u9ZaHTbi1AM6a+t75sR8+j1X/S7g1XvGKoQ3IdWvDfLK90KYPrkMpRtKhz3IbNWMHDSt2BPboZbi
+yOFmC2K/akifaZ+DMvK7aNxrRwzq/ODnTCTS1bl6yUA8CMQ/pmqErG6Q8+DKmkZuvznbLgLEhA11
+oUo9+Al8FLuRFw9L+EoWYC4qWrc7qXT8/Sn7Lrz95KAVbniMLCb9Vtwzygb420ILpU2iNYLRnjEa
+DcBlkqpaMZtj0UKuRLqrIzhASehbznDJ4KrRcon2m5saCCOtGCmwdrWTmxq3NTaZgjTHypfXDxAb
+6ggWIEbBlA3+PgdVBKmXZXu7Ub4pX/91hVusOw==
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+</ds:KeyInfo>
+<ds:Object Id="Signature343357-Object727798"><etsi:QualifyingProperties Target="#Signature343357"><etsi:SignedProperties Id="Signature343357-SignedProperties601320"><etsi:SignedSignatureProperties><etsi:SigningTime>2025-09-29T16:13:35-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>X4y7yfe+O2Qi1y0wgR/X+AWUeCs=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUBCA-2 SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A. 2,C=EC</ds:X509IssuerName><ds:X509SerialNumber>7780793509644678480</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-213332"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature></factura>]]></comprobante>
+  <mensajes/>
+</autorizacion>

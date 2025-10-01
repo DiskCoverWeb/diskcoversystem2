@@ -291,7 +291,7 @@ class cambioeC
 
 	function editar_datos_empresa($parametros)
 	{
-		//print_r($parametros);die();
+		// print_r($parametros);die();
 		$contribuyente = $this->modelo->tipoContribuyente($parametros['TxtRuc']);
 		if(count($contribuyente)==0)
 		{
@@ -498,19 +498,19 @@ class cambioeC
 			control_procesos('N',"Edicion datos empres",$texto.' Por:'.$_SESSION['INGRESO']['CodigoU']);
 		}
 
-		if($empresas[0]['Gerente']!=$parametros['TxtRepresentanteLegal'])
+		if(isset($parametros['TxtRepresentanteLegal']) && $empresas[0]['Gerente']!=$parametros['TxtRepresentanteLegal'])
 		{
 			$texto=$empresas[0]['Gerente'].' a '.$parametros['TxtRepresentanteLegal'];
 
 			control_procesos('N',"Edicion datos empres",$texto.' Por:'.$_SESSION['INGRESO']['CodigoU']);
 		}
-		if($empresas[0]['Contador']!=$parametros['TxtNombConta'])
+		if(isset($parametros['TxtNombConta']) && $empresas[0]['Contador']!=$parametros['TxtNombConta'])
 		{
 			$texto= $empresas[0]['Contador'].' a '.$parametros['TxtNombConta'];
 
 			control_procesos('N',"Edicion datos empres",$texto.' Por:'.$_SESSION['INGRESO']['CodigoU']);
 		}
-		if($empresas[0]['RUC_Contador']!=$parametros['TxtRucConta'])
+		if(isset($parametros['TxtRucConta']) && $empresas[0]['RUC_Contador']!=$parametros['TxtRucConta'])
 		{
 			$texto=$empresas[0]['RUC_Contador'].' a '.$parametros['TxtRucConta'];
 
@@ -875,6 +875,10 @@ class cambioeC
 			}else{
 				$campos['Cta_Venta'] = "'".$vpar['MBoxCta_Venta']."'";
 			}*/
+
+			if(substr($vpar['MBoxCta'], -1,1)=='.'){$vpar['MBoxCta'] = substr($vpar['MBoxCta'],0,-1);}
+			if(substr($vpar['MBoxCta_Anio_Anterior'], -1,1)=='.'){$vpar['MBoxCta_Anio_Anterior'] = substr($vpar['MBoxCta_Anio_Anterior'], 0,-1);}
+
 			$campos['CxC'] = "'".$vpar['MBoxCta']."'";
 			$campos['CxC_Anterior'] = "'".$vpar['MBoxCta_Anio_Anterior']."'";
 			$campos['Cta_Venta'] = "'".$vpar['MBoxCta_Venta']."'";
@@ -904,7 +908,7 @@ class cambioeC
 				$campos['Imp_Mes'] = 1;
 				
 			}
-			//print_r($campos);die();
+			// print_r($campos);die();
 			
 			$this->modelo->crearActualizarRegistro($Entidad, $Item, "Catalogo_Lineas", $campos, $actualizar, $act_where);
 	

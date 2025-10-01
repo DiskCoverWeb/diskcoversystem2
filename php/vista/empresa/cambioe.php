@@ -399,37 +399,46 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 											</div>                        
 										</div>
 										<div class="row">
-											<div class="col-sm-2">
-												<label>TELEFONO:</label>
-												<input type="text" name="TxtTelefono" id="TxtTelefono" class="form-control form-control-sm" value="" onkeyup="num_caracteres(this.id,10)" onblur="num_caracteres(this.id,10)">
+											<div class="col-sm-5">
+												<div class="row">
+													<div class="col-sm-4">
+														<label>TELEFONO:</label>
+														<input type="text" name="TxtTelefono" id="TxtTelefono" class="form-control form-control-sm" value="" onkeyup="num_caracteres(this.id,10)" onblur="num_caracteres(this.id,10)">
+													</div>
+													<div class="col-sm-4">
+														<label>TELEFONO 2:</label>
+														<input type="text" name="TxtTelefono2" id="TxtTelefono2" class="form-control form-control-sm" value="" onkeyup="num_caracteres(this.id,10)" onblur="num_caracteres(this.id,10)">
+													</div>
+													<div class="col-sm-4">
+														<label>FAX:</label>
+														<input type="text" name="TxtFax" id="TxtFax" class="form-control form-control-sm" value="">
+													</div>
+												</div>												
 											</div>
-											<div class="col-sm-2">
-												<label>TELEFONO 2:</label>
-												<input type="text" name="TxtTelefono2" id="TxtTelefono2" class="form-control form-control-sm" value="" onkeyup="num_caracteres(this.id,10)" onblur="num_caracteres(this.id,10)">
-											</div>
-											<div class="col-sm-1">
-												<label>FAX:</label>
-												<input type="text" name="TxtFax" id="TxtFax" class="form-control form-control-sm" value="">
-											</div>
-											<div class="col-sm-1">
-												<label>MONEDA</label>
-												<input type="text" name="TxtMoneda" id="TxtMoneda" class="form-control form-control-sm" value="USD">
-											</div>
-											<div class="col-sm-2">
-												<label>NO. PATRONAL:</label>
-												<input type="text" name="TxtNPatro" id="TxtNPatro" class="form-control form-control-sm" value="">
-											</div>
-											<div class="col-sm-1">
-												<label>COD.BANCO</label>
-												<input type="text" name="TxtCodBanco" id="TxtCodBanco" class="form-control form-control-sm" value="">
-											</div>
-											<div class="col-sm-1" style="padding: 0 0 0 8px;">
-												<label>TIPO CAR.</label>
-												<input type="text" name="TxtTipoCar" id="TxtTipoCar" class="form-control form-control-sm" value="">
-											</div>
-											<div class="col-sm-2">
-												<label>ABREVIATURA</label>
-												<input type="text" name="TxtAbrevi" id="TxtAbrevi" class="form-control form-control-sm" value="">
+											<div class="col-sm-7">
+												<div class="row">
+													<div class="col-sm-2">
+														<label>MONEDA</label>
+														<input type="text" name="TxtMoneda" id="TxtMoneda" class="form-control form-control-sm" value="USD">
+													</div>
+													<div class="col-sm-3">
+														<label>NO. PATRONAL:</label>
+														<input type="text" name="TxtNPatro" id="TxtNPatro" class="form-control form-control-sm" value="">
+													</div>
+													<div class="col-sm-2">
+														<label>Cod.Banco</label>
+														<input type="text" name="TxtCodBanco" id="TxtCodBanco" class="form-control form-control-sm" value="">
+													</div>
+													<div class="col-sm-2">
+														<label>Tipo Car.</label>
+														<input type="text" name="TxtTipoCar" id="TxtTipoCar" class="form-control form-control-sm" value="">
+													</div>
+													<div class="col-sm-3">
+														<label>ABREVIATURA</label>
+														<input type="text" name="TxtAbrevi" id="TxtAbrevi" class="form-control form-control-sm" value="">
+													</div>
+													
+												</div>
 											</div>
 										</div>
 										<div class="row">
@@ -481,7 +490,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 
 
 										<div class="row mt-2">
-											<div class="col-md-4" style="background-color:#ffe0c0">                                   
+											<div class="col-md-4" id="tab_3_parte_1" style="background-color:#ffe0c0">                                   
 											<!-- setesos -->
 												<label class="fw-bold">|Seteos Generales|</label>
 												<div class="checkbox">
@@ -521,11 +530,13 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 													<select class="form-control form-control-sm" onchange="cargar_img()" id="ddl_img" name="ddl_img" row="11" multiple></select>                                                
 												</div>
 												<div class="row">
-													<div class="col-sm-10">
-														<input class="btn btn-sm" type="file" id="file_img" name="file_img" />
-													</div>
-													<div class="col-sm-2">
-														<button type="button" class="btn btn-primary btn-sm" id="subir_imagen" onclick="subir_img()" >Cargar</button>                        	
+													<div class="col-sm-12">
+														<div class="input-group">
+															<input type="file" id="file_img" name="file_img" class="form-control form-control-sm" />
+															<button type="button" class="btn btn-primary btn-sm" id="subir_imagen" onclick="subir_img()" >Cargar</button>    
+															
+														</div>
+														                    	
 													</div>
 												</div>
 												
@@ -537,7 +548,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 												</div>                                     
 											</div>
 										</div>
-										<div class="row">
+										<div class="row" id="tab_3_row_2">
 											<div class="col-md-4">
 												<label class="fw-bold">|Numeración de Comprobantes|</label>
 												<div class="row">
@@ -650,7 +661,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 											</div>
 									</div>
 									<div class="row">
-										<div class="col-sm-4" style="background-color:#c0ffc0">
+										<div class="col-sm-4" id="tab_3_row3_parte1" style="background-color:#c0ffc0">
 											<div class="row">
 												<label class="fw-bold">|Cantidad de Decimales en|</label>
 											</div>   
@@ -667,7 +678,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 												I.V.A
 												<input type="text" name="TxtIVA" id="TxtIVA" class="form-control form-control-sm" value="">
 											</div>
-											<div class="col-md-3" style="background-color:#c0ffc0">
+											<div class="col-md-3 p-0" style="background-color:#c0ffc0">
 												CANTIDAD
 												<input type="text" name="TxtCantidad" id="TxtCantidad" class="form-control form-control-sm" value="">
 											</div>
@@ -773,21 +784,21 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 														<input type="hidden" id="TxtIDLinea" name="TxtIDLinea">
 														<input type="hidden" id="LblTreeClick" name="LblTreeClick">
 													</div>
-													<div class="row">
+													<div class="row mb-2">
 														<div class="col-sm-5">
 															<div class="form-group">
-																<label for="inputEmail3" class="col-sm-2 control-label">CODIGO</label>
-																<div class="col-sm-10">
+																<label for="inputEmail3">CODIGO</label>
+																<!-- <div class="col-sm-10"> -->
 																	<input type="text" class="form-control form-control-sm" id="TextCodigo" name="TextCodigo" placeholder="" value="." onchange="validar_codigo();">
-																</div>
+																<!-- </div> -->
 															</div>	
 														</div>
 														<div class="col-sm-7">
 															<div class="form-group">
-																<label for="inputEmail3" class="col-sm-2 control-label">DESCRIPCION</label>
-																<div class="col-sm-10">
+																<label for="inputEmail3">DESCRIPCION</label>
+																<!-- <div class="col-sm-10"> -->
 																	<input type="text" class="form-control form-control-sm" id="TextLinea" name="TextLinea" placeholder="NO PROCESABLE" value="NO PROCESABLE">
-																</div>
+																<!-- </div> -->
 															</div>	
 														</div>
 													</div>
@@ -845,7 +856,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 																				</div>
 																				<div class="col-sm-6">
 																					<div class="">
-																					<label for="inputEmail3" class="col-sm-5 control-label">TIPO DE DOCUMENTO</label>
+																					<label for="inputEmail3">TIPO DE DOCUMENTO</label>
 																					<div class="col-sm-7">
 																						<select class="form-select form-select-sm" id="CTipo" name="CTipo">
 																							<option value="FA">FA</option>
@@ -868,7 +879,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 																		<div class="row">
 																			<div class="col-sm-6">
 																				<div class="form-group">
-																				<label for="inputEmail3" class="col-sm-7 control-label">NUMERO DE FACTURAS POR PAGINAS</label>
+																				<label for="inputEmail3">NUMERO DE FACTURAS POR PAGINAS</label>
 																				<div class="col-sm-5">
 																						<input type="text" class="form-control form-control-sm" id="TxtNumFact" name="TxtNumFact" placeholder="Email" value="00">
 																				</div>
@@ -876,7 +887,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 																			</div>
 																			<div class="col-sm-6">
 																				<div class="form-group">
-																					<label for="inputEmail3" class="col-sm-5 control-label">ITEMS POR FACTURA</label>
+																					<label for="inputEmail3">ITEMS POR FACTURA</label>
 																					<div class="col-sm-7">
 																							<input type="text" class="form-control form-control-sm" id="TxtItems" name="TxtItems" placeholder="Email" value="0.00">
 																					</div>
@@ -884,7 +895,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 																			</div>
 																			<div class="col-sm-12">
 																				<div class="form-group">
-																					<label for="TxtLogoFact" class="col-sm-5 control-label">FORMATO GRAFICO DEL DOCUMENTO (EXTENSION:GIF)</label>
+																					<label for="TxtLogoFact">FORMATO GRAFICO DEL DOCUMENTO (EXTENSION:GIF)</label>
 																					<div class="col-sm-7">
 																						<input type="text" class="form-control form-control-sm" id="TxtLogoFact" name="TxtLogoFact">
 																					</div>
@@ -893,11 +904,11 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 																		</div>
 																		<div class="row">
 																			<div class="col-sm-12">
-																				ESPACIO Y POSICION DE LA COPIA DE LA FACTURA / NOTA DE VENTA
+																				<b>ESPACIO Y POSICION DE LA COPIA DE LA FACTURA / NOTA DE VENTA</b>
 																			</div>
 																			<div class="col-sm-6">
 																				<div class="">
-																					<label for="inputEmail3" class="col-sm-5 control-label">POSICION X DE LA FACTURA</label>
+																					<label for="inputEmail3">POSICION X DE LA FACTURA</label>
 																					<div class="col-sm-7">
 																						<input type="text" class="form-control form-control-sm" id="TxtPosFact" name="TxtPosFact" placeholder="Email" value="0.00">
 																					</div>
@@ -905,7 +916,7 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 																			</div>
 																			<div class="col-sm-6">
 																				<div class="">
-																					<label for="inputEmail3" class="col-sm-5 control-label">POSICION Y DE LA FACTURA</label>
+																					<label for="inputEmail3">POSICION Y DE LA FACTURA</label>
 																					<div class="col-sm-7">
 																							<input type="text" class="form-control form-control-sm" id="TxtPosY" name="TxtPosY" placeholder="" value="0.00">
 																					</div>
@@ -913,21 +924,21 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 																			</div>
 																			<div class="col-sm-6">
 																				<div class="">
-																					<label for="inputEmail3" class="col-sm-5 control-label">ESPACIO ENTRE LA FACTURA</label>
+																					<label for="inputEmail3">ESPACIO ENTRE LA FACTURA</label>
 																					<div class="col-sm-7">
 																						<input type="text" class="form-control form-control-sm" id="TxtEspa" name="TxtEspa" placeholder="" value="0.00">
 																					</div>
 																				</div>	
 																			</div>
 																			<div class="col-sm-6">
-																				<div class="">
-																					<label for="inputEmail3" class="col-sm-2 control-label">LARGO</label>
+																				<div class="row">
 																					<div class="col-sm-3">
+																						<label for="inputEmail3">LARGO</label>
 																						<input type="text" class="form-control form-control-sm" id="TxtLargo" name="TxtLargo" placeholder="" value="0.00">
 																					</div>
-																					<label for="inputEmail3" class="col-sm-2 control-label">X</label>
-																					<label for="inputEmail3" class="col-sm-2 control-label">ANCHO</label>
+																					<label for="inputEmail3" class="col-sm-1">X</label>
 																					<div class="col-sm-3">
+																						<label for="inputEmail3">ANCHO</label>
 																						<input type="text" class="form-control form-control-sm" id="TxtAncho" name="TxtAncho" placeholder="" value="0.00">
 																					</div>
 

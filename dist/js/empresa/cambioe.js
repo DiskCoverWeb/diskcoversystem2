@@ -846,16 +846,77 @@ async function datos_empresa()
         if (empresa2 == '') 
         {						
             $('#txt_sqlserver').val(0);
-            Swal.fire('Esta empresa no tiene una configuracion SQL server','','warning');
+            Swal.fire('Esta empresa no tiene una una base de datos configurada','','warning');
             $('#li_tab1').addClass('active');
             $('#tab_1').addClass('active');	
 
-            $('#li_tab2').css('display','none');
-            $('#tab_2').removeClass('active');	
-            $('#li_tab3').css('display','none');
-            $('#tab_3').removeClass('active');
+            // $('#li_tab2').css('display','none');
+            $('#li_tab2').removeClass('active');
+            $('#tab_2').removeClass('active');
+
+            // $('#li_tab3').css('display','none');
+            $('#tab_3').removeClass('active');            
+            $('#tab_3_parte_1').addClass('d-none')      
+            $('#tab_3_row_2').addClass('d-none') 
+            $('#tab_3_row3_parte1').addClass('d-none')
+            
             $('#li_tab5').css('display','none');
             $('#tab_5').removeClass('active');
+
+
+            $('#TxtEmpresa').val(empresa.Empresa);
+            $('#lbl_item').text(empresa.Item);
+            $('#TxtRazonSocial').val(empresa.Razon_Social);
+            $('#TxtNomComercial').val(empresa.Empresa);
+            $('#TxtRuc').val(empresa.RUC_CI_NIC);
+
+
+            if(contribuyente!='')
+            {
+                $('#TxtRucTipocontribuyente').val(contribuyente.RUC)
+                $('#TxtZonaTipocontribuyente').val(contribuyente.Zona)
+                $('#TxtAgentetipoContribuyente').val(contribuyente.Agente_Retencion);
+            }
+
+            $('#rbl_ContEs').prop('checked',false)
+            $('#rbl_rimpeE').prop('checked',false)
+            $('#rbl_rimpeP').prop('checked',false)
+            $('#rbl_regGen').prop('checked',false)
+            $('#rbl_rise').prop('checked',false)
+            $('#rbl_micro2020').prop('checked',false)
+            $('#rbl_micro2021').prop('checked',false)
+
+            if(contribuyente.Contribuyente_Especial==1){
+                $('#rbl_ContEs').prop('checked',true)
+            }
+
+            if(contribuyente.RIMPE_E==1){
+                $('#rbl_rimpeE').prop('checked',true)
+             }
+
+             if(contribuyente.RIMPE_P==1){
+                $('#rbl_rimpeP').prop('checked',true)
+             }
+
+             if(contribuyente.Regimen_General==1){
+                $('#rbl_regGen').prop('checked',true)
+             }
+
+             if(contribuyente.RISE==1){
+             $('#rbl_rise').prop('checked',true)
+             }
+
+             if(contribuyente.Micro_2020==1){
+             $('#rbl_micro2020').prop('checked',true)
+             }
+
+             if(contribuyente.Micro_2021==1){
+             $('#rbl_micro2021').prop('checked',true)
+             }
+
+
+            bloquear_tab_2();
+
             return false
 
         }else
@@ -886,10 +947,11 @@ async function datos_empresa()
             $('#prov').val(empresa2.CProv);
         });
 
-        var numero = parseFloat(empresa2.Ciudad);
-        if (!isNaN(numero)) {
+        // console.log(numero);
+        if (empresa2.Ciudad!='.') {
            ciudad_l(empresa2.CProv,function(){
-                $('#ddl_ciudad').val(empresa2.Ciudad);
+                // $('#ddl_ciudad').val(empresa2.Ciudad);
+                $('#ddl_ciudad option:contains("' + empresa2.Ciudad + '")').prop('selected', true);
             })
         } else {		
             ciudad_l(empresa2.CProv,function(){
@@ -915,6 +977,7 @@ async function datos_empresa()
         $('#TxtSubdir').val(empresa2.SubDir);
         $('#TxtNombConta').val(empresa2.Contador);
         $('#TxtRucConta').val(empresa2.RUC_Contador);
+
         //------------- fin tab 2 ------------------
 
         //---------------- tab 3 -------------------
@@ -1082,6 +1145,36 @@ async function datos_empresa()
 });
 }
 
+function bloquear_tab_2()
+{
+        $('#ddl_obli').prop('disabled',true);
+        $('#TxtRepresentanteLegal').prop('disabled',true);
+        $('#TxtCI').prop('disabled',true);
+
+        $('#ddl_naciones').prop('disabled',true);
+        $('#prov').prop('disabled',true);
+        $('#ddl_ciudad').prop('disabled',true);
+     
+        
+        $('#TxtDirMatriz').prop('disabled',true);
+        $('#TxtEsta').prop('disabled',true);
+        $('#TxtTelefono').prop('disabled',true);
+        $('#TxtTelefono2').prop('disabled',true);
+        $('#TxtFax').prop('disabled',true);
+        $('#TxtMoneda').prop('disabled',true);
+        $('#TxtNPatro').prop('disabled',true);
+        $('#TxtCodBanco').prop('disabled',true);
+        $('#TxtTipoCar').prop('disabled',true);
+        $('#TxtAbrevi').prop('disabled',true);
+        $('#TxtEmailEmpre').prop('disabled',true);
+        $('#TxtEmailConta').prop('disabled',true);
+        $('#TxtEmailRespa').prop('disabled',true);
+        $('#TxtSegDes1').prop('disabled',true);
+        $('#TxtSegDes2').prop('disabled',true);
+        $('#TxtSubdir').prop('disabled',true);
+        $('#TxtNombConta').prop('disabled',true);
+        $('#TxtRucConta').prop('disabled',true);
+    }
 function consultarCatalogoLinea(){
 let entidad = $('#TxtLineasEntidad').val();
 let item = $('#TxtLineasItem').val();
@@ -1322,8 +1415,8 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
     {
         var ant = $('#txt_anterior').val();
         var che = cod.split('.').join('_');	
-        if(ant==''){	$('#txt_anterior').val(che); }else{	$('#label_'+ant).css('border','0px');$('#label_'+ant).removeAttr('title');}
-        $('#label_'+che+auto+serie+fact).css('border','1px solid');
+        if(ant==''){	$('#txt_anterior').val(che); }else{	$('#label_'+ant).css('font-weight','normal');$('#label_'+ant).removeAttr('title');}
+        $('#label_'+che+auto+serie+fact).css('font-weight','bold');
         $('#label_'+che+auto+serie+fact).attr('title', 'Presione Suprimir para eliminar');
         $('#LblTreeClick').val(auto+'_'+serie+'_'+fact);
         $('#txt_anterior').val(che+auto+serie+fact); 
@@ -1704,8 +1797,8 @@ function TVcatalogo(nl='',cod='',auto='',serie='',fact='')
     {
         var ant = $('#txt_anterior').val();
         var che = cod.split('.').join('_');	
-        if(ant==''){	$('#txt_anterior').val(che); }else{	$('#label_'+ant).css('border','0px');$('#label_'+ant).removeAttr('title');}
-        $('#label_'+che+'_'+id).css('border','1px solid');
+        if(ant==''){	$('#txt_anterior').val(che); }else{	$('#label_'+ant).css('font-weight','normal');$('#label_'+ant).removeAttr('title');}
+        $('#label_'+che+'_'+id).css('font-weight','bold');
         $('#label_'+che+'_'+id).attr('title', 'Presione Suprimir para eliminar');
         $('#txt_anterior').val(che+'_'+id); 
     }
