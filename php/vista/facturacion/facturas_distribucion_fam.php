@@ -303,11 +303,16 @@ if (isset ($_GET['tipo'])) {
 				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
+				<div class="row">
+					<div class="col-sm-12 text-end">
+						<button type="button" class="btn btn-primary"  onclick="Generar_factura()">Generar Facturas</button>
+					</div>
+				</div>
                 <div class="row">
-                	<div class="col-sm-12">
+                	<div class="col-sm-12" style="overflow-y: scroll; height: 350px;">
                 		<table class="table table-sm table-hover table-striped" id="tblClientes">
 	                        <thead>
-                                <th></th>
+                                <th> <input type="checkbox" name="cbx_all" id="cbx_all" onchange="cambiar_all()" checked>  </th>
                                 <th>ITEM</th>
                                 <th>USUARIO</th>
                                 <th>CEDULA</th>
@@ -322,7 +327,6 @@ if (isset ($_GET['tipo'])) {
                 </div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary"  onclick="Generar_factura()">Generar Facturas</button>
 				<button type="button" class="btn btn-warning"  onclick="finalizar_factura()">Finalizar pedidos</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 			</div>

@@ -2195,3 +2195,23 @@
 		}
 	}
 
+	function cambiar_all()
+	{
+		if($('#cbx_all').prop('checked'))
+		{
+			$('.class_integrante').each(function() {
+			    const checkbox = $(this);
+			    checkbox.prop('checked',true); 
+			    
+			});
+		}else
+		{
+			$('.class_integrante').each(function() {
+			    const checkbox = $(this);
+			    checkbox.prop('checked',false); 
+			    
+			});
+
+		}
+	}
+

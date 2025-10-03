@@ -91,6 +91,7 @@ class asignacion_familiasC
         SetAdoAddNew("Detalle_Factura");
         SetAdoFields("TC","OF");
         SetAdoFields("T","P");  // p =>pendiente
+        SetAdoFields("Factura","-1");  // p =>pendiente
         // SetAdoFields("CodigoC",$parametros['beneficiarioCodigo']);
         
         SetAdoFields("CodigoL",$parametros['programa']);
