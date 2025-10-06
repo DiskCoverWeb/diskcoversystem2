@@ -1439,6 +1439,7 @@ function control_errores($parametros)
 function validar_formato_img($file)
 {
     switch ($file['file_img']['type']) {
+        case 'image/jpg':
         case 'image/jpeg':
         case 'image/pjpeg':
         case 'image/gif':

@@ -30,26 +30,15 @@ if(isset($_POST['RUC']) AND !isset($_POST['submitweb']))
 $SetD = array();
 function ip()
 {
-  // print_r($_SESSION);die();
-   $ipaddress = '';
-    if (getenv('HTTP_CLIENT_IP'))
-        $ipaddress = getenv('HTTP_CLIENT_IP');
-    else if(getenv('HTTP_X_FORWARDED_FOR'))
-        $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
-    else if(getenv('HTTP_X_FORWARDED'))
-        $ipaddress = getenv('HTTP_X_FORWARDED');
-    else if(getenv('HTTP_FORWARDED_FOR'))
-        $ipaddress = getenv('HTTP_FORWARDED_FOR');
-    else if(getenv('HTTP_FORWARDED'))
-       $ipaddress = getenv('HTTP_FORWARDED');
-    else if (getenv('HTTP_X_REAL_IP'))
-        $ip_address = getenv('HTTP_X_REAL_IP');
-    else if(getenv('REMOTE_ADDR'))
-        $ipaddress = getenv('REMOTE_ADDR');
-    else
-        $ipaddress = 'UNKNOWN';
-  return $ipaddress;
-
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        return $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // Si hay múltiples IPs, nos quedamos con la primera
+        $ipList = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        return trim($ipList[0]);
+    } else {
+        return $_SERVER['REMOTE_ADDR'];
+    }
 }
 
 function getInfoIPS(){
@@ -105,58 +94,133 @@ function Empresa_data()
  }
 
 
-function control_procesos($TipoTrans,$opcional_proceso,$Tarea='.')
-{  
-   $start_time = microtime(true);
-  // print_r($_SESSION['INGRESO']);die();
-  $conn = new db();
-  $TMail_Credito_No = G_NINGUNO;
+ function control_procesos($TipoTrans,$Proceso,$Tarea='',$Credito_No = '',$Mail_de='.',$Mail_para='.')
+ {
+  
+  if(strlen($Mail_de)<1)
+  { 
+    if(strlen($_SESSION['INGRESO']['Email_conexion_CE'])>1)
+      { 
+        $Mail_de = $_SESSION['INGRESO']['Email_conexion_CE'];
+      }else
+      { 
+        $Mail_de = $_SESSION['INGRESO']['Email_conexion'];
+      } 
+  }
+
   $NumEmpresa = $_SESSION['INGRESO']['item'];
-  $TMail = '';
   $Modulo = $_SESSION['INGRESO']['modulo_'];
-  if($NumEmpresa=="")
+ 
+  if($NumEmpresa == ""){$NumEmpresa = G_NINGUNO;}
+  if($Credito_No == ""){$Credito_No = G_NINGUNO;}
+  if($Modulo <>  G_NINGUNO && $TipoTrans <> G_NINGUNO && $NumEmpresa <> G_NINGUNO)
   {
-    $NumEmpresa = G_NINGUNO;
-  }
-  if($TMail == "")
-  {
-    $TMail = G_NINGUNO;
-  }
-  if($Modulo <> G_NINGUNO AND $TipoTrans<>G_NINGUNO AND $NumEmpresa<>G_NINGUNO)
-  {
-    if($Tarea == G_NINGUNO)
-    {
-      $Tarea = "Inicio de Sección";
-    }else
-    {
-      $Tarea = substr($Tarea,0,60);
-    }
-    $proceso = substr($opcional_proceso,0,60);
-    $NombreUsuario1 = substr($_SESSION['INGRESO']['Nombre'], 0, 60);
-    $Mifecha1 = date("Y-m-d");
-    $MiHora1 = date("H:i:s");
-    $CodigoUsuario= $_SESSION['INGRESO']['CodigoU'];
-    if($Tarea == "")
-    {
-      $Tarea = G_NINGUNO;
-    }
-    if($opcional_proceso=="")
-    {
-      $opcional_proceso = G_NINGUNO;
-    }
+     if($Proceso = G_NINGUNO){$Proceso = "Procesando...";}else{$Proceso = trim(substr($Proceso, 0, 120));}
 
-  $ip = $_SESSION['INGRESO']['IP_Wan'];
-
-    $sql = "INSERT INTO acceso_pcs (IP_Acceso,CodigoU,Item,Aplicacion,RUC,Fecha,Hora,
-             ES,Tarea,Proceso,Credito_No,Periodo)VALUES('".$ip."','".$CodigoUsuario."','".$NumEmpresa."',
-             '".$_SESSION['INGRESO']['NombreModulo']."','".$_SESSION['INGRESO']['RUC']."','".$Mifecha1."','".$MiHora1."','".$TipoTrans."','".$Tarea."','".$proceso."','".$TMail_Credito_No."','".$_SESSION['INGRESO']['periodo']."');";
-    $conn->String_Sql($sql,'MYSQL');
-  $end_time = microtime(true);
-  $execution_time = ($end_time - $start_time);
-  #$tmp = `<script>console.log('Tiempo de ejecución: ' . $execution_time . ' segundos');</script>`;
-  #echo "Tiempo de ejecución: " . $execution_time . " segundos";
+     $Tarea = trim(substr($Tarea, 0, 120));
+     if($Tarea == ""){$Tarea = G_NINGUNO;}
+     if(strlen($Proceso) > 1)
+     {
+           $Modulos = $Modulo;
+           $NombreUsuario1 = substr($_SESSION['INGRESO']['Nombre'], 0, 60);
+           $TipoTrans = strtoupper($TipoTrans);
+           if($Credito_No == ""){$Credito_No = G_NINGUNO;}
+           
+          $ip_pc = ip();
+          Control_Procesos_SP_MySQL($ip_pc, $TipoTrans, $Proceso, $Tarea, $Credito_No,$Mail_de,$Mail_para);
+      }
   }
 }
+
+function Control_Procesos_SP_MySQL($IPAcceso, $TipoTrans, $Proceso, $Tarea, $Credito_No,$Mail_de='.',$Mail_para='.')
+{
+
+    $conn = new db();
+    $pPausaMails = 'pPausaMails';
+    If(strLen($Mail_para) < 1){$Mail_para = G_NINGUNO;}
+    If(strlen($Mail_de) <= 1){$Mail_de = $_SESSION['INGRESO']['Email_Conexion'];};
+       $parametros = array(
+          array($TipoTrans,'IN'),
+          array($Proceso,'IN'),
+          array($Tarea,'IN'),
+          array($Credito_No,'IN'),
+          array($IPAcceso,'IN'),
+          array($_SESSION['INGRESO']['CodigoU'],'IN'),
+          array($_SESSION['INGRESO']['item'],'IN'),
+          array($_SESSION['INGRESO']['modulo_'],'IN'),
+          array($_SESSION['INGRESO']['RUC'],'IN'),
+          array($_SESSION['INGRESO']['periodo'],'IN'),
+          array($Mail_de,'IN'),
+          array($Mail_para,'IN'),
+          array($pPausaMails,'OUT'),
+        );
+
+        $sql = "CALL sp_mysql_control_procesos";
+        $res = $conn->ejecutar_procesos_almacenados($sql,$parametros,$respuesta='1',$tipo='MYSQL');
+
+        // print_r($res);die();
+         if($res['@pPausaMails']== 0)
+         {
+            sleep(10000);
+            return 1;
+         }
+        // print_r($res);die();
+        return 1;
+}
+
+
+// function control_procesos($TipoTrans,$opcional_proceso,$Tarea='.',$Credito_No = false)
+// {  
+//    $start_time = microtime(true);
+//   // print_r($_SESSION['INGRESO']);die();
+//   $conn = new db();
+//   $TMail_Credito_No = G_NINGUNO;
+//   $NumEmpresa = $_SESSION['INGRESO']['item'];
+//   $TMail = '';
+//   $Modulo = $_SESSION['INGRESO']['modulo_'];
+//   if($NumEmpresa=="")
+//   {
+//     $NumEmpresa = G_NINGUNO;
+//   }
+//   if($TMail == "")
+//   {
+//     $TMail = G_NINGUNO;
+//   }
+//   if($Modulo <> G_NINGUNO AND $TipoTrans<>G_NINGUNO AND $NumEmpresa<>G_NINGUNO)
+//   {
+//     if($Tarea == G_NINGUNO)
+//     {
+//       $Tarea = "Inicio de Sección";
+//     }else
+//     {
+//       $Tarea = substr($Tarea,0,60);
+//     }
+//     $proceso = substr($opcional_proceso,0,60);
+//     $NombreUsuario1 = substr($_SESSION['INGRESO']['Nombre'], 0, 60);
+//     $Mifecha1 = date("Y-m-d");
+//     $MiHora1 = date("H:i:s");
+//     $CodigoUsuario= $_SESSION['INGRESO']['CodigoU'];
+//     if($Tarea == "")
+//     {
+//       $Tarea = G_NINGUNO;
+//     }
+//     if($opcional_proceso=="")
+//     {
+//       $opcional_proceso = G_NINGUNO;
+//     }
+
+//     $ip = $this->ip();
+
+//     $sql = "INSERT INTO acceso_pcs (IP_Acceso,CodigoU,Item,Aplicacion,RUC,Fecha,Hora,
+//              ES,Tarea,Proceso,Credito_No,Periodo)VALUES('".$ip."','".$CodigoUsuario."','".$NumEmpresa."',
+//              '".$_SESSION['INGRESO']['NombreModulo']."','".$_SESSION['INGRESO']['RUC']."','".$Mifecha1."','".$MiHora1."','".$TipoTrans."','".$Tarea."','".$proceso."','".$TMail_Credito_No."','".$_SESSION['INGRESO']['periodo']."');";
+//     $conn->String_Sql($sql,'MYSQL');
+//   $end_time = microtime(true);
+//   $execution_time = ($end_time - $start_time);
+//   #$tmp = `<script>console.log('Tiempo de ejecución: ' . $execution_time . ' segundos');</script>`;
+//   #echo "Tiempo de ejecución: " . $execution_time . " segundos";
+//   }
+// }
 
  function Cliente($cod,$grupo = false,$query=false,$clave=false)
  {
