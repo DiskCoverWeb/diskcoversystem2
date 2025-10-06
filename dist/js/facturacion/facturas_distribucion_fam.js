@@ -572,6 +572,7 @@
 
 		// console.log(ListaAbonos)
 
+
 		var parametros =
 		{
 			'programa': $('#ddl_programas').val(),
@@ -601,6 +602,7 @@
 			'PorcIva':$('#DCPorcenIVA').text(),
 		}
 
+		$('#myModal_espera').modal("show");
 		$.ajax({
 			type: "POST",
 			url: '../controlador/facturacion/facturas_distribucion_famC.php?GenerarFactura=true',
@@ -623,12 +625,14 @@
 						// editar para que no aparesca la factura 
 						// finalizarFactura()
 						// mostrar los tiquets y facturas  
+						$('#myModal_espera').modal("hide");
 					})
 				}
 
 			},
 		    error: function(error){
 		      console.error("Error revisar: ", error);
+				$('#myModal_espera').modal("hide");
 		    }
 		});
 
