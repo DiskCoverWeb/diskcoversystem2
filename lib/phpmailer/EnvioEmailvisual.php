@@ -62,7 +62,8 @@ class EnviarVisual
     $_SESSION['INGRESO']['RUC'] = $parametros['RUCEmpresa'];
     $_SESSION['INGRESO']['periodo'] = '.';
     $_SESSION['INGRESO']['Email_Conexion'] = '.';
-    
+    $_SESSION['INGRESO']['Nombre'] = $parametros['Nombre'];
+
 
     	$to_correo = trim($parametros['to']);
     	$to_correo = str_replace(';',',',$to_correo);
