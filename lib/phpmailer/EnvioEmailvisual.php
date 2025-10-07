@@ -59,7 +59,7 @@ class EnviarVisual
 		$_SESSION['INGRESO']['item'] = $parametros['item'];
   	$_SESSION['INGRESO']['modulo_'] = $parametros['modulo'];
   	$_SESSION['INGRESO']['CodigoU'] = $parametros['CodigoU'];
-    $_SESSION['INGRESO']['RUC'] = $parametros['RUC'];
+    $_SESSION['INGRESO']['RUC'] = $parametros['RUCEmpresa'];
     $_SESSION['INGRESO']['periodo'] = '.';
     $_SESSION['INGRESO']['Email_Conexion'] = '.';
     
