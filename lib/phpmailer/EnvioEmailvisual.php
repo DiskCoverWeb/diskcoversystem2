@@ -58,6 +58,11 @@ class EnviarVisual
 
 		$_SESSION['INGRESO']['item'] = $parametros['item'];
   	$_SESSION['INGRESO']['modulo_'] = $parametros['modulo'];
+  	$_SESSION['INGRESO']['CodigoU'] = $parametros['CodigoU'];
+    $_SESSION['INGRESO']['RUC'] = $parametros['RUC'];
+    $_SESSION['INGRESO']['periodo'] = '.';
+    $_SESSION['INGRESO']['Email_Conexion'] = '.';
+    
 
     	$to_correo = trim($parametros['to']);
     	$to_correo = str_replace(';',',',$to_correo);
@@ -141,7 +146,7 @@ class EnviarVisual
 	     	}
     	}
 
-			control_procesos("EMW", "Email: ".trim($parametros['from'])." => ".trim($parametros['to']), "Asunto(Error): ".$e);
+			control_procesos("EMW", "Email: ".trim($parametros['from'])." => ".trim($parametros['to']), "Asunto(Error): ");
     	
     	foreach ($list_delete as $key => $value) {
     		if (file_exists($value)) {
