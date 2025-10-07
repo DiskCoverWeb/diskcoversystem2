@@ -56,6 +56,9 @@ class EnviarVisual
 			$this->descargar_archivos_ftp($parametros['Archivo']);
 		}
 
+		$_SESSION['INGRESO']['item'] = $parametros['item'];
+  	$_SESSION['INGRESO']['modulo_'] = $parametros['modulo'];
+
     	$to_correo = trim($parametros['to']);
     	$to_correo = str_replace(';',',',$to_correo);
     	$to = explode(',', $to_correo);
@@ -132,8 +135,8 @@ class EnviarVisual
 		          // print_r($mail);
 		          // print_r($e);
 		          // die();
-		          // control_procesos("EMW", "Email: ".trim($from)." => ".trim($email_to), "Asunto(Error): ".$e);
-		          return -1;
+			          control_procesos("EMW", "Email: ".trim($from)." => ".trim($email_to), "Asunto(Error): ".$e);
+			          return -1;
 		        }
 	     	}
     	}
