@@ -137,6 +137,9 @@ class EnviarVisual
 		        }
 	     	}
     	}
+
+			control_procesos("EMW", "Email: ".trim($parametros['from'])." => ".trim($parametros['to']), "Asunto(Error): ".$e);
+    	
     	foreach ($list_delete as $key => $value) {
     		if (file_exists($value)) {
 	        	unlink($value);
