@@ -101,7 +101,7 @@ class ingreso_descargosM
      WHERE Orden_No = '".$orden."' 
      AND T.CodigoL = '".$SUBCTA."'
      AND T.Codigo_P = '".$paciente."'
-     AND Numero =0
+     AND Numero =-1
      AND T.Item = P.Item
      AND T.Periodo = P.Periodo
 	 AND T.Codigo_Inv = P.Codigo_Inv";
@@ -151,7 +151,12 @@ class ingreso_descargosM
 	function cargar_pedidos_fecha_trans($orden,$SUBCTA)
 	{
     // 'LISTA DE CODIGO DE ANEXOS
-     $sql = "SELECT DISTINCT Fecha ,CodigoL as 'SUBCTA',Orden_No as 'ORDEN'  FROM Trans_Kardex WHERE Orden_No = '".$orden."' AND CodigoL = '".$SUBCTA."' AND Numero = 0 ORDER BY Fecha DESC";
+     $sql = "SELECT DISTINCT Fecha ,CodigoL as 'SUBCTA',Orden_No as 'ORDEN'  
+     FROM Trans_Kardex 
+     WHERE Orden_No = '".$orden."' 
+     AND CodigoL = '".$SUBCTA."' 
+     AND Numero = -1 
+     ORDER BY Fecha DESC";
      // print_r($sql);die();
      $datos = $this->conn1->datos($sql);
        
