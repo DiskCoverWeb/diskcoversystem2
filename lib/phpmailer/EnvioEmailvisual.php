@@ -58,6 +58,7 @@ class EnviarVisual
 		$Proceso = '.';
 		$Tarea = '.';
 		$Correo_Conexion = '.';
+		$Credito_No = '.';
 		if(trim($parametros['Archivo'])!='')
 		{
 			$this->descargar_archivos_ftp($parametros['Archivo']);
@@ -68,6 +69,7 @@ class EnviarVisual
 		if(isset($Proceso)){ $Proceso = $parametros['Proceso']; }
 		if(isset($Tarea)){ $Tarea = $parametros['Tarea']; }
 		if(isset($Correo_Conexion)){ $Correo_Conexion  = $parametros['Correo_Conexion']; }
+		if(isset($Credito_No)){ $Credito_No  = $parametros['Credito_No']; }
 
 
 		$_SESSION['INGRESO']['item'] = $parametros['item'];
