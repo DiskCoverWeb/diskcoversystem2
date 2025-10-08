@@ -53,17 +53,29 @@ class EnviarVisual
 		// print_r($parametros);die();
 
 		$temp_file = 'ftp_folder_visual/';
+		$Mail_de = '.';
+		$Mail_para = '.';
+		$Proceso = '.';
+		$Tarea = '.';
+		$Correo_Conexion = '.';
 		if(trim($parametros['Archivo'])!='')
 		{
 			$this->descargar_archivos_ftp($parametros['Archivo']);
 		}
+
+		if(isset($Mail_de)){ $Mail_de = $parametros['Mail_de']; }
+		if(isset($Mail_para)){ $Mail_de = $parametros['Mail_para']; }
+		if(isset($Proceso)){ $Proceso = $parametros['Proceso']; }
+		if(isset($Tarea)){ $Tarea = $parametros['Tarea']; }
+		if(isset($Correo_Conexion)){ $Correo_Conexion  = $parametros['Correo_Conexion']; }
+
 
 		$_SESSION['INGRESO']['item'] = $parametros['item'];
   	$_SESSION['INGRESO']['modulo_'] = $parametros['modulo'];
   	$_SESSION['INGRESO']['CodigoU'] = $parametros['CodigoU'];
     $_SESSION['INGRESO']['RUC'] = $parametros['RUCEmpresa'];
     $_SESSION['INGRESO']['periodo'] = '.';
-    $_SESSION['INGRESO']['Email_Conexion'] = '.';
+    $_SESSION['INGRESO']['Email_Conexion'] = $Correo_Conexion;
     $_SESSION['INGRESO']['Nombre'] = $parametros['Nombre'];
 
 
@@ -148,7 +160,7 @@ class EnviarVisual
 	     	}
     	}
 
-			control_procesos("EMW", "Email: ".trim($parametros['from'])." => ".trim($parametros['to']), "Asunto(Error): ");
+			control_procesos("EMW",$Proceso,$Tarea,$Credito_No,$Mail_de,$Mail_para);
     	
     	foreach ($list_delete as $key => $value) {
     		if (file_exists($value)) {
