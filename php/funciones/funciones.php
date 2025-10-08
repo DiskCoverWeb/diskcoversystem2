@@ -115,7 +115,7 @@ function Empresa_data()
   if($Credito_No == ""){$Credito_No = G_NINGUNO;}
   if($Modulo <>  G_NINGUNO && $TipoTrans <> G_NINGUNO && $NumEmpresa <> G_NINGUNO)
   {
-     if($Proceso = G_NINGUNO){$Proceso = "Procesando...";}else{$Proceso = trim(substr($Proceso, 0, 120));}
+     if($Proceso == G_NINGUNO){$Proceso = "Procesando...";}else{$Proceso = trim(substr($Proceso, 0, 120));}
 
      $Tarea = trim(substr($Tarea, 0, 120));
      if($Tarea == ""){$Tarea = G_NINGUNO;}
