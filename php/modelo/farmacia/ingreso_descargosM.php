@@ -51,7 +51,7 @@ class ingreso_descargosM
 		AND Item = '".$_SESSION['INGRESO']['item']."'
 		AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
 		AND T <> 'A'
-        AND Numero <> 0
+        AND Numero NOT IN (0, -1)
 		AND CodBodega ='".$Codbod."' ";
 		// print_r($sql);die();
 
@@ -109,6 +109,8 @@ class ingreso_descargosM
      {
      	$sql.=" AND T.Fecha = '".$fecha."'";
      }
+
+     // print_r($diferente);die();
      if($diferente)
      {
      	$diferente = explode(',',$diferente);
@@ -950,7 +952,16 @@ class ingreso_descargosM
     // 'LISTA DE CODIGO DE ANEXOS
       $sql = "SELECT CP.Codigo_Inv,CP.Producto,CP.TC,TK.Costo as 'Valor_Total',CP.Unidad, SUM(Entrada-Salida) As Stock_Actual ,CP.Cta_Inventario
            FROM Catalogo_Productos As CP, Trans_Kardex AS TK 
-           WHERE CP.INV = 1 AND CP.Periodo = '".$_SESSION['INGRESO']['periodo']."' AND CP.Item = '".$_SESSION['INGRESO']['item']."'AND LEN(CP.Cta_Inventario)>3 AND CP.Codigo_Inv LIKE '".$query."' AND TK.T<> 'A' AND CP.Periodo = TK.Periodo AND CP.Item = TK.Item AND CP.Codigo_Inv = TK.Codigo_Inv group by CP.Codigo_Inv,CP.Producto,CP.TC,CP.Valor_Total,CP.Unidad,TK.Costo,CP.Cta_Inventario having SUM(TK.Entrada-TK.Salida) <> 0 
+           WHERE CP.INV = 1 
+           AND CP.Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+           AND CP.Item = '".$_SESSION['INGRESO']['item']."'
+           AND LEN(CP.Cta_Inventario)>3 
+           AND CP.Codigo_Inv LIKE '".$query."' 
+           AND TK.T<> 'A' 
+           AND CP.Periodo = TK.Periodo 
+           AND CP.Item = TK.Item 
+           AND CP.Codigo_Inv = TK.Codigo_Inv 
+           GROUP BY CP.Codigo_Inv,CP.Producto,CP.TC,CP.Valor_Total,CP.Unidad,TK.Costo,CP.Cta_Inventario having SUM(TK.Entrada-TK.Salida) <> 0 
 order by CP.Codigo_Inv,CP.Producto,CP.TC,CP.Valor_Total,CP.Unidad,CP.Cta_Inventario";
    
 
