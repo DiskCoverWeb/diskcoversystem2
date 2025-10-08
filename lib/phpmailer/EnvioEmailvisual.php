@@ -64,12 +64,12 @@ class EnviarVisual
 			$this->descargar_archivos_ftp($parametros['Archivo']);
 		}
 
-		if(isset($Mail_de)){ $Mail_de = $parametros['Mail_de']; }
-		if(isset($Mail_para)){ $Mail_de = $parametros['Mail_para']; }
-		if(isset($Proceso)){ $Proceso = $parametros['Proceso']; }
-		if(isset($Tarea)){ $Tarea = $parametros['Tarea']; }
-		if(isset($Correo_Conexion)){ $Correo_Conexion  = $parametros['Correo_Conexion']; }
-		if(isset($Credito_No)){ $Credito_No  = $parametros['Credito_No']; }
+		if(isset($parametros['Mail_de'])){ $Mail_de = $parametros['Mail_de']; }
+		if(isset($parametros['Mail_para'])){ $Mail_de = $parametros['Mail_para']; }
+		if(isset($parametros['Proceso'])){ $Proceso = $parametros['Proceso']; }
+		if(isset($parametros['Tarea'])){ $Tarea = $parametros['Tarea']; }
+		if(isset($parametros['Correo_Conexion'])){ $Correo_Conexion  = $parametros['Correo_Conexion']; }
+		if(isset($parametros['Credito_No'])){ $Credito_No  = $parametros['Credito_No']; }
 
 
 		$_SESSION['INGRESO']['item'] = $parametros['item'];
