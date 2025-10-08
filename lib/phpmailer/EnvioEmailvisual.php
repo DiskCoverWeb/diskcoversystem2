@@ -139,8 +139,7 @@ class EnviarVisual
 
 		        } catch (Exception $e) {
 		          // print_r($mail);
-		          // print_r($e);
-		          // die();
+		        
 			          control_procesos("EMW", "Email: ".trim($from)." => ".trim($email_to), "Asunto(Error): ".$e);
 			          return -1;
 		        }

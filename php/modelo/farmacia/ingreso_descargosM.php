@@ -113,7 +113,7 @@ class ingreso_descargosM
      {
      	$diferente = explode(',',$diferente);
      	foreach ($diferente as $key => $value) {
-     		$sql.=" AND Codigo_Inv <>'".$value."' ";
+     		$sql.=" AND T.Codigo_Inv <>'".$value."' ";
      	}
      }  
      $sql.=" ORDER BY T.ID DESC";
@@ -605,7 +605,11 @@ class ingreso_descargosM
 
 		 // $cid = $this->conn;
     // 'LISTA DE CODIGO DE ANEXOS
-     $sql = "SELECT * FROM Catalogo_Cuentas  WHERE Item = '".$_SESSION['INGRESO']['item']."' AND Periodo = '".$_SESSION['INGRESO']['periodo']."' AND Codigo = '".$cuenta."'";
+     $sql = "SELECT * 
+     		FROM Catalogo_Cuentas  
+     		WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+     		AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+     		AND Codigo = '".$cuenta."'";
           // print_r($sql);
      return $this->conn1->datos($sql);
 	}
@@ -615,7 +619,10 @@ class ingreso_descargosM
 
 		 // $cid = $this->conn;
     // 'LISTA DE CODIGO DE ANEXOS
-     $sql = "SELECT * FROM Catalogo_SubCtas   WHERE Item = '".$_SESSION['INGRESO']['item']."' AND Periodo = '".$_SESSION['INGRESO']['periodo']."' AND Codigo = '".$cuenta."'";
+     $sql = "SELECT * FROM Catalogo_SubCtas   
+     		WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+     		AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+     		AND Codigo = '".$cuenta."'";
           // print_r($sql);die();
      return $this->conn1->datos($sql);
  
