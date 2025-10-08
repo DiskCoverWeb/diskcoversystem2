@@ -1,4 +1,6 @@
 <?php 
+
+@session_start();
 require_once(dirname(__DIR__,2)."/php/funciones/funciones.php");
 
 header("Access-Control-Allow-Origin: *"); // Permite todas las orígenes, puedes restringir a uno específico
