@@ -29,7 +29,7 @@ class descargosM
 			FROM Trans_Kardex A
 			LEFT JOIN Clientes C ON C.Codigo = A.Codigo_P 
 			LEFT JOIN Catalogo_SubCtas CS ON CS.Codigo = A.CodigoL
-			WHERE Numero= 0 AND Orden_No <> '.'
+			WHERE Numero= -1 AND Orden_No <> '.'
 			AND A.Item = '".$_SESSION['INGRESO']['item']."' AND A.Periodo = '".$_SESSION['INGRESO']['periodo']."' 
 			AND CS.Item = A.Item
 			AND CS.Periodo = A.Periodo";
@@ -134,7 +134,7 @@ class descargosM
 		WHERE A.Item = CS.Item
 		AND A.Periodo = CS.Periodo
 		AND A.Item = CS.Item
-		AND A.Numero =0
+		AND A.Numero =-1
 		AND A.Codigo_Inv <>'.'";
 		if($codigo_b)
 		{
@@ -184,7 +184,7 @@ class descargosM
 		LEFT JOIN Catalogo_SubCtas CS ON CS.Codigo = A.CodigoL 
 		WHERE A.Item = CS.Item
 		AND A.Periodo = CS.Periodo 
-		AND A.Numero = 0 ";
+		AND A.Numero = -1 ";
 		if($codigo_b)
 		{
 			$sql.=" AND Codigo_P = '".$codigo_b."' ";
@@ -238,7 +238,7 @@ class descargosM
 			AND A.Periodo = '".$_SESSION['INGRESO']['periodo']."'
 			AND A.Item = CS.Item
 			AND A.Periodo = CS.Periodo
-			AND Numero = 0
+			AND Numero = -1
 			AND Orden_No <> '.'";
 		if($codigo_b)
 		{
@@ -330,7 +330,7 @@ function elimina_pedido($parametros)
 	{
 
 		$cid = $this->conn;
-		$sql = "DELETE FROM Trans_Kardex WHERE Orden_No='".$parametros['ped']."' and CodigoL ='".$parametros['area']."' AND Numero=0";
+		$sql = "DELETE FROM Trans_Kardex WHERE Orden_No='".$parametros['ped']."' and CodigoL ='".$parametros['area']."' AND Numero=-1";
 		// print_r($sql);die();
 		$stmt = sqlsrv_query($cid, $sql);
 		if( $stmt === false)  
