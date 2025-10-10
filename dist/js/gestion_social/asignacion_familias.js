@@ -253,6 +253,11 @@ function limpiar() {
 
 function IntegrantesGrupo()
 {
+
+    if ($.fn.DataTable.isDataTable('#tblClientes')) {
+      $('#tblClientes').DataTable().destroy();
+  }
+
     tipoCompra();
     var grupo = $('#ddl_grupos').val();
     var fech = $('#fechAten').val();
@@ -281,6 +286,33 @@ function IntegrantesGrupo()
                     </tr>`;
                 })
                 $('#tbl_integrantes').html(tr);
+
+
+                $('#tbl_body_motivo').html(tr);
+       
+                  $('#tblClientes').DataTable({
+                      scrollX: true,
+                      searching: false,
+                      responsive: false,
+                  // paging: false,   
+                      info: false,   
+                      autoWidth: false,  
+                  order: [[1, 'asc']], // Ordenar por la segunda columna
+                      /*autoWidth: false,
+                      responsive: true,*/
+                      language: {
+                      url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+                    },
+                    columnDefs: [
+                    ],
+                    dom: 'Bfrtip', // Define la posición de los botones
+                     buttons: [
+                        'pdfHtml5',
+                        'excelHtml5',
+                    ],
+                  });
+
+
 
                 $('#totalPersAten').val(data.length);
             }

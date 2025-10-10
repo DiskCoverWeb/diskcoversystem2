@@ -138,9 +138,11 @@ class facturas_distribucion_famM
 
     function IntegrantesGrupo($grupo)
     {
+        // 87.02 -> codigo de viculado
       $sql = "SELECT ".Full_Fields('Clientes')."
               FROM Clientes
               WHERE Grupo = '".$grupo."'
+              AND CodigoA = '87.02'
               ORDER BY Cliente ASC";
 
               // print_r($sql);die();
