@@ -294,10 +294,10 @@ function IntegrantesGrupo()
                       scrollX: true,
                       searching: false,
                       responsive: false,
-                  // paging: false,   
+                      paging: false,   
                       info: false,   
                       autoWidth: false,  
-                  order: [[1, 'asc']], // Ordenar por la segunda columna
+                      order: [[1, 'asc']], // Ordenar por la segunda columna
                       /*autoWidth: false,
                       responsive: true,*/
                       language: {
@@ -307,8 +307,16 @@ function IntegrantesGrupo()
                     ],
                     dom: 'Bfrtip', // Define la posición de los botones
                      buttons: [
-                        'pdfHtml5',
-                        'excelHtml5',
+                       {
+                            extend: 'excelHtml5',
+                            title: 'BANCO DE ALIMENTOS QUITO - GESTIÓN SOCIAL',   // Título dentro del archivo
+                            text: 'Excel',         // Texto del botón
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            title: 'BANCO DE ALIMENTOS QUITO - GESTIÓN SOCIAL',
+                        },
+
                     ],
                   });
 
