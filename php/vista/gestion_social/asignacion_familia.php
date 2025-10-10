@@ -275,10 +275,10 @@
 
 
     <div id="modalBtnGrupo" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">INtegrantes de grupo</h4>
+                    <h4 class="modal-title">Integrantes de grupo</h4>
                     <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" style="overflow-y: auto; max-height: 300px; background: antiquewhite;">

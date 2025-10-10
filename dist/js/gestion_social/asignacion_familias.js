@@ -289,6 +289,7 @@ function IntegrantesGrupo()
 
 function llenarCamposPoblacion()
 {
+    IntegrantesGrupo()
     $('#modalBtnGrupo').modal('show');
 }
 function listaAsignacion() {

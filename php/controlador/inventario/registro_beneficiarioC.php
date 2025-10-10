@@ -1002,7 +1002,7 @@ class registro_beneficiarioC
 
         // print_r($codigos);die();
         SetAdoAddNew("Clientes");
-        SetAdoFields('Cliente', $dato['cliente']);    
+        SetAdoFields('Cliente',trim(strtoupper($dato['cliente'])));    
         SetAdoFields('CI_RUC', $dato['txt_ci']);        
         SetAdoFields('TD', $dato['txt_td']);      
         SetAdoFields('Codigo',$codigos['Codigo_RUC_CI']);

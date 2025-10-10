@@ -140,7 +140,8 @@ class facturas_distribucion_famM
     {
       $sql = "SELECT ".Full_Fields('Clientes')."
               FROM Clientes
-              WHERE Grupo = '".$grupo."'";
+              WHERE Grupo = '".$grupo."'
+              ORDER BY Cliente ASC";
 
               // print_r($sql);die();
         return $this->db->datos($sql);
