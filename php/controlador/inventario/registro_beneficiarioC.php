@@ -1063,7 +1063,7 @@ class registro_beneficiarioC
          if($dato["select_93"]=="93.02")
          {
             // para familias dato unico
-            SetAdoFields('Cliente', $dato['nombres'].' '. $dato['apellidos']);
+            // SetAdoFields('Cliente', $dato['nombres'].' '. $dato['apellidos']);
             SetAdoFields('Telefono', $dato['telefonoFam']); 
             SetAdoFields('Profesion', $dato['ocupacion']);
             SetAdoFields('Casilla', $dato['nivelEscolar']);

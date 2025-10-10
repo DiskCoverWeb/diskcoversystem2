@@ -196,7 +196,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="nombres"><b>Nombres</b></label>
-                                <input class="form-control form-control-sm" type="text" name="nombres" id="nombres" placeholder="Nombres">                                
+                                <input class="form-control form-control-sm" type="text" name="nombres" id="nombres" placeholder="Nombres" readonly>                                
                             </div>
                             <div class="col-6">
                                 <label for="edad"><b>Edad</b></label>
@@ -207,7 +207,7 @@
                             <div class="col-6">
                                 <label for="apellidos"><b>Apellidos</b></label>
                                 <input class="form-control form-control-sm" type="text" name="apellidos" id="apellidos"
-                                        placeholder="Apellidos">                                
+                                        placeholder="Apellidos" readonly>                                
                             </div>  
                              <div class="col-6">
                                 <label for="ocupacion"><b>Ocupación</b></label>
