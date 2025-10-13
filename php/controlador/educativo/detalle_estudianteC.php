@@ -1215,7 +1215,7 @@ if (!file_exists('../../img/img_estudiantes/'.$datos[0]['Archivo_Foto']))
   	$nombre = "Secretaria";
     $nombre1 = "Colecturia";
     $email_conexion = $empresaGeneral[0]['Email_Conexion'];
-    $email_pass =  $empresaGeneral[0]['Email_Contraseña'];
+    $email_pass =  $empresaGeneral[0]['Email_Clave'];
   	$correo1= $datos[0]['Email_R'].','.$datos[0]['Email_M'].','.$datos[0]['Email_P'];
     //print_r($correo1);
     //print_r($email_conexion);

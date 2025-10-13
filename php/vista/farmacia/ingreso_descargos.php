@@ -37,8 +37,343 @@
     <button title="Mayorizar Articulos"  class="btn btn-outline-secondary btn-sm" onclick="mayorizar_inventario()">
       <img src="../../img/png/update.png" >
     </button>
+    <button title="Mayorizar Articulos"  class="btn btn-outline-secondary btn-sm" onclick="enviaremail()">
+      <img src="../../img/png/update.png" >
+    </button>
+
   </div>
 </div>
+
+
+<script>
+  function enviaremail()   //funcion para enviarlo por javascript
+  { 
+
+
+          const xhr = new XMLHttpRequest();
+          // const url =  'https://erp.diskcoversystem.com/~diskcover/lib/phpmailer/EnvioEmailvisual.php?EnviarVisual';
+          const url =  'https://erp.diskcoversystem.com/lib/phpmailer/EnvioEmailvisual.php?EnviarVisual';
+          // const url =  '../../lib/phpmailer/EnvioEmailvisual.php?EnviarVisual';
+
+          xhr.open('POST', url, true);
+          xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              console.log('Respuesta:', xhr.responseText);
+            }
+          };
+
+           // const params = `from=admin@imap.diskcoversystem.com
+           //                 &fromName=CORREO DESDE 192.168.20.3 RELAYHOST IMAP <admin@imap.diskcoversystem.com>
+           //                 &to=javier.farinango92@gmail.com;diskcoversystem@msn.com
+           //                 &body=juan@ejemplo.com
+           //                 &subject=hola email como estas
+           //                 &HTML=1
+           //                 &Archivo=
+           //                 &reply=
+           //                 &replyName=
+           //                 &debug=0
+           //                 &item=001
+           //                 &modulo=01
+           //                 &CodigoU=1722214507 
+           //                 &RUCEmpresa=1722214507001         
+           //                 &Nombre=javier farinango         
+           //                 &Mail_de=javier farinango        
+           //                 &Mail_para=javier farinango        
+           //                 &Proceso=proceso        
+           //                 &Tarea=tarea 11        
+           //                 &Credito_No= 11111`;
+
+
+          const params = `from=informacion@imap.diskcoversystem.com&fromName=Actualizacion de DiskCover System <informacion@imap.diskcoversystem.com>
+          &to=actualizar@diskcoversystem.com;diskcoversystem@msn.com;diskcover.system@yahoo.com;diskcover.system@gmail.com
+          &subject=Prueba de Mails por imap.diskcoversystem.com desde UPDATE [ESO99], Hora (14:45:24), IP: 192.168.27.55
+          &HTML=1
+          &reply=
+          &replyName=
+          &debug=0
+          &Archivo=
+          &item=000
+          &modulo=UPDATE
+          &CodigoU=ACCESO99
+          &RUCEmpresa=9999999999999
+          &Nombre=Update DiskCover
+          &Mail_de=informacion@imap.diskcoversystem.com
+          &Mail_para=actualizar@diskcoversystem.com;diskcoversystem@msn.com;diskcover.system@yahoo.com;diskcover.system@gmail.com
+          &Proceso=Email de: informacion@imap.diskcoversystem.com
+          &Tarea=Asunto: Prueba de Mails por imap.diskcoversystem.com desde UPDATE [ESO99], Hora (14:45:24), IP: 192.168.27.55&Credito_No=&body=<!DOCTYPE html>
+<html>
+<head>
+  <title>Cartera Clientes</title>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="shortcut icon" href="https://www.diskcoversystem.com/dsimg/diskcover_system.jpg" />  
+  <style rel='stylesheet' type='text/css' media='screen'>
+    body {
+      margin: 15px;
+      font-family: monospace;
+    }
+    header{
+      padding: 1px;     
+      text-align: center;
+    }
+    h2 {
+      text-shadow: 0 0 3px white;
+      font-weight: bold;
+    }
+    #izq{
+      text-align: left;
+    }
+    #der{
+      text-align: right;
+    }
+    #central{
+      text-align: center;
+      font-weight: bold;
+    }   
+    #contenido {
+      display: flex;
+      flex-direction: column;
+    }
+    #destacados {
+      background-color: #669999;
+    }
+    #ofertas {
+      background-color: #F7D988;
+    }
+    #disponible {
+      background-color: #F7A188;
+    }
+    #contenido > section > h1 {
+      text-align: center;
+    }
+    footer {
+      margin-top: 5px;
+      border-top: solid 1px black;
+      padding-top: 5px;
+      text-align: center;
+    }
+    .contenedor {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      max-width: 1366px;
+      margin: auto;
+    }
+    #destacados .contenedor > div {
+      /*text-align: center;*/
+      padding: 10px;
+      margin: 5px;
+      background-color: white;
+      width: 50%;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(255, 255, 0, 0.3);
+    }
+    #destacados h1 {
+      text-shadow: 0 0 3px white;
+    }
+    #ofertas .contenedor > div {
+      padding: 10px;
+      margin: 5px;
+      background-color: white;
+      width: 33.3%;
+      box-shadow: 4px 8px;
+    }
+    #ofertas h1 {
+      text-shadow: 1px 1px 12px white, 0 0 30px #D46A6A;
+    }
+    #disponible .contenedor > div {
+      padding: 10px;
+      background-color: white;
+      width: 24%;
+      margin: 5px;
+      box-shadow: 4px 8px #D46A6A;
+    }
+    img.icono {
+      border: double #A52A2A 3px; 
+      border-radius: 13em/3em;
+      width: 60px;
+      margin:1px;
+      }
+    .table{
+      width: 100%;
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+      margin: 10px;
+      padding: 0px;
+      table-layout: fixed;
+    }
+    .table caption{
+      font-size: 20px;
+      text-transform: uppercasex;
+      font-weight: bold;
+      margin: 8px 0px;
+    }
+    .table tr{
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+    }
+    .table th, .table td {
+      font-size: 16px;
+      padding: 8px;
+      /*text-align: center;*/
+    }
+    .table thead th{
+      text-transform: uppercase;
+      background-color: #ddd;
+    }
+    .table tbody tr:hover{
+      background-color: rgba(0,0,0,0.2);
+    }
+    .table tbody td:hover{
+      background-color: rgba(0,0,0,0.3);
+    }
+    .text-short{
+      font-size: 10px;
+    }
+    .text-justificado{
+      text-align: justify;
+    }
+    .row{
+      overflow: hidden;
+    }
+    .margin-b-0{
+      margin-bottom: 0px;
+    }
+        /*
+         En las siguientes lineas se define el diseÃ±o adaptable, para que se muestre en los dispositivos moviles
+        */
+        /******************************************/
+        /***    DISEÃ‘O PARA MOVILES 600        ****/
+        /******************************************/    
+    @media screen and (max-width: 600px) {
+      .table{
+        border: 0px;
+      }
+      .table caption {
+        font-size: 14px;
+      }
+      .table thead{
+        display: none;
+      }
+      .table tr{
+        margin-bottom: 8px;
+        margin-bottom: 4px solid #ddd;
+        display: block;
+      }
+      .table th, .table td{
+        font-size: 12px;
+      }
+      .table td{
+        display: block;
+        border-bottom: 1px solid #ddd;
+        text-align: right;
+      }
+      .table td:last-child{
+        border-bottom: 0px;
+      }
+      .table td::before{
+        content: attr(data-label);
+        font-weight: bold;
+        text-transform: uppercase;
+        float: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <section id='ofertas'>
+      <div class='contenedor' id='central'> 
+        <table class='table'>
+          <thead>
+            <tr>
+              <th><img src='https://erp.diskcoversystem.com/img/logotipos/DiskCover.gif' alt='plataforma' width='100px' height='50px'></th>
+              <th><h1>DISKCOVER SYSTEM</h1></th>
+            </tr>   
+          </thead>      
+        </table>
+      </div>  
+      <h2>ACTUALIZACION DE BASES<br>R.U.C. 9999999999999<br>Direccion: www.diskcoversystem.com<br>Telefono(s): 09-9965-4196/09-8910-5300</h2>
+    </section>
+  </header> 
+  <section id='contenido'>
+    <section id='destacados'>
+      <div class='contenedor' id='central'>
+        <table class='table'>
+          <caption>Detalle del Srvidor FTP</caption>
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Clave</th>
+            </tr>   
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label='Usuario'>DiskCover</td>
+              <td data-label='Clave'>**********</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class='contenedor' id='central'>
+        <table class='table'>
+          <caption>Detalle del Telefono SIP</caption>
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Clave</th>
+              <th>IP Local</th>
+            </tr>   
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label='Usuario'>DiskCover System</td>
+              <td data-label='Clave'>**********</td>
+              <td data-label='Clave'>Localhost</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section id='disponible'>
+      <div class='contenedor'>
+        <table class='table'>
+          <caption>SERVIDORES PRINCIPALES</caption>
+          <thead>
+            <tr>
+              <th>Red WIFI</th>
+              <th>IP LAN</th>
+              <th>Usuario</th>
+              <th>Clave WIFI</th>
+            </tr>   
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label='Red WIFI'>DiskCover System FTP</td>
+              <td data-label='IP LAN'>192.168.27.55</td>
+              <td data-label='Usuario'>DiskCoverFtp</td>
+              <td data-label='Clave WIFI'>*********</td>
+            </tr>
+            <tr>
+              <td data-label='Red WIFI'>DiskCover-Prismanet</td>
+              <td data-label='IP LAN'>LocalHost</td>
+              <td data-label='Usuario'>Prismanet</td>
+              <td data-label='Clave WIFI'>**********</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </section>
+  <footer>
+    <div class="row margin-b-0 text-justificado text-short"><br><br>Este correo electronico fue generado automaticamente a usted desde El Sistema Financiero Contable DiskCover System, porque figura como correo electronico alternativo de DISKCOVER SYSTEM. Nosotros respetamos su privacidad y solamente se utiliza este medio para mantenerlo informado sobre nuestras ofertas, promociones y comunicados. No compartimos, publicamos o vendemos su informacion personal fuera de nuestra empresa. Este mensaje fue procesado por: Update DiskCover, funcionario que forma parte de la Institucion.<br><br>Esta direccion de correo electronico no admite respuestas. En caso de requerir atencion personalizada por parte de un asesor de Servicio al Cliente, podra solicitar ayuda mediante los canales oficiales que detallamos a continuacion: Telefonos: 09-9965-4196/09-8910-5300, Correo: actualizar@diskcoversystem.com.<br><br>Por la atencion que se de al presente quedo de usted.<br><br>Atentamente,<br><br>Walter Vaca Prieto<br><br>Visita: www.diskcoversystem.com<br>QUITO - ECUADOR</div>
+  </footer>
+</body>
+</html>`;   
+          xhr.send(params);
+  }
+</script>
 <div class="row mb-2">
   <div class="card card-primary">
     <div class="card-body">

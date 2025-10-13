@@ -378,7 +378,7 @@ class lista_liquidacionCompraC
   	$nueva_Clave = generate_clave(8);
 
   	$email_conexion = $empresaGeneral[0]['Email_Conexion'];
-    $email_pass =  $empresaGeneral[0]['Email_Contraseña'];
+    $email_pass =  $empresaGeneral[0]['Email_Clave'];
     // print_r($empresaGeneral[0]);die();
   	$correo_apooyo="info@diskcoversystem.com"; //correo que saldra ala do del emisor
   	$cuerpo_correo = 'Se a generado una clave temporar para que usted pueda ingresar:'. $nueva_Clave;

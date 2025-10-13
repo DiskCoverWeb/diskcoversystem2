@@ -239,8 +239,8 @@ class crear_empresaC
                 'smtp_UseAuntentificacion'=>$value['smtp_UseAuntentificacion'],
                 'smtp_SSL'=>$value['smtp_SSL'],
                 'Serie_FA'=>$value['Serie_FA'],
-                'Email_Contraseña'=>$value['Email_Contraseña'],
-                'Email_Contraseña_CE'=>$value['Email_Contraseña_CE'],                
+                'Email_Contraseña'=>$value['Email_Clave'],
+                'Email_Contraseña_CE'=>$value['Email_Clave_CE'],                
                 'X'=>$value['X'],
                 'Debo_Pagare'=>$value['Debo_Pagare'],
                 'smtp_Secure'=>$value['smtp_Secure'],
@@ -503,9 +503,9 @@ function  TextSubDir_LostFocus($query)
         SetAdoFields("Ruta_Certificado", $parametros["TxtEXTP12"]);
         SetAdoFields("Clave_Certificado", $parametros["TxtContraExtP12"]);
         SetAdoFields("Email_Conexion", ($parametros["TxtEmailGE"]=='')?$CorreoDiskCover:$parametros["TxtEmailGE"]);
-        SetAdoFields("Email_Contraseña", ($parametros["TxtContraEmailGE"]=='')?$ContrasenaDiskCover:$parametros["TxtContraEmailGE"]);
+        SetAdoFields("Email_Clave", ($parametros["TxtContraEmailGE"]=='')?$ContrasenaDiskCover:$parametros["TxtContraEmailGE"]);
         SetAdoFields("Email_Conexion_CE", $parametros["TxtEmaiElect"]);
-        SetAdoFields("Email_Contraseña_CE", $parametros["TxtContraEmaiElect"]);
+        SetAdoFields("Email_Clave_CE", $parametros["TxtContraEmaiElect"]);
         SetAdoFields("Email_Procesos", $parametros["TxtCopiaEmai"]);
         SetAdoFields("RUC_Operadora", $parametros["TxtRUCOpe"]);
         SetAdoFields("LeyendaFA", $parametros["txtLeyendaDocumen"]);

@@ -633,7 +633,7 @@ function variables_sistema($EmpresaEntidad, $NombreEmp, $ItemEmp)
         $_SESSION['INGRESO']['EmailContador'] = $empresa[0]['Email_Contabilidad'];
         $_SESSION['INGRESO']['Impresora_Rodillo'] = $empresa[0]['Impresora_Rodillo'];
 
-        $_SESSION['INGRESO']['Email_Contrasena'] = $empresa[0]['Email_Contraseña'];
+        $_SESSION['INGRESO']['Email_Contrasena'] = $empresa[0]['Email_Clave'];
         $_SESSION['INGRESO']['smtp_SSL'] = $empresa[0]['smtp_SSL'];
         $_SESSION['INGRESO']['smtp_UseAuntentificacion'] = $empresa[0]['smtp_UseAuntentificacion'];
         $_SESSION['INGRESO']['smtp_Puerto'] = $empresa[0]['smtp_Puerto'];
@@ -986,14 +986,14 @@ function validacionAcceso($nombreEmpresa, $Usuario, $Clave)
         );
     }
 
-    if (strlen($empresa[0]["Email_Conexion"]) > 1 && strlen($empresa[0]["Email_Contraseña"]) > 1) {
+    if (strlen($empresa[0]["Email_Conexion"]) > 1 && strlen($empresa[0]["Email_Clave"]) > 1) {
         $Lista_De_Correos[0]['Correo_Electronico'] = $empresa[0]["Email_Conexion"];
-        $Lista_De_Correos[0]['Contraseña'] = $empresa[0]["Email_Contraseña"];
+        $Lista_De_Correos[0]['Contraseña'] = $empresa[0]["Email_Clave"];
     }
 
-    if (strlen($empresa[0]["Email_Conexion_CE"]) > 1 && strlen($empresa[0]["Email_Contraseña_CE"]) > 1) {
+    if (strlen($empresa[0]["Email_Conexion_CE"]) > 1 && strlen($empresa[0]["Email_Clave_CE"]) > 1) {
         $Lista_De_Correos[4]['Correo_Electronico'] = $empresa[0]["Email_Conexion_CE"];
-        $Lista_De_Correos[4]['Contraseña'] = $empresa[0]["Email_Contraseña_CE"];
+        $Lista_De_Correos[4]['Contraseña'] = $empresa[0]["Email_Clave_CE"];
     }
 
     $Lista_De_Correos[6]['Correo_Electronico'] = 'credenciales@diskcoversystem.com';
@@ -1368,14 +1368,14 @@ function enviarCorreo($empresa, $titulo, $mensaje)
         );
     }
 
-    if (strlen($empresa[0]["Email_Conexion"]) > 1 && strlen($empresa[0]["Email_Contraseña"]) > 1) {
+    if (strlen($empresa[0]["Email_Conexion"]) > 1 && strlen($empresa[0]["Email_Clave"]) > 1) {
         $Lista_De_Correos[0]['Correo_Electronico'] = $empresa[0]["Email_Conexion"];
-        $Lista_De_Correos[0]['Contraseña'] = $empresa[0]["Email_Contraseña"];
+        $Lista_De_Correos[0]['Contraseña'] = $empresa[0]["Email_Clave"];
     }
 
-    if (strlen($empresa[0]["Email_Conexion_CE"]) > 1 && strlen($empresa[0]["Email_Contraseña_CE"]) > 1) {
+    if (strlen($empresa[0]["Email_Conexion_CE"]) > 1 && strlen($empresa[0]["Email_Clave_CE"]) > 1) {
         $Lista_De_Correos[4]['Correo_Electronico'] = $empresa[0]["Email_Conexion_CE"];
-        $Lista_De_Correos[4]['Contraseña'] = $empresa[0]["Email_Contraseña_CE"];
+        $Lista_De_Correos[4]['Contraseña'] = $empresa[0]["Email_Clave_CE"];
     }
 
     $Lista_De_Correos[6]['Correo_Electronico'] = 'credenciales@diskcoversystem.com';

@@ -310,7 +310,7 @@ class loginC
 	        $_SESSION['INGRESO']['EmailContador'] = $empresa[0]['Email_Contabilidad'];
 	        $_SESSION['INGRESO']['Impresora_Rodillo'] = $empresa[0]['Impresora_Rodillo'];
 
-	        $_SESSION['INGRESO']['Email_Contrasena'] = $empresa[0]['Email_Contraseña'];
+	        $_SESSION['INGRESO']['Email_Contrasena'] = $empresa[0]['Email_Clave'];
 	        $_SESSION['INGRESO']['smtp_SSL'] = $empresa[0]['smtp_SSL'];
 	        $_SESSION['INGRESO']['smtp_UseAuntentificacion'] = $empresa[0]['smtp_UseAuntentificacion'];
 	        $_SESSION['INGRESO']['smtp_Puerto'] = $empresa[0]['smtp_Puerto'];

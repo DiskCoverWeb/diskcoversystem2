@@ -1127,9 +1127,9 @@ async function datos_empresa()
         $('#TxtEXTP12').val(empresa2.Ruta_Certificado);
         $('#TxtContraExtP12').val(empresa2.Clave_Certificado);
         $('#TxtEmailGE').val(empresa2.Email_Conexion);
-        $('#TxtContraEmailGE').val(empresa2.Email_Contraseña);
+        $('#TxtContraEmailGE').val(empresa2.Email_Clave);
         $('#TxtEmaiElect').val(empresa2.Email_Conexion_CE);
-        $('#TxtContraEmaiElect').val(empresa2.Email_Contraseña_CE);
+        $('#TxtContraEmaiElect').val(empresa2.Email_Clave_CE);
         if(empresa2.Email_CE_Copia==1 && empresa2.Email_Procesos!=''){	$('#rbl_copia').prop('checked', true); }
         $('#TxtCopiaEmai').val(empresa2.Email_Procesos);
         $('#TxtRUCOpe').val(empresa2.RUC_Operadora);

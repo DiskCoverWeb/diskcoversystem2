@@ -11774,11 +11774,11 @@ function Procesar_Renumerar_CIRUC_JuntaAgua($CodigoCliente, $CI_RUC_Actual) {
       Cambio_De_Codigo("Clientes_Datos_Extras", "Codigo", $Codigo1, $Codigo2);
       Cambio_De_Codigo("Clientes_Facturacion", "Codigo", $Codigo1, $Codigo2);
       Cambio_De_Codigo("Clientes_Matriculas", "Codigo", $Codigo1, $Codigo2);
-        Cambio_De_Codigo("Clientes_Matriculas", "Cedula_R", $CI_RUC_Actual, $CadenaDV['RUC_CI']);
+      Cambio_De_Codigo("Clientes_Matriculas", "Cedula_R", $CI_RUC_Actual, $CadenaDV['RUC_CI']);
       Cambio_De_Codigo("Comprobantes", "Codigo_B", $Codigo1, $Codigo2);
       Cambio_De_Codigo("Detalle_Factura", "CodigoC", $Codigo1, $Codigo2);
       Cambio_De_Codigo("Facturas", "CodigoC", $Codigo1, $Codigo2);
-        Cambio_De_Codigo("Facturas", "RUC_CI", $CI_RUC_Actual, $CadenaDV['RUC_CI']);
+      Cambio_De_Codigo("Facturas", "RUC_CI", $CI_RUC_Actual, $CadenaDV['RUC_CI']);
       Cambio_De_Codigo("Trans_Abonos", "CodigoC", $Codigo1, $Codigo2);
       Cambio_De_Codigo("Trans_Actas", "Codigo", $Codigo1, $Codigo2);
       Cambio_De_Codigo("Trans_Activos", "Codigo_R", $Codigo1, $Codigo2);

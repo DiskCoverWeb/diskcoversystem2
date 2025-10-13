@@ -973,7 +973,7 @@ class lista_facturasC
 		// $where[0]['tipo'] = 'string';
 
 		$email_conexion = $empresaGeneral[0]['Email_Conexion'];
-		$email_pass = $empresaGeneral[0]['Email_Contraseña'];
+		$email_pass = $empresaGeneral[0]['Email_Clave'];
 		$correo_apooyo = "info@diskcoversystem.com"; //correo que saldra ala do del emisor
 		$cuerpo_correo = 'Se a generado una clave temporar para que usted pueda ingresar:' . $nueva_Clave;
 		$titulo_correo = 'EMAIL DE RECUPERACION DE CLAVE';

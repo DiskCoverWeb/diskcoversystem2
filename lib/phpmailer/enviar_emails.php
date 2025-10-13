@@ -519,7 +519,7 @@ class enviar_emails
 
       $conn = new db();
       $sSQL = "SELECT smtp_Servidor, smtp_Puerto, smtp_UseAuntentificacion, smtp_SSL, smtp_Secure, " .
-        "Email_Conexion, Email_Contraseña, Email_Conexion_CE, Email_Contraseña_CE, Email_CE_Copia " .
+        "Email_Conexion, Email_Clave, Email_Clave_CE, Email_Clave_CE, Email_CE_Copia " .
         "FROM Empresas " .
         "WHERE Item = '" . $itemEmpresa . "' " .
         "AND LEN(smtp_Servidor) > 1 " .
@@ -534,7 +534,7 @@ class enviar_emails
           case "CE":
             $TMail->de = $AdoSMTP[0]["Email_Conexion_CE"];
             $TMail->Usuario = $AdoSMTP[0]["Email_Conexion_CE"];
-            $TMail->PassWord = $AdoSMTP[0]["Email_Contraseña_CE"];
+            $TMail->PassWord = $AdoSMTP[0]["Email_Clave_CE"];
             break;
           default:
             // En caso de que se envie desde otro correo por default

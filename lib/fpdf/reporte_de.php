@@ -476,35 +476,7 @@ function imprimirDocElP($stmt, $id = null, $formato = null, $nombre_archivo = nu
 		$pdf->Image($src, 40, 22, 80, 40);
 	} 
 
-	/*if(isset($_SESSION['INGRESO']['Logo_Tipo'])) 
-				{
-					$logo=$_SESSION['INGRESO']['Logo_Tipo'];
-				}
-				else
-				{
-					$logo="diskcover";
-				}
-				$pdf->Image(__DIR__ . '/../../img/logotipos/'.$logo.'.png',40,20,80,40,'','http://www.fpdf.org');*/
-	//$drawing->setPath(__DIR__ . '/../../img/logotipos/'.$logo.'.png');
-	//$arr=array('NO TIENE LOGO');
-	//$pdf->Row($arr,13);
-	//panel
-	/*
-				SELECT        TOP (1) Periodo, TL, Codigo, Concepto, Fact, CxC, Cta_Venta, Logo_Factura, Largo, Ancho, Item, Individual, Espacios, Pos_Factura, Fact_Pag, Pos_Y_Fact, Serie, Autorizacion, Vencimiento, Fecha, Secuencial, ItemsxFA, 
-								Grupo_I, Grupo_F, CxC_Anterior, Imp_Mes, Nombre_Establecimiento, Direccion_Establecimiento, Telefono_Estab, Logo_Tipo_Estab, Tipo_Impresion, ID, X
-							FROM            Catalogo_Lineas
-							WHERE        (LEN(Autorizacion) >= 13) AND (Periodo = '.') AND (Item = '001') AND (Fact = 'FA') AND (Fecha <= '2020-03-11') AND (Vencimiento >= '2020-03-11')
-				
-				SELECT        Opc, Grupo, Item, Fecha, Ciudad, Pais, Empresa, Gerente, RUC, Telefono1, Telefono2, FAX, Direccion, SubDir, Logo_Tipo, Alto, Servicio, S_M, Cta_Caja, Cotizacion, Sucursal, Email, Contador, CodBanco, Num_CD, 
-					 Num_CE, Num_CI, Nombre_Comercial, Mod_Fact, Mod_Fecha, Plazo_Fijo, Det_Comp, CI_Representante, TD, RUC_Contador, CPais, No_Patronal, Dec_PVP, Dec_Costo, CProv, Grabar_PV, Num_Meses, Separar_Grupos, Credito, 
-					 Medio_Rol, Sueldo_Basico, Cant_Item_PV, Copia_PV, Encabezado_PV, Calcular_Comision, Formato_Inventario, Cant_Ancho_PV, Grafico_PV, Formato_Activo, Num_ND, Num_NC, Referencia, Fecha_Rifa, Rifa, Monto_Minimo, 
-					 Rol_2_Pagina, Cierre_Vertical, Tipo_Carga_Banco, Comision_Ejecutivo, Seguro, Nombre_Banco, Impresora_Rodillo, Costo_Bancario, Impresora_Defecto, Papel_Impresora, Marca_Agua, Seguro2, Cta_Banco, Mod_PVP, 
-					 Abreviatura, Registrar_IVA, Imp_Recibo_Caja, Det_SubMod, Establecimientos, Email_Conexion, Email_Contraseña, Actualizar_Buses, Email_Contabilidad, Cierre_Individual, Email_Respaldos, Imp_Ceros, Tesorero, CIT, 
-					 Razon_Social, Dec_IVA, Dec_Cant, Ambiente, Ruta_Certificado, Clave_Certificado, Web_SRI_Recepcion, Web_SRI_Autorizado, Codigo_Contribuyente_Especial, Formato_Cuentas, Email_Conexion_CE, Email_Contraseña_CE, 
-					 No_ATS, Obligado_Conta, No_Autorizar, Email_Procesos, Email_CE_Copia, Estado, Firma_Digital, ID, SP, Combo, Por_CxC, Fecha_Igualar, Ret_Aut, LeyendaFA, Signo_Dec, Signo_Mil, Fecha_CE, LeyendaFAT, Centro_Costos, 
-					 smtp_Servidor, smtp_Puerto, smtp_UseAuntentificacion, smtp_SSL
-				FROM            Empresas
-				*/
+	
 	//datos empresa
 	$cid = cone_ajaxSQL();
 	$sql = "SELECT * FROM  Empresas WHERE

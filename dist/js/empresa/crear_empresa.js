@@ -319,9 +319,9 @@ function llamar()
                 $('#TxtEXTP12').val(response[0]['Ruta_Certificado']);
                 $('#TxtContraExtP12').val(response[0]['Clave_Certificado']);
                 $('#TxtEmailGE').val(response[0]['Email_Conexion']);
-                $('#TxtContraEmailGE').val(response[0]['Email_Contraseña']);
+                $('#TxtContraEmailGE').val(response[0]['Email_Clave']);
                 $('#TxtEmaiElect').val(response[0]['Email_Conexion_CE']);
-                $('#TxtContraEmaiElect').val(response[0]['Email_Contraseña_CE']);
+                $('#TxtContraEmaiElect').val(response[0]['Email_Clave_CE']);
                 $('#TxtCopiaEmai').val(response[0]['Email_Procesos']);
                 $('#TxtRUCOpe').val(response[0]['RUC_Operadora']);
                 $('#txtLeyendaDocumen').val(response[0]['LeyendaFA']);
