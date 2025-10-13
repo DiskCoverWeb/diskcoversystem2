@@ -159,11 +159,11 @@ function Control_Procesos_SP_MySQL($IPAcceso, $TipoTrans, $Proceso, $Tarea, $Cre
         $res = $conn->ejecutar_procesos_almacenados($sql,$parametros,$respuesta='1',$tipo='MYSQL');
 
         // print_r($res);die();
-         if($res['@pPausaMails']== 0)
-         {
-            sleep(10000);
-            return 1;
-         }
+         // if($res['@pPausaMails']== 0)
+         // {
+         //    sleep(10000);
+         //    return 1;
+         // }
         // print_r($res);die();
         return 1;
 }
