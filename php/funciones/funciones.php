@@ -150,8 +150,8 @@ function Control_Procesos_SP_MySQL($IPAcceso, $TipoTrans, $Proceso, $Tarea, $Cre
           array($_SESSION['INGRESO']['modulo_'],'IN'),
           array($_SESSION['INGRESO']['RUC'],'IN'),
           array($_SESSION['INGRESO']['periodo'],'IN'),
-          array($Mail_de,'IN'),
           array($Mail_para,'IN'),
+          array($Mail_de,'IN'),
           array($pPausaMails,'OUT'),
         );
 
