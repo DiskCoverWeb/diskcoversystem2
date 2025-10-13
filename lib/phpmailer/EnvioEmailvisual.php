@@ -65,7 +65,7 @@ class EnviarVisual
 		}
 
 		if(isset($parametros['Mail_de'])){ $Mail_de = $parametros['Mail_de']; }
-		if(isset($parametros['Mail_para'])){ $Mail_de = $parametros['Mail_para']; }
+		if(isset($parametros['Mail_para'])){ $Mail_para = $parametros['Mail_para']; }
 		if(isset($parametros['Proceso'])){ $Proceso = $parametros['Proceso']; }
 		if(isset($parametros['Tarea'])){ $Tarea = $parametros['Tarea']; }
 		if(isset($parametros['Credito_No'])){ $Credito_No  = $parametros['Credito_No']; }
