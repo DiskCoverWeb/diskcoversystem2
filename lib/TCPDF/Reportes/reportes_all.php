@@ -203,7 +203,7 @@ class MYPDF extends TCPDF
 		case 'RE':
 			$this->MultiCell($row_col, 2,'Retencion No.', $border, '', 0, 1, '', '', true);
 			$documento = $this->datos[0]['SecRetencion'];			
-			 $numAutorizacion = $this->datos[0]['Clave_Acceso'];
+			 $numAutorizacion = $this->datos[0]['Autorizacion_R'];
 			break;
 		case 'LC':
 			$this->MultiCell($row_col, 2,'Liquidacion compra No.', $border, '', 0, 1, '', '', true);
@@ -249,6 +249,7 @@ class MYPDF extends TCPDF
 
 		$this->SetX($cuardo_2_X);
 		//clave de acceso barcode y numero	
+		// print_r($this->datos);die();
 		if ($this->datos[0]['Clave_Acceso'] != $this->datos[0]['Autorizacion']) {
 			$this->write1DBarcode($numAutorizacion, 'C128', '', '',105, 18, 0.4, $style, 'N');
 		} else if ($this->datos[0]['Clave_Acceso'] > 39) {				
@@ -1474,7 +1475,7 @@ function imprimirDocEle_ret($datos, $detalle, $nombre_archivo = null, $imp1 = fa
 		$pdf->writeHTML($tbl, true, false, false, false, '');
 
 		
-
+// die();
 
 		// $pdf->Output('Guia_remision_.pdf', 'I');
 
