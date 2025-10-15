@@ -125,7 +125,7 @@ class asignacion_familiasC
         $total = 0;
         foreach ($datos as $key => $value) {
 
-            $producto = $this->modelo->lineasKArdex($value['CodBodega']);   
+            $producto = $this->modelo->lineasKArdex($value['Codigo_Barra']);   
             // print_r($producto);die();        
             $datos[$key]['Producto'] = $producto[0]['Producto'];
             $datos[$key]['Codigo_Barra'] = $producto[0]['Codigo_Barra'];
@@ -282,6 +282,7 @@ class asignacion_familiasC
             $stock = 0; 
             // buscar producto bodega
              $bode = $this->egresos->buscar_producto(false,$parametros['codigoProducto']);
+             // print_r($bode);die();
 
             // cantidad ingresada
             $cant_ing = $this->modelo->total_ingresados($Beneficiario[0],$parametros['CodigoInv'],$Beneficiario[1],$parametros['FechaAsig']);
@@ -316,12 +317,13 @@ class asignacion_familiasC
                 SetAdoFields("Fecha",$parametros['FechaAte']);
                 SetAdoFields("Fecha_A",$parametros['FechaAsig']);
                 SetAdoFields("Fecha_C",date('Y-m-d'));      
-                SetAdoFields("CodBodega",$bode[0]['Codigo_Barra']);        
+                SetAdoFields("CodBodega",$bode[0]['CodBodega']);        
                 SetAdoFields("Item",$_SESSION['INGRESO']['item']);
                 SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
                 SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
                 SetAdoFields("T","P");
-                SetAdoFields("TP","OF");
+                SetAdoFields("TP","OF");                
+                SetAdoFields("Cmds",$parametros['cmds']);
                 SetAdoFields("Orden_No",$Beneficiario[0]);
                 
                 return SetAdoUpdate();

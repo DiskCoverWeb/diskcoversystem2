@@ -107,7 +107,7 @@ class asignacion_familiasM
 
     function cargar_asignacion($bene,$tipo,$T,$fecha=false,$codbarras=false)
     {
-        $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,T
+        $sql = "SELECT TC.ID,TC.Fecha,TC.Fecha_C,A.Nombre_Completo,TC.Total,TC.CodBodega,TC.Codigo_Barra,T
                 FROM Trans_Comision TC
                 INNER JOIN Accesos A ON TC.CodigoU = A.Codigo
                 WHERE Orden_No = '".$bene."'

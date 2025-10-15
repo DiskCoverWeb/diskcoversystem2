@@ -230,6 +230,42 @@ class facturas_distribucion_famM
                 // print_r($Strgs);
       return $this->db->String_Sql($Strgs);
   }
+
+   function asignacion_familias($orden,$tipo=false,$T=false,$fecha=false,$codigo_inv=false)
+  {
+        $sql = "SELECT Periodo, T, TC, Cta, Fecha, Fecha_C, CodigoC, TP, Numero, Factura, Codigo_Inv, Total, Porc, Valor_Pagar, Item, CodigoU, X, CodBodega, ID, Orden_No, Fecha_A, Codigo_Barra, Cmds
+                FROM Trans_Comision
+                WHERE Orden_No = '".$orden."'
+                AND T = '".$T."'
+                AND Item = '".$_SESSION['INGRESO']['item']."' 
+                AND Periodo='".$_SESSION['INGRESO']['periodo']."' ";
+                if($tipo)
+                {
+                  $sql.=" AND Cta = '".$tipo."'"; 
+                }
+                if($fecha)
+                {
+                    //fecha_A es la fecha de asignacion
+                    $sql.=" AND Fecha_A = '".$fecha."'";
+                }
+
+                if($codigo_inv)
+                {
+                    //fecha_A es la fecha de asignacion
+                    $sql.=" AND Codigo_Inv = '".$codigo_inv."'";
+                }
+                // print_r($sql);die();
+        return $this->db->datos($sql);    
+    }
+
+    function DeleteAsientoF($pedido)
+    {
+      $sql = "DELETE FROM Asiento_F
+              WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'
+              AND Orden_No = '".$pedido."'";
+              // print_r($sql);die();
+      return $this->db->String_Sql($sql);
+    }
 }
 
 ?>

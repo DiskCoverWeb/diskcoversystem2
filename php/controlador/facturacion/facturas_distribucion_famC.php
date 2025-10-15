@@ -145,34 +145,68 @@ class facturas_distribucion_fam
 			$Ln_No = 1;
 			// print_r($cliente);die();
 			// $datosFA['T'] = $cliente['TB'];
-			foreach ($lineas as $key2 => $value2) {
-				$producto = Leer_Codigo_Inv($value2['Codigo'],$datosFA['MBFecha']);
-				if($producto['respueta']==1)
-				{
-					$producto = $producto['datos'];
-					// print_r($producto);die();
-					// print_r($value2);die();
-					SetAdoAddNew("Asiento_F");
-		            SetAdoFields("CODIGO", $value2['Codigo']);
-		            SetAdoFields("CODIGO_L", $CodigoL);
-		            SetAdoFields("PRODUCTO", $producto['Producto']);
-		            SetAdoFields("CANT", $value2['cantidad']);
-		            SetAdoFields("PRECIO", $value2['pvp']);
-		            SetAdoFields("TOTAL", $value2['total']);
-		            // SetAdoFields("Total_Desc", $value['Total_Desc']);
-		            // SetAdoFields("Total_IVA", $value['Total_IVA']);
-		            SetAdoFields("Serie_No", $datosFA['Serie'] );
-		            // SetAdoFields("CodBod", $value['CodBodega']);
-		            SetAdoFields("Costo", number_format($producto['Costo'],2,'.',''));
-		            // SetAdoFields("Cta", $parametros['cta']);
-		            SetAdoFields("Item", $_SESSION['INGRESO']['item']);
-		            SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
-		            SetAdoFields("A_No", $Ln_No);
-		            // SetAdoFields("Numero", $ordenP);
-		            SetAdoUpdate();
-		            $Ln_No = $Ln_No + 1;
-	        	}
+
+
+			$producto = Leer_Codigo_Inv('FA.98',date('Y-m-d'));
+			if($producto['respueta']!='1')
+			{
+				// no se encontro el producto que se estaba buscando
+				return -3;
 			}
+			// else {
+				$total = 0;
+				$this->modelo->DeleteAsientoF($parametros['orden']);
+				$cliente = Leer_Datos_Cliente_FA($datosFA['CI']);
+				foreach ($lineas as $key => $value) {
+					$total = $total+$value['total'];			
+				}
+
+				// print_r($cliente);die();
+
+				SetAdoAddNew('Asiento_F');
+				SetAdoFields('Codigo_Cliente', $cliente['CodigoC']);
+				SetAdoFields('CODIGO', $producto['datos']['Codigo_Inv']);
+				SetAdoFields('PRODUCTO', $producto['datos']['Producto']);
+				SetAdoFields('Orden_No', $parametros['orden']);
+				SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
+				SetAdoFields('A_No', 1);
+				SetAdoFields('CANT', 1);
+				SetAdoFields('PRECIO', number_format($total,$_SESSION['INGRESO']['Dec_PVP'],'.',''));
+				SetAdoFields('TOTAL', number_format($total,2,'.',''));
+				SetAdoFields('Serie',$parametros['Serie']);
+				SetAdoFields('Item',$_SESSION['INGRESO']['item']);
+				SetAdoUpdate();
+
+			// foreach ($lineas as $key2 => $value2) {
+			// 	$producto = Leer_Codigo_Inv($value2['Codigo'],$datosFA['MBFecha']);
+			// 	$cmds = $this->modelo->asignacion_familias($parametros['orden'],false,'F',false,$value2['Codigo']);
+
+			// 	if($producto['respueta']==1)
+			// 	{
+			// 		$producto = $producto['datos'];
+			// 		// print_r($producto);die();
+			// 		// print_r($value2);die();
+			// 		SetAdoAddNew("Asiento_F");
+		    //         SetAdoFields("CODIGO", $value2['Codigo']);
+		    //         SetAdoFields("CODIGO_L", $CodigoL);
+		    //         SetAdoFields("PRODUCTO", $producto['Producto']);
+		    //         SetAdoFields("CANT", $value2['cantidad']);
+		    //         SetAdoFields("PRECIO", $value2['pvp']);
+		    //         SetAdoFields("TOTAL", $value2['total']);
+		    //         // SetAdoFields("Total_Desc", $value['Total_Desc']);
+		    //         // SetAdoFields("Total_IVA", $value['Total_IVA']);
+		    //         SetAdoFields("Serie_No", $datosFA['Serie'] );
+		    //         SetAdoFields("CodBod", $cmds[0]['CodBodega']);
+		    //         SetAdoFields("Costo", number_format($producto['Costo'],2,'.',''));
+		    //         // SetAdoFields("Cta", $parametros['cta']);
+		    //         SetAdoFields("Item", $_SESSION['INGRESO']['item']);
+		    //         SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
+		    //         SetAdoFields("A_No", $Ln_No);
+		    //         SetAdoFields("Cmds", $cmds[0]['Cmds']);
+		    //         SetAdoUpdate();
+		    //         $Ln_No = $Ln_No + 1;
+	        // 	}
+			// }
 
 
 			$datosFA['TxtEfectivo'] = $abonos[$key]['valorEfectivo'];
@@ -203,11 +237,12 @@ class facturas_distribucion_fam
 
 			//insertya en trasn kardex
 
-			$this->ingresar_trans_kardex_salidas_FA($lineas,$parametros,$factura['factura'],$factura['serie']);
+			$this->ingresar_trans_kardex_salidas_FA($lineas,$parametros,$factura['factura'],$factura['serie'],$datosFA['CI']);
 
 			//genera lineas de tickes
 			foreach ($lineas as $key2 => $value2) {
 				$producto = Leer_Codigo_Inv($value2['Codigo'],$datosFA['MBFecha']);
+				$cmds = $this->modelo->asignacion_familias($parametros['orden'],false,'F',false,$value2['Codigo']);
 				if($producto['respueta']==1)
 				{
 					$producto = $producto['datos'];
@@ -222,13 +257,14 @@ class facturas_distribucion_fam
 		            SetAdoFields("TOTAL", $value2['total']);
 		            // SetAdoFields("Total_Desc", $value['Total_Desc']);
 		            // SetAdoFields("Total_IVA", $value['Total_IVA']);
-		            SetAdoFields("Serie_No", $datosFA['Serie'] );
-		            // SetAdoFields("CodBod", $value['CodBodega']);
+		            SetAdoFields("Serie_No", $datosFA['Serie'] );		            
+		            SetAdoFields("CodBod", $cmds[0]['CodBodega']);
 		            SetAdoFields("Costo", number_format($producto['Costo'],2,'.',''));
 		            // SetAdoFields("Cta", $parametros['cta']);
 		            SetAdoFields("Item", $_SESSION['INGRESO']['item']);
 		            SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
 		            SetAdoFields("A_No", $Ln_No);
+		            SetAdoFields("Cmds", $cmds[0]['Cmds']);
 		            // SetAdoFields("Numero", $ordenP);
 		            SetAdoUpdate();
 		            $Ln_No = $Ln_No + 1;
@@ -246,7 +282,7 @@ class facturas_distribucion_fam
 
 	}
 
-	function ingresar_trans_kardex_salidas_FA($lineas,$parametros,$factura,$serie)
+	function ingresar_trans_kardex_salidas_FA($lineas,$parametros,$factura,$serie,$codigo_p)
 	{
 		// print_r($lineas);
 		// print_r($parametros);die();
@@ -259,6 +295,7 @@ class facturas_distribucion_fam
 			foreach ($lineas as $key2 => $value2) {
 				$cantidad = $value2['cantidad'];
 				$CodigoProducto = $this->modelo->cargar_asignacion($parametros['orden'],$tipo=false,'F',$parametros['fechaPick'],$value2['Codigo']);
+				$cmds = $this->modelo->asignacion_familias($parametros['orden'],false,'F',false,$value2['Codigo']);
 
 				$i = 0;
 				while ($cantidad!=0) {
@@ -280,7 +317,8 @@ class facturas_distribucion_fam
 						{
 							$dispo = $disponible-$tomado;
 							$this->modelo->ACtualizarDisponibilidad($parametros['orden'],'F',$CodigoProducto[$i]['CodBodega'],$dispo);
-							$lines = array('CodBarras'=>$CodigoProducto[$i]['CodBodega'],'cantidad'=>$tomado,'Valor_Unitario'=>$value2['pvp'],'codigo_Inv'=>$value2['Codigo'],'fecha'=>$parametros['fecha']);
+
+							$lines = array('CodBarras'=>$CodigoProducto[$i]['Codigo_Barra'],'cantidad'=>$tomado,'Valor_Unitario'=>$value2['pvp'],'codigo_Inv'=>$value2['Codigo'],'fecha'=>$parametros['fecha'],'Cmds'=>$cmds[0]['Cmds'],'CodBodega'=>$cmds[0]['CodBodega'],'Codigo_P'=>$codigo_p);
 							array_push($lineasKardex, $lines);
 							// $i++;
 						}
@@ -311,8 +349,8 @@ class facturas_distribucion_fam
 				SetAdoFields('TP', '.');
 				SetAdoFields('Costo', number_format($value2['Valor_Unitario'], $_SESSION['INGRESO']['Dec_PVP'], '.', ''));
 				SetAdoFields('Total', number_format(($value2['Valor_Unitario']*$value2['cantidad']), 2, '.', ''));
-				// SetAdoFields('Existencia', number_format(($cant[2]), 2, '.', '') - number_format(($value['Cantidad']), 2, '.', ''));
-				SetAdoFields('CodBodega', '01');
+				SetAdoFields('Codigo_P', $value2['Codigo_P']);
+				SetAdoFields('CodBodega', $value2['CodBodega']);
 				SetAdoFields('Detalle', 'Salida de inventario (FA) para  con FACTURA : ' .  $factura . ' el dia ' . $value2['fecha']);
 				SetAdoFields('Procesado', 0);
 				// SetAdoFields('Total_IVA', number_format($value['Total_IVA'], 2, '.', ''));
@@ -327,6 +365,7 @@ class facturas_distribucion_fam
 				SetAdoFields('Codigo_Barra', $value2['CodBarras']);
 				SetAdoFields('TC','FA');
 				SetAdoFields('Serie',$serie);
+				SetAdoFields("Cmds",$value2['Cmds']);
 				SetAdoUpdate();
 
 			}
