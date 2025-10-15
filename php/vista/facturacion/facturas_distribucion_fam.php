@@ -376,7 +376,7 @@ if (isset ($_GET['tipo'])) {
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header bg-primary">
-				<h4 class="modal-title text-white">Información Facturar</h4>
+				<h4 class="modal-title text-white">Información Facturar - Familias</h4>
 				<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body" style="overflow-y: auto; height: fit-content; margin:5px">
