@@ -138,6 +138,7 @@ class facturas_distribucion_fam
 		$respuesta_final = array();
 
 		foreach ($integrantes as $key => $value) {
+
 			$cliente = Leer_Datos_Cliente_FA($key);
 			$datosFA['CI'] = $key;
 			$datosTick['CI'] = $key;
@@ -146,6 +147,25 @@ class facturas_distribucion_fam
 			// print_r($cliente);die();
 			// $datosFA['T'] = $cliente['TB'];
 
+			$datosFA['TxtEfectivo'] = $abonos[$key]['valorEfectivo'];
+			$datosFA['TextBanco'] = $abonos[$key]['documento'];
+			$datosFA['TextCheqNo'] =  $abonos[$key]['ctaBancos'];
+			$datosFA['DCBancoC'] =  $abonos[$key]['ctaBancos'];
+			$datosFA['CodDoc'] = '01';
+			$datosFA['valorBan'] =  $abonos[$key]['valorBanco'];
+			$datosFA['PorcIva'] = trim($parametros['PorcIva']);			
+			$datosFA['TC'] = "FA";
+
+			$Factura_No = 1;
+			if($parametros['TC']=='NDU')
+			{
+				$Factura_No = ReadSetDataNum($parametros['TC'] . "_SERIE_" . $parametros['Serie'], True, true);
+			}
+
+			// print_r($Factura_No);die();
+			// die();
+
+			$datosFA['FacturaNo'] = $Factura_No;
 
 			$producto = Leer_Codigo_Inv('FA.98',date('Y-m-d'));
 			if($producto['respueta']!='1')
@@ -157,8 +177,8 @@ class facturas_distribucion_fam
 				$total = 0;
 				$this->modelo->DeleteAsientoF($parametros['orden']);
 				$cliente = Leer_Datos_Cliente_FA($datosFA['CI']);
-				foreach ($lineas as $key => $value) {
-					$total = $total+$value['total'];			
+				foreach ($lineas as $key2 => $value2) {
+					$total = $total+$value2['total'];			
 				}
 
 				// print_r($cliente);die();
@@ -176,57 +196,15 @@ class facturas_distribucion_fam
 				SetAdoFields('Serie',$parametros['Serie']);
 				SetAdoFields('Item',$_SESSION['INGRESO']['item']);
 				SetAdoUpdate();
+				// print_r($datosFA);die();
 
-			// foreach ($lineas as $key2 => $value2) {
-			// 	$producto = Leer_Codigo_Inv($value2['Codigo'],$datosFA['MBFecha']);
-			// 	$cmds = $this->modelo->asignacion_familias($parametros['orden'],false,'F',false,$value2['Codigo']);
+				$factura =  $this->GenerarFacturaUni($datosFA);
 
-			// 	if($producto['respueta']==1)
-			// 	{
-			// 		$producto = $producto['datos'];
-			// 		// print_r($producto);die();
-			// 		// print_r($value2);die();
-			// 		SetAdoAddNew("Asiento_F");
-		    //         SetAdoFields("CODIGO", $value2['Codigo']);
-		    //         SetAdoFields("CODIGO_L", $CodigoL);
-		    //         SetAdoFields("PRODUCTO", $producto['Producto']);
-		    //         SetAdoFields("CANT", $value2['cantidad']);
-		    //         SetAdoFields("PRECIO", $value2['pvp']);
-		    //         SetAdoFields("TOTAL", $value2['total']);
-		    //         // SetAdoFields("Total_Desc", $value['Total_Desc']);
-		    //         // SetAdoFields("Total_IVA", $value['Total_IVA']);
-		    //         SetAdoFields("Serie_No", $datosFA['Serie'] );
-		    //         SetAdoFields("CodBod", $cmds[0]['CodBodega']);
-		    //         SetAdoFields("Costo", number_format($producto['Costo'],2,'.',''));
-		    //         // SetAdoFields("Cta", $parametros['cta']);
-		    //         SetAdoFields("Item", $_SESSION['INGRESO']['item']);
-		    //         SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
-		    //         SetAdoFields("A_No", $Ln_No);
-		    //         SetAdoFields("Cmds", $cmds[0]['Cmds']);
-		    //         SetAdoUpdate();
-		    //         $Ln_No = $Ln_No + 1;
-	        // 	}
-			// }
-
-
-			$datosFA['TxtEfectivo'] = $abonos[$key]['valorEfectivo'];
-			$datosFA['TextBanco'] = $abonos[$key]['documento'];
-			$datosFA['TextCheqNo'] =  $abonos[$key]['ctaBancos'];
-			$datosFA['DCBancoC'] =  $abonos[$key]['ctaBancos'];
-			$datosFA['CodDoc'] = '01';
-			$datosFA['valorBan'] =  $abonos[$key]['valorBanco'];
-			$datosFA['PorcIva'] = trim($parametros['PorcIva']);
-
-
-			// print_r($datosFA);die();
-
-
-			$factura =  $this->GenerarFacturaUni($datosFA);
 
 			// print_r($factura);
 			// die();
 
-			$datosTick['FacturaNo'] = $parametros['TextNDUNo'];
+			$datosTick['FacturaNo'] = $Factura_No;
 			$datosTick['TxtEfectivo'] =0;
 			$datosTick['TextBanco'] = 0;
 			$datosTick['TextCheqNo'] = 0;
@@ -234,6 +212,8 @@ class facturas_distribucion_fam
 			$datosTick['CodDoc'] = '01';
 			$datosTick['valorBan'] = 0;
 			$datosTick['PorcIva'] = $parametros['PorcIva'];
+			$datosFA['TC'] = "NDU";
+			$datosTick['TC'] = "NDU";
 
 			//insertya en trasn kardex
 
@@ -275,6 +255,7 @@ class facturas_distribucion_fam
 			$Ticket = $this->GenerarTicketUni($datosTick);
 			// $this->ingresar_trans_kardex_salidas_FA($integrantes);
 			array_push($respuesta_final, $factura);
+			$this->modelo->ActualizarCodigoFactura($parametros['TC'] . "_SERIE_" . $parametros['Serie'],$Factura_No);
 		}
 
 		return $respuesta_final;
@@ -546,18 +527,19 @@ class facturas_distribucion_fam
 			$FA['Nuevo_Doc'] = True;
 			$FA['Saldo_MN'] = $Saldo;
 
-			if($FA['TC']=='NDU')
-			{
-				$Factura_No = ReadSetDataNum($FA['TC'] . "_SERIE_" . $FA['Serie'], True, True);
-			}else{ 
-				$Factura_No = $FA['FacturaNo']; 
-				$this->modelo->ActualizarCodigoFactura($FA['TC'] . "_SERIE_" . $FA['Serie'],$Factura_No);
+			$Factura_No = $FA['FacturaNo'];
 
-				}
+			// if($FA['TC']=='NDU')
+			// {
+			// 	$Factura_No = ReadSetDataNum($FA['TC'] . "_SERIE_" . $FA['Serie'], True, True);
+			// }else{ 
+			// 	$Factura_No = $FA['FacturaNo']; 
+			// 	$this->modelo->ActualizarCodigoFactura($FA['TC'] . "_SERIE_" . $FA['Serie'],$Factura_No);
+
+			// 	}
 
 
-			$FA['Factura'] = $Factura_No;
-			$FA['FacturaNo'] = $Factura_No;
+			$FA['Factura'] =$Factura_No;
 			$TipoFactura = $FA['TC'];
 			if ($TipoFactura == "PV") {
 				Control_Procesos("F", "Grabar Ticket No. " . $Factura_No, '');

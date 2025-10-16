@@ -94,6 +94,11 @@ if (isset($_GET['DCLineas'])) {
 	echo json_encode($controlador->DCLinea($parametros));
  }
 
+ if (isset($_GET['DCLineasFam'])) {
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->DCLineaFam($parametros));
+ }
+
 if (isset($_GET['ActualizarAsientoF'])) {
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->actualizarAsientoF($parametros));
@@ -327,6 +332,17 @@ class facturas_distribucion
 	function DCLinea($parametros)
    {
       $datos = $this->modelo->DCLinea($parametros['TC'], $parametros['Fecha']);
+      $lis = array();
+      foreach ($datos as $key => $value) {
+         $lis[] = array('codigo' => $value['Codigo'], 'nombre' => $value['Concepto'],'caja'=>$value['Caja_Efectivo']);
+      }
+      return $lis;
+   }
+
+
+	function DCLineaFam($parametros)
+   {
+      $datos = $this->modelo->DCLinea('NDU', $parametros['Fecha']);
       $lis = array();
       foreach ($datos as $key => $value) {
          $lis[] = array('codigo' => $value['Codigo'], 'nombre' => $value['Concepto'],'caja'=>$value['Caja_Efectivo']);

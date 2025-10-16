@@ -76,7 +76,7 @@
 		var parametros =
 		{
 			'Fecha': $('#MBFecha').val(),
-			'TC': 'FA'
+			'TC': 'NDU'
 		}
 		$.ajax({
 			type: "POST",
@@ -699,6 +699,7 @@
 				cache: true
 			}
 		});
+        $('#DCBanco').append($('<option>',{value:'1.1.01.02.01', text: '1.1.01.02.01  Banco Pichincha Ahorros (Cuota Recuperacion) No. 3708204100',selected: true }));
 	}
 
 	function DCEfectivo() {
@@ -719,6 +720,8 @@
 				cache: true
 			}
 		});
+
+        $('#DCEfectivo').append($('<option>',{value:'1.1.01.01.03', text: '1.1.01.01.03 Caja Familias',selected: true }));
 	}
 
 	function guardarAbonos()
