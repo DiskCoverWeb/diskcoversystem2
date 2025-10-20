@@ -132,7 +132,7 @@ class facturas_distribucion_fam
 		$integrantes = json_decode($parametros['integrantes'],true);
 		$abonos = json_decode($parametros['Abonointegrantes'],true);
 
-
+// print_r($abonos);die();
 
 			
 		$respuesta_final = array();
@@ -147,6 +147,7 @@ class facturas_distribucion_fam
 			// print_r($cliente);die();
 			// $datosFA['T'] = $cliente['TB'];
 
+			$datosFA['DCEfectivo'] =  $abonos[$key]['ctaEfectivo'];
 			$datosFA['TxtEfectivo'] = $abonos[$key]['valorEfectivo'];
 			$datosFA['TextBanco'] = $abonos[$key]['documento'];
 			$datosFA['TextCheqNo'] =  $abonos[$key]['ctaBancos'];
@@ -204,7 +205,8 @@ class facturas_distribucion_fam
 			// print_r($factura);
 			// die();
 
-			$datosTick['FacturaNo'] = $Factura_No;
+			$datosTick['FacturaNo'] = $Factura_No;			
+			$datosTick['DCEfectivo'] = 0;
 			$datosTick['TxtEfectivo'] =0;
 			$datosTick['TextBanco'] = 0;
 			$datosTick['TextCheqNo'] = 0;
@@ -400,6 +402,7 @@ class facturas_distribucion_fam
 			$FA['TextCheqNo'] = $parametros['TextCheqNo'];
 			$FA['DCBancoC'] = $parametros['DCBancoC'];
 			// $FA['T'] = $parametros['T'];
+			$FA['CtaEfectivo'] = $parametros['DCEfectivo'];
 			$FA['CodDoc'] = $parametros['CodDoc'];
 			$FA['valorBan'] = $parametros['valorBan'];
 			$FA['TxtEfectivo'] = $parametros['TxtEfectivo'];
