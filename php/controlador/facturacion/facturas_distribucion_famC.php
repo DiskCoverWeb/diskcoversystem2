@@ -585,7 +585,7 @@ class facturas_distribucion_fam
 				$TA['TP'] = $TipoFactura;
 				$TA['Fecha'] = $FechaTexto;
 				$TA['Cta_CxP'] = $FA['Cta_CxP'];
-				$TA['Cta'] = $_SESSION['SETEOS']['Cta_CajaG'];
+				$TA['Cta'] = $FA['CtaEfectivo']; //$_SESSION['SETEOS']['Cta_CajaG'];
 				$TA['Banco'] = "EFECTIVO MN";
 				$TA['Cheque'] = generaCeros($FA['Factura'], 8);
 				$TA['Factura'] = $FA['Factura'];
