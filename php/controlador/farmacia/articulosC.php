@@ -706,6 +706,7 @@ class articulosC
 
 		//asientos para el debe
 		$asiento_debe = $this->modelo->datos_asiento_haber($orden,$CodigoPrv);
+		// print_r($asiento_debe);die();
 		$tiene_iva =false;
 		foreach ($asiento_debe as $key => $value) {
 			 if($value['IVA']!=0)
@@ -720,10 +721,12 @@ class articulosC
 			$fecha = $asiento_debe[0]['fecha']->format('Y-m-d');	
 			$total_iva = $this->modelo->iva_comprobante($orden,$CodigoPrv);
 			$cuenta_iva =$this->modelo->buscar_cta_iva_inventario();
+
+			// print_r($total_iva);die();
 		    foreach ($total_iva as $key => $value) 
 		    {
 				    $parametros_debe = array(
-				     "va" =>number_format($value['IVA'],2,'.',''),//valor que se trae del otal sumado
+				     "va" =>round($value['IVA'],2),//valor que se trae del otal sumado
                       "dconcepto1" =>'Cta_IVA_Inventario',
                       "codigo" => $cuenta_iva, // cuenta de codigo de 
                       "cuenta" => 'Cta_IVA_Inventario', // detalle de cuenta;
@@ -739,13 +742,15 @@ class articulosC
 		    }
 
 		    $siento_debe_con_iva = $this->modelo->datos_asiento_haber_CON_IVA($orden,$CodigoPrv);
+		    // print_r($siento_debe_con_iva);die();
 		   foreach ($siento_debe_con_iva as $key => $value) 
 		    {
-			    // print_r($value);die();
+			    // print_r($value);
+			    // die();
 			       $cuenta = $this->ing_descargos->catalogo_cuentas($value['cuenta']);		
 			       // print_r($cuenta);die();
 				    $parametros_debe = array(
-				     "va" =>number_format($value['sub'],2,'.',''),//valor que se trae del otal sumado
+				     "va" =>round($value['sub'],2),//valor que se trae del otal sumado
                       "dconcepto1" =>$cuenta[0]['Cuenta'],
                       "codigo" => $value['cuenta'], // cuenta de codigo de 
                       "cuenta" => $cuenta[0]['Cuenta'], // detalle de cuenta;
@@ -757,6 +762,7 @@ class articulosC
                       "con" => 0,// depende de moneda
                       "t_no" => '99',
 			    );
+				    // print_r($parametros_debe);die();
 				     $this->ing_descargos->ingresar_asientos($parametros_debe);
 		    }
 		}else
@@ -785,6 +791,7 @@ class articulosC
         }
         // asiento para el haber
 		$asiento_haber  =  $this->modelo->datos_asiento_debe($orden,$CodigoPrv);
+		// print_r($asiento_haber);die();
 		foreach ($asiento_haber as $key => $value) {
 			$cuenta = $this->ing_descargos->catalogo_cuentas($value['cuenta']);
 			if(count($cuenta)==0){$cuenta[0]['Cuenta']='.';}			

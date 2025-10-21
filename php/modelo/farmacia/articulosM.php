@@ -127,7 +127,7 @@ class articulosM
 	{
      $cid = $this->conn;
     // 'LISTA DE CODIGO DE ANEXOS
-     $sql = "SELECT ROUND(SUM(CANTIDAD*VALOR_UNIT-P_DESC),2) as 'sub',CTA_INVENTARIO as 'cuenta',Fecha_DUI as 'fecha',TC FROM Asiento_K  WHERE Item = '".$_SESSION['INGRESO']['item']."' AND ORDEN = '".$orden."'  AND SUBCTA = '".$proveedor."' GROUP BY Codigo_B,ORDEN,CONTRA_CTA,CTA_INVENTARIO,Fecha_DUI,TC";
+     $sql = "SELECT ROUND(SUM(CANTIDAD*VALOR_UNIT-P_DESC),4) as 'sub',CTA_INVENTARIO as 'cuenta',Fecha_DUI as 'fecha',TC FROM Asiento_K  WHERE Item = '".$_SESSION['INGRESO']['item']."' AND ORDEN = '".$orden."'  AND SUBCTA = '".$proveedor."' GROUP BY Codigo_B,ORDEN,CONTRA_CTA,CTA_INVENTARIO,Fecha_DUI,TC";
         
        return $datos = $this->conn->datos($sql);
 	}
