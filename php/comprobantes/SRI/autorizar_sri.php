@@ -2512,6 +2512,15 @@ function generar_xml($cabecera,$detalle)
 		$xml->appendChild($xml_factura);
 
 		$ruta_G = dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/Generados';
+		$ruta_F = dirname(__DIR__).'/entidades/entidad_'.$entidad."/CE".$empresa.'/Firmados';
+
+		if (file_exists($ruta_G.'/'.$compro.'.xml')) {
+		    unlink($ruta_G.'/'.$compro.'.xml');
+		} 
+		if (file_exists($ruta_F.'/'.$compro.'.xml')) {
+		    unlink($ruta_F.'/'.$compro.'.xml');
+		} 
+
 		if($archivo = fopen($ruta_G.'/'.$compro.'.xml',"w+b"))
 		  {
 		  	fwrite($archivo,$xml->saveXML());

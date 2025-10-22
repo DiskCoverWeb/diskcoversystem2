@@ -3597,10 +3597,11 @@ function validar_registro()
 
             $('#txt_id').val(response[0].value);
             $('#txt_codigo').val(response[0].codigo);
-            $('#txt_td').val(response[0].TD);
+            $('#txt_td').val(response[0].TD);    
             $('#cliente').val(response[0].nombre);
             ClienteAllData(response[0].codigo);
             $("#myModal_espera").modal('hide');
+           
 
       } else {
         $('#cliente').val("");
@@ -3635,8 +3636,31 @@ function codigo() {
           },
           success: function (response) {
             $('#txt_codigo').val(response.Codigo_RUC_CI);
-            $('#txt_td').val(response.Tipo_Beneficiario);
+             if(response.Tipo_Beneficiario=='P')
+            {
+                Swal.fire({
+                  title: 'Numero de cedula insonsistente?',
+                  text: "Desea registrar como numero de cedula?",
+                  type: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Si!'
+                }).then((result) => {
+                  if (result.value==true) {
+                    $('#txt_td').val("C");    
+                  }else
+                  {
+                    $('#txt_td').val(response.Tipo_Beneficiario);
+                  }
+                })
+
+            }else
+            {
+                $('#txt_td').val(response.Tipo_Beneficiario);          
+            }
             $("#myModal_espera").modal('hide');
+
 
           }
         });
