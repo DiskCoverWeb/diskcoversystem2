@@ -13,15 +13,20 @@ class catalogo_bodegaM
 
     function GuardarProducto($parametros)
     {
+        // print_r($parametros);die();
         $sql = "";
         if($parametros['nivel'] == '0'){
             $sql = "INSERT INTO Catalogo_Proceso(DC, Cmds, Proceso, TP, Nivel, Item, Picture, Color, Cta_Debe, Cta_Haber) 
                     VALUES ('--', '" . $parametros['codigo'] . "', '" . strtoupper($parametros['concepto']) . "', '".$parametros['tp']."', '".$parametros['nivel']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."', '".$parametros['cta_debe']."', '".$parametros['cta_haber']."')";
         }else {
             $sql = "INSERT INTO Catalogo_Proceso(DC, Cmds, Proceso, TP, Nivel, Item, Picture, Color, Cta_Debe, Cta_Haber) 
-                    VALUES ('" . $parametros['tipo'] . "', '" . $parametros['codigo'] . "', '" . $parametros['concepto'] . "', '".$parametros['tp']."', '".$parametros['nivel']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."', '".$parametros['cta_debe']."', '".$parametros['cta_haber']."')";
+                    VALUES ('" . $parametros['tipo'] . "', '" . $parametros['codigo'] . "', '" . $parametros['concepto'] . "', '".$parametros['tp']."', '".$parametros['NivelSuperior']."', '" . $_SESSION['INGRESO']['item'] . "', '".$parametros['picture']."', '".$parametros['color']."', '".$parametros['cta_debe']."', '".$parametros['cta_haber']."')";
         }
-        //print_r($sql); die();
+        // print_r($sql); die();
+
+        // INSERT INTO Catalogo_Proceso(DC, Cmds, Proceso, TP, Nivel, Item, Picture, Color, Cta_Debe, Cta_Haber) VALUES 
+        //                             ('D','85.05.01','prueba sub Desnutrición ', 'PROGRAMA', '85.05', '001', '.', '.', '.', '.')
+
         return $this->db->datos($sql);
     }
     
@@ -99,7 +104,7 @@ class catalogo_bodegaM
                 WHERE Cmds = '" . $parametros['codigo'] . "' 
                 AND Item = '" . $_SESSION['INGRESO']['item'] . "' 
                 AND TP = '".$parametros['tp']."' 
-                AND Nivel = '".$parametros['nivel']."'";
+                AND Nivel = '".$parametros['NivelSuperior']."'";
         }
 
         /*if($parametros['nivel'] == '99'){

@@ -169,6 +169,8 @@ class catalogo_bodegaC
 
     function GuardarProducto($parametros)
     {    
+        $nivel = explode(".",$parametros['nivel']);
+        $parametros['NivelSuperior'] = $nivel[0];
         try {
             if($parametros['nivel'] == '00') $parametros['nivel'] = '0';
             $datos = $this->modelo->GuardarProducto($parametros); 
@@ -257,6 +259,10 @@ class catalogo_bodegaC
     function ListaEliminar($parametros)
     {    
         //$parametros['tp'] = explode(',', $parametros['tp']);
+
+        
+        $nivel = explode(".",$parametros['nivel']);
+        $parametros['NivelSuperior'] = $nivel[0];
 
         try {
             //if($parametros['nivel'] == '00') $parametros['nivel'] = '0';
