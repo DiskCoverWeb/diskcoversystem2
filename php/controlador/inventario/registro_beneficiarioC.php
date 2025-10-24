@@ -1044,7 +1044,7 @@ class registro_beneficiarioC
         if($dato["select_93"]=="93.01")
         {
          // para organizacion social datos unicos   
-            SetAdoFields('Cliente', strtoupper($dato['cliente']));
+            SetAdoFields('Cliente', strtoupper(trim($dato['cliente'])));
             SetAdoFields('Contacto', $dato['contacto']);
             SetAdoFields('Profesion', $dato['cargo']);
             SetAdoFields('Email', $dato['email']);
@@ -1060,6 +1060,7 @@ class registro_beneficiarioC
             SetAdoFields('CI_RUC_R', $dato['ciRepre']);
             SetAdoFields('Telefono_R', $dato['telfRepre']);
          }
+
          if($dato["select_93"]=="93.02")
          {
             // para familias dato unico

@@ -273,8 +273,8 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 
 	$Total = 0;
 	$TotalPVP = 0;
-
-
+	$total_lineas = 0;
+	
 	if(count($info['lineas']) > 0){
 		foreach($info['lineas'] as $key => $value){
 			if($info['factura'][0]['TC'] == "DO" || $info['factura'][0]['TC'] == "NDO" || $info['factura'][0]['TC'] == "NDU"){
@@ -305,6 +305,7 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 
 			if($info['factura'][0]['TC'] <> "PV"){$Total_IVA += $value['Total_IVA'];} 
 		}
+		$total_lineas+=floatval($value['Total']);
 	}
 
 
@@ -410,6 +411,16 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 	$textoReciboCaja = "INGRESO No. ";
 	if($_SESSION['INGRESO']['IDEntidad'] == '65'){
 		$textoReciboCaja = "RECIBO CAJA No. ";
+	}
+
+	if(isset($info['lineas']))
+	{
+		$total_lineas = round($total_lineas,3);
+		$total_lineas = round($total_lineas,2);
+		if(number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')!=$total_lineas)
+		{
+			$info['factura'][0]['Total_MN'] = $total_lineas;
+		}
 	}
 
 
@@ -578,6 +589,21 @@ $ticket  = '
 		$textoReciboCaja = "RECIBO CAJA No. ";
 	}
 
+	if(isset($info['lineas']))
+	{
+		$total = 0;
+		foreach ($info['lineas'] as $key => $value) {
+			$total+=floatval($value['Total']);
+		}
+		$total = round($total,3);
+		$total = round($total,2);
+		if($info['factura'][0]['Total_MN']!=$total)
+		{
+			$info['factura'][0]['Total_MN'] = $total;
+		}
+	}
+
+	// print_r($total);die();
 
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";		
 		$ticket.="<tr><td colspan='3' style='text-align:center'><b>".$textoReciboCaja . $filasTA[0]['Fecha']->format('Y').'-'.$filasTA[0]['Recibo_No']."<b></td></tr>";
@@ -586,6 +612,7 @@ $ticket  = '
 		$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";
 
 		$ticket.="<tr><td colspan='3'>Fecha: ".$info['factura'][0]['Fecha']->format('Y/m/d')."</td></tr>";
+		// print_r($info);die();
 		$ticket.="<tr><td colspan='3'>Por USD ".number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')."</td></tr>";
 		$ticket.="<tr><td colspan='3'>La suma de: ".str_pad((int)($info['factura'][0]['Total_MN'] * 100), 2, "0", STR_PAD_LEFT)."/100</td></tr>";
 
