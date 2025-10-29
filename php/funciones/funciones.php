@@ -1366,8 +1366,7 @@ function Digito_Verificador_SP($NumeroRUC)
   );
   // print_r($parametros);die();
   $sql = "EXEC sp_Digito_Verificador @NumeroRUC=?, @Item=?, @RUCCI=?, @CodigoRUCCI=?, @DigitoVerificador=?, @TipoBeneficiario=?, @RUCNatural=?";
-  $exec = $conn->ejecutar_procesos_almacenados($sql,$parametros);
-
+  $exec = $conn->ejecutar_procesos_almacenados($sql,$parametros,1);
   if($Tipo_Beneficiario != "R") {$TipoSRI_Existe  = false; };
 // print_r($exec);die();
   $datos = compact('RUC_CI', 'Codigo_RUC_CI', 'Digito_Verificador', 'Tipo_Beneficiario', 'RUC_Natural', 'TipoSRI_Existe'); 
@@ -6468,9 +6467,7 @@ function  Leer_Datos_Cliente_FA($Codigo_CIRUC_Cliente)
     if(strlen($Codigo_CIRUC_Cliente) <= 0){$Codigo_CIRUC_Cliente = G_NINGUNO;}
     $datos = Leer_Datos_Cliente_SP($Codigo_CIRUC_Cliente);
     $TFA['CodigoC'] = $Codigo_CIRUC_Cliente;
-
-    // print_r($datos);die();
-
+    
      $Cliente = json_decode("[".$datos."]", true);
      if (json_last_error() !== JSON_ERROR_NONE) {
           die('Error al decodificar JSON: ' . json_last_error_msg());
@@ -9771,6 +9768,26 @@ function Eliminar_Nulos_SP($NombreTabla)
   $res = $conn->ejecutar_procesos_almacenados($sql,$parametros,$tipo=false);
   return $res;
 }
+
+// function Actualizar_Datos_Representante_SP()
+// {
+//   $conn = new db();
+//   $MasGrupo = true;
+//   if($_SESSION['INGRESO']['Mas_Grupos']==0)
+//   {
+//     $MasGrupo = false;
+//   }
+//   $parametros = array(
+//     array(&$_SESSION['INGRESO']['item'], SQLSRV_PARAM_IN),
+//     array(&$_SESSION['INGRESO']['periodo'], SQLSRV_PARAM_IN),
+//     array(&$MasGrupo, SQLSRV_PARAM_IN),
+//   );
+
+//   // print_r($parametros);die();
+//   $sql = "EXEC sp_Actualizar_Datos_Representantes @Item=?, @Periodo=?, @MasGrupos=?";
+//   $res = $conn->ejecutar_procesos_almacenados($sql,$parametros,$tipo=false);
+//   return $res;
+// }
 
 function BuscarArchivo_Foto_Estudiante($nombre){
   $imagen_url = BuscarImagen($nombre, __DIR__ ."/../img/img_estudiantes/");

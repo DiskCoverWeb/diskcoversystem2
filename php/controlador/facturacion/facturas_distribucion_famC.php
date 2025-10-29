@@ -3,6 +3,7 @@ require(dirname(__DIR__, 2) . '/modelo/facturacion/facturas_distribucion_famM.ph
 require_once(dirname(__DIR__, 2) . '/modelo/facturacion/punto_ventaM.php');
 require_once(dirname(__DIR__, 2) . "/comprobantes/SRI/autorizar_sri.php");
 require_once(dirname(__DIR__, 3) . "/lib/fpdf/cabecera_pdf.php");
+require_once(dirname(__DIR__, 2) . '/controlador/modalesC.php');
 /**
  * 
  */
@@ -65,12 +66,14 @@ class facturas_distribucion_fam
 	private $sri;
 	private $pdf;
 	private $punto_venta;
+	private $modales;
 	function __construct()
 	{
 		$this->modelo = new facturas_distribucion_famM();
 		$this->sri = new autorizacion_sri();
 		$this->pdf = new cabecera_pdf();
 		$this->punto_venta =  new punto_ventaM();
+		$this->modales = new modalesC();
 	}
 
 	
@@ -99,8 +102,18 @@ class facturas_distribucion_fam
 	function IntegrantesGrupo($parametros)
 	{
 		$datos = $this->modelo->IntegrantesGrupo($parametros['grupo']);
+		foreach ($datos as $key => $value) {
+			// print_r($value);die();
+			if($value['TD']=='.')
+			{
+				$datosC = $this->modales->codigo_CI($value['CI_RUC']);
+				SetAdoAddNew("Clientes");
+				SetAdoFields("TD",$datosC['Tipo_Beneficiario']);
+				SetAdoFieldsWhere('CI_RUC',$value['CI_RUC']);
+				SetAdoUpdateGeneric();
+			}
+		}
 		return $datos;
-		print_r($parametros);die();
 
 	}
 
@@ -132,7 +145,7 @@ class facturas_distribucion_fam
 		$integrantes = json_decode($parametros['integrantes'],true);
 		$abonos = json_decode($parametros['Abonointegrantes'],true);
 
-// print_r($abonos);die();
+		// print_r($abonos);die();
 
 			
 		$respuesta_final = array();
@@ -377,6 +390,8 @@ class facturas_distribucion_fam
 		$datos = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
 		$cliente = Leer_Datos_Cliente_FA($parametros['CI']);
 
+		// print_r($cliente);die();
+
 		if (count($datos) > 0 && count($cliente)>0)  {
 			// print_r($datos);die();
 			// $FA['Nota'] = $parametros['TxtNota'];
@@ -469,7 +484,8 @@ class facturas_distribucion_fam
 			$FA['valorBan'] = $parametros['valorBan'];
 			$FA['TxtEfectivo'] = $parametros['TxtEfectivo'];
 			$FA['Cod_CxC'] = $datos[0]['Codigo'];
-			$FA['Remision'] = 0;
+			$FA['Remision'] = 0;			
+			$FA['CtaEfectivo'] = $parametros['DCEfectivo'];
 			if (isset($parametros['tipo_pago'])) {
 				$FA['Tipo_Pago'] = $parametros['tipo_pago'];
 			} else {
