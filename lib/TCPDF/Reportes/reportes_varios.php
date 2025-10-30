@@ -413,15 +413,15 @@ $ticket.='<tr><td colspan="3">Fecha de Emisión: '.$info['factura'][0]['Fecha']-
 		$textoReciboCaja = "RECIBO CAJA No. ";
 	}
 
-	if(isset($info['lineas']))
-	{
-		$total_lineas = round($total_lineas,3);
-		$total_lineas = round($total_lineas,2);
-		if(number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')!=$total_lineas)
-		{
-			$info['factura'][0]['Total_MN'] = $total_lineas;
-		}
-	}
+	// if(isset($info['lineas']))
+	// {
+	// 	$total_lineas = round($total_lineas,3);
+	// 	$total_lineas = round($total_lineas,2);
+	// 	if(number_format((float)$info['factura'][0]['Total_MN'], 2, '.', '')!=$total_lineas)
+	// 	{
+	// 		$info['factura'][0]['Total_MN'] = $total_lineas;
+	// 	}
+	// }
 
 
 	$ticket.="<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>";		
