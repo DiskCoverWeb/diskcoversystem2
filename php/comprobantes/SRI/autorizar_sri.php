@@ -79,6 +79,7 @@ class autorizacion_sri
 
 	function Autorizar_factura_o_liquidacion($parametros)
 	{
+		// print_r($parametros);die();
 		// 1 para autorizados
 	    //-1 para no autorizados y devueltas
 	    // 2 para devueltas
@@ -88,6 +89,10 @@ class autorizacion_sri
 		$cabecera['ambiente']=$_SESSION['INGRESO']['Ambiente'];
 	    $cabecera['ruta_ce']=$_SESSION['INGRESO']['Ruta_Certificado'];
 	    $cabecera['clave_ce']=$_SESSION['INGRESO']['Clave_Certificado'];
+
+	    $cabecera['EsTransporte']=$_SESSION['INGRESO']['Es_Transporte'];	    
+	    $cabecera['RucOperador']=$_SESSION['INGRESO']['RUC_Operadora'];
+
 	    $cabecera['nom_comercial_principal']=$this->quitar_carac($_SESSION['INGRESO']['Nombre_Comercial']);
 	    $cabecera['razon_social_principal']=$this->quitar_carac($_SESSION['INGRESO']['Razon_Social']);
 	    $cabecera['ruc_principal']=$_SESSION['INGRESO']['RUC'];
@@ -159,6 +164,7 @@ class autorizacion_sri
 		 }
 				//datos de factura
 	    		$datos_fac = $this->datos_factura($cabecera['serie'],$cabecera['factura'],$cabecera['tc']);
+	    		// print_r($datos_fac);die();
 	    		if(count($datos_fac)==0)
 	    		{
 	    			return -2;
@@ -171,6 +177,12 @@ class autorizacion_sri
 				$cabecera['Sin_IVA']= $this->money_formato($datos_fac[0]['Sin_IVA'],2);
 				$cabecera['Descuento'] = $this->money_formato($datos_fac[0]['Descuento']+$datos_fac[0]['Descuento2'],2);
 				$cabecera['baseImponible'] = $datos_fac[0]['Sin_IVA']+$cabecera['Descuento'];
+				$cabecera['TDT'] = $datos_fac[0]['TDT'];
+				$cabecera['EsPorReembolso'] = false;
+				if($cabecera['TDT']==41)
+				{
+					$cabecera['EsPorReembolso'] = true;
+				}
 				$cabecera['Porc_IVA'] = $this->money_formato($datos_fac[0]['Porc_IVA'],2);
 
 				// print_r($cabecera['Porc_IVA']);die();
@@ -267,19 +279,29 @@ class autorizacion_sri
 				    $detalle[$key]['Cantidad'] = $this->money_formato($value['Cantidad'],6);
 				    $detalle[$key]['Precio'] =  $this->money_formato($value['Precio'],6);
 				    $detalle[$key]['descuento'] = $this->money_formato(($value['Total_Desc']+$value['Total_Desc2']),2);
-				  if ($cabecera['Imp_Mes']==true)
-				  {
-				   	$detalle[$key]['Producto'] = $this->quitar_carac($value['Producto']).', '.$value['Ticket'].': '.$value['Mes'].' ';
-				  }
-				  if($cabecera['SP']==true)
-				  {
-				  	$detalle[$key]['Producto'] = $this->quitar_carac($value['Producto']).', Lote No. '.$value['Lote_No'].
-					', ELAB. '.$value['Fecha_Fab'].
-					', VENC. '.$value['Fecha_Exp'].
-					', Reg. Sanit. '.$value['Reg_Sanitario'].
-					', Modelo: '.$value['Modelo'].
-					', Procedencia: '.$value['Procedencia'];
-				  }
+				    $detalle[$key]['Desc_Item'] = $producto[0]['Desc_Item'];
+				    $detalle[$key]['Codigo_Barra'] = $producto[0]['Codigo_Barra'];
+				    $detalle[$key]['Total_Desc2'] = $value['Total_Desc2'];
+
+				    $detalle[$key]['Ticket'] = $value['Ticket'];
+				    $detalle[$key]['Mes'] = $value['Mes'];
+				    $detalle[$key]['Total_Desc'] = $value['Total_Desc'];
+				   
+
+
+				  // if ($cabecera['Imp_Mes']==true)
+				  // {
+				  //  	$detalle[$key]['Producto'] = $this->quitar_carac($value['Producto']).', '.$value['Ticket'].': '.$value['Mes'].' ';
+				  // }
+				  // if($cabecera['SP']==true)
+				  // {
+				  // 	$detalle[$key]['Producto'] = $this->quitar_carac($value['Producto']).', Lote No. '.$value['Lote_No'].
+				// 	', ELAB. '.$value['Fecha_Fab'].
+				// 	', VENC. '.$value['Fecha_Exp'].
+				// 	', Reg. Sanit. '.$value['Reg_Sanitario'].
+				// 	', Modelo: '.$value['Modelo'].
+				// 	', Procedencia: '.$value['Procedencia'];
+				  // }
 				   $detalle[$key]['SubTotal'] =  $this->money_formato(($value['Cantidad']*$value['Precio'])-($value['Total_Desc']+$value['Total_Desc2']),2);
 				   $detalle[$key]['Serie_No'] = $value['Serie_No'];
 				   $detalle[$key]['Total_IVA'] = $this->money_formato(($value['Total_IVA']),2);
@@ -2175,19 +2197,86 @@ function generar_xml($cabecera,$detalle)
 
 		$xml_detalles = $xml->createElement( "detalles");
 		foreach ($detalle as $key => $value) {
-			if($value['Cod_Bar'] !='' or $value['Codigo']!='')
-			{
-				$xml_detalle = $xml->createElement( "detalle" );
-				if($cabecera['SP']==true)
+
+			// print_r($value);die();
+			$Producto = $value["Producto"];
+            $Cod_Aux = $value["Desc_Item"];
+            $Cod_Bar = $value["Codigo_Barra"];
+            $SubTotal = ($value["Cantidad"] * $value["Precio"]) - ($value["Total_Desc"] + $value["Total_Desc2"]);
+
+            if($cabecera['EsPorReembolso'])
+            {
+            	$Cod_Aux = "Reembolso de Gastos";
+            	 If(strlen($value("Tipo_Hab")) > 1){ $Cod_Aux = $Cod_Aux." por ".$value["Tipo_Hab"];}
+                    $SubTotal = $SubTotal + $value["Total_IVA"];
+
+                    $xml_detalle = $xml->createElement( "detalle" );
+                    $xml_codigoPrincipal = $xml->createElement( "codigoPrincipal",$value['Codigo']);
+                    $xml_codigoAuxiliar = $xml->createElement( "codigoAuxiliar",substr(trim($value['Ruta']),0,10));
+
+                    $xml_descripcion = $xml->createElement( "descripcion",preg_replace("/[\r\n|\n|\r]+/", " ",$value['Producto']));
+					$xml_cantidad = $xml->createElement( "cantidad", $value['Cantidad']);
+					$xml_precioUnitario = $xml->createElement( "precioUnitario",$SubTotal);
+					$xml_descuento = $xml->createElement( "descuento",'0.00' );
+					$xml_precioTotalSinImpuesto = $xml->createElement( "precioTotalSinImpuesto",$SubTotal);
+
+
+					$xml_detalle->appendChild( $xml_codigoPrincipal);
+                   	$xml_detalle->appendChild( $xml_codigoAuxiliar);
+                   	$xml_detalle->appendChild( $xml_descripcion);
+                   	$xml_detalle->appendChild( $xml_cantidad);
+                   	$xml_detalle->appendChild( $xml_precioUnitario);
+                   	$xml_detalle->appendChild( $xml_descuento);
+                   	$xml_detalle->appendChild( $xml_precioTotalSinImpuesto);
+
+                    $xml_detallesAdicionales = $xml->createElement( "detallesAdicionales" );
+
+	                    $xml_campoAdicional = $xml->createElement( "detAdicional");
+						$xml_campoAdicional->setAttribute( "nombre", "RUC Factura");
+						$xml_campoAdicional->setAttribute( "valor", $value['Nota']);
+						$xml_detallesAdicionales->appendChild( $xml_campoAdicional );
+
+						$xml_campoAdicional = $xml->createElement( "detAdicional");
+						$xml_campoAdicional->setAttribute( "nombre", "Serie y Factura");
+						$xml_campoAdicional->setAttribute( "valor", $value['Serie_No']);
+						$xml_detallesAdicionales->appendChild( $xml_campoAdicional );
+
+						$xml_campoAdicional = $xml->createElement( "detAdicional");
+						$xml_campoAdicional->setAttribute( "nombre", "Descripcion Reembolso");
+						$xml_campoAdicional->setAttribute( "valor", $Cod_Aux);
+						$xml_detallesAdicionales->appendChild( $xml_campoAdicional );      
+					
+                   	$xml_detalle->appendChild($xml_detallesAdicionales);
+
+                   	$xml_impuestos = $xml->createElement( "impuestos" );
+						$xml_impuesto = $xml->createElement( "impuesto" );
+						$xml_codigo = $xml->createElement( "codigo",'2' );
+                    
+            }else
+            {
+            	if($cabecera['Imp_Mes']){$Producto = $Producto .", ".$value["Ticket"].": ".$value["Mes"]." ";
+                If($cabecera['SP']){
+                    $Producto = $Producto
+                             .", Lote No. ".$value["Lote_No"]
+                             .", ELAB. ".$value["Fecha_Fab"]
+                             .", VENC. ".$value["Fecha_Exp"]
+                             .", Reg. Sanit. ".$value["Reg_Sanitario"]
+                             .", Modelo: ".$value["Modelo"]
+                             .", Procedencia: ".$value["Procedencia"];
+                }
+
+                $xml_detalle = $xml->createElement( "detalle" );
+
+                if($cabecera['SP']==true)
 				{
-					if(strlen($value['Cod_Bar'])>1)
+					if(strlen($Cod_Bar)>1)
 					{
-						$xml_codigoPrincipal = $xml->createElement( "codigoPrincipal",$value['Cod_Bar'] );
+						$xml_codigoPrincipal = $xml->createElement( "codigoPrincipal",$Cod_Bar);
 					}
 					$xml_detalle->appendChild( $xml_codigoPrincipal );
-					if(strlen($detalle[$i]['Cod_Aux'])>1)
+					if(strlen($Cod_Aux)>1)
 					{
-						$xml_codigoAuxiliar = $xml->createElement( "codigoAuxiliar",$value['Cod_Aux'] );
+						$xml_codigoAuxiliar = $xml->createElement( "codigoAuxiliar",$Cod_Aux);
 					}
 					else
 					{
@@ -2195,107 +2284,92 @@ function generar_xml($cabecera,$detalle)
 					}
 					$xml_detalle->appendChild( $xml_codigoAuxiliar );
 
-				}else
-				{
+				}else{
 
-					$cod_au = str_replace('.','', $value['Codigo']);
-					$cod =explode('.', $value['Codigo']);
-						$num_partes = count($cod);
-						$val_cod = '';
-						for ($i=0; $i <$num_partes-1 ; $i++) { 
-							$val_cod.= $cod[$i].'.';
-							$val_cod = substr($val_cod,0,-1);
-						}
+					if(strlen($Cod_Aux) > 1){
+                        $xml_codigoPrincipal = $xml->createElement( "codigoPrincipal",$Cod_Aux);
+                        $xml_detalle->appendChild( $xml_codigoPrincipal );
+                    }else{
+                        $xml_codigoPrincipal = $xml->createElement( "codigoPrincipal",$value['Codigo']);
+                        $xml_detalle->appendChild( $xml_codigoPrincipal );
+                   	}
 
-					if(strlen($value['Cod_Aux'])>1)
-					{
-						$xml_codigoPrincipal = $xml->createElement( "codigoPrincipal",$value['Cod_Aux'] );
-					}
-					else
-					{					
-						$xml_codigoPrincipal = $xml->createElement( "codigoPrincipal",$value['Codigo']);
-					}
-					$xml_detalle->appendChild( $xml_codigoPrincipal );
-					// if(strlen($value['Cod_Bar'])>1)
-					// {
-						// $xml_codigoAuxiliar = $xml->createElement( "codigoAuxiliar",$val_cod);
-						// $xml_detalle->appendChild( $xml_codigoAuxiliar );
-					// }
-				}
+                    If($cabecera['EsTransporte']){
+                    	$xml_codigoAuxiliar = $xml->createElement( "codigoAuxiliar",'H492001');
+						$xml_detalle->appendChild( $xml_codigoAuxiliar );
 
-				$xml_descripcion = $xml->createElement( "descripcion",preg_replace("/[\r\n|\n|\r]+/", " ",$value['Producto']));
-				$xml_unidadMedida = $xml->createElement( "unidadMedida",$cabecera['moneda'] );
-				$xml_cantidad = $xml->createElement( "cantidad", $value['Cantidad']);
-				$xml_precioUnitario = $xml->createElement( "precioUnitario",$value['Precio']);
-				$xml_descuento = $xml->createElement( "descuento",$value['descuento'] );
-				$xml_precioTotalSinImpuesto = $xml->createElement( "precioTotalSinImpuesto",$value['SubTotal'] );
-				
-				$xml_detalle->appendChild( $xml_codigoPrincipal );
-				
-				$xml_detalle->appendChild( $xml_descripcion );
-				$xml_detalle->appendChild( $xml_unidadMedida );
-				$xml_detalle->appendChild( $xml_cantidad );
-				$xml_detalle->appendChild( $xml_precioUnitario );
-				$xml_detalle->appendChild( $xml_descuento );
-				$xml_detalle->appendChild( $xml_precioTotalSinImpuesto );
-				if(strlen($value['Serie_No'])>1)
-				{
-					$detallesAdicionales = $xml->createElement( "detallesAdicionales" );
-					$detAdicional = $xml->createElement( "detAdicional" );
-					$detAdicional->setAttribute( "nombre", "Serie_No" );
-					$detAdicional->setAttribute( "valor", $value['Serie_No'] );
-					$detallesAdicionales->appendChild( $detAdicional );
-					$xml_detalle->appendChild( $detallesAdicionales );
-				}
-				$xml_impuestos = $xml->createElement( "impuestos" );
-				$xml_impuesto = $xml->createElement( "impuesto" );
-				$xml_codigo = $xml->createElement( "codigo",'2' );
+                    }Else If($cabecera['RUCOperadora'] = $cabecera['RUC_CI']){
+                    	$xml_codigoAuxiliar = $xml->createElement( "codigoAuxiliar",'H492002');
+						$xml_detalle->appendChild( $xml_codigoAuxiliar );
+                    }Else{
+                       If(strlen($Cod_Bar) > 1){ 
+                       		$xml_codigoAuxiliar = $xml->createElement( "codigoAuxiliar",$Cod_Bar);
+                       		$xml_detalle->appendChild( $xml_codigoAuxiliar );
+                       	}
+                    }
+            	}
+            }
 
-				if($value['Total_IVA'] == 0)
-				{
-					$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'0' );
-					$xml_tarifa = $xml->createElement( "tarifa",'0' );
-				}
-				else
-				{
-
-					//se cambia por el valor de iva en la tabla
-
-					$porceiva = (floatval($cabecera['Porc_IVA'])*100);
-				    if($porceiva>0)
-				    {
-				    	$iva = Porcentajes_IVA($cabecera['Fecha'],$porceiva);
-				    	if(count($iva)>0)
-				    	{
-				    		$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",$iva[0]['Codigo']);
-				    	}
-				    }
-
-
-
-					// if(($value['Porc_IVA']*100) > 12)
-					// {
-					// 	$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'3' );
-					// }
-					// else
-					// {
-					// 	$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'2' );
-					// }
-					$xml_tarifa = $xml->createElement( "tarifa", ($value['Porc_IVA']*100));
-					
-				}
-				$xml_baseImponible = $xml->createElement( "baseImponible",$value['SubTotal'] );
-				$xml_valor = $xml->createElement( "valor",$value['Total_IVA']  );
-				$xml_impuesto->appendChild( $xml_codigo );
-				$xml_impuesto->appendChild( $xml_codigoPorcentaje );
-				$xml_impuesto->appendChild( $xml_tarifa );
-				$xml_impuesto->appendChild( $xml_baseImponible );
-				$xml_impuesto->appendChild( $xml_valor );
+			$xml_descripcion = $xml->createElement( "descripcion",preg_replace("/[\r\n|\n|\r]+/", " ",$value['Producto']));
+			$xml_unidadMedida = $xml->createElement( "unidadMedida",$cabecera['moneda'] );
+			$xml_cantidad = $xml->createElement( "cantidad", $value['Cantidad']);
+			$xml_precioUnitario = $xml->createElement( "precioUnitario",$value['Precio']);
+			$xml_descuento = $xml->createElement( "descuento",$value['descuento'] );
+			$xml_precioTotalSinImpuesto = $xml->createElement( "precioTotalSinImpuesto",$value['SubTotal'] );
 			
-				$xml_impuestos->appendChild( $xml_impuesto );
-				$xml_detalle->appendChild( $xml_impuestos );
-				$xml_detalles->appendChild( $xml_detalle );
+			$xml_detalle->appendChild( $xml_descripcion );
+			$xml_detalle->appendChild( $xml_unidadMedida );
+			$xml_detalle->appendChild( $xml_cantidad );
+			$xml_detalle->appendChild( $xml_precioUnitario );
+			$xml_detalle->appendChild( $xml_descuento );
+			$xml_detalle->appendChild( $xml_precioTotalSinImpuesto );
+					
+			if(strlen($value['Serie_No'])>1)
+			{
+				$detallesAdicionales = $xml->createElement( "detallesAdicionales" );
+				$detAdicional = $xml->createElement( "detAdicional" );
+				$detAdicional->setAttribute( "nombre", "Serie_No" );
+				$detAdicional->setAttribute( "valor", $value['Serie_No'] );
+				$detallesAdicionales->appendChild( $detAdicional );
+				$xml_detalle->appendChild( $detallesAdicionales );
 			}
+			$xml_impuestos = $xml->createElement( "impuestos" );
+			$xml_impuesto = $xml->createElement( "impuesto" );
+			$xml_codigo = $xml->createElement( "codigo",'2' );
+
+			if($value['Total_IVA'] == 0)
+			{
+				$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'0' );
+				$xml_tarifa = $xml->createElement( "tarifa",'0' );
+			}
+			else
+			{
+
+				//se cambia por el valor de iva en la tabla
+				$porceiva = (floatval($cabecera['Porc_IVA'])*100);
+			    if($porceiva>0)
+			    {
+			    	$iva = Porcentajes_IVA($cabecera['Fecha'],$porceiva);
+			    	if(count($iva)>0)
+			    	{
+			    		$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",$iva[0]['Codigo']);
+			    	}
+			    }
+				$xml_tarifa = $xml->createElement( "tarifa", ($value['Porc_IVA']*100));
+				
+			}
+						$xml_baseImponible = $xml->createElement( "baseImponible",$value['SubTotal'] );
+						$xml_valor = $xml->createElement( "valor",$value['Total_IVA']  );
+						$xml_impuesto->appendChild( $xml_codigo );
+						$xml_impuesto->appendChild( $xml_codigoPorcentaje );
+						$xml_impuesto->appendChild( $xml_tarifa );
+						$xml_impuesto->appendChild( $xml_baseImponible );
+						$xml_impuesto->appendChild( $xml_valor );
+					
+						$xml_impuestos->appendChild( $xml_impuesto );
+						$xml_detalle->appendChild( $xml_impuestos );
+						$xml_detalles->appendChild( $xml_detalle );
+				}
 		}
 		$xml_infoAdicional = $xml->createElement( "infoAdicional");
 		//agregar informacion por default
@@ -2501,8 +2575,6 @@ function generar_xml($cabecera,$detalle)
 			$xml_infoAdicional->appendChild( $xml_campoAdicional );
 		}		
 	}
-
-
 		$xml_factura->appendChild( $xml_infoTributaria );
 		$xml_factura->appendChild( $xml_infoFactura );
 		$xml_factura->appendChild( $xml_detalles );
