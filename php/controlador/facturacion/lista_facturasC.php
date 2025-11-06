@@ -863,7 +863,7 @@ class lista_facturasC
 		$clave = $this->sri->Clave_acceso($parametros['Fecha'], $TC, $parametros['serie'], $parametros['FacturaNo']);
 		$imp = '';
 		if (isset($resp[0]) && $resp[0] == 1) {
-			$resp = $resp['pdf'] = $imp;
+			$resp['pdf'] = $imp;
 			return $resp;
 		} else {
 			try {

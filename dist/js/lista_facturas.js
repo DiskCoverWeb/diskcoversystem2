@@ -300,7 +300,7 @@ $(document).ready(function()
         $('#myModal_espera').modal('hide');
       }, 500)
       console.log(data);
-      if(data.respuesta==1)
+      if(data[0]==1)
       { 
         Swal.fire({
           icon:'success',
@@ -309,38 +309,38 @@ $(document).ready(function()
           allowOutsideClick: false,
         }).then(function(){
 
-            nombre_pdf = [data.pdf+'.pdf'];
-            clave_Acceso = [data.clave+'.xml'];
+            nombre_pdf = [data['pdf']+'.pdf'];
+            clave_Acceso = [data[1]+'.xml'];
             enviar_email_comprobantes(nombre_pdf,clave_Acceso,email);
 
         })
-      }else if(data.respuesta==-1)
+      }else if(data[0]==-1)
       {
-        if(data.text==2 || data.text==null)
+        if(data[0]==2 || data.text==null)
           {
 
           Swal.fire('XML devuleto','XML DEVUELTO','error').then(function(){ 
             // var url=  '../../TEMP/'+data.pdf+'.pdf';    window.open(url, '_blank');             
           }); 
-            tipo_error_sri(data.clave);
+            tipo_error_sri(data[1]);
           }else
           {
             Swal.fire({
              icon: 'error',
              title: 'XML DEVUELTO',
-             html: `<div style="width: 100%; color:black;font-weight: 400;font-size: 1.525em;">${data.text[3]}</div>`
+             html: `<div style="width: 100%; color:black;font-weight: 400;font-size: 1.525em;">${data[3]}</div>`
            }).then(function (){
-              tipo_error_sri(data.clave);
+              tipo_error_sri(data[1]);
            });
 
           }
-      }else if(data.respuesta==2)
+      }else if(data[0]==2)
       {
         tipo_error_comprobante(clave)
         Swal.fire('XML devuelto','','error'); 
         tipo_error_sri(data.clave);
       }
-      else if(data.respuesta==4)
+      else if(data[0]==4)
       {
         Swal.fire('SRI intermitente intente mas tarde','','info');  
       }else
