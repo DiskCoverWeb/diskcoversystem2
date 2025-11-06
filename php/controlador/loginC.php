@@ -320,6 +320,10 @@ class loginC
 	            $_SESSION['INGRESO']['RUC_Operadora'] = $empresa[0]['RUC_Operadora'];
 	        }
 
+	        if (isset($empresa[0]['Es_Transporte'])) {
+				$_SESSION['INGRESO']['Es_Transporte'] = $empresa[0]['Es_Transporte'];
+			}
+
 	        $_SESSION['INGRESO']['paginacionIni'] = 0;
 	        $_SESSION['INGRESO']['paginacionFin'] = 100;
 	        $_SESSION['INGRESO']['base_actual'] = '';
