@@ -549,10 +549,20 @@ class reportes_all
 			$CODIGO2 = (strlen($Cod_Aux) > 1) ? $Cod_Aux : $value["Codigo"];
 
 		} else {
-			$CODIGO1 = (strlen($Cod_Aux) > 1) ? $Cod_Aux : $value["Codigo"];
-			if (strlen($Cod_Bar) > 1) {
-				$CODIGO2 = $Cod_Bar;
-			}
+			
+            $CODIGO1 = (strlen($Cod_Aux) > 1) ? $Cod_Aux : $value["Codigo"];
+			If($_SESSION['INGRESO']['Es_Transporte']){
+            	$CODIGO2 = 'H492001';
+
+            }Else If($cabecera['RUCOperadora'] = $cabecera['RUC_CI']){
+            	$CODIGO2 = 'H492002';
+            }Else{
+				if (strlen($Cod_Bar) > 1) {
+					$CODIGO2 = $Cod_Bar;
+				}
+
+            }
+
 		}
 		//FIN tomado de  SRI_Generar_PDF_FA( Linea 1298
 		$descto = '0';
