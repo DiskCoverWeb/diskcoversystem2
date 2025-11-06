@@ -589,7 +589,7 @@ function generar() {
         confirmButtonText: 'Si!'
     }).then((result) => {
         if (result.value == true) {
-            if (banco > total) {
+            if (parseFloat(banco) > parseFloat(total)) {
                 Swal.fire('Si el pago es por banco este no debe superar el total de la factura', 'PUNTO VENTA',
                     'info').then(function() {
                     $('#TextCheque').select();
