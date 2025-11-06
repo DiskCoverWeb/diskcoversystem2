@@ -2254,7 +2254,7 @@ function generar_xml($cabecera,$detalle)
                     
             }else
             {
-            	if($cabecera['Imp_Mes']){$Producto = $Producto .", ".$value["Ticket"].": ".$value["Mes"]." ";
+            	if($cabecera['Imp_Mes']){$Producto = $Producto .", ".$value["Ticket"].": ".$value["Mes"]." ";}
                 If($cabecera['SP']){
                     $Producto = $Producto
                              .", Lote No. ".$value["Lote_No"]
@@ -2308,7 +2308,6 @@ function generar_xml($cabecera,$detalle)
                        	}
                     }
             	}
-            }
 
 			$xml_descripcion = $xml->createElement( "descripcion",preg_replace("/[\r\n|\n|\r]+/", " ",$value['Producto']));
 			$xml_unidadMedida = $xml->createElement( "unidadMedida",$cabecera['moneda'] );
