@@ -554,7 +554,7 @@ class reportes_all
 			If($_SESSION['INGRESO']['Es_Transporte']){
             	$CODIGO2 = 'H492001';
 
-            }Else If($cabecera['RUCOperadora'] = $cabecera['RUC_CI']){
+            }Else If($_SESSION['INGRESO']['RUC_Operadora'] == $datos[0]['RUC_CI']){
             	$CODIGO2 = 'H492002';
             }Else{
 				if (strlen($Cod_Bar) > 1) {
