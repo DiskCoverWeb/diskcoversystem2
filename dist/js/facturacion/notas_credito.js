@@ -276,6 +276,7 @@ function catalogoLineas() {
 
                $('#TextBanco').val(data[0].data.Autorizacion);
                $('#TextCheqNo').val(data[0].data.Serie);
+               autocoplete_clinete()
 
             } else {
                 $('#myModal_espera').modal('hide');
@@ -506,11 +507,12 @@ function Lineas_Factura(Factura=false,Serie=false,TC=false,Autorizacion=false)
     });
 }
 function autocoplete_clinete(){
+    var serie = $('#TextCheqNo').val();
       $('#DCClientes').select2({
         placeholder: 'Seleccione una beneficiario',
         width:'90%',
         ajax: {
-          url:   '../controlador/facturacion/notas_creditoC.php?cliente=true&serie='+$('#TextCheqNo').val(),
+          url:   '../controlador/facturacion/notas_creditoC.php?cliente=true&serie='+serie,
           dataType: 'json',
           delay: 250,
           processResults: function (data) {
