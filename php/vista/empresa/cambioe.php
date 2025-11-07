@@ -35,6 +35,8 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 				<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Mostrar Vencimiento" onclick='mostrarEmpresa();'><img src="../../img/png/reporte_1.png"></button>
 				<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Asignar credenciales de comprobanmtes electronicos" onclick='asignar_clave();'><img src="../../img/png/credencial_cliente.png"></button>
 				<a href="#" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" style="display: none;" title="Asignar reserva" id="reporte_exc" onclick="reporte()"><img img src="../../img/png/table_excel.png"></a>
+				<a href="#" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modalSearchEmpresa">
+					<img img src="../../img/png/lupa.png"></a>
 			</div>
 		</div>
 	</div>
@@ -1219,5 +1221,51 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 			</div>
 
 		</div>
+	</div>
+</div>
+
+<div class="modal" id="modalSearchEmpresa" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-md-down">
+	<div class="modal-content">
+		<div class="modal-header gap-2">
+		<div class="position-relative popup-search w-100">
+			<h3>Buscar empresa</h3>
+		</div>
+		<button type="button" class="btn-close d-md-none" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-sm-12 mb-2">
+					<div class="input-group">
+						<input type="" name="txt_ruc_empresa" id="txt_ruc_empresa" class="form-control form-control-sm">
+						<button type="button" class="btn btn-primary btn-sm" onclick="buscarEmpresa()">Buscar</button>						
+					</div>					
+				</div>
+				<div class="col-sm-12">
+					<div class="search-list" id="pnl_empresas">
+						<!-- <div class="list-group">
+							<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+									<i class='bx bx-building fs-4'></i>Razon Social:<br>
+									<span></span>
+							</a>
+							<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+									<i class='bx bx-buildings fs-4'></i>Nombre Comercial: <br>
+									<span></span>
+							</a>
+							<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+									<i class='bx bx-caret-right fs-4'></i><b>RUC:</b> 
+									<span></span>
+							</a>
+							<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+									<i class='bx bx-caret-right fs-4'></i><b>Item:</b> 
+									<span></span>
+							</a>
+						</div> -->
+					</div>
+					
+				</div>				
+			</div>
+		</div>
+	</div>
 	</div>
 </div>

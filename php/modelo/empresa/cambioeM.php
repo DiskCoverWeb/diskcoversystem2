@@ -826,6 +826,17 @@ class cambioeM
 	  	$res = sqlsrv_execute($stmt);
 	}
 
+	function buscarEmpresa($ruc)
+	{
+		$sql ="SELECT LE.Estado, E.Nombre_Entidad, E.ID_Empresa, LE.Empresa, LE.Item,LE.RUC_CI_NIC, LE.Base_Datos, LE.Tipo_Base
+				FROM entidad AS E, lista_empresas AS LE
+				WHERE LE.RUC_CI_NIC = '".$ruc."'
+				AND E.ID_Empresa = LE.ID_Empresa
+				ORDER BY E.Nombre_Entidad, LE.Empresa"; 
+		return $this->db->datos($sql,'MYSQL');
+
+	}
+
 }
 
 ?>

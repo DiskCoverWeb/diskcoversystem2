@@ -2158,3 +2158,62 @@ function enviar_email()
         }
     });
 }
+
+function buscarEmpresa()
+{
+    if($('#txt_ruc_empresa').val()=="")
+    {
+        Swal.fire("Ingrese un numero de ruc","","error")
+        return false;
+    }
+    var parametros = 
+    {
+        'ruc':$('#txt_ruc_empresa').val(),
+    }
+
+    $('#pnl_empresas').html('')
+    $.ajax({
+        type: "POST",
+        url: '../controlador/empresa/cambioeC.php?buscarEmpresa=true',
+        data:{parametros:parametros},
+        dataType:'json',       
+        success: function(data)
+        {
+            pnl = '';
+            // if(data.length>1)
+            // {
+                data.forEach(function(item,i){
+                    pnl+=`<div class="list-group mb-2">
+                            <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+                                    <i class='bx bx-building fs-4'></i>Razon Social:<br>
+                                    <span>`+item.Empresa+`</span>
+                            </a>
+                            <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+                                    <i class='bx bx-buildings fs-4'></i>Nombre Comercial: <br>
+                                    <span>`+item.Nombre_Entidad+`</span>
+                            </a>
+                            <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+                                    <i class='bx bx-caret-right fs-4'></i><b>RUC:</b> 
+                                    <span>`+item.RUC_CI_NIC+`</span>
+                            </a>
+                            <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+                                    <i class='bx bx-caret-right fs-4'></i><b>Item:</b> 
+                                    <span>`+item.Item+`</span>
+                            </a>
+                        </div>`
+                })
+                $('#pnl_empresas').html(pnl)
+           //  }else
+           //  {
+           //      console.log('unico');
+           //  }
+           // console.log(data);
+        },
+        error: (err) => {
+            Swal.fire('Ocurrio un error al procesar su solicitud. Error: ' + err, '', 'error');
+            setTimeout(()=>{
+                $('#myModal_espera').modal('hide');
+            }, 2000);
+        }
+    })
+}

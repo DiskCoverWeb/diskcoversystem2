@@ -145,6 +145,11 @@ if(isset($_GET['consultar_lineas']))
   $entidad = $_POST['entidad'];
   echo json_encode($controlador->consultarLinea($item, $entidad));
 }
+if(isset($_GET['buscarEmpresa']))
+{
+	$parametros = $_POST['parametros'];
+  	echo json_encode($controlador->buscarEmpresa($parametros));
+}
 
 class cambioeC 
 {
@@ -1041,6 +1046,12 @@ class cambioeC
 		unlink($nuevo_nom);
 		return $resp;
 
+	}
+
+	function buscarEmpresa($parametros)
+	{
+		// print_r($parametros);die();
+		return $this->modelo->buscarEmpresa(trim($parametros['ruc']));
 	}
 
 }
