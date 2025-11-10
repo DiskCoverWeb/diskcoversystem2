@@ -285,7 +285,7 @@ class lista_liquidacionCompraC
 
 		    $tablaHTML[$pos]['medidas']=$tablaHTML[0]['medidas'];
 		    $tablaHTML[$pos]['alineado']=$tablaHTML[0]['alineado'];
-		    $tablaHTML[$pos]['datos']=array($key+1,$value['T'],$value['TC'],$value['Serie'],$value['Autorizacion'].' ',$value['Factura'],$value['Fecha']->format('Y-m-d'),$value['SubTotal'],$value['Con_IVA'],$value['IVA'],$value['Total'],$value['Saldo'],$value['RUC_CI'],$value['TB'],$value['Razon_Social'],$value['ID']);
+		    $tablaHTML[$pos]['datos']=array($key+1,$value['T'],$value['TC'],$value['Serie'],$value['Autorizacion'].' ',$value['Factura'],$value['Fecha']->format('Y-m-d'),number_format($value['SubTotal'],2,'.',''),number_format($value['Con_IVA'],2,'.',''),number_format($value['IVA'],2,'.',''),number_format($value['Total'],2,'.',''),number_format($value['Saldo'],2,'.',''),$value['RUC_CI'],$value['TB'],$value['Razon_Social'],$value['ID']);
 		    $tablaHTML[$pos]['borde'] =$borde;
 			$pos+=1;
 		}
