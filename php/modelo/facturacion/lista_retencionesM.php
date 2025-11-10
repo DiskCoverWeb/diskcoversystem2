@@ -38,7 +38,7 @@ class lista_retencionesM
 	     	$sql.= " AND TC.Fecha BETWEEN   '".$desde."' AND '".$hasta."' ";
 	    }
 
-       $sql.="ORDER BY Serie_R,SecRetencion DESC "; 
+       $sql.="ORDER BY Serie_Retencion,SecRetencion DESC "; 
 		$sql.=" OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;";   
 	    // // print_r($_SESSION['INGRESO']);
 		 // print_r($sql);die();    

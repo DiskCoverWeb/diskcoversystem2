@@ -98,7 +98,10 @@ $(document).ready(function(){
                       return data ? new Date(data).toLocaleDateString() : '';
                   }
               },              
-              { data: 'BaseImponible' },
+              { data: 'BaseImponible',
+                render: data => parseFloat(data || 0).toFixed(2),
+                className: 'text-end'
+               },
               { data: 'IdProv' },
               { data : null,
                      render: function(data, type, item) {return 'RE'; }

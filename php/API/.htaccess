@@ -1,0 +1,23 @@
+RewriteEngine On
+
+# Permitir CORS (importante para APIs)
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+
+# Manejar preflight requests
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Quitar .php de los endpoints de API
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.+)$ $1.php [L]
+
+# Redireccionar si alguien escribe .php
+RewriteCond %{THE_REQUEST} \s/+(.*?)/?\.php[\s?] [NC]
+RewriteRule ^ /php/API/%1 [R=301,L]
+
+# Reglas específicas para tus endpoints
+RewriteRule ^ApiRequest$ ApiRequest.php [L,QSA]
+RewriteRule ^Auth$ Auth.php [L,QSA]

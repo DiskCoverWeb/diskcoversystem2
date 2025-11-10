@@ -489,8 +489,8 @@ class punto_ventaC
 
 	//funcion que se ejecuta en punto de venta en facturacion
 	function generar_factura($parametros)
-	{
-		// print_r($parametros);die();
+	{		
+		// print_r($_SESSION['INGRESO']);die();
 		$this->sri->Actualizar_factura($parametros['CI'], $parametros['TextFacturaNo'], $parametros['Serie']);
 
 		// FechaValida MBFecha
@@ -604,9 +604,11 @@ class punto_ventaC
 	// funcion para vista de facturar electronico , sin restriccion de que la factura este en cero
 	function generar_factura_elec($parametros)
 	{
+		// print_r($_SESSION['INGRESO']);die();
 		// print_r($parametros);die();
 		$this->sri->Actualizar_factura($parametros['CI'], $parametros['TextFacturaNo'], $parametros['Serie']);
 
+		// print_r($parametros);die();
 		$electronico = 0;
 		if (isset($parametros['electronico'])) {
 			$electronico = $parametros['electronico'];
@@ -614,6 +616,8 @@ class punto_ventaC
 
 		// FechaValida MBFecha
 		$FechaTexto = $parametros['MBFecha'];
+		
+		// print_r($parametros);die();
 		$FA = Calculos_Totales_Factura();
 		$datos = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
 		if (count($datos) > 0) {
@@ -688,6 +692,8 @@ class punto_ventaC
 
 			$Moneda_US = False;
 			$TextoFormaPago = G_PAGOCONT;
+
+		// print_r($parametros);die();
 			return $this->ProcGrabar($FA);
 		} else {
 			return array('respuesta' => -1, 'text' => "Cuenta CxC sin setear en catalogo de lineas");

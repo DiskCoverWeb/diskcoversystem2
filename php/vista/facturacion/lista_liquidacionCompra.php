@@ -103,12 +103,30 @@
                       return data ? new Date(data).toLocaleDateString() : '';
                   }
               },
-              { data: 'SubTotal' },
-              { data: 'Con_IVA' },
-              { data: 'IVA' },
-              { data: 'Descuentos' },
-              { data: 'Total' },
-              { data: 'Saldo' },
+              { data: 'SubTotal',
+               render: data => parseFloat(data || 0).toFixed(2),
+                className: 'text-end'
+              },
+              { data: 'Con_IVA',
+               render: data => parseFloat(data || 0).toFixed(2),
+                className: 'text-end'
+              },
+              { data: 'IVA',
+               render: data => parseFloat(data || 0).toFixed(2),
+                className: 'text-end'
+              },
+              { data: 'Descuentos',
+               render: data => parseFloat(data || 0).toFixed(2),
+                className: 'text-end'
+              },
+              { data: 'Total',
+               render: data => parseFloat(data || 0).toFixed(2),
+                className: 'text-end'
+              },
+              { data: 'Saldo',
+               render: data => parseFloat(data || 0).toFixed(2),
+                className: 'text-end'
+              },
               { data: 'RUC_CI' },
               { data: 'TB' }
           ],

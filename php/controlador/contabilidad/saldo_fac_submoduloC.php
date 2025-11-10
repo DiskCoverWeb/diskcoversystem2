@@ -16,7 +16,13 @@ if(isset($_GET['consultar']))
 	$parametros = $_POST['parametros'];
 	$parametros['tabla'] = '1';
 	$tabla = $controlador->cargar_consulta($parametros);
-	echo json_encode($tabla['tabla']);
+	if($tabla!="")
+	{
+		echo json_encode($tabla['tabla']);
+	}else
+	{
+		echo json_encode($tabla);
+	}
 }
 
 if(isset($_GET['consultar_x_meses']))
