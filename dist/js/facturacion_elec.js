@@ -135,7 +135,7 @@ function validar_cta() {
         success: function(data) {
             if (data != 1) {
                 Swal.fire({
-                    type: 'info',
+                    icon: 'info',
                     title: data,
                     text: '',
                     allowOutsideClick: false,
@@ -260,13 +260,13 @@ function serie() {
         },
         dataType: 'json',
         success: function(data) {
-            if (data.serie != '.') {
+            if (data.serie != '.' && data.serie != '') {
                 $('#LblSerie').text(data.serie);
                 $('#TextFacturaNo').val(data.NumCom);
+                validar_cta();
             } else {
                 numeroFactura();
             }
-            validar_cta();
         }
     });
 }
@@ -1008,8 +1008,10 @@ function numeroFactura() {
         dataType: 'json',
         success: function(data) {
             datos = data;
+            // console.log(data);
             document.querySelector('#LblSerie').innerText = datos.serie;
             $("#TextFacturaNo").val(datos.codigo);
+            validar_cta();
         }
     });
 }
