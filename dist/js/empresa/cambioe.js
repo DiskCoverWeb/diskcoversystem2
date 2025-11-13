@@ -2200,6 +2200,22 @@ function buscarEmpresa()
                                     <i class='bx bx-caret-right fs-4'></i><b>Item:</b> 
                                     <span>`+item.Item+`</span>
                             </a>
+                            <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+                                    <i class='bx bx-caret-right fs-4'></i><b>Estado:</b> 
+                                    <span>`+item.Estado+`</span>
+                            </a>
+                            <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+                                    <i class='bx bx-caret-right fs-4'></i><b>Base de Datos:</b> 
+                                    <span>`+item.Base_Datos+`</span>
+                            </a>
+                             <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+                                    <i class='bx bx-caret-right fs-4'></i><b>Tipo de Base:</b> 
+                                    <span>`+item.Tipo_Base+`</span>
+                            </a>
+                            <a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
+                                    <i class='bx bx-caret-right fs-4'></i><b>ID Empresa:</b> 
+                                    <span>`+item.ID_Empresa+`</span>
+                            </a>
                         </div>`
                 })
                 $('#pnl_empresas').html(pnl)

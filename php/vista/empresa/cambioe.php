@@ -1241,26 +1241,11 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 						<button type="button" class="btn btn-primary btn-sm" onclick="buscarEmpresa()">Buscar</button>						
 					</div>					
 				</div>
+			</div>
+			<div class="row">				
 				<div class="col-sm-12">
 					<div class="search-list" id="pnl_empresas">
-						<!-- <div class="list-group">
-							<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-									<i class='bx bx-building fs-4'></i>Razon Social:<br>
-									<span></span>
-							</a>
-							<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-									<i class='bx bx-buildings fs-4'></i>Nombre Comercial: <br>
-									<span></span>
-							</a>
-							<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-									<i class='bx bx-caret-right fs-4'></i><b>RUC:</b> 
-									<span></span>
-							</a>
-							<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-									<i class='bx bx-caret-right fs-4'></i><b>Item:</b> 
-									<span></span>
-							</a>
-						</div> -->
+						
 					</div>
 					
 				</div>				
