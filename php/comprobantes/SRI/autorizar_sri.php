@@ -2294,7 +2294,7 @@ function generar_xml($cabecera,$detalle)
                         $xml_detalle->appendChild( $xml_codigoPrincipal );
                    	}
 
-                    If($cabecera['EsTransporte']){
+                    If($cabecera['EsTransporte']==1){
                     	$xml_codigoAuxiliar = $xml->createElement( "codigoAuxiliar",'H492001');
 						$xml_detalle->appendChild( $xml_codigoAuxiliar );
 
