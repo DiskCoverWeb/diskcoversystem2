@@ -63,8 +63,11 @@ class db
 		
 	}
 
-	function SQLServer()
+	function SQLServer($tercero=0)
 	{
+
+		if($tercero==0)
+		{
 		// print_r($_SESSION['INGRESO']);die();
 			$this->usuario = $_SESSION['INGRESO']['Usuario_DB'];
 	    $this->password = $_SESSION['INGRESO']['Password_DB'];  // en mi caso tengo contraseña pero en casa caso introducidla aquí.
@@ -72,6 +75,7 @@ class db
 	    $this->database = $_SESSION['INGRESO']['Base_Datos'];
 	    $this->puerto = $_SESSION['INGRESO']['Puerto'];
 		// print_r($_SESSION);die();
+	  }
 
 
 	    // print_r($this->servidor);die();
@@ -279,6 +283,87 @@ class db
 		{
 		       $conn = $this->SQLServer();
 		       // print_r('expression');die();
+           $stmt = sqlsrv_prepare($conn, $sql, $parametros);
+		       // print_r('expression');die();
+           $res = sqlsrv_execute($stmt);
+           // print_r($res);die();
+           if ($res === false) 
+           {
+            echo "Error en consulta PA.\n";  
+				$error = print_r( sqlsrv_errors(), true);
+				echo $error.'-'.$sql; die();
+           		return -1;
+           	// die( print_r("<script type='text/javascript'>alert('Estructura procesco almacenado')</script>", true));  
+           }else{
+				   if($retorna)
+				   {
+				   	// print_r($sql);
+				    		$result = array();
+				    		$row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+				    		// print_r($row);die();
+						    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+						        $result[] = $row;
+						    }
+						    // sqlsrv_close($conn);
+						    return $result;
+				   }else{
+				   	  sqlsrv_close($conn);
+				   		return 1;
+				   }
+				 }
+		}
+
+	}
+
+	function ejecutar_procesos_almacenados_terceros($sql,$parametros,$Usuario_DB,$Password_DB,$IP_VPN_RUTA,$Base_Datos,$Puerto,$retorna=false,$tipo=false)
+	{
+		// print_r($tipo);die();
+		if($tipo=='MY SQL' || $tipo =='MYSQL' || $tipo=='My SQL' || $tipo=='My sql')
+		{
+			$conn = $this->MySQL();
+			$select = '';
+			$variables = '';
+			if(count($parametros)>1)
+			{
+				 foreach ($parametros as $key => $value) {
+				 		if($value[1]=='OUT' || $value[1]=='out')
+				 		{
+				 			 $select.='@'.$value[0].',';
+				 			 $variables.= '@'.$value[0].',';
+				 		}else{
+				 		$variables.= '"'.$value[0].'",'; 
+				 	}
+				 }
+				 $variables = substr($variables,0,-1);
+				 $select = substr($select,0,-1);
+			}
+
+			$sql = $sql.'('.$variables.')';
+
+
+		if (!$conn->query($sql)) {
+		   return  "Falló CALL: (" . $conn->errno . ") " . $conn->error;
+		}
+
+		if (!($resultado = $conn->query("SELECT ".$select))) {
+		    return "Falló la obtención: (" . $conn->errno . ") " . $conn->error;
+		}
+
+		$fila = $resultado->fetch_assoc();
+		return $fila;
+
+
+		}else
+		{
+						$this->usuario = $Usuario_DB;
+				    $this->password = $Password_DB;  // en mi caso tengo contraseña pero en casa caso introducidla aquí.
+				    $this->servidor = $IP_VPN_RUTA;	   
+				    $this->database = $Base_Datos;
+				    $this->puerto = $Puerto;
+
+		       $conn = $this->SQLServer(1);
+		       // print_r('expression');die();
+		       // print_r($conn);die();
            $stmt = sqlsrv_prepare($conn, $sql, $parametros);
 		       // print_r('expression');die();
            $res = sqlsrv_execute($stmt);

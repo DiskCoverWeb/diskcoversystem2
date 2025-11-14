@@ -1,5 +1,8 @@
 <?php 
 require_once(dirname(__DIR__,2)."/php/controlador/loginC.php");
+require_once(dirname(__DIR__,2)."/php/db/db1.php");
+require_once(dirname(__DIR__,2)."/php/modelo/empresa/cambioeM.php");
+
 require_once("AuthJWT/AuthJWT.php");
 
 $controlador = new ApiRequest();
@@ -21,13 +24,13 @@ if(isset($_GET['dataInvoice']))
 		if (json_last_error() !== JSON_ERROR_NONE) {
 			$controlador->errorJson("Json Invalido");      
 	    }else{
-	    	$token = $controlador->getBearerToken();
+	    	$token = $controlador->ValidateTokenBearer();
 	    	if($token==-1)
 	    	{
 				$controlador->errorJson("Token no valido");  
 	    	}else
 	    	{
-	    		echo json_encode($controlador->dataInvoice($param));
+	    		echo json_encode($controlador->dataInvoice($token,$param),true);
 	    	}
 		}
 
@@ -42,11 +45,15 @@ class ApiRequest
 {
 	private $login;
 	private $AuthJWT;
+	private $db;
+	private $cambioEmpresa;
 	
 	function __construct()
 	{
 		$this->login = new loginC();
 		$this->AuthJWT = new AuthJWT();
+		$this->db = new db();
+		$this->cambioEmpresa = new cambioeM();
 	}
 
 	function Apitoken($param)
@@ -54,19 +61,18 @@ class ApiRequest
 		$cartera_usu = '';
 		$cartera_pass = '';
 
-		if($param['cartera'])
+		if($param['ApiCartera'])
 		{
 			$cartera_usu = '';
 			$cartera_pass = '';
 		}
-
 		$parametros = array(
-		 	 'usuario'=>$param['usuario'],
-		 	 'entidad'=>$param['entidad'],
-		 	 'item'=>$param['item'],
-		 	 'empresa'=>$param['RUC'],
-		 	 'pass'=>$param['clave'],
-		 	 'cartera'=>$param['cartera'],
+		 	 'usuario'=>$param['ApiUsuario'],
+		 	 'entidad'=>$param['ApiEntidad'],
+		 	 'item'=>$param['ApiItem'],
+		 	 'empresa'=>$param['ApiRUC'],
+		 	 'pass'=>$param['ApiClave'],
+		 	 'cartera'=>$param['ApiCartera'],
 		 	 'cartera_usu'=>$cartera_usu,
 		 	 'cartera_pass'=>$cartera_pass,
 		 	 'localIp'=>$this->ip(),
@@ -76,7 +82,7 @@ class ApiRequest
 
 		if($data==1)
 		{
-			$token = $this->AuthJWT->createAccessToken($param['RUC'],$param['usuario'], $param['item']); 
+			$token = $this->AuthJWT->createAccessToken($param['ApiEntidad'],$param['ApiRUC'],$param['ApiUsuario'], $param['ApiItem']); 
 			$token = array("Response"=>1,'token' => $token);
 			return $token;
 
@@ -87,11 +93,48 @@ class ApiRequest
 		// print_r($data);die();
 	}
 
-	function dataInvoice($param)
+	function dataInvoice($token,$param)
 	{
 		// print_r($param);
 
-		return $param;
+		$token = $this->getBearerToken();
+		$payload = $this->AuthJWT->peekToken($token);
+		$empresa = $this->cambioEmpresa->empresas_datos($payload['entidad'],$payload['role']);
+		$empresa = $empresa[0];
+		// exec sp_Api_Leer_PreFactura '1391721943001', '017', '3050735657', @ListaCampos OUTPUT;
+
+		$JSON_OutPut = "";
+		$parametros = array(
+	        array(&$payload['user_id'], SQLSRV_PARAM_IN),
+	        array(&$payload['role'], SQLSRV_PARAM_IN),
+	        array(&$param['ApiCliente'], SQLSRV_PARAM_IN),
+	        array(&$JSON_OutPut, SQLSRV_PARAM_INOUT)
+	      );
+
+	    $sql = "EXEC sp_Api_Leer_PreFactura @ID_Empresa = ?, @Item=?, @ID_Identificacion=?, @JSON_OutPut=?";
+		$datos = $this->db->ejecutar_procesos_almacenados_terceros($sql,$parametros,$empresa['usu'],$empresa['pass'],$empresa['host'],$empresa['base'],$empresa['Puerto'],1);
+
+		$jsonReal = stripslashes($JSON_OutPut);
+		$datos = json_decode($jsonReal, true);
+	    return $datos;
+	   
+	}
+
+	function ValidateTokenBearer()
+	{
+		$tokenTake = $this->getBearerToken();
+		if($tokenTake!='')
+	    {
+	    	if($this->AuthJWT->validateToken($tokenTake))
+	    	{
+	    		return 1;
+	    	}else{
+	    		$this->errorJson($msj = "token vencido");
+	    	}
+	    }else
+	    {
+	    	return -1;
+	    }
 	}
 
 	function getBearerToken() {
@@ -125,18 +168,7 @@ class ApiRequest
 	        }
 	    }
 
-	    if($tokenTake!='')
-	    {
-	    	if($this->AuthJWT->validateToken($tokenTake))
-	    	{
-	    		return 1;
-	    	}else{
-	    		$this->errorJson($msj = "token vencido");
-	    	}
-	    }else
-	    {
-	    	return -1;
-	    }
+	   return $tokenTake;
 	}
 
 

@@ -18,16 +18,17 @@ class AuthJWT {
     }
     
     // Crear token de acceso
-    public function createAccessToken($userId, $username, $role = 'user') {
+    public function createAccessToken($entidad,$userId, $username, $role = 'user') {
         $payload = [
             'iss' => $_SERVER['HTTP_HOST'] ?? 'localhost',
             'aud' => 'api',
             'iat' => time(),
-            'exp' => time() + (15 * 60), // 15 minutos
+            'exp' => time() + (365 * 24 * 60 * 60), // 1 año
             'type' => 'access',
             'user_id' => $userId,
             'username' => $username,
-            'role' => $role
+            'role' => $role,
+            'entidad' => $entidad
         ];
         
         return JWT::encode($payload, $this->secretKey, $this->algorithm);
