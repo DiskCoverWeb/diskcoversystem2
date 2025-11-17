@@ -39,6 +39,29 @@ if(isset($_GET['dataInvoice']))
 	}
 }
 
+if(isset($_GET['InvoiceAdvance']))
+{
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+		$param = json_decode(file_get_contents('php://input'), true);
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			$controlador->errorJson("Json Invalido");      
+	    }else{
+	    	$token = $controlador->ValidateTokenBearer();
+	    	if($token==-1)
+	    	{
+				$controlador->errorJson("Token no valido");  
+	    	}else
+	    	{
+	    		echo json_encode($controlador->InvoiceAdvance($token,$param),true);
+	    	}
+		}
+
+
+		// echo json_encode($controlador->Apitoken($param));
+	}
+}
+
+
 
 
 class ApiRequest
@@ -105,13 +128,12 @@ class ApiRequest
 
 		$JSON_OutPut = "";
 		$parametros = array(
-	        array(&$payload['user_id'], SQLSRV_PARAM_IN),
 	        array(&$payload['role'], SQLSRV_PARAM_IN),
 	        array(&$param['ApiCliente'], SQLSRV_PARAM_IN),
 	        array(&$JSON_OutPut, SQLSRV_PARAM_INOUT)
 	      );
 
-	    $sql = "EXEC sp_Api_Leer_PreFactura @ID_Empresa = ?, @Item=?, @ID_Identificacion=?, @JSON_OutPut=?";
+	    $sql = "EXEC sp_Api_Leer_PreFactura @Item=?, @ID_Identificacion=?, @JSON_OutPut=?";
 		$datos = $this->db->ejecutar_procesos_almacenados_terceros($sql,$parametros,$empresa['usu'],$empresa['pass'],$empresa['host'],$empresa['base'],$empresa['Puerto'],1);
 
 		$jsonReal = stripslashes($JSON_OutPut);
@@ -119,6 +141,36 @@ class ApiRequest
 	    return $datos;
 	   
 	}
+
+
+	function InvoiceAdvance($token,$param)
+	{
+		// print_r($param);
+
+		$token = $this->getBearerToken();
+		$payload = $this->AuthJWT->peekToken($token);
+		$empresa = $this->cambioEmpresa->empresas_datos($payload['entidad'],$payload['role']);
+		$empresa = $empresa[0];
+		// exec sp_Api_Leer_PreFactura '1391721943001', '017', '3050735657', @ListaCampos OUTPUT;
+
+		$JSON_OutPut = "";
+		$parametros = array(
+	        array(&$payload['role'], SQLSRV_PARAM_IN),
+	        array(&$param['ApiCliente'], SQLSRV_PARAM_IN),
+	        array(&$param['IDTransaccion'], SQLSRV_PARAM_IN),
+	        array(&$JSON_OutPut, SQLSRV_PARAM_INOUT)
+	      );
+
+
+	    $sql = "EXEC sp_Api_Grabar_Abonos_Factura @Item=?, @ID_Identificacion=?, @IDTransaccion=?, @JSON_OutPut=?";
+		$datos = $this->db->ejecutar_procesos_almacenados_terceros($sql,$parametros,$empresa['usu'],$empresa['pass'],$empresa['host'],$empresa['base'],$empresa['Puerto'],1);
+
+		$jsonReal = stripslashes($JSON_OutPut);
+		$datos = json_decode($jsonReal, true);
+	    return $datos;
+	   
+	}
+
 
 	function ValidateTokenBearer()
 	{
