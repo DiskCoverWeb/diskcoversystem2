@@ -815,6 +815,17 @@ class punto_ventaC
 				Grabar_Abonos($TA);
 				// print_r($TA);die();
 
+				$abonos = $this->modelo->Abonos($FA);
+				if(count($abonos)==0)
+				{
+					$Saldo = $FA["Total_MN"];
+				}else
+				{
+					$SaldoAbono = $FA["Total_MN"]-$abonos[0]['abono'];
+					if($SaldoAbono<=0){$Saldo = 0; }else{$Saldo = $SaldoAbono;}
+				}
+
+
 
 
 				$FA['TC'] = $TA['TP'];
@@ -822,11 +833,11 @@ class punto_ventaC
 				$FA['Autorizacion'] = $TA['Autorizacion'];
 				$FA['Factura'] = $Factura_No;
 				$sql = "UPDATE Facturas
-          SET Saldo_MN = 0 ";
-				if (isset($FA['TxtEfectivo']) && $FA['TxtEfectivo'] == 0) {
-					$sql .= ",T = 'P'";
+          		SET Saldo_MN = ".$Saldo." ";
+				if ($Saldo <= 0) {
+					$sql .= ",T = 'C'";
 				} else {
-					$sql .= " ,T = 'C' ";
+					$sql .= " ,T = 'P' ";
 				}
 				$sql .= "
           WHERE Item = '" . $_SESSION['INGRESO']['item'] . "'

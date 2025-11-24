@@ -723,6 +723,19 @@ class punto_ventaM
     return $this->db->datos($sql);
   }
 
+  function Abonos($TFA)
+  {
+     $sql = "SELECT sum(Abono) as abono
+        FROM Trans_Abonos 
+        WHERE Factura = ".$TFA['Factura']." 
+        AND TP = '".$TFA['TC']."' 
+        AND Serie = '".$TFA['Serie']."' 
+        AND Autorizacion = '".$TFA['Autorizacion']."' 
+        AND Item = '".$_SESSION['INGRESO']['item']."' 
+        AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+        return $this->db->datos($sql);
+  }
+
 
 
 
