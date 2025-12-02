@@ -132,10 +132,7 @@
           ],
           order: [
               [1, 'asc']
-          ],
-          drawCallback: function() {
-        this.api().columns.adjust();
-    }
+          ]
       });
        
    })
