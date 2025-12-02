@@ -25,8 +25,11 @@
               },
               dataSrc: '',             
           },
-           scrollX: true,  // Habilitar desplazamiento horizontal
-   
+          scrollX: true,  // Habilitar desplazamiento horizontal
+          autoWidth: false, 
+          // columnDefs: [
+          //     { targets: 0, width: "110px" }, // acciones
+          // ],
           columns: [
               { data: null,
                   render: function(data, type, item) {
@@ -41,46 +44,71 @@
                         if (item.Email2 != '.' && item.Email2 != '') {
                           email+= item.Email2+ ',';
                         }
-                    options=`<li>
-                                <a href="#" class="dropdown-item" onclick="Ver_Nota_credito('${item.Secuencial_NC}','${item.Serie_NC}')"><i class="bx bx-show-alt"></i> Ver Nota de credito</a>
-                            </li>
-                            <li>
+                    options=`
 
-                              <a href="#" class="dropdown-item" onclick=" modal_email_nota('${item.Secuencial_NC}','${item.Serie_NC}','.${item.Factura}','${item.Autorizacion_NC}','${email}')"><i class="bx bx-envelope"></i> Enviar Nota de credito por email</a>
-                            </li>
-                            <li>
-                                <a href="#" class="dropdown-item" onclick="descargar_nota('${item.Secuencial_NC}','${item.Serie_NC}','${item.Factura}','${item.Serie}')"><i class="bx bx-download"></i> Descargar Nota de credito</a>
-                            </li>`;
+                      <button title="Ver Nota de credito" type="button" class="btn btn-sm py-0 px-0 btn-secondary" onclick="Ver_Nota_credito('${item.Secuencial_NC}','${item.Serie_NC}')"><i class="bx bx-show-alt ps-1 bx-xs"></i></button>
+
+                      <button title="Enviar Nota de credito por email" type="button" class="btn btn-sm py-0 px-0 btn btn-outline-secondary" onclick=" modal_email_nota('${item.Secuencial_NC}','${item.Serie_NC}','.${item.Factura}','${item.Autorizacion_NC}','${email}')"><i class="bx bx-envelope ps-1 bx-xs"></i></button>
+
+                      <button title="Descargar Nota de credito" type="button" class="btn btn-sm py-0 px-0 btn-info" onclick="descargar_nota('${item.Secuencial_NC}','${item.Serie_NC}','${item.Factura}','${item.Serie}')"><i class="bx bx-download ps-1 bx-xs"></i></button>`;
+
+                            // <li>
+                            //     <a href="#" class="dropdown-item" onclick="Ver_Nota_credito('${item.Secuencial_NC}','${item.Serie_NC}')"><i class="bx bx-show-alt"></i> Ver Nota de credito</a>
+                            // </li>
+                            // <li>
+
+                            //   <a href="#" class="dropdown-item" onclick=" modal_email_nota('${item.Secuencial_NC}','${item.Serie_NC}','.${item.Factura}','${item.Autorizacion_NC}','${email}')"><i class="bx bx-envelope"></i> Enviar Nota de credito por email</a>
+                            // </li>
+                            // <li>
+                            //     <a href="#" class="dropdown-item" onclick="descargar_nota('${item.Secuencial_NC}','${item.Serie_NC}','${item.Factura}','${item.Serie}')"><i class="bx bx-download"></i> Descargar Nota de credito</a>
+                            // </li>`;
                   
                     if (item.ExisteSerie =='Si'  && item.Autorizacion_NC.length == 13) 
                     {
-                        options+=`<li>
-                          <a href="#" class="dropdown-item" onclick="autorizar('${item.Secuencial_NC}','${item.Serie_NC}','${formatoDate(item.Fecha.date)}')" ><i class="bx bx-paper-plane"></i>Autorizar</a>
-                          </li>`;
+                        options+=`
+                        <button title="Autorizar" type="button" class="btn btn-sm py-0 px-0 btn-primary" onclick="autorizar('${item.Secuencial_NC}','${item.Serie_NC}','${formatoDate(item.Fecha.date)}')"><i class="bx bx-paper-plane ps-1 bx-xs"></i></button>`;
+
+                          // <li><a href="#" class="dropdown-item" onclick="autorizar('${item.Secuencial_NC}','${item.Serie_NC}','${formatoDate(item.Fecha.date)}')" ><i class="bx bx-paper-plane"></i>Autorizar</a>
+                          // </li>`;
                     }else
                     {
-                       options+=`<li><a href="#"  class="dropdown-item btn-danger"><i class="fa fa-info"></i>Para autorizar Asigne en catalo de lineas la serie: ${item.Serie_NC}</a></li>`;
+                       // options+=`
+                       //  <li><a href="#"  class="dropdown-item btn-danger"><i class="fa fa-info"></i>Para autorizar Asigne en catalo de lineas la serie: ${item.Serie_NC}</a></li>`;
+
+                         options+=`
+                        <button title="Para autorizar Asigne en catalo de lineas la serie: ${item.Serie_NC}" type="button" class="btn btn-sm py-0 px-0 btn-primary" disabled=""><i class="bx bx-paper-plane ps-1 bx-xs"></i></button>`;
 
                     }
                     
                     if (item.T != 'A') 
                     {
-                          options+=`<li><a href="#" class="dropdown-item" onclick="anular_factura('${item.Secuencial_NC}','${item.Serie_NC}','${item.Codigo}')"><i class="bx bx-x"></i>Anular Nota de credito</a></li>`;
+                          options+=`
+                            <button title="Anular Nota de credito" type="button" class="btn btn-sm py-0 px-0 btn-danger" onclick="anular_factura('${item.Secuencial_NC}','${item.Serie_NC}','${item.Codigo}')"><i class="bx bx-x ps-1 bx-xs"></i></button>`;
+
+                            // <li><a href="#" class="dropdown-item" onclick="anular_factura('${item.Secuencial_NC}','${item.Serie_NC}','${item.Codigo}')"><i class="bx bx-x"></i>Anular Nota de credito</a></li>`;
                     }
                     if (item.Autorizacion_NC.length > 13) 
                     {
-                        options+=`<li><a href="#" class="dropdown-item" onclick="descargar_xml('${item.Autorizacion_NC}')">
-                        <i class="bx bx-download"></i> Descargar XML</a></li>`;
+                        options+=`
+                          <button title="Descargar XML" type="button" class="btn btn-sm py-0 px-0 btn-warning" onclick="descargar_xml('${item.Autorizacion_NC}')"><i class="bx bx-download ps-1 bx-xs"></i></button>`;
+
+                        // <li><a href="#" class="dropdown-item" onclick="descargar_xml('${item.Autorizacion_NC}')">
+                        // <i class="bx bx-download"></i> Descargar XML</a></li>`;
                     }
 
 
                   
-                    return `<div class="input-group-btn">
-                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">Acciones
-                                    <span class="fa fa-caret-down"></span>
-                                </button>
-                                <ul class="dropdown-menu">`+options+`</ul>
-                            </div>`;                    
+                    return `<div class="row row-cols-auto ps-1" style="width:100px">
+                      `+options+`
+                      
+                    </div>`;  
+                    // <div class="input-group-btn">
+                    // <button type="button" class="btn btn-sm py-0 px-0 btn-info"><i class="bx bx-download"></i></button>
+                    //             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">Acciones
+                    //                 <span class="fa fa-caret-down"></span>
+                    //             </button>
+                    //             <ul class="dropdown-menu">`+options+`</ul>
+                    //         </div>`;                    
                   } 
               },
               { data: 'T' },
@@ -104,7 +132,10 @@
           ],
           order: [
               [1, 'asc']
-          ]
+          ],
+          drawCallback: function() {
+        this.api().columns.adjust();
+    }
       });
        
    })
@@ -187,6 +218,7 @@
       <div class="card-body">
             <table class="table text-sm" style="width: 100%;" id="tbl_nota_credito">
               <thead>
+                <tr>
                 <th></th>
                 <th>T</th>          
                 <th>Razon_Social</th>
@@ -202,6 +234,7 @@
                 <th>Descuento</th>
                 <th>Descuento2</th>
                 <th>RUC_CI</th>
+              </tr>
               </thead>
               <tbody>
                 <tr>
