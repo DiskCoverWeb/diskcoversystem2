@@ -13,7 +13,10 @@ $(document).ready(function()
       // Recargar los datos de la tabla
       tbl_nota_credito_all.ajax.reload(function() {
           // Cerrar el modal después de que se hayan recargado los datos
+         setTimeout(() => {
           $('#myModal_espera').modal('hide');
+        }, 1000);
+
       }, false);
    }
 
