@@ -608,6 +608,10 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'constructora_tiempos':
 					require_once("inventario/reporte_constructora_tiempos.php");
 					break;
+				case 'orden_trabajo_const':
+					require_once("inventario/orden_trabajo_const.php");
+					break;
+	
 	
 				//MODALES
 				case 'FSubCtas':
@@ -668,10 +672,21 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'registro_horas_laboradas':
 					require_once('rol_pagos/registro_horas_laboradas.php');
 					break;
+
+				/************************************* CONTRATOS ***************************************/
+				case 'registro_GFN':
+					require_once('contratos/registro_GFN.php');
+					break;
+				case 'reporte_GFN':
+					require_once('contratos/reporte_GFN.php');
+					break;
+					
+		
 	
 				default:
 					echo "<div class='box-body'><img src='../../img/404.png' width='100%'></div>";
 					break;
+
 			}
 		}catch(Exception $e){
 			//print_r($e->getCode());
