@@ -95,10 +95,23 @@ function guardar_img($file)
     }
     if(validar_formato_img($file)==1)
     {
-         $uploadfile_temporal=$file['file_img']['tmp_name'];
-         $tipo = explode('/', $file['file_img']['type']);
-         $nombre = $_SESSION['INGRESO']['CodigoU'].'.'.$tipo[1];            
-         $nuevo_nom=$ruta.$nombre;
+         // $uploadfile_temporal=$file['file_img']['tmp_name'];
+         // $tipo = explode('/', $file['file_img']['type']);
+         // $nombre = $_SESSION['INGRESO']['CodigoU'].'.'.$tipo[1];            
+         // $nuevo_nom=$ruta.$nombre;
+
+         $uploadfile_temporal = $file['file_img']['tmp_name'];
+        // Obtener extensión del nombre original y normalizar
+        $extension_original = strtolower(pathinfo($file['file_img']['name'], PATHINFO_EXTENSION));
+        if ($extension_original == 'jpeg' || $extension_original == 'jpg') {
+            $extension_final = 'jpg';
+        } else {
+            $extension_final = $extension_original;
+        }
+        $nombre = $_SESSION['INGRESO']['CodigoU'] . '.' . $extension_final;            
+        $nuevo_nom = $ruta . $nombre;
+
+
          if (is_uploaded_file($uploadfile_temporal))
          {
            move_uploaded_file($uploadfile_temporal,$nuevo_nom);
