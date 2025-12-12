@@ -347,6 +347,21 @@ date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION);die();//pr
 											<div class="col-sm-10">
 												<input type="text" name="TxtNomComercial" id="TxtNomComercial" class="form-control form-control-sm" value="">
 											</div>
+										</div>    
+										<div class="row">
+											<div class="col-sm-2">
+												<label>API TOKEN:</label>
+											</div>
+											<div class="col-sm-10">
+												<div class="input-group">
+													<input type="text" name="TxtApiToken" id="TxtApiToken" class="form-control form-control-sm" value="" readonly>
+													<button type="button" class="btn btn-primary btn-sm" id="btn_token" disabled onclick="generar_tokenApi()">Generar Token</button>		
+													<!-- <button type="button" class="btn btn-primary btn-sm" id="btn_token"  onclick="Prefacturas()">Generar Token</button>		
+
+													<button type="button" class="btn btn-primary btn-sm" id="btn_token"  onclick="abonosinvoice()">Generar Token</button>		 -->											
+												</div>
+												
+											</div>
 										</div>                
 										<div class="row">
 											<div class="col-sm-2">
