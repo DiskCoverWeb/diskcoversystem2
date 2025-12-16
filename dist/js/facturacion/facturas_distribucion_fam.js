@@ -557,6 +557,69 @@
 		});
 	}
 
+	function validar_cliente_factura()
+	{
+		if(Object.keys(ListaIntegrantesXProducto).length==0)
+		{
+			Swal.fire("Seleccione algun Integrante de grupo","","info");
+			return false;
+		}
+
+		var integrantes = JSON.stringify(ListaIntegrantesXProducto);
+		var ListaAbonosInte = JSON.stringify(ListaAbonos);
+		// console.log(integrantes)
+
+		// console.log(ListaAbonos)
+
+
+		var parametros =
+		{
+			'integrantes':integrantes,
+		}
+
+		$('#myModal_espera').modal("show");
+		$.ajax({
+			type: "POST",
+			url: '../controlador/facturacion/facturas_distribucion_famC.php?validar_cliente_factura=true',
+			data: { parametros: parametros },
+			dataType: 'json',
+			success: function (data) {
+
+				if(data.result==1)
+				{
+					$('#myModal_espera').modal("hide");
+					integrantes = '';
+					data.integrantes.forEach(function(item,i){
+						integrantes+=item+',';
+					})
+					Swal.fire({
+						allowOutsideClick: false,
+						title: 'Uno o varios integrantes del grupo \n se van a facturar como Consumidor final \n Desea continuar?',
+						text: 'Integrantes con Identificacion: '+integrantes,
+						icon: 'warning',
+						showCancelButton: true,
+						confirmButtonColor: '#3085d6',
+						cancelButtonColor: '#d33',
+						confirmButtonText: 'Si!'
+					}).then((result) => {
+						if (result.value == true) {
+							Generar_factura();
+						}
+					})			
+				}else
+				{
+					Generar_factura();
+				}
+				
+			},
+		    error: function(error){
+		      console.error("Error revisar: ", error);
+				$('#myModal_espera').modal("hide");
+		    }
+		});
+
+	}
+
 	function Generar_factura()
 	{
 

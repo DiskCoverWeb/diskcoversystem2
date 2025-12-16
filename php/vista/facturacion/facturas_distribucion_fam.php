@@ -305,7 +305,7 @@ if (isset ($_GET['tipo'])) {
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-sm-12 text-end">
-						<button type="button" class="btn btn-primary"  onclick="Generar_factura()">Generar Facturas</button>
+						<button type="button" class="btn btn-primary"  onclick="validar_cliente_factura()">Generar Facturas</button>
 					</div>
 				</div>
                 <div class="row">

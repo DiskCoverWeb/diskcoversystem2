@@ -58,6 +58,11 @@ if (isset($_GET['quitar_de_facturar'])) {
 	echo json_encode($controlador->quitar_de_facturar($parametros));
 }
 
+if (isset($_GET['validar_cliente_factura'])) {
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->validar_cliente_factura($parametros));
+}
+
 
 
 class facturas_distribucion_fam
@@ -813,6 +818,23 @@ class facturas_distribucion_fam
 		SetAdoFields("T",'P');
 		SetAdoFieldsWhere('Orden_No',$parametros['orden']);
 		return SetAdoUpdateGeneric();
+	}
+
+	function validar_cliente_factura($parametros)
+	{
+		$consumidor_final = 0;
+		$integrantes = json_decode($parametros['integrantes'],true);
+		$integrantes_actualizar = array();
+		foreach ($integrantes as $key => $value) {	
+			$cliente = Leer_Datos_Cliente_FA($key);
+			if($cliente['RUC_CI']=='9999999999999')
+			{
+				$consumidor_final = 1;
+				$integrantes_actualizar[] = $key;
+			}
+		}		
+
+		return array('result'=>$consumidor_final,'integrantes'=>$integrantes_actualizar);
 	}
 
 

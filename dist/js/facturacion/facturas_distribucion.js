@@ -807,12 +807,16 @@ function construirTablaEvalFundaciones(){
 		confirmButtonText: 'Si!'
 	}).then((result) => {
 		if (result.value == true) {
-			 validar_pago();	
+			 // validar_pago();	
+			 validar_cliente_factura();
 			
 		}
 	})
 	
 }
+
+
+
 
 function validar_pago()
 {
@@ -958,6 +962,46 @@ function grabar_gavetas(){
 		}
 	});
 }
+
+function validar_cliente_factura()
+{
+	var parametros = 
+	{
+		'CI':$('#LblRUC').val(),
+	}
+	$.ajax({
+		type: "POST",
+		url: '../controlador/facturacion/facturas_distribucionC.php?validar_cliente_factura=true',
+		data: { parametros: parametros },
+		dataType: 'json',
+		success: function (data) {
+			if(data==0)
+			{
+				Swal.fire({
+					allowOutsideClick: false,
+					title: 'Esta Seguro que desea grabar: \n Comprobante  No. ' + $('#TextFacturaNo').val()+' Como Consumidor final',
+					text: '',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Si!'
+				}).then((result) => {
+					if (result.value == true) {
+						validar_pago();	
+					}
+				})			
+			}else{
+				validar_pago();	
+			}
+		},
+		error: (err) => {
+			Swal.fire('Error', 'Hubo un problema al subir la actualizacion de gavetas.');
+		}
+	});
+
+}
+
 function generar_factura() 
 {
 	var lista = [];

@@ -213,6 +213,10 @@ if (isset($_GET['generar_factura'])) {
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->generar_factura($parametros));
 }
+if (isset($_GET['validar_cliente_factura'])) {
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->validar_cliente_factura($parametros));
+}
 
 if (isset($_GET['generar_factura_elec'])) {
 	//print_r($_POST);die();
@@ -1634,6 +1638,18 @@ class facturas_distribucion
 		}
 	}
 
+	function validar_cliente_factura($parametros)
+	{
+		$cliente = Leer_Datos_Cliente_FA($parametros['CI']);
+		if($cliente['RUC_CI']=='9999999999999')
+		{
+			return 0;
+		}else
+		{
+			return 1;
+		}
+
+	}
 
 	//funcion que se ejecuta en punto de venta en facturacion
 	function generar_factura($parametros)
