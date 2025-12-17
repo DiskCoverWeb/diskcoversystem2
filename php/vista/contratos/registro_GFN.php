@@ -19,14 +19,14 @@
                 print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
             <img src="../../img/png/salire.png">
         </a>
-        <button type="button" class="btn btn-outline-secondary" title="Informe excel" onclick="imprimir_excel()" >
+        <!-- <button type="button" class="btn btn-outline-secondary" title="Informe excel" onclick="imprimir_excel()" >
           <img src="../../img/png/excel2.png">
         </button>
         <button type="button" class="btn btn-outline-secondary" title="Informe pdf" onclick="imprimir_pdf()">
           <img src="../../img/png/pdf.png">
-        </button>
-        <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_solicitud_proveedor()">
-          <img src="../../img/png/grabar.png" >
+        </button> -->
+         <button title="Guardar"  class="btn btn-outline-secondary" onclick="nuevo_indicador_modal()">
+          <img src="../../img/png/mostrar.png" >
         </button>
       </div>
   </div>
@@ -34,24 +34,36 @@
 <div class="row mb-2">
   <div class="card">
     <div class="card-body">
-      <div class="col-sm-6 mb-2">
-        <b>Indicador de gestion</b><br>
-        <div class="input-group">
-           <select class="form-select form-select-sm" id="ddl_indicador_gestion">
-             <option value="">Seleccione</option>
-           </select> 
-           <button class="btn btn-sm btn-success" onclick="nuevo_indicador_modal()"><i class="bx bx-plus"></i></button>
-        </div>       
+      <div class="row">
+        <div class="col-sm-4 mb-2">
+          <b>Indicador de gestion</b><br>
+          <div class="input-group">
+            <select class="form-select form-select-sm" id="ddl_indicador_gestion_grupo" onchange="ddl_indicador_gestion()">
+              <option value="">Seleccione</option>
+            </select> 
+               <!-- <button class="btn btn-sm btn-success" onclick="nuevo_indicador_modal()"><i class="bx bx-plus"></i></button> -->
+          </div>       
+        </div>
+        <div class="col-sm-6 mb-2">
+          <b>Indicador de gestion de</b><br>
+          <div class="input-group">
+             <select class="form-select form-select-sm" id="ddl_indicador_gestion">
+               <option value="">Seleccione</option>
+             </select> 
+          </div>       
+        </div>
       </div>
+     
+      
       <div class="col-sm-6">
         <table class="table">
           <tr>
             <td><b>Enero</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_enero" id="txt_enero" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_enero"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_enero" onclick="guardar_valor(1)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_0" id="txt_valor_0" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_0" onclick="editar_valor(0)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_0" onclick="guardar_valor(0)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -59,9 +71,9 @@
             <td><b>Febrero</b></td>
             <td>
               <div class="input-group">
-                  <input type="text" class="form-control form-control-sm" name="txt_febrero" id="txt_febrero" readonly>
-                  <button class="btn btn-sm d-none" id="btn_edit_febrero"><i class="bx bx-pencil"></i></button>
-                  <button class="btn btn-sm d-none" id="btn_save_febrero" onclick="guardar_valor(2)"><i class="bx bx-save"></i></button>
+                  <input type="text" class="form-control form-control-sm" name="txt_valor_1" id="txt_valor_1" readonly>
+                  <button class="btn btn-sm d-none" id="btn_edit_1" onclick="editar_valor(1)"><i class="bx bx-pencil"></i></button>
+                  <button class="btn btn-sm d-none" id="btn_save_1" onclick="guardar_valor(1)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -69,9 +81,9 @@
             <td><b>Marzo</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_marzo" id="txt_marzo" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_marzo"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_marzo" onclick="guardar_valor(3)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_2" id="txt_valor_2" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_2" onclick="editar_valor(2)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_2" onclick="guardar_valor(2)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -79,9 +91,9 @@
             <td><b>Abril</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_abril" id="txt_abril" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_abril"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_abril" onclick="guardar_valor(4)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_3" id="txt_valor_3" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_3" onclick="editar_valor(3)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_3" onclick="guardar_valor(3)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -89,9 +101,9 @@
             <td><b>Mayo</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_mayo" id="txt_mayo" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_mayo"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_mayo" onclick="guardar_valor(5)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_4" id="txt_valor_4" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_4" onclick="editar_valor(4)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_4" onclick="guardar_valor(4)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -99,9 +111,9 @@
             <td><b>Junio</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_junio" id="txt_junio" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_junio"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_junio" onclick="guardar_valor(6)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_5" id="txt_valor_5" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_5" onclick="editar_valor(5)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_5" onclick="guardar_valor(5)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -109,9 +121,9 @@
             <td><b>Julio</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_julio" id="txt_julio" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_julio"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_julio" onclick="guardar_valor(7)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_6" id="txt_valor_6" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_6" onclick="editar_valor(6)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_6" onclick="guardar_valor(6)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -119,9 +131,9 @@
             <td><b>Agosto</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_agosto" id="txt_agosto" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_agosto"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_agosto" onclick="guardar_valor(8)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_7" id="txt_valor_7" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_7" onclick="editar_valor(7)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_7" onclick="guardar_valor(7)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -129,9 +141,9 @@
             <td><b>Septiembre</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_septiembre" id="txt_septiembre" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_septiembre"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_septiembre" onclick="guardar_valor(9)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_8" id="txt_valor_8" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_8" onclick="editar_valor(8)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_8" onclick="guardar_valor(8)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -139,9 +151,9 @@
             <td><b>Octubre</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_octubre" id="txt_octubre" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_octubre"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_octubre" onclick="guardar_valor(10)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_9" id="txt_valor_9" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_9" onclick="editar_valor(9)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_9" onclick="guardar_valor(9)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -149,9 +161,9 @@
             <td><b>Noviembre</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_noviembre" id="txt_noviembre" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_noviembre"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_noviembre" onclick="guardar_valor(11)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_10" id="txt_valor_10" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_10" onclick="editar_valor(10)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_10" onclick="guardar_valor(10)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -159,9 +171,9 @@
             <td><b>Diciembre</b></td>
             <td>
               <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="txt_diciembre" id="txt_diciembre" readonly>
-                <button class="btn btn-sm d-none" id="btn_edit_diciembre"><i class="bx bx-pencil"></i></button>
-                <button class="btn btn-sm d-none" id="btn_save_diciembre" onclick="guardar_valor(12)"><i class="bx bx-save"></i></button>
+                <input type="text" class="form-control form-control-sm" name="txt_valor_11" id="txt_valor_11" readonly>
+                <button class="btn btn-sm d-none" id="btn_edit_11" onclick="editar_valor(11)"><i class="bx bx-pencil"></i></button>
+                <button class="btn btn-sm d-none" id="btn_save_11" onclick="guardar_valor(11)"><i class="bx bx-save"></i></button>
               </div>
             </td>
           </tr>
@@ -181,6 +193,20 @@
         <button type="button" class="btn-close d-md-none" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <label><input type="radio" name="rbl_tipo" value="G" id="rbl_tipo_grupo" checked onclick="cambiar_tipo()">Grupo</label>    
+            <label><input type="radio" name="rbl_tipo" value="D" id="rbl_tipo_detalle" onclick="cambiar_tipo()">Detalle</label>   
+          </div>       
+        </div>
+        <div class="row d-none" id="pnl_grupo">
+          <div class="col-sm-12">
+            <b>Grupo de indicadores</b> <br>
+            <select class="form-select form-select-sm" id="ddl_grupo_identificador">
+              <option value="">Seleccione grupo</option>
+            </select>            
+          </div>
+        </div>
         <div class="row">
           <div class="col-sm-4">
             <b>Codigo</b>
