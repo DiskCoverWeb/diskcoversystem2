@@ -35,6 +35,15 @@
   <div class="card">
     <div class="card-body">
       <div class="row">
+        <div class="col-sm-4 mb-2">
+          <b>Indicador de gestion</b><br>
+          <div class="d-flex align-items-center">
+            <select class="form-select form-select-sm" id="ddl_indicador_gestion_grupo" onchange="ddl_indicador_gestion();cargar_lista()">
+              <option value="">Seleccione</option>
+            </select> 
+             <button class="btn btn-sm btn-outline-secondary  p-1" onclick="limpiar_grupo()"><i class="bx bx-x"></i></button>
+          </div>       
+        </div>
          <div class="col-sm-6 mb-2">
           <b>Indicador de gestion</b><br>
           <div class="d-flex align-items-center">
@@ -44,7 +53,7 @@
              <button class="btn btn-sm btn-outline-secondary  p-1" onclick="limpiar()"><i class="bx bx-x"></i></button>
           </div>       
         </div>
-        <div class="col-sm-6 text-end">
+        <div class="col-sm-2 text-end">
           <button class="btn btn-sm btn-primary" onclick="cargar_lista()"><i class="bx bx-search"></i> Buscar</button>
         </div>
       </div>

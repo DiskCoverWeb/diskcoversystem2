@@ -32,12 +32,16 @@ class reporte_GFNM
 		return $this->db->datos($sql);
 	}
 
-	function cargar_lista($codigo=false)
+	function cargar_lista($grupo=false,$codigo=false)
 	{
 		$sql = "SELECT ".Full_Fields("Catalogo_APIs")." 
 				FROM Catalogo_APIs 
 				WHERE Item = '".$_SESSION['INGRESO']['item']."' 
 				AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+				if($grupo)
+				{
+					$sql.=" AND codigo like '".$grupo.".%'";
+				}
 				if($codigo)
 				{
 					$sql.=" AND codigo = '".$codigo."'";

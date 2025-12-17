@@ -60,7 +60,7 @@ class reporte_GFNC
 
 	function cargar_lista($parametros)
 	{
-		return $this->modelo->cargar_lista($parametros['indicador']);
+		return $this->modelo->cargar_lista($parametros['grupo'],$parametros['indicador']);
 	}
 
 	function imprimir_excel($parametros)

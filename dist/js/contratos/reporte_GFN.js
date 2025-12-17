@@ -2,7 +2,8 @@
   const mes = hoy.getMonth(); 
   
   $(document).ready(function () {
-    ddl_indicador_gestion();
+
+    ddl_indicador_gestion_grupo();
 
        tbl_pedidos_all = $('#tbl_lista').DataTable({
           // responsive: true,
@@ -14,6 +15,7 @@
               type: 'POST',  // Cambia el método a POST    
               data: function(d) {
                   var parametros = {                    
+                    grupo:$('#ddl_indicador_gestion_grupo').val(),
                     indicador:$('#ddl_indicador_gestion').val(),
                   };
                   return { parametros: parametros };
@@ -81,7 +83,8 @@
          $('#ddl_indicador_gestion').select2({
           placeholder: 'Centro costo',
           ajax: {
-            url: '../controlador/contratos/reporte_GFNC.php?ddl_indicador_gestion=true',
+            // url: '../controlador/contratos/reporte_GFNC.php?ddl_indicador_gestion=true',
+            url: '../controlador/contratos/registro_GFNC.php?ddl_indicador_gestion=true&grupo='+$('#ddl_indicador_gestion_grupo').val(),
             dataType: 'json',
             delay: 250,
             processResults: function (data) {
@@ -104,5 +107,29 @@ function limpiar()
     $('#ddl_indicador_gestion').val(null).trigger('change');
     cargar_lista()
 }
+
+function limpiar_grupo()
+{
+    $('#ddl_indicador_gestion_grupo').val(null).trigger('change');
+    $('#ddl_indicador_gestion').val(null).trigger('change');
+    cargar_lista()
+}
+
+function ddl_indicador_gestion_grupo(){
+       $('#ddl_indicador_gestion_grupo').select2({
+        placeholder: 'Centro costo',
+        ajax: {
+          url: '../controlador/contratos/registro_GFNC.php?ddl_indicador_gestion_grupo=true',
+          dataType: 'json',
+          delay: 250,
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+      });
+  }
 
 
