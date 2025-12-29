@@ -564,6 +564,9 @@ function validar_comprobante()
                     <select id="beneficiario1" name='beneficiario1' class='form-control form-control-sm' onchange="benefeciario_edit()">
                       <option value="">Seleccione beneficiario</option>                                
                     </select>
+                    <button type="button" class="btn btn-primary btn-sm d-none" id="btn_editar_cliente" onclick="EditCliente()" title="editar Cliente" data-bs-toggle="tooltip">
+                      <span class="bx bx-pencil"></span>
+                    </button>
                     <button type="button" class="btn btn-success btn-sm btn-flat rounded" id="btn_nuevo_cliente" onclick="addCliente()" title="Nuevo Cliente" data-bs-toggle="tooltip">
                       <span class="bx bx-user-plus"></span>
                     </button>
