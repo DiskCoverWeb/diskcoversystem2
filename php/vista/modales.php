@@ -24,6 +24,10 @@ if(isset($_GET['FCliente']))
 {
 	require_once('contabilidad/FCliente.php');
 }
+if(isset($_GET['FClienteEdit']))
+{
+	require_once('contabilidad/FClienteEdit.php');
+}
 if(isset($_GET['FProveedores']))
 {
 	require_once('contabilidad/FProveedores.php');

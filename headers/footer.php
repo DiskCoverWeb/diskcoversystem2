@@ -399,6 +399,23 @@
     </div>
   </div>
 
+  <div id="myModal_edit_cliente" class="modal fade myModalNuevoCliente" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title d-flex justify-content-start">Editar Cliente</h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="FClienteEdit" width="100%" height="400px" marginheight="0" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="editar_cliente_iframe()">Guardar</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
   <div id="myModal_provedor" class="modal fade myModalNuevoCliente" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -557,6 +574,16 @@ function datos_cliente()
     var T = frame.contentWindow.document.getElementById('TD').value;
     // crear esta funcion donde se desee agregar estos datos de cliente
     usar_cliente(nombre, ruc, codigocliente, email, T,grupo);
+}
+
+function editar_cliente_iframe()
+{
+	var iframe = document.getElementById('FClienteEdit');
+	if (iframe.contentWindow) {
+	var iframeWindow = iframe.contentWindow;
+	// console.log(iframeWindow);
+	iframeWindow.editar_cliente_cli();
+	}
 }
 
 function enter(e) {
