@@ -51,6 +51,7 @@ function benefeciario_edit()
             bene = bene.split('-');
             $('#ruc').val(bene[0]);
             $('#email').val(bene[1]);
+            $('#btn_editar_cliente').removeClass("d-none");
 
         }
       });       
@@ -89,6 +90,7 @@ function usar_cliente(nombre, ruc, codigo, email, t='N'){
   }
   
 }
+
 
 function guardar_diferencia()
 {
@@ -1876,4 +1878,11 @@ function Disable_Buttons(){
     document.getElementById(id).classList.add("disable");
     document.getElementById(id).disabled = true; 
   });
+}
+
+function EditCliente(){
+  $("#myModal_edit_cliente").modal("show");
+  var ciCliente = $('#beneficiario1').val();
+  var src ="../vista/modales.php?FClienteEdit=true&CIBuscar="+ciCliente;
+   $('#FClienteEdit').attr('src',src).show();
 }
