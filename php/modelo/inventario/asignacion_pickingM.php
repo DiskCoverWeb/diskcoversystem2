@@ -302,6 +302,7 @@ class asignacion_pickingM
             AND TK.CodBodega <> '-1'
             AND TK.T = 'N'            
             AND CP.Item = TK.Item
+            AND CP.Periodo = TK.Periodo 
             AND TK.Salida = 0";
 
 
