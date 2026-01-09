@@ -1748,7 +1748,7 @@ class autorizacion_sri
  			  	$xml_cantidad = $xml->createElement('cantidad',$value["Cantidad"]);
  			  	$xml_detalle->appendChild($xml_cantidad);
 
- 			  	$xml_precio = $xml->createElement('precioUnitario',$value["Precio"]);
+ 			  	$xml_precio = $xml->createElement('precioUnitario',number_format($value["Precio"],2,'.',''));
  			  	$xml_detalle->appendChild($xml_precio);
 
  			  	$xml_descuento = $xml->createElement('descuento',$value["Descuento"]);
