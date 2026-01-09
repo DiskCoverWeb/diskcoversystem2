@@ -8,7 +8,6 @@ require_once(dirname(__DIR__,2)."/db/db1.php");
 
 date_default_timezone_set('America/Guayaquil');
 
-
 $controlador = new autoriza_sri();
 if(isset($_GET['AutorizarXMLOnline']))
 {
@@ -17,6 +16,13 @@ if(isset($_GET['AutorizarXMLOnline']))
 	// print_r($parametros);die();
      echo json_encode($controlador->AutorizarXMLOnline($parametros));
 }
+
+if(isset($_GET['EnviarAutorizarXMLOnline']))
+{
+	$parametros = $_POST;
+     echo json_encode($controlador->EnviarAutorizarXMLOnline($parametros));
+}
+
 if(isset($_GET['subirftp']))
 {
 	$xml = '';
@@ -60,6 +66,92 @@ class autoriza_sri
 		// $this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
 	}
 
+
+	function EnviarAutorizarXMLOnline($parametros)
+	{
+		$this->carpetas_descarga();
+		$respuesta = 1;
+		$xml = "";
+		$Autorizacion1 = trim($parametros["Autorizacion"]).'.xml';
+		$ruta = dirname(__DIR__).'/SRI/ftp_folder_xmls/Generados/';
+		$rutaAu = dirname(__DIR__).'/SRI/ftp_folder_xmls/Autorizados/';
+		$rutaNo = dirname(__DIR__).'/SRI/ftp_folder_xmls/No_autorizados/';
+		$rutaRe = dirname(__DIR__).'/SRI/ftp_folder_xmls/Rechazados/';
+		if(trim($parametros['XML'])=='')
+		{
+			return -1;
+		}else
+		{
+			$xml = $parametros['XML'];
+			file_put_contents($ruta.'/'.$Autorizacion1, $xml);
+			$Autorizacion = substr($Autorizacion1,0,-4);
+            $ambiente = substr(substr($Autorizacion,0,24),-1,1);
+            $this->link_ambientes($ambiente);
+
+       	 	$validar_autorizado = $this->comprobar_xml_sri($Autorizacion,$this->linkSriAutorizacion);
+          	if(isset($validar_autorizado[0]) && $validar_autorizado[0] == 1)
+	   	 	{
+	   	 		
+   		 			$ArchivoXML = file_get_contents($rutaAu.$Autorizacion1);
+          			return array("respuesta"=>1,"mensaje"=>$firma,"XML"=>$ArchivoXML);
+	   	 	}
+
+          	if($parametros['RUTA']!='' && $parametros['PASS']!='')
+          	{
+          		$firma = $this->firmar_documento($Autorizacion,$parametros['PASS'],$parametros['RUTA']);
+          		if($firma!=1)
+          		{
+          			return array("respuesta"=>-2,"mensaje"=>$firma,"XML"=>$xml);
+          		}
+          	}
+
+              	
+	   	 	$enviar_sri = $this->enviar_xml_sri($Autorizacion,$this->linkSriRecepcion);
+	   	 	// print_r($enviar_sri);die();
+	   		if($enviar_sri[0]==1)
+	   		{
+   		 		$resp =  $this->comprobar_xml_sri($Autorizacion,$this->linkSriAutorizacion);
+   		 		// print_r($resp);die();
+   		 		if($resp[0]==1)
+   		 		{
+   		 			$ArchivoXML = file_get_contents($rutaAu.$Autorizacion1);
+					$this->borrar_xml_file($Autorizacion);
+   		 			return  array('respuesta'=>1,"mensaje"=>"XML autorizado","XML"=>$ArchivoXML);
+   		 			
+   		 		}else
+   		 		{
+   		 			$ArchivoXML = "";
+   		 			if(file_exists($rutaNo.$Autorizacion1))
+   		 			{
+   		 				$ArchivoXML = file_get_contents($rutaNo.$Autorizacion1);
+   		 			}
+   		 			if(file_exists($rutaRe.$Autorizacion1))
+   		 			{
+   		 				$ArchivoXML = file_get_contents($rutaRe.$Autorizacion1);
+   		 			}
+					$this->borrar_xml_file($Autorizacion);
+					
+   		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","XML"=>$ArchivoXML);
+   		 		}
+	   		 		// print_r($resp);die();
+	   		}else
+	   		{
+	   				$ArchivoXML = "";
+   		 			if(file_exists($rutaNo.$Autorizacion1))
+   		 			{
+   		 				$ArchivoXML = file_get_contents($rutaNo.$Autorizacion1);
+   		 			}
+   		 			if(file_exists($rutaRe.$Autorizacion1))
+   		 			{
+   		 				$ArchivoXML = file_get_contents($rutaRe.$Autorizacion1);
+   		 			}
+					$this->borrar_xml_file($Autorizacion);
+   		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","XML"=>$ArchivoXML);
+	   		}
+            
+          }
+
+	}
 
 
 //esta funcion entra aun ftp donde se encontrara el archivo xml firmado de antemano
@@ -156,6 +248,32 @@ class autoriza_sri
           }
 
 				
+
+	}
+
+
+
+	function carpetas_descarga()
+	{
+		$temp_file = 'ftp_folder_xmls/';
+		$remote_path = '/';
+
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Autorizados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Enviados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Firmados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Rechazados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/No_autorizados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_file = 'ftp_folder_xmls/Enviados/';
+		if(!file_exists($temp_file)){mkdir($temp_file, 0777);}
+		$temp_fileF = 'ftp_folder_xmls/Generados/';
+		if(!file_exists($temp_fileF)){mkdir($temp_fileF, 0777);}
+
 
 	}
 
@@ -646,7 +764,7 @@ class autoriza_sri
 		$temp_file = $dire.'ftp_folder_xmls/No_autorizados/'.$xml;
 		if(file_exists($temp_file)){ unlink($temp_file);}
 
-		$temp_fileF = $dire.'ftp_folder_xmls/Generados/'.$xml;
+		$temp_file = $dire.'ftp_folder_xmls/Generados/'.$xml;
 		if(file_exists($temp_file)){ unlink($temp_file);}
 
 	}
