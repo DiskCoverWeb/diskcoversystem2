@@ -77,6 +77,7 @@ class autoriza_sri
 		$rutaAu = dirname(__DIR__).'/SRI/ftp_folder_xmls/Autorizados/';
 		$rutaNo = dirname(__DIR__).'/SRI/ftp_folder_xmls/No_autorizados/';
 		$rutaRe = dirname(__DIR__).'/SRI/ftp_folder_xmls/Rechazados/';
+
 		if(trim($parametros['XML'])=='')
 		{
 			return -1;
@@ -93,7 +94,10 @@ class autoriza_sri
 	   	 	{
 	   	 		
    		 			$ArchivoXML = file_get_contents($rutaAu.$Autorizacion1);
-          			return array("respuesta"=>1,"mensaje"=>$firma,"XML"=>$ArchivoXML);
+   		 			$xml = simplexml_load_string($ArchivoXML);
+   		 			$fechaAutorizacion =  (string)$xml->fechaAutorizacion;
+					
+          			return array("respuesta"=>1,"mensaje"=>"XML autorizado","FechaAutorizacion"=>$fechaAutorizacion,"XML"=>$ArchivoXML);
 	   	 	}
 
           	if($parametros['RUTA']!='' && $parametros['PASS']!='')
@@ -101,7 +105,7 @@ class autoriza_sri
           		$firma = $this->firmar_documento($Autorizacion,$parametros['PASS'],$parametros['RUTA']);
           		if($firma!=1)
           		{
-          			return array("respuesta"=>-2,"mensaje"=>$firma,"XML"=>$xml);
+          			return array("respuesta"=>-2,"mensaje"=>$firma,"FechaAutorizacion"=>"","XML"=>$xml);
           		}
           	}
 
@@ -115,8 +119,10 @@ class autoriza_sri
    		 		if($resp[0]==1)
    		 		{
    		 			$ArchivoXML = file_get_contents($rutaAu.$Autorizacion1);
+   		 			$xml = simplexml_load_string($ArchivoXML);
+   		 			$fechaAutorizacion =  (string)$xml->fechaAutorizacion;
 					$this->borrar_xml_file($Autorizacion);
-   		 			return  array('respuesta'=>1,"mensaje"=>"XML autorizado","XML"=>$ArchivoXML);
+   		 			return  array('respuesta'=>1,"mensaje"=>"XML autorizado",'FechaAutorizacion'=>$fechaAutorizacion,"XML"=>$ArchivoXML);
    		 			
    		 		}else
    		 		{
@@ -131,7 +137,7 @@ class autoriza_sri
    		 			}
 					$this->borrar_xml_file($Autorizacion);
 					
-   		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","XML"=>$ArchivoXML);
+   		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","FechaAutorizacion"=>"","XML"=>$ArchivoXML);
    		 		}
 	   		 		// print_r($resp);die();
 	   		}else
@@ -146,7 +152,7 @@ class autoriza_sri
    		 				$ArchivoXML = file_get_contents($rutaRe.$Autorizacion1);
    		 			}
 					$this->borrar_xml_file($Autorizacion);
-   		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","XML"=>$ArchivoXML);
+   		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","FechaAutorizacion"=>"","XML"=>$ArchivoXML);
 	   		}
             
           }
