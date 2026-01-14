@@ -576,7 +576,7 @@ class alimentos_recibidosC
 	   $ingresoOrg = $this->modelo->Trans_correos($num_ped);
 	   $Cmds = $parametro['txt_tipoCompra'];
 	   $Contra_Cta =  $parametro['txt_contra_cta'];
-	   $cta_inv = $parametros['txt_cta_inv'];
+	   $cta_inv = $parametro['txt_cta_inv'];
 	   if(count($ingresoOrg)>0)
 	   {
 	   		$Cmds = $ingresoOrg[0]['Cod_C'];
