@@ -192,11 +192,14 @@
 			<div class="col-sm-2">
 				<label for="inputEmail3"><b>Gavetas</b></label>
 				<input type="text" class="form-control form-control-sm" id="txt_serie" name="txt_serie">	
+			</div>			
+			<div class="col-sm-2">
+				<label><b>Serie</b></label>
+				<input type="text" class="form-control form-control-sm" id="txt_serie" name="txt_serie" value=".">
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-2">
 				<label><b>Factura</b></label>
-				<input type="text" class="form-control form-control-sm" id="txt_factura" name="txt_factura">	
-				
+				<input type="text" class="form-control form-control-sm" id="txt_factura" name="txt_factura" value=".">
 			</div>
 		</div>		
     

@@ -463,6 +463,16 @@ class alimentos_recibidosM
 		return $this->db->String_Sql($sql);
 	}
 
+	function Trans_correos($pedido)
+	{
+		$sql = "SELECT Periodo, Item, CI, T, ME, Fecha, Fecha_P, Fecha_A, Fecha_An, Recibo_No, Envio_No, Giro_No, Cod_R, Cod_B, Cod_C,Cantidad, Porc_C, TOTAL, INGRESO, EGRESO, Mensaje, Cotizacion, CodigoU, CodigoA, CodigoAn,CodigoP, SucIng, SucPag, Llamadas, C,X, Mensaje2, Editado, Motivo, Motivo_Edicion, ID
+		     FROM Trans_Correos
+		     WHERE Item = '".$_SESSION['INGRESO']['item']."'
+		     AND Periodo = '".$_SESSION['INGRESO']['periodo']."' AND 
+		     Envio_No = '".$pedido."'";
+		return $this->db->datos($sql);
+	}
+
 	function bodegas($nivel=false)
 	{
 		$sql = "SELECT TC, CodBod, Bodega, Item, Periodo, X, ID
@@ -586,6 +596,20 @@ class alimentos_recibidosM
 
 				// print_r($sql);die();
 			
+		return $this->db->datos($sql);
+	}
+
+	function catalogo_procesos($TP=false)
+	{
+		$sql = "SELECT Item, Nivel, TP, Proceso, DC, Cheque, Mi_Cta, Cmds, Cta_Debe, Cta_Haber, Cta_Costo, Picture, Color, X, ID
+				FROM         Catalogo_Proceso
+				WHERE  Item = '".$_SESSION['INGRESO']['item']."' ";
+				if($TP)
+				{
+					$sql.= " AND TP = '".$TP."'";
+				}
+				$sql.="	ORDER BY Cmds, Proceso";
+
 		return $this->db->datos($sql);
 	}
 

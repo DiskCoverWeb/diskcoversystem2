@@ -265,6 +265,7 @@ class PDFC extends TCPDF{
 function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$formato=null,$nombre_archivo=null,$va=null,$imp1=null,
         $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
 {
+    // print_r($stmt2);die();
     $pdf = new PDFC(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT,true, 'UTF-8', false);
     $pdf->setPrintHeader(true);
     $pdf->setPrintFooter(false);
@@ -315,6 +316,7 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
     $sumdb = 0;
     if(count($stmt2)>0){
         foreach($stmt2 as $key => $value){
+            $array = array();
             $parc=''; $debe=''; $haber='';
             if($value['Parcial_ME']!=0 and $value['Parcial_ME']!='0.00'){
                 $parc = number_format($value['Parcial_ME'], 2, '.', '');
@@ -329,10 +331,11 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
             }
             $array = array($value['Cta'], $value['Cuenta'], $parc, $debe, $haber);
             $pdf->SetFont('times', '', 9);
+            // print_r(end($stmt2));die();
             if($value === end($stmt2)){
                 if($value['Detalle']!='.' && $value['Detalle']!=''){
                     $pdf->SetFont('helvetica', '', 8);
-                    $arr=array('', $value['Detalle'], '', '', '');
+                    $arr=array('',' - '.$value['Detalle'], '', '', '');
                     $pdf->Row($array);
                     $pdf->Row($arr);
                 }
@@ -343,7 +346,7 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
             else{
                 $pdf->Row($array);
                 if($value['Detalle']!='.' && $value['Detalle']!=''){
-                    $arr=array('', $value['Detalle'], '', '', '');
+                    $arr=array('', ' - '.$value['Detalle'], '', '', '');
                     $pdf->Row($arr);
                 }
             }

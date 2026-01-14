@@ -273,6 +273,8 @@ function guardar()
                         cargar_datos();
                         preguntas_transporte();
                     });
+            }else if(data==-3){
+                Swal.fire('No se pudo guardar','Revise el codigo de ingreso no esta bien codificado','warning');
             }
         
         }

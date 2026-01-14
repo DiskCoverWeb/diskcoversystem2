@@ -348,11 +348,17 @@ class alimentos_recibidosC
 	{
 
 		$empresa = explode('-',$parametros['txt_codigo']);
+		if(isset($empresa[0]) && $empresa[0]=="")
+		{
+			return -3;
+		}
 
 		// print_r($parametros);
 		// print_r($transporte);
 		// print_r($gavetas);
 		// die();
+
+		// print_r($empresa);die();
 
 		$dia = date('Ymd');
 		$numero_secuencial = numero_comprobante1("Ingreso_".$dia,$_SESSION['INGRESO']['item'],true,date('Y-m-d'));
@@ -565,6 +571,24 @@ class alimentos_recibidosC
 
 
 	   $num_ped = $parametro['txt_codigo']; 	
+
+	   //consulta el pedido original en trans_correos
+	   $ingresoOrg = $this->modelo->Trans_correos($num_ped);
+	   $Cmds = $parametro['txt_tipoCompra'];
+	   $Contra_Cta =  $parametro['txt_contra_cta'];
+	   if(count($ingresoOrg)>0)
+	   {
+	   		$Cmds = $ingresoOrg[0]['Cod_C'];
+	   		$Proceso = $this->modelo->catalogo_procesos($Cmds);
+	   		if(count($Proceso)>0)
+	   		{
+	   			$Contra_Cta = $Proceso[0]['Cta_Costo'];
+	   		}
+	   }
+
+	   	// print_r($IngresoOrg);die();
+
+
 	   $producto = $this->modelo->catalogo_productos($parametro['txt_referencia']);
 	   // print_r($producto);die();
 	   if($producto[0]['TDP']=='R')
@@ -618,11 +642,11 @@ class alimentos_recibidosC
 	   SetAdoFields('Codigo_Barra',$codigo_barras);
 	   SetAdoFields('CodBodega',-1);
 
-	   SetAdoFields('Contra_Cta',$parametro['txt_contra_cta']);
+	   SetAdoFields('Contra_Cta',$Contra_Cta);
 	   SetAdoFields('Codigo_P',$parametro['txt_codigo_p']);
 	   SetAdoFields('Codigo_Dr',$parametro['ddl_sucursales']);
 	   SetAdoFields('Tipo_Empaque',$parametro['txt_paquetes']);
-	   SetAdoFields('Cmds',$parametro['txt_tipoCompra']);
+	   SetAdoFields('Cmds',$Cmds);
 	   $resp = SetAdoUpdate();
 
 
@@ -1185,11 +1209,25 @@ class alimentos_recibidosC
 
 	function contabilizar($parametros)
 	{
+		// print_r($parametros);die();
 
 
 		SetAdoAddNew('Trans_Correos');
 		SetAdoFields('T','N');		
 		SetAdoFieldsWhere('ID',$parametros['txt_id']);
+		SetAdoUpdateGeneric();
+
+		//actualizar numero de factura y serie
+
+		if($parametros['txt_serie'] == ''){$parametros['txt_serie'] = '.';}
+		if($parametros['txt_factura'] == ''){$parametros['txt_factura'] = '.';}
+		
+		SetAdoAddNew('Trans_Kardex');
+		SetAdoFields('Serie',$parametros['txt_serie']);	
+		SetAdoFields('Factura',$parametros['txt_factura']);		
+		SetAdoFieldsWhere('Orden_No',$parametros['txt_codigo']);
+		SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
+		SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']);
 		SetAdoUpdateGeneric();
 
 		$asientos_SC = $this->egresoAli->datos_asiento_SC_trans($parametros['txt_codigo']);
@@ -1359,6 +1397,8 @@ class alimentos_recibidosC
 		   	// SetAdoFields('Detalle','Salida inventario prueba');
 		   	SetAdoFields('TP','CD');
 		   	SetAdoFieldsWhere('ID',$value['ID']);
+			SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
+			SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']);
 		  	SetAdoUpdateGeneric();
 		}
 		                		// print_r($resp);die();
