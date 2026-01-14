@@ -563,7 +563,7 @@ class alimentos_recibidosC
 	function guardar_recibido($parametro)
 	{
 		
-		print_r($parametro);die();
+		// print_r($parametro);die();
 	   // SetAdoAddNew("Trans_Kardex");
 
 		// print_r($parametro);
