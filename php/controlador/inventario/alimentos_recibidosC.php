@@ -563,7 +563,7 @@ class alimentos_recibidosC
 	function guardar_recibido($parametro)
 	{
 		
-		// print_r($parametro);die();
+		print_r($parametro);die();
 	   // SetAdoAddNew("Trans_Kardex");
 
 		// print_r($parametro);
@@ -576,6 +576,7 @@ class alimentos_recibidosC
 	   $ingresoOrg = $this->modelo->Trans_correos($num_ped);
 	   $Cmds = $parametro['txt_tipoCompra'];
 	   $Contra_Cta =  $parametro['txt_contra_cta'];
+	   $cta_inv = $parametros['txt_cta_inv'];
 	   if(count($ingresoOrg)>0)
 	   {
 	   		$Cmds = $ingresoOrg[0]['Cod_C'];
@@ -583,6 +584,7 @@ class alimentos_recibidosC
 	   		if(count($Proceso)>0)
 	   		{
 	   			$Contra_Cta = $Proceso[0]['Cta_Costo'];
+	   			$cta_inv = $Proceso[0]['Cta_Debe'];
 	   		}
 	   }
 
@@ -627,7 +629,7 @@ class alimentos_recibidosC
 	   SetAdoFields('Producto',$producto[0]['Producto']);
 	   SetAdoFields('UNIDAD',$producto[0]['Unidad']); /**/
 	   SetAdoFields('Entrada',$parametro['txt_cantidad']);
-	   SetAdoFields('Cta_Inv',$producto[0]['Cta_Inventario']);
+	   SetAdoFields('Cta_Inv',$cta_inv);
 	   SetAdoFields('Fecha_Fab',$parametro['txt_fecha_cla']);	
 	   SetAdoFields('Fecha_Exp',$parametro['txt_fecha_exp']);	   
 	   SetAdoFields('CodigoU',$_SESSION['INGRESO']['CodigoU']);   
