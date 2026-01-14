@@ -139,6 +139,7 @@ class comproC
 
 	function anular_comprobante($parametros)
 	{
+		$matener_kardex = $parametros['mantener_kardex'];
 		$datos_com = $this->modelo->Listar_el_Comprobante($parametros['numero'],$parametros['TP']);
 		$Co = $datos_com[0];
 
@@ -213,8 +214,14 @@ class comproC
 			foreach ($datos as $key => $value) {
 				$Codigo = $value["Codigo_Inv"];
 				$this->modelo->Trans_Kardex_update($Co['Item'],$Codigo);
-			}			        		         
-			$this->modelo->Trans_Kardex_delete($AnularComprobanteDe);
+			}
+			if($matener_kardex)
+			{				
+				$this->modelo->Trans_Kardex_update_matener($AnularComprobanteDe);
+
+			}else{			        		         
+				$this->modelo->Trans_Kardex_delete($AnularComprobanteDe);
+			}
 		}
 
 		//'Actualizar las Ctas a mayoriazar

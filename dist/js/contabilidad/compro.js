@@ -508,6 +508,7 @@ function resp_clave_ingreso(response)
 
 function anular_comprobante()
 {
+
     Swal.fire({
          title: 'Seguro de Anular El Comprobante No. '+$('#tipoc').val()+' - '+$('#ddl_comprobantes').val(),
          // text: "You won't be able to revert this!",
@@ -518,11 +519,38 @@ function anular_comprobante()
          confirmButtonText: 'SI'
        }).then((result) => {
          if (result.value) {
-             $('#myModal_anular').modal('show');			  	
+            if(tbl_kardex.data().any())
+            {
+              anular_comprobante_mantener_kardex();  	
+            }else
+            {
+               $('#myModal_anular').modal('show');       
+            }
          }
        })			
 }
 
+function anular_comprobante_mantener_kardex()
+{
+  Swal.fire({
+         title: 'Quiere mantener el kardex?',
+         // text: "You won't be able to revert this!",
+         icon: 'warning',
+         showCancelButton: true,
+         confirmButtonColor: '#3085d6',
+         cancelButtonColor: '#d33',
+         confirmButtonText: 'SI',
+         cancelButtonText:"NO"
+       }).then((result) => {
+         if (result.value) {
+          $('#txt_mantener_kardex').val(1);        
+         }else
+         {
+          $('#txt_mantener_kardex').val(0);
+         }         
+          $('#myModal_anular').modal('show');  
+       })     
+}
 function anular_comprobante_procesar()
 {
         $('#myModal_espera').modal('show');
@@ -534,6 +562,7 @@ function anular_comprobante_procesar()
                'Fecha':$('#MBFecha').val(),
                'Concepto':$('#LabelConcepto').val(),
                'Motivo_Anular':$('#txt_motivo_anulacion').val(),
+               'mantener_kardex':$('#txt_mantener_kardex').val(),
            }
             $.ajax({
          data:  {parametros:parametros},

@@ -223,6 +223,16 @@ class comproM
         $this->db->String_Sql($sql);
 	}
 
+	function Trans_Kardex_update_matener($AnularComprobanteDe)
+	{
+		$sql = "UPDATE Trans_Kardex 
+             	SET TP = '.',
+             	Numero = 0 ".$AnularComprobanteDe;
+             	// print_r($sql);die();
+        $this->db->String_Sql($sql);
+	}
+
+
 	function Trans_Kardex_update_cierre($AnularComprobanteDe,$FechaIni,$FechaFin)
 	{
 		$sql = "UPDATE Trans_Kardex 
@@ -236,10 +246,12 @@ class comproM
 
 	function Trans_Kardex_delete($AnularComprobanteDe)
 	{
-		$sql = "DELETE 	FROM Trans_Kardex ".$AnularComprobanteDe.
-               "AND TC = '".G_NINGUNO."' 
-              	AND Serie = '".G_NINGUNO."' 
-              	AND Factura = 0 ";
+		$sql = "DELETE 	FROM Trans_Kardex ".$AnularComprobanteDe;
+
+               // "AND TC = '".G_NINGUNO."' 
+              	// AND Serie = '".G_NINGUNO."' 
+              	// AND Factura = 0 ";
+              	// print_r($sql);die();
         $this->db->String_Sql($sql);
 	}
 

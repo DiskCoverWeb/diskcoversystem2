@@ -625,7 +625,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
 					<h4 class="modal-title">Formulario de Anulacion</h4>
 				</div>
 				<div class="modal-body">
@@ -633,12 +633,13 @@
 						<div class="col-sm-12">
 							<b>Motivo de la anulacion</b>
 							<input type="" name="" id="txt_motivo_anulacion" class="form-control input-sm">
+							<input type="hidden" name="" id="txt_mantener_kardex" class="form-control input-sm" value="0">
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" onclick="anular_comprobante_procesar()">Aceptar</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
 				</div>
 			</div>
 		</div>
