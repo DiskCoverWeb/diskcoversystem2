@@ -583,7 +583,7 @@ class alimentos_recibidosC
 	   		$Proceso = $this->modelo->catalogo_procesos($Cmds);
 	   		if(count($Proceso)>0)
 	   		{
-	   			$Contra_Cta = $Proceso[0]['Cta_Costo'];
+	   			$Contra_Cta = $Proceso[0]['Cta_Haber'];
 	   			$cta_inv = $Proceso[0]['Cta_Debe'];
 	   		}
 	   }
