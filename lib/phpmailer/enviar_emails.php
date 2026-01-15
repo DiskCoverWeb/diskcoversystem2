@@ -29,6 +29,7 @@ class enviar_emails
 
     // print_r('ingresa');die();
     $empresaGeneral = $this->Empresa_data();
+    // print_r($empresaGeneral);die();
     $server_externo = 0;
 
     if ($empresaGeneral[0]["smtp_Servidor"] == "relay.dnsexit.com" ||  $empresaGeneral[0]["smtp_Servidor"] == "mail.diskcoversystem.com") 
@@ -70,7 +71,7 @@ class enviar_emails
           $mail->Host = $empresaGeneral[0]['smtp_Servidor']; //Set the SMTP server to send through
           $mail->SMTPAuth = true; //Enable SMTP authentication
           $mail->Username = $empresaGeneral[0]['Email_Conexion']; //SMTP username
-          $mail->Password = $empresaGeneral[0]['Email_Contraseña'];
+          $mail->Password = $empresaGeneral[0]['Email_Clave'];
           if ($server_externo == 0) //SMTP password
           {
             if ($empresaGeneral[0]['smtp_SSL'] == 1) {
