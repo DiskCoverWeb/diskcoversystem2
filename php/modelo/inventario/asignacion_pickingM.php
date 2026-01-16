@@ -293,7 +293,7 @@ class asignacion_pickingM
 
      function lista_stock_ubicado($bodega=false,$cod_barras  =false,$grupo=false)
     {
-        $sql="select TK.Periodo, TK.T, CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.TP, Numero, Entrada, Salida, Valor_Unitario, TK.Valor_Total, Existencia, TK.Costo, Total, TK.Codigo_P, Descuento, Descuento1, Cta_Inv, Contra_Cta, Orden_No, TK.PVP, Total_IVA, Porc_C, CodigoU, TK.Item, Stock_Bod, Unit_Bod, Valor_Bod, Stock_Barra, Costo_Bod, Unit_Barr, Costo_Barr, Valor_Barr, Total_Bod, Total_Barr, Solicitud, CodigoL, Cod_Tarifa, Fecha_DUI, No_Refrendo, DUI, Precio_FOB, Comision, Trans_Unit, Guia_No, CodMarca, Lote_No, Codigo_Dr, Codigo_Tra, Fecha_Fab, Fecha_Exp, Modelo, Procedencia, Serie_No, TK.TC, Serie, TK.Factura, TK.Detalle, Centro_Costo, Tipo_Empaque, TK.ID, Cmds,Producto
+        $sql="SELECT TOP(50) TK.T, CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.Entrada,TK.Valor_Unitario, Existencia, TK.Costo, TK.Codigo_P, TK.Cta_Inv, TK.Contra_Cta, TK.Orden_No,TK.CodigoU, TK.Codigo_Tra, TK.ID, TK.Cmds,CP.Producto,TK.Fecha_Exp
             FROM Trans_Kardex TK
             INNER JOIN Catalogo_Productos CP on TK.Codigo_Inv = CP.Codigo_Inv
             where TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
@@ -317,8 +317,11 @@ class asignacion_pickingM
             if($grupo)
             {
                 $sql.=" AND CP.Codigo_Inv = '".$grupo."' ";
-
             }
+            $sql.=" group by TK.T, CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.Entrada,TK.Valor_Unitario, Existencia, TK.Costo, TK.Codigo_P, TK.Cta_Inv, TK.Contra_Cta, TK.Orden_No,TK.CodigoU, TK.Codigo_Tra, TK.ID, TK.Cmds,CP.Producto,TK.Fecha_Exp
+                having (sum(Entrada)-sum(Salida))>0
+                ORDER BY  Codigo_Barra";
+
 
             // print_r($sql);die();
         return $this->db->datos($sql);
@@ -381,9 +384,7 @@ class asignacion_pickingM
          AND Item = '".$_SESSION['INGRESO']['item']."'
          AND ID = '".$id."'";
                // print_r($sql);die();
-
         return $this->db->datos($sql);   
-
     }
 
     function buscar_producto($query=false,$id=false,$grupo=false)

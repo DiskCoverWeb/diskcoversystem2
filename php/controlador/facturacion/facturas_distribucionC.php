@@ -1753,6 +1753,9 @@ class facturas_distribucion
 		$listado_kardex = $this->modelo->detalle_Factura('NDO',$parametros['serie'],$Factura_No);
 		// print_r($listado_kardex);die();
 		foreach ($listado_kardex as $key => $value) {
+			$ctaCosto = $value['Cta_Costo_Venta'];
+			$cta = $this->modelo->catalogo_procesos($value['DFCMDS']);
+			if(count($cta)>0) {$ctaCosto = $cta[0]['Cta_Costo'];}
 			SetAdoAddNew('Trans_Kardex');
 			SetAdoFields('Codigo_P', $value['CodigoC']);
 			SetAdoFields('Codigo_Inv', $value['Codigo']);
@@ -1766,7 +1769,7 @@ class facturas_distribucion
 			SetAdoFields('Total', number_format($value['Total'],4,'.',''));
 			SetAdoFields('Costo', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_Costo'],'.','.'));
 			SetAdoFields('Cta_Inv', $value['Cta_Inventario']);
-			SetAdoFields('Contra_Cta', $value['Cta_Costo_Venta']);
+			SetAdoFields('Contra_Cta', $ctaCosto);
 			SetAdoFields('TC', $value['DFTC']);
 			SetAdoFields('Factura', $value['FACT']);
 			SetAdoFields('Serie',$value['Serie']);			

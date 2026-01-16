@@ -453,7 +453,17 @@ class asignacion_pickingC
             // }
             if($dias<=0){$color = '#ffff00';}else if ($dias<=8 && $dias>0) { $color = '#ff0000';}
 
-           $tr[] = array('id'=>$value['ID'],'text'=>$value['Codigo_Barra'],'data'=>$value,'fondo'=>$color,'texto'=>$color2);
+             $existencias = costo_venta($value['Codigo_Inv'],$value['Codigo_Barra']);
+             $stock = 0;
+             if(count($existencias)>0)
+             {
+                $stock = $existencias[0]['Existencia'];
+             }
+             if($stock>0)
+             {
+
+                $tr[] = array('id'=>$value['ID'],'text'=>$value['Codigo_Barra'],'data'=>$value,'fondo'=>$color,'texto'=>$color2);
+            }
             $color2 = '#000000';
          $color = '';
         }
@@ -469,10 +479,12 @@ class asignacion_pickingC
         $datos = $this->egresos->buscar_producto(false,$parametros['codigo']);
        
         // print_r($existencias); die();
+        // print_r($parametros);die();
+        // print_r($datos);die();
         $validado_grupo =1;
         $lista_producto = array();
         foreach ($datos as $key => $value) {
-             $existencias = costo_venta($value['Codigo_Inv']);
+             $existencias = costo_venta($value['Codigo_Inv'],$value['Codigo_Barra']);
              // print_r($existencias);die();
              $value['Stock'] = $existencias[0]['Existencia'];
 
@@ -542,7 +554,7 @@ class asignacion_pickingC
             $stock = $stock[0]['Cantidad'];
         }
 
-        // print_r($cant_ing);die();
+        // print_r($cant_ing);
         // print_r($stock);die();
         $cant_ing = $cant_ing+$parametros['Cantidad'];
 

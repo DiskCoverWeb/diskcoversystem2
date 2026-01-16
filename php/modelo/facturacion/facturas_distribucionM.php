@@ -258,6 +258,20 @@ class facturas_distribucionM
     return $this->db->datos($sql);
   }
 
+  function catalogo_procesos($TP=false)
+  {
+    $sql = "SELECT Item, Nivel, TP, Proceso, DC, Cheque, Mi_Cta, Cmds, Cta_Debe, Cta_Haber, Cta_Costo, Picture, Color, X, ID
+        FROM         Catalogo_Proceso
+        WHERE  Item = '".$_SESSION['INGRESO']['item']."' ";
+        if($TP)
+        {
+          $sql.= " AND TP = '".$TP."'";
+        }
+        $sql.=" ORDER BY Cmds, Proceso";
+
+    return $this->db->datos($sql);
+  }
+
   function LlenarSelectIVA($fecha)
   {
     $sql = "SELECT Codigo, Porc 
