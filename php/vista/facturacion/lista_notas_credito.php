@@ -6,6 +6,8 @@
 
   $(document).ready(function(){
 
+    catalogoLineas();
+
       tbl_nota_credito_all = $('#tbl_nota_credito').DataTable({
           // responsive: true,
           language: {
@@ -113,7 +115,7 @@
               },
               { data: 'T' },
               { data: 'Cliente' },
-              { data: 'TC' },
+              { data: 'TP' },
               { data: 'Serie_NC' },
               { data: 'Autorizacion_NC' },
               { data: 'Secuencial_NC' },
