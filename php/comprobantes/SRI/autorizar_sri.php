@@ -316,7 +316,7 @@ class autorizacion_sri
 
 	            
 	           $xml = $this->generar_xml($cabecera,$detalle);
-	           // print_r('expression');
+	           // print_r($xml);
 	           // die();
 
 	           if($xml==1)
@@ -335,10 +335,12 @@ class autorizacion_sri
 			   		 	$enviar_sri = $this->enviar_xml_sri(
 			   		 		$cabecera['ClaveAcceso'],
 			   		 		$this->linkSriRecepcion);
+			   		 	// print_r($enviar_sri);die();
 			   		 	// die();
 			   		 	if($enviar_sri[0]==1)
 			   		 	{
 			   		 		//una vez enviado comprobamos el estado de la factura
+			   		 		sleep(3);
 			   		 		$resp =  $this->comprobar_xml_sri($cabecera['ClaveAcceso'],$this->linkSriAutorizacion);
 			   		 		if($resp[0]==1)
 			   		 		{
