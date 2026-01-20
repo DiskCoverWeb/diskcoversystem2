@@ -75,13 +75,18 @@ class lista_notas_creditoC
    function tabla_facturas($parametros)
     {
 
-    	// print_r($parametros);die();
+    	$serie = false;
+    	if(isset($parametros['serie']) && $parametros['serie']!='')
+    	{
+    		$serie = explode(" ", $parametros['serie']);
+    		$serie = $serie[1];
+    	}
     	$codigo = $parametros['ci'];
-    	$tbl = $this->modelo->notas_credito_emitidas_tabla($codigo,$parametros['desde'],$parametros['hasta'],$parametros['serie']);
+    	$tbl = $this->modelo->notas_credito_emitidas_tabla($codigo,$parametros['desde'],$parametros['hasta'],$serie);
     	$tr='';
 
     	foreach ($tbl as $key => $value) {
-    		$exis = $this->sri->catalogo_lineas($value['TC'], $value['Serie']);
+    		$exis = $this->sri->catalogo_lineas($value['TP'], $value['Serie']);
 				$tbl[$key]['ExisteSerie'] = 'No';
 				if(count($exis)>0)
 				{
