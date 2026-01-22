@@ -459,6 +459,7 @@ class asignacion_pickingC
              {
                 $stock = $existencias[0]['Existencia'];
              }
+             // print_r($existencias);die();
              if($stock>0)
              {
 
@@ -486,7 +487,7 @@ class asignacion_pickingC
         foreach ($datos as $key => $value) {
              $existencias = costo_venta($value['Codigo_Inv'],$value['Codigo_Barra']);
              // print_r($existencias);die();
-             $value['Stock'] = $existencias[0]['Existencia'];
+             $value['Stock'] = number_format($existencias[0]['Existencia'],2,'.','');
 
             if($parametros['grupo'] == $value['Codigo_Inv'])
             {
