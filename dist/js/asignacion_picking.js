@@ -209,7 +209,7 @@ function validar_codigo()
                     $('#txt_ubicacion').val(data.ubicacion)
                     $('#txt_donante').val(data.Cliente)
                     // $('#txt_grupo').val(data.Producto)
-                    $('#txt_stock').val(data.Entrada)
+                    $('#txt_stock').val(data.Stock)
                     $('#txt_unidad').val(data.Unidad)
                     $('#txt_fecha_exp').val(formatoDate(data.Fecha.date));
 
