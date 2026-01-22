@@ -6067,7 +6067,7 @@ function LeerCta($CodigoCta ) //optimizado
   }
 }
 
-function costo_venta($codigo_inv,$codigoBarras=false)  // optimizado
+function costo_venta($codigo_inv,$codigoBarras=false,$Cmds=false)  // optimizado
   {
     $conn = new db();
     $sql = "SELECT  SUM(Entrada-Salida) as 'Existencia' 
@@ -6080,6 +6080,10 @@ function costo_venta($codigo_inv,$codigoBarras=false)  // optimizado
     if($codigoBarras)
       {
         $sql.=" AND Codigo_Barra='".$codigoBarras."'";
+      }
+     if($Cmds)
+      {
+        $sql.=" AND Cmds='".$Cmds."'";
       }
     // print_r($sql);die();
     $datos = $conn->datos($sql);

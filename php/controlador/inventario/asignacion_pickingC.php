@@ -453,7 +453,7 @@ class asignacion_pickingC
             // }
             if($dias<=0){$color = '#ffff00';}else if ($dias<=8 && $dias>0) { $color = '#ff0000';}
 
-             $existencias = costo_venta($value['Codigo_Inv'],$value['Codigo_Barra']);
+             $existencias = costo_venta($value['Codigo_Inv'],$value['Codigo_Barra'],$value['Cmds']);
              $stock = 0;
              if(count($existencias)>0)
              {
