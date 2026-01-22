@@ -265,124 +265,130 @@ if (isset($_GET['guardarAsignacion1'])){
 
     }
 
-
-if (isset($_GET['guardarAsignacion'])) {
-    // Crear un array con los datos del formulario
-    $params = array(
-        'Cliente' => $_POST['Cliente'],
-        'CI_RUC' => $_POST['CI_RUC'],
-        'Codigo' => $_POST['Codigo'],
-        'TB' => $_POST['TB'],
-        'Calificacion' => $_POST['Calificacion'],
-        'CodigoA' => $_POST['CodigoA'],
-        'Representante' => $_POST['Representante'],
-        'CI_RUC_R' => $_POST['CI_RUC_R'],
-        'Telefono_R' => $_POST['Telefono_R'],
-        'Contacto' => $_POST['Contacto'],
-        'Profesion' => $_POST['Profesion'],
-        'Dia_Ent' => $_POST['Dia_Ent'],
-        'Hora_Ent' => $_POST['Hora_Ent'],
-        'Sexo' => $_POST['Sexo'],
-        'Email' => $_POST['Email'],
-        'Email2' => $_POST['Email2'],
-        'Provincia' => $_POST['Provincia'],
-        'Ciudad' => $_POST['Ciudad'],
-        'Canton' => $_POST['Canton'],
-        'Parroquia' => $_POST['Parroquia'],
-        'Barrio' => $_POST['Barrio'],
-        'CalleP' => $_POST['CalleP'],
-        'CalleS' => $_POST['CalleS'],
-        'Referencia' => $_POST['Referencia'],
-        'Telefono' => $_POST['Telefono'],
-        'TelefonoT' => $_POST['TelefonoT'],
-        //datos extra
-        'CodigoA2' => $_POST['CodigoA2'],
-        'Dia_Ent2' => $_POST['Dia_Ent2'],
-        'Hora_Registro' => $_POST['Hora_Registro'],
-        'Envio_No' => $_POST['Envio_No'],
-        'Comentario' => $_POST['Comentario'],
-        'No_Soc' => $_POST['No_Soc'],
-        //'Area' => $_POST['Area'],
-        'TipoPoblacion' => $_POST['TipoPoblacion'],
-        'Acreditacion' => $_POST['Acreditacion'],
-        'Tipo_Dato' => $_POST['Tipo_Dato'],
-        'Cod_Fam' => $_POST['Cod_Fam'],
-        'Observaciones' => $_POST['Observaciones']
-    );
-
-
-    // Verificar si se han cargado archivos
-    if (isset($_FILES['Evidencias']) && $_FILES['Evidencias']['error'][0] == UPLOAD_ERR_OK) {
-        $nombresArchivos = array();
-        $filePathBase = dirname(__DIR__, 2) . "/comprobantes/sustentos/EVIDENCIA_" . $_SESSION['INGRESO']['Entidad'] . "/EVIDENCIA_" . $_SESSION['INGRESO']['item'] . "/";
-        $filePathBase = str_replace(' ', '_', $filePathBase);
-
-        // Crear el directorio si no existe
-        if (!is_dir($filePathBase)) {
-            mkdir($filePathBase, 0777, true);
-        }
-
-        // Iterar sobre cada archivo cargado
-        foreach ($_FILES['Evidencias']['name'] as $indice => $nombre) {
-            $filename = pathinfo($nombre, PATHINFO_FILENAME);
-            $filename = str_replace(' ', '_', $filename);
-            $ext = strtolower(pathinfo($nombre, PATHINFO_EXTENSION));
-            $filepath = $filePathBase . $filename . '.' . $ext;
-
-            switch ($ext) {
-                case 'doc':
-                case 'docx':
-                    $letra_ext = 'W';
-                    break;
-                case 'pdf':
-                    $letra_ext = 'D';
-                    break;
-                case 'jpg':
-                case 'png':
-                    $letra_ext = 'P';
-                    break;
-                default:
-                    $letra_ext = 'O';
-            }
-
-            $codigo = $params['Codigo'];
-
-            $filename = $filename . '_' . $letra_ext . $codigo;
-            $filepath = $filePathBase . $filename . '.' . $ext;
-
-            /*$contador = 1;
-            while (file_exists($filepath)) {
-                $filename = $filename . '_' . $contador;
-                $filepath = $filePathBase . $filename . '.' . $ext;
-                $contador++;
-            }*/
-
-            if (move_uploaded_file($_FILES['Evidencias']['tmp_name'][$indice], $filepath)) {
-                $nombresArchivos[] = $filename;
-            } else {
-                echo json_encode(["res" => '0', "mensaje" => "No se ha cargado el archivo: " . $nombre]);
-                return;
-            }
-        }
-
-        foreach ($nombresArchivos as &$nombreArchivo) {
-            $nombreArchivo = $nombreArchivo . ',';
-        }
-        unset($nombreArchivo);
-        $params['NombreArchivo'] = implode('', $nombresArchivos);
-
-        if (strlen($params['NombreArchivo']) > 90) {
-            echo json_encode(["res" => '0', "mensaje" => "El nombre del archivo supera el máximo de caracteres", "datos" => $params['NombreArchivo']]);
-        } 
-    } else{
-        $params['NombreArchivo'] = '';
+    if(isset($_GET['guardar_new_ci']))
+    {       
+       $parametros =  $_POST['parametros'];
+       echo json_encode($controlador->guardar_new_ci($parametros));
     }
-    echo json_encode($controlador->guardarAsignacion($params));
-    /*else {
-        echo json_encode(["res" => '0', "mensaje" => "No se ha cargado ningún archivo"]);
-    }*/
 
-}
+
+// if (isset($_GET['guardarAsignacion'])) {
+//     // Crear un array con los datos del formulario
+//     $params = array(
+//         'Cliente' => $_POST['Cliente'],
+//         'CI_RUC' => $_POST['CI_RUC'],
+//         'Codigo' => $_POST['Codigo'],
+//         'TB' => $_POST['TB'],
+//         'Calificacion' => $_POST['Calificacion'],
+//         'CodigoA' => $_POST['CodigoA'],
+//         'Representante' => $_POST['Representante'],
+//         'CI_RUC_R' => $_POST['CI_RUC_R'],
+//         'Telefono_R' => $_POST['Telefono_R'],
+//         'Contacto' => $_POST['Contacto'],
+//         'Profesion' => $_POST['Profesion'],
+//         'Dia_Ent' => $_POST['Dia_Ent'],
+//         'Hora_Ent' => $_POST['Hora_Ent'],
+//         'Sexo' => $_POST['Sexo'],
+//         'Email' => $_POST['Email'],
+//         'Email2' => $_POST['Email2'],
+//         'Provincia' => $_POST['Provincia'],
+//         'Ciudad' => $_POST['Ciudad'],
+//         'Canton' => $_POST['Canton'],
+//         'Parroquia' => $_POST['Parroquia'],
+//         'Barrio' => $_POST['Barrio'],
+//         'CalleP' => $_POST['CalleP'],
+//         'CalleS' => $_POST['CalleS'],
+//         'Referencia' => $_POST['Referencia'],
+//         'Telefono' => $_POST['Telefono'],
+//         'TelefonoT' => $_POST['TelefonoT'],
+//         //datos extra
+//         'CodigoA2' => $_POST['CodigoA2'],
+//         'Dia_Ent2' => $_POST['Dia_Ent2'],
+//         'Hora_Registro' => $_POST['Hora_Registro'],
+//         'Envio_No' => $_POST['Envio_No'],
+//         'Comentario' => $_POST['Comentario'],
+//         'No_Soc' => $_POST['No_Soc'],
+//         //'Area' => $_POST['Area'],
+//         'TipoPoblacion' => $_POST['TipoPoblacion'],
+//         'Acreditacion' => $_POST['Acreditacion'],
+//         'Tipo_Dato' => $_POST['Tipo_Dato'],
+//         'Cod_Fam' => $_POST['Cod_Fam'],
+//         'Observaciones' => $_POST['Observaciones']
+//     );
+
+
+//     // Verificar si se han cargado archivos
+//     if (isset($_FILES['Evidencias']) && $_FILES['Evidencias']['error'][0] == UPLOAD_ERR_OK) {
+//         $nombresArchivos = array();
+//         $filePathBase = dirname(__DIR__, 2) . "/comprobantes/sustentos/EVIDENCIA_" . $_SESSION['INGRESO']['Entidad'] . "/EVIDENCIA_" . $_SESSION['INGRESO']['item'] . "/";
+//         $filePathBase = str_replace(' ', '_', $filePathBase);
+
+//         // Crear el directorio si no existe
+//         if (!is_dir($filePathBase)) {
+//             mkdir($filePathBase, 0777, true);
+//         }
+
+//         // Iterar sobre cada archivo cargado
+//         foreach ($_FILES['Evidencias']['name'] as $indice => $nombre) {
+//             $filename = pathinfo($nombre, PATHINFO_FILENAME);
+//             $filename = str_replace(' ', '_', $filename);
+//             $ext = strtolower(pathinfo($nombre, PATHINFO_EXTENSION));
+//             $filepath = $filePathBase . $filename . '.' . $ext;
+
+//             switch ($ext) {
+//                 case 'doc':
+//                 case 'docx':
+//                     $letra_ext = 'W';
+//                     break;
+//                 case 'pdf':
+//                     $letra_ext = 'D';
+//                     break;
+//                 case 'jpg':
+//                 case 'png':
+//                     $letra_ext = 'P';
+//                     break;
+//                 default:
+//                     $letra_ext = 'O';
+//             }
+
+//             $codigo = $params['Codigo'];
+
+//             $filename = $filename . '_' . $letra_ext . $codigo;
+//             $filepath = $filePathBase . $filename . '.' . $ext;
+
+//             /*$contador = 1;
+//             while (file_exists($filepath)) {
+//                 $filename = $filename . '_' . $contador;
+//                 $filepath = $filePathBase . $filename . '.' . $ext;
+//                 $contador++;
+//             }*/
+
+//             if (move_uploaded_file($_FILES['Evidencias']['tmp_name'][$indice], $filepath)) {
+//                 $nombresArchivos[] = $filename;
+//             } else {
+//                 echo json_encode(["res" => '0', "mensaje" => "No se ha cargado el archivo: " . $nombre]);
+//                 return;
+//             }
+//         }
+
+//         foreach ($nombresArchivos as &$nombreArchivo) {
+//             $nombreArchivo = $nombreArchivo . ',';
+//         }
+//         unset($nombreArchivo);
+//         $params['NombreArchivo'] = implode('', $nombresArchivos);
+
+//         if (strlen($params['NombreArchivo']) > 90) {
+//             echo json_encode(["res" => '0', "mensaje" => "El nombre del archivo supera el máximo de caracteres", "datos" => $params['NombreArchivo']]);
+//         } 
+//     } else{
+//         $params['NombreArchivo'] = '';
+//     }
+//     echo json_encode($controlador->guardarAsignacion($params));
+//     /*else {
+//         echo json_encode(["res" => '0', "mensaje" => "No se ha cargado ningún archivo"]);
+//     }*/
+
+// }
 
 
 if (isset($_GET['provincias'])) {
@@ -1605,6 +1611,18 @@ class registro_beneficiarioC
         return $lista;
 
     }
+
+    function guardar_new_ci($parametros)
+    {
+       // print_r($parametros);die();
+        SetAdoAddNew("Clientes");  
+        SetAdoFields('CI_RUC', $parametros['ci']);           
+        SetAdoFields('TD', $parametros['td']);           
+        SetAdoFields('Codigo', $parametros['codigo']);        
+        SetAdoFieldsWhere('ID', $parametros['id']);
+        return SetAdoUpdateGeneric();
+    }
+
 
 }
 ?>

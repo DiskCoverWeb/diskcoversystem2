@@ -71,7 +71,7 @@
                         <b>Nombre del Beneficiario/Usuario <span style="color: red;">*</span></b>
                         <div class="input-group">
                             <input type="text" name="cliente" id="cliente" class="form-control form-control-sm" onblur="validar_nombre()">
-                            <!-- <button class="btn-sm btn btn-primary"><i class="bx bx-search"></i></button> -->
+                            <button title="Editar CI - RUC" id="btn_editar_ci" name="btn_editar_ci" type="button" class="btn-sm btn btn-primary" disabled onclick="modalCambioCI()"><i class="bx bx-pencil"></i></button>
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -1490,6 +1490,35 @@
                     <iframe id="modVAFrame" src="" frameborder="0" style="height:100%; width:100%;"></iframe>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div id="modalCambioCI_RUC" class="modal fade">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modVATitulo"></h4>
+                    <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <b>Ci o RUC Nuevo</b>
+                            <div class="input-group">
+                                 <input type="text" name="txt_ci" id="txt_ci" class="form-control form-control-sm" onblur="codigo_new()"> 
+                                  <input type="text" name="txt_td_new" id="txt_td_new" style="color:red; width:35px" readonly>  
+                                  <input type="hidden" name="txt_codigo_new" id="txt_codigo_new" class="form-control form-control-sm">                                
+                            </div>
+                           
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="guardar_new_ci()">Guardar</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>

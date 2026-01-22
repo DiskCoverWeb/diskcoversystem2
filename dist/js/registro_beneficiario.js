@@ -3300,7 +3300,7 @@ function tipo_discapacidad()
 // ================================================= fin para familias =================================
 
 function llenarCamposInfo(datos) {
-
+    $('#btn_editar_ci').attr('disabled',false);
     //console.log(datos);
      $('#txt_id_datos_extra').val(datos.cliente_datos_extra.ID);
     actualizarEstilo(datos.Tipo_Beneficiario.Color)
@@ -3639,7 +3639,7 @@ function codigo() {
              if(response.Tipo_Beneficiario=='P')
             {
                 Swal.fire({
-                  title: 'Numero de cedula insonsistente?',
+                  title: 'Numero de cedula inconsistente?',
                   text: "Desea registrar como numero de cedula?",
                   type: 'warning',
                   showCancelButton: true,
@@ -4113,4 +4113,81 @@ function limpiar_info_general()
     $('#diaEntregac').val('');
     $('#horaEntregac').val('');
     
+}
+
+function modalCambioCI(){
+    $('#modalCambioCI_RUC').modal('show');
+}
+
+function guardar_new_ci()
+{
+    var parametros = {
+        'id': $('#txt_id').val(),
+        'ci':$('#txt_ci').val(),
+        'td':$('#txt_td_new').val(),
+        'codigo':$('#txt_codigo_new').val(),
+    }
+      $.ajax({
+        type: "POST",
+        url: '../controlador/inventario/registro_beneficiarioC.php?guardar_new_ci=true',
+        data: { parametros: parametros },
+        dataType: 'json',
+        success: function (data) {
+            if(data==1)
+            {
+                $('#modalCambioCI_RUC').modal("hide");
+               Swal.fire("Se recargara la pagina","CI / RUC Actualizadas","success").then(function(){
+                location.reload();
+               })
+            }else
+            {
+               Swal.fire("Se recargara la pagina","No se pudo actualizar","error")                
+            }
+        }
+    });
+}
+
+function codigo_new() {
+  $("#myModal_espera").modal('show');
+  var ci = $('#txt_ci').val();
+        $.ajax({
+          url: '../controlador/modalesC.php?codigo=true',
+          type: 'post',
+          dataType: 'json',
+          data: { ci: ci },
+          beforeSend: function () {
+            // $("#myModal_espera").modal('show');
+          },
+          success: function (response) {
+            setTimeout(() => {  $("#myModal_espera").modal('hide');   }, 1000);
+
+            $('#txt_codigo_new').val(response.Codigo_RUC_CI);
+             if(response.Tipo_Beneficiario=='P')
+            {
+                Swal.fire({
+                  title: 'Numero de cedula inconsistente?',
+                  text: "Desea registrar como numero de cedula?",
+                  type: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Si!'
+                }).then((result) => {
+                  if (result.value==true) {
+                    $('#txt_td_new').val("C");    
+                  }else
+                  {
+                    $('#txt_td_new').val(response.Tipo_Beneficiario);
+                  }
+                })
+
+            }else
+            {
+                $('#txt_td_new').val(response.Tipo_Beneficiario);          
+            }
+            $("#myModal_espera").modal('hide');
+
+
+          }
+        });
 }
