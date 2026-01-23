@@ -637,13 +637,16 @@ class autorizacion_sri
 	       	 	// // print_r($validar_autorizado);die();
 	       	 	// if($validar_autorizado == -1)
 		   		//  {
+
+
+	       	 	
 		   		 	$enviar_sri = $this->enviar_xml_sri(
 		   		 		$aut,
 		   		 		$this->linkSriRecepcion);
 		   		 	if($enviar_sri==1)
 		   		 	{
 		   		 		//una vez enviado comprobamos el estado de la factura
-		   		 		// sleep(3);
+		   		 		sleep(3);
 		   		 		$resp =  $this->comprobar_xml_sri($aut,$this->linkSriAutorizacion);
 		   		 		if($resp==1)
 		   		 		{
