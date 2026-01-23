@@ -690,12 +690,12 @@ function generar_nc()
             location.reload();    
 
           })
-        }else if(data[0]==-1)
+        }else if(data[0]==-1 || data[0]==0)
         {
 
           Swal.fire('XML DEVUELTO:'+data[3],'XML DEVUELTO','error').then(function(){ 
             var url=  '../../TEMP/'+data.pdf+'.pdf';    window.open(url, '_blank');   
-            tipo_error_sri(data.clave);
+            tipo_error_sri(data[1]);
           }); 
         }else if(data[0]==2)
         {
