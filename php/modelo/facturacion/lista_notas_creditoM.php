@@ -18,7 +18,7 @@ class lista_notas_creditoM
 
 	function notas_credito_emitidas_tabla($codigo=false,$desde=false,$hasta=false,$serie=false,$secuencia_NC=false)
 	{
-		$sql = " SELECT TOP 300 F.T,F.TP, F.Fecha, C.Cliente, F.Serie, F.Factura, F.Banco, F.Cheque, F.Abono, F.Mes, F.Comprobante, F.Autorizacion, F.Serie_NC,Secuencial_NC, F.Autorizacion_NC, F.Base_Imponible, F.Porc, C.Representante As Razon_Social, F.Cta,F.Cta_CxP,FA.Total_MN,FA.Descuento,FA.Descuento2,C.CI_RUC,C.Email,C.Codigo,C.EmailR,C.Email2
+		$sql = " SELECT TOP 300 F.T,F.TP, F.Fecha, C.Cliente, F.Serie, F.Factura, F.Banco, F.Cheque, F.Abono, F.Mes, F.Comprobante, F.Autorizacion, F.Serie_NC,Secuencial_NC, F.Autorizacion_NC, F.Base_Imponible, F.Porc, C.Representante As Razon_Social, F.Cta,F.Cta_CxP,FA.Total_MN,FA.Descuento,FA.Descuento2,C.CI_RUC,C.Email,C.Codigo,C.EmailR,C.Email2,FA.Porc_IVA,FA.Fecha as 'FechaF',F.Cod_Ejec,Cod_CxC,Tipo_Pago,F.CodigoU,FA.TB
            FROM Trans_Abonos As F,Clientes C,Facturas FA 
            WHERE F.Item = '".$_SESSION['INGRESO']['item']."' 
            AND F.Periodo = '".$_SESSION['INGRESO']['periodo']."'
@@ -52,7 +52,7 @@ class lista_notas_creditoM
 	    {
 	    	$sql.=" AND Secuencial_NC = '".$secuencia_NC."'";
 	    }
-	    $sql.=" group by F.T,F.TP, F.Fecha, C.Cliente, F.Serie, F.Factura, F.Banco, F.Cheque, F.Abono, F.Mes, F.Comprobante, F.Autorizacion, F.Serie_NC,Secuencial_NC,F.Autorizacion_NC,F.Base_Imponible,F.Porc,C.Representante,F.Cta,F.Cta_CxP,FA.Total_MN,FA.Descuento,FA.Descuento2,C.CI_RUC,C.Email,C.Codigo,C.EmailR,C.Email2 ";
+	    $sql.=" group by F.T,F.TP, F.Fecha, C.Cliente, F.Serie, F.Factura, F.Banco, F.Cheque, F.Abono, F.Mes, F.Comprobante, F.Autorizacion, F.Serie_NC,Secuencial_NC,F.Autorizacion_NC,F.Base_Imponible,F.Porc,C.Representante,F.Cta,F.Cta_CxP,FA.Total_MN,FA.Descuento,FA.Descuento2,C.CI_RUC,C.Email,C.Codigo,C.EmailR,C.Email2,FA.Porc_IVA,FA.Fecha,F.Cod_Ejec,Cod_CxC,F.CodigoU,Tipo_Pago,FA.TB ";
 	    $sql.=" ORDER BY F.Banco, F.Cheque, C.Cliente, F.Serie, F.Factura, F.Fecha ";
 		// print_r($sql);die();    
 		return $this->db->datos($sql);

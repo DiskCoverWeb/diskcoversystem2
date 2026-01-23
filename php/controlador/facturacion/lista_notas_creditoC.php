@@ -104,7 +104,9 @@ class lista_notas_creditoC
     	// print_r($parametros);die();
     	$datos = $this->modelo->notas_credito_emitidas_tabla($codigo=false,$desde=false,$hasta=false,$parametros['serie'],$parametros['nota']);
 
-    	$TFA['Serie_NC'] = $parametros['serie'];
+    	// print_r($datos);
+
+    $TFA['Serie_NC'] = $parametros['serie'];
 		$TFA['Nota_Credito'] = $parametros['nota'];
 		$TFA['Serie'] = $datos[0]['Serie'];
 		$TFA['TC'] = $datos[0]['Serie'];
@@ -122,6 +124,7 @@ class lista_notas_creditoC
 		$TFA['RUC_CI'] = $datos[0]['CI_RUC'];
 		$TFA['Cliente'] = $datos[0]['Cliente'];
 		$TFA['Razon_Social'] = $datos[0]['Cliente'];
+		// die();
 
 
         $res = $this->sri->SRI_Crear_Clave_Acceso_Nota_Credito($TFA);
