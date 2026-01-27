@@ -38,7 +38,7 @@ class enviar_emails
       $server_externo = 1;
       $empresaGeneral[0]['smtp_Servidor'] = "imap.diskcoversystem.com";
       $empresaGeneral[0]['Email_Conexion'] = "admin";
-      $empresaGeneral[0]['Email_Contraseña'] = "Admin@2023";
+      $empresaGeneral[0]['Email_Clave'] = "Admin@2023";
       $empresaGeneral[0]['smtp_SSL'] = 0;
       $empresaGeneral[0]['smtp_Puerto'] = 587;
     }
@@ -66,7 +66,7 @@ class enviar_emails
 
         try {
           //Server settings
-          // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                 //Enable verbose debug output
+          $mail->SMTPDebug = SMTP::DEBUG_SERVER;                 //Enable verbose debug output
           $mail->isSMTP(); //Send using SMTP
           $mail->Host = $empresaGeneral[0]['smtp_Servidor']; //Set the SMTP server to send through
           $mail->SMTPAuth = true; //Enable SMTP authentication
