@@ -420,7 +420,7 @@
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary btn-sm btn-block"  id="btn_email" onclick="enviar_mail()"> Enviar Email</button>
-        <button type="button" class="btn btn-default btn-sm btn-block"   data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-default btn-sm btn-block" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
