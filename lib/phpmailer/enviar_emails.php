@@ -66,7 +66,7 @@ class enviar_emails
 
         try {
           //Server settings
-          $mail->SMTPDebug = SMTP::DEBUG_SERVER;                 //Enable verbose debug output
+          // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                 //Enable verbose debug output
           $mail->isSMTP(); //Send using SMTP
           $mail->Host = $empresaGeneral[0]['smtp_Servidor']; //Set the SMTP server to send through
           $mail->SMTPAuth = true; //Enable SMTP authentication
@@ -90,7 +90,7 @@ class enviar_emails
             $mail->Port = $empresaGeneral[0]['smtp_Puerto'];
           }
 
-          $from = str_replace("@diskcoversystem.com","@smtp.diskcoversystem.com", $_SESSION['INGRESO']['Email_Conexion_CE']);
+          $from = str_replace("@diskcoversystem.com","@imap.diskcoversystem.com", $_SESSION['INGRESO']['Email_Conexion_CE']);
 
           $mail->setFrom($from, 'DiskCover System');
           $mail->addAddress($value); //Add a recipient
