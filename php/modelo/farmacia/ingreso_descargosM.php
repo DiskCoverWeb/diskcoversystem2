@@ -51,7 +51,7 @@ class ingreso_descargosM
 		AND Item = '".$_SESSION['INGRESO']['item']."'
 		AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
 		AND T <> 'A'
-        AND Numero NOT IN (0, -1)
+        AND Numero <> -1
 		AND CodBodega ='".$Codbod."' ";
 		// print_r($sql);die();
 
