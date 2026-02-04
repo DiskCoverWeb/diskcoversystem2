@@ -232,3 +232,29 @@
 
   </div>
 </div>
+
+<div id="myModal_edit_fecha" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+		  <h4 class="modal-title text-white" id="">Cambiar Fecha</h4>
+		  <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        	<div class="row" id="">
+        		<div class="col-sm-12">
+        			<input type="date" name="txt_fecha_edit" id="txt_fecha_edit" class="form-control form-control-sm">
+        			<input type="hidden" name="txt_ordenEdit" id="txt_ordenEdit">
+        		</div>
+          </div> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary border border-1" onclick="editarFecha()">Editar</button>
+        <button type="button" class="btn btn-light border border-1" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

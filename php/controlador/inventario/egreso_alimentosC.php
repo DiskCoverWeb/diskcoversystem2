@@ -113,6 +113,12 @@ if(isset($_GET['cambiar_estado_subcta']))
 	echo json_encode($controlador->cambiar_estado_subcta($parametros));
 }
 
+if(isset($_GET['editarFecha']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->editarFecha($parametros));
+}
+
 /**
  * 
  */
@@ -787,6 +793,15 @@ class egreso_alimentosC
 	   	SetAdoFields('Valor_Unitario',number_format($parametros['precio'],2,'.',''));
 	   	SetAdoFields('Total',$total);
 	   	SetAdoFieldsWhere('ID',$parametros['id']);
+	  	return SetAdoUpdateGeneric();
+
+	}
+
+	function editarFecha($parametros)
+	{
+		SetAdoAddNew("Trans_Kardex"); 		
+	   	SetAdoFields('Fecha',$parametros['fecha']);
+	   	SetAdoFieldsWhere('Orden_No',$parametros['orden']);
 	  	return SetAdoUpdateGeneric();
 
 	}

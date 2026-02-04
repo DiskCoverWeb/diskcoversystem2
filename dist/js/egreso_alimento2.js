@@ -42,7 +42,9 @@ $(document).ready(function () {
           },
           { data: 'Fecha.date',  
             render: function(data, type, item) {
-              return data ? new Date(data).toLocaleDateString() : '';
+
+              return `<button class="btn btn-primary btn-sm p-0" onclick="cambiar_fecha('${item.Orden_No}','`+formatoDate(data)+`')"><i class="bx bx-pencil me-0"></i></button> `+formatoDate(data)
+              // return data ? new Date(data).toLocaleDateString() : '';
             }
           },
           { data:  null,
@@ -549,6 +551,63 @@ function lista_egreso_checking()
        
       },
           error: function (error) {
+            $('#myModal_espera').modal('hide');
+            // Puedes manejar el error aquí si es necesario
+          }
+
+    });
+
+  }
+
+  function cambiar_fecha(id,fecha)
+  {
+    $('#clave_supervisor').modal('show');
+    $('#BuscarEn').val('SQL');
+    $('#TipoSuper_MYSQL').val('Contador');
+    $('#txt_fecha_edit').val(fecha);
+    $('#txt_ordenEdit').val(id);
+    console.log(id);
+  }
+
+  function resp_clave_ingreso(response)
+  {
+    if(response.respuesta==1)
+    {
+      $('#myModal_edit_fecha').modal('show');
+    }
+  }
+
+  function editarFecha()
+  {
+       
+    if($('#txt_fecha_edit').val()=='')
+    {
+       swal.fire("Ingrese una fecha valida","","info");
+       return false;
+    }
+    parametros = 
+    {
+      'fecha': $('#txt_fecha_edit').val(),
+      'orden':$('#txt_ordenEdit').val(),
+    }
+    $.ajax({
+      type: "POST",
+      url:   '../controlador/inventario/egreso_alimentosC.php?editarFecha=true',
+      data:{parametros:parametros},
+      dataType:'json',
+      success: function(data)
+        {
+          if(data==1)
+          {
+
+            Swal.fire("Fecha Editada","","success").then(function(){
+              lista_egreso_checking();
+              $('#myModal_edit_fecha').modal('hide');
+            })
+          }
+          console.log(data);
+       
+        },error: function (error) {
             $('#myModal_espera').modal('hide');
             // Puedes manejar el error aquí si es necesario
           }
