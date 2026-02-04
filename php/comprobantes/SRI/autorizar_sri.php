@@ -1842,7 +1842,12 @@ class autorizacion_sri
         	 $xml_campoAdicional->setAttribute( "nombre", "Email");
         	$xml_infoAdicional->appendChild($xml_campoAdicional);
         	}
-        	$xml_inicio->appendChild($xml_infoAdicional);
+
+        	if($xml_infoAdicional->childElementCount !=0)
+        	{
+        		// agrega si existe datos adicionales
+        		$xml_inicio->appendChild($xml_infoAdicional);
+        	}
         
         	$xml->appendChild($xml_inicio);
 

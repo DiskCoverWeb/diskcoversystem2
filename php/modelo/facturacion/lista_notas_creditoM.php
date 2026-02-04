@@ -18,22 +18,16 @@ class lista_notas_creditoM
 
 	function notas_credito_emitidas_tabla($codigo=false,$desde=false,$hasta=false,$serie=false,$secuencia_NC=false)
 	{
-		$sql = " SELECT TOP 300 F.T,F.TP, F.Fecha, C.Cliente, F.Serie, F.Factura, F.Banco, F.Cheque, F.Abono, F.Mes, F.Comprobante, F.Autorizacion, F.Serie_NC,Secuencial_NC, F.Autorizacion_NC, F.Base_Imponible, F.Porc, C.Representante As Razon_Social, F.Cta,F.Cta_CxP,FA.Total_MN,FA.Descuento,FA.Descuento2,C.CI_RUC,C.Email,C.Codigo,C.EmailR,C.Email2,FA.Porc_IVA,FA.Fecha as 'FechaF',F.Cod_Ejec,Cod_CxC,Tipo_Pago,F.CodigoU,FA.TB
+		$sql = " SELECT TOP 300 FA.Periodo,FA.Item,F.T,F.TP, F.Fecha, C.Cliente, F.Serie, F.Factura, F.Banco, F.Cheque, F.Abono, F.Mes, F.Comprobante, F.Autorizacion, F.Serie_NC,Secuencial_NC, F.Autorizacion_NC, F.Base_Imponible, F.Porc, C.Representante As Razon_Social, F.Cta,F.Cta_CxP,FA.Descuento2,C.CI_RUC,C.Email,C.Codigo,C.EmailR,C.Email2,F.Cod_Ejec,Tipo_Pago,F.CodigoU,FA.TB,FA.Total_MN,FA.Descuento,FA.Porc_IVA ,FA.Cod_CxC,FA.Fecha as FechaF   
            FROM Trans_Abonos As F,Clientes C,Facturas FA 
-           WHERE F.Item = '".$_SESSION['INGRESO']['item']."' 
-           AND F.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-           AND F.Banco = 'NOTA DE CREDITO' 
-           AND F.CodigoC = C.Codigo ";
-		// $sql ="SELECT TA.T,TC,Cliente,C.Codigo,C.CI_RUC,TA.Fecha,F.Fecha as 'FechaF',Serie_NC,TA.Clave_Acceso_NC,TA.Autorizacion_NC,Secuencial_NC,F.Factura,F.Serie,F.Autorizacion,F.Total_MN,F.Descuento,F.Descuento2,Nota,IVA,F.Porc_IVA,TA.Autorizacion_NC,TA.Clave_Acceso_NC,TA.Cod_Ejec,Tipo_Pago,Cod_CxC,TA.CodigoU,F.TB,Email,EmailR,Email2
-		// 	FROM Trans_Abonos TA 
-		// 	INNER JOIN Facturas F ON TA.Factura = F.Factura
-		// 	INNER JOIN Clientes C ON F.CodigoC = C.Codigo
-		// 	WHERE TA.Item = '".$_SESSION['INGRESO']['item']."' 
-		// 	AND TA.Periodo ='".$_SESSION['INGRESO']['periodo']."'
-		// 	AND TA.Serie =  F.Serie
-		// 	AND TA.Item = F.Item
-		// 	AND TA.Periodo = F.Periodo 
-		// 	AND Secuencial_NC<>0";    
+           WHERE F.Item = FA.Item
+			AND F.Periodo = FA.Periodo
+			AND F.Factura = FA.Factura
+			AND F.Item = '".$_SESSION['INGRESO']['item']."' 
+            AND F.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+            AND F.Banco = 'NOTA DE CREDITO' 
+            AND F.CodigoC = C.Codigo ";
+		
 		if($codigo!='T' && $codigo!='')
 		{
 			// si el codigo es T se refiere a todos
@@ -52,7 +46,7 @@ class lista_notas_creditoM
 	    {
 	    	$sql.=" AND Secuencial_NC = '".$secuencia_NC."'";
 	    }
-	    $sql.=" group by F.T,F.TP, F.Fecha, C.Cliente, F.Serie, F.Factura, F.Banco, F.Cheque, F.Abono, F.Mes, F.Comprobante, F.Autorizacion, F.Serie_NC,Secuencial_NC,F.Autorizacion_NC,F.Base_Imponible,F.Porc,C.Representante,F.Cta,F.Cta_CxP,FA.Total_MN,FA.Descuento,FA.Descuento2,C.CI_RUC,C.Email,C.Codigo,C.EmailR,C.Email2,FA.Porc_IVA,FA.Fecha,F.Cod_Ejec,Cod_CxC,F.CodigoU,Tipo_Pago,FA.TB ";
+	    $sql.=" group by FA.Periodo,FA.Item, F.T,F.TP, F.Fecha, C.Cliente, F.Serie, F.Factura, F.Banco, F.Cheque, F.Abono, F.Mes, F.Comprobante, F.Autorizacion, F.Serie_NC,Secuencial_NC,F.Autorizacion_NC,F.Base_Imponible,F.Porc,C.Representante,F.Cta,F.Cta_CxP,FA.Descuento2,C.CI_RUC,C.Email,C.Codigo,C.EmailR,C.Email2,F.Cod_Ejec,F.CodigoU,Tipo_Pago,FA.TB,FA.Total_MN,FA.Descuento,FA.Porc_IVA,FA.Cod_CxC,FA.Fecha   ";
 	    $sql.=" ORDER BY F.Banco, F.Cheque, C.Cliente, F.Serie, F.Factura, F.Fecha ";
 		// print_r($sql);die();    
 		return $this->db->datos($sql);
