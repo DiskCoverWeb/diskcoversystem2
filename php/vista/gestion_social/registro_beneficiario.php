@@ -1508,7 +1508,7 @@
                         <div class="col-lg-12">
                             <b>Ci o RUC Nuevo</b>
                             <div class="input-group">
-                                 <input type="text" name="txt_ci" id="txt_ci" class="form-control form-control-sm" onblur="codigo_new()"> 
+                                 <input type="text" name="txt_ci_new" id="txt_ci_new" class="form-control form-control-sm" onblur="codigo_new()"> 
                                   <input type="text" name="txt_td_new" id="txt_td_new" style="color:red; width:35px" readonly>  
                                   <input type="hidden" name="txt_codigo_new" id="txt_codigo_new" class="form-control form-control-sm">                                
                             </div>

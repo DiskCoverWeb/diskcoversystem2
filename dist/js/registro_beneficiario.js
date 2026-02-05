@@ -4123,7 +4123,7 @@ function guardar_new_ci()
 {
     var parametros = {
         'id': $('#txt_id').val(),
-        'ci':$('#txt_ci').val(),
+        'ci':$('#txt_ci_new').val(),
         'td':$('#txt_td_new').val(),
         'codigo':$('#txt_codigo_new').val(),
     }
