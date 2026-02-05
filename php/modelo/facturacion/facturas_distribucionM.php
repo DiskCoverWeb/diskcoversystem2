@@ -29,14 +29,13 @@ class facturas_distribucionM
             AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
             AND TC.Fecha <= '".$params['fecha']."' 
             AND TC.T='F'
-            AND TC.TC = '.'
-            AND TP='.'";
+            AND TC.TC = '.'";
             if($orden)
             {
               $sql.=" AND TC.Orden_No = '".$orden."' ";
             }
-            if($id)
-            {
+            if($id
+)            {
                $sql.=" AND TC.ID = '".$id."' ";
             }
     // print_r($sql);die();
@@ -328,7 +327,6 @@ class facturas_distribucionM
                 AND TC.Fecha = '".$parametros['fecha']."'
                 AND Cliente <> '.' 
                 AND TC = '.' 
-                AND TP = '.' 
                 AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
                 AND Item = '".$_SESSION['INGRESO']['item']."'";
     if (!is_numeric($query)) {
