@@ -323,7 +323,7 @@ class asignacion_pickingM
                 ORDER BY  Codigo_Barra";
 
 
-            print_r($sql);die();
+            // print_r($sql);die();
         return $this->db->datos($sql);
     }
 
