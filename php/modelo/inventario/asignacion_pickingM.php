@@ -138,8 +138,11 @@ class asignacion_pickingM
             INNER JOIN Clientes C on DF.CodigoC = C.Codigo
             LEFT JOIN Catalogo_Proceso CP ON DF.CodigoB = CP.Cmds 
             LEFT JOIN Catalogo_Proceso CP2 ON DF.CodigoL = CP2.Cmds 
-            INNER JOIN Catalogo_Proceso CP3 on DF.No_Hab = CP3.ID 
-            WHERE DF.Item = '".$_SESSION['INGRESO']['item']."'
+            LEFT JOIN Catalogo_Proceso CP3 on DF.No_Hab = CP3.Cmds
+            WHERE DF.TC = 'OF'
+            AND (DF.T = 'K' OR DF.T = 'KF' )
+            AND CP.Item = DF.Item 
+            AND DF.Item = '".$_SESSION['INGRESO']['item']."'
             AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
             if($fecha)
             {
@@ -150,10 +153,7 @@ class asignacion_pickingM
             if($codigo)
             {
                 $sql.=" AND C.Cliente like '%".$codigo."%'";
-            }
-            $sql.=" AND DF.TC = 'OF'
-            AND (DF.T = 'K' OR DF.T = 'KF' )
-            AND CP.Item = DF.Item ";     
+            }  
 
             // print_r($sql);die();   
 
@@ -323,7 +323,7 @@ class asignacion_pickingM
                 ORDER BY  Codigo_Barra";
 
 
-            // print_r($sql);die();
+            print_r($sql);die();
         return $this->db->datos($sql);
     }
 

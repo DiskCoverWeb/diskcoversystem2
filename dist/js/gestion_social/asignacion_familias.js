@@ -122,7 +122,7 @@ function tipoCompra()
                         '<b>'+item.Proceso+'</b>'+
                     '</div>';
 
-            op+='<option value="'+item.ID+'">'+item.Proceso+'</option>';
+            op+='<option value="'+item.Cmds+'">'+item.Proceso+'</option>';
         })
 
         $('#tipoCompra').html(op); 
