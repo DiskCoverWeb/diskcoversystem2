@@ -1,4 +1,4 @@
-
+var tbl_pedidos_all = null;
   $(document).ready(function () {
 
       tbl_pedidos_all = $('#tbl_body').DataTable({
@@ -54,44 +54,47 @@
 
   function cargar_pedidos(f='')
   {
-     var paginacion = 
-    {
-      '0':$('#pag').val(),
-      '1':$('#ddl_reg').val(),
-      '2':'cargar_pedidos',
-    }
-    $('#txt_tipo_filtro').val(f);
-    var ruc = CI;
-    var nom = $('#txt_query').val();
-    var ci = ruc.substring(0,10);
-    var desde=$('#txt_desde').val();
-      var  parametros = 
-      { 
-        'codigo':ci,
-        'nom':$('#txt_nombre').val(),
-        'query':nom,
-        'tipo':$('input:radio[name=rbl_buscar]:checked').val(),
-        'desde':desde,
-        'hasta':$('#txt_hasta').val(),
-        'busfe':f,
-      }    
-     // console.log(parametros);
-     $.ajax({
-      data:  {parametros:parametros,paginacion:paginacion},
-      url:   '../controlador/farmacia/devoluciones_insumosC.php?cargar_pedidos=true',
-      type:  'post',
-      dataType: 'json',
-        beforeSend: function () {   
-          var spiner = '<tr><td colspan="5"><img src="../../img/gif/loader4.1.gif" width="20%"></td> </tr>';   
-          $('#tbl_body').html(spiner);
-         },
-      success:  function (response) { 
-        if(response)
-        {
-          $('#tbl_body').html(response.tabla);
-        }
-      }
-    });
+
+     tbl_pedidos_all.ajax.reload(null, false);
+     
+    //  var paginacion = 
+    // {
+    //   '0':$('#pag').val(),
+    //   '1':$('#ddl_reg').val(),
+    //   '2':'cargar_pedidos',
+    // }
+    // $('#txt_tipo_filtro').val(f);
+    // var ruc = CI;
+    // var nom = $('#txt_query').val();
+    // var ci = ruc.substring(0,10);
+    // var desde=$('#txt_desde').val();
+    //   var  parametros = 
+    //   { 
+    //     'codigo':ci,
+    //     'nom':$('#txt_nombre').val(),
+    //     'query':nom,
+    //     'tipo':$('input:radio[name=rbl_buscar]:checked').val(),
+    //     'desde':desde,
+    //     'hasta':$('#txt_hasta').val(),
+    //     'busfe':f,
+    //   }    
+    //  // console.log(parametros);
+    //  $.ajax({
+    //   data:  {parametros:parametros,paginacion:paginacion},
+    //   url:   '../controlador/farmacia/devoluciones_insumosC.php?cargar_pedidos=true',
+    //   type:  'post',
+    //   dataType: 'json',
+    //     beforeSend: function () {   
+    //       var spiner = '<tr><td colspan="5"><img src="../../img/gif/loader4.1.gif" width="20%"></td> </tr>';   
+    //       $('#tbl_body').html(spiner);
+    //      },
+    //   success:  function (response) { 
+    //     if(response)
+    //     {
+    //       $('#tbl_body').html(response.tabla);
+    //     }
+    //   }
+    // });
   }
 
 
