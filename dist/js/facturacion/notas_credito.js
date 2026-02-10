@@ -303,6 +303,10 @@ function catalogoLineas() {
 
 function numero_autorizacion()
 {
+    var idserie = $('#DCLineas').val();
+    console.log(idserie);
+    var Serie = idserie.split(" ");
+    $('#TextCheqNo').val(Serie[1]);
   var parametros = 
   {
     'serie':$('#TextCheqNo').val(),

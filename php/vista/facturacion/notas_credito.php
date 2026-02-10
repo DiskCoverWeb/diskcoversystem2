@@ -53,21 +53,21 @@
           <div class="col-sm-3">
             <input type="hidden" name="ReIngNC" id="ReIngNC" value="0">
             <b>Lineas de Nota de Credito</b>
-            <select class="form-select form-select-sm" id="DCLineas" name="DCLineas" onchange="numero_autorizacion();$('#TextCheqNo').val(this.value);autocoplete_clinete()" onblur="valida_cxc();">
+            <select class="form-select form-select-sm" id="DCLineas" name="DCLineas" onchange="numero_autorizacion();autocoplete_clinete()" onblur="valida_cxc();">
                     <option value="">Seleccione</option>
                 </select>
           </div>
           <div class="col-sm-3">
             <b>Autorizacion Nota de Credito</b>
-            <input type="text" name="TextBanco" id="TextBanco" class="form-control form-control-sm" value=".">
+            <input type="text" name="TextBanco" id="TextBanco" class="form-control form-control-sm" value="." readonly>
           </div>
           <div class="col-sm-1" style="padding:0px">
             <b>Serie</b>
-            <input type="text" name="TextCheqNo" id="TextCheqNo" class="form-control form-control-sm" value="001001">
+            <input type="text" name="TextCheqNo" id="TextCheqNo" class="form-control form-control-sm" value="001001" readonly>
           </div>
           <div class="col-sm-1" style="padding: 0px;">
             <b>Comp No.</b>
-            <input type="text" name="TextCompRet" id="TextCompRet" class="form-control form-control-sm" value="00000000" onblur="validar_procesar()">
+            <input type="text" name="TextCompRet" id="TextCompRet" class="form-control form-control-sm" value="00000000" onblur="validar_procesar()" readonly>
           </div>
         </div>
         <div class="row">
