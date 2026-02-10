@@ -176,7 +176,10 @@ function estado_licencia($f3)
 							<li>
 								<div id="periodo"></div>
 							</li>
-
+							<li>
+								<a class="nav-link dark-mode-icon" href="inicio.php?mod=01&amp;acc=campe&amp;acc1=Cambio de periodo&amp;b=1" inicio.php?mod="01&amp;acc=campe&amp;acc1=Cambio" title="Cambio de periodo"><i class='bx bx-shuffle'></i>
+								</a>
+							</li>
 							<li class="nav-item dark-mode d-none d-sm-flex">
 								<a class="nav-link dark-mode-icon" href="javascript:;"><i class='bx bx-moon'></i>
 								</a>
