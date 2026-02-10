@@ -21,7 +21,7 @@ class devoluciones_insumosM
 
 	function cargar_comprobantes($query=false,$desde=false,$hasta=false,$tipo='',$paginacion=false)
 	{
-		$sql="SELECT Numero,CP.Fecha,Concepto,Monto_Total,Cliente FROM Comprobantes CP 
+		$sql="SELECT top 300 Numero,CP.Fecha,Concepto,Monto_Total,Cliente FROM Comprobantes CP 
 		LEFT JOIN Clientes C ON CP.Codigo_B = C.Codigo
 		WHERE TP='CD' 
 		AND CP.T='N' 
@@ -34,7 +34,7 @@ class devoluciones_insumosM
 						AND Periodo = '".$_SESSION['INGRESO']['periodo']."'  
 						AND Entrada = 0 
 					  )";
-		if($tipo =='f')
+		if($desde !='' && $hasta!="" && $desde!= $hasta)
 		{
 			$sql.= " AND CP.Fecha BETWEEN '".$desde."' AND '".$hasta."'";
 		}
@@ -172,7 +172,7 @@ class devoluciones_insumosM
 
 	function lista_devoluciones($comprobante)
 	{
-	  $sql = "SELECT CODIGO_INV as 'CODIGO PRODUCTO',PRODUCTO,CANTIDAD,VALOR_UNIT AS 'VALOR UNITARIO',VALOR_TOTAL AS 'VALOR TOTAL',Fecha_Fab AS 'FECHA',A_No FROM Asiento_K WHERE DH = '1' AND ORDEN = '".$comprobante."'";
+	  $sql = "SELECT CODIGO_INV as 'CODIGO_PRODUCTO',PRODUCTO,CANTIDAD,VALOR_UNIT AS 'VALOR_UNITARIO',VALOR_TOTAL AS 'VALOR_TOTAL',Fecha_Fab AS 'FECHA',A_No FROM Asiento_K WHERE DH = '1' AND ORDEN = '".$comprobante."'";
 	  $datos = $this->conn->datos($sql);
 	  $botones[0] = array('boton'=>'Eliminar','icono'=>'<i class="fa fa-trash"></i>', 'tipo'=>'danger', 'id'=>$comprobante.',CODIGO PRODUCTO,A_No');
 

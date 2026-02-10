@@ -10,8 +10,8 @@ $controlador = new devoluciones_insumosC();
 if(isset($_GET['cargar_pedidos']))
 {
 	$parametros = $_POST['parametros'];
-	$paginacion = $_POST['paginacion'];
-	echo json_encode($controlador->cargar_pedidos($parametros,$paginacion));
+	// $paginacion = $_POST['paginacion'];
+	echo json_encode($controlador->cargar_pedidos($parametros));
 }
 if(isset($_GET['tabla_detalles']))
 {
@@ -103,10 +103,10 @@ class devoluciones_insumosC
 
 	
 
-	function cargar_pedidos($parametros,$paginacion)
+	function cargar_pedidos($parametros)
 	{
 		// print_r($parametros);die();
-		$datos = $this->modelo->cargar_comprobantes($parametros['query'],$parametros['desde'],$parametros['hasta'],$parametros['busfe'],$paginacion);
+		$datos = $this->modelo->cargar_comprobantes($parametros['query'],$parametros['desde'],$parametros['hasta']);
 		return $tabla = array('num_lin'=>0,'tabla'=>$datos);
 
 	}
@@ -144,13 +144,13 @@ class devoluciones_insumosC
 			$tr.='<tr>
 			  			<td width="'.dimenciones_tabl(strlen('Codigo_Inv')).'" id="codigo_'.$key.'">'.$value['Codigo_Inv'].'</td>
 			  			<td width="'.dimenciones_tabl(strlen($value['Producto'])).'" id="producto_'.$key.'">'.$value['Producto'].'</td>
-			  			<td width="'.dimenciones_tabl(strlen('cant'.$value['Salida'])).'"><input class="form-control input-sm" value="'.$value['Salida'].'" readonly="" name="txt_salida_'.$key.'" id="txt_salida_'.$key.'"></td>
+			  			<td width="'.dimenciones_tabl(strlen('cant'.$value['Salida'])).'"><input class="form-control form-control-sm" value="'.$value['Salida'].'" readonly="" name="txt_salida_'.$key.'" id="txt_salida_'.$key.'"></td>
 			  			<td width="'.dimenciones_tabl(strlen('Valor_Unitario')).'" class="text-right">'.number_format($value['Valor_Unitario'],2).'</td>
 			  			<td width="'. dimenciones_tabl(strlen('Precio Total')).'" class="text-right">'.number_format($value['Valor_Total'],2).'</td>
-        			<td  width="'.dimenciones_tabl(strlen('cant_dev')).'"><input class="form-control input-sm text-right" id="txt_cant_dev_'.$key.'"  value="0" onblur="calcular_dev(\''.$key.'\')" '.$readonly.'></td>
-        			<td width="'.dimenciones_tabl(strlen('Valor utilidad')).'"><input class="form-control input-sm text-right" id="txt_valor_'.$key.'" value="0"   readonly></td>
-        			<td width="'.dimenciones_tabl(strlen('total_dev')).'"><input class="form-control input-sm text-right" id="txt_gran_t_'.$key.'" value="0"  readonly=""></td>
-        			<td><button onclick="calcular_dev(\''.$key.'\');guardar_devolucion(\''.$value['ID'].'\',\''.$key.'\')" id="btn_linea_'.$key.'" class="btn btn-primary"><i class="fa-icon fa fa-save"></i></button></td>
+        			<td  width="'.dimenciones_tabl(strlen('cant_dev')).'"><input class="form-control form-control-sm text-right" id="txt_cant_dev_'.$key.'"  value="0" onblur="calcular_dev(\''.$key.'\')" '.$readonly.'></td>
+        			<td width="'.dimenciones_tabl(strlen('Valor utilidad')).'"><input class="form-control form-control-sm text-right" id="txt_valor_'.$key.'" value="0"   readonly></td>
+        			<td width="'.dimenciones_tabl(strlen('total_dev')).'"><input class="form-control form-control-sm text-right" id="txt_gran_t_'.$key.'" value="0"  readonly=""></td>
+        			<td><button onclick="calcular_dev(\''.$key.'\');guardar_devolucion(\''.$value['ID'].'\',\''.$key.'\')" id="btn_linea_'.$key.'" class="btn btn-primary btn-sm"><i class="fa-icon fa fa-save"></i></button></td>
         		</tr>';
         	// $tot+=$gran;
 		}
