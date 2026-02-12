@@ -87,7 +87,9 @@ class facturas_distribucion_famM
                 FROM Trans_Comision TC 
                 INNER JOIN Accesos A ON TC.CodigoU = A.Codigo 
                 INNER JOIN Catalogo_Productos CP ON TC.Codigo_Inv = CP.Codigo_Inv
-                WHERE Orden_No = '".$orden."'
+                WHERE  CP.Item = TC.Item
+                AND CP.Periodo = TC.Periodo
+                AND Orden_No = '".$orden."'
                 AND TC.T = '".$T."'
                 AND TC.Item = '".$_SESSION['INGRESO']['item']."' 
                 AND TC.Periodo='".$_SESSION['INGRESO']['periodo']."' ";
