@@ -336,13 +336,15 @@ class asignacion_familiasC
 
     function GuardarPicking($parametros)
     {
+
+        // print_r($parametros);die();
         
         SetAdoAddNew('Detalle_Factura');
         SetAdoFields('T','KF');      
         SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
         SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']); 
         SetAdoFieldsWhere('Orden_No',$parametros['orden']);  
-        SetAdoFieldsWhere('Cta',$parametros['tipo']);  
+        SetAdoFieldsWhere('No_Hab',$parametros['tipo']);  
         SetAdoFieldsWhere('Fecha_A',$parametros['fechaAsi']);  
         // SetAdoFieldsWhere('Fecha',$parametros['fechaAsi']);   
         
