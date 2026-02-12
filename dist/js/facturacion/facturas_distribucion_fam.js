@@ -523,6 +523,23 @@
 
 	function finalizar_factura()
 	{
+		 Swal.fire({
+              title: 'Esta seguro?',
+              text: "Esta usted seguro de finalizar todo el proceso de facturacion!",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Si!'
+            }).then((result) => {
+              if (result.value==true) {
+              	finalizar_factura_ok();              
+              }
+            })
+	}
+
+	function finalizar_factura_ok()
+	{
 			var parametros =
 		{
 			'programa': $('#ddl_programas').val(),

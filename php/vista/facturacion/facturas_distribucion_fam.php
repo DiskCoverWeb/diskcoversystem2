@@ -305,7 +305,7 @@ if (isset ($_GET['tipo'])) {
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-sm-12 text-end">
-						<button type="button" class="btn btn-primary"  onclick="validar_cliente_factura()">Generar Facturas</button>
+						<button type="button" class="btn btn-warning"  onclick="finalizar_factura()">Finalizar pedidos</button>
 					</div>
 				</div>
                 <div class="row">
@@ -327,7 +327,7 @@ if (isset ($_GET['tipo'])) {
                 </div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-warning"  onclick="finalizar_factura()">Finalizar pedidos</button>
+				<button type="button" class="btn btn-primary"  onclick="validar_cliente_factura()">Generar Facturas</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 			</div>
 		</div>
