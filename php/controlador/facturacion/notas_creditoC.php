@@ -220,6 +220,7 @@ class notas_creditoC
 
 	function numero_autorizacion($parametro)
 	{
+		// print_r("NC_SERIE_".$parametro['serie']);die();
 		 $numero  = ReadSetDataNum("NC_SERIE_".$parametro['serie'], True, False);
 		 return $numero;
 
@@ -624,12 +625,14 @@ class notas_creditoC
 	        	  	      	 
 	        	 	}
 
+	        	 	// print_r($respuesta_NC);
+
 	        	 	return $respuesta_NC;
 	  			}
 
 			        $Ln_No = 0;
 			        $this->modelo->delete_asientonNC();		
-
+// print_r('expression');
 			        // hay que generar esta funcion o proceso almacenado        
 			        // Actualizar_Saldos_Facturas_SP($FA['TC'],$FA['Serie'],$FA['Factura']);
 

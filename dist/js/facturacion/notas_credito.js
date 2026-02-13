@@ -667,7 +667,7 @@ function generar_nc()
     success: function(data)
     {
       $('#myModal_espera').modal('hide');
-      
+      console.log(data);
         if(data[0]==1 && data[1]!='')
         { 
           Swal.fire({
@@ -676,12 +676,12 @@ function generar_nc()
             confirmButtonText: 'Ok!',
             allowOutsideClick: false,
           }).then(function(){
-            var url=  '../../TEMP/'+data.pdf+'.pdf';
+            var url=  '../../TEMP/'+data['pdf']+'.pdf';
             window.open(url, '_blank'); 
             location.reload();    
 
           })
-        }else if(data[0]==1 && data.clave=='')
+        }else if(data[0]==1 && data[1]=='')
         { 
           Swal.fire({
             icon:'success',

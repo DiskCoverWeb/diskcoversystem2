@@ -637,24 +637,27 @@ class autorizacion_sri
 	       	 	// // print_r($validar_autorizado);die();
 	       	 	// if($validar_autorizado == -1)
 		   		//  {
-
-
 	       	 	
 		   		 	$enviar_sri = $this->enviar_xml_sri(
 		   		 		$aut,
 		   		 		$this->linkSriRecepcion);
-		   		 	if($enviar_sri==1)
+		   		 	// print_r($enviar_sri);die();
+		   		 	if($enviar_sri[0]==1)
 		   		 	{
 		   		 		//una vez enviado comprobamos el estado de la factura
 		   		 		sleep(3);
 		   		 		$resp =  $this->comprobar_xml_sri($aut,$this->linkSriAutorizacion);
-		   		 		if($resp==1)
+
+		   		 		if($resp[0]==1)
 		   		 		{
+
+		   		 			// print_r('expressionaaa');die();
 		   		 			$this->SRI_Actualizar_Autorizacion_Nota_Credito($TFA);
 		   		 			$this->SRI_Actualizar_Documento_XML($TFA['ClaveAcceso_NC']);
 		   		 			return  $resp;
 		   		 		}else
 		   		 		{
+		   		 			// print_r('expression');die();
 		   		 			return $resp;
 		   		 		}
 		   		 		// print_r($resp);die();
