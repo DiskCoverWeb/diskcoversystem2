@@ -78,6 +78,9 @@ class autoriza_sri
 		$rutaNo = dirname(__DIR__).'/SRI/ftp_folder_xmls/No_autorizados/';
 		$rutaRe = dirname(__DIR__).'/SRI/ftp_folder_xmls/Rechazados/';
 
+
+		// print_r($parametros);die();
+
 		if(trim($parametros['XML'])=='')
 		{
 			return -1;
@@ -90,6 +93,7 @@ class autoriza_sri
             $this->link_ambientes($ambiente);
 
        	 	$validar_autorizado = $this->comprobar_xml_sri($Autorizacion,$this->linkSriAutorizacion);
+       	 	// print_r($validar_autorizado);die();
           	if(isset($validar_autorizado[0]) && $validar_autorizado[0] == 1)
 	   	 	{
 	   	 		
@@ -109,12 +113,13 @@ class autoriza_sri
           		}
           	}
 
-              	
+            // print_r($firma);die();
 	   	 	$enviar_sri = $this->enviar_xml_sri($Autorizacion,$this->linkSriRecepcion);
 	   	 	// print_r($enviar_sri);die();
 	   		if($enviar_sri[0]==1)
 	   		{
-	   			sleep(4);
+	   			// print_r('expression');die();
+	   			sleep(3);
    		 		$resp =  $this->comprobar_xml_sri($Autorizacion,$this->linkSriAutorizacion);
    		 		// print_r($resp);die();
    		 		if($resp[0]==1)
@@ -462,7 +467,8 @@ class autoriza_sri
  	    $veces_envio = 1;
  	    while ($comprobado) {
  	    	$command = $this->rutaJava8."java -jar ".$comprobar_sri." 2 ".$clave_acceso." ".$url_autorizado." ".$url_No_autorizados." ".$link_autorizacion; 
-	   		$output = shell_exec($command);   
+	   		$output = shell_exec($command);  
+	   		// print_r($command);die(); 
 	   		// print_r($output);die();		
 	   		$output = mb_convert_encoding($output, 'UTF-8', 'ISO-8859-1');
 			$output = json_decode($output,true); // <== para que la respuesta se haga un array
