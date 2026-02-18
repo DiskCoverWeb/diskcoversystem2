@@ -201,7 +201,7 @@ class enviar_emails
           $mail->Host = $empresaGeneral[0]['smtp_Servidor']; //Set the SMTP server to send through
           $mail->SMTPAuth = true; //Enable SMTP authentication
           $mail->Username = $empresaGeneral[0]['Email_Conexion']; //SMTP username
-          $mail->Password = $empresaGeneral[0]['Email_Contraseña'];
+          $mail->Password = $empresaGeneral[0]['Email_Clave'];
           if ($server_externo == 0) //SMTP password
           {
             if ($empresaGeneral[0]['smtp_SSL'] == 1) {
@@ -296,7 +296,7 @@ class enviar_emails
           $mail->Host = $empresaGeneral[0]['smtp_Servidor'];
           $mail->SMTPAuth = true;
           $mail->Username = $empresaGeneral[0]['Email_Conexion'];
-          $mail->Password = $empresaGeneral[0]['Email_Contraseña'];
+          $mail->Password = $empresaGeneral[0]['Email_Clave'];
         
           if ($server_externo == 0) //SMTP password
           {
