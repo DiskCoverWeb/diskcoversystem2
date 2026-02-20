@@ -1,0 +1,72 @@
+<factura id="comprobante" version="1.1.0">
+<infoTributaria>
+<ambiente>2</ambiente>
+<tipoEmision>1</tipoEmision>
+<razonSocial>UNIDAD EDUCATIVA PARTICULAR BILINGUE SAN FRANCISCO DE SALES</razonSocial>
+<nombreComercial>UNIDAD EDUCATIVA PARTICULAR BILINGUE SAN FRANCISCO DE SALES</nombreComercial>
+<ruc>1791861523001</ruc>
+<claveAcceso>1902202601179186152300120010060000266991234567816</claveAcceso>
+<codDoc>01</codDoc>
+<estab>001</estab>
+<ptoEmi>006</ptoEmi>
+<secuencial>000026699</secuencial>
+<dirMatriz>Av. Colon E10-07 Y Tamayo</dirMatriz>
+<agenteRetencion>00000001</agenteRetencion>
+</infoTributaria>
+<infoFactura>
+<fechaEmision>19/02/2026</fechaEmision>
+<dirEstablecimiento>Av. Colon E10-07 Y Tamayo</dirEstablecimiento>
+<obligadoContabilidad>SI</obligadoContabilidad>
+<tipoIdentificacionComprador>05</tipoIdentificacionComprador>
+<razonSocialComprador>GUANA QUIZAMANCHURO ANDRES VINICIO</razonSocialComprador>
+<identificacionComprador>1713941340</identificacionComprador>
+<direccionComprador>CUMBAYA, SANTA CATALINA Y SEGUNDO SALAZAR, CONJUNT</direccionComprador>
+<totalSinImpuestos>272.22</totalSinImpuestos>
+<totalDescuento>0.00</totalDescuento>
+<totalConImpuestos>
+<totalImpuesto>
+<codigo>2</codigo>
+<codigoPorcentaje>0</codigoPorcentaje>
+<descuentoAdicional>0</descuentoAdicional>
+<baseImponible>272.22</baseImponible>
+<valor>0.00</valor>
+</totalImpuesto>
+</totalConImpuestos>
+<propina>0.00</propina>
+<importeTotal>272.22</importeTotal>
+<moneda>DOLAR</moneda>
+<pagos>
+<pago>
+<formaPago>20</formaPago>
+<total>272.22</total>
+</pago>
+</pagos>
+</infoFactura>
+<detalles>
+<detalle>
+<codigoPrincipal>01.02</codigoPrincipal>
+<codigoAuxiliar>0000000000</codigoAuxiliar>
+<descripcion>Pension Basica, 2026: Febrero</descripcion>
+<unidadMedida>DOLAR</unidadMedida>
+<cantidad>1.000000</cantidad>
+<precioUnitario>272.220000</precioUnitario>
+<descuento>0.00</descuento>
+<precioTotalSinImpuesto>272.22</precioTotalSinImpuesto>
+<impuestos>
+<impuesto>
+<codigo>2</codigo>
+<codigoPorcentaje>0</codigoPorcentaje>
+<tarifa>0</tarifa>
+<baseImponible>272.22</baseImponible>
+<valor>0.00</valor>
+</impuesto>
+</impuestos>
+</detalle>
+</detalles>
+<infoAdicional>
+<campoAdicional nombre="Beneficiario">GUANA SUASNAVAS BENJAMIN ANDRES</campoAdicional>
+<campoAdicional nombre="Codigo">1758790313</campoAdicional>
+<campoAdicional nombre="Ubicacion">1.03.BB-TERCER ANO DE EDUCACION GENERAL BASICA B</campoAdicional>
+<campoAdicional nombre="Direccion">CUMBAYA, SANTA CATALINA Y SEGUNDO SALAZAR, CONJUNT</campoAdicional>
+</infoAdicional>
+</factura>

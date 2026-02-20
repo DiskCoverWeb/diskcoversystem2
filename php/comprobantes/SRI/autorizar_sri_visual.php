@@ -20,7 +20,7 @@ if(isset($_GET['AutorizarXMLOnline']))
 if(isset($_GET['EnviarAutorizarXMLOnline']))
 {
 	$parametros = $_POST;
-     echo json_encode($controlador->EnviarAutorizarXMLOnline($parametros), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+     print_r( $controlador->EnviarAutorizarXMLOnline($parametros));
 }
 
 if(isset($_GET['subirftp']))
@@ -124,8 +124,8 @@ class autoriza_sri
    		 		// print_r($resp);die();
    		 		if($resp[0]==1)
    		 		{
-   		 			$ArchivoXML = str_replace(array("\r\n", "\r", "\n","\t"), '',file_get_contents($rutaAu.$Autorizacion1));
-   		 			$ArchivoXML = str_replace('"', "'",$ArchivoXML);
+   		 			$ArchivoXML = file_get_contents($rutaAu.$Autorizacion1);
+   		 			// $ArchivoXML = str_replace('"', "'",$ArchivoXML);
    		 			$xml = simplexml_load_string($ArchivoXML);
    		 			$fechaAutorizacion =  (string)$xml->fechaAutorizacion;
 					// $this->borrar_xml_file($Autorizacion);
@@ -136,17 +136,17 @@ class autoriza_sri
    		 			$ArchivoXML = "";
    		 			if(file_exists($rutaNo.$Autorizacion1))
    		 			{
-   		 				$ArchivoXML =  str_replace(array("\r\n", "\r", "\n","\t"), '',file_get_contents($rutaNo.$Autorizacion1));
+   		 				$ArchivoXML =  file_get_contents($rutaNo.$Autorizacion1);
    		 			}
    		 			if(file_exists($rutaRe.$Autorizacion1))
    		 			{
-   		 				$ArchivoXML =  str_replace(array("\r\n", "\r", "\n","\t"), '',file_get_contents($rutaRe.$Autorizacion1));
+   		 				$ArchivoXML =  file_get_contents($rutaRe.$Autorizacion1);
    		 			}
 					$this->borrar_xml_file($Autorizacion);
 					
 					// print_r($ArchivoXML);die();
 
-   		 			$ArchivoXML = str_replace('"', "'",$ArchivoXML);
+   		 			// $ArchivoXML = str_replace('"', "'",$ArchivoXML);
    		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","FechaAutorizacion"=>"","XML"=>$ArchivoXML);
    		 		}
 	   		 		// print_r($resp);die();
@@ -155,16 +155,16 @@ class autoriza_sri
 	   				$ArchivoXML = "";
    		 			if(file_exists($rutaNo.$Autorizacion1))
    		 			{
-   		 				$ArchivoXML =  str_replace(array("\r\n", "\r", "\n","\t"), '',file_get_contents($rutaNo.$Autorizacion1));
+   		 				$ArchivoXML =  file_get_contents($rutaNo.$Autorizacion1);
    		 			}
    		 			if(file_exists($rutaRe.$Autorizacion1))
    		 			{
-   		 				$ArchivoXML =  str_replace(array("\r\n", "\r", "\n","\t"), '',file_get_contents($rutaRe.$Autorizacion1));
+   		 				$ArchivoXML =  file_get_contents($rutaRe.$Autorizacion1);
    		 			}
 					$this->borrar_xml_file($Autorizacion);
 					// print_r($ArchivoXML);die();
 
-   		 			$ArchivoXML = str_replace('"', "'",$ArchivoXML);
+   		 			// $ArchivoXML = str_replace('"', "'",$ArchivoXML);
    		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","FechaAutorizacion"=>"","XML"=>$ArchivoXML);
 	   		}
             
