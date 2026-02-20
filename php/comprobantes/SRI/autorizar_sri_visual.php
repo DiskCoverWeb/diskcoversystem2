@@ -20,7 +20,7 @@ if(isset($_GET['AutorizarXMLOnline']))
 if(isset($_GET['EnviarAutorizarXMLOnline']))
 {
 	$parametros = $_POST;
-     print_r( $controlador->EnviarAutorizarXMLOnline($parametros));
+     echo json_encode($controlador->EnviarAutorizarXMLOnline($parametros));
 }
 
 if(isset($_GET['subirftp']))
@@ -62,8 +62,8 @@ class autoriza_sri
 		$this->iv = base64_decode("C9fBxl1EWtYTL1/M8jfstw==");
 		// $this->conn = new Conectar();
 		$this->db = new db();
-		$this->rutaJava8  = "";
-		// $this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
+		// $this->rutaJava8  = "";
+		$this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
 	}
 
 
@@ -129,6 +129,9 @@ class autoriza_sri
    		 			$xml = simplexml_load_string($ArchivoXML);
    		 			$fechaAutorizacion =  (string)$xml->fechaAutorizacion;
 					// $this->borrar_xml_file($Autorizacion);
+					
+					$ArchivoXML = str_replace(array("\r\n", "\r", "\n", "\t"), '', $ArchivoXML);
+   		 			// $ArchivoXML = str_replace('"', "'",$ArchivoXML);
    		 			return  array('respuesta'=>1,"mensaje"=>"XML autorizado",'FechaAutorizacion'=>$fechaAutorizacion,"XML"=>$ArchivoXML);
    		 			
    		 		}else
@@ -146,6 +149,7 @@ class autoriza_sri
 					
 					// print_r($ArchivoXML);die();
 
+					$ArchivoXML = str_replace(array("\r\n", "\r", "\n", "\t"), '', $ArchivoXML);
    		 			// $ArchivoXML = str_replace('"', "'",$ArchivoXML);
    		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","FechaAutorizacion"=>"","XML"=>$ArchivoXML);
    		 		}
@@ -163,7 +167,7 @@ class autoriza_sri
    		 			}
 					$this->borrar_xml_file($Autorizacion);
 					// print_r($ArchivoXML);die();
-
+					$ArchivoXML = str_replace(array("\r\n", "\r", "\n", "\t"), '', $ArchivoXML);
    		 			// $ArchivoXML = str_replace('"', "'",$ArchivoXML);
    		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","FechaAutorizacion"=>"","XML"=>$ArchivoXML);
 	   		}
