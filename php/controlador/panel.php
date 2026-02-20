@@ -80,6 +80,10 @@ if (isset($_GET['validar_estado'])) {
     echo json_encode(validar_estado_all());
 }
 
+if (isset($_GET['validar_cta_iva'])) {
+    echo json_encode(validar_cta_iva());
+}
+
 if(isset($_GET['cargar_imagen']))
 {
     $file = $_FILES;
@@ -188,6 +192,23 @@ function IngClaveCredenciales($usuario){
     }else{
         return array("res" => 0);
     }
+}
+
+function validar_cta_iva()
+{
+
+    $login = new loginM();
+    $cta = array('Cta_iva'=>$_SESSION['SETEOS']['Cta_IVA'],'Cta_iva_inventario'=>$_SESSION['SETEOS']['Cta_IVA_Inventario']);
+    $mensaje = "";
+    foreach ($cta as $key => $value) {
+        $datos = $login->validar_cta($value);
+        if(count($datos)==0)
+        {
+            $mensaje.="La cuenta ".$key." con codigo ".$value." no esta definida \n";
+        }
+    }
+
+    return $mensaje;
 }
 
 function IngClave($parametros)

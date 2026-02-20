@@ -426,6 +426,24 @@ function fecha_actual()
     return output;
 }
 
+function validar_cta_iva()
+{
+	$.ajax({
+      type: "POST",
+      url: '../controlador/panel.php?validar_cta_iva=true',
+      // data: {parametros: parametros},
+      dataType:'json', 
+      success: function(data)
+      {        
+      	if(data!='')
+      	{
+      		Swal.fire("Cuentas de iva no encontrada ",data,"info")
+      	}
+         console.log(data);
+      }
+    });
+}
+
  function tipo_error_sri(clave)
   {
     var parametros = 

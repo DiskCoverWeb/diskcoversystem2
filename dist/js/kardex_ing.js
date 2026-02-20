@@ -1,5 +1,6 @@
 var Ini_Iva;
 var tbl_retencion;
+var tbl_asientocompra;
 $(document).ready(function()
   {
     ddl_DCRetIBienes();
@@ -25,6 +26,7 @@ $(document).ready(function()
     });
 
     cargar_grilla();
+    cargar_grillaAsientoCompras();
     // $(function() {
     // $('#TxtNumTresComRet').bind('focusout', function(e) {
     //    console.log($('#val_num').val());
@@ -954,6 +956,8 @@ function habilitar_bienes()
     $('#DCPorcenRetenIvaBien').prop('disabled', false);
     $('#DCRetIBienes').css('display', 'initial');
 
+    $('#pnl_bienes').removeClass("d-none");
+
   }else
   {
     $('#TxtIvaBienMonIva').prop('readonly', true);
@@ -963,6 +967,7 @@ function habilitar_bienes()
     $('#TxtIvaBienMonIva').val('0.00');     
     $('#TxtIvaBienValRet').val('0.00');
     $('#DCPorcenRetenIvaBien').val(0);
+    $('#pnl_bienes').addClass("d-none");
 
   }
 }
@@ -976,8 +981,12 @@ function habilitar_servicios()
     $('#DCPorcenRetenIvaServ').prop('disabled', false);
     $('#DCRetISer').css('display', 'initial');
 
+    $('#pnl_servicios').removeClass("d-none");
+
   }else
   {
+
+    $('#pnl_servicios').addClass("d-none");
     $('#TxtIvaSerMonIva').prop('readonly', true);
     // $('#TxtIvaSerValRet').prop('readonly', true); 
     $('#DCPorcenRetenIvaServ').prop('disabled', true);
@@ -1619,3 +1628,142 @@ function cambio_tarifa(opcion){
   let tarifa_label = ("Tarifa "+opcion);
   $('#tarifa_porc').text(tarifa_label);
 }
+
+
+function cargar_grillaAsientoCompras()
+{
+  // if($.fn.dataTable.isDataTable('#tbl_retencion')){
+  //   $('#tbl_retencion').DataTable().clear().destroy();
+  // }
+  var  parametros= 
+  {
+    'Trans_No':'1',
+  }
+   $.ajax({
+      data:  {parametros:parametros},
+      url:   '../controlador/inventario/registro_esC.php?DGAsientoCompras=true',
+      type:  'post',
+      dataType: 'json',
+        success:  function (response) {
+            if (response!='') 
+            {
+              tbl_retencion.destroy();
+
+               // if ($.fn.DataTable.isDataTable('#tbl_retencion')) {
+               //      $('#tbl_retencion').DataTable().destroy();
+               //  }
+
+              tbl_asientocompra = $('#tbl_asientocompra').DataTable({
+                searching: false,
+                // responsive: true,
+                paging: false,   
+                info: false,   
+                autoWidth: false,   
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+                },
+                columnDefs: [],
+                data: response,
+                scrollY: '250px',
+                scrollX: true, 
+                scrollCollapse: true,
+                columns: [
+                  {data:null, 
+                    render: function(data, type, row){
+                      return `<button type="button" class="btn btn-sm btn-danger" onclick="eliminar_asientoCompras()" title="Eliminar linea retencion">
+                      <i class="fa fa-trash me-0 bx-xs"></i>
+                      </button>`;
+                    },
+                    orderable: false,
+                    className: 'text-center'
+                  },
+                    {data: 'Porc_IVA',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                   },
+                    {data: 'MontoIvaBienes',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                    },
+                    {data: 'Porc_Bienes'},
+                    {data: 'ValorRetBienes',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                    },
+                    {data: 'MontoIvaServicios',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                    },
+                    {data: 'Porc_Servicios'},
+                    {data: 'ValorRetServicios',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                    },
+                    {data: 'TipoComprobante'},
+                    {data: 'CodSustento'},
+                    {data: 'Establecimiento'},
+                    {data: 'PuntoEmision'},
+                    {data: 'Secuencial'},
+                    {data: 'Autorizacion'},
+                    {data: 'FechaEmision.date'},
+                    {data: 'FechaRegistro.date'},
+                    {data: 'FechaCaducidad.date'},
+                    {data: 'BaseNoObjIVA',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                    },
+                    {data: 'BaseImponible',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                    },
+                    {data: 'BaseImpGrav',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                    },
+                    {data: 'PorcentajeIva'},
+                    {data: 'MontoIva',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                    },
+                    {data: 'BaseImpIce'},
+                    {data: 'PorcentajeIce'},
+                    {data: 'MontoIce',
+                      render: data => parseFloat(data || 0).toFixed(2),
+                      className: 'text-end'
+                    },
+                    {data: 'DevIva'},
+                    {data: 'Cta_Servicio'},
+                    {data: 'Cta_Bienes'},
+                    {data: 'PorRetServicios'},
+                    {data: 'PorRetBienes'},
+                    {data: 'DocModificado'},
+                    {data: 'FechaEmiModificado'},
+                    {data: 'EstabModificado'},
+                    {data: 'PtoEmiModificado'},
+                    {data: 'SecModificado'},
+                    {data: 'AutModificado'},
+                    {data: 'ContratoPartidoPolitico'},
+                    {data: 'MontoTituloOneroso'},
+                    {data: 'MontoTituloGratuito'},
+                    {data: 'Item'},
+                    {data: 'CodigoU'},
+                    {data: 'A_No'},
+                    {data: 'T_No'},
+                    {data: 'PagoLocExt'},
+                    {data: 'PaisEfecPago'},
+                    {data: 'AplicConvDobTrib'},
+                    {data: 'PagExtSujRetNorLeg'},
+                    {data: 'FormaPago'},
+                    {data: 'Clave_Acceso_NCD'},
+                    {data: 'IdProv'},
+                    {data: 'Devolucion'},
+
+                
+                  ]
+              });
+              // $('#txt_total_retencion').val(response.total);          
+            }
+         
+      }
+    });
+}  

@@ -328,6 +328,18 @@ class loginM
         return  $this->db->datos($sql);
     }
 
+    function validar_cta($cuenta)
+    {
+    	  $sql= "SELECT *
+            FROM Catalogo_Cuentas 
+            WHERE Item = '".$_SESSION['INGRESO']['item']."'
+            AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+            AND Codigo  = '".$cuenta."'
+            AND DG = 'D'";
+        return  $this->db->datos($sql);
+    }
+
+
     function getPeriodoActualSQL($Opcem=false)
 	{
 		if($Opcem)
