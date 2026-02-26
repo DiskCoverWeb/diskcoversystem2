@@ -40,6 +40,14 @@ if(isset($_GET['CERecibidos']))
      echo json_encode($controlador->CERecibidos($parametros));
 }
 
+if(isset($_GET['validarRuc']))
+{
+	$parametros = $_POST;
+	// print_r($parametros);die();
+     echo json_encode($controlador->validarRuc($parametros));
+}
+
+
 /**
  * 
  */
@@ -64,6 +72,41 @@ class autoriza_sri
 		$this->db = new db();
 		$this->rutaJava8  = "";
 		// $this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
+	}
+
+
+	function validarRuc($parametros)
+	{
+		$ci = $parametros['RUC'];
+		$link = "https://srienlinea.sri.gob.ec/sri-catastro-sujeto-servicio-internet/rest/ConsolidadoContribuyente/existePorNumeroRuc?numeroRuc=".$ci;
+		$res = file_get_contents($link);
+		// print_r($link);
+		// print_r($res);die();
+			if($res==true)
+			{
+				$link2 = "https://srienlinea.sri.gob.ec/facturacion-internet/consultas/publico/ruc-datos2.jspa?accion=siguiente&ruc=".$ci;
+				$res2 = file_get_contents($link2);
+				$res2 = explode('<table class="formulario">',$res2); //divide en tabla formulario que viene en el html
+				// print_r($res2);die();
+				$res2 = $res2[1]; //solo toma de tabla formulario para abajo
+				$res2 = explode('</table>', $res2); //divide cuando lña tabla termina 
+				$res2 = $res2[0]; //se selecciona solo la parte primera que seran los tr
+
+				$res2 = str_replace(array('<td colspan="2" class="lineaSep" />','th','<td colspan="2">&nbsp;</td>'),array('','td',''), $res2);
+
+				// print_r($res2);die();
+				
+
+
+
+            $tbl =strval('<table class="table">'.mb_convert_encoding($res2, 'UTF-8').'</table>');
+            $r = array('res'=>1,'tbl'=>$tbl);
+            return $r;
+           }else
+           {
+           	return array("res"=>-1);
+           }
+
 	}
 
 
