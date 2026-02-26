@@ -1,4 +1,5 @@
 	var ListaIntegrantesXProducto = {};
+	var totales_colocados_defualt = {};
 	var ListaAbonos = {};
 	$(document).ready(function () {
 		 autocomplete_pedidos();
@@ -12,6 +13,7 @@
 
 		 $('#ddl_pedidos').on('select2:select', function (e) {
         var datos = e.params.data.data;//Datos beneficiario seleccionado
+        $('#txt_tipo').val(datos.No_Hab);
         console.log(datos);
         $('#MBFechaChek').val(formatoDate(datos.Fecha.date));//Fecha de Atencion
         datos.Fecha = formatoDate(datos.Fecha.date);
@@ -158,9 +160,10 @@
 	          type: 'POST',  // Cambia el método a POST   
 	          data: function(d) {
 	              var parametros = {                    
-	               orden:$('#ddl_pedidos').val(),         
-	               fechaPick:$('#MBFechaChek').val(),     
-	               grupo:$('#ddl_grupos').val(),
+		               orden:$('#ddl_pedidos').val(),         
+		               fechaPick:$('#MBFechaChek').val(),     
+		               grupo:$('#ddl_grupos').val(),
+		               tipo:$('#txt_tipo').val(),
 	              };
 	              return { parametros: parametros };
 	          },   
@@ -295,7 +298,7 @@
 				{
 					$('#txt_integrate_produ').val(codigoC);					
 					ListaIntegrantesXProducto[codigoC].forEach(function(item,i){
-						console.log(item);
+
 						$('#txt_cantidad_entregada_'+item.Codigo.replaceAll('.','_')).val(item.cantidad);
 						$('#txt_pvp_entregada_'+item.Codigo.replaceAll('.','_')).val(item.pvp);
 						$('#txt_total_entregada_'+item.Codigo.replaceAll('.','_')).val(item.total);
@@ -335,7 +338,19 @@
 				console.log(data);
 				tr = '';
 				var total = 0;
+				console.log(totales_colocados_defualt);
 				data.forEach(function(item,i){
+
+						// console.log(item);
+						var valoresNew = totales_colocados_defualt[item.Codigo.replaceAll('.','_')];
+						// console.log(valoresNew);
+						if(valoresNew!=undefined)
+						{
+							 var pvp = valoresNew.split("_");
+							 item.Precio = pvp[1];
+						}
+						console.log(valoresNew)
+
 					tr+= `<tr>
 							<td>
 								<input class="class_productos" type="checkbox" value="`+item.Codigo+`" id="rbl_prod_entregada_`+item.Codigo.replaceAll('.','_')+`">
@@ -362,12 +377,36 @@
 		});
 	}
 
+	function limpiar_datos()
+	{
+		 Swal.fire({
+              title: 'Esta seguro de cerrar?',
+              text: "Si cierra los datos colocados se van a perder!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Si!'
+      }).then((result) => {
+        if (result.value==true) {
+        		totales_colocados_defualt = {};
+						$('#modal_grupoIntegrantes').modal('hide');
+        }
+      })
+
+
+	}
+
 	function recalcular_pvp(codigo)
 	{
 		var total = $('#txt_total_entregada_'+codigo).val();
 		var cant = $('#txt_cantidad_entregada_'+codigo).val();
 		var pvp = parseFloat(total)/parseFloat(cant);
 		$('#txt_pvp_entregada_'+codigo).val(pvp.toFixed(4));
+
+		totales_colocados_defualt[codigo] = total+"_"+pvp;
+
+		console.log(totales_colocados_defualt);
 
 	}
 
@@ -399,7 +438,7 @@
 					tr+=`<tr>
 						<td class="text-center"><input class="class_integrante" type='checkbox' onclick="SelectionarIntegerante()" value="`+item.Codigo+`" id="rbl_facturar_`+item.Codigo+`" name="rbl_facturar_`+item.Codigo+`" checked="" ></td>
 						<td>`+(i+1)+`</td>
-						<td>`+item.Cliente+`</td>
+						<td id="lbl_cliente_`+item.CI_RUC+`">`+item.Cliente+`</td>
 						<td>`+item.CI_RUC+`</td>
 						<td>
 							<input type="" id="txt_cant_cp_`+item.Codigo+`" name ="" class="form-control form-control-sm" value="0" readonly>
@@ -594,7 +633,7 @@
 			'integrantes':integrantes,
 		}
 
-		$('#myModal_espera').modal("show");
+		// $('#myModal_espera').modal("show");
 		$.ajax({
 			type: "POST",
 			url: '../controlador/facturacion/facturas_distribucion_famC.php?validar_cliente_factura=true',
@@ -638,6 +677,40 @@
 	}
 
 	function Generar_factura()
+	{
+		if(Object.keys(ListaIntegrantesXProducto).length==0)
+		{
+			Swal.fire("Seleccione algun Integrante de grupo","","info");
+			return false;
+		}
+
+
+		$('#modal_progres_factura').modal("show");		
+		var num_total_fac = Object.keys(ListaIntegrantesXProducto).length;
+		console.log(ListaIntegrantesXProducto);
+		console.log(num_total_fac);
+
+		var fac_num = 1;
+		var partes = "";
+		Object.keys(ListaIntegrantesXProducto).forEach(function(i,item){
+			partes = fac_num+'/'+num_total_fac;
+			cliente = $('#lbl_cliente_'+i).text();
+			console.log(item);
+
+			sleep(3000)
+			
+			$('#lbl_nombre_cliente').text(cliente);
+			$('#lbl_num_facturas_procesadas').text(partes);
+
+			fac_num= fac_num+1;
+		})
+
+
+
+		// $('#myModal_espera').modal("show");
+	}
+
+	function Generar_factura1()
 	{
 
 		if(Object.keys(ListaIntegrantesXProducto).length==0)
