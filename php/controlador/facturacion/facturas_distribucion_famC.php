@@ -122,7 +122,7 @@ class facturas_distribucion_fam
 
 	}
 
-	function GenerarFactura($parametros)
+	function GenerarFactura_OLD($parametros)
 	{
 		// print_r($parametros);die();
 
@@ -283,12 +283,186 @@ class facturas_distribucion_fam
 
 	}
 
+
+	function GenerarFactura($parametros)
+	{
+		// print_r($parametros);die();
+
+		$this->modelo->ProductosSisponible($parametros['orden'],'F');
+		$electronico = 0;
+		if (isset($parametros['electronico'])) {
+			$electronico = $parametros['electronico'];
+		}
+		$datosFA['MBFecha'] = $parametros['fecha'];		
+		$datosTick['MBFecha'] = $parametros['fecha'];
+
+		$FechaTexto =  $parametros['fecha'];
+		$datosFA['TC'] = $parametros['TipoFactura'];
+		$datosFA['Serie'] = $parametros['Serie'];
+
+		$datosTick['TC'] = $parametros['TipoNDU'];
+		$datosTick['Serie'] = $parametros['Serie'];
+		$datosFA['FacturaNo'] = $parametros['TextNDUNo'];
+
+		$CodigoL = '.';
+		$CodigoL2 = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
+		if (count($CodigoL2) > 0) {
+			$CodigoL = $CodigoL2[0]['Codigo'];
+		}
+
+
+		$integrantes = $parametros['integrante'];
+		$abonos = $parametros['Abonointegrantes'];
+		$productos = $parametros['productos'];
+
+			// print_r($abonos);
+			// print_r($integrantes);
+			// die();
+
+			
+		$respuesta_final = array();
+		$cliente = Leer_Datos_Cliente_FA($integrantes);
+			
+		$datosFA['CI'] = $integrantes;
+		$datosTick['CI'] = $integrantes;
+		$lineas = $parametros['productos'];
+		$Ln_No = 1;
+
+			// print_r($cliente);die();
+			// $datosFA['T'] = $cliente['TB'];
+
+		$datosFA['DCEfectivo'] =  $abonos['ctaEfectivo'];
+		$datosFA['TxtEfectivo'] = $abonos['valorEfectivo'];
+		$datosFA['TextBanco'] = $abonos['documento'];
+		$datosFA['TextCheqNo'] =  $abonos['ctaBancos'];
+		$datosFA['DCBancoC'] =  $abonos['ctaBancos'];
+		$datosFA['CodDoc'] = '01';
+		$datosFA['valorBan'] =  $abonos['valorBanco'];
+		$datosFA['PorcIva'] = trim($parametros['PorcIva']);			
+		$datosFA['TC'] = "FA";
+
+		$Factura_No = 1;
+		if($parametros['TC']=='NDU')
+		{
+			$Factura_No = ReadSetDataNum($parametros['TC'] . "_SERIE_" . $parametros['Serie'], True, true);
+		}
+
+		// print_r($Factura_No);
+		// die();
+
+		$datosFA['FacturaNo'] = $Factura_No;
+
+		$producto = Leer_Codigo_Inv('FA.98',date('Y-m-d'));
+		if($producto['respueta']!='1')
+		{
+			// no se encontro el producto que se estaba buscando
+			return -3;
+		}
+			// else {
+		$total = 0;
+		$this->modelo->DeleteAsientoF($parametros['orden']);
+		$cliente = Leer_Datos_Cliente_FA($datosFA['CI']);
+		foreach ($lineas as $key2 => $value2) {
+			$total = $total+$value2['total'];			
+		}
+			// print_r($cliente);
+			// print_r($lineas);
+			// die();
+
+		SetAdoAddNew('Asiento_F');
+		SetAdoFields('Codigo_Cliente', $cliente['CodigoC']);
+		SetAdoFields('CODIGO', $producto['datos']['Codigo_Inv']);
+		SetAdoFields('PRODUCTO', $producto['datos']['Producto']);
+		SetAdoFields('Orden_No', $parametros['orden']);
+		SetAdoFields('CodigoU', $_SESSION['INGRESO']['CodigoU']);
+		SetAdoFields('A_No', 1);
+		SetAdoFields('CANT', 1);
+		SetAdoFields('PRECIO', number_format($total,$_SESSION['INGRESO']['Dec_PVP'],'.',''));
+		SetAdoFields('TOTAL', number_format($total,2,'.',''));
+		SetAdoFields('Serie',$parametros['Serie']);
+		SetAdoFields('Item',$_SESSION['INGRESO']['item']);
+		SetAdoUpdate();
+		// print_r($datosFA);die();
+
+		$factura =  $this->GenerarFacturaUni($datosFA);
+
+
+		// die();
+
+
+		// ---------------------  prefactura ------------------------------ // 
+
+
+			// print_r($factura);
+			// die();
+
+			$datosTick['FacturaNo'] = $Factura_No;			
+			$datosTick['DCEfectivo'] = 0;
+			$datosTick['TxtEfectivo'] =0;
+			$datosTick['TextBanco'] = 0;
+			$datosTick['TextCheqNo'] = 0;
+			$datosTick['DCBancoC'] = '';
+			$datosTick['CodDoc'] = '01';
+			$datosTick['valorBan'] = 0;
+			$datosTick['PorcIva'] = $parametros['PorcIva'];
+			$datosFA['TC'] = "NDU";
+			$datosTick['TC'] = "NDU";
+
+			//insertya en trasn kardex
+
+			$this->ingresar_trans_kardex_salidas_FA($lineas,$parametros,$factura['factura'],$factura['serie'],$datosFA['CI']);
+
+			//genera lineas de tickes
+			foreach ($lineas as $key2 => $value2) {
+				$producto = Leer_Codigo_Inv($value2['Codigo'],$datosFA['MBFecha']);
+				$cmds = $this->modelo->asignacion_familias($parametros['orden'],false,'F',false,$value2['Codigo']);
+				if($producto['respueta']==1)
+				{
+					$producto = $producto['datos'];
+					// print_r($producto);die();
+					// print_r($value2);die();
+					SetAdoAddNew("Asiento_F");
+		            SetAdoFields("CODIGO", $value2['Codigo']);
+		            SetAdoFields("CODIGO_L", $CodigoL);
+		            SetAdoFields("PRODUCTO", $producto['Producto']);
+		            SetAdoFields("CANT", $value2['cantidad']);
+		            SetAdoFields("PRECIO", $value2['pvp']);
+		            SetAdoFields("TOTAL", $value2['total']);
+		            // SetAdoFields("Total_Desc", $value['Total_Desc']);
+		            // SetAdoFields("Total_IVA", $value['Total_IVA']);
+		            SetAdoFields("Serie_No", $datosFA['Serie'] );		            
+		            SetAdoFields("CodBod", $cmds[0]['CodBodega']);
+		            SetAdoFields("Costo", number_format($producto['Costo'],2,'.',''));
+		            // SetAdoFields("Cta", $parametros['cta']);
+		            SetAdoFields("Item", $_SESSION['INGRESO']['item']);
+		            SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
+		            SetAdoFields("A_No", $Ln_No);
+		            SetAdoFields("Cmds", $cmds[0]['Cmds']);
+		            // SetAdoFields("Numero", $ordenP);
+		            SetAdoUpdate();
+		            $Ln_No = $Ln_No + 1;
+	        	}
+			}
+
+
+			$Ticket = $this->GenerarTicketUni($datosTick);
+			// print_r($Ticket);die();
+			// $this->ingresar_trans_kardex_salidas_FA($integrantes);
+			array_push($respuesta_final, $factura);
+			$this->modelo->ActualizarCodigoFactura($parametros['TC'] . "_SERIE_" . $parametros['Serie'],$Factura_No);
+		// }
+
+		return $respuesta_final;
+		// print_r($respuesta_final);die();
+
+	}
+
 	function ingresar_trans_kardex_salidas_FA($lineas,$parametros,$factura,$serie,$codigo_p)
 	{
 		// print_r($lineas);
 		// print_r($parametros);die();
 
-		$productosDistribuidos = json_decode($parametros['integrantes'],true);
+		$productosDistribuidos = json_decode($parametros['integrante'],true);
 
 		$listadoK = array();
 

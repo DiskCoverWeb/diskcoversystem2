@@ -2,6 +2,10 @@
 	var totales_colocados_defualt = {};
 	var ListaAbonos = {};
 	$(document).ready(function () {
+
+
+		// $('#modal_progres_factura').modal("show");		
+
 		 autocomplete_pedidos();
 		 DCLineasNDU(); 
 		 // serie();
@@ -676,7 +680,10 @@
 
 	}
 
-	function Generar_factura()
+	lista_no_autorizada = [];
+	lista_autorizados = [];
+
+	async function  Generar_factura()
 	{
 		if(Object.keys(ListaIntegrantesXProducto).length==0)
 		{
@@ -692,22 +699,129 @@
 
 		var fac_num = 1;
 		var partes = "";
-		Object.keys(ListaIntegrantesXProducto).forEach(function(i,item){
-			partes = fac_num+'/'+num_total_fac;
-			cliente = $('#lbl_cliente_'+i).text();
-			console.log(item);
+		var progress_val = 0;
 
-			sleep(3000)
-			
-			$('#lbl_nombre_cliente').text(cliente);
-			$('#lbl_num_facturas_procesadas').text(partes);
+		for (const i of Object.keys(ListaIntegrantesXProducto)) 
+		{
+        partes = fac_num+'/'+num_total_fac;
+        cliente = $('#lbl_cliente_'+i).text();
+        progress_val = 100/num_total_fac;
 
-			fac_num= fac_num+1;
-		})
+        progress = fac_num*progress_val;
+        progress_cambio(progress);
+
+        productos = ListaIntegrantesXProducto[i];
+        abonos = ListaAbonos[i];
+        
+
+        $('#lbl_nombre_cliente').text(cliente);
+        $('#lbl_num_facturas_procesadas').text(partes);
+
+        // Ahora await funciona correctamente
+
+        var resp = await generar_facturas_x_cliente(i,productos,abonos);
+        if(resp[0]['respuesta'][0]==1)
+        {
+        	lista_autorizados.push(resp);
+        }else
+        {
+        	lista_no_autorizada.push(resp);
+        }
+
+        fac_num = fac_num + 1;
+
+    }
+
+    Swal.fire("Facturas generadas",'Factura generadas',"success")
 
 
+		$('#modal_progres_factura').modal("hide");
+
+
+
+        console.log(lista_autorizados);
+        console.log(lista_no_autorizada);
+	}
+
+	function progress_cambio(numFacturado)
+	{
+		if(numFacturado==0 && numFacturado<25)
+		{
+			 $('#progress_bar').removeClass('w-0');
+		}else if(numFacturado>=25 && numFacturado<50)
+		{
+			 $('#progress_bar').addClass('w-25');
+			 $('#progress_bar').removeClass('w-0');
+		}else if(numFacturado>=50 && numFacturado<75)
+		{
+			 $('#progress_bar').removeClass('w-25');
+			 $('#progress_bar').addClass('w-50');
+		}else if(numFacturado>=75 && numFacturado<100)
+		{
+			 $('#progress_bar').removeClass('w-50');
+			 $('#progress_bar').addClass('w-75');
+		}else if(numFacturado>=100)
+		{
+			 $('#progress_bar').removeClass('w-75');
+			 $('#progress_bar').addClass('w-100');
+		}
+	}
+
+
+
+	function generar_facturas_x_cliente(cliente,productos,abonos)
+	{
+
+		var parametros =
+		{
+			'programa': $('#ddl_programas').val(),
+			'grupo': $('#ddl_grupos').val(),
+			'orden': $('#ddl_pedidos').val(),
+			'fechaPick': $('#MBFechaChek').val(),
+			'fecha': $('#MBFecha').val(),
+			'integrante':cliente,
+			'Abonointegrantes':abonos,
+			'productos':productos,
+
+			'TxtEfectivo': $('#btnToggleInfoEfectivo').attr('stateval')=="1" ? $('#TxtEfectivo').val() : 0.00,
+			'TextFacturaNo': $('#TextFacturaNo').val(),
+			'TipoFactura': 'FA',
+			'TextNDUNo': $('#TextNDUNo').val(),
+			'TipoNDU': $('#DCTipoFact2').val(),
+			'TC':$('#DCTipoFact2').val(),
+			'Serie': $('#LblSerie').text(),
+			'SerieFA': $('#LblSerieFA').text(),
+			'DCBancoN': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco option:selected').text() : "",
+			'DCBancoC': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#DCBanco').val() : "",
+			'TextBanco': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextBanco').val() : "",
+			'TextCheqNo': $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextCheqNo').val() : "",
+			'CodDoc': $('#CodDoc').val(),
+			'valorBan':  $('#btnToggleInfoBanco').attr('stateval')=="1" ? $('#TextCheque').val() : 0.00,
+			'Cta_Cobrar': $('#Cta_CxP').val(),
+			'Autorizacion': $('#Autorizacion').val(),
+			'PorcIva':$('#DCPorcenIVA').text(),
+		}
 
 		// $('#myModal_espera').modal("show");
+
+		return new Promise((resolve, reject) => {
+
+				$.ajax({
+					type: "POST",
+					url: '../controlador/facturacion/facturas_distribucion_famC.php?GenerarFactura=true',
+					data: { parametros: parametros },
+					dataType: 'json',
+					success: function (data) {
+						resolve(data);
+					},
+				    error: function(error){
+				      console.error("Error revisar: ", error);
+							$('#myModal_espera').modal("hide");
+							reject(error);
+				    }
+				});
+			});
+
 	}
 
 	function Generar_factura1()
@@ -973,6 +1087,11 @@
 			$('#modalInfoFactura').modal('show')
 			apagar = $('#txt_total_cp_'+codigo).val();
 			$('#LabelTotal').val(apagar);
+
+      $('#DCEfectivo').append($('<option>',{value:'1.1.01.01.03', text: '1.1.01.01.03 Caja Familias',selected: true }));
+      $('#DCBanco').append($('<option>',{value:'1.1.01.02.01', text: '1.1.01.02.01  Banco Pichincha Ahorros (Cuota Recuperacion) No. 3708204100',selected: true }));
+
+
 		}else
 		{
 			Swal.fire('Seleccione productos','El total de productos no puede ser cero ( 0 )','info');

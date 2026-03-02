@@ -112,6 +112,7 @@ if (isset ($_GET['tipo'])) {
 						<div class="col-sm-4">
 							<b>Pedido</b>	
 							<div class="d-flex align-items-center">
+								<input type="hidden" name="txt_tipo" id="txt_tipo">
 								<select class="form-select form-select-sm" id="ddl_pedidos" name="ddl_pedidos">
 									<option value="">Seleccione Prog</option>
 								</select>		
@@ -328,7 +329,7 @@ if (isset ($_GET['tipo'])) {
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary"  onclick="validar_cliente_factura()">Generar Facturas</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-secondary" onclick="limpiar_datos()">Cerrar</button>
 			</div>
 		</div>
 	</div>
@@ -535,3 +536,29 @@ if (isset ($_GET['tipo'])) {
 		</div>
 	</div>
 </div>
+
+
+<div id="modal_progres_factura" class="modal fade"  role="dialog" >
+	<div class="modal-dialog modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header bg-primary">
+				<!-- <h4 class="modal-title text-white">Grupo de alimentos</h4> -->
+			</div>
+			<div class="modal-body">
+               	<div class="row">
+               		<label id="lbl_nombre_cliente">.</label>
+               		<div class="progress p-0">
+						<div class="progress-bar w-0 progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="progress_bar">
+							<span id="lbl_num_facturas_procesadas">1/60</span>
+						</div>
+					</div>               		
+               	</div>
+			</div>
+			<!-- <div class="modal-footer">
+				<button type="button" class="btn btn-primary"  onclick="SeleccionarIntegrante()">Ok</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+			</div> -->
+		</div>
+	</div>
+</div>
+
