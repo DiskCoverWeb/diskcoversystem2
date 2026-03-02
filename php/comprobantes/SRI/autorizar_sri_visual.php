@@ -173,7 +173,7 @@ class autoriza_sri
    		 			$fechaAutorizacion =  (string)$xml->fechaAutorizacion;
 					// $this->borrar_xml_file($Autorizacion);
 					
-					$ArchivoXML = str_replace(array("\r\n", "\r", "\n", "\t"), '', $ArchivoXML);
+					$ArchivoXML = str_replace(array("\r\n", "\r", "\t"), '', $ArchivoXML);
    		 			// $ArchivoXML = str_replace('"', "'",$ArchivoXML);
    		 			return  array('respuesta'=>1,"mensaje"=>"XML autorizado",'FechaAutorizacion'=>$fechaAutorizacion,"XML"=>$ArchivoXML);
    		 			
@@ -192,7 +192,7 @@ class autoriza_sri
 					
 					// print_r($ArchivoXML);die();
 
-					$ArchivoXML = str_replace(array("\r\n", "\r", "\n", "\t"), '', $ArchivoXML);
+					$ArchivoXML = str_replace(array("\r\n", "\r", "\t"), '', $ArchivoXML);
    		 			// $ArchivoXML = str_replace('"', "'",$ArchivoXML);
    		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","FechaAutorizacion"=>"","XML"=>$ArchivoXML);
    		 		}
@@ -210,7 +210,7 @@ class autoriza_sri
    		 			}
 					$this->borrar_xml_file($Autorizacion);
 					// print_r($ArchivoXML);die();
-					$ArchivoXML = str_replace(array("\r\n", "\r", "\n", "\t"), '', $ArchivoXML);
+					$ArchivoXML = str_replace(array("\r\n", "\r", "\t"), '', $ArchivoXML);
    		 			// $ArchivoXML = str_replace('"', "'",$ArchivoXML);
    		 			return  array('respuesta'=>-1,"mensaje"=>"XML NO autorizado","FechaAutorizacion"=>"","XML"=>$ArchivoXML);
 	   		}
