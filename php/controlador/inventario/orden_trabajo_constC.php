@@ -39,10 +39,22 @@
         $parametros = $_POST['parametros'];
         echo json_encode($controlador->cargar_lista($parametros));
     }
+    if(isset($_GET['aprob_cargar_lista']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->aprob_cargar_lista($parametros));
+    }
     if(isset($_GET['eliminar_linea']))
     {
         $id = $_POST['ID'];
         echo json_encode($controlador->eliminar_linea($id));
+    }
+
+    if(isset($_GET['contratistas']))
+    {
+        $query = false;
+        if(isset($_GET['q'])){$query = $_GET['q'];}
+        echo json_encode($controlador->contratistas($query));
     }
 
 
@@ -99,7 +111,7 @@
 
             }
 
-            SetAdoAddNew("Trans_SubCtas");
+            SetAdoAddNew("Trans_Contratistas");
             SetAdoFields("T","N");
             SetAdoFields("TC","OT");
             SetAdoFields("Cta",$parametros["ddl_cuenta_contable"]);
@@ -133,9 +145,18 @@
         {
             return $this->modelo->cargar_lista($parametros['orden']);
         }
+        function aprob_cargar_lista($parametros)
+        {
+            return $this->modelo->aprob_cargar_lista($parametros['orden']);
+        }
         function eliminar_linea($id)
         {
             return $this->modelo->eliminar_linea($id);
+        }
+
+        function contratistas($query)
+        {
+           return $this->modelo-> contratistas($query);
         }
     }
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<notaCredito id="comprobante" version="1.0.0">
+  <infoTributaria>
+    <ambiente>1</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>VACA PRIETO WALTER JALILL</razonSocial>
+    <nombreComercial>EMPRESA PARA DESARROLLO</nombreComercial>
+    <ruc>0702164179001</ruc>
+    <claveAcceso>1302202604070216417900110010030000001581234567810</claveAcceso>
+    <codDoc>04</codDoc>
+    <estab>001</estab>
+    <ptoEmi>003</ptoEmi>
+    <secuencial>000000158</secuencial>
+    <dirMatriz>Desarrollo para programacion de DiskCover System</dirMatriz>
+  </infoTributaria>
+  <infoNotaCredito>
+    <fechaEmision>13/02/2026</fechaEmision>
+    <dirEstablecimiento>direccion de empresa xyz</dirEstablecimiento>
+    <tipoIdentificacionComprador>04</tipoIdentificacionComprador>
+    <razonSocialComprador>PRISMANET PROFESIONAL S.A.</razonSocialComprador>
+    <identificacionComprador>1792164710001</identificacionComprador>
+    <obligadoContabilidad>NO</obligadoContabilidad>
+    <codDocModificado>01</codDocModificado>
+    <numDocModificado>001-003-000001676</numDocModificado>
+    <fechaEmisionDocSustento>10/07/2024</fechaEmisionDocSustento>
+    <totalSinImpuestos>19.50</totalSinImpuestos>
+    <valorModificacion>19.50</valorModificacion>
+    <moneda>DOLAR</moneda>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>3</codigoPorcentaje>
+        <baseImponible>0.00</baseImponible>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <motivo>Anulacion por Nota de Credito</motivo>
+  </infoNotaCredito>
+  <detalles>
+    <detalle>
+      <codigoInterno>98.40</codigoInterno>
+      <codigoAdicional>8</codigoAdicional>
+      <descripcion>7 LINEAS</descripcion>
+      <cantidad>1.0000</cantidad>
+      <precioUnitario>19.50</precioUnitario>
+      <descuento>.0000</descuento>
+      <precioTotalSinImpuesto>19.5</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <tarifa>0.00</tarifa>
+          <baseImponible>19.5</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Direccion">SD</campoAdicional>
+    <campoAdicional nombre="Telefono">000000000</campoAdicional>
+    <campoAdicional nombre="Email">prisma_net@hotmail.es</campoAdicional>
+  </infoAdicional>
+</notaCredito>

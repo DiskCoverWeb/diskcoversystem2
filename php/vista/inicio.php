@@ -611,8 +611,18 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'orden_trabajo_const':
 					require_once("inventario/orden_trabajo_const.php");
 					break;
-	
-	
+				case 'aprob_orden_trabajo_const':
+					require_once("inventario/aprob_orden_trabajo_const.php");
+					break;
+				case 'detalle_orden_trabajo_const':
+					require_once("inventario/detalle_orden_trabajo_const.php");
+					break;
+				case 'contrato_trabajo_const':
+					require_once("inventario/contrato_trabajo_const.php");
+					break;	
+				case 'contrato_trabajo_detalle_const':
+					require_once("inventario/contrato_trabajo_detalle_const.php");
+					break;	
 				//MODALES
 				case 'FSubCtas':
 					require_once('contabilidad/FSubCtas.php');
