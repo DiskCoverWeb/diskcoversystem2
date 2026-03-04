@@ -438,6 +438,7 @@ class facturas_distribucion_fam
 		            SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
 		            SetAdoFields("A_No", $Ln_No);
 		            SetAdoFields("Cmds", $cmds[0]['Cmds']);
+		            SetAdoFields('CodBod', $cmds[0]['Codigo_Barra']);
 		            // SetAdoFields("Numero", $ordenP);
 		            SetAdoUpdate();
 		            $Ln_No = $Ln_No + 1;
