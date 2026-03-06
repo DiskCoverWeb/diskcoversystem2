@@ -21,10 +21,10 @@ class reubicarM
             where TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
             AND TK.Item = '".$_SESSION['INGRESO']['item']."'
             AND TK.Item = CP.Item
-            AND TK.Orden_No <> '0'
-            AND TK.Orden_No <> '.'
-            AND TK.Orden_No <> '0.'
+            AND TK.Periodo = CP.Periodo
+            AND TK.Orden_No NOT IN('0','.','0.')
             AND TK.CodBodega <> '-1'
+            AND Salida = 0
             AND TK.T = 'N'";
             if($bodega)
             {
