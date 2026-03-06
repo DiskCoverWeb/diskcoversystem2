@@ -75,7 +75,7 @@ function isMobileDevice() {
 				<div class="row">	
 					<label class="col-auto px-0 col-form-label"><b>Fecha de Egreso</b></label>
 					<div class="col-auto">
-						<input type="date" class="form-control form-control-sm" id="txt_fecha" name="txt_fecha" value="<?php echo date('Y-m-d'); ?>" readonly>		
+						<input type="date" class="form-control form-control-sm" id="txt_fecha" name="txt_fecha" value="<?php echo date('Y-m-d'); ?>" >		
 					</div>
 				</div>			
 				<div class="row">

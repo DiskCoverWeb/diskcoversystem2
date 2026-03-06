@@ -330,7 +330,8 @@ class egreso_alimentosM
 				$sql.="order by c.Cliente;";
 
 
-		// print_r($sql);die();
+		// print_r($sql);
+		// die();
 			
 		return $this->db->datos($sql);
 	}
@@ -370,6 +371,7 @@ class egreso_alimentosM
 	     $sql = "SELECT SUM(VALOR_TOTAL) as 'total',Contra_Cta as 'CONTRA_CTA',Cta_Inv AS 'SUBCTA',CodigoL,Fecha AS 'Fecha_Fab',TC 
 	     FROM Trans_Kardex  
 	     WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+	     AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
 	     AND Orden_No = '".$orden."'
 	     GROUP BY Contra_Cta,Fecha,TC,Cta_Inv,CodigoL";
 	          // print_r($sql);die();
@@ -383,6 +385,7 @@ class egreso_alimentosM
      $sql = "SELECT SUM(VALOR_TOTAL) as 'total',Contra_Cta as 'cuenta',Fecha as 'fecha',TC 
      FROM Trans_Kardex  
      WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+	AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
      AND Orden_No = '".$orden."' 
      AND Fecha = '".$fecha."'";
      if($diferente)
