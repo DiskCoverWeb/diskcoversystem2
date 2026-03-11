@@ -15,21 +15,14 @@ class contrato_trabajo_detalle_constM
 
     function detalleContrato($contrato=false)
     {
-        $sql = "SELECT TC.ID,TC.Fecha,Fecha_V,TC.Codigo,C.Cliente,TC.Proceso as categoriaId, CP.Proceso as categoria,TC.Categoria_Contrato  as cuenta_contableId,CC.Cuenta as cuenta_contable,TC.Cta as tipo_costoId,CC1.Cuenta as tipo_costo,Cargo_Mat,
-        Mas_Persona,Nombre_Contrato,Proyecto as proyectoId,CC2.Cuenta as proyecto,Autorizacion 
+        $sql = "select TC.ID,C.Cliente,CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID  
         FROM Trans_Contratistas TC
         INNER JOIN Clientes C ON TC.Codigo = C.Codigo
         INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds
-        INNER JOIN Catalogo_Cuentas CC ON TC.Categoria_Contrato = CC.Codigo 
-        INNER JOIN Catalogo_Cuentas CC1 ON TC.Cta = CC1.Codigo         
-        INNER JOIN Catalogo_Cuentas CC2 ON TC.Proyecto = CC2.Codigo 
-        where TC.Item = CP.Item
-        AND TC.Item = CC.Item
-        AND TC.Item = CC1.Item
-        AND TC.Item = CC2.Item
-        AND TC.Periodo = CC.Periodo
-        AND TC.Periodo = CC1.Periodo
-        AND TC.Periodo = CC2.Periodo
+        INNER JOIN Catalogo_Proceso CP1 ON TC.Proyecto = CP1.ID
+        where TC.T ='.'
+        AND TC.Item = CP.Item
+        AND TC.Item = CP1.Item
         AND TC.Item = '".$_SESSION['INGRESO']['item']."'
         AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
         if($contrato)
@@ -66,10 +59,10 @@ class contrato_trabajo_detalle_constM
     function lista_solicitud_rubro($contrato=false,$rubro = false)
     {
         $sql = "SELECT  TCR.ID,Cta as IdRubro,Detalle,Etapa as IdEtapa ,C.Proceso as Etapa,Centro_Costos,CC.Cuenta,Cantidad,Costo_Unit,TCR.Total,TCR.Codigo
-                FROM Trans_Contratistas_Rubros TCR 
-                INNER JOIN Catalogo_Proceso C ON TCR.Etapa = C.Cmds
-                INNER JOIN Catalogo_SubCtas SC ON TCR.Cta = SC.Codigo
-                INNER JOIN Catalogo_Cuentas CC ON TCR.Centro_Costos = CC.Codigo
+               FROM Trans_Contratistas_Rubros TCR 
+               INNER JOIN Catalogo_Proceso C ON TCR.Etapa = C.Cta_Debe
+               INNER JOIN Catalogo_SubCtas SC ON TCR.Cta = SC.Codigo
+               INNER JOIN Catalogo_Cuentas CC ON TCR.Centro_Costos = CC.Codigo 
                 WHERE C.Item = TCR.Item
                 AND CC.Item = TCR.Item
                 AND CC.Periodo = TCR.Periodo
@@ -77,10 +70,35 @@ class contrato_trabajo_detalle_constM
                 AND SC.Periodo = TCR.Periodo
                 AND TCR.Item = '".$_SESSION['INGRESO']['item']."'
                 AND TCR.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-                AND TCR.Orden_Trabajo = '".$contrato."'
-                AND TCR.Cta = '".$rubro."'";
+                AND TCR.Orden_Trabajo = '".$contrato."' ";
+                if($rubro)
+                {
+                    $sql.=" AND TCR.Cta = '".$rubro."'";
+                }
 
                 // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+
+    function proyecto($query,$id=false)
+    {
+        $sql= "SELECT Item, Nivel, TP, Proceso as text, DC, Cheque, Mi_Cta, Cmds, Cta_Debe, Cta_Haber,ID as id, Picture, Color, Cta_Costo
+               FROM Catalogo_Proceso 
+               WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+               AND (Nivel = 0)
+               AND LEN(Cmds) = 2 ";
+                if($query)
+                {
+                    $sql.=" AND Proceso like'%".$query."%'";
+                }
+                if($id)
+                {
+                    $sql.=" AND ID = '".$id."'";
+                }
+        $sql.=" ORDER by Proceso";
+
+        // print_r($sql);die();
         return $this->db->datos($sql);
     }
 
@@ -100,7 +118,7 @@ class contrato_trabajo_detalle_constM
 
     function personal($query)
     {
-        $sql= "SELECT top 25 Codigo as id, Cliente as text
+        $sql= "SELECT top 25 Codigo,Cliente,Actividad,Fecha_N,CI_RUC
                FROM Clientes 
                 WHERE 1=1 ";
                 if($query)
@@ -113,17 +131,18 @@ class contrato_trabajo_detalle_constM
         return $this->db->datos($sql);
     }
 
-    function lista_etapas($query=false)
+    function lista_etapas($proyecto,$query=false)
     {
         $sql = "SELECT TP, Proceso,Cmds, Cta_Debe, Cta_Haber, ID
                 FROM Catalogo_Proceso
                 WHERE Item = '".$_SESSION['INGRESO']['item']."'
-                AND Cmds LIKE '04.%'";
+                AND Cmds LIKE '".$proyecto.".04.%'";
                 if($query)
                 {
                     $sql.= " AND Proceso like '%".$query."%'";
                 }
 
+// print_r($sql);die();
         return $this->db->datos($sql);
 
     }
@@ -157,6 +176,66 @@ class contrato_trabajo_detalle_constM
     {
         $sql = "DELETE FROM Trans_Contratistas_Rubros WHERE ID = '".$id."'";
         return $this->db->String_Sql($sql);
+    }
+
+    function ddl_Proceso($cuenta=false,$cmds=false)
+    {
+
+        $sql = "SELECT Cmds as id,Proceso as text 
+            FROM Catalogo_Proceso
+            WHERE Item = '".$_SESSION['INGRESO']['item']."' ";
+            if($cuenta)
+            {
+                $sql.=" AND Proceso like '".$cuenta."%'";
+            }
+            if($cmds)
+            {
+                $sql.=" AND Cmds like '".$cmds."%'";
+            }
+            $sql.=" ORder by Nivel DESC";
+
+            // print_r($sql);die();
+
+       $datos =  $this->db->datos($sql);
+       return $datos;
+    }
+
+
+    function listar_cc($query='',$proyectos=false)
+    {
+        // 'LISTA DE CODIGO DE ANEXOS
+         $sql = "SELECT Codigo,Cuenta 
+         FROM Catalogo_Cuentas 
+         WHERE TC='CC' 
+         AND DG='D' 
+         AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+         AND Item = '".$_SESSION['INGRESO']['item']."' ";
+         if($query !='')
+         {
+            $sql .=" AND Cuenta+' '+Codigo LIKE '%".$query."%'"; 
+         }
+          if($proyectos)
+         {
+            $sql .=" AND Codigo LIKE '".$proyectos."%'"; 
+         }
+            // print_r($sql);die();
+             $datos1 =  $this->db->datos($sql);
+
+             $datos = array();
+             foreach ($datos1 as $key => $value) {
+                $datos[]=array('id'=>$value['Codigo'],'text'=>$value['Cuenta']);        
+             }
+             return $datos;
+
+    }
+
+    function grabar_orden_trabajo($orden)
+    {
+        $sql = "UPDATE Trans_Contratistas 
+                SET T = 'A' 
+                WHERE Autorizacion = '".$orden."' ";
+        return $this->db->String_Sql($sql);
+
     }
 
 

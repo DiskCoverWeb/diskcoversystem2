@@ -68,8 +68,11 @@ if(isset($_GET['personal']))
 if(isset($_GET['lista_etapas']))
 {
     $query = '';
+    $proyecto = '';
     if(isset($_GET['q'])){ $query = $_GET['q'];}
-    echo json_encode($controlador->lista_etapas($query));
+    if(isset($_GET['pro'])){ $proyecto = $_GET['pro'];}
+
+    echo json_encode($controlador->lista_etapas($proyecto,$query));
 }
 
 if(isset($_GET['eliminar_personal']))
@@ -84,6 +87,39 @@ if(isset($_GET['eliminar_rubros']))
     echo json_encode($controlador->eliminar_rubros($parametros));
 }
 
+if(isset($_GET['proyecto']))
+{   
+   
+    $query = '';
+    if(isset($_GET['q'])){ $query = $_GET['q'];}
+    echo json_encode($controlador->proyecto($query));
+}
+
+if(isset($_GET['ddl_Proceso']))
+{
+    $query = false;
+    $proyecto = $_GET['idproyecto'];
+    if(isset($_GET['q'])){$query = $_GET['q'];}
+    echo json_encode($controlador->ddl_Proceso($proyecto,$query));
+}
+
+if (isset($_GET['cc'])) {
+    if(!isset($_GET['q']))
+    {
+        $_GET['q'] =''; 
+    }
+    $pro = $_GET['pro'];
+    $etapa = $_GET['etapaCC'];
+    echo json_encode($controlador->lista_cc($_GET['q'],$pro,$etapa));
+}
+
+if(isset($_GET['grabar_orden_trabajo']))
+{
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->grabar_orden_trabajo($parametros));
+}
+
+
 
 class contrato_trabajo_detalle_constC
 {
@@ -92,6 +128,11 @@ class contrato_trabajo_detalle_constC
         $this->modelo = new contrato_trabajo_detalle_constM();
     }
 
+    function proyecto($query)
+    {
+        $datos = $this->modelo->proyecto($query);
+        return $datos;
+    }
 
     function contratistas($query)
     {
@@ -102,30 +143,31 @@ class contrato_trabajo_detalle_constC
     function personal($query)
     {
         $datos = $this->modelo->personal($query);
-        return $datos;
+        $lista = array();
+        foreach ($datos as $key => $value) {
+            $lista[] = array('id'=>$value['Codigo'],'text'=>$value['Cliente'],'data'=>$value);
+        }
+        return $lista;
     }
 
     function GuardarContrato($parametros)
     {
         $tipo = substr($parametros['cate_contrato_name'],0,2);
-        $numeroContrato = ReadSetDataNum("Contrato_No",true,$Incrementar = false);
+        $numeroContrato = ReadSetDataNum(strtoupper($tipo)."_SEC_999999",true,$Incrementar = false);
 
         // print_r($tipo);
         // print_r($parametros);die();
         // print_r($numeroContrato); die();
-        $contrato = $tipo.'_'.$parametros['contratista'].'_'.date('ymd').'_'.generaCeros($numeroContrato,5);
+        $contrato = strtoupper($tipo).'_'.$numeroContrato.'_'.$parametros['contratista'];
 
         SetAdoAddNew("Trans_Contratistas");
         SetAdoFields("TC","OT");        
-        SetAdoFields("Nombre_Contrato",$parametros['nombre_contrato']);
         SetAdoFields("Codigo",$parametros['contratista']);
         SetAdoFields("Proceso",$parametros['cate_contrato']);
-        SetAdoFields("Cta",$parametros['cc_']);
         SetAdoFields("Proyecto",$parametros['proyecto']);
         SetAdoFields("Cargo_Mat",$parametros['material']);
         SetAdoFields("Mas_Persona",$parametros['mas_personas']);
-        SetAdoFields("Categoria_Contrato",$parametros['cuenta_contable']);
-        SetAdoFields("Autorizacion",$contrato);
+        SetAdoFields("No_Contrato",$contrato);
         SetAdoFields("Fecha",$parametros['fecha_inicio']);
         SetAdoFields("Fecha_V",$parametros['fecha_fin']);
 
@@ -182,12 +224,18 @@ class contrato_trabajo_detalle_constC
 
     }
 
-    function  lista_etapas($query)
+    function  lista_etapas($proyecto,$query)
     {
-        $datos = $this->modelo->lista_etapas($query);
+
+        // print_r($proyecto);
+        // print_r($query);
+        // die();
+        // $datos = $this->modelo->lista_etapas($query);
+        $proyecto = $this->modelo->proyecto(false,$proyecto);
+        $lista_etapas = $this->modelo->lista_etapas($proyecto[0]['Cmds'],$query=false);
         $lista = array();
-        foreach ($datos as $key => $value) {
-            $lista[] =array('id'=>$value['Cmds'],'text'=>$value['Proceso'], 'data'=>$value); 
+        foreach ($lista_etapas as $key => $value) {
+            $lista[] =array('id'=>$value['Cta_Debe'],'text'=>$value['Proceso'], 'data'=>$value); 
         }
         return $lista;
     }
@@ -196,55 +244,20 @@ class contrato_trabajo_detalle_constC
     function lista_solicitud_rubro($parametros)
     {
         $contrato = $parametros['orden'];
-        $data = $this->modelo->lista_rubros_unicos($contrato);
+        $data = $this->modelo->lista_solicitud_rubro($contrato);
         $lista = '';
+                                  // print_r($data);die();
         foreach ($data as $key => $value) {
-            $lineas = $this->modelo->lista_solicitud_rubro($contrato,$value['Cta']);
-
-            // print_r($lineas);die();
-            $lista.= ' <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_'.$value['Cta'].'" aria-expanded="true" aria-controls="collapseOne">'.$value['Detalle'].'
-                      </button>
-                    </h2>
-                    <div id="collapseOne_'.$value['Cta'].'" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                      <div class="accordion-body"> 
-                        <div class="row">
-                          <div class="col-sm-12">
-                            <div class="table-responsive">
-                              <table class="table w-100" id="tbl_lista_solicitud_rubro">
-                                  <thead>                                  
-                                     <th></th>
-                                     <th>No</th>
-                                     <th>Centro de costos</th>
-                                     <th>Detalle</th>
-                                     <th>U/m</th>
-                                     <th>Cant</th>
-                                     <th>Costo/Uni</th>
-                                     <th>Total</th>
-                                  </thead>
-                                  <tbody>';
-                                  foreach ($lineas as $key2 => $value2) {
-                                    $lista.= '<tr>
-                                          <td><button type="button" class="btn-danger btn-sm btn" onclick="eliminar_rubros('.$value2['ID'].')"><i class="bx bx-trash me-0"></i></button></td>
-                                          <td>'.($key2+1).'</td>
-                                          <td>Puerta batiente</td>
-                                          <td>'.$value2['Codigo'].'</td>
-                                          <td>'.$value2['Cantidad'].'</td>
-                                          <td>'.$value2['Costo_Unit'].'</td>
-                                          <td>'.$value2['Total'].'</td>
-                                        </tr>';
-                                  }
-                                    
-                                  $lista.='</tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>';
+        $lista.= '<tr>
+              <td><button type="button" class="btn-danger btn-sm btn" onclick="eliminar_rubros('.$value['ID'].')"><i class="bx bx-trash me-0"></i></button></td>
+              <td>'.($key+1).'</td>
+              <td>'.$value['Cuenta'].'</td>
+              <td>'.$value['Detalle'].'</td>
+              <td>'.$value['Codigo'].'</td>
+              <td>'.$value['Cantidad'].'</td>
+              <td>'.$value['Costo_Unit'].'</td>
+              <td>'.$value['Total'].'</td>
+            </tr>';              
         }
 
         return $lista;
@@ -306,6 +319,37 @@ class contrato_trabajo_detalle_constC
         return $this->modelo->eliminar_rubros($parametros['id']);
         // print_r($parametros);die();
     }
+
+    function ddl_Proceso($proyecto,$query)
+    {
+        $proyecto = $this->modelo->proyecto(false,$proyecto);
+        $cmds = $proyecto[0]['Cmds'].'.02';
+
+        // print_r($proyecto);
+        // print_r($cmds);
+        // die();
+
+        $data = $this->modelo->ddl_Proceso($query,$cmds);
+        return $data;
+    }
+
+    function lista_cc($query,$proyecto,$etapa)
+    {
+        // print_r($query);
+        // print_r($proyecto);
+        // print_r($etapa);die();
+
+        $resp = $this->modelo->listar_cc($query,$etapa);
+        // print_r($resp);die();
+        return $resp;
+    }
+
+    function grabar_orden_trabajo($parametros)
+    {
+        return $this->modelo->grabar_orden_trabajo($parametros['pedido']);
+
+    }
+
 
 
 

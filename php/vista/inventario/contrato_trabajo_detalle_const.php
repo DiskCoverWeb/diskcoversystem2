@@ -5,18 +5,15 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
-<script type="text/javascript" src="../../dist/js/inventario/contrato_trabajo_const.js"></script>
 <script type="text/javascript" src="../../dist/js/inventario/contrato_trabajo_detalle_const.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
-  proyectos();
-  contratistas();
-  ddl_cuenta_contable();
-  autocmpletar_cc();
-  ddl_cate_contrato();
-  lista_etapas();
-  lista_cc();
-  ddl_personal();
+  // ddl_cuenta_contable();
+  // autocmpletar_cc();
+  // ddl_cate_contrato();
+  // lista_etapas();
+  // lista_cc();
+  // ddl_personal();
   if(ordenNo!='-1')
   {
     detalleContrato()
@@ -32,7 +29,7 @@
    // ddl_cuenta_contable();
    // ddl_Proceso();
    // ddl_Grupo();
-   ddl_Rubro();
+   // ddl_Rubro();
   })
 
 </script>
@@ -60,7 +57,7 @@
         <button type="button" class="btn btn-outline-secondary" title="Informe pdf" onclick="imprimir_pdf()">
           <img src="../../img/png/pdf.png">
         </button>
-        <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_solicitud_proveedor()">
+        <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_orden_trabajo()">
           <img src="../../img/png/grabar.png" >
         </button>
       </div>
@@ -81,12 +78,12 @@
       </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-sm-6">              
+            <div class="col-sm-4">              
               <b>Proyectos: </b><br>
               <label id="lbl_proyecto">-</label>
               <input type="hidden" name="txt_cuenta_proyecto" id="txt_cuenta_proyecto">
             </div>   
-            <div class="col-sm-6">
+            <div class="col-sm-4">
               <b>Contratista: </b>    <br>         
               <label id="lbl_contratista">-</label>
             </div>
@@ -103,17 +100,17 @@
               <label id="lbl_nombre_contrato">-</label>
             </div> -->
            <div class="col-sm-3">
-            <b>Categoria Contrato: </b>
+            <b>Tipo Contrato: </b>
             <label id="lbl_categoria">-</label>
           </div>
-          <div class="col-sm-4">
+          <!-- <div class="col-sm-4">
             <b>Tipo Costo: </b>            
             <label id="lbl_tipo_costo">-</label>
-          </div>
-          <div class="col-sm-4">
+          </div> -->
+          <!-- <div class="col-sm-4">
             <b>Cuenta contable: </b>            
             <label id="lbl_cuenta_contable">-</label>
-          </div>
+          </div> -->
           <div class="col-sm-2">
             <b>Fecha inicio: </b><br>    
             <label id="lbl_fecha">0000-00-00</label>          
@@ -136,7 +133,7 @@
               <div>
                 <h5 class="mb-0">Personal</h5>
               </div>
-               <div class="ms-auto"><button class="btn btn-outline-secondary" onclick="agregar_personal()"><i class="font-22 bx bx-plus"></i>Agregar</button>
+               <div class="ms-auto"><button class="btn btn-sm btn-outline-secondary" onclick="agregar_personal()"><i class="font-22 bx bx-plus"></i>Agregar</button>
               </div>
             </div>
             <hr>
@@ -172,84 +169,30 @@
               <div>
                 <h5 class="mb-0">Orden de trabajo</h5>
               </div>
-               <div class="ms-auto"><button class="btn btn-outline-secondary" onclick="agregar_a_orden()"><i class="font-22 bx bx-plus"></i>Agregar</button>
+               <div class="ms-auto"><button class="btn btn-sm btn-outline-secondary" onclick="agregar_a_orden()"><i class="font-22 bx bx-plus"></i>Agregar</button>
               </div>
             </div>
             <hr>
-
-             <div class="row">
-                <div class="accordion" id="accordionExample">
-                  <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Accordion Item #1
-                      </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                      <div class="accordion-body"> 
-                        <div class="row">
-                          <div class="col-sm-12">
-                            <div class="table-responsive">
-                              <table class="table w-100" id="tbl_lista_solicitud_rubro">
-                                  <thead>
-                                     <th>No</th>
-                                     <th>Categoria del servicio</th>
-                                     <th>U/m</th>
-                                     <th>Costo/Uni</th>
-                                     <th>Cant</th>
-                                     <th>Total</th>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <td>1</td>
-                                      <td>Puerta batiente</td>
-                                      <td>$/m2</td>
-                                      <td>75.73</td>
-                                      <td>10</td>
-                                      <td>757.3</td>
-                                    </tr>
-                                  </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                  <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingTwo">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Accordion Item #2
-                      </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                      <div class="accordion-body">
-                        <div class="row">
-                          <div class="col-sm-12">
-                            <div class="table-responsive">
-                              <table class="table w-100" id="tbl_lista_solicitud">
-                                  <thead>
-                                     <th>No</th>
-                                     <th>Categoria del servicio</th>
-                                     <th>U/m</th>
-                                     <th>Costo/Uni</th>
-                                     <th>Cant</th>
-                                     <th>Total</th>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <td colspan="6">Sin datos</td>
-                                    </tr>
-                                  </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-             
-            </div>
-             
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                          <th></th>
+                          <th>No</th>
+                          <th>Centro de costos</th>
+                          <th>Detalle</th>
+                          <th>U/m</th>
+                          <th>Cant</th>
+                          <th>Costo/Uni</th>
+                          <th>Total</th>
+                        </thead>
+                        <tbody id="tbl_body_orden">
+                          
+                        </tbody>
+                    </table>
+                </div>
+              </div>
             </div>
           </div>    
     </div>
@@ -270,8 +213,8 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-sm-12">
-            <b>Proyectos</b>
-            <select class="form-select form-select-sm" name="ddl_proyecto" id="ddl_proyecto">
+            <b>Proyectos</b><br>
+            <select class="form-select form-select-sm" name="ddl_proyecto" id="ddl_proyecto" onchange="ddl_cate_contrato()">
               <option value="">Seleccione proyecto</option>
             </select>    
           </div>
@@ -363,7 +306,7 @@
         <div class="row">
           <div class="col-sm-12">
             <b>Etapa</b><br>
-            <select class="form-select form-select-sm" style="width:100%" name="ddl_etapa" id="ddl_etapa">
+            <select class="form-select form-select-sm" style="width:100%" name="ddl_etapa" id="ddl_etapa" onchange="lista_cc()">
               <option value="">Seleccione proyecto</option>
             </select>    
           </div>
@@ -420,13 +363,34 @@
         <div class="row">
           <div class="col-sm-12">
             <b>Personal</b><br>
-            <div class="input-group">
+            <div class="d-flex align-items-center">
                <select class="form-select form-select-sm" style="width:100%" name="ddl_personal" id="ddl_personal">
                 <option value="">Seleccione proyecto</option>
               </select>
-              <button type="button" class="btn btn-primary"><i class="bx bx-home-alt"></i></button>                 
+              <button type="button" class="btn btn-sm btn-primary"onclick="nuevo_personal()" ><i class="bx bx-plus me-0"></i></button>
             </div>
-            
+          </div>
+          <div class="col-sm-12 d-none" id="pnl_data_personal">
+              <div class="row">
+                 <div class="col-sm-4">
+                    <label><b>Cedula:</b></label>
+                    <label id="lbl_ci_ruc">-</label>
+                   
+                 </div>              
+                 <div class="col-sm-5">
+                    <label><b>Fecha Naci.:</b></label>
+                    <label id="lbl_fecha_na">-</label>
+                   
+                 </div>              
+                 <div class="col-sm-3">
+                    <label><b>Edad:</b></label>
+                    <label id="lbl_edad">-</label>
+                 </div>   
+                  <div class="col-sm-6">
+                    <label><b>Cargo:</b></label>
+                    <label id="lbl_cargo">-</label>
+                 </div>                
+              </div>
           </div>
         </div>
            
@@ -469,6 +433,178 @@
               </table>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-sm" onclick="ingresar_personal_orden()">Agregar</button> 
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal" aria-bs-label="Close">Cerrar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="myModal_nuevo_personal" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Agregar a personal</h4>
+      </div>
+      <div class="modal-body">  
+        <div class="row">
+          <form class="form-horizontal" id="form_cliente">
+              <div class="row">
+                <div class="col-sm-4">
+                  <label for="ruc" class="control-label" id="resultado"><span style="color: red;">*</span>RUC/CI</label>
+                    <div class="d-flex align-items-center">
+                      <input type="hidden" class="form-control" id="txt_id" name="txt_id" placeholder="ruc" autocomplete="off">
+                      <input type="text" class="form-control form-control-sm" id="ruc" name="ruc" placeholder="RUC/CI" autocomplete="off"
+                      onblur="buscar_numero_ci()">
+                      <button type="button" class="btn btn-sm" onclick="validar_sriC($('#ruc').val())" style="width: 20%">
+                        <img src="../../img/png/SRI.jpg" style="width: 100%">
+                      </button>
+                    </div>
+                    <span class="help-block" id='e_ruc' style='display:none;color: red;'>Debe ingresar RUC/CI</span>
+                </div>
+                <div class="col-sm-3">
+                  <label for="telefono" class=""><span style="color: red;">*</span>Telefono</label>
+                  <input type="text" class="form-control form-control-sm" id="telefono" name="telefono" placeholder="Telefono"
+                      autocomplete="off">
+                  <span class="help-block" id='e_telefono' style='display:none;color: red;'>Debe ingresar Telefono</span>
+                </div>
+                <div class="col-sm-3">
+                  <label for="codigoc" class="control-label"><span style="color: red;">*</span>Codigo</label>
+                  <input type="hidden" id='buscar' name='buscar' value='' />
+                  <div class="input-group"> 
+                    <input type="text" class="form-control form-control-sm" id="codigoc" name="codigoc" placeholder="Codigo" readonly="">
+                    <input type="text" id='TD' name='TD' value='' readonly style="width:30px" />
+                  </div>
+                  <span class="help-block" id='e_codigoc' style='display:none;color: red;'>debe agregar Codigo</span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-md-11 col-lg-10">
+                  <label for="nombrec" class="control-label"><span style="color: red;">*</span>Apellidos y Nombres</label>
+                  <input type="text" class="form-control form-control-sm" id="nombrec" name="nombrec" placeholder="Razon social"
+                    onkeyup="buscar_cliente_nom();" onblur="mayusculas('nombrec',this.value);">
+                  <span class="help-block" id='e_nombrec' style='display:none;color: red;'>Debe ingresar nombre</span>
+                </div>
+                <div class="col-sm-3 col-md-1 col-lg-2 d-none">
+                  <br>
+                  <label> </label><input type="checkbox" name="rbl_facturar" id="rbl_facturar" checked> Para Facturar
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-8">
+                  <label for="direccion" class="control-label"><span style="color: red;">*</span>Direccion</label>
+                  <input type="text" class="form-control form-control-sm" id="direccion" name="direccion" placeholder="Direccion"
+                    tabindex="0" onblur="mayusculas('direccion',this.value)">
+                  <span class="help-block" id='e_direccion' style='display:none;color: red;'>debe agregar Direccion</span>
+                </div>
+                <div class="col-sm-4">
+                  <label for="email" class="control-label"><span style="color: red;">*</span>Email Principal</label>
+                  <input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="Email" tabindex="0"
+                    onblur="validador_correo('email')">
+                  <span class="help-block" id='e_email' style='display:none;color: red;'> debe agregar un email</span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <b>Cargo</b>
+                  <input type="" name="txt_ejec" id="txt_ejec" class="form-control form-control-sm">
+                </div>
+                <div class="col-sm-3">
+                  <b>Fecha Nacimiento</b>
+                  <input type="date" name="txt_fecha_na" id="txt_fecha_na" class="form-control form-control-sm" onchange="calcular_edad_form()">
+                </div>
+                <div class="col-sm-3">
+                  <b>Edad</b>
+                  <input type="" name="txt_edad" id="txt_edad" class="form-control form-control-sm" readonly>
+                </div>
+              </div>
+          </form>
+      </div>
+    </div> 
+    <div class="modal-footer">
+        <button class="btn btn-primary btn-sm" onclick="guardar_cliente()">Agregar</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" aria-bs-label="Close">Cerrar</button>   
+    </div>   
+  </div>
+</div>
+  <!-- Modal CXC y CXP -->
+  <div class="modal fade" id="modal_cuentas" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="titulo">ASIGNACION DE CUENTAS POR COBRAR</h5>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <form id="form_cuentas">
+              <input type="hidden" name="SubCta" id="SubCta" value="">
+
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <input id="txt_ci_cuenta" name="txt_ci_cuenta" class="form-control form-control-sm" readonly
+                      style="background-color:black; color: yellow;" value="999999999999">
+                  </div>
+                  <div class="col-sm-8">
+                    <input id="txt_nombre_cuenta" name="txt_nombre_cuenta" class="form-control form-control-sm" readonly
+                      style="background-color:black; color: yellow;" value="CONSUMIDOR FINAL">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <b>Asignar a:</b>
+                    <select class="form-control form-control-sm" id="DLCxCxP" name="DLCxCxP" style="width: 100%;">
+                      <option value="">Seleccione Cuenta</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <label><input type="checkbox" name="cbx_cuenta_g" id="cbx_cuenta_g" onclick="mostar_cuenta_Gastos()">
+                      ASIGNAR A LA CUENTA DE GASTOS</label>
+                  </div>
+                </div>
+                <div class="row" id="panel_cuenta_gasto" style="display:none">
+                  <div class="col-sm-6 nopadding">
+                    <select class="form-control form-control-sm col-sm-6" id="DLGasto" name="DLGasto">
+                      <option value="">Seleccione Cuenta</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6 nopadding">
+                    <select class="form-control form-control-sm col-sm-6" id="DLSubModulo" name="DLSubModulo">
+                      <option value="">Seleccione Cuenta</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <label><input type="checkbox" name="cbx_retencion" id="cbx_retencion"
+                        onclick="mostar_porcentaje_retencion()"> PORCENTAJES DE RETENCION</label>
+                  </div>
+                </div>
+                <div class="row" id="panel_retencion" style="display:none">
+                  <div class="col-sm-4">
+                    Codigo Retencion
+                    <input type="" name="TxtCodRet" id="TxtCodRet" class="form-control form-control-sm">
+                  </div>
+                  <div class="col-sm-4">
+                    Retencion IVA Bienes
+                    <input type="" name="TxtRetIVAB" id="TxtRetIVAB" class="form-control form-control-sm">
+                  </div>
+                  <div class="col-sm-4">
+                    Retencion IVA servicios
+                    <input type="" name="TxtRetIVAS" id="TxtRetIVAS" class="form-control form-control-sm">
+                  </div>
+
+                </div>
+              </div>
+            </form>
+     
+            
         </div>
       </div>
       <div class="modal-footer">

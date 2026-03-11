@@ -49,38 +49,16 @@
 <div class="row mb-2">
   <div class="card">
     <div class="card-body">
-      <form id="form_datos">
         <div class="row">
           <div class="col-lg-4">
             <b>Contratista </b><br>
-            <select class="form-select form-select-sm" id="ddl_contratista" name="ddl_contratista">
+            <select class="form-select form-select-sm" id="ddl_contratista" name="ddl_contratista" onchange="cargar_contratos()">
               <option value="">Seleccione</option>
             </select>
           </div>
-           <div class="col-lg-2">
+          <div class="col-lg-2">
             <b>Contrato</b><br>
-            <label><input type="radio" name="rbl_contrato" value="1" checked> SI</label>
-            <label><input type="radio" name="rbl_contrato" value="0"> No</label>
-          </div>
-          <div class="col-lg-3">
-            <b>No de  contrato</b><br>
-            <input type="text" name="txt_NoContrato" id="txt_NoContrato" class="form-control form-control-sm">
-          </div>
-           <div class="col-lg-3">
-            <b>Proceso </b><br>
-            <select class="form-select form-select-sm" id="ddl_Proceso" name="ddl_Proceso">
-              <option value="">Seleccione</option>
-            </select>
-          </div>
-           <div class="col-lg-4">
-            <b>Grupo </b><br>
-            <select class="form-select form-select-sm" id="ddl_Grupo" name="ddl_Grupo">
-              <option value="">Seleccionar</option>
-            </select>
-          </div>
-          <div class="col-lg-4">
-            <b>Cuenta contable </b><br>
-            <select class="form-select form-select-sm" id="ddl_cuenta_contable" name="ddl_cuenta_contable">
+            <select class="form-select form-select-sm" id="ddl_Contrato" name="ddl_Contrato">
               <option value="">Seleccione</option>
             </select>
           </div>
@@ -90,71 +68,104 @@
               <option value="">seleccione</option>
             </select>
           </div>
-           <div class="col-lg-2">
-            <b>Fecha inicio</b><br>
-            <input type="date" name="txt_fechaIni" id="txt_fechaIni" class="form-control form-control-sm">
-          </div>
-           <div class="col-lg-2">
-            <b>Fecha finalizacion</b><br>
-            <input type="date" name="txt_fechaFin" id="txt_fechaFin" class="form-control form-control-sm">
-          </div>
-           <div class="col-lg-2">
-            <b>Categoria contrato</b><br>
-            <input type="text" name="txt_categoria" id="txt_categoria" class="form-control form-control-sm">
-          </div>
-          <div class="col-lg-6">
-            <b>Observacion</b><br>          
-            <input type="input" name="txt_observacion" id="txt_observacion" class="form-control form-control-sm">
-          </div>
-          <div class="col-lg-2">
-            <b>Unidad de medida</b><br>
-            <input type="input" name="txt_unidadMed" id="txt_unidadMed" class="form-control form-control-sm">
-          </div>
-          <div class="col-lg-2">
-            <b>Cantidad contrato</b><br>
-            <input type="input" name="txt_cantidad" id="txt_cantidad" class="form-control form-control-sm">
-          </div>
-          <div class="col-lg-2">
-            <b>Cantidad de la orden</b><br>
-            <input type="input" name="txt_cantidadOrd" id="txt_cantidadOrd" class="form-control form-control-sm">
-          </div>
-          <div class="col-lg-2">
-            <b>Diferencia</b><br>
-            <input type="input" name="txt_diferencia" id="txt_diferencia" class="form-control form-control-sm">
-          </div>
-          <div class="col-sm-12 col-md-12 col-lg-4 text-end">
-            <br>
-            <button type="button" class="btn btn-primary btn-sm" onclick="agregar_tabla()">Agregar</button>          
-          </div>
         </div>
-      </form>
-    </div>    
-  </div>  
+    </div>
+  </div>
 </div>
 <div class="row mb-2">
   <div class="card">
     <div class="card-body">
+       <div class="row">
+            <div class="col-sm-4">              
+              <b>Proyectos: </b><br>
+              <label>Proyecto de aaa</label>
+            </div>   
+           <!--  <div class="col-sm-12">
+              <b>Contratista: </b>    <br>         
+              <label>Proyecto de aaa</label>
+            </div> -->
+            <div class="col-sm-3">
+                <b>Se entrega a cargo material: </b><br>
+                <span class=" text-center">SI / NO</span>
+            </div>
+            <div class="col-sm-5">
+              <b>El contratista ejecuta el trabajo con mas de una persona:</b><br>
+              <span class=" text-center"> SI / NO </span>
+            </div>
+            <div class="col-sm-4">
+              <b>Nombre de contrato: </b><br>
+              <label>nombre de contrato aaa</label>
+            </div>
+           <div class="col-sm-4">
+            <b>Categoria Contrato: </b><br>
+            <label>Adicionales</label>
+          </div>
+          <div class="col-sm-4">
+            <b>Tipo Costo: </b>       <br>     
+            <label>Centro de costos</label>
+          </div>
+          <div class="col-sm-4">
+            <b>Cuenta contable: </b>  <br>          
+            <label>cuenta contable</label>
+          </div>
+          <div class="col-sm-4">
+            <b>Fecha inicio: </b>  <br>
+            <label>2025-02-01</label>          
+          </div>
+          <div class="col-sm-4">
+            <b>Fecha fin: </b> <br>
+            <label>2025-02-01</label>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="row mb-2">
+ <div class="card">
+              <div class="card-body">
+                <ul class="nav nav-pills nav-pills-warning mb-3" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link active" data-bs-toggle="pill" href="#warning-pills-home" role="tab" aria-selected="true">
+                      <div class="d-flex align-items-center">
+                        <div class="tab-icon"><i class="bx bx-home font-18 me-1"></i>
+                        </div>
+                        <div class="tab-title">Bloque 1 - 2</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-bs-toggle="pill" href="#warning-pills-profile" role="tab" aria-selected="false" tabindex="-1">
+                      <div class="d-flex align-items-center">
+                        <div class="tab-icon"><i class="bx bx-user-pin font-18 me-1"></i>
+                        </div>
+                        <div class="tab-title">Bloque 1</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-bs-toggle="pill" href="#warning-pills-contact" role="tab" aria-selected="false" tabindex="-1">
+                      <div class="d-flex align-items-center">
+                        <div class="tab-icon"><i class="bx bx-microphone font-18 me-1"></i>
+                        </div>
+                        <div class="tab-title">Bloque 2</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane fade active show" id="warning-pills-home" role="tabpanel">
        <div class="row">
          <div class="col-sm-12">
               <div class="table-responsive">
                 <table class="table w-100" id="tbl_lista_solicitud">
                   <thead>
                      <th>No</th>
-                     <th>Contratista</th>
-                     <th>Contrato</th>
-                     <th>No de contrato</th>
-                     <th>Proceso</th>
-                     <th>Grupo</th>
-                     <th>Cuenta contable</th>
-                     <th>Rubro</th>
-                     <th>Fecha inicio</th>
-                     <th>Fecha finalizacion</th>
-                     <th>Categoria Contrato</th>
-                     <th>Observacion</th>
-                     <th>Unidad de medida</th>
-                     <th>Cantidad contrato</th>
-                     <th>Cantidad de orden</th>
+                     <th>Categoria del servicio</th>
+                     <th>U/m</th>
+                     <th>Cantidad/uni</th>
+                     <th>Cantidad de la orden </th>
                      <th>Diferencia</th>
+                     <th>Observacion</th> 
                      <th></th>
                   </thead>
                   <tbody>
@@ -167,7 +178,31 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+        </div> 
+      </div>
+                  </div>
+                  <div class="tab-pane fade" id="warning-pills-profile" role="tabpanel">
+                   
+       <div class="row">
+         <div class="col-sm-12">
+              <div class="table-responsive">
+                 <table class="table w-100" id="tbl_lista_solicitud">
+                  <thead>
+                     <th>No</th>
+                     <th>Categoria del servicio</th>
+                     <th>U/m</th>
+                     <th>Cantidad/uni</th>
+                     <th>Cantidad de la orden </th>
+                     <th>Diferencia</th>
+                     <th>Observacion</th> 
+                     <th></th>
+                  </thead>
+                  <tbody>
+                    <tr>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -179,11 +214,43 @@
                     </tr>
                   </tbody>
                 </table>
-                
               </div>
-            </div> 
-       
+        </div> 
       </div>
-    </div>    
-  </div>  
+                  </div>
+                  <div class="tab-pane fade" id="warning-pills-contact" role="tabpanel">
+       <div class="row">
+         <div class="col-sm-12">
+              <div class="table-responsive">
+                <table class="table w-100" id="tbl_lista_solicitud">
+                  <thead>
+                     <th>No</th>
+                     <th>Categoria del servicio</th>
+                     <th>U/m</th>
+                     <th>Cantidad/uni</th>
+                     <th>Cantidad de la orden </th>
+                     <th>Diferencia</th>
+                     <th>Observacion</th> 
+                     <th></th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+        </div> 
+      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 </div>
