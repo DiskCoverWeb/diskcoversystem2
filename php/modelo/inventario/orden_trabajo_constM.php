@@ -91,7 +91,7 @@ class orden_trabajo_constM
     function cargar_lista($orden)
     {
         $sql="SELECT TS.Periodo, TS.T, TS.TC, Cta,CC.Cuenta, TS.Fecha, Fecha_V, C.Cliente as Codigo, TS.TP, Numero, Factura, Prima, TS.Debitos, TS.Creditos, Saldo_MN, Parcial_ME, Saldo_ME, TS.Item, Saldo, TS.CodigoU, TS.X, Comp_No, Autorizacion, Serie, Detalle_SubCta, TS.Procesado, TS.ID, Fecha_E,TS.Proceso as CProceso ,CP.Proceso as Proceso,TS.Grupo as GCodigo,  CP1.Proceso as Grupo, Rubro as RCodigo,CS.Detalle as Rubro, UnidadMed, Cantidad, CantidadOrd, TS.Diferencia,Categoria_Contrato,No_Contrato 
-            FROM Trans_SubCtas TS,Clientes C,Catalogo_Proceso CP ,Catalogo_Proceso CP1,Catalogo_Cuentas CC,Catalogo_SubCtas CS 
+            FROM Trans_Contratistas TS,Clientes C,Catalogo_Proceso CP ,Catalogo_Proceso CP1,Catalogo_Cuentas CC,Catalogo_SubCtas CS 
             WHERE TS.Item = '".$_SESSION['INGRESO']['item']."' 
             AND TS.Periodo = '".$_SESSION['INGRESO']['periodo']."'
             AND Autorizacion = '".$orden."'
@@ -112,10 +112,57 @@ class orden_trabajo_constM
        return $datos;
     }
 
+    function aprob_cargar_lista($orden)
+    {
+        $sql="SELECT Periodo, TC, Codigo, Detalle, Presupuesto, Caja, Item, X, Reembolso, Cta_Reembolso, Nivel, Agrupacion, Fecha_D, Fecha_H, Total, Porc, Bloquear, ID
+            FROM            Catalogo_SubCtas
+            WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+            AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+            AND TC = 'OT'
+            ORDER BY ID DESC";
+
+            // print_r($sql);die();
+        $datos =  $this->db->datos($sql);
+       return $datos;
+    }
+
     function eliminar_linea($id)
     {
-        $sql = "DELETE FROM Trans_SubCtas WHERE ID = '".$id."'";
+        $sql = "DELETE FROM Trans_Contratistas WHERE ID = '".$id."'";
         return $this->db->String_Sql($sql);
+    }
+
+    function contratistas($cliente=false)
+    {
+        $sql = "SELECT distinct C.Cliente AS text,TC.Codigo as id 
+        FROM Trans_Contratistas TC
+        INNER JOIN Clientes C on TC.Codigo = C.Codigo 
+        WHERE Item = '".$_SESSION['INGRESO']['item']."'";
+        if($cliente)
+        {
+            $sql.=" AND C.Cliente like '%".$cliente."%'";
+        }
+        $sql.=" ORDER BY ID DESC";
+
+        return $this->db->datos($sql);
+    }
+
+    function contratos($contratista,$contrato=false)
+    {
+        $sql = "SELECT No_Contrato as id,No_Contrato as text
+        FROM Trans_Contratistas TC
+        WHERE Item = '".$_SESSION['INGRESO']['item']."'
+        AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+        AND Codigo = '".$contratista."'";
+        if($contrato)
+        {
+            $sql.=" AND TC.No_Contrato like '%".$contrato."%'";
+        }
+        $sql.=" ORDER BY ID DESC";
+
+        // print_r($sql);die();
+
+        return $this->db->datos($sql);
     }
 
 

@@ -74,7 +74,27 @@ function contratistas()
     placeholder: 'Seleccione contratista',
     width:'resolve',
     ajax: {
-	    url:   '../controlador/inventario/reporte_constructora_Compras.php?contratistas=true',
+	    url:   '../controlador/inventario/orden_trabajo_constC.php?contratistas=true',
+        dataType: 'json',
+        delay: 250,
+        processResults: function (data) {
+          return {
+            results: data
+          };
+        },
+        cache: true
+      }
+    });
+}
+
+function cargar_contratos()
+{
+  var contratista = $('#ddl_contratista').val();
+  $('#ddl_Contrato').select2({
+    placeholder: 'Seleccione contratista',
+    width:'resolve',
+    ajax: {
+      url:   '../controlador/inventario/orden_trabajo_constC.php?contratos=true&ContratosContratista='+contratista,
         dataType: 'json',
         delay: 250,
         processResults: function (data) {

@@ -57,6 +57,14 @@
         echo json_encode($controlador->contratistas($query));
     }
 
+    if(isset($_GET['contratos']))
+    {
+        $query = false;
+        if(isset($_GET['q'])){$query = $_GET['q'];}
+        if(isset($_GET['ContratosContratista'])){$contratista = $_GET['ContratosContratista'];}
+        echo json_encode($controlador->contratos($contratista,$query));
+    }
+
 
     class orden_trabajo_constC
     {
@@ -157,6 +165,10 @@
         function contratistas($query)
         {
            return $this->modelo-> contratistas($query);
+        }
+        function contratos($contratista,$query)
+        {
+           return $this->modelo->contratos($contratista,$query);
         }
     }
 

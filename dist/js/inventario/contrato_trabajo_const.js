@@ -35,7 +35,7 @@
                     // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
                     // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
                  
-                    return `<a href="inicio.php?mod=03&acc=contrato_trabajo_detalle_const&ordenNo=${data.Autorizacion}">${data.Autorizacion}</a>`;                    
+                    return `<a href="inicio.php?mod=03&acc=contrato_trabajo_detalle_const&ordenNo=${data.No_Contrato}">${data.No_Contrato}</a>`;                    
                   }
               },
               { data: 'Fecha.date',  
@@ -99,26 +99,6 @@ function autocmpletar_cc(id=''){
     });
   }
 
-function ddl_cate_contrato(){
-
-     $('#ddl_cate_contrato').select2({
-      placeholder: 'Centro costo',
-      dropdownParent: $('#myModal_proyecto'),
-      ajax: {
-        url: '../controlador/inventario/orden_trabajo_constC.php?ddl_Proceso=true',
-        dataType: 'json',
-        delay: 250,
-        processResults: function (data) {
-          return {
-            results: data
-          };
-        },
-        cache: true
-      }
-    });
-}
-
-
 
 function ddl_cuenta_contable(){
 
@@ -158,16 +138,6 @@ function ddl_Rubro(){
       }
     });
 }
-
-function agregar_a_orden()
-{
-   $('#myModal_orden_trabajo').modal('show')
-}
-function agregar_personal()
-{
-   $('#myModal_personal').modal('show')
-}
-
 
 function eliminar_pedido(id)
 {
