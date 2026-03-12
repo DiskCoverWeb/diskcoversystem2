@@ -599,6 +599,7 @@ class egreso_alimentosC
 	   	SetAdoFieldsWhere('T','G');
 	  	SetAdoUpdateGeneric();
 
+		// die();
 
 
 		// print_r($asientos_SC); die();
@@ -799,10 +800,18 @@ class egreso_alimentosC
 
 	function editarFecha($parametros)
 	{
-		SetAdoAddNew("Trans_Kardex"); 		
-	   	SetAdoFields('Fecha',$parametros['fecha']);
-	   	SetAdoFieldsWhere('Orden_No',$parametros['orden']);
-	  	return SetAdoUpdateGeneric();
+		if($parametros['orden']!='' $parametros['orden']!='.')
+		{
+			SetAdoAddNew("Trans_Kardex"); 		
+		   	SetAdoFields('Fecha',$parametros['fecha']);
+		   	SetAdoFieldsWhere('Orden_No',$parametros['orden']);
+		   	SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
+		   	SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']);
+		  	return SetAdoUpdateGeneric();
+		}else
+		{
+			return -1;
+		}
 
 	}
 
@@ -811,3 +820,4 @@ class egreso_alimentosC
 
 
 ?>
+
