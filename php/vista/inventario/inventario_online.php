@@ -79,7 +79,7 @@ if(isset($_GET['proyecto'])){$proye=$_GET['proyecto'];}
         <div class="row">
           <input type="hidden" name="txt_CodMar" id="txt_CodMar" class="form-control input-sm" value="<?php echo $marca; ?>">
           <input type="hidden" name="txt_proyecto" id="txt_proyecto" class="form-control input-sm" value="<?php echo $proye; ?>">
-          <div class="col-sm-2 p-0">
+          <div class="col-sm-1 p-0">
             <b>Codigo</b>
             <input type="text" name="txt_codigo_" id="txt_codigo_" disabled="" class="form-control form-control-sm">
           </div>
@@ -88,6 +88,12 @@ if(isset($_GET['proyecto'])){$proye=$_GET['proyecto'];}
             <select class="form-select form-select-sm select2" id="ddl_productos_" name="ddl_productos_" onchange="cargar_datos()">
               <option value="">Seleccione producto</option>
             </select>
+          </div>
+          <div class="col-sm-1">
+            <b>Bodega</b><br>
+            <select class="form-select form-select-sm" id="ddl_bodega_" name="ddl_bodega_" onchange="cargar_datos()">
+              <option value="">Seleccione producto</option>
+            </select>            
           </div>
           <div class="col-sm-3">
             <div class="row">
@@ -169,6 +175,7 @@ if(isset($_GET['proyecto'])){$proye=$_GET['proyecto'];}
               <th>Fecha</th>
               <th>Codigo</th>
               <th>Producto</th>
+              <th>Bodega</th>
               <th>UNI</th>
               <th>Cant</th>
               <th>Centro Costo</th>

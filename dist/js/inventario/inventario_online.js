@@ -45,33 +45,63 @@ function verificar_cuenta()
   }
 
 
-  $(document).ready(function()
-  {
+  $(document).ready(function(){
      $('.select2').select2();
-    marcas();
-    proyectos();
-    verificar_cuenta();
+      marcas();
+      proyectos();
+      verificar_cuenta();
 
-    $('#contenedor_tabla_csv').hide();
+      $('#contenedor_tabla_csv').hide();
 
-  $('#imprimir_pdf').click(function(){
-  var url = '../controlador/inventario/inventario_onlineC.php?reporte_pdf';                
-  window.open(url, '_blank');
-}); 
-  $('#imprimir_excel').click(function(){
-  var url = '../controlador/inventario/inventario_onlineC.php?reporte_excel';                
-  window.open(url, '_blank');
-}); 
+      $('#imprimir_pdf').click(function(){
+        var url = '../controlador/inventario/inventario_onlineC.php?reporte_pdf';                
+        window.open(url, '_blank');
+      }); 
+      $('#imprimir_excel').click(function(){
+        var url = '../controlador/inventario/inventario_onlineC.php?reporte_excel';                
+        window.open(url, '_blank');
+      }); 
 
-    // autocmpletar_rubro();
-    autocmpletar_cc();
-    cargar_entrega();
-    // autocmpletar_rubro_bajas();
-    autocmpletar();
+      // autocmpletar_rubro();
+      autocmpletar_cc();
+      cargar_entrega();
+      // autocmpletar_rubro_bajas();
+      autocmpletar();
+
+      $('#ddl_productos_').on('select2:select', function (e) {
+        var data = e.params.data.data;
+        cargar_bodegas(data.Codigo_Inv)
+
+        console.log(data);
+      })
 
 
 
   });
+
+
+  function cargar_bodegas(codigo_Inv)
+  {
+    var parametros = {
+      'codigoInv': codigo_Inv,
+    };
+    $.ajax({
+      url: '../controlador/inventario/inventario_onlineC.php?cargar_bodegas=true',
+      type: 'POST',
+      data: {'parametros': parametros},
+      dataType:'json',
+      success: function(response) {
+        var option = '';
+        console.log(response);
+
+        response.forEach(function(item,i){
+          option+='<option value="'+item.id+'">'+item.bodega+'</option>';
+        })
+
+        $('#ddl_bodega_').html(option);
+      }
+    });
+  }
 
   function simularClick(){
     $('#archivoAdjunto').click();
@@ -500,6 +530,7 @@ function verificar_cuenta()
               '<td id="fecha_'+i+'">'+item.Fecha_Fab.date.substr(0,10)+'</td>'+
               '<td id="txt_codigo_'+i+'" >'+item.CODIGO_INV+'</td>'+
               '<td>'+item.PRODUCTO+'</td>'+
+              '<td>'+item.Bodega+'</td>'+
               '<td>'+item.UNIDAD+'</td>'+
               '<td>'+item.CANT_ES+'</td>'+
               '<td>'+item.Cuenta+'</td>'+
@@ -561,6 +592,7 @@ function verificar_cuenta()
         {
             'codigo':$('#txt_codigo_'+id).val(),
             'producto':$('select[name="ddl_productos_'+id+'"] option:selected').text(),
+            'bodega':$('#ddl_bodega_').val(),
             'cta_pro':producto[5],
             'uni':$('#txt_uni_'+id).val(),
             'cant':$('#txt_cant_'+id).val(),

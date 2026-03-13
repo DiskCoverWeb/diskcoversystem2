@@ -115,6 +115,11 @@ if (isset($_GET['validar_presupuesto'])) {
 	echo json_encode($controlador->validar_presupuesto($parametro));
 }
 
+if (isset($_GET['cargar_bodegas'])) {
+	$parametro = $_POST['parametros'];
+	echo json_encode($controlador->cargar_bodegas($parametro));
+}
+
 if (isset($_GET['subir_archivo'])) {
     try {
 
@@ -412,7 +417,7 @@ class inventario_onlineC
 		$id =count($this->lista_entrega())+1;
 		if($parametro['id']=='')
 		{
-			 SetAdoAddNew("Asiento_K");
+		   SetAdoAddNew("Asiento_K");
 		   SetAdoFields('CODIGO_INV',$parametro['codigo']);
 		   SetAdoFields('PRODUCTO',$parametro['producto']);
 		   SetAdoFields('UNIDAD',$parametro['uni']);
@@ -432,7 +437,8 @@ class inventario_onlineC
 		   SetAdoFields('VALOR_UNIT',number_format($parametro['valor'],$_SESSION['INGRESO']['Dec_PVP'],'.',''));
 		   SetAdoFields('DH',2);
 		   SetAdoFields('CONTRA_CTA',$parametro['cc']);
-	   	 SetAdoFields('CodMar',$parametro['codma']);
+	   	   SetAdoFields('CodMar',$parametro['codma']);
+	   	   SetAdoFields('CodBod',$parametro['bodega']);
 		   // print_r($datos);die();
 		 		  $resp = SetAdoUpdate();
 
@@ -861,6 +867,22 @@ function eliminar_asientos_k()
 		return $datos;
 		// print_r($datos);die();
 	}
+
+	function cargar_bodegas($parametro)
+	{
+		$data = array();
+		$bodegas = $this->modelo->cargar_bodegas($parametro['codigoInv']);
+		foreach ($bodegas as $key => $value) {
+			$lista_bod = $this->modelo->lista_bodegas($value['CodBodega']);
+			$data[] = array('id'=>$value['CodBodega'],'bodega'=>$lista_bod[0]['Bodega']);
+		}
+
+		return $data;
+
+		// print_r($bodegas);die();
+	}
+
+
 
 
 }

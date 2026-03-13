@@ -38,7 +38,7 @@ class inventario_onlineM
 	   $datos1 =  $this->db->datos($sql2);
 	   $datos = array();
 	   foreach ($datos1 as $key => $value) {
-	   	 $datos[]=array('id'=>$value['Codigo_Inv'].','.$value['Unidad'].','.$value['Stock_Actual'].','.$value['TC'].','.$value['Valor_Total'].','.$value['Cta_Inventario'],'text'=>$value['Producto']);		
+	   	 $datos[]=array('id'=>$value['Codigo_Inv'].','.$value['Unidad'].','.$value['Stock_Actual'].','.$value['TC'].','.$value['Valor_Total'].','.$value['Cta_Inventario'],'text'=>$value['Producto'],'data'=>$value);		
 	   }
 
        return $datos;
@@ -286,12 +286,15 @@ order by CP.Codigo_Inv,CP.Producto,CP.TC,CP.Valor_Total,CP.Unidad,CP.Cta_Inventa
      $sql = "SELECT * FROM Asiento_K AK
 		INNER JOIN Catalogo_Cuentas  CC ON AK.CONTRA_CTA = CC.Codigo
 		INNER JOIN Catalogo_SubCtas  CS ON AK.SUBCTA = CS.Codigo
+		INNER JOIN Catalogo_Bodegas CB ON AK.CodBod = CB.CodBod
 		WHERE CodigoU = '".$_SESSION['INGRESO']['CodigoU']."' 
 		AND AK.Item = '".$_SESSION['INGRESO']['item']."' 
 		AND CC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
 		AND CC.Item = CS.Item
 		AND CC.Periodo = CS.Periodo
-		AND AK.Item = CC.Item";
+		AND AK.Item = CC.Item
+		AND CB.Item = AK.Item
+		AND CC.Periodo = CB.Periodo";
          if($fecha)
          {
          	$sql .= " AND Fecha_Fab='".$fecha."'";
@@ -560,6 +563,31 @@ order by CP.Codigo_Inv,CP.Producto,CP.TC,CP.Valor_Total,CP.Unidad,CP.Cta_Inventa
 		AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'";
 		return $this->db->datos($sql);
 
+	}
+
+	function cargar_bodegas($codigo_inv)
+	{
+		$sql="SELECT DISTINCT CodBodega, Codigo_Inv
+		FROM Trans_Kardex
+		WHERE   Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+		AND Item = '".$_SESSION['INGRESO']['item']."'
+		AND Codigo_Inv = '".$codigo_inv."'";
+
+		// print_r($sql);die();
+		return $this->db->datos($sql);
+	}
+
+	function lista_bodegas($codbod=false)
+	{
+		$sql="SELECT Periodo, CodBod, Bodega, Item,ID
+		FROM Catalogo_Bodegas
+		WHERE   Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+		AND Item = '".$_SESSION['INGRESO']['item']."'";
+		if($codbod)
+		{
+			$sql.=" AND CodBod  = '".$codbod."'";
+		} 
+		return $this->db->datos($sql);
 	}
 
 }
