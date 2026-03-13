@@ -3206,9 +3206,8 @@ function imprimirDocEle_fac($datos, $detalle, $educativo, $matri = false, $nombr
 		}
 	}
 
-	// print_r($detalle_descuento);die();
+	// print_r($detalle);die();
 	foreach ($detalle as $key => $value) {
-		//tomado de SRI_Generar_PDF_FA( Linea 1298
 		if (strlen($value["Codigo_Barra"]) > 1) {
 			$Cod_Bar = $value["Codigo_Barra"];
 		} else {
@@ -3233,10 +3232,20 @@ function imprimirDocEle_fac($datos, $detalle, $educativo, $matri = false, $nombr
 			$CODIGO2 = (strlen($Cod_Aux) > 1) ? $Cod_Aux : $value["Codigo"];
 
 		} else {
-			$CODIGO1 = (strlen($Cod_Aux) > 1) ? $Cod_Aux : $value["Codigo"];
-			if (strlen($Cod_Bar) > 1) {
-				$CODIGO2 = $Cod_Bar;
-			}
+			
+            $CODIGO1 = (strlen($Cod_Aux) > 1) ? $Cod_Aux : $value["Codigo"];
+			If($_SESSION['INGRESO']['Es_Transporte']==1){
+            	$CODIGO2 = 'H492001';
+
+            }Else If($_SESSION['INGRESO']['RUC_Operadora'] == $datos[0]['RUC_CI']){
+            	$CODIGO2 = 'H492002';
+            }Else{
+				if (strlen($Cod_Bar) > 1) {
+					$CODIGO2 = $Cod_Bar;
+				}
+
+            }
+
 		}
 		//FIN tomado de  SRI_Generar_PDF_FA( Linea 1298
 		$descto = '0';
