@@ -800,7 +800,7 @@ class egreso_alimentosC
 
 	function editarFecha($parametros)
 	{
-		if($parametros['orden']!='' $parametros['orden']!='.')
+		if($parametros['orden']!='' && $parametros['orden']!='.')
 		{
 			SetAdoAddNew("Trans_Kardex"); 		
 		   	SetAdoFields('Fecha',$parametros['fecha']);
