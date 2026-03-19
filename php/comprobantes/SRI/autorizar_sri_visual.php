@@ -70,8 +70,8 @@ class autoriza_sri
 		$this->iv = base64_decode("C9fBxl1EWtYTL1/M8jfstw==");
 		// $this->conn = new Conectar();
 		$this->db = new db();
-		$this->rutaJava8  = "";
-		// $this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
+		// $this->rutaJava8  = "";
+		$this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
 	}
 
 
@@ -162,7 +162,7 @@ class autoriza_sri
 	   		if($enviar_sri[0]==1)
 	   		{
 	   			// print_r('expression');die();
-	   			sleep(3);
+	   			sleep(5);
    		 		$resp =  $this->comprobar_xml_sri($Autorizacion,$this->linkSriAutorizacion);
    		 		// print_r($resp);die();
    		 		if($resp[0]==1)
