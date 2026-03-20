@@ -592,7 +592,7 @@ class lista_comprasC
 			    SetAdoFields('Codigo_Dr',$value['Codigo_Sup']);
 			    SetAdoFields('CodigoU',$_SESSION['INGRESO']['CodigoU']);
 			    SetAdoFields('Item',$_SESSION['INGRESO']['item']);
-			    SetAdoFields('CodBodega','01');
+			    SetAdoFields('CodBodega',$value['CodBodega']);
 			    SetAdoFields('Orden_No',$orden);
 			    SetAdoFields('Serie_No','999999');
 			    SetAdoFields('Detalle','Entrada de inventario por '.$nombre.' de la factura '.$orden.' el dia '.$fechaC);

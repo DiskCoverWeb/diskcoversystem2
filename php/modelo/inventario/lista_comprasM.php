@@ -69,7 +69,7 @@ class lista_comprasM
 
 	function lineas_compras_solicitados($orden=false,$id=false,$codigoC=false)
 	{
-		$sql = "SELECT TP.Periodo, TP.Fecha, Codigo_Inv, Hora, Producto, Cantidad, Precio, Total, Total_IVA, No_Hab, Cta_Venta, TP.Item, TP.CodigoU, Orden_No, Cta_Venta_0, TC, Factura, Autorizacion, Serie, Codigo_Sup, CodigoC, Opc1, Opc2, Opc3, TP.Estado, HABIT, TP.X, TP.ID, Fecha_Ent, CodMarca, Comentario,Marca,C.Cliente as 'proveedor',Total_Original,Costo_Original 
+		$sql = "SELECT TP.Periodo, TP.Fecha, Codigo_Inv, Hora, Producto, Cantidad, Precio, Total, Total_IVA, No_Hab, Cta_Venta, TP.Item, TP.CodigoU, Orden_No, Cta_Venta_0, TC, Factura, Autorizacion, Serie, Codigo_Sup, CodigoC, Opc1, Opc2, Opc3, TP.Estado, HABIT, TP.X, TP.ID, Fecha_Ent, CodMarca, Comentario,Marca,C.Cliente as 'proveedor',Total_Original,Costo_Original,CodBodega 
 		FROM Trans_Pedidos TP
 		inner join Catalogo_Marcas CM on TP.CodMarca = CM.CodMar
 		inner join Clientes C on TP.CodigoC = C.Codigo
