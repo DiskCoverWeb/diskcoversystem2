@@ -14,6 +14,7 @@
       $('#txt_uni').val(data.Unidad);
       $('#ddl_familia').text('Familia: '+data.familia);
       $('#ddl_idfamilia').text(data.codfamilia);
+      cargar_bodegas(data.Codigo_Inv);
       console.log(data);
     });
 
@@ -114,6 +115,7 @@
         'total':$('#txt_total').val(),
         'obs':$('#txt_observacion').val(),
         'stock':$('#txt_stock').val(),
+        'bodega':$('#ddl_bodega_').val(),
      }
 
       $.ajax({
@@ -316,6 +318,29 @@
     $('#txt_uni').val(uni)
 
     $('#ddl_productos').append($('<option>',{value:  cod, text: prod,selected: true }));
+  }
+
+  function cargar_bodegas(codigo_Inv)
+  {
+    var parametros = {
+      'codigoInv': codigo_Inv,
+    };
+    $.ajax({
+      url: '../controlador/inventario/inventario_onlineC.php?cargar_bodegas=true',
+      type: 'POST',
+      data: {'parametros': parametros},
+      dataType:'json',
+      success: function(response) {
+        var option = '';
+        console.log(response);
+
+        response.forEach(function(item,i){
+          option+='<option value="'+item.id+'">'+item.bodega+'</option>';
+        })
+
+        $('#ddl_bodega_').html(option);
+      }
+    });
   }
 
 
