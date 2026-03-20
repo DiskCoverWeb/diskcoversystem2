@@ -387,6 +387,7 @@ class solicitud_materialC
 		        SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
 		        SetAdoFields("Comentario",$parametros['obs']);
 		        SetAdoFields("CodMarca",$parametros['marca']);
+		        SetAdoFields("CodBodega",$parametros['bodega']);
 				
 				return SetAdoUpdate();
 		}
@@ -425,6 +426,7 @@ class solicitud_materialC
 					<td>'.$value['Precio'].'</td>
 					<td>'.($value['Precio']*$value['Cantidad_Total']).'</td>
 					<td>'.$value['Marca'].'</td>
+					<td>'.$value['Bodega'].'</td>
 					<td>'.$value['Fecha']->format('Y-m-d').'</td>
 					<td>'.$value['Fecha_Ent']->format('Y-m-d').'</td>
 					<td>'.$value['Comentario'].'</td>

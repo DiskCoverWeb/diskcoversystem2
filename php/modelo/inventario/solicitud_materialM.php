@@ -117,18 +117,19 @@ class solicitud_materialM
 
 	function lineas_pedido()
 	{
-		$sql = "SELECT TP.Periodo, TP.Fecha, TP.Codigo_Inv, Hora, TP.Producto, TP.Cantidad, Precio, Total, Total_IVA, No_Hab, Cta_Venta, 
-TP.Item, CodigoU, Orden_No, Cta_Venta_0, TP.TC, TP.Factura, Autorizacion, Serie, TP.Codigo_Sup, CodigoC, Opc1, Opc2, Opc3, 
-TP.Estado, HABIT, TP.X, TP.ID, Fecha_Ent, CodMarca, Comentario,CM.Marca,CP.Unidad,Cantidad_Total 
-
+		$sql = "SELECT TP.Periodo, TP.Fecha, TP.Codigo_Inv, Hora, TP.Producto, TP.Cantidad, Precio, Total, Total_IVA, No_Hab, Cta_Venta,TP.Item, CodigoU, Orden_No, Cta_Venta_0, TP.TC, TP.Factura, Autorizacion, Serie, TP.Codigo_Sup, CodigoC, Opc1, Opc2, Opc3, 
+			TP.Estado, HABIT, TP.X, TP.ID, Fecha_Ent, CodMarca, Comentario,CM.Marca,CP.Unidad,Cantidad_Total,CodBodega,CB.Bodega  
 		FROM Trans_Pedidos TP
-		inner join Catalogo_Marcas CM on TP.CodMarca = CM.CodMar
-		inner join Catalogo_Productos CP on TP.Codigo_Inv = CP.Codigo_Inv 
+		INNER JOIN Catalogo_Marcas CM on TP.CodMarca = CM.CodMar
+		INNER JOIN Catalogo_Productos CP on TP.Codigo_Inv = CP.Codigo_Inv 
+		INNER JOIN Catalogo_Bodegas CB on TP.CodBodega = CB.CodBod
 		WHERE CM.Item = TP.Item 
 		AND CM.Periodo = TP.Periodo 
 		AND TP.Periodo = CP.Periodo 
 		AND TP.Item = CP.Item 
 		AND CM.Periodo = TP.Periodo 
+		AND CB.Item = TP.Item
+		AND CB.Periodo = TP.Periodo
 		AND TP.Periodo = '".$_SESSION['INGRESO']['periodo']."'
 		AND TP.TC = 'P' 
 		AND TP.Item='".$_SESSION['INGRESO']['item']."' 

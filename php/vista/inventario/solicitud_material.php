@@ -46,25 +46,37 @@
             <b>Fecha</b>
             <input type="date" name="txt_fecha" id="txt_fecha" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>" readonly >
         </div>        
-        <div class="col-sm-5">
+        <div class="col-sm-4">
             <b>Producto / articulo </b>
              <div class="d-flex align-items-center">   
                 <select class="form-select form-select-sm" id="ddl_productos" name="ddl_productos">
 	                <option value="">Seleccione producto</option>
 	              </select>         
-                <button type="button" class="btn btn-primary btn-flat btn-sm" onclick="buscar_modal()"><i class="fa fa-search m-0"></i></button>
+                <button type="button" class="btn btn-primary btn-sm p-1" onclick="buscar_modal()">
+                  <i class="bx bx-search me-0"></i>
+                </button>
               
               </div>                  
             <label id="ddl_familia" name="ddl_familia" ></label>
             <input type="hidden" name="ddl_idfamilia" id="ddl_idfamilia">
         </div>
-        <div class="col-sm-3">
+         <div class="col-sm-2">
+            <b>Bodega </b>
+             <div class="d-flex align-items-center">   
+                <select class="form-select form-select-sm" id="ddl_bodega_" name="ddl_bodega_">
+                  <option value="">Seleccione bodega</option>
+                </select>    
+              </div>                  
+        </div>
+        <div class="col-sm-2">
           <b>Marcas </b>
           <div class="d-flex align-items-center">
             <select class="form-select form-select-sm" id="ddl_marca" name="ddl_marca">
               <option value="">Seleccione</option>
             </select>
-              <button type="button" class="btn btn-primary btn-flat btn-sm" onclick="modal_marcas()"><i class="fa fa-plus m-0"></i></button>
+              <button type="button" class="btn btn-primary btn-sm p-1" onclick="modal_marcas()">
+                  <i class="bx bx-plus me-0"></i>
+                </button>
           </div>
         </div>
       </div>
@@ -121,7 +133,8 @@
 		              <th>Unidad</th>   
 		              <th>Costo ref</th>     
 		              <th>Total ref </th> 
-		              <th>Marca</th>          
+		              <th>Marca</th>       
+                  <th>Bodega</th>          
 		              <th>Fecha Solicitud</th>
 		              <th>Fecha Entrega</th> 
 		              <th>Observacion</th>
