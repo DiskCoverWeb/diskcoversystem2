@@ -10,11 +10,15 @@ $(document).ready(function() {
         $('#textoServicio').text(`Total Servicio ${servicio}%`);
     }
 
-    if (operadora != '.') {
-        buscar_cliente(operadora);
-        $('#btn_nuevo_cli').css('display', 'none');
-        $('#DCCliente').prop('disabled', true);
-    }
+
+    //este bloque de codigo hay que revisar por que.
+    // if (operadora != '.') {
+    //     buscar_cliente(operadora);
+    //     $('#btn_nuevo_cli').css('display', 'none');
+    //     $('#DCCliente').prop('disabled', true);
+    // }
+
+
     ddl_DCTipoPago();
     catalogoLineas();
     autocomplete_cliente();
