@@ -326,7 +326,7 @@
       'codigoInv': codigo_Inv,
     };
     $.ajax({
-      url: '../controlador/inventario/inventario_onlineC.php?cargar_bodegas=true',
+      url: '../controlador/inventario/inventario_onlineC.php?listar_bodegas=true',
       type: 'POST',
       data: {'parametros': parametros},
       dataType:'json',
