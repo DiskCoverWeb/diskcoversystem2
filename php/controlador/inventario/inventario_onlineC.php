@@ -120,6 +120,12 @@ if (isset($_GET['cargar_bodegas'])) {
 	echo json_encode($controlador->cargar_bodegas($parametro));
 }
 
+
+if (isset($_GET['listar_bodegas'])) {
+	$parametro = $_POST['parametros'];
+	echo json_encode($controlador->listar_bodegas($parametro));
+}
+
 if (isset($_GET['subir_archivo'])) {
     try {
 
@@ -880,6 +886,16 @@ function eliminar_asientos_k()
 		return $data;
 
 		// print_r($bodegas);die();
+	}
+
+	function listar_bodegas()
+	{
+		$data = array();
+		$bodegas =  $this->modelo->lista_bodegas();
+		foreach ($bodegas as $key => $value) {
+			$data[] = array('id'=>$value['CodBod'],'bodega'=>$value['Bodega']);
+		}
+		return $data;
 	}
 
 
