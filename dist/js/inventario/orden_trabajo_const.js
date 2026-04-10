@@ -474,7 +474,8 @@ function cargar_lista_subrubros()
               data.forEach(function(item,i){
                 table+=`<tr> 
                             <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminar_subrubro('`+item.ID+`')"><i class="bx bx-trash me-0"></i></button></td>
-                            <td>`+item.Detalle+`</td>
+                            <td>`+item.Detalle+`</td> 
+                            <td>`+item.Unidad+`</td>
                             <td>`+item.Cantidad+`</td>
                             <td>`+item.PVP+`</td>
                             <td>`+item.Total+`</td>

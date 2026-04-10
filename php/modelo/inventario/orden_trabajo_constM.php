@@ -231,7 +231,7 @@ class orden_trabajo_constM
 
     function cargar_lista_subrubros($contrato,$rubro,$subrubro=false,$centrocostos=false,$contratista=false)
     {
-        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total
+        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total,Unidad
                 FROM Entidad_Rubro_Contratista ERC
                 INNER JOIN Catalogo_SubCtas CS on ERC.Sub_Rubro = CS.ID
                 WHERE ERC.Item =  '".$_SESSION['INGRESO']['item']."'
