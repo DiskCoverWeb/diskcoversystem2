@@ -235,7 +235,7 @@ class contrato_trabajo_detalle_constM
             FROM Catalogo_SubCtas
             WHERE Item = '".$_SESSION['INGRESO']['item']."' 
             AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-            AND (Nivel = 00) 
+            AND (Nivel = 99) 
             AND (TC = 'G') ";
             if($cuenta)
             {
