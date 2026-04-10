@@ -91,6 +91,7 @@ function estado_licencia($f3)
 	<title>Diskcover system - Modulos</title>
 	<script type="text/javascript">
 		$(document).ready(function () {
+			validar_cta_iva();
 			labelPeriodo();
       		setInterval(validar_session_Activa, 5000);
 	    });

@@ -306,7 +306,13 @@
         <div class="row">
           <div class="col-sm-12">
             <b>Etapa</b><br>
-            <select class="form-select form-select-sm" style="width:100%" name="ddl_etapa" id="ddl_etapa" onchange="lista_cc()">
+            <select class="form-select form-select-sm" style="width:100%" name="ddl_etapa" id="ddl_etapa" onchange="ddl_Rubro()">
+              <option value="">Seleccione proyecto</option>
+            </select>    
+          </div>
+           <div class="col-sm-12">
+            <b>Rubro</b><br>
+            <select class="form-select form-select-sm" style="width:100%" name="ddl_Rubro" id="ddl_Rubro">
               <option value="">Seleccione proyecto</option>
             </select>    
           </div>
@@ -317,12 +323,7 @@
               <option value="">Seleccione proyecto</option>
             </select>
           </div>
-          <div class="col-sm-12">
-            <b>Rubro</b><br>
-            <select class="form-select form-select-sm" style="width:100%" name="ddl_Rubro" id="ddl_Rubro">
-              <option value="">Seleccione proyecto</option>
-            </select>    
-          </div>
+         
           
           <div class="col-sm-3">
             <b>U/m</b>

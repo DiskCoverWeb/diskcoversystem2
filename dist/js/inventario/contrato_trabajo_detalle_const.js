@@ -3,7 +3,8 @@
     contratistas();
     proyectos();
     ddl_personal();
-    ddl_Rubro();
+    // ddl_Rubro();
+     lista_cc();
     lista_etapas();
 
      //enviar datos del cliente
@@ -30,12 +31,14 @@
 
 
 function ddl_Rubro(){
+   var pro = $('#txt_cuenta_proyecto').val();  
+     var etapa = $('#ddl_etapa').val();  
 
      $('#ddl_Rubro').select2({
       placeholder: 'Centro costo',
       dropdownParent: $('#myModal_orden_trabajo'),
       ajax: {
-        url: '../controlador/inventario/orden_trabajo_constC.php?ddl_Rubro=true',
+        url: '../controlador/inventario/contrato_trabajo_detalle_constC.php?ddl_Rubro=true&pro='+pro+'&etapaCC='+etapa,
         dataType: 'json',
         delay: 250,
         processResults: function (data) {
@@ -237,9 +240,11 @@ function ingresar_orden()
           type:  'post',
           dataType: 'json',
             success:  function (response) { 
-                if(response)
+                if(response==1)
                 {
-                    lista_solicitud_rubro();
+                  Swal.fire("Agregado","","success").then(function(){
+                      lista_solicitud_rubro();
+                  })
                 }
           }
         });
@@ -288,13 +293,12 @@ function lista_etapas()
 }
 
 function lista_cc(){
-     var pro = $('#txt_cuenta_proyecto').val();  
-     var etapa = $('#ddl_etapa').val();   
+    
      $('#ddl_cc').select2({
       placeholder: 'Centro costo',
       dropdownParent: $('#myModal_orden_trabajo'),
       ajax: {
-        url: '../controlador/inventario/contrato_trabajo_detalle_constC.php?cc=true&pro='+pro+'&etapaCC='+etapa,
+        url: '../controlador/inventario/contrato_trabajo_detalle_constC.php?cc=true',
         dataType: 'json',
         delay: 250,
         processResults: function (data) {

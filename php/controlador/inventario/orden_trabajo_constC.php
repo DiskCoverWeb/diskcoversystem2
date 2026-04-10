@@ -1,5 +1,6 @@
     <?php
     require_once(dirname(__DIR__,2).'/modelo/inventario/orden_trabajo_constM.php');
+    require_once(dirname(__DIR__,2).'/modelo/inventario/contrato_trabajo_detalle_constM.php');
 
     $controlador = new orden_trabajo_constC();
     if(isset($_GET['ddl_cuenta_contable']))
@@ -65,12 +66,55 @@
         echo json_encode($controlador->contratos($contratista,$query));
     }
 
+    if(isset($_GET['detalleContrato']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->detalleContrato($parametros));
+    }
+
+    if(isset($_GET['centrosCostocXRubro']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->centrosCostocXRubro($parametros));
+    }
+
+    if(isset($_GET['subrubro']))
+    {
+        $query='';
+        $rubro='';
+        if(isset($_GET['q'])){$query = $_GET['q'];}
+        if(isset($_GET['rubro'])){$rubro = $_GET['rubro'];}
+        echo json_encode($controlador->subrubro($query,$rubro));
+    }
+
+    if(isset($_GET['add_subRubro']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->add_subRubro($parametros));
+    }
+
+    if(isset($_GET['cargar_lista_subrubros']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->cargar_lista_subrubros($parametros));
+    }
+
+    if(isset($_GET['delete_subrubro']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->delete_subrubro($parametros));
+    }
+
+
+
 
     class orden_trabajo_constC
     {
         private $modelo;
+        private $contrato;
         function __construct(){
             $this->modelo = new orden_trabajo_constM();
+            $this->contrato = new contrato_trabajo_detalle_constM();
         }
 
         function ddl_cuenta_contable($query){
@@ -168,7 +212,76 @@
         }
         function contratos($contratista,$query)
         {
-           return $this->modelo->contratos($contratista,$query);
+           $rubro = array();
+           $data =  $this->modelo->rubrosXcontratista($query,$contratista);
+           foreach ($data as $key => $value) {
+               $rubro[] = array('id'=>$value['Cta'],'text'=>$value['Cuenta'],'data'=>$value);
+           }
+           return $rubro;
+        }
+
+        function detalleContrato($parametros)
+        {
+            $contrato = $parametros['contrato'];
+            return $this->contrato->detalleContrato($contrato,"A");
+            // print_r($parametros);die();
+        }
+
+        function centrosCostocXRubro($parametros)
+        {
+            $data = $this->modelo->centrosCostocXRubro($parametros['contrato'],$parametros['rubro']);
+
+            return $data;
+            // print_r($data);die();
+            // print_r($parametros);die();
+        }
+
+        function subrubro($query,$rubro)
+        {
+            $lista = array();
+            $data = $this->modelo->subrubro($rubro,$query);
+            foreach ($data as $key => $value) {
+                $lista[] = array('id'=>$value['ID'],'text'=>$value['Detalle'],'data'=>$value);
+            }
+
+            return $lista;
+        }
+
+        function add_subRubro($parametros)
+        {
+            // print_r($parametros);die();
+
+            SetAdoAddNew("Entidad_Rubro_Contratista");
+            SetAdoFields("Rubro",$parametros['rubro']);
+            SetAdoFields("Sub_Rubro",$parametros['subRubro']);
+            SetAdoFields("Centro_Costo",$parametros['centroCostos']);
+            SetAdoFields("Contratista",$parametros["contratista"]);
+            SetAdoFields("No_Contrato",$parametros['Contrato']);
+
+            SetAdoFields("Unidad",$parametros['unidad']);
+            SetAdoFields("Cantidad",$parametros['cantidad']);
+            SetAdoFields("PVP",$parametros['pvp']);
+            SetAdoFields("Total",$parametros['total']);
+
+            SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+            SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+            SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+            return SetAdoUpdate(); 
+
+        }
+
+        function cargar_lista_subrubros($parametros)
+        {            
+            $data = $this->modelo->cargar_lista_subrubros($parametros['Contrato'],$parametros['rubro'],$subrubro=false,$parametros['centroCostos'],$parametros['contratista']);
+
+            return $data;
+            // print_r($data);die();
+        }
+
+        function delete_subrubro($parametros)
+        {
+            return $this->modelo->delete_subrubro($parametros['id']);
+            // print_r($parametros);die();
         }
     }
 

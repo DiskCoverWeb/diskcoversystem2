@@ -108,9 +108,18 @@ if (isset($_GET['cc'])) {
     {
         $_GET['q'] =''; 
     }
+    echo json_encode($controlador->lista_cc($_GET['q']));
+}
+
+if(isset($_GET['ddl_Rubro']))
+{
+    if(!isset($_GET['q']))
+    {
+        $_GET['q'] =''; 
+    }
     $pro = $_GET['pro'];
     $etapa = $_GET['etapaCC'];
-    echo json_encode($controlador->lista_cc($_GET['q'],$pro,$etapa));
+    echo json_encode($controlador->ddl_Rubro($_GET['q'],$pro,$etapa));
 }
 
 if(isset($_GET['grabar_orden_trabajo']))
@@ -333,13 +342,24 @@ class contrato_trabajo_detalle_constC
         return $data;
     }
 
-    function lista_cc($query,$proyecto,$etapa)
+    function lista_cc($query)
     {
         // print_r($query);
         // print_r($proyecto);
         // print_r($etapa);die();
 
-        $resp = $this->modelo->listar_cc($query,$etapa);
+        $resp = $this->modelo->listar_cc($query);
+        // print_r($resp);die();
+        return $resp;
+    }
+
+    function ddl_Rubro($query,$proyecto,$etapa)
+    {
+        // print_r($query);
+        // print_r($proyecto);
+        // print_r($etapa);die();
+
+        $resp = $this->modelo->ddl_Rubro($query,$etapa);
         // print_r($resp);die();
         return $resp;
     }

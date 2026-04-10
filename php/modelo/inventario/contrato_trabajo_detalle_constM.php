@@ -13,21 +13,21 @@ class contrato_trabajo_detalle_constM
         $this->db = new db();
     }
 
-    function detalleContrato($contrato=false)
+    function detalleContrato($contrato=false,$T = '.')
     {
         $sql = "select TC.ID,C.Cliente,CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID  
         FROM Trans_Contratistas TC
         INNER JOIN Clientes C ON TC.Codigo = C.Codigo
         INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds
         INNER JOIN Catalogo_Proceso CP1 ON TC.Proyecto = CP1.ID
-        where TC.T ='.'
+        where TC.T ='".$T."'
         AND TC.Item = CP.Item
         AND TC.Item = CP1.Item
         AND TC.Item = '".$_SESSION['INGRESO']['item']."'
         AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
         if($contrato)
         {
-            $sql.=" AND Autorizacion = '".$contrato."'";
+            $sql.=" AND No_Contrato = '".$contrato."'";
         }
 
         // print_r($sql);die();
@@ -60,9 +60,9 @@ class contrato_trabajo_detalle_constM
     {
         $sql = "SELECT  TCR.ID,Cta as IdRubro,Detalle,Etapa as IdEtapa ,C.Proceso as Etapa,Centro_Costos,CC.Cuenta,Cantidad,Costo_Unit,TCR.Total,TCR.Codigo
                FROM Trans_Contratistas_Rubros TCR 
-               INNER JOIN Catalogo_Proceso C ON TCR.Etapa = C.Cta_Debe
-               INNER JOIN Catalogo_SubCtas SC ON TCR.Cta = SC.Codigo
-               INNER JOIN Catalogo_Cuentas CC ON TCR.Centro_Costos = CC.Codigo 
+               INNER JOIN Catalogo_Proceso C ON TCR.Etapa = C.Cta_Debe 
+               INNER JOIN Catalogo_SubCtas SC ON TCR.Centro_Costos = SC.Codigo
+               INNER JOIN Catalogo_Cuentas CC ON  TCR.Cta = CC.Codigo 
                 WHERE C.Item = TCR.Item
                 AND CC.Item = TCR.Item
                 AND CC.Periodo = TCR.Periodo
@@ -201,13 +201,12 @@ class contrato_trabajo_detalle_constM
     }
 
 
-    function listar_cc($query='',$proyectos=false)
+    function ddl_Rubro($query='',$proyectos=false)
     {
         // 'LISTA DE CODIGO DE ANEXOS
          $sql = "SELECT Codigo,Cuenta 
          FROM Catalogo_Cuentas 
-         WHERE TC='CC' 
-         AND DG='D' 
+         WHERE DG='D' 
          AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
          AND Item = '".$_SESSION['INGRESO']['item']."' ";
          if($query !='')
@@ -229,11 +228,32 @@ class contrato_trabajo_detalle_constM
 
     }
 
+    function listar_cc($cuenta=false)
+    {
+
+        $sql = "SELECT Codigo as id,Detalle as text 
+            FROM Catalogo_SubCtas
+            WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+            AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+            AND (Nivel = 03) 
+            AND (TC = 'G') ";
+            if($cuenta)
+            {
+                $sql.=" AND Detalle like '%".$cuenta."%'";
+            }
+            $sql.=" Order by Detalle"; 
+          // print_r($sql);die();
+
+       $datos =  $this->db->datos($sql);
+       return $datos;
+    }
+
+
     function grabar_orden_trabajo($orden)
     {
         $sql = "UPDATE Trans_Contratistas 
                 SET T = 'A' 
-                WHERE Autorizacion = '".$orden."' ";
+                WHERE No_Contrato = '".$orden."' ";
         return $this->db->String_Sql($sql);
 
     }

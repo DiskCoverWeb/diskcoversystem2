@@ -165,5 +165,109 @@ class orden_trabajo_constM
         return $this->db->datos($sql);
     }
 
+    function rubrosXcontratista($query,$contratistaCod=false)
+    {
+        $sql="Select Orden_Trabajo,TCR.Cta,CC.Cuenta 
+            From Trans_Contratistas_Rubros TCR
+            INNER JOIN Trans_Contratistas TC on TCR.Orden_Trabajo = TC.No_Contrato
+            INNER JOIN Catalogo_Cuentas CC ON  TCR.Cta = CC.Codigo 
+            where TCR.Item = TC.Item
+            AND TCR.Periodo = TC.Periodo
+            AND TC.Item = '".$_SESSION['INGRESO']['item']."'
+            AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+            if($query)
+            {
+                $sql.=" AND CC.Cuenta like '%".$query."%'";
+
+            }
+            if($contratistaCod)
+            {
+                $sql.=" AND TC.Codigo = '".$contratistaCod."'";
+            }
+            $sql.=" group by  Orden_Trabajo,TCR.Cta,CC.Cuenta ";
+
+            // print_r($sql);die();
+
+        return $this->db->datos($sql);
+
+    }
+
+    function centrosCostocXRubro($proyecto=false,$rubro=false)
+    {
+        $sql ="Select TCR.Centro_Costos,Detalle
+                From Trans_Contratistas_Rubros TCR
+                INNER JOIN Catalogo_SubCtas SC ON TCR.Centro_Costos = SC.Codigo
+                where SC.Item = TCR.Item
+                AND SC.Periodo = TCR.Periodo
+                AND TCR.Item =  '".$_SESSION['INGRESO']['item']."'
+                AND TCR.Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+                if($rubro)
+                {
+                    $sql.=" AND Cta = '".$rubro."' ";
+                }
+                if($proyecto)
+                {
+                    $sql.=" AND Orden_Trabajo = '".$proyecto."'";
+                }
+        
+        return $this->db->datos($sql);
+    }
+
+    function subrubro($rubro,$query=false)
+    {
+        $sql = "SELECT  Periodo, TC, Codigo, Detalle, Presupuesto, Caja, Item, X, Reembolso, Cta_Reembolso, Cta_Proyecto, Nivel, Agrupacion, Fecha_D, Fecha_H, Total, Porc, Bloquear, ID
+                FROM Catalogo_SubCtas
+                WHERE TC = 'SR'
+                AND Item =  '".$_SESSION['INGRESO']['item']."'
+                AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+                AND Cta_Proyecto = '".$rubro."' ";
+                if($query)
+                {
+                    $sql.=" AND Detalle like '%".$query."%'";
+                }
+
+        return $this->db->datos($sql);
+    }
+
+    function cargar_lista_subrubros($contrato,$rubro,$subrubro=false,$centrocostos=false,$contratista=false)
+    {
+        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total
+                FROM Entidad_Rubro_Contratista ERC
+                INNER JOIN Catalogo_SubCtas CS on ERC.Sub_Rubro = CS.ID
+                WHERE ERC.Item =  '".$_SESSION['INGRESO']['item']."'
+                AND ERC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+                if($contrato)
+                {
+                    $sql.=" AND No_Contrato = '".$contrato."'";
+                }
+                // if($rubro)
+                // {
+                //     $sql.=" AND Rubro='".$rubro."'";
+                // }
+                if($subrubro)
+                {
+                    $sql.=" AND Sub_Rubro='".$subrubro."'";
+                }
+                if($centrocostos)
+                {
+                    $sql.=" AND Centro_Costo = '".$centrocostos."'";
+                }
+                if($contratista)
+                {
+                    $sql.=" AND Contratista = '".$contratista."'";
+                }
+
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+                
+    }
+
+    function delete_subrubro($id)
+    {
+        $sql = "DELETE FROM Entidad_Rubro_Contratista WHERE ID = '".$id."'";
+
+        return $this->db->String_Sql($sql);
+    }
+
 
 }
