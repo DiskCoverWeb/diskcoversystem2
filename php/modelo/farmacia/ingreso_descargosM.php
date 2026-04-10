@@ -341,6 +341,7 @@ class ingreso_descargosM
      $sql = "SELECT SUM(VALOR_TOTAL) as 'total',Cta_Inv as 'cuenta',Fecha as 'fecha',TC 
              FROM Trans_Kardex  
              WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+             AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
              AND Orden_No = '".$orden."'  
              AND Fecha = '".$fecha."'";
              if($diferente)
