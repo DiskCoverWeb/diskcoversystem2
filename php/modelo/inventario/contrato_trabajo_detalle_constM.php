@@ -15,9 +15,9 @@ class contrato_trabajo_detalle_constM
 
     function detalleContrato($contrato=false,$T = '.')
     {
-        $sql = "select TC.ID,C.Cliente,CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID  
+        $sql = "select TC.ID,C.Nombre_Completo as 'Cliente',CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID  
         FROM Trans_Contratistas TC
-        INNER JOIN Clientes C ON TC.Codigo = C.Codigo
+        INNER JOIN Accesos C ON TC.Codigo = C.Codigo
         INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds
         INNER JOIN Catalogo_Proceso CP1 ON TC.Proyecto = CP1.ID
         where TC.T ='".$T."'
@@ -235,7 +235,7 @@ class contrato_trabajo_detalle_constM
             FROM Catalogo_SubCtas
             WHERE Item = '".$_SESSION['INGRESO']['item']."' 
             AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-            AND (Nivel = 03) 
+            AND (Nivel = 00) 
             AND (TC = 'G') ";
             if($cuenta)
             {
