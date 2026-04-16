@@ -932,6 +932,8 @@ class registro_beneficiarioC
         parse_str($parametros['data'],$data);
         parse_str($parametros['dataD'],$direccion);
 
+        $this->addEdit_catalogo_CxCxP($data);
+
         $respuesta = 1;
         switch ($data['select_93']) {
             case '93.01':
@@ -981,6 +983,30 @@ class registro_beneficiarioC
         return $respuesta;
     }
 
+    function addEdit_catalogo_CxCxP($dato)
+    {
+        $CI_RUC = $this->sri->quitar_carac($dato['txt_ci']);
+        $codigos = Digito_verificador($CI_RUC);
+
+        $data = $this->modelo->addEdit_catalogo_CxCxP($codigos['Codigo_RUC_CI']);
+        
+        SetAdoAddNew("Catalogo_CxCxP");   
+        SetAdoFields('CI_RUC', $codigos['RUC_CI']);        
+        SetAdoFields('TC', $codigos['Tipo_Beneficiario']);      
+        SetAdoFields('Codigo',$codigos['Codigo_RUC_CI']);      
+        SetAdoFields('Item',$_SESSION['INGRESO']['item']);     
+        SetAdoFields('Periodo',$_SESSION['INGRESO']['periodo']);
+        SetAdoFields('Cta',$_SESSION['SETEOS']['Cta_Proveedores']);
+        if(count($data)==0)
+        {
+            return SetAdoUpdate();  
+        }else
+        {
+            SetAdoFieldsWhere("Codigo",$codigos['Codigo_RUC_CI']);
+            return SetAdoUpdateGeneric();
+        }
+
+    }
 
     function editarAccionSocial($dato,$datosdir)
     {

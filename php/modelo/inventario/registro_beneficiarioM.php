@@ -753,6 +753,23 @@ class registro_beneficiarioM
         $data = $this->db->datos($sql);
         return $data;
     }
+
+    function addEdit_catalogo_CxCxP($Codigo)
+    {
+        $sql="SELECT ".Full_Fields('Catalogo_CxCxP')."
+                FROM            Catalogo_CxCxP
+                WHERE        Item = '".$_SESSION['INGRESO']['item']."'
+                AND  Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+                if($Codigo)
+                {
+                    $sql.=" AND Codigo = '".$Codigo."' ";
+                }
+                
+                // print_r($sql);die();
+        $data = $this->db->datos($sql);
+        return $data;
+
+    }
 }
 
 ?>
