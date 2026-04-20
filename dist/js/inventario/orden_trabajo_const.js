@@ -141,20 +141,40 @@ function centrosCostocXRubro(ordenNo)
             var estado_cont = '';
             response.forEach(function(item,i){
               console.log(item)
-              if(i==0){estado_tab = 'active'; estado_cont = 'show'; $('#txt_centro_costos').val(item.Centro_Costos) }
-              pnl_tab+=`<button class="nav-link `+estado_tab+`" id="tab_`+item.Centro_Costos+`" data-bs-toggle="pill" data-bs-target="#content_tab_`+item.Centro_Costos+`" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true" onclick="$('#txt_centro_costos').val('`+item.Centro_Costos+`');cargar_lista_subrubros()">`+item.Detalle+`</button>`
+              fechaI = ""
+              fechaF = ""
+              semana = "";
+              if(item.Fecha_Inicio!=null && item.Fecha_Inicio!='') {fechaI = formatoDate(item.Fecha_Inicio.date) }
+              if(item.Fecha_Fin!=null && item.Fecha_Fin!='') {fechaF = formatoDate(item.Fecha_Fin.date) }
+              if(item.Semana !=null  && item.Semana!='' ){semana =item.Semana; }
+
+              if(i==0){estado_tab = 'active'; estado_cont = 'show'; $('#txt_centro_costos').val(item.Centro_Costos); $('#txt_id_centro_costos').val(item.ID) }
+              pnl_tab+=`<button class="nav-link `+estado_tab+`" id="tab_`+item.Centro_Costos+`" data-bs-toggle="pill" data-bs-target="#content_tab_`+item.Centro_Costos+`" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true" onclick="$('#txt_centro_costos').val('`+item.Centro_Costos+`'); $('#txt_id_centro_costos').val(`+item.ID+`);cargar_lista_subrubros()">`+item.Detalle+`</button>`
               pnl_cont+=`<div class="tab-pane fade `+estado_cont+` `+estado_tab+`" id="content_tab_`+item.Centro_Costos+`" role="tabpanel" aria-labelledby="v-pills-home-tab">
-                              <table class="table table-hover">
-                                <thead>
-                                  <th></th>
-                                  <th>Detalle</th>
-                                  <th>Unidad</th>
-                                  <th>Cantidad</th>
-                                  <th>Costo unitario</th>
-                                  <th>costo total</th>
-                                </thead>
-                                <tbody id="tbl_`+item.Centro_Costos+`"></tbody>
-                              </table>
+                            <div class="row">
+
+                              <div class="col-sm-3">
+                                <button class="btn btn-sm btn-primary" onclick="modal_periodo_trabajo()" ><i class="bx bx-calendar"></i>Asignar periodos</button>
+                              </div>
+                              <div class="col-sm-3"><b>Semana: </b><span>`+semana+`</span></div>
+                              <div class="col-sm-3"><b>Fecha Inicio: </b><span>`+fechaI+`</span></div>
+                              <div class="col-sm-3"><b>Fecha Fin: </b><span>`+fechaF+`</span></div>
+                              
+
+                              <div class="col-sm-12 mt-3">
+                                  <table class="table table-hover">
+                                    <thead>
+                                      <th></th>
+                                      <th>Detalle</th>
+                                      <th>Unidad</th>
+                                      <th>Cantidad</th>
+                                      <th>Costo unitario</th>
+                                      <th>costo total</th>
+                                    </thead>
+                                    <tbody id="tbl_`+item.Centro_Costos+`"></tbody>
+                                  </table>
+                                </div>
+                            </div>
                           </div>`
               estado_tab = '';
               estado_cont = '';
@@ -525,7 +545,102 @@ function delete_subrubro(id)
           
         }
     });   
+}
 
+function modal_periodo_trabajo()
+{
+  $('#myModal_periodo_trabajo').modal('show');
+  numero_semanas();
+}
+
+function numero_semanas()
+{
+  var option = '<option value="">Seleccione semana </option>';
+  for (var i = 1; i <=52; i++) {
+      option+='<option value="'+i+'">'+i+'</option>';
+  }
+  $('#ddl_semana').html(option);
+}
+
+function guardar_periodo()
+{
+  var semana = $('#ddl_semana').val()
+  var fechaInicio = $('#txt_fecha_inicio').val()
+  var fechaFin = $('#txt_fecha_fin').val()
+  var observacion = $('#txt_observacion').val()
+
+  var centroCostos = $('#txt_centro_costos').val()
+  var idCentroCostos = $('#txt_id_centro_costos').val()
+  var rubro = $('#ddl_Rubro').val()
+  var contrato = $('#ddl_Contrato').val()
+
+  if(semana=='' || fechaInicio=='' || fechaFin=='')
+  {
+    Swal.fire("Llene todo los campos","","error")
+    return false;
+  }
+
+
+  var parametros = 
+  {
+    'idCentroCostos':idCentroCostos,
+    'centroCostos':centroCostos,
+    'rubro':rubro,
+    'contrato':contrato,
+    'semana': semana,
+    'fechaInicio': fechaInicio,
+    'fechaFin': fechaFin,
+    'observacion': observacion,
+  }
+   $.ajax({
+        type: "POST",
+        url: '../controlador/inventario/orden_trabajo_constC.php?guardar_periodo=true',
+        data:{parametros:parametros},
+        dataType:'json',
+        success: function(data)
+        {
+          if(data==1)
+          {
+            centrosCostocXRubro(contrato);
+            $('#myModal_periodo_trabajo').modal('hide');
+          }       
+          
+        }
+    });   
+}
+
+
+function grabar_orden_trabajo()
+{
+  var rubro = $('#ddl_Rubro').val()
+  var contrato = $('#ddl_Contrato').val()
+
+  var parametros = 
+  {
+    'rubro':rubro,
+    'contrato':contrato,
+  }
+   $.ajax({
+        type: "POST",
+        url: '../controlador/inventario/orden_trabajo_constC.php?grabar_orden_trabajo=true',
+        data:{parametros:parametros},
+        dataType:'json',
+        success: function(data)
+        {
+          if(data.respuesta!=1)
+          {
+            Swal.fire("No se pudo Guardar",data.mensaje,"info");
+          }  
+
+          if(data.respuesta==1)
+          {
+            Swal.fire("Orden de trabajo generada","","success").then(function(){
+              location.reload();
+            });
+          }       
+          
+        }
+    });   
 }
 
 
