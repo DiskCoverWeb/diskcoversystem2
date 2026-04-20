@@ -286,7 +286,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary btn-sm" onclick="GuardarContrato()">Aceptar</button> 
-        <a href="../vista/inicio.php?mod=03&acc=contrato_trabajo_const" class="btn btn-default">Cerrar</a>
+        <a href="../vista/inicio.php?mod=<?php echo $_GET['mod']; ?>&acc=contrato_trabajo_const" class="btn btn-default">Cerrar</a>
       </div>
     </div>
 
