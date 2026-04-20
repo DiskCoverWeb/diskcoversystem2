@@ -180,8 +180,8 @@
                         <thead>
                           <th></th>
                           <th>No</th>
+                          <th>Rubro</th>
                           <th>Centro de costos</th>
-                          <th>Detalle</th>
                           <th>U/m</th>
                           <th>Cant</th>
                           <th>Costo/Uni</th>

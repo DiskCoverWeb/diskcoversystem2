@@ -40,7 +40,7 @@
         <button type="button" class="btn btn-outline-secondary" title="Informe pdf" onclick="imprimir_pdf()">
           <img src="../../img/png/pdf.png">
         </button>
-        <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_solicitud_proveedor()">
+        <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_orden_trabajo()">
           <img src="../../img/png/grabar.png" >
         </button>
       </div>
@@ -116,6 +116,7 @@
       <div class="row">
         <div class="col-sm-1">
           <input type="hidden" name="txt_centro_costos" id="txt_centro_costos">
+          <input type="hidden" name="txt_id_centro_costos" id="txt_id_centro_costos">
         </div>
         <div class="col-sm-3">
           <b>Sub Rubro</b>
@@ -161,4 +162,37 @@
       </div>
     </div>    
   </div>
+</div>
+
+<div class="modal fade" id="myModal_periodo_trabajo" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-sm-12">
+                  <b>Semana</b>
+                  <select class="form-select form-select-sm" id="ddl_semana" name="ddl_semana">
+                    <option value="">Selecione Semana</option>
+                  </select>
+                </div>
+                 <div class="col-sm-12">
+                  <b>Fecha Inicio</b>
+                  <input type="date" name="txt_fecha_inicio" id="txt_fecha_inicio" class="form-control form-control-sm">
+                </div>
+                 <div class="col-sm-12">
+                  <b>Fecha Fin</b>
+                  <input type="date" name="txt_fecha_fin" id="txt_fecha_fin" class="form-control form-control-sm">
+                </div>
+                 <div class="col-sm-12">
+                  <b>Observaciones</b>
+                  <textarea name="txt_observacion" id="txt_observacion" class="form-control form-control-sm"></textarea>
+                </div>                
+              </div>
+            </div>
+             <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" id="btn_guardar_periodo" name="btn_guardar_periodo" onclick="guardar_periodo()"><i class="bx bx-save"></i>Guardar</button>        
+                  <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+        </div>
+    </div>
 </div>

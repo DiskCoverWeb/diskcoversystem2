@@ -39,7 +39,7 @@
         <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_solicitud_proveedor()">
           <img src="../../img/png/grabar.png" >
         </button>
-         <a title="Guardar"  class="btn btn-outline-secondary" href="../vista/inicio.php?mod=03&acc=contrato_trabajo_detalle_const">
+         <a title="Guardar"  class="btn btn-outline-secondary" href="../vista/inicio.php?mod=<?php echo $_GET['mod']; ?>&acc=contrato_trabajo_detalle_const">
           <img src="../../img/png/mostrar.png" >
         </a>
       </div>
