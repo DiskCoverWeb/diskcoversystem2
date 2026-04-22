@@ -15,9 +15,9 @@ class contrato_trabajo_detalle_constM
 
     function detalleContrato($contrato=false,$T = '.')
     {
-        $sql = "select TC.ID,C.Nombre_Completo as 'Cliente',CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID  
+        $sql = "select TC.ID,C.Cliente as 'Cliente',CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID  
         FROM Trans_Contratistas TC
-        INNER JOIN Accesos C ON TC.Codigo = C.Codigo
+        INNER JOIN Clientes C ON TC.Codigo = C.Codigo
         INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds
         INNER JOIN Catalogo_Proceso CP1 ON TC.Proyecto = CP1.ID
         where TC.T ='".$T."'
@@ -104,13 +104,28 @@ class contrato_trabajo_detalle_constM
 
     function contratistas($query)
     {
-        $sql= "SELECT Codigo as id, Nombre_Completo as text
-               FROM Accesos WHERE 1=1 ";
-                if($query)
+        $sql="SELECT C.Cliente as text, C.CI_RUC, C.Codigo as  id, CXP.Cta
+            FROM Clientes As C, Ctas_Proceso As CP, Catalogo_CxCxP As CXP
+            WHERE CXP.Item ='".$_SESSION['INGRESO']['item']."' 
+                and CXP.Periodo ='".$_SESSION['INGRESO']['periodo']."' 
+                AND LEN(C.Cliente)>1
+                AND CP.Detalle ='Cta_Proveedores'
+                and CXP.Item = CP.Item
+                and CXP.periodo = CP.Periodo 
+                and CP.Codigo=CXP.Cta
+                AND C.Codigo = CXP.Codigo";
+                 if($query)
                 {
-                    $sql.=" AND Nombre_Completo like'%".$query."%'";
+                    $sql.=" AND  C.Cliente like'%".$query."%'";
                 }
-        $sql.=" ORDER by Nombre_Completo";
+            $sql.="    ORDER BY C.Cliente;";
+        // $sql= "SELECT Codigo as id, Nombre_Completo as text
+        //        FROM Accesos WHERE 1=1 ";
+        //         if($query)
+        //         {
+        //             $sql.=" AND Nombre_Completo like'%".$query."%'";
+        //         }
+        // $sql.=" ORDER by Nombre_Completo";
 
         // print_r($sql);die();
         return $this->db->datos($sql);
