@@ -46,6 +46,8 @@ class orden_trabajo_constM
             }
             $sql.=" ORder by Nivel DESC";
 
+            // print_r($sql);die();
+
        $datos =  $this->db->datos($sql);
        return $datos;
     }
@@ -134,10 +136,12 @@ class orden_trabajo_constM
 
     function contratistas($cliente=false)
     {
-        $sql = "SELECT distinct C.Cliente AS text,TC.Codigo as id 
+        $sql = "SELECT distinct C.Nombre_Completo AS text,TC.Codigo as id 
         FROM Trans_Contratistas TC
-        INNER JOIN Clientes C on TC.Codigo = C.Codigo 
-        WHERE Item = '".$_SESSION['INGRESO']['item']."'";
+        INNER JOIN Accesos C on TC.Codigo = C.Codigo 
+        WHERE Item = '".$_SESSION['INGRESO']['item']."'
+        AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+        AND TC.T = 'A'";
         if($cliente)
         {
             $sql.=" AND C.Cliente like '%".$cliente."%'";
@@ -174,7 +178,8 @@ class orden_trabajo_constM
             where TCR.Item = TC.Item
             AND TCR.Periodo = TC.Periodo
             AND TC.Item = '".$_SESSION['INGRESO']['item']."'
-            AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+            AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+            AND TC.T = 'A'";
             if($query)
             {
                 $sql.=" AND CC.Cuenta like '%".$query."%'";
@@ -191,10 +196,9 @@ class orden_trabajo_constM
         return $this->db->datos($sql);
 
     }
-
-    function centrosCostocXRubro($proyecto=false,$rubro=false)
+    function SemanasXcentrosCostocXRubro($proyecto=false,$rubro=false)
     {
-        $sql ="Select TCR.Centro_Costos,Detalle
+        $sql ="Select Semana
                 From Trans_Contratistas_Rubros TCR
                 INNER JOIN Catalogo_SubCtas SC ON TCR.Centro_Costos = SC.Codigo
                 where SC.Item = TCR.Item
@@ -209,7 +213,35 @@ class orden_trabajo_constM
                 {
                     $sql.=" AND Orden_Trabajo = '".$proyecto."'";
                 }
-        
+
+                $sql.=" group by Semana";
+        return $this->db->datos($sql);
+    }
+
+
+    function centrosCostocXRubro($proyecto=false,$rubro=false,$semana =false)
+    {
+        $sql ="Select TCR.Centro_Costos,Detalle,TCR.ID,Fecha_Inicio,Fecha_Fin,Observacion,Semana
+                From Trans_Contratistas_Rubros TCR
+                INNER JOIN Catalogo_SubCtas SC ON TCR.Centro_Costos = SC.Codigo
+                where SC.Item = TCR.Item
+                AND SC.Periodo = TCR.Periodo
+                AND TCR.Item =  '".$_SESSION['INGRESO']['item']."'
+                AND TCR.Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+                if($rubro)
+                {
+                    $sql.=" AND Cta = '".$rubro."' ";
+                }
+                if($proyecto)
+                {
+                    $sql.=" AND Orden_Trabajo = '".$proyecto."'";
+                }
+                if($semana)
+                {
+                    $sql.=" AND Semana = '".$semana."'";
+                }
+
+                // print_r($sql);die();
         return $this->db->datos($sql);
     }
 
@@ -231,7 +263,7 @@ class orden_trabajo_constM
 
     function cargar_lista_subrubros($contrato,$rubro,$subrubro=false,$centrocostos=false,$contratista=false)
     {
-        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total,Unidad
+        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total,Unidad,Cant_Ejec,Diferencia
                 FROM Entidad_Rubro_Contratista ERC
                 INNER JOIN Catalogo_SubCtas CS on ERC.Sub_Rubro = CS.ID
                 WHERE ERC.Item =  '".$_SESSION['INGRESO']['item']."'
@@ -256,6 +288,7 @@ class orden_trabajo_constM
                 {
                     $sql.=" AND Contratista = '".$contratista."'";
                 }
+               
 
                 // print_r($sql);die();
         return $this->db->datos($sql);
@@ -268,6 +301,17 @@ class orden_trabajo_constM
 
         return $this->db->String_Sql($sql);
     }
+
+
+    function grabar_orden_trabajo($orden)
+    {
+        $sql = "UPDATE Trans_Contratistas 
+                SET T = 'E' 
+                WHERE No_Contrato = '".$orden."' ";
+        return $this->db->String_Sql($sql);
+
+    }
+
 
 
 }

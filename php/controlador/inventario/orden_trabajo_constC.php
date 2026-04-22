@@ -105,6 +105,18 @@
         echo json_encode($controlador->delete_subrubro($parametros));
     }
 
+    if(isset($_GET['guardar_periodo']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->guardar_periodo($parametros));
+    }
+
+    if(isset($_GET['grabar_orden_trabajo']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->grabar_orden_trabajo($parametros));
+    }
+
 
 
 
@@ -282,6 +294,55 @@
         {
             return $this->modelo->delete_subrubro($parametros['id']);
             // print_r($parametros);die();
+        }
+
+        function guardar_periodo($parametros)
+        {
+
+            // print_r($parametros);die();
+            SetAdoAddNew("Trans_Contratistas_Rubros");
+            SetAdoFields("Semana",$parametros['semana']);
+            SetAdoFields("Fecha_Inicio",$parametros['fechaInicio']);
+            SetAdoFields("Fecha_Fin",$parametros['fechaFin']);
+            SetAdoFields("Observacion",$parametros["observacion"]);
+
+
+            SetAdoFieldsWhere('ID',$parametros["idCentroCostos"]);
+            return SetAdoUpdateGeneric(); 
+        }
+
+        function grabar_orden_trabajo($parametros)
+        {
+
+            $mensaje = '';
+            $existeSubRubroAll = 1;
+            $existePeriodoAll = 1;
+
+            $centroCostos = $this->modelo->centrosCostocXRubro($parametros['contrato'],$parametros['rubro']);
+            foreach ($centroCostos as $key => $value) {
+                // print_r($value);die();
+                $subrubro = $this->modelo->cargar_lista_subrubros($parametros['contrato'],$parametros['rubro'],false,$value['Centro_Costos'],false);
+                if(count($subrubro)==0)
+                {
+                    $existeSubRubroAll = 0;
+                    $mensaje.='<b>'.$value['Detalle'].':</b> no tiene Sub Rubros asignados <br>';
+                }
+                if($value['Semana']=='' || $value['Semana']==0 || $value['Fecha_Inicio']=='' || $value['Fecha_Fin']=='' || $value['Fecha_Inicio']==null || $value['Fecha_Fin']==null )
+                {                    
+                    $mensaje.='<b>'.$value['Detalle'].':</b> Periodos no asignados <br>';
+                    $existePeriodoAll = 0;
+                }
+            }
+
+            $resp = -1;
+            if($existePeriodoAll == 1 && $existeSubRubroAll == 1)
+            {
+
+                $this->modelo->grabar_orden_trabajo($parametros['contrato']);
+                $resp = 1;
+            }
+
+            return array('respuesta'=>$resp,'mensaje'=>$mensaje);
         }
     }
 

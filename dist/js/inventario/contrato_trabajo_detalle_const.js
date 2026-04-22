@@ -99,6 +99,20 @@ function ddl_cate_contrato(){
 
   function GuardarContrato()
   {
+     var fechaInicio = $('#txt_fecha_inicio').val();
+     var fechaFin = $('#txt_fecha_fin').val();
+
+    var inicio = new Date(fechaInicio);
+    var fin = new Date(fechaFin);
+    if (fin <= inicio)
+    {
+      Swal.fire("Fecha fin debe ser mayor al de inicio","","info")
+      $('#txt_fecha_inicio').val("");
+      return false;
+
+    }
+
+    
      var parametros = 
      {
         'proyecto':$('#ddl_proyecto').val(),

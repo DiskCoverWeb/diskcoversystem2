@@ -92,7 +92,7 @@
                 <span id="lbl_material">-</span>
             </div>
             <div class="col-sm-5">
-              <b>El contratista ejecuta el trabajo con mas de una persona:</b>
+              <b>El contratista ejecuta el trabajo con marquinaria:</b>
               <span id="lbl_mas_personas"> - </span>
             </div>
            <!--  <div class="col-sm-12">
