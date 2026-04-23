@@ -59,7 +59,7 @@ class EnviarVisual
 		$Tarea = '.';
 		$Correo_Conexion = '.';
 		$Credito_No = '.';
-		$resp = 0;
+		$res = 0;
 		if(trim($parametros['Archivo'])!='')
 		{
 			$this->descargar_archivos_ftp($parametros['Archivo']);
