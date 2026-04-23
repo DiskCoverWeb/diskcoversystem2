@@ -72,7 +72,7 @@
               <h5>Resumen de Contrato</h5>
           </div>          
           <div class="col-sm-6 text-end">
-            <button type="button" class="btn btn-primary btn-sm" onclick="ver_resumen()">Ver Resumen</button>            
+            <!-- <button type="button" class="btn btn-primary btn-sm" onclick="ver_resumen()">Ver Resumen</button>             -->
           </div>
         </div>
       </div>
@@ -371,15 +371,22 @@
               <button type="button" class="btn btn-sm btn-primary"onclick="nuevo_personal()" ><i class="bx bx-plus me-0"></i></button>
             </div>
           </div>
+          <div class="col-sm-6">
+            <b>Fecha Inicio</b>
+            <input type="date" name="txt_fecha_ini_p" id="txt_fecha_ini_p" class="form-control form-control-sm">            
+          </div>
+           <div class="col-sm-6">
+            <b>Fecha Fin</b>
+            <input type="date" name="txt_fecha_fin_p" id="txt_fecha_fin_p" class="form-control form-control-sm">            
+          </div>
           <div class="col-sm-12 d-none" id="pnl_data_personal">
               <div class="row">
-                 <div class="col-sm-4">
+                 <div class="col-sm-6">
                     <label><b>Cedula:</b></label>
                     <label id="lbl_ci_ruc">-</label>
-                   
                  </div>              
-                 <div class="col-sm-5">
-                    <label><b>Fecha Naci.:</b></label>
+                 <div class="col-sm-6">
+                    <label><b>Fecha Nacimiento:</b></label>
                     <label id="lbl_fecha_na">-</label>
                    
                  </div>              

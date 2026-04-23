@@ -102,6 +102,30 @@ function ddl_cate_contrato(){
      var fechaInicio = $('#txt_fecha_inicio').val();
      var fechaFin = $('#txt_fecha_fin').val();
 
+    if ($('#ddl_proyecto').val() === "" || $('#ddl_proyecto').val() === null || $('#ddl_proyecto').val() === undefined)
+     {
+        Swal.fire("Selecione un proyectos","","info");
+        return false;
+     }
+
+     if ($('#ddl_contratista').val() === "" || $('#ddl_contratista').val() === null || $('#ddl_contratista').val() === undefined)
+     {
+        Swal.fire("Selecione un contratista","","info")
+        return false;
+     }
+
+     if ($('#ddl_cate_contrato').val() === "" || $('#ddl_cate_contrato').val() === null || $('#ddl_cate_contrato').val() === undefined)
+     {
+        Swal.fire("Selecione un tipo de contrato","","info")
+        return false;
+     }
+
+     if(fechaInicio=="" || fechaFin=="" || fechaInicio==null || fechaFin==null)
+     {
+       Swal.fire("Fecha inicio o fecha fin no ingresados","","info")
+        return false;
+     }
+
     var inicio = new Date(fechaInicio);
     var fin = new Date(fechaFin);
     if (fin <= inicio)
@@ -237,6 +261,42 @@ function contratistas()
 
 function ingresar_orden()
 {
+    if ($('#ddl_etapa').val() === "" || $('#ddl_etapa').val() === null || $('#ddl_etapa').val() === undefined)
+     {
+        Swal.fire("Selecione un etapa","","info");
+        return false;
+     }
+     if ($('#ddl_Rubro').val() === "" || $('#ddl_Rubro').val() === null || $('#ddl_Rubro').val() === undefined)
+     {
+        Swal.fire("Selecione un rubro","","info");
+        return false;
+     }
+     if ($('#ddl_cc').val() === "" || $('#ddl_cc').val() === null || $('#ddl_cc').val() === undefined)
+     {
+        Swal.fire("Selecione un centro de constos","","info");
+        return false;
+     }
+
+     if ($('#txt_unidad_med').val() === "" || $('#txt_unidad_med').val() === null || $('#txt_unidad_med').val() === undefined)
+     {
+        Swal.fire("Ingrese una unidad de medida ","","info");
+        return false;
+     }
+
+     if ($('#txt_pvp').val() === "" || $('#txt_pvp').val() === null || $('#txt_pvp').val() <= 0)
+     {
+        Swal.fire("Ingrese un costo valido","","info");
+        return false;
+     }
+
+
+     if ($('#txt_cantidad').val() === "" || $('#txt_cantidad').val() === null || $('#txt_cantidad').val() <= 0)
+     {
+        Swal.fire("Ingrese una cantidad valida","","info");
+        return false;
+     }
+
+
   var parametros = 
      {
         'orden':ordenNo,
@@ -327,10 +387,42 @@ function lista_cc(){
 
   function ingresar_personal_orden()
   {    
+
+    if ($('#ddl_personal').val() === "" || $('#ddl_personal').val() === null || $('#ddl_personal').val() <= 0)
+     {
+        Swal.fire("Seleccione una persona","","info");
+        return false;
+     }
+
+    if ($('#txt_fecha_ini_p').val() === "" || $('#txt_fecha_ini_p').val() === null || $('#txt_fecha_ini_p').val() <= 0)
+     {
+        Swal.fire("Ingrese una fecha inicial","","info");
+        return false;
+     }
+
+    if ($('#txt_fecha_fin_p').val() === "" || $('#txt_fecha_fin_p').val() === null || $('#txt_fecha_fin_p').val() <= 0)
+     {
+        Swal.fire("Ingrese una fecha final","","info");
+        return false;
+     }
+
+    var inicio = new Date($('#txt_fecha_ini_p').val() );
+    var fin = new Date($('#txt_fecha_fin_p').val());
+    if (fin <= inicio)
+    {
+      Swal.fire("Fecha fin debe ser mayor al de inicio","","info")
+      $('#txt_fecha_ini_p').val("");
+      return false;
+
+    }
+
+
       var parametros = 
          {
             'orden':ordenNo,
-            'personal':$('#ddl_personal').val()
+            'personal':$('#ddl_personal').val(),
+            'fechaInicio':$('#txt_fecha_ini_p').val(),
+            'fechaFin':$('#txt_fecha_fin_p').val(),
          }
         $.ajax({
           data:  {parametros:parametros},
@@ -560,7 +652,7 @@ function guardar_cliente() {
       if (response == 1) {
         if ($('#txt_id').val() != '') 
         {
-          swal.fire('Registro guardado', '', 'success').then(function(){
+          Swal.fire('Registro guardado', '', 'success').then(function(){
             limpiar();
             $('#myModal_nuevo_personal').modal("hide");
           });
@@ -573,9 +665,9 @@ function guardar_cliente() {
         }
 
       } else if (response == 2) {
-        swal.fire('Este CI / RUC ya esta registrado', '', 'info');
+        Swal.fire('Este CI / RUC ya esta registrado', '', 'info');
       } else if (response == 3) {
-        swal.fire('El Nombre ya esta registrado', '', 'info');
+        Swal.fire('El Nombre ya esta registrado', '', 'info');
       }
     },
     error:function(err){
