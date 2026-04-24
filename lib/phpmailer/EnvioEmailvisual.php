@@ -163,7 +163,7 @@ class EnviarVisual
 	     	}
     	}
 
-			control_procesos("EMW",$Proceso,$Tarea,$Credito_No,$Mail_de,$Mail_para);
+			// control_procesos("EMW",$Proceso,$Tarea,$Credito_No,$Mail_de,$Mail_para);
     	
     	foreach ($list_delete as $key => $value) {
     		if (file_exists($value)) {
