@@ -147,7 +147,7 @@ class EnviarVisual
 			          if(strlen($from)>3)
 			          {
 			            if ($mail->send()) {
-			              control_procesos("EMW", "Email: ".trim($from)."=>".trim($email_to), "Asunto: ".$parametros['subject']);
+			              control_procesos("EMW", "Email: ".trim($from)."=>".trim($email_to), "Asunto: ".$parametros['subject'],'',trim($from),trim($email_to));
 			              $res = 1;
 			            }
 			          }
