@@ -26,11 +26,18 @@ if(isset($_GET['datos_empresa']))
 	echo json_encode($controlador->datos_empresa($parametros));
 }
 
+if(isset($_GET['editar_datos_empresa_mysql']))
+{
+	$parametros = $_POST;
+	echo json_encode($controlador->editar_datos_empresa_mysql($parametros));
+}
+
 if(isset($_GET['editar_datos_empresa']))
 {
 	$parametros = $_POST;
 	echo json_encode($controlador->editar_datos_empresa($parametros));
 }
+
 
 if(isset($_GET['mensaje_masivo']))
 {
@@ -269,7 +276,11 @@ class cambioeC
 
 			if($datos[0]['IP_VPN_RUTA']!='.' && $datos[0]['Base_Datos'] !='.' && $datos[0]['Usuario_DB']!='.' && $datos[0]['Contrasena_DB']!='.' && $datos[0]['Tipo_Base']!='.')
 			{
+
 				$datosEmp = $this->modelo->datos_sql_terceros($datos[0],$datos[0]['IP_VPN_RUTA'],$datos[0]['Usuario_DB'],$datos[0]['Contrasena_DB'],$datos[0]['Base_Datos'],$datos[0]['Puerto']);
+
+				// print_r($datosEmp);die();
+
 				if($datosEmp!= '-1' && count($datosEmp)>0)
 				{					
 					$src = url_logo($datosEmp[0]['Logo_Tipo']);
@@ -300,6 +311,63 @@ class cambioeC
 			}
 		}
 		return $rep;	
+	}
+
+	function editar_datos_empresa_mysql($parametros)
+	{
+		$host=$parametros['Servidor'];
+		$user=$parametros['Usuario'];
+		$pass=$parametros['Clave'];
+		$base=$parametros['Base'];
+		$Puerto=$parametros['Puerto'];
+
+
+		// print_r($parametros);die();
+
+
+		$contribuyente = $this->modelo->tipoContribuyente($parametros['TxtRuc']);
+		if(count($contribuyente)==0)
+		{
+			$this->modelo->ingresar_tipo_contribuyente($parametros['TxtRuc']);
+			control_procesos('N',"Grabar conribuyente especial",'Por:'.$_SESSION['INGRESO']['CodigoU']);
+		}else
+		{
+			// print_r($contribuyente);print_r($parametros);die();
+			$this->modelo->editar_tipo_contribuyente($parametros);			
+			control_procesos('N',"Editado conribuyente especial",'Por:'.$_SESSION['INGRESO']['CodigoU']);
+		}
+
+		$text = $this->validar_cambios($parametros);
+		$resp = $this->modelo->editar_datos_empresaMYSQL($parametros);
+
+		if($host!='' && $user!='' && $pass!='' && $base!='' )
+		{
+		
+
+			$ID = $parametros['empresas'];		
+			$datos = $this->modelo->datos_empresa($ID);
+			// print_r($datos);die();
+
+			$db =  $this->modelo->conexion_sql_server($host,$user,$pass,$base,$Puerto);
+			if($db==-1)
+			{
+				return -1;
+			}else
+			{
+				$parametros['Item'] = $datos[0]['Item'];
+				$parametros['RUC_CI_NIC'] = $datos[0]['RUC_CI_NIC'];
+				$datosEmp = $this->modelo->datos_sql_terceros($parametros,$host,$user,$pass,$base,$Puerto);
+
+				if(count($datosEmp)>0)
+				{
+					return 1;
+				}else
+				{
+					return 2;
+				}
+			}
+		}
+		// print_r($db);die();
 	}
 
 	function editar_datos_empresa($parametros)
@@ -1052,6 +1120,11 @@ class cambioeC
 	{
 		// print_r($parametros);die();
 		return $this->modelo->buscarEmpresa(trim($parametros['ruc']));
+	}
+
+	function comprobar_conexion()
+	{
+
 	}
 
 }

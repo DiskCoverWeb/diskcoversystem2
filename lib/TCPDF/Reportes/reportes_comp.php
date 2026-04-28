@@ -265,7 +265,7 @@ class PDFC extends TCPDF{
 function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$formato=null,$nombre_archivo=null,$va=null,$imp1=null,
         $stmt2_count=null,$stmt4_count=null,$stmt5_count=null,$stmt6_count=null)
 {
-    // print_r($stmt2);die();
+
     $pdf = new PDFC(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT,true, 'UTF-8', false);
     $pdf->setPrintHeader(true);
     $pdf->setPrintFooter(false);
@@ -315,6 +315,8 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
     $sumcr = 0; 
     $sumdb = 0;
     if(count($stmt2)>0){
+
+
         foreach($stmt2 as $key => $value){
             $array = array();
             $parc=''; $debe=''; $haber='';
@@ -329,27 +331,58 @@ function imprimirCD($stmt, $stmt2, $stmt4, $stmt5, $stmt6, $stmt1, $id=null,$for
                 $sumcr = $sumcr + $value['Haber'];
                 $haber = number_format($value['Haber'], 2, '.', '');
             }
-            $array = array($value['Cta'], $value['Cuenta'], $parc, $debe, $haber);
-            $pdf->SetFont('times', '', 9);
+            $array = array(" ".$value['Cta']," ".$value['Cuenta'], $parc, $debe, $haber);
+            $pdf->SetFont('times', '', 10);
+            $pdf->Row($array);
+
+            if(count($stmt6)>0)
+            {
+
+                $resultado = array_filter($stmt6, fn($item) => $item['Cta'] === $value['Cta']);
+                // Reindexar el array (opcional, para que empiece desde 0)
+                $resultado = array_values($resultado);
+                if(count($resultado)>0)
+                {
+                    foreach ($resultado as $key2 => $value2) {
+
+                        $valor = $value2['Debitos'];
+                        if($valor==0){$valor = $value2['Creditos'];}
+                        // print_r($value2);die();
+                        $array = array(" ","   -".$value2['Cliente'], number_format($valor,2,'.',''), "", "");
+                         $pdf->SetFont('helvetica','I', 8);
+                        $pdf->Row($array);
+
+                    }
+                    // print_r($resultado);        die();            
+                }
+            }
+             $pdf->SetFont('times', '', 10);
+           
+
+
             // print_r(end($stmt2));die();
-            if($value === end($stmt2)){
-                if($value['Detalle']!='.' && $value['Detalle']!=''){
-                    $pdf->SetFont('helvetica', '', 8);
-                    $arr=array('',' - '.$value['Detalle'], '', '', '');
-                    $pdf->Row($array);
-                    $pdf->Row($arr);
-                }
-                else{
-                    $pdf->Row($array);
-                }
-            }
-            else{
-                $pdf->Row($array);
-                if($value['Detalle']!='.' && $value['Detalle']!=''){
-                    $arr=array('', ' - '.$value['Detalle'], '', '', '');
-                    $pdf->Row($arr);
-                }
-            }
+            // if($value === end($stmt2)){
+
+            //     // print_r($value);die();
+            //     if($value['Detalle']!='.' && $value['Detalle']!=''){
+            //         $pdf->SetFont('helvetica', '', 8);
+            //         $arr=array('',' - '.$value['Detalle'], '', '', '');
+            //         $pdf->Row($array);
+            //         $pdf->Row($arr);
+            //     }
+            //     else{
+            //         $pdf->Row($array);
+            //     }
+            // }
+            // else{
+
+            //     // print_r($value['Detalle']);die();
+            //     $pdf->Row($array);
+            //     if($value['Detalle']!='.' && $value['Detalle']!=''){
+            //         $arr=array('', ' - '.$value['Detalle'], '', '', '');
+            //         $pdf->Row($arr);
+            //     }
+            // }
             $pdf->PageCheckBreak();
         }
         $sumdb = number_format($sumdb, 2, '.', '');

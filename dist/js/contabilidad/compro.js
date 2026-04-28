@@ -708,6 +708,8 @@ window.open(url, '_blank');
 
 $( document ).ready(function() {
     //buscar('comproba');
+  $('#ddl_comprobantes').select2();
+  $('#mes').select2();
     comprobante();
     $('[data-bs-toggle="tooltip"]').tooltip();
     // listar_comprobante();
