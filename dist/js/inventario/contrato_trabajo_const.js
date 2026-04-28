@@ -35,7 +35,7 @@
                     // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
                     // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
                  
-                    return `<a href="inicio.php?mod=13&acc=contrato_trabajo_detalle_const&ordenNo=${data.No_Contrato}">${data.No_Contrato}</a>`;                    
+                    return `<a href="inicio.php?mod=`+ModuloActual+`&acc=contrato_trabajo_detalle_const&ordenNo=${data.No_Contrato}">${data.No_Contrato}</a>`;                    
                   }
               },
               { data: 'Fecha.date',  

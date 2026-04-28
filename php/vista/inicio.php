@@ -611,8 +611,11 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'orden_trabajo_const':
 					require_once("inventario/orden_trabajo_const.php");
 					break;
-				case 'aprob_orden_trabajo_const':
-					require_once("inventario/aprob_orden_trabajo_const.php");
+				case 'orden_ejecucion':
+					require_once("inventario/orden_ejecucion.php");
+					break;
+				case 'orden_ejecucion_add':
+					require_once("inventario/orden_ejecucion_add.php");
 					break;
 				case 'detalle_orden_trabajo_const':
 					require_once("inventario/detalle_orden_trabajo_const.php");

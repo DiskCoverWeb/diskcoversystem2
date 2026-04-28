@@ -263,22 +263,29 @@
         {
             // print_r($parametros);die();
 
-            SetAdoAddNew("Entidad_Rubro_Contratista");
-            SetAdoFields("Rubro",$parametros['rubro']);
-            SetAdoFields("Sub_Rubro",$parametros['subRubro']);
-            SetAdoFields("Centro_Costo",$parametros['centroCostos']);
-            SetAdoFields("Contratista",$parametros["contratista"]);
-            SetAdoFields("No_Contrato",$parametros['Contrato']);
+            $data = $this->modelo->cargar_lista_subrubros($parametros['Contrato'],$parametros['rubro'],$parametros['subRubro'],$parametros['centroCostos'],$parametros["contratista"]);
+            if(count($data)==0)
+            {
+                SetAdoAddNew("Entidad_Rubro_Contratista");
+                SetAdoFields("Rubro",$parametros['rubro']);
+                SetAdoFields("Sub_Rubro",$parametros['subRubro']);
+                SetAdoFields("Centro_Costo",$parametros['centroCostos']);
+                SetAdoFields("Contratista",$parametros["contratista"]);
+                SetAdoFields("No_Contrato",$parametros['Contrato']);
 
-            SetAdoFields("Unidad",$parametros['unidad']);
-            SetAdoFields("Cantidad",$parametros['cantidad']);
-            SetAdoFields("PVP",$parametros['pvp']);
-            SetAdoFields("Total",$parametros['total']);
+                SetAdoFields("Unidad",$parametros['unidad']);
+                SetAdoFields("Cantidad",$parametros['cantidad']);
+                SetAdoFields("PVP",$parametros['pvp']);
+                SetAdoFields("Total",$parametros['total']);
 
-            SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
-            SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
-            SetAdoFields("Item",$_SESSION['INGRESO']['item']);
-            return SetAdoUpdate(); 
+                SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+                SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+                SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+                return SetAdoUpdate(); 
+            }else
+            {
+                return -2;
+            }
 
         }
 

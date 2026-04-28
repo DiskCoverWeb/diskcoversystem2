@@ -673,18 +673,19 @@ function solo_3_numeros(id)
 
     function formatoDate(date) {
     	// console.log(date);
+    	if (typeof date === 'string' && date.includes('.')) {
+        // Limpiar: quitar los microsegundos y todo lo que sigue
+        date = date.split('.')[0]; // "2026-02-18 00:00:00"
+    	}
       var formattedDate = new Date(date);
       var d = formattedDate.getDate();
-      var m = formattedDate.getMonth();
-      m += 1; // javascript months are 0-11
-      if (m < 10) {
-        m = '0' + m;
-      }
-      if (d < 10) {
-        d = '0' + d;
-      }
+      var m = formattedDate.getMonth()+1;
       var y = formattedDate.getFullYear();
-      var Fecha = y + "-" + m + "-" + d;
+
+      var diaStr = d < 10 ? '0' + d : d.toString();
+    	var mesStr = m < 10 ? '0' + m : m.toString();
+    
+      var Fecha = y + "-" + mesStr + "-" + diaStr;
       // console.log(Fecha);
       return Fecha;
     }
@@ -913,4 +914,11 @@ function openModal(text, tipo) {
      textTemp = textTemp.replace("{", "");
      textTemp = textTemp.replace("}", "");
      Swal.fire('Prueba de Escritorio', '<div>'+textTemp+'</div>', 'info');
+}
+
+
+function diferenciaEnDias(fecha1, fecha2) {
+    const unDia = 1000 * 60 * 60 * 24; // milisegundos en un día
+    const diferenciaMs = Math.abs(fecha2 - fecha1);
+    return Math.floor(diferenciaMs / unDia);
 }

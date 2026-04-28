@@ -273,6 +273,25 @@ class contrato_trabajo_detalle_constM
 
     }
 
+    function Trans_Contratistas($id=false,$contrato=false)
+    {
+        $sql = "SELECT *
+                FROM Trans_Contratistas_Rubros CR 
+                WHERE CR.Item = '".$_SESSION['INGRESO']['item']."'
+                AND CR.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+                if($contrato)
+                {
+                    $sql.=" AND Orden_Trabajo = '".$contrato."' ";
+                }
+                if($id)
+                {                    
+                    $sql.=" AND ID = '".$id."' ";
+                }
+
+        return $this->db->datos($sql);
+    }
+
+
 
 
 } 

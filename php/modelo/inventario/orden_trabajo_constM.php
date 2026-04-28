@@ -221,7 +221,7 @@ class orden_trabajo_constM
 
     function centrosCostocXRubro($proyecto=false,$rubro=false,$semana =false)
     {
-        $sql ="Select TCR.Centro_Costos,Detalle,TCR.ID,Fecha_Inicio,Fecha_Fin,Observacion,Semana
+        $sql ="Select TCR.ID,TCR.Centro_Costos,Detalle,TCR.ID,Fecha_Inicio,Fecha_Fin,Observacion,Semana
                 From Trans_Contratistas_Rubros TCR
                 INNER JOIN Catalogo_SubCtas SC ON TCR.Centro_Costos = SC.Codigo
                 where SC.Item = TCR.Item
@@ -263,7 +263,7 @@ class orden_trabajo_constM
 
     function cargar_lista_subrubros($contrato,$rubro,$subrubro=false,$centrocostos=false,$contratista=false)
     {
-        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total,Unidad,Cant_Ejec,Diferencia
+        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total,Unidad,Cant_Ejec,Diferencia,Costo_Unit_Ejec,Costo_Total_Ejec
                 FROM Entidad_Rubro_Contratista ERC
                 INNER JOIN Catalogo_SubCtas CS on ERC.Sub_Rubro = CS.ID
                 WHERE ERC.Item =  '".$_SESSION['INGRESO']['item']."'

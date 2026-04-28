@@ -1,0 +1,62 @@
+<comprobanteRetencion id="comprobante" version="2.0.0">
+<infoTributaria>
+<ambiente>1</ambiente>
+<tipoEmision>1</tipoEmision>
+<razonSocial>VACA PRIETO WALTER JALIL</razonSocial>
+<nombreComercial>DISKCOVER SYSTEM</nombreComercial>
+<ruc>0702164179001</ruc>
+<claveAcceso>1903202607070216417900110010010000000031234567813</claveAcceso>
+<codDoc>07</codDoc>
+<estab>001</estab>
+<ptoEmi>001</ptoEmi>
+<secuencial>000000003</secuencial>
+<dirMatriz>Diskcover System</dirMatriz>
+</infoTributaria>
+<infoCompRetencion>
+<fechaEmision>19/03/2026</fechaEmision>
+<dirEstablecimiento>Diskcover System</dirEstablecimiento>
+<obligadoContabilidad>NO</obligadoContabilidad>
+<tipoIdentificacionSujetoRetenido>04</tipoIdentificacionSujetoRetenido>
+<parteRel>NO</parteRel>
+<razonSocialSujetoRetenido>PRISMANET PROFESIONAL S.A.</razonSocialSujetoRetenido>
+<identificacionSujetoRetenido>1792164710001</identificacionSujetoRetenido>
+<periodoFiscal>03/2026</periodoFiscal>
+</infoCompRetencion>
+<docsSustento>
+<docSustento>
+<codSustento>01</codSustento>
+<codDocSustento>01</codDocSustento>
+<numDocSustento>001003000005719</numDocSustento>
+<fechaEmisionDocSustento>19/03/2026</fechaEmisionDocSustento>
+<fechaRegistroContable>19/03/2026</fechaRegistroContable>
+<numAutDocSustento>0702164179001</numAutDocSustento>
+<pagoLocExt>01</pagoLocExt>
+<totalSinImpuestos>100.00</totalSinImpuestos>
+<importeTotal>115.00</importeTotal>
+<impuestosDocSustento>
+<impuestoDocSustento>
+<codImpuestoDocSustento>2</codImpuestoDocSustento>
+<codigoPorcentaje>4</codigoPorcentaje>
+<baseImponible>100.00</baseImponible>
+<tarifa>15</tarifa>
+<valorImpuesto>15.00</valorImpuesto>
+</impuestoDocSustento>
+</impuestosDocSustento>
+<retenciones>
+<retencion>
+<codigo>1</codigo>
+<codigoRetencion>303</codigoRetencion>
+<baseImponible>100.00</baseImponible>
+<porcentajeRetener>10.00</porcentajeRetener>
+<valorRetenido>10.00</valorRetenido>
+</retencion>
+</retenciones>
+<pagos>
+<pago>
+<formaPago>01</formaPago>
+<total>115.00</total>
+</pago>
+</pagos>
+</docSustento>
+</docsSustento>
+</comprobanteRetencion>

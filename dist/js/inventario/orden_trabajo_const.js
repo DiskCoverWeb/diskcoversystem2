@@ -437,6 +437,30 @@ function add_subRubro()
     var total = $('#txt_costo_total').val();
     var centroCostos = $('#txt_centro_costos').val();
 
+    if(subRubro==="" || subRubro==null || subRubro== undefined)
+    {
+      Swal.fire("Seleccione un sub rubro","","info");
+      return  false;
+    }
+
+    if(unidad==="" || unidad==null)
+    {
+      Swal.fire("Ingrese unidad de medida","","info");
+      return  false;
+    }
+
+    if(cantidad==="" || cantidad==null || cantidad==0)
+    {
+      Swal.fire("Ingrese una cantidad valida","","info");
+      return  false;
+    }
+
+    if(pvp==="" || pvp==null || pvp==0)
+    {
+      Swal.fire("Ingrese una costo unitario valida","","info");
+      return  false;
+    }
+
     var parametros = 
     {
       'contratista':contratista,
@@ -462,6 +486,9 @@ function add_subRubro()
                 Swal.fire('Sub rubro ingresado','','success').then(function(){
                   cargar_lista_subrubros();
                 });
+            }else
+            {
+              Swal.fire('El sub rubro ya esta ingresado','','error')
             }     
         }
     });   
@@ -578,6 +605,16 @@ function guardar_periodo()
   {
     Swal.fire("Llene todo los campos","","error")
     return false;
+  }
+
+  var inicio = new Date(fechaInicio);
+  var fin = new Date(fechaFin);
+  if (fin <= inicio)
+  {
+    Swal.fire("Fecha fin debe ser mayor al de inicio","","info")
+    $('#txt_fecha_inicio').val("");
+    return false;
+
   }
 
 

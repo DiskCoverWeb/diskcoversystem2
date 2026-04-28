@@ -113,9 +113,6 @@
             <b>Fecha fin: </b> <br>
             <label id="lbl_fecha_v">2025-02-01</label>
           </div>
-          <div class="col-sm-2">
-            <button type="button" onclick="$('#myModal_periodo_trabajo').modal('show')" class="btn btn-primary btn-sm"><i class="bx bx-calendar"></i> Periodos</button>
-          </div>
         </div>
     </div>
   </div>
@@ -161,6 +158,7 @@
             <div class="modal-body">
               <div class="row">
                 <div class="col-sm-12">
+                  <input type="hidden" name="txt_rubro" id="txt_rubro">
                   <div  class="table-responsive">
                     <table class="table table-hover">
                       <thead>
@@ -174,24 +172,26 @@
                           <td>Fecha fin</td>
                           <td>Fecha inicio</td>
                           <td>Fecha fin</td>
-                          <td>Retrazo</td>
-                          <td>Adelanto</td>
-                          <td>Observacion</td>
+                          <td>Retrazo (dias)</td>
+                          <td>Adelanto (dias)</td>
                         </tr>
                       </thead>
                       <tbody>
                          <tr>
-                          <td>2026-04-20</td>
-                          <td>2026-04-31</td>
-                          <td><input type="date" class="form-control form-control-sm" name="" id=""></td>
-                          <td><input type="date" class="form-control form-control-sm" name="" id=""></td>
-                          <td><input type="" class="form-control form-control-sm" name="" id="" readonly></td>
-                          <td><input type="" class="form-control form-control-sm" name="" id="" readonly></td>
-                          <td><textarea class="form-control form-control-sm"></textarea></td>
+                          <td><b id="lbl_fecha_ini_sub">0000-00-00</b></td>
+                          <td><b id="lbl_fecha_fin_sub">0000-00-00</b></td>
+                          <td><input type="date" class="form-control form-control-sm" onchange="calcular_dias()" name="txt_fechaIni_eje" id="txt_fechaIni_eje"></td>
+                          <td><input type="date" class="form-control form-control-sm" onchange="calcular_dias()" name="txt_fechaFin_eje" id="txt_fechaFin_eje"></td>
+                          <td><input type="" class="form-control form-control-sm text-danger" name="txt_retrazo" id="txt_retrazo" readonly></td>
+                          <td><input type="" class="form-control form-control-sm text-success" name="txt_adelanto" id="txt_adelanto" readonly></td>
                         </tr>                        
                       </tbody>
                     </table>                    
                   </div>                  
+                </div>
+                <div class="col-sm-12">
+                  <b>Observacion</b>
+                  <textarea id="txt_observacion" name="txt_observacion" class="form-control form-control-sm"></textarea>                  
                 </div>           
               </div>
             </div>

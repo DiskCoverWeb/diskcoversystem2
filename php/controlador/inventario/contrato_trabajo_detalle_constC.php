@@ -1,3 +1,4 @@
+
 <?php
 require_once(dirname(__DIR__,2).'/modelo/inventario/contrato_trabajo_detalle_constM.php');
 
@@ -282,6 +283,8 @@ class contrato_trabajo_detalle_constC
         SetAdoFields("Item",$_SESSION['INGRESO']['item']);
         SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
         SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+        SetAdoFields("Fecha_Ini",$parametros['fechaInicio']);
+        SetAdoFields("Fecha_Fin",$parametros['fechaFin']);
 
         $resp = SetAdoUpdate();
 

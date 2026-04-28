@@ -48,6 +48,17 @@ if(isset($_GET['guardar_subrubro_ejecucion']))
     echo json_encode($controlador->guardar_subrubro_ejecucion($parametros));
 }
 
+if(isset($_GET['cargar_fecha_periodo']))
+{
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->cargar_fecha_periodo($parametros));
+}
+
+if(isset($_GET['guardar_periodo']))
+{
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->guardar_periodo($parametros));
+}
 
 class orden_ejecucionC
 {
@@ -97,7 +108,16 @@ class orden_ejecucionC
         foreach ($CentroCostos as $key => $value) {
             // print_r($value);die();
             $tbl.='<div class="col-sm-12">
-                <h5>'.$value['Detalle'].'</h5>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h5>'.$value['Detalle'].'</h5>
+                        </div>
+                        <div class="col-sm-6 text-end">
+                            <button type="button" onclick="add_periodo(\''.$value['ID'].'\')" class="btn btn-primary btn-sm"><i class="bx bx-calendar"></i> Periodos</button>
+                        </div>
+                        <div class="col-sm-12">
+
+
                 <table class="table table-hover">
                     <thead>
                       <th></th>
@@ -126,14 +146,15 @@ class orden_ejecucionC
                                     <input type="text" class="form-control form-control-sm" id="txt_ejecucion_'.$value['ID'].'" onblur="calcular_ejecutado('.$value['ID'].')" value="'.$value['Cant_Ejec'].'" />
                                 </div>
                             </td>
-                            <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_pvp_'.$value['ID'].'" readonly /></td>
-                            <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_total_'.$value['ID'].'" readonly /></td>
+                            <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_pvp_'.$value['ID'].'" value="'.$value['Costo_Unit_Ejec'].'" readonly /></td>
+                            <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_total_'.$value['ID'].'" value="'.$value['Costo_Total_Ejec'].'" readonly /></td>
                             <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_dif_'.$value['ID'].'"  value="'.$value['Diferencia'].'"readonly /></td>
                         </tr>';
             }
 
         // print_r($data);die();
-            $tbl.='</table></div>';
+            $tbl.='</table></div> </div>
+                    </div>';
         }
 
         return $tbl;
@@ -153,11 +174,32 @@ class orden_ejecucionC
         SetAdoAddNew("Entidad_Rubro_Contratista");
         SetAdoFields("Cant_Ejec",$parametros['ejec']);
         SetAdoFields("Diferencia",$parametros['ejec_dif']);
-        // SetAdoFields("",$parametros['fechaFin']);
-        // SetAdoFields("Observacion",$parametros["observacion"]);
+        SetAdoFields("Costo_Unit_Ejec",$parametros['pvp_ejec']);
+        SetAdoFields("Costo_Total_Ejec",$parametros["total_ejec"]);
 
 
         SetAdoFieldsWhere('ID',$parametros["id"]);
+        return SetAdoUpdateGeneric(); 
+    }
+
+    function cargar_fecha_periodo($parametros)
+    {
+        $data = $this->contratos->Trans_Contratistas($parametros['id']);
+        return $data;
+        // print_r($data);die();
+    }
+
+    function guardar_periodo($parametros)
+    {
+
+        // print_r($parametros);die();
+        SetAdoAddNew("Trans_Contratistas_Rubros");
+        SetAdoFields("Fecha_Inicio_Ejec",$parametros['fechaInicio']);
+        SetAdoFields("Fecha_Fin_Ejec",$parametros['fechaFin']);
+        SetAdoFields("Observacion",$parametros["observacion"]);
+
+
+        SetAdoFieldsWhere('ID',$parametros["idrubro"]);
         return SetAdoUpdateGeneric(); 
     }
 }

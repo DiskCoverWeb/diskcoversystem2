@@ -43,6 +43,13 @@ if(isset($_GET['guardar_cliente']))
 	echo json_encode($controlador->guardar_cliente($query));
 }
 
+if(isset($_GET['guardar_cliente_orden_trabajo']))
+{
+	// print_r($_POST);die();
+	$query = $_POST;
+	echo json_encode($controlador->guardar_cliente_orden_trabajo($query));
+}
+
 if(isset($_GET['DLCxCxP']))
 {
 	// print_r($_POST);die();
@@ -179,6 +186,7 @@ class modalesC
 			    'TD'=>$value['TD'],
 			    'Cod_Ejec'=>$value['Cod_Ejec'],
 			    'Actividad'=>$value['Actividad'],
+			    'Fecha_N'=>$value['Fecha_N']
 			);
 		}	
 		return $datos;
@@ -342,6 +350,77 @@ function li2Array($html,$elemento="li"){
 		{
 			return -1;
 		}
+	}
+
+	function guardar_cliente_orden_trabajo($parametro)
+	{
+		 // $cli = $this->modelo->buscar_cliente($ci=false,false,$parametro['txt_id']);	
+
+		 // print_r($parametro);die();
+		 
+		 SetAdoAddNew("Clientes");
+	    SetAdoFields("T", G_NORMAL);
+	    SetAdoFields("Cliente", $parametro['nombrec']);
+	    SetAdoFields("CI_RUC", $this->sri->quitar_carac($parametro['ruc']));
+	    SetAdoFields("Codigo",$parametro['codigoc']);
+	    SetAdoFields("Direccion", $parametro['direccion']);
+	    SetAdoFields("Telefono", $parametro['telefono']);
+	    SetAdoFields("Email", $parametro['email']);
+	    SetAdoFields("TD", $parametro['TD']);
+	    SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
+	    SetAdoFields("Pais", "593");
+	    SetAdoFields("Actividad", $parametro['txt_ejec']);
+	    SetAdoFields("Fecha_N", $parametro['txt_fecha_na']);
+	    if($parametro['rbl']=='false')
+	    {
+		    SetAdoFields("FA", 0);
+	    }else
+	    {
+	    	SetAdoFields("FA", 1);    	
+	    }    
+
+		if($parametro['txt_id']!='')
+		{
+			$nom = $this->modelo->buscar_cliente($ci=false,$parametro['nombrec'],$id=false,1);	
+			if(count($nom)==0)
+			{
+				// el nombre no existe y se podra editar el registro
+				SetAdoFieldsWhere("ID", $parametro['txt_id']);
+   			$re = SetAdoUpdateGeneric();  
+
+			}else
+			{
+				// nombre si existe
+				if($nom[0]['ID']==$parametro['txt_id'])
+				{
+					//entra aqui cuando solo se edita otras partes que no sea el nombre
+					SetAdoFieldsWhere("ID", $parametro['txt_id']);
+   				$re = SetAdoUpdateGeneric();  
+
+				}else
+				{
+					// en el caso de que el nombre exista pero no es del registro ya establecido sino otros 
+					return 3;
+				}
+
+
+			}			
+		}else
+		{			
+			// print_r('nuevo');die();
+
+		 $cli = $this->modelo->buscar_cliente($parametro['ruc'],false,false);	
+		 if(count($cli)==0)
+		 	{
+		 				 $re = SetAdoUpdate();	
+		 	}else
+		 	{
+		 		return -3;
+		 	}
+		}
+
+		return $re;
+
 	}
 
 	function validar_sri($ci)
