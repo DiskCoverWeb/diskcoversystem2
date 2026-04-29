@@ -1321,7 +1321,7 @@ function validar_comprobante()
   </div>
   <div class="card">
     <div class="card-body pb-0">
-       <div class="row align-items-center">
+       <div class="row">
           <div class="col-6">
              <button type="button"  class="btn btn-primary btn-sm" id='grabar1' onclick="validar_comprobante()">Guardar</button>
              <a  href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" title="Salir de modulo" class="btn btn-danger btn-sm">
