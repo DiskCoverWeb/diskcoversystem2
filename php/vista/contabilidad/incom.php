@@ -1343,12 +1343,18 @@ function validar_comprobante()
             <div class="col-4 col-sm-4 col-md-3 col-lg-4">
                <div class="input-group mb-3">
                   <label class="input-group-text" for="inputGroupSelect01">
-                    <b>Totales</b>
+                    <b>Totales Debe</b>
                   </label>
                   <input type="text" name="txt_debe" id="txt_debe" class="form-control form-control-sm text-right" readonly="" value="0">
+                </div>
             </div>
-            <div class="col-4"><br>
-                <input type="text" name="txt_haber" id="txt_haber" class="form-control form-control-sm text-right" readonly="" value="0">
+            <div class="col-4 col-sm-4 col-md-3 col-lg-4">
+               <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupSelect01">
+                    <b>Totales Haber</b>
+                  </label>
+                  <input type="text" name="txt_haber" id="txt_haber" class="form-control form-control-sm text-right" readonly="" value="0">
+                </div>
             </div>
           </div>
         </div>       
