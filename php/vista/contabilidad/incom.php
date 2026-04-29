@@ -1332,7 +1332,7 @@ function validar_comprobante()
              -->                            
           </div>
           <div class="row col-6">
-            <div class="col-4 col-sm-4 col-md-3 col-lg-2">
+            <div class="col-4 col-sm-4 col-md-3 col-lg-4">
               <div class="input-group mb-3">
                   <label class="input-group-text" for="inputGroupSelect01">
                       <b>Diferencia</b>
@@ -1340,7 +1340,7 @@ function validar_comprobante()
                   <input type="text" name="txt_diferencia" id="txt_diferencia" class="form-control form-control-sm text-right" readonly="" value="0">
                 </div>
             </div>
-            <div class="col-4 col-sm-4 col-md-3 col-lg-2">
+            <div class="col-4 col-sm-4 col-md-3 col-lg-4">
                <div class="input-group mb-3">
                   <label class="input-group-text" for="inputGroupSelect01">
                     <b>Totales</b>
