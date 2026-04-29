@@ -544,7 +544,7 @@ function validar_comprobante()
   <div class="card mb-3">
     <div class="card-body">
        <div class="row mb-2">                        
-          <div class="col col-sm-3 col-md-3 col-lg-3">                          
+          <div class="col col-sm-3 col-md-3 col-lg-2">                          
             <!-- <div class="form-group"> -->
                  <div class="input-group">
                    <div class="input-group-addon form-control-sm p-2 text-box">
@@ -554,7 +554,7 @@ function validar_comprobante()
                  </div>
             <!-- </div> -->
           </div>
-          <div class="col-sm-6 col-md-6 col-lg-6">
+          <div class="col-sm-6 col-md-6 col-lg-8">
             <!-- <div class="form-group"> -->
                  <div class="input-group">
                    <div class="input-group-addon d-flex align-items-center p-2 text-box">
@@ -576,7 +576,7 @@ function validar_comprobante()
              <!-- </div> -->
           </div>
           
-          <div class="col-md-3 col-sm-3 col-lg-3">
+          <div class="col-md-3 col-sm-3 col-lg-2">
             <!-- <div class="form-group"> -->
                  <div class="input-group">
                    <div class="input-group-addon p-2 text-box">
