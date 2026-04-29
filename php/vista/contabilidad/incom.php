@@ -554,26 +554,24 @@ function validar_comprobante()
                  </div>
             <!-- </div> -->
           </div>
-          <div class="col-sm-6 col-md-6 col-lg-8">
-            <!-- <div class="form-group"> -->
+          <div class="col col-sm-6 col-md-6 col-lg-8">
                  <div class="input-group">
                    <div class="input-group-addon d-flex align-items-center p-2 text-box">
                      <b>BENEFICIARIO:</b>
                    </div>
-                   <div class="row-cols-auto d-flex flex-nowrap">                        
-                    <select id="beneficiario1" name='beneficiario1' class='form-control form-control-sm' onchange="benefeciario_edit()">
-                      <option value="">Seleccione beneficiario</option>                                
-                    </select>
-                    <button type="button" class="btn btn-primary btn-sm d-none" id="btn_editar_cliente" onclick="EditCliente()" title="editar Cliente" data-bs-toggle="tooltip">
-                      <span class="bx bx-pencil"></span>
-                    </button>
-                    <button type="button" class="btn btn-success btn-sm btn-flat rounded" id="btn_nuevo_cliente" onclick="addCliente()" title="Nuevo Cliente" data-bs-toggle="tooltip">
-                      <span class="bx bx-user-plus"></span>
-                    </button>
-                    <input type="hidden" name="beneficiario2" id="beneficiario2" value='' />
+                   <div class="d-flex align-items-center">                        
+                      <select id="beneficiario1" name='beneficiario1' class='form-control form-control-sm' onchange="benefeciario_edit()" style="width:100%">
+                        <option value="">Seleccione beneficiario</option>                                
+                      </select>
+                      <button type="button" class="btn btn-primary btn-sm d-none" id="btn_editar_cliente" onclick="EditCliente()" title="editar Cliente" data-bs-toggle="tooltip">
+                        <span class="bx bx-pencil"></span>
+                      </button>
+                      <button type="button" class="btn btn-success btn-sm btn-flat rounded" id="btn_nuevo_cliente" onclick="addCliente()" title="Nuevo Cliente" data-bs-toggle="tooltip">
+                        <span class="bx bx-user-plus"></span>
+                      </button>
+                      <input type="hidden" name="beneficiario2" id="beneficiario2" value='' />
                     </div>
                  </div>
-             <!-- </div> -->
           </div>
           
           <div class="col-md-3 col-sm-3 col-lg-2">
@@ -588,13 +586,13 @@ function validar_comprobante()
           </div>          
         </div>
         <div class="row mb-2">
-           <div class="col col-sm-3 col-md-3 col-lg-3">
+           <div class="col col-sm-3 col-md-3 col-lg-4">
               <div class="input-group">
                 <div class="input-group-addon p-2 text-box"><b>Email:</b></div>
                 <input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="prueba@prueba.com" maxlength='255' size='100'/>
               </div>
           </div>       
-          <div class="col-md-3 col-sm-3 col-lg-3">
+          <div class="col-md-3 col-sm-3 col-lg-2">
              <div class="input-group">
                 <div class="input-group-addon p-2 text-box"><b>COTIZACION:</b></div>
                 <input type="text" class="form-control form-control-sm" id="cotizacion" name='cotizacion' placeholder="0.00" onkeyup="validar_numeros_decimal(this)" onblur="validar_float(this,2)" style="text-align:right; width: 70px;" maxlength='20' />
@@ -616,7 +614,7 @@ function validar_comprobante()
                 </div> 
               </div>
             </div>       
-           <div class="col-md-3 col-sm-3 col-lg-3">
+           <div class="col-md-3 col-sm-3 col-lg-2">
              <div class="input-group">
                <div class="input-group-addon p-2 text-box"><b>VALOR TOTAL:</b></div>
                 <input type="text" class="form-control form-control-sm" id="VT" name='VT' placeholder="0.00" style="text-align:right;" onKeyPress='return soloNumerosDecimales(event)' maxlength='20' size='33' readonly="">
