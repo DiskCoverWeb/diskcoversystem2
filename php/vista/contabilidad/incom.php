@@ -1320,9 +1320,9 @@ function validar_comprobante()
     </div>    
   </div>
   <div class="card">
-    <div class="card-body">
+    <div class="card-body pb-0">
        <div class="row align-items-center">
-          <div class="col-6 pt-4">
+          <div class="col-6">
              <button type="button"  class="btn btn-primary btn-sm" id='grabar1' onclick="validar_comprobante()">Guardar</button>
              <a  href="./inicio.php?mod=<?php echo @$_GET['mod']; ?>" title="Salir de modulo" class="btn btn-danger btn-sm">
                 Cancelar
@@ -1331,29 +1331,31 @@ function validar_comprobante()
               <button type="button"  class="btn btn-danger" id='' onclick="xml()">xml</button>
              -->                            
           </div>
-          <div class="row col-6">
-            <div class="col-4 col-sm-4 col-md-3 col-lg-4">
-              <div class="input-group mb-3">
-                  <label class="input-group-text" for="inputGroupSelect01">
-                      <b>Diferencia</b>
-                  </label>
-                  <input type="text" name="txt_diferencia" id="txt_diferencia" class="form-control form-control-sm text-right" readonly="" value="0">
+          <div class=" col-6">
+            <div class="row">
+                <div class="col-4 col-sm-4 col-md-3 col-lg-4">
+                  <div class="input-group mb-3">
+                      <label class="input-group-text" for="inputGroupSelect01">
+                          <b>Diferencia</b>
+                      </label>
+                      <input type="text" name="txt_diferencia" id="txt_diferencia" class="form-control form-control-sm text-right" readonly="" value="0">
+                    </div>
                 </div>
-            </div>
-            <div class="col-4 col-sm-4 col-md-3 col-lg-4">
-               <div class="input-group mb-3">
-                  <label class="input-group-text" for="inputGroupSelect01">
-                    <b>Totales Debe</b>
-                  </label>
-                  <input type="text" name="txt_debe" id="txt_debe" class="form-control form-control-sm text-right" readonly="" value="0">
+                <div class="col-4 col-sm-4 col-md-3 col-lg-4">
+                   <div class="input-group mb-3">
+                      <label class="input-group-text" for="inputGroupSelect01">
+                        <b>Totales Debe</b>
+                      </label>
+                      <input type="text" name="txt_debe" id="txt_debe" class="form-control form-control-sm text-right" readonly="" value="0">
+                    </div>
                 </div>
-            </div>
-            <div class="col-4 col-sm-4 col-md-3 col-lg-4">
-               <div class="input-group mb-3">
-                  <label class="input-group-text" for="inputGroupSelect01">
-                    <b>Totales Haber</b>
-                  </label>
-                  <input type="text" name="txt_haber" id="txt_haber" class="form-control form-control-sm text-right" readonly="" value="0">
+                <div class="col-4 col-sm-4 col-md-3 col-lg-4">
+                   <div class="input-group mb-3">
+                      <label class="input-group-text" for="inputGroupSelect01">
+                        <b>Totales Haber</b>
+                      </label>
+                      <input type="text" name="txt_haber" id="txt_haber" class="form-control form-control-sm text-right" readonly="" value="0">
+                    </div>
                 </div>
             </div>
           </div>
