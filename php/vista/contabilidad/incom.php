@@ -554,13 +554,12 @@ function validar_comprobante()
                  </div>
             <!-- </div> -->
           </div>
-          <div class="col col-sm-6 col-md-6 col-lg-8">
+          <!-- <div class="col col-sm-6 col-md-6 col-lg-8">
                  <div class="input-group">
                    <div class="input-group-addon d-flex align-items-center p-2 text-box">
                      <b>BENEFICIARIO:</b>
-                   </div>
-                   <div class="d-flex align-items-center">                        
-                      <select id="beneficiario1" name='beneficiario1' class='form-control form-control-sm' onchange="benefeciario_edit()" style="width:100%">
+                   </div>                 
+                      <select id="beneficiario1" name='beneficiario1' class='form-select form-select-sm' onchange="benefeciario_edit()">
                         <option value="">Seleccione beneficiario</option>                                
                       </select>
                       <button type="button" class="btn btn-primary btn-sm d-none" id="btn_editar_cliente" onclick="EditCliente()" title="editar Cliente" data-bs-toggle="tooltip">
@@ -570,9 +569,25 @@ function validar_comprobante()
                         <span class="bx bx-user-plus"></span>
                       </button>
                       <input type="hidden" name="beneficiario2" id="beneficiario2" value='' />
-                    </div>
                  </div>
-          </div>
+          </div> -->
+
+          <div class="col col-sm-6 col-md-6 col-lg-8">
+            <div class="d-flex">
+                <span class="border rounded p-2 bg-light fw-bold">BENEFICIARIO:</span>
+                <select id="beneficiario1" name="beneficiario1" class="form-select form-select-sm w-100" onchange="benefeciario_edit()" style="flex: 1;">
+                    <option value="">Seleccione beneficiario</option>
+                </select>
+                <button type="button" class="btn btn-primary btn-sm d-none" id="btn_editar_cliente" onclick="EditCliente()" title="editar Cliente" data-bs-toggle="tooltip">
+                    <span class="bx bx-pencil"></span>
+                </button>
+                <button type="button" class="btn btn-success btn-sm btn-flat rounded" id="btn_nuevo_cliente" onclick="addCliente()" title="Nuevo Cliente" data-bs-toggle="tooltip">
+                    <span class="bx bx-user-plus"></span>
+                </button>
+                <input type="hidden" name="beneficiario2" id="beneficiario2" value="" />
+            </div>
+        </div>
+
           
           <div class="col-md-3 col-sm-3 col-lg-2">
             <!-- <div class="form-group"> -->

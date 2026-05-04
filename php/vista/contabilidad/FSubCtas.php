@@ -519,6 +519,16 @@ $(document).ready(function () {
   //   });
 
   // }
+
+  function validar_serie()
+  {
+    var serie = $("#txt_serie").val();
+    if(serie == '' || serie =='0' || serie=='.')
+    {
+      $("#txt_serie").val("001001")
+    }
+
+  }
 </script>
 
 <div class="card">
@@ -541,7 +551,7 @@ $(document).ready(function () {
           </div>
           <div class="col-sm-1" style=" padding: 0px;">
             <b>Serie</b>
-            <input type="input" name="txt_serie" id="txt_serie" class="form-control form-control-sm" value="" placeholder="001001">
+            <input type="input" name="txt_serie" id="txt_serie" class="form-control form-control-sm" value="" placeholder="001001" onblur="validar_serie()">
           </div>
           <div class="col-sm-2">
             <b>Factura No</b>

@@ -17,8 +17,8 @@ function FormActivate() {
 function autocoplet_bene(){
   $('#beneficiario1').select2({
     placeholder: 'Seleccione una beneficiario',
-    width:'100%',
-    dropdownAutoWidth: true,
+    width:'resolve',
+    // dropdownAutoWidth: true,
     selectionCssClass: 'form-control form-control-sm h-100',  // Para el contenedor de Select2
     ajax: {
       url:   '../controlador/contabilidad/incomC.php?beneficiario=true&q=.',
