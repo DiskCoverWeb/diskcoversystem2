@@ -36,10 +36,10 @@
         <button type="button" class="btn btn-outline-secondary" title="Informe pdf" onclick="imprimir_pdf()">
           <img src="../../img/png/pdf.png">
         </button>
-        <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_solicitud_proveedor()">
+        <!-- <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_solicitud_proveedor()">
           <img src="../../img/png/grabar.png" >
-        </button>
-         <a title="Guardar"  class="btn btn-outline-secondary" href="../vista/inicio.php?mod=<?php echo $_GET['mod']; ?>&acc=contrato_trabajo_detalle_const">
+        </button> -->
+         <a title="Nuevo"  class="btn btn-outline-secondary" href="../vista/inicio.php?mod=<?php echo $_GET['mod']; ?>&acc=contrato_trabajo_detalle_const">
           <img src="../../img/png/mostrar.png" >
         </a>
       </div>
