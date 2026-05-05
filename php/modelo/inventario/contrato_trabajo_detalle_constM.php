@@ -29,6 +29,7 @@ class contrato_trabajo_detalle_constM
         {
             $sql.=" AND No_Contrato = '".$contrato."'";
         }
+        $sql.=" ORDER BY TC.ID DESC";
 
         // print_r($sql);die();
 

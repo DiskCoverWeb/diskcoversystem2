@@ -197,7 +197,7 @@ class contrato_trabajo_detalle_constC
 
     function cargar_lista_contratos()
     {
-        return $this->modelo->detalleContrato();
+        return $this->modelo->detalleContrato(false,'A');
     }  
 
     function eliminar_contrato($id)
