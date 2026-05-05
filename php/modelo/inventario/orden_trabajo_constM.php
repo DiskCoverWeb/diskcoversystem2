@@ -171,7 +171,7 @@ class orden_trabajo_constM
 
     function rubrosXcontratista($query,$contratistaCod=false)
     {
-        $sql="Select Orden_Trabajo,TCR.Cta,CC.Cuenta 
+        $sql="Select Orden_Trabajo,TCR.Cta,CC.Cuenta,TCR.Cantidad,TCR.Costo_Unit 
             From Trans_Contratistas_Rubros TCR
             INNER JOIN Trans_Contratistas TC on TCR.Orden_Trabajo = TC.No_Contrato
             INNER JOIN Catalogo_Cuentas CC ON  TCR.Cta = CC.Codigo 
@@ -189,7 +189,7 @@ class orden_trabajo_constM
             {
                 $sql.=" AND TC.Codigo = '".$contratistaCod."'";
             }
-            $sql.=" group by  Orden_Trabajo,TCR.Cta,CC.Cuenta ";
+            $sql.=" group by  Orden_Trabajo,TCR.Cta,CC.Cuenta,TCR.Cantidad,TCR.Costo_Unit  ";
 
             // print_r($sql);die();
 
@@ -264,6 +264,40 @@ class orden_trabajo_constM
     function cargar_lista_subrubros($contrato,$rubro,$subrubro=false,$centrocostos=false,$contratista=false)
     {
         $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total,Unidad,Cant_Ejec,Diferencia,Costo_Unit_Ejec,Costo_Total_Ejec
+                FROM Entidad_Rubro_Contratista ERC
+                INNER JOIN Catalogo_SubCtas CS on ERC.Sub_Rubro = CS.ID
+                WHERE ERC.Item =  '".$_SESSION['INGRESO']['item']."'
+                AND ERC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+                if($contrato)
+                {
+                    $sql.=" AND No_Contrato = '".$contrato."'";
+                }
+                // if($rubro)
+                // {
+                //     $sql.=" AND Rubro='".$rubro."'";
+                // }
+                if($subrubro)
+                {
+                    $sql.=" AND Sub_Rubro='".$subrubro."'";
+                }
+                if($centrocostos)
+                {
+                    $sql.=" AND Centro_Costo = '".$centrocostos."'";
+                }
+                if($contratista)
+                {
+                    $sql.=" AND Contratista = '".$contratista."'";
+                }
+               
+
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+                
+    }
+
+    function cargar_lista_subrubros_sum($contrato,$rubro,$subrubro=false,$centrocostos=false,$contratista=false)
+    {
+        $sql = "SELECT SUM(Cantidad) as Cantidad
                 FROM Entidad_Rubro_Contratista ERC
                 INNER JOIN Catalogo_SubCtas CS on ERC.Sub_Rubro = CS.ID
                 WHERE ERC.Item =  '".$_SESSION['INGRESO']['item']."'

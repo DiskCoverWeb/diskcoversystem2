@@ -262,26 +262,34 @@
         function add_subRubro($parametros)
         {
             // print_r($parametros);die();
-
             $data = $this->modelo->cargar_lista_subrubros($parametros['Contrato'],$parametros['rubro'],$parametros['subRubro'],$parametros['centroCostos'],$parametros["contratista"]);
             if(count($data)==0)
             {
-                SetAdoAddNew("Entidad_Rubro_Contratista");
-                SetAdoFields("Rubro",$parametros['rubro']);
-                SetAdoFields("Sub_Rubro",$parametros['subRubro']);
-                SetAdoFields("Centro_Costo",$parametros['centroCostos']);
-                SetAdoFields("Contratista",$parametros["contratista"]);
-                SetAdoFields("No_Contrato",$parametros['Contrato']);
+                 $dataCantidad = $this->modelo->cargar_lista_subrubros_sum($parametros['Contrato'],$parametros['rubro'],false,$parametros['centroCostos'],$parametros["contratista"]);
+                 // print_r($dataCantidad);die();
+                 $cantidadPedido = ($parametros['cantidad']+$dataCantidad[0]['Cantidad']);
+                if($cantidadPedido<=$parametros['cantidad_rela'])
+                {
+                    SetAdoAddNew("Entidad_Rubro_Contratista");
+                    SetAdoFields("Rubro",$parametros['rubro']);
+                    SetAdoFields("Sub_Rubro",$parametros['subRubro']);
+                    SetAdoFields("Centro_Costo",$parametros['centroCostos']);
+                    SetAdoFields("Contratista",$parametros["contratista"]);
+                    SetAdoFields("No_Contrato",$parametros['Contrato']);
 
-                SetAdoFields("Unidad",$parametros['unidad']);
-                SetAdoFields("Cantidad",$parametros['cantidad']);
-                SetAdoFields("PVP",$parametros['pvp']);
-                SetAdoFields("Total",$parametros['total']);
+                    SetAdoFields("Unidad",$parametros['unidad']);
+                    SetAdoFields("Cantidad",$parametros['cantidad']);
+                    SetAdoFields("PVP",$parametros['pvp']);
+                    SetAdoFields("Total",$parametros['total']);
 
-                SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
-                SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
-                SetAdoFields("Item",$_SESSION['INGRESO']['item']);
-                return SetAdoUpdate(); 
+                    SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
+                    SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+                    SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+                    return SetAdoUpdate(); 
+                }else
+                {
+                    return -3;
+                }
             }else
             {
                 return -2;

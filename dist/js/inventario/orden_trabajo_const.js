@@ -73,6 +73,9 @@
          console.log(data);
          $('#ddl_Contrato').append('<option value="' + data.Orden_Trabajo +'">' + data.Orden_Trabajo+ '</option>');         
          $('#ddl_Contrato').val(data.Orden_Trabajo);
+         $('#txt_cantidad_rela').val(data.Cantidad);
+         $('#txt_costo_pvp').val(data.Costo_Unit);
+
          detalleContrato(data.Orden_Trabajo)
          centrosCostocXRubro(data.Orden_Trabajo)
          ddl_sub_rubro();
@@ -433,6 +436,7 @@ function add_subRubro()
     var subRubro = $('#ddl_sub_rubro').val();
     var unidad = $('#txt_unidad').val();
     var cantidad = $('#txt_cantidad').val();
+    var cantidad_rela = $('#txt_cantidad_rela').val();
     var pvp = $('#txt_costo_pvp').val();
     var total = $('#txt_costo_total').val();
     var centroCostos = $('#txt_centro_costos').val();
@@ -470,6 +474,7 @@ function add_subRubro()
       'subRubro':subRubro,
       'unidad':unidad,
       'cantidad':cantidad,
+      'cantidad_rela':cantidad_rela,
       'pvp':pvp,
       'total':total,
     }
@@ -486,7 +491,11 @@ function add_subRubro()
                 Swal.fire('Sub rubro ingresado','','success').then(function(){
                   cargar_lista_subrubros();
                 });
-            }else
+            }else if(data==-3)
+            {              
+              Swal.fire('La cantidad supera lo establecido para este rubro','','error');
+            }
+            else
             {
               Swal.fire('El sub rubro ya esta ingresado','','error')
             }     

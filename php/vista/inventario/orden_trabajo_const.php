@@ -128,9 +128,12 @@
           <b>Unidad</b>
           <input type="" class="form-control form-control-sm" name="txt_unidad" id="txt_unidad">
         </div>   
-        <div class="col-sm-1">
+        <div class="col-sm-2 text-end">
            <b>Cantidad</b>
-          <input type="" class="form-control form-control-sm" name="txt_cantidad" id="txt_cantidad" onblur="calcular_costo_total()">
+            <div class="input-group">
+              <input type="" class="form-control form-control-sm" name="txt_cantidad_rela" id="txt_cantidad_rela" readonly>
+              <input type="" class="form-control form-control-sm" name="txt_cantidad" id="txt_cantidad" onblur="calcular_costo_total()">
+            </div>
         </div>   
         <div class="col-sm-2">
            <b>Costo Unitario</b>
@@ -141,7 +144,7 @@
            <b>Costo total</b>
           <input type="" class="form-control form-control-sm" name="txt_costo_total" id="txt_costo_total" readonly>
         </div>   
-         <div class="col-sm-2 text-end">
+         <div class="col-sm-1 text-end">
            <br>
            <button type="button" class="btn btn-primary btn-sm" onclick="add_subRubro()">Agregar</button>
         </div>            
