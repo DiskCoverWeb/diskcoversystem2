@@ -34,8 +34,12 @@
                  render: function(data, type, item) {
                     // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
                     // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
-                 
+                    if(data.T=='.'){
                     return `<a href="inicio.php?mod=`+ModuloActual+`&acc=contrato_trabajo_detalle_const&ordenNo=${data.No_Contrato}">${data.No_Contrato}</a>`;                    
+                    }else
+                    {
+                      return `${data.No_Contrato}`;                    
+                    }
                   }
               },
               { data: 'Fecha.date',  
@@ -50,11 +54,21 @@
               },
               { data: null,
                  render: function(data, type, item) {
+                  // console.log(item);
+                  // console.log(data);
                     // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
                     // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
-                 
-                    return `
-                     <button type="button" title="Eliminar Pedido" class="btn btn-danger btn-sm p-0 m-0" onclick="eliminar_pedido('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;                    
+                    if(data.T=='.')
+                    {
+                     return `
+                       <button type="button" title="Eliminar Pedido" class="btn btn-danger btn-sm p-0 m-0" onclick="eliminar_pedido('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;         
+                    }else if(data.T=='A')
+                    {
+                      return '<label class="text-primary">En orden</label>'
+                    }else if(data.T=='E')
+                    {
+                      return '<label class="text-success">En Ejecucion</label>'
+                    }           
                   }
               },
               

@@ -36,6 +36,28 @@ class contrato_trabajo_detalle_constM
         return $this->db->datos($sql);
     }
 
+    function detalleContratoAll($contrato=false,$T = '.')
+    {
+        $sql = "select TC.ID,C.Cliente as 'Cliente',CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.T 
+        FROM Trans_Contratistas TC
+        INNER JOIN Clientes C ON TC.Codigo = C.Codigo
+        INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds
+        INNER JOIN Catalogo_Proceso CP1 ON TC.Proyecto = CP1.ID
+        where TC.Item = CP.Item
+        AND TC.Item = CP1.Item
+        AND TC.Item = '".$_SESSION['INGRESO']['item']."'
+        AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+        if($contrato)
+        {
+            $sql.=" AND No_Contrato = '".$contrato."'";
+        }
+        $sql.=" ORDER BY TC.ID DESC";
+
+        // print_r($sql);die();
+
+        return $this->db->datos($sql);
+    }
+
     function eliminar_contrato($id)
     {
         $sql = "DELETE FROM Trans_Contratistas WHERE ID = '".$id."'";
