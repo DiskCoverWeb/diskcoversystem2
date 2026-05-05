@@ -96,7 +96,7 @@ class orden_trabajo_constM
             FROM Trans_Contratistas TS,Clientes C,Catalogo_Proceso CP ,Catalogo_Proceso CP1,Catalogo_Cuentas CC,Catalogo_SubCtas CS 
             WHERE TS.Item = '".$_SESSION['INGRESO']['item']."' 
             AND TS.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-            AND Autorizacion = '".$orden."'
+            AND No_Contrato = '".$orden."'
             AND CP.Cmds = TS.Proceso
             AND CP1.Cmds = TS.Grupo
             AND C.Codigo = TS.Codigo
@@ -136,9 +136,9 @@ class orden_trabajo_constM
 
     function contratistas($cliente=false)
     {
-        $sql = "SELECT distinct C.Nombre_Completo AS text,TC.Codigo as id 
+        $sql = "SELECT distinct C.Cliente AS text,TC.Codigo as id 
         FROM Trans_Contratistas TC
-        INNER JOIN Accesos C on TC.Codigo = C.Codigo 
+        INNER JOIN Clientes C on TC.Codigo = C.Codigo 
         WHERE Item = '".$_SESSION['INGRESO']['item']."'
         AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
         AND TC.T = 'A'";
