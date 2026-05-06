@@ -41,9 +41,9 @@ class orden_ejecucionM
 
      function contratistas($cliente=false)
     {
-        $sql = "SELECT distinct C.Nombre_Completo AS text,TC.Codigo as id 
+        $sql = "SELECT distinct C.Cliente AS text,TC.Codigo as id 
         FROM Trans_Contratistas TC
-        INNER JOIN Accesos C on TC.Codigo = C.Codigo 
+        INNER JOIN Clientes C on TC.Codigo = C.Codigo 
         WHERE Item = '".$_SESSION['INGRESO']['item']."'
         AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
         AND TC.T = 'E'";
@@ -53,6 +53,7 @@ class orden_ejecucionM
         }
         $sql.=" ORDER BY ID DESC";
 
+            // print_r($sql);die();
         return $this->db->datos($sql);
     }
 
