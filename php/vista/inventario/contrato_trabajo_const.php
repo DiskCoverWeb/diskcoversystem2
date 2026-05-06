@@ -58,7 +58,7 @@
                      <th>Orden de trabajo</th>
                      <th>Fecha</th>
                      <th>Fecha vencimiento</th>
-                     <th></th>
+                     <th>Estado</th>
                   </thead>
                   <tbody>
                     <tr>
