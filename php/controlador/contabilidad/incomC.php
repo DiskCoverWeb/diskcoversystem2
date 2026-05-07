@@ -312,6 +312,44 @@ if(isset($_GET['generar_num_comp'])){
     echo json_encode($controlador->Generar_Num_Comprobante($parametros));
 }
 
+if(isset($_GET['lista_clientes'])){
+	$query = '';
+	if(isset($_GET['q'])){$query = $_GET['q'];}
+    echo json_encode($controlador->lista_clientes($query));
+}
+
+if(isset($_GET['Insertar_CxP'])){
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->Insertar_CxP($parametros));
+}
+
+
+if(isset($_GET['TxtCI_RUC_LostFocus'])){
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->TxtCI_RUC_LostFocus($parametros));
+}
+
+if(isset($_GET['boton_guardarCliente'])){
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->boton_guardarCliente($parametros));
+}
+
+if(isset($_GET['nacionalidad'])){
+    echo json_encode($controlador->nacionalidad());
+}
+
+if(isset($_GET['provincias'])){
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->provincias($parametros));
+}
+
+
+if(isset($_GET['todas_ciudad'])){
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->todas_ciudad($parametros));
+}
+
+
 class incomC
 {
 	private $modelo;
@@ -2469,5 +2507,135 @@ function ExistenMovimientos($parametros)
         If($parametros['tip']=='NC'){ $NumComp = ReadSetDataNum("NotaCredito", True, false,$parametros['fecha']);}
         return $NumComp; 
     }
+
+    function lista_clientes($query)
+    {
+    	$cliente = array();
+    	$data = $this->modelo->lista_clientes($query);
+    	foreach ($data as $key => $value) {
+    		$cliente[] = array('id'=>$value['Codigo'],'text'=>$value['Cliente'],'data'=>$value);
+    	}
+
+    	return $cliente;
+    }
+
+    function Insertar_CxP($parametros)
+    {
+    	$this->modelo->Insertar_CxP($parametros['SubCtaGen'],$parametros['CodigoCliente'],$parametros['SubCta']);
+	   	SetAdoAddNew("Catalogo_CxCxP");
+        SetAdoFields("TC",$parametros['SubCta']);
+        SetAdoFields("Cta",$parametros['SubCtaGen']);
+        SetAdoFields("Codigo",$parametros['CodigoCliente']);
+        SetAdoFields("Importaciones",0); 
+        SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+        SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
+		
+		return SetAdoUpdate();
+	 }
+
+	 function TxtCI_RUC_LostFocus($parametros)
+	 {
+		   // TextoValido TxtCI_RUC, , True
+		   $DigVerif = Digito_Verificador($parametros['CI_RUC']);
+		   // print_r($DigVerif);die();
+		   if($DigVerif['Digito_Verificador'] == "-"){
+		   		return array('resp'=>-1,'msj'=>"RUC/CEDULA INCORRECTA");
+		   }
+		   if( $parametros['CI_RUC'] <> G_NINGUNO)
+		   {
+		   		$data = $this->modelo->beneficiarios_pro($parametros['CI_RUC']);
+		   		if(count($data)>0)
+		   		{
+		   			// print_r($data);die();
+		           if($data[0]["nombre"] <> $parametros['TxtApellidosS'])
+		           {
+		           		return array('resp'=>-1,'msj'=>"Este R.U.C./C.I., está asignado a ".$data[0]["nombre"]);
+		           	}else{
+		               // TipoBenef = .Fields("TD")
+		           	}
+		   		}
+		   }
+	}
+
+	function boton_guardarCliente($parametros)
+	{
+		// print_r($parametros);die();
+		  if($parametros['CI_RUC']== G_NINGUNO || $parametros['TxtApellidosS'] == G_NINGUNO)
+		  {
+		     return array('resp'=>-1,'msj'=>"No se puede grabar, La C.I./R.U.C. deben tener valores");
+		  }else{
+		        Control_Procesos(G_NORMAL, "Insertar Clientes en Submodulos");
+		        $Codigo = G_NINGUNO;
+		        $data = $this->modelo->beneficiarios_c($parametros['CI_RUC']);
+		        if(count($data) <= 0 )
+		        {
+		           $DigVerif = Digito_Verificador($parametros['CI_RUC']);
+		           $Codigo = $DigVerif['Codigo_RUC_CI'];
+		           $CodigoCliente = $Codigo;
+
+		           $data = $this->modelo->beneficiarios_codigo($Codigo);
+		          
+		           if( count($data) <= 0 )
+		           {
+		              SetAdoAddNew("Clientes");
+		              SetAdoFields("T", G_NORMAL);
+		              SetAdoFields("Codigo",$DigVerif['Codigo_RUC_CI']);
+		              SetAdoFields("Cliente", strtoupper(trim($parametros['TxtApellidosS'])));
+		              SetAdoFields("CI_RUC", $parametros['CI_RUC']);
+		              SetAdoFields("Fecha", date('Y-m-d'));
+		              SetAdoFields("Fecha_N", date('Y-m-d'));
+		              SetAdoFields("Direccion", "SD");
+		              SetAdoFields("DirNumero", "SN");
+		              SetAdoFields("TD", $DigVerif['Tipo_Beneficiario']);
+		              SetAdoFields("Telefono", "022000000");
+		              SetAdoFields("Pais", "593");
+		              SetAdoFields("Prov",$parametros['ddl_Provincia']);
+		              SetAdoFields("Ciudad",$parametros['CiudadS']);
+		              SetAdoFields("Grupo", $_SESSION['INGRESO']['item']);
+		              SetAdoFields("CodigoU", $_SESSION['INGRESO']['CodigoU']);
+		              SetAdoFields("Email",$parametros['TxtEmail1']);
+		              SetAdoFields("Email2",$parametros['TxtEmail1']);
+		              $resp =  SetAdoUpdate();
+
+						$parametros['CodigoCliente'] = $DigVerif['Codigo_RUC_CI'];
+		              	$this->Insertar_CxP($parametros);
+
+		              return array('resp'=>1,'Ingresado');
+		           }else{
+		               return array('resp'=>-1,'msj'=>"No se puede volver a crear un Codigo Existente");
+		           }
+		        }else{
+		            return array('resp'=>-1,'msj'=>"No se puede volver a crear un CI/RUC Existente");
+		        }
+		  }
+		  // sSQL = "SELECT Cl.Cliente As NomCuenta,CP.Codigo, Cl.Credito " _
+		  //      & "FROM Catalogo_CxCxP As CP,Clientes As Cl " _
+		  //      & "WHERE CP.TC = '" & SubCta & "' " _
+		  //      & "AND CP.Cta = '" & SubCtaGen & "' " _
+		  //      & "AND CP.Item = '" & NumEmpresa & "' " _
+		  //      & "AND CP.Periodo = '" & Periodo_Contable & "' " _
+		  //      & "AND Cl.Codigo <> '.' " _
+		  //      & "AND CP.Codigo = Cl.Codigo " _
+		  //      & "ORDER BY Cl.Cliente "
+		  // SelectDB_List DLSubCta, AdoBenef, sSQL, "NomCuenta"
+		  // FSubCtas.Height = Command1.Top + Command1.Height + 600
+		  // ToggleButton1.value = False
+		  // Frame1.Visible = False
+		  // DLSubCta.SetFocus
+	}
+
+	function nacionalidad()
+	{
+		return naciones_todas();
+	}
+
+	function provincias($parametros)
+	{
+		return provincia_todas($parametros['nacion'],$provincia=false);
+	}
+	function todas_ciudad($parametros)
+	{
+		return todas_ciudad($parametros['provincia']);
+	}
 }
 ?>

@@ -24,6 +24,8 @@ $(document).ready(function () {
     cargar_submodulos()
     mostrarCuenta(parent.Cuenta);
 
+    datos_carga_ddl();
+
     $("#ddl_aux").on("focus", function() {
       $(this).autocomplete("search",'%'); 
     });
@@ -282,6 +284,7 @@ $(document).ready(function () {
       $('#ddl_subcta').select2({
         placeholder: 'Seleccione cuenta efectivo',
         width: 'resolve',
+        selectionCssClass: 'form-control form-control-sm h-100',
         ajax: {
           url:   '../controlador/contabilidad/incomC.php?modal_subcta_catalogo=true&tc='+tc+'&OpcDH='+OpcDH+'&OpcTM='+OpcTM+'&cta='+cta,
           dataType: 'json',
@@ -298,6 +301,32 @@ $(document).ready(function () {
         }
       });
     }
+
+
+  function datos_carga_ddl()
+  {
+      var tc = '<?php echo $tc; ?>';
+      var OpcDH = '<?php echo $OpcDH; ?>';
+      var OpcTM = '<?php echo $OpcTM; ?>';
+      var cta = '<?php echo $cta; ?>';
+
+      $.ajax({
+          // data:  {parametros:parametros},
+          url:   '../controlador/contabilidad/incomC.php?modal_subcta_catalogo=true&tc='+tc+'&OpcDH='+OpcDH+'&OpcTM='+OpcTM+'&cta='+cta,
+          type:  'post',
+          dataType: 'json',
+            success:  function (response){
+              if(response.length==0)
+              {
+                Swal.fire("No existen datos asignados para procesar","","info").then(function(){
+                  cerrarModal();
+                })
+              }
+            
+            console.log(response);
+          }
+        });
+  }
 
  
   function agregar_sc()
@@ -482,6 +511,30 @@ $(document).ready(function () {
       });
   }
 
+
+  function lista_clientes()
+  {
+      $('#ddl_cliente_lista').select2({
+        placeholder: 'Seleccione cliente',
+        width:'100%',        
+        dropdownParent: $('#modal_clientes_lista'),
+        ajax: {
+          url:   '../controlador/contabilidad/incomC.php?lista_clientes=true',
+          dataType: 'json',
+          // data:  {parametros:parametros},
+          // type:  'post',
+          delay: 250,
+          processResults: function (data) {
+            console.log(data);
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+      });
+  }
+
   // function Eliminar_Gasto(id,codigo)
   // {
   //   var parametros = 
@@ -529,6 +582,213 @@ $(document).ready(function () {
     }
 
   }
+
+  function Insertar_CxP()
+  {
+     var tc = '<?php echo $tc; ?>';
+     var cta = '<?php echo $cta; ?>';
+     
+       var parametros = 
+      {
+        'SubCtaGen':cta,
+        'SubCta':tc,
+        'CodigoCliente': $('#ddl_cliente_lista').val(),       
+      }      
+      $.ajax({
+          data:  {parametros:parametros},
+          url:   '../controlador/contabilidad/incomC.php?Insertar_CxP=true',
+          type:  'post',
+          dataType: 'json',
+            success:  function (response) { 
+              if(response==1)
+              {
+                Swal.fire('Registrado','','success').then(function(){
+                    $('#modal_clientes_lista').modal('hide');
+                });
+              }
+          }
+        });
+
+  }
+
+  function show_panel_cliente() {
+    if($('#rbl_pnl_nuevo_cli').prop('checked'))
+    {
+      $('#pnl_nuevo_cliente').removeClass('d-none');
+      $('#pnl_guardar_proceso').addClass('d-none');
+      nacionalidades();
+    }else
+    {      
+      $('#pnl_nuevo_cliente').addClass('d-none');
+      $('#pnl_guardar_proceso').removeClass('d-none');
+    }
+  }
+
+  function validar_ci()
+  {
+    var ci_ruc = $('#txt_ci_ruc').val();
+    if(ci_ruc.length==10){$('#lbl_tipo_cliente').text('APELLIDOS Y NOMBRES')}else{$('#lbl_tipo_cliente').text('RAZON SOCIAL')}
+    if(ci_ruc!='')
+    {
+       var parametros = 
+        {
+          'CI_RUC':ci_ruc,
+          'TxtApellidosS':$('#TxtApellidosS').val(),
+          'TxtEmail1':$('#TxtEmail1').val(),
+          'TxtEmail2':$('#TxtEmail2').val(),
+          'ddl_Nacion':$('#ddl_Nacion').val(),
+          'ddl_Provincia':$('#ddl_Provincia').val(),
+          'ddl_CiudadS':$('#ddl_CiudadS').val(),
+        }      
+        $.ajax({
+          data:  {parametros:parametros},
+          url:   '../controlador/contabilidad/incomC.php?TxtCI_RUC_LostFocus=true',
+          type:  'post',
+          dataType: 'json',
+            success:  function (response) { 
+              if(response.resp==-1)
+              {
+                Swal.fire('Registrado',response.msj,'info').then(function(){
+                    $('#pnl_nuevo_cliente').addClass('d-none');
+                    $('#pnl_guardar_proceso').removeClass('d-none');
+                    $('#rbl_pnl_nuevo_cli').prop('checked',false);
+                });
+              }
+          }
+        });
+    }
+  }
+
+  function boton_guardarCliente()
+  {
+    var ci_ruc = $('#txt_ci_ruc').val();
+    var apellidos = $('#TxtApellidosS').val();
+    var tc = '<?php echo $tc; ?>';
+    var cta = '<?php echo $cta; ?>';
+    
+
+    if(ci_ruc!='' && apellidos)
+    {
+       var parametros = 
+        {
+          'CI_RUC':ci_ruc,
+          'TxtApellidosS':$('#TxtApellidosS').val(),
+          'TxtEmail1':$('#TxtEmail1').val(),
+          'TxtEmail2':$('#TxtEmail2').val(),
+          'ddl_Nacion':$('#ddl_Nacion').val(),
+          'ddl_Provincia':$('#ddl_Provincia').val(),
+          'ddl_CiudadS':$('#ddl_CiudadS').val(),
+          'CiudadS':$('#ddl_CiudadS option:selected').text(),
+          'SubCtaGen':cta,
+          'SubCta':tc,
+        }      
+        $.ajax({
+          data:  {parametros:parametros},
+          url:   '../controlador/contabilidad/incomC.php?boton_guardarCliente=true',
+          type:  'post',
+          dataType: 'json',
+            success:  function (response) { 
+              if(response.resp==-1)
+              {
+                Swal.fire('Error',response.msj,'info').then(function(){
+                    $('#pnl_nuevo_cliente').addClass('d-none');
+                    $('#pnl_guardar_proceso').removeClass('d-none');
+                    $('#rbl_pnl_nuevo_cli').prop('checked',false);
+                });
+              }else
+              {
+                Swal.fire("Guardado","Registro guardado","success").then(function()
+                {
+                   $('#pnl_nuevo_cliente').addClass('d-none');
+                   $('#pnl_guardar_proceso').removeClass('d-none');
+                })
+              }
+          }
+        });
+    }else
+    {
+      Swal.fire("Error","No se puede grabar, La C.I./R.U.C. deben tener valores","error");
+    }
+  }
+
+  function nacionalidades()
+  {
+    $.ajax({
+      // data:  {parametros:parametros},
+      url:   '../controlador/contabilidad/incomC.php?nacionalidad=true',
+      type:  'post',
+      dataType: 'json',
+        success:  function (response) { 
+          var op = '<option value="">Seleccione nacionalidad</option>';
+          response.forEach(function(item,i){
+            op+='<option value="'+item.Codigo+'">'+item.Descripcion_Rubro+'</option>';
+          })
+          $('#ddl_Nacion').html(op);
+
+          $('#ddl_Nacion').val('593');
+          provincias();
+      }
+    });
+  }
+
+  function provincias()
+  {
+    var parametros = 
+    {
+      'nacion':$('#ddl_Nacion').val()
+    }
+    $.ajax({
+      data:  {parametros:parametros},
+      url:   '../controlador/contabilidad/incomC.php?provincias=true',
+      type:  'post',
+      dataType: 'json',
+        success:  function (response) { 
+          var op = '<option value="">Seleccione nacionalidad</option>';
+          response.forEach(function(item,i){
+            op+='<option value="'+item.Codigo+'">'+item.Descripcion_Rubro+'</option>';
+          })
+          $('#ddl_Provincia').html(op);
+
+          $('#ddl_Provincia').val('01');
+          ciudad();
+          console.log(response);
+      }
+    });
+  }
+
+  function ciudad()
+  {
+    var parametros = 
+    {
+      'provincia':$('#ddl_Provincia').val()
+    }
+    $.ajax({
+      data:  {parametros:parametros},
+      url:   '../controlador/contabilidad/incomC.php?todas_ciudad=true',
+      type:  'post',
+      dataType: 'json',
+        success:  function (response) { 
+          var op = '<option value="">Seleccione nacionalidad</option>';
+          response.forEach(function(item,i){
+            op+='<option value="'+item.Codigo+'">'+item.Descripcion_Rubro+'</option>';
+          })
+          $('#ddl_CiudadS').html(op);
+
+          // $('#ddl_CiudadS').val('');
+          console.log(response);
+      }
+    });
+  }
+
+  function cancelar_cliente()
+  {
+    $('#txt_ci_ruc').val("");
+    $('#TxtApellidosS').val("")
+    $('#TxtEmail1').val("")
+    $('#TxtEmail2').val("")
+    $('#pnl_nuevo_cliente').addClass('d-none');
+    $('#pnl_guardar_proceso').removeClass('d-none');
+  }
 </script>
 
 <div class="card">
@@ -536,11 +796,18 @@ $(document).ready(function () {
        <div class="row">
           <div class="col-sm-4">
             <b id="titulo" class="">Sub cuenta por cobrar</b>
-            <select class="form-control input-sm" id="ddl_subcta" >
-              <option value="">Seleccione una sub cuenta</option>
-            </select> 
+            <div class="input-group">
+              <select class="form-select" id="ddl_subcta" >
+                <option value="">Seleccione una sub cuenta</option>
+              </select> 
+              <button type="button" class="btn btn-sm btn-primary" onclick="Modal_addCliente()"><i class="bx bx-user"></i></button>
+            </div>
           </div>
           <div class="col-sm-2">
+            <label class="btn btn-outline-secondary btn-lg" title="Nuevo Beneficiario">
+              <input type="checkbox" name="rbl_pnl_nuevo_cli" id="rbl_pnl_nuevo_cli" onchange="show_panel_cliente()"><i class="bx bx-user-plus"></i>
+            </label>
+            <!-- <button class="btn btn-outline-secondary btn-lg" title="Nuevo Beneficiario"></button> -->
           </div>
           <div class="col-sm-6">
             <b class="text-danger" id="Cuenta_C">Cuenta seleccionada</b>
@@ -555,7 +822,7 @@ $(document).ready(function () {
           </div>
           <div class="col-sm-2">
             <b>Factura No</b>
-            <input type="input" name="txt_factura" id="txt_factura" class="form-control form-control-sm" onkeyup="solo_numeros(this)" value="0">
+            <input type="input" style="z-index: auto;" name="txt_factura" id="txt_factura" class="form-control form-control-sm" onkeyup="solo_numeros(this)" value="0">
           </div>
           <div class="col-sm-1">
             <b>Meses</b>
@@ -578,13 +845,13 @@ $(document).ready(function () {
             </div>
             <div class="col-sm-8">
               <b>DETALLE AUXILIAR DE SUB MODULO</b>
-              <input type="text" class="form-control"  id="ddl_aux"  name="ddl_aux">
+              <input type="text" class="form-control"  id="ddl_aux"  name="ddl_aux" style="z-index: auto;">
               <!-- <select class="form-control input-sm" id="ddl_aux">
                 <option value="">Seleccione detalle auxiliar de sub modulo</option>
               </select> -->
             </div>
         </div>
-         <div class="row" style="overflow-x: scroll;">
+         <div class="row mb-2" style="overflow-x: scroll;">
           <!-- <div class="col-sm-12" id="subcuentass"></div> -->
           <!-- <div class="" > -->
               <table class="table table-sm" id="subcuentas">
@@ -620,7 +887,60 @@ $(document).ready(function () {
               </table>
             <!-- </div> -->
         </div>
-        <div class="row mt-4">
+        <div class="row mb-2 d-none" id="pnl_nuevo_cliente">
+          <div class="col-sm-10">
+            <div class="row">
+              <div class="col-sm-4">
+                <b>C.I / R.U.C</b>
+                <input type="" name="txt_ci_ruc" id="txt_ci_ruc" onblur="validar_ci()" class="form-control form-control-sm">
+              </div>   
+              <div class="col-sm-8">
+                <b id="lbl_tipo_cliente">APELLIDOS Y NOMBRES</b>
+                <input type="" name="TxtApellidosS" id="TxtApellidosS" class="form-control form-control-sm">
+              </div>   
+              <div class="col-sm-6">
+                <b>CORREOS ELECTRONICOS</b>
+                <input type="" name="TxtEmail1" id="TxtEmail1" class="form-control form-control-sm">
+              </div>   
+              <div class="col-sm-6">
+                <br>
+                <input type="" name="TxtEmail2" id="TxtEmail2" class="form-control form-control-sm">
+              </div>   
+              <div class="col-sm-3">
+                <b>NACIONALIDAD</b>
+                <select class="form-select form-select-sm" id="ddl_Nacion" name="ddl_Nacion">
+                  <option>Seleciones nacionalidad</option>
+                </select>
+              </div>   
+              <div class="col-sm-3">
+                <b>PROVINCIA</b>
+                <select class="form-select form-select-sm" id="ddl_Provincia" name="ddl_Provincia">
+                  <option>Seleciones Provincia</option>
+                </select>
+              </div>   
+              <div class="col-sm-6">
+                <b>CIUDAD</b>
+                <select class="form-select form-select-sm" id="ddl_CiudadS" name="ddl_CiudadS">
+                  <option>Seleciones ciudad</option>
+                </select>
+              </div>   
+            </div>
+          </div>
+          <div class="col-sm-2">
+            <button type="button" class="btn w-80 btn-md btn-outline-secondary" onclick="boton_guardarCliente()">
+              <img src="../../img/png/grabar.png">
+              <br>
+              Grabar
+            </button>
+            <br>
+            <button type="button" class="btn w-80 btn-md btn-outline-secondary" onclick="cancelar_cliente()">
+              <img src="../../img/png/cxc.png">
+              <br>
+              No Grabar
+            </button>
+          </div>
+        </div>
+        <div class="row mt-4" id="pnl_guardar_proceso">
              <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="generar_asiento();">Continuar</button>
                 <button type="button" class="btn btn-outline-secondary" onclick="cerrarModal();">Salir</button>           
@@ -629,11 +949,41 @@ $(document).ready(function () {
     </div>
 </div>
 
+
+<div class="modal fade" id="modal_clientes_lista" tabindex="-1" role="dialog" data-keyboard="false" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <h5 class="modal-title" id="titulo_frame"></h5> -->
+      </div>
+      <div class="modal-body">
+       
+        <select class="form-select form-select-sm" id="ddl_cliente_lista" name="ddl_cliente_lista">
+          <option>Seleccione</option>
+        </select>
+        
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="Insertar_CxP();">Guardar</button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" class="btn btn-default">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script type="text/javascript">
   function cerrarModal() {
        // window.parent.document.getElementById('modal_subcuentas').style.display = 'none';
        // window.parent.document.getElementById('modal_subcuentas').click();
    window.parent.postMessage("closeModal", "*");
     // $('#modal_subcuentas').hide();
+  }
+
+  // lo que hace visual al colocar el CTRl+s
+  function Modal_addCliente()
+  {
+    lista_clientes();
+    $('#modal_clientes_lista').modal('show');
   }
 </script>

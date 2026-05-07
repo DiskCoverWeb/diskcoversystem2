@@ -63,6 +63,26 @@ class incomM
 	   return $result;
 	}
 
+	function beneficiarios_codigo($query)
+	{
+		$sql="SELECT TOP 25 Cliente AS nombre, CI_RUC as id, email
+		   FROM Clientes 
+		   WHERE T <> '.' ";
+		   if($query != '')
+		   {
+		   if(is_numeric($query))
+		   	{
+		   		$sql.=" AND Codigo='".$query."'";
+		   	}else
+		   	{
+		   		$sql.=" AND Cliente like '%".$query."%'";
+		   	}
+		   }
+		  $sql.=" ORDER BY Cliente";
+		   $result = $this->conn->datos($sql);
+	   return $result;
+	}
+
 	function beneficiarios_pro($query)
 	{
 		$sql="SELECT TOP 25 Cliente AS nombre, CI_RUC as id, email,TD,CI_RUC,Codigo
@@ -1826,6 +1846,32 @@ class incomM
 	  return $this->conn->datos($sql);
 
   }
+
+  function lista_clientes($query)
+  {
+    	$sql = "SELECT TOP 50 Codigo, Cliente, CI_RUC, Credito
+              FROM Clientes 
+              WHERE LEN(Cliente) > 1";
+              if($query)
+              {
+              	$sql.="AND (Cliente like '%".$query."%' or CI_RUC like '%".$query."%')";
+              }
+              $sql.=" ORDER BY Cliente ";
+      return $this->conn->datos($sql);
+  }
+
+  function Insertar_CxP($SubCtaGen,$CodigoCliente,$SubCta)
+    {
+	    // 'Garantizamos que no exista duplicidad
+	    $sql ="DELETE
+	          	FROM Catalogo_CxCxP
+	          	WHERE Item = '".$_SESSION['INGRESO']['item']."'
+	          	AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+	          	AND Cta = '".$SubCtaGen."'
+	          	AND Codigo = '".$CodigoCliente."'
+	          	AND TC = '".$SubCta."' ";
+	    $this->conn->String_Sql($sql);
+	 }
 
 
 }
