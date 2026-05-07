@@ -1443,7 +1443,7 @@ function validar_comprobante()
       <div class="modal-header">
         <h5 class="modal-title" id="titulo_frame">SUB CUENTAS</h5>
       </div>
-      <div class="modal-body" style="padding-top: 0px;">
+      <div class="modal-body p-0" style="padding-top: 0px;">
         <!-- <div class="container-fluid"> -->
           <iframe  id="frame" width="100%" marginheight="0" frameborder="0"></iframe>
           
