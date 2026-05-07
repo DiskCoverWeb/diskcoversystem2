@@ -70,9 +70,9 @@ class autoriza_sri
 		$this->iv = base64_decode("C9fBxl1EWtYTL1/M8jfstw==");
 		// $this->conn = new Conectar();
 		$this->db = new db();
-		$this->rutaJava8  = "";
+		// $this->rutaJava8  = "";
 		
-		// $this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
+		$this->rutaJava8  = escapeshellarg("C:\\Program Files\\Java\\jdk-1.8\\bin\\");
 	}
 
 
@@ -839,6 +839,7 @@ class autoriza_sri
 
 	function CERecibidos($parametros)
 	{
+		$temp_file = 'ftp_folder_xmls/';
 		try {
 			$this->crear_carpetas();
 		  	$clave_acceso = $parametros['XML'];
@@ -848,10 +849,19 @@ class autoriza_sri
 			$validar_autorizado = $this->comprobar_xml_sri($clave_acceso,$this->linkSriAutorizacion);
 			if($validar_autorizado[0]==1)
 			{
-				$this->subirftpRuta($clave_acceso,"ce_recibidos");
-				$temp_file = 'ftp_folder_xmls/';
-				$this->deleteFolder($temp_file);
-				return 'OK';
+				$ruta = dirname(__DIR__)."/SRI/ftp_folder_xmls/Autorizados/".$clave_acceso.'.xml';
+				if(file_exists($ruta))
+				{
+					$documento = file_get_contents($ruta);
+					$this->deleteFolder($temp_file);
+					return array('resp'=>1,'XML'=>$documento,'msj'=>'documento encontrado');
+				}else
+				{
+					return array('resp'=>-1,'XML'=>'','msj'=>'Docuemnto no encontrado');
+				}
+				// $this->subirftpRuta($clave_acceso,"ce_recibidos");
+				// $this->deleteFolder($temp_file);
+				// return 'OK';
 			}else
 			{
 				return 'CEI';
