@@ -106,9 +106,10 @@ class egreso_alimentosM
 			CPO.Cmds,
 			CPO.Proceso AS Proceso,CPO.Picture
 			FROM Trans_Kardex TK
-			INNER JOIN Catalogo_Proceso CPO ON TK.Codigo_Tra = CPO.Cmds
+			INNER JOIN Catalogo_Proceso CPO ON TK.Codigo_Tra = CPO.Cmds AND TK.Item = CPO.Item
 			WHERE TK.Item = '".$_SESSION['INGRESO']['item']."'
-			AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+			AND TK.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+			AND LEN(TK.Codigo_Tra) between 5 and 8";
 			if($query)
 			{
 				$sql.=" AND Proceso like '%".$query."%' ";
