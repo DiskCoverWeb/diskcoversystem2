@@ -260,15 +260,26 @@ class enviar_emails
   // funcion de envios enviando datos por correo (funciona)
   function enviar_credenciales($archivos = false, $to_correo = "", $cuerpo_correo = "", $titulo_correo = "", $correo_apooyo = "", $nombre = "", $EMAIL_CONEXION = "", $EMAIL_CONTRASEÑA = "", $HTML = false, $empresaGeneral = "")
   {
+    $empresaGeneral = $this->Empresa_data();
     $server_externo = 0;
 
-    if ($empresaGeneral[0]["smtp_Servidor"] == "mail.diskcoversystem.com") {
+    if ($empresaGeneral[0]["smtp_Servidor"] == "relay.dnsexit.com" ||  $empresaGeneral[0]["smtp_Servidor"] == "mail.diskcoversystem.com") 
+    {
+
       $server_externo = 1;
       $empresaGeneral[0]['smtp_Servidor'] = "imap.diskcoversystem.com";
       $empresaGeneral[0]['Email_Conexion'] = "admin";
       $empresaGeneral[0]['Email_Contraseña'] = "Admin@2023";
       $empresaGeneral[0]['smtp_SSL'] = 0;
-      $empresaGeneral[0]['smtp_puerto'] = 587;
+      $empresaGeneral[0]['smtp_Puerto'] = 587;
+    }
+
+    $res = 1;
+    // print_r($empresaGeneral);die();
+    if ($empresaGeneral[0]['Email_CE_Copia'] == 1) {
+      if ($empresaGeneral[0]['Email_Procesos'] != '' && $empresaGeneral[0]['Email_Procesos'] != '.') {
+        $to_correo .= ',' . $empresaGeneral[0]['Email_Procesos'];
+      }
     }
 
     //print_r($empresaGeneral[0]);die();
@@ -283,7 +294,7 @@ class enviar_emails
       if($value != '.' && $value != ''){
         //SMTPDebug nos ayudara a definir el problema en caso de haber alguno.
         $mail = new PHPMailer(true);
-        //$mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
         $mail->SMTPOptions = array(
           'ssl' => array(
             'verify_peer' => false,
@@ -316,7 +327,9 @@ class enviar_emails
               $mail->Port = 587;
             }
           }
-          $from = str_replace("@diskcoversystem.com", "@imap.diskcoversystem.com", $EMAIL_CONEXION);
+          // $from = str_replace("@diskcoversystem.com", "@imap.diskcoversystem.com", $EMAIL_CONEXION);
+          $from = str_replace("@diskcoversystem.com","@smtp.diskcoversystem.com", $_SESSION['INGRESO']['Email_Conexion_CE']);
+        
           $mail->setFrom($from, 'Informacion DiskCover System');
           $mail->addAddress($value);
 
