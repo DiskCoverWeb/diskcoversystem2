@@ -2075,7 +2075,7 @@ function pagina_acceso($codMenu,$usuario,$entidad,$item)
            INNER JOIN menu_modulos MM ON AE.Pagina = MM.ID 
            WHERE ID_Empresa = '".$entidad."' 
            AND CI_NIC = '".$usuario."' 
-           AND codMenu LIKE '".$codMenu."' 
+           AND codMenu LIKE '".$codMenu."%' 
            AND Item = '".$item."' 
            AND Pagina != '.' 
            AND Pagina != ''
@@ -2092,6 +2092,7 @@ function pagina_acceso($codMenu,$usuario,$entidad,$item)
     $array_menu[$key]['descripcionMenu'] = $value['descripcionMenu'];
     $array_menu[$key]['accesoRapido'] = $value['accesoRapido'];
     $array_menu[$key]['rutaProceso'] = $value['rutaProceso'];
+    $array_menu[$key]['Pagina'] = $value['Pagina'];
     
   }
  

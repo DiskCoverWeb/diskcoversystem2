@@ -1377,21 +1377,21 @@ Emails: recepcion@diskcoversystem.com o prisma_net@hotmail.es
 				foreach ($modulos as $key => $value) {
 					$ver = '';
 					if($key==0){ $ver = 'active';}
-					$op.='<li class="'.$ver.'"><a data-bs-toggle="tab" href="#'.str_replace(' ','_',$value['aplicacion']).'">'.$value['aplicacion'].'</a></li>';
+					$op.='<li class="'.$ver.'"><a class="nav-link" data-bs-toggle="tab" href="#'.str_replace(' ','_',$value['aplicacion']).'">'.$value['aplicacion'].'</a></li>';
 				}
 				$encontrado = 0;
 				$op.='</ul>
 					  <div class="tab-content">';
 				foreach ($modulos as $key => $value) {
 					$ver = '';
-					if($key==0){$ver = 'in active';}
+					if($key==0){$ver = 'show ';}
 					$op.='<div id="'.str_replace(' ','_',$value['aplicacion']).'" class="tab-pane fade '.$ver.'"><br>';
 					$pag = $this->modelo->paginas($value['modulo']);
-					$pag_select = pagina_acceso_hijos($parametros['usuario'],$parametros['entidad'],$parametros['item'],$value['modulo']);
+					$pag_select = pagina_acceso($value['modulo'],$parametros['usuario'],$parametros['entidad'],$parametros['item']);
 					foreach ($pag as $key => $value1) {
 						$encontrado = 0;
 						// print_r($pag);
-						// print_r($pag_select);die();
+						// print_r($pag_select);
 						if(count($pag_select)>0)
 						{
 							foreach ($pag_select as $key2 => $value2) {
@@ -1435,14 +1435,14 @@ Emails: recepcion@diskcoversystem.com o prisma_net@hotmail.es
 	    		$datos[3]['tipo']  = 'string';
 	    		$datos[4]['campo'] = 'Pagina';
 	    		$datos[4]['dato']  = $parametros['pagina'];
-	    		$this->modelo->add_accesos('acceso_empresas',$datos);
+	    		return $this->modelo->add_accesos('acceso_empresas',$datos);
     		}
     	}else
     	{
-    		$this->modelo->delete_acceso($parametros['entidad'],$parametros['usuario'],$parametros['modulo'],$parametros['empresa'],$parametros['pagina']);
+    		return $this->modelo->delete_acceso($parametros['entidad'],$parametros['usuario'],$parametros['modulo'],$parametros['empresa'],$parametros['pagina']);
     		// elimina el acceso
     	}
-    	print_r($parametros);die();
+    	// print_r($parametros);die();
     }
 
 

@@ -408,7 +408,7 @@
 </div>
 
 <div id="mymodal_acceso_pag" class="modal fade" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-xl">
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
