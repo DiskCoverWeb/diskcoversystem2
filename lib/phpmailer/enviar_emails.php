@@ -282,7 +282,7 @@ class enviar_emails
       }
     }
 
-    //print_r($empresaGeneral[0]);die();
+    print_r($empresaGeneral[0]);die();
     //Instantiation and passing `true` enables exceptions
     
 
@@ -344,6 +344,7 @@ class enviar_emails
             $res = 1;
           }
         } catch (Exception $e){
+          print_r($e);
           return -1;
         }
       }
