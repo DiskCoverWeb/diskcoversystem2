@@ -282,7 +282,7 @@ class enviar_emails
       }
     }
 
-    print_r($empresaGeneral[0]);die();
+    // print_r($empresaGeneral[0]);die();
     //Instantiation and passing `true` enables exceptions
     
 
