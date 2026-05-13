@@ -1387,25 +1387,31 @@ Emails: recepcion@diskcoversystem.com o prisma_net@hotmail.es
 					if($key==0){$ver = 'show ';}
 					$op.='<div id="'.str_replace(' ','_',$value['aplicacion']).'" class="tab-pane fade '.$ver.'"><br>';
 					$pag = $this->modelo->paginas($value['modulo']);
+					// print_r($pag);die();
 					$pag_select = pagina_acceso($value['modulo'],$parametros['usuario'],$parametros['entidad'],$parametros['item']);
 					foreach ($pag as $key => $value1) {
 						$encontrado = 0;
 						// print_r($pag);
 						// print_r($pag_select);
-						if(count($pag_select)>0)
+						if(strlen($value1['CodMenu'])<5)
 						{
-							foreach ($pag_select as $key2 => $value2) {
-								if($value1['ID']==$value2['Pagina'])
-								{
-									$op.='<label class="form-check-label"><input class="form-check-input" type="checkbox" checked id="rbl_'.$value1['ID'].'" onclick="guardar_pag(\''.$parametros['entidad'].'\',\''.$parametros['item'].'\',\''.$parametros['usuario'].'\',\''.$value1['ID'].'\',\''.$value['modulo'].'\')"> '.$value1['descripcionMenu'].'</label><br>';
-									$encontrado = 1;
+							$op.=" <br> - ".$value1['descripcionMenu']."<br>";
+						}else{
+							if(count($pag_select)>0)
+							{
+								foreach ($pag_select as $key2 => $value2) {
+									if($value1['ID']==$value2['Pagina'])
+									{
+										$op.='<label class="form-check-label"><input class="form-check-input" type="checkbox" checked id="rbl_'.$value1['ID'].'" onclick="guardar_pag(\''.$parametros['entidad'].'\',\''.$parametros['item'].'\',\''.$parametros['usuario'].'\',\''.$value1['ID'].'\',\''.$value['modulo'].'\')"> '.$value1['descripcionMenu'].'</label><br>';
+										$encontrado = 1;
+									}
 								}
-							}
 
-						}
-						if($encontrado==0)
-						{
-						$op.='<label class="form-check-label"><input class="form-check-input" type="checkbox" id="rbl_'.$value1['ID'].'" onclick="guardar_pag(\''.$parametros['entidad'].'\',\''.$parametros['item'].'\',\''.$parametros['usuario'].'\',\''.$value1['ID'].'\',\''.$value['modulo'].'\')"> '.$value1['descripcionMenu'].'</label><br>';
+							}
+							if($encontrado==0)
+							{
+							$op.='<label class="form-check-label"><input class="form-check-input" type="checkbox" id="rbl_'.$value1['ID'].'" onclick="guardar_pag(\''.$parametros['entidad'].'\',\''.$parametros['item'].'\',\''.$parametros['usuario'].'\',\''.$value1['ID'].'\',\''.$value['modulo'].'\')"> '.$value1['descripcionMenu'].'</label><br>';
+							}
 						}
 					}
 					$op.='</div>';
