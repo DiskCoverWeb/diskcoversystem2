@@ -502,7 +502,7 @@ function lista_egreso_checking()
       'TC':TC,
     }
 
-    // $('#myModal_espera').modal('show');
+    $('#myModal_espera').modal('show');
     $.ajax({
       type: "POST",
       url:   '../controlador/inventario/egreso_alimentosC.php?generar_comprobante=true',
