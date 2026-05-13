@@ -328,7 +328,7 @@ class enviar_emails
             }
           }
           // $from = str_replace("@diskcoversystem.com", "@imap.diskcoversystem.com", $EMAIL_CONEXION);
-          $from = str_replace("@diskcoversystem.com","@smtp.diskcoversystem.com", $_SESSION['INGRESO']['Email_Conexion_CE']);
+          $from = str_replace("@diskcoversystem.com","@smtp.diskcoversystem.com", "credenciales@diskcoversystem.com");
         
           $mail->setFrom($from, 'Informacion DiskCover System');
           $mail->addAddress($value);
