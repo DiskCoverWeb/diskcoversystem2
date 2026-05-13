@@ -294,7 +294,7 @@ class enviar_emails
       if($value != '.' && $value != ''){
         //SMTPDebug nos ayudara a definir el problema en caso de haber alguno.
         $mail = new PHPMailer(true);
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
         $mail->SMTPOptions = array(
           'ssl' => array(
             'verify_peer' => false,
@@ -304,9 +304,9 @@ class enviar_emails
         );
         try {
           $mail->isSMTP();
-          $mail->Host =   "imap.diskcoversystem.com"; //$empresaGeneral[0]['smtp_Servidor'];
+          $mail->Host =   $empresaGeneral[0]['smtp_Servidor'];
           $mail->SMTPAuth = true;
-          $mail->Username = "admin"; //$empresaGeneral[0]['Email_Conexion'];
+          $mail->Username = $empresaGeneral[0]['Email_Conexion'];
           $mail->Password =  "Admin@2023"; //$empresaGeneral[0]['Email_Clave'];
         
           if ($server_externo == 0) //SMTP password
