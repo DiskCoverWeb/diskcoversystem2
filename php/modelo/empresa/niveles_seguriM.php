@@ -970,7 +970,12 @@ class niveles_seguriM
 
 	function paginas($modulo)
 	{
-		$sql = "SELECT ID,CodMenu,descripcionMenu FROM menu_modulos WHERE codMenu like '".$modulo.".%' AND LENGTH(codMenu)>4 ORDER BY descripcionMenu ASC";
+		$sql = "SELECT ID,CodMenu,descripcionMenu 
+		FROM menu_modulos 
+		WHERE codMenu like '".$modulo.".%' 
+		ORDER BY CodMenu ASC";
+		
+		// AND LENGTH(codMenu)>4 
 		return $this->db->datos($sql,'MYSQL');
 	}
 
