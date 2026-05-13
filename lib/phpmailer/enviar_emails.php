@@ -268,8 +268,8 @@ class enviar_emails
 
       $server_externo = 1;
       $empresaGeneral[0]['smtp_Servidor'] = "imap.diskcoversystem.com";
-      $empresaGeneral[0]['Email_Conexion'] = "credenciales@diskcoversystem.com";
-      $empresaGeneral[0]['Email_Clave'] = "Dlcjvl1210@Credenciales";
+      $empresaGeneral[0]['Email_Conexion'] = "admin";
+      $empresaGeneral[0]['Email_Contraseña'] = "Admin@2023";
       $empresaGeneral[0]['smtp_SSL'] = 0;
       $empresaGeneral[0]['smtp_Puerto'] = 587;
     }
@@ -332,7 +332,7 @@ class enviar_emails
         
           $mail->setFrom($from, 'Informacion DiskCover System');
           $mail->addAddress($value);
-
+// print_r($mail);die();
           if($HTML){
             $mail->isHTML(true);
           }
