@@ -304,10 +304,10 @@ class enviar_emails
         );
         try {
           $mail->isSMTP();
-          $mail->Host = $empresaGeneral[0]['smtp_Servidor'];
+          $mail->Host =   "imap.diskcoversystem.com"; //$empresaGeneral[0]['smtp_Servidor'];
           $mail->SMTPAuth = true;
-          $mail->Username = $empresaGeneral[0]['Email_Conexion'];
-          $mail->Password = $empresaGeneral[0]['Email_Clave'];
+          $mail->Username = "admin"; //$empresaGeneral[0]['Email_Conexion'];
+          $mail->Password =  "Admin@2023"; //$empresaGeneral[0]['Email_Clave'];
         
           if ($server_externo == 0) //SMTP password
           {
@@ -327,8 +327,8 @@ class enviar_emails
               $mail->Port = 587;
             }
           }
-          // $from = str_replace("@diskcoversystem.com", "@imap.diskcoversystem.com", $EMAIL_CONEXION);
-          $from = str_replace("@diskcoversystem.com","@smtp.diskcoversystem.com", "credenciales@diskcoversystem.com");
+          $from = str_replace("@diskcoversystem.com", "@imap.diskcoversystem.com", $EMAIL_CONEXION);
+          // $from = str_replace("@diskcoversystem.com","@smtp.diskcoversystem.com", "credenciales@diskcoversystem.com");
         
           $mail->setFrom($from, 'Informacion DiskCover System');
           $mail->addAddress($value);
