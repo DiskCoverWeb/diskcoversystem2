@@ -45,7 +45,7 @@ class menuM
 	           AND Pagina != ''
 	           ORDER BY CodMenu ASC";
 
-	 // print_r($sql);
+	 // print_r($sql);die();
 	  $submenu = $this->db->datos($sql,'MYSQL');
 	 
 	  $lista = array();
@@ -62,8 +62,27 @@ class menuM
 	}
 
 
-	function generar_menu()
+	function generar_menu($modulo)
 	{
+		$sql = "SELECT * FROM menu_modulos 
+		WHERE codMenu  in(".$modulo." )
+		ORDER BY codMenu ASC";
+		// print_r($sql);die();
+	  	$submenu = $this->db->datos($sql,'MYSQL');
+
+	  // $submenu=$cid->query($sql) or die($cid->error);
+	  $array_menu = array();
+	  $i = 0;
+
+	  $lista = array();
+	  foreach ($submenu as $key => $value) {
+	  	$lista[] = array('codMenu'=> $value['codMenu'],
+	  					  'descripcionMenu' => $value['descripcionMenu'],
+	  					  'accesoRapido'=>$value['accesoRapido'],
+	  					  'rutaProceso' => $value['rutaProceso']);
+	    
+	  }	 
+	  return $lista;
 
 	}
 

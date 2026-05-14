@@ -17,9 +17,10 @@ class menuC
 	{
 		$menu = $this->modelo->select_menu_mysql($modulo);
        	$accesos_pag = $this->modelo->pagina_acceso_hijos($modulo,$_SESSION['INGRESO']['CodigoU'], $_SESSION['INGRESO']['IDEntidad'], $_SESSION['INGRESO']['item']);
+       	// print_r($menu);die();
        if (count($accesos_pag) > 0) 
        {
-       		$menuHTML = $this->menu_restringido();
+       		$menuHTML = $this->menu_restringido($accesos_pag);
        }else
        {
        		array_shift($menu);  //elimina el primer dato
@@ -30,8 +31,32 @@ class menuC
 
 	}
 
-	function menu_restringido()
+	function menu_restringido($menu)
 	{
+		$codigo = $menu[0]['codMenu'];
+		$arbol = explode('.',$codigo);
+		$codigos_menu = "";
+		$cod = "";
+		foreach ($arbol as $key => $value) {
+
+			if($cod!="")
+			{ 
+				$codigos_menu.= ",'".$cod.'.'.$value."'"; 
+				$cod = $cod.'.'.$value; 
+			}
+			else
+			{ 
+				$codigos_menu = "'".$value."'"; 
+				$cod = $value; 
+			}
+		}
+// print_r($codigos_menu);die();
+		$lista = $this->modelo->generar_menu($codigos_menu);
+
+
+		return $this->menu_completo($lista);
+
+		print_r($lista);die();
 
 	}
 
@@ -75,8 +100,10 @@ class menuC
 
 	function generarHTML($arbol) 
 	{
+		// print_r($arbol);die();
 	    $html = "<ul>";
 	    foreach ($arbol as $key => $nodo) {
+	    	// print_r($nodo);die();
 	        if (isset($nodo['info'])) {
 	            $descripcion = $nodo['info']['descripcionMenu'];
 	            $ruta = $nodo['info']['rutaProceso'] !== '.' ? $nodo['info']['rutaProceso'] : '#';
