@@ -43,9 +43,9 @@
         <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_solicitud_proveedor()">
           <img src="../../img/png/grabar.png" >
         </button>
-         <a title="Guardar"  class="btn btn-outline-secondary" href="../vista/inicio.php?mod=<?php echo $modulo ;?>&acc=orden_ejecucion_add">
+        <!--  <a title="Guardar"  class="btn btn-outline-secondary" href="../vista/inicio.php?mod=<?php echo $modulo ;?>&acc=orden_ejecucion_add">
           <img src="../../img/png/mostrar.png" >
-        </a>
+        </a> -->
       </div>
   </div>
 </div>

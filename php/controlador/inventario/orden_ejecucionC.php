@@ -60,6 +60,64 @@ if(isset($_GET['guardar_periodo']))
     echo json_encode($controlador->guardar_periodo($parametros));
 }
 
+if(isset($_GET['contratistasBuscar']))
+{
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->contratistasBuscar($parametros));
+}
+
+if(isset($_GET['finalizar_ejecucion']))
+{
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->finalizar_ejecucion($parametros));
+}
+
+// control de avances
+
+if(isset($_GET['contratistasAvances']))
+{
+    $query = false;
+    if(isset($_GET['q'])){$query = $_GET['q'];}
+    echo json_encode($controlador->contratistasAvances($query));
+}
+
+
+if(isset($_GET['contratosAvances']))
+{
+    $query = false;
+    if(isset($_GET['q'])){$query = $_GET['q'];}
+    $contratista = $_GET['CotraAvance'];
+    echo json_encode($controlador->contratosAvances($contratista,$query));
+}
+
+
+if(isset($_GET['rubrosAvances']))
+{
+    $query = false;
+    if(isset($_GET['q'])){$query = $_GET['q'];}
+    $contrato = $_GET['CotratoAvance'];
+    echo json_encode($controlador->rubrosAvances($contrato,$query));
+}
+
+if(isset($_GET['mesesAvances']))
+{
+    $query = false;
+    if(isset($_GET['q'])){$query = $_GET['q'];}
+    $contrato = $_GET['CtaRubroAvance'];
+    echo json_encode($controlador->mesesAvances($contrato,$query));
+}
+
+
+if(isset($_GET['cargar_lista_subrubros_avance']))
+{
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->cargar_lista_subrubros_avance($parametros));
+}
+
+
+
+
+
 class orden_ejecucionC
 {
     private $modelo;
@@ -81,6 +139,17 @@ class orden_ejecucionC
     function contratistas($query)
     {
        return $this->modelo->contratistas($query);
+    }
+
+    function contratistasBuscar($parametros)
+    {
+        $codigo = $parametros['contratista'];
+       return $this->modelo->contratistas(false,$codigo);
+    }
+
+    function contratistasAvances($query)
+    {
+          return $this->modelo->contratistas($query,false,'N');
     }
 
     function contratos($contratista,$query)
@@ -201,6 +270,71 @@ class orden_ejecucionC
 
         SetAdoFieldsWhere('ID',$parametros["idrubro"]);
         return SetAdoUpdateGeneric(); 
+    }
+
+    function finalizar_ejecucion($parametros)
+    {
+        SetAdoAddNew("Trans_Contratistas");
+        SetAdoFields("TP",'N');
+
+        SetAdoFieldsWhere('Codigo',$parametros["contratista"]);
+        SetAdoFieldsWhere('No_Contrato',$parametros["contrato"]);
+        SetAdoFieldsWhere('Item',$_SESSION['INGRESO']["item"]);
+        SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']["periodo"]);
+
+        return SetAdoUpdateGeneric(); 
+    }
+
+    function contratosAvances($contratista,$query)
+    {
+
+       $lista =  $this->modelo->lista_orden_ejecucion_finalizada($query,$contratista);
+       $contratos = array();
+
+       foreach ($lista as $key => $value) {
+           $contratos[] = array('id'=>$value['No_Contrato'],'text'=>$value['No_Contrato']);
+       }
+       return $contratos;
+    }
+
+
+    function rubrosAvances($contratista,$query)
+    {
+
+       $lista =  $this->modelo->rubrosXcontratista($query,false,$contratista);
+       $contratos = array();
+
+       // print_r($lista);die();
+       foreach ($lista as $key => $value) {
+           $contratos[] = array('id'=>$value['Cta'],'text'=>$value['Cuenta']);
+       }
+       return $contratos;
+    }
+
+    function mesesAvances($rubrocta,$query)
+    {
+
+        $lista = $this->contratos->Trans_Contratistas_meses($id=false,$contrato=false,$rubrocta);
+
+        $mesesAvances = array();
+        foreach ($lista as $key => $value) {
+            $mesesAvances[] = array('id'=>$value['Mes'],'text'=> mes_X_nombre($value['Mes']));
+        }
+
+        return $mesesAvances;
+        print_r($lista);die();
+        // print_r($query);die();
+        // mes_X_nombre($num)
+    }
+
+    function cargar_lista_subrubros_avance($parametros)
+    {
+        // print_r($parametros);die();
+        $data = $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$parametros['contrato'],$parametros['rubro'],$parametros['mes']);
+
+        return $data;
+
+        // print_r($data);die();
     }
 }
 

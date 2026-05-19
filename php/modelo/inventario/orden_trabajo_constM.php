@@ -171,6 +171,34 @@ class orden_trabajo_constM
 
     function rubrosXcontratista($query,$contratistaCod=false)
     {
+        $sql="Select Orden_Trabajo,TCR.Cta,CC.Cuenta
+            From Trans_Contratistas_Rubros TCR
+            INNER JOIN Trans_Contratistas TC on TCR.Orden_Trabajo = TC.No_Contrato
+            INNER JOIN Catalogo_Cuentas CC ON  TCR.Cta = CC.Codigo 
+            where TCR.Item = TC.Item
+            AND TCR.Periodo = TC.Periodo
+            AND TC.Item = '".$_SESSION['INGRESO']['item']."'
+            AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+            AND TC.T = 'A'";
+            if($query)
+            {
+                $sql.=" AND CC.Cuenta like '%".$query."%'";
+
+            }
+            if($contratistaCod)
+            {
+                $sql.=" AND TC.Codigo = '".$contratistaCod."'";
+            }
+            $sql.=" group by  Orden_Trabajo,TCR.Cta,CC.Cuenta  ";
+
+            // print_r($sql);die();
+
+        return $this->db->datos($sql);
+
+    }
+
+    function rubrosXcontratistaAll($query=false,$contratistaCod=false,$rubro=false,$orden=false,$centro_costos=false)
+    {
         $sql="Select Orden_Trabajo,TCR.Cta,CC.Cuenta,TCR.Cantidad,TCR.Costo_Unit 
             From Trans_Contratistas_Rubros TCR
             INNER JOIN Trans_Contratistas TC on TCR.Orden_Trabajo = TC.No_Contrato
@@ -189,13 +217,30 @@ class orden_trabajo_constM
             {
                 $sql.=" AND TC.Codigo = '".$contratistaCod."'";
             }
-            $sql.=" group by  Orden_Trabajo,TCR.Cta,CC.Cuenta,TCR.Cantidad,TCR.Costo_Unit  ";
+
+            if($rubro)
+            {
+                $sql.=" AND TCR.Cta = '".$rubro."'";
+            }
+
+            if($orden)
+            {
+                $sql.=" AND Orden_Trabajo = '".$orden."'";  
+            }
+
+            if($centro_costos)
+            {
+                $sql.=" AND Centro_Costos = '".$centro_costos."'";  
+            }
+
+            $sql.=" group by  Orden_Trabajo,TCR.Cta,CC.Cuenta,TCR.Cantidad,TCR.Costo_Unit   ";
 
             // print_r($sql);die();
 
         return $this->db->datos($sql);
 
     }
+
     function SemanasXcentrosCostocXRubro($proyecto=false,$rubro=false)
     {
         $sql ="Select Semana

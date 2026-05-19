@@ -152,7 +152,8 @@ function centrosCostocXRubro(ordenNo)
               if(item.Semana !=null  && item.Semana!='' ){semana =item.Semana; }
 
               if(i==0){estado_tab = 'active'; estado_cont = 'show'; $('#txt_centro_costos').val(item.Centro_Costos); $('#txt_id_centro_costos').val(item.ID) }
-              pnl_tab+=`<button class="nav-link `+estado_tab+`" id="tab_`+item.Centro_Costos+`" data-bs-toggle="pill" data-bs-target="#content_tab_`+item.Centro_Costos+`" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true" onclick="$('#txt_centro_costos').val('`+item.Centro_Costos+`'); $('#txt_id_centro_costos').val(`+item.ID+`);cargar_lista_subrubros()">`+item.Detalle+`</button>`
+              pnl_tab+=`<button class="nav-link `+estado_tab+`" id="tab_`+item.Centro_Costos+`" data-bs-toggle="pill" data-bs-target="#content_tab_`+item.Centro_Costos+`" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true" onclick="$('#txt_centro_costos').val('`+item.Centro_Costos+`'); $('#txt_id_centro_costos').val(`+item.ID+`);cargar_lista_subrubros();;valores_default()
+()">`+item.Detalle+`</button>`
               pnl_cont+=`<div class="tab-pane fade `+estado_cont+` `+estado_tab+`" id="content_tab_`+item.Centro_Costos+`" role="tabpanel" aria-labelledby="v-pills-home-tab">
                             <div class="row">
 
@@ -188,6 +189,7 @@ function centrosCostocXRubro(ordenNo)
 
             cargar_lista_subrubros();
             $('#pnl_centro_costos_proyecto').removeClass("d-none");
+             valores_default();
              
         }
       });
@@ -499,6 +501,38 @@ function add_subRubro()
             {
               Swal.fire('El sub rubro ya esta ingresado','','error')
             }     
+        }
+    });   
+}
+
+function valores_default()
+{
+
+  var contratista = $('#ddl_contratista').val();
+  var rubro = $('#ddl_Rubro').val();
+  var Contrato=$('#ddl_Contrato').val();
+  var centroCostos=$('#txt_centro_costos').val();
+    
+  var parametros = 
+  {
+    'contratista': contratista,
+    'rubro': rubro,
+    'Contrato': Contrato,
+    'centroCostos':centroCostos,
+
+  }
+   $.ajax({
+        type: "POST",
+        url: '../controlador/inventario/orden_trabajo_constC.php?valores_default=true',
+        data:{parametros:parametros},
+        dataType:'json',
+        success: function(data)
+        {
+          $('#txt_cantidad_rela').val(data[0].Cantidad);
+          $('#txt_costo_pvp').val(data[0].Costo_Unit);
+
+       
+            console.log(data);
         }
     });   
 }

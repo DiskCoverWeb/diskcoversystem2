@@ -15,7 +15,7 @@ class contrato_trabajo_detalle_constM
 
     function detalleContrato($contrato=false,$T = '.')
     {
-        $sql = "select TC.ID,C.Cliente as 'Cliente',CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID  
+        $sql = "select TC.ID,C.Cliente as 'Cliente',C.Codigo,CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.TP  
         FROM Trans_Contratistas TC
         INNER JOIN Clientes C ON TC.Codigo = C.Codigo
         INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds
@@ -296,7 +296,7 @@ class contrato_trabajo_detalle_constM
 
     }
 
-    function Trans_Contratistas($id=false,$contrato=false)
+    function Trans_Contratistas($id=false,$contrato=false,$rubro=false)
     {
         $sql = "SELECT *
                 FROM Trans_Contratistas_Rubros CR 
@@ -310,6 +310,38 @@ class contrato_trabajo_detalle_constM
                 {                    
                     $sql.=" AND ID = '".$id."' ";
                 }
+                if($rubro)
+                {                    
+                    $sql.=" AND CR.Cta = '".$rubro."' ";
+                }
+
+                // print_r($sql);die();
+
+        return $this->db->datos($sql);
+    }
+
+    function Trans_Contratistas_meses($id=false,$contrato=false,$rubro=false)
+    {
+        $sql = "SELECT MONTH(Fecha_Inicio_Ejec) AS Mes
+                FROM Trans_Contratistas_Rubros CR 
+                WHERE CR.Item = '".$_SESSION['INGRESO']['item']."'
+                AND CR.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+                if($contrato)
+                {
+                    $sql.=" AND Orden_Trabajo = '".$contrato."' ";
+                }
+                if($id)
+                {                    
+                    $sql.=" AND ID = '".$id."' ";
+                }
+                if($rubro)
+                {                    
+                    $sql.=" AND CR.Cta = '".$rubro."' ";
+                }
+
+                $sql.=" GROUP BY  MONTH(Fecha_Inicio_Ejec)";
+
+                // print_r($sql);die();
 
         return $this->db->datos($sql);
     }

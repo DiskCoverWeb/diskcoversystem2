@@ -1,23 +1,18 @@
-<?php date_default_timezone_set('America/Guayaquil'); $contratista = '-1'; if(isset($_GET['contratistaDetalle']) && $_GET['contratistaDetalle']!=''){$contratista = $_GET['contratistaDetalle'];}?>
+<?php date_default_timezone_set('America/Guayaquil'); $ordenNo = '-1'; if(isset($_GET['ordenNo']) && $_GET['ordenNo']!=''){$ordenNo = $_GET['ordenNo'];}?>
 
 <script type="text/javascript">
- var contratista = '<?php echo $contratista; ?>';
+ var ordenNo = '<?php echo $ordenNo; ?>';
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
-<script type="text/javascript" src="../../dist/js/inventario/orden_ejecucion.js"></script>
+<script type="text/javascript" src="../../dist/js/inventario/control_avances.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
-    if(contratista!='-1')
-    {
-      buscar_contratistas(contratista);
-    }else{
-      contratistas();
-    }
+   contratistas();
    // ddl_cuenta_contable();
    // ddl_Proceso();
    // ddl_Grupo();
-   ddl_Rubro();
+   // ddl_Rubro();
 
   })
 
@@ -36,19 +31,19 @@
 <div class="row mb-2">
   <div class="col-sm-6">
      <div class="btn-group" role="group" aria-label="Basic example">
-        <a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
+       <!--  <a href="<?php $ruta = explode('&', $_SERVER['REQUEST_URI']);
                 print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
             <img src="../../img/png/salire.png">
-        </a>
+        </a> -->
         <button type="button" class="btn btn-outline-secondary" title="Informe excel" onclick="imprimir_excel()" >
           <img src="../../img/png/excel2.png">
         </button>
         <button type="button" class="btn btn-outline-secondary" title="Informe pdf" onclick="imprimir_pdf()">
           <img src="../../img/png/pdf.png">
         </button>
-        <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_orden_trabajo()">
+       <!--  <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_orden_trabajo()">
           <img src="../../img/png/grabar.png" >
-        </button>
+        </button> -->
       </div>
   </div>
 </div>
@@ -62,24 +57,31 @@
               <option value="">Seleccione</option>
             </select>
           </div>
+           <div class="col-lg-3">
+            <b>Contrato</b><br>
+            <select class="form-select form-select-sm" id="ddl_Contrato" name="ddl_Contrato" onchange="cargar_rubros()">
+              <option value="">Seleccione</option>
+            </select>
+          </div>
           <div class="col-lg-3">
             <b>Rubro </b><br>
-            <select class="form-select form-select-sm" id="ddl_Rubro" name="ddl_Rubro">
+            <select class="form-select form-select-sm" id="ddl_Rubro" name="ddl_Rubro" onchange="cargar_meses()">
               <option value="">seleccione</option>
             </select>
           </div>
-          <div class="col-lg-2">
+           <div class="col-lg-1">
+            <b>Mes </b><br>
+            <select class="form-select form-select-sm" id="ddl_meses" name="ddl_meses" onchange="cargar_lista_subrubros()">
+              <option value="">seleccione</option>
+            </select>
+          </div>
+          <div class="col-lg-1">
             <b>Semana </b><br>
             <select class="form-select form-select-sm" id="ddl_semana" name="ddl_semana" onchange="cargar_lista_subrubros()">
               <option value="">seleccione</option>
             </select>
           </div>
-          <div class="col-lg-3">
-            <b>Contrato</b><br>
-            <select class="form-select form-select-sm" id="ddl_Contrato" name="ddl_Contrato" disabled>
-              <option value="">Seleccione</option>
-            </select>
-          </div>
+         
           
         </div>
     </div>
@@ -89,34 +91,25 @@
   <div class="card">
     <div class="card-body">
        <div class="row">
-            <div class="col-sm-4">              
-              <b>Proyectos: </b><br>
-              <label id="lbl_proyecto">Proyecto de aaa</label>
-            </div>   
-           <!--  <div class="col-sm-12">
-              <b>Contratista: </b>    <br>         
-              <label>Proyecto de aaa</label>
-            </div> -->
-            <div class="col-sm-3">
-                <b>Se entrega a cargo material: </b><br>
-                <span class=" text-center" id="lbl_material">SI / NO</span>
+          <div class="col-sm-12">
+            <div class="table-responsive">
+              <table class="table table-hover" id="tbl_body_procesados">
+                <thead>
+                  <th></th>
+                  <th>Centro de costos</th>
+                  <th>Sub Rubros</th>
+                  <th>Unidad</th>
+                  <th>Orden</th>
+                  <th>Ejecutado</th>
+                  <th>Avance</th>
+                  <th>Costo orden</th>
+                  <th>Costo ejecutado</th>
+                  <th>Diferencia</th>
+                </thead>
+                
+              </table>            
             </div>
-            <div class="col-sm-5">
-              <b>El contratista ejecuta el trabajo con mas de una persona:</b><br>
-              <span class=" text-center" id="lbl_mas_personas"> SI / NO </span>
-            </div>
-           
-           <div class="col-sm-4">
-            <b>Tipo Contrato: </b><br>
-            <label id="lbl_categoria">Adicionales</label>
-          </div>
-          <div class="col-sm-4">
-            <b>Fecha inicio: </b>  <br>
-            <label id="lbl_fecha">2025-02-01</label>          
-          </div>
-          <div class="col-sm-2">
-            <b>Fecha fin: </b> <br>
-            <label id="lbl_fecha_v">2025-02-01</label>
+            
           </div>
         </div>
     </div>

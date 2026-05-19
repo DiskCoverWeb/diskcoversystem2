@@ -198,7 +198,7 @@ class ingreso_descargosC
 		foreach ($datos as $key => $value) {
 			$FechaInventario = date('Y-m-d');
  	 		$CodBodega = '01';
-			$costo_existencias =  Leer_Codigo_Inv($value['Codigo_Inv'],$FechaInventario,$CodBodega,$CodMarca='');
+			$costo_existencias = Leer_Codigo_Inv($value['Codigo_Inv'],$FechaInventario,$CodBodega,$CodMarca='');
 
 			// $costo_venta = $this->modelo->costo_venta();
 			// $costotra = $this->modelo->costo_producto($value['Codigo_Inv']);
@@ -796,7 +796,7 @@ class ingreso_descargosC
 			$costo =  $this->modelo->costo_venta($value['Codigo_Inv']);
 		// print_r($costo);die();
 			$nega = 0;
-			if(empty($costo))
+			if(count($costo)==0)
 			{
 				$costo[0]['Costo'] = 0;
 				$costo[0]['Existencia'] = 0;
@@ -810,6 +810,8 @@ class ingreso_descargosC
 			}
 		}
 		$negativos = substr($negativos,0,-1);
+
+		// print_r($negativos);die();
 
 		$asientos_SC = $this->modelo->datos_asiento_SC_trans($orden,$fecha,$negativos);
 		// $asientos_SC = $this->modelo->datos_asiento_SC($orden,$fecha,$negativos);
@@ -1140,10 +1142,15 @@ class ingreso_descargosC
 
 	function ingresar_trans_kardex_salidas($orden,$comprobante,$fechaC,$area,$ruc,$nombre,$negativos)
     {
+    	// print_r($orden);
+    	// print_r($area);
+    	// print_r($fechaC);
+    	// print_r($negativos);
+    	// print_r($ruc);die();
 		$datos_K = $this->modelo->cargar_pedidos_trans($orden,$area,$fechaC,$negativos,$ruc);
 		// print_r($datos_K);
 		// $comprobante = explode('.',$comprobante);
-		// $comprobante = explode('-',trim($comprobante[1]));
+		$comprobante = explode('-',trim($comprobante[1]));
 		$comprobante = $comprobante;
 		$resp = 1;
 		$lista = '';

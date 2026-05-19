@@ -118,6 +118,13 @@
     }
 
 
+    if(isset($_GET['valores_default']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->valores_default($parametros));
+    }
+
+
 
 
     class orden_trabajo_constC
@@ -358,6 +365,14 @@
             }
 
             return array('respuesta'=>$resp,'mensaje'=>$mensaje);
+        }
+
+        function valores_default($parametros)
+        {
+
+            $data = $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$parametros['rubro'],$parametros['Contrato'],$parametros['centroCostos']);
+            return $data;
+            // print_r($data);die();
         }
     }
 

@@ -33,8 +33,12 @@
                  render: function(data, type, item) {
                     // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
                     // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
-                 
-                    return `<a href="inicio.php?mod=`+ModuloActual+`&acc=detalle_orden_trabajo_const&ordenNo=${data.No_Contrato}">${data.No_Contrato}</a>`;                    
+                      if(data.TP=="N")
+                      {    
+                        return `<a href="inicio.php?mod=`+ModuloActual+`&acc=control_avance&Orden=${data.No_Contrato}">${data.No_Contrato}</a>`;                    
+                      }else{
+                         return `<a href="inicio.php?mod=`+ModuloActual+`&acc=orden_ejecucion_add&contratistaDetalle=${data.Codigo}">${data.No_Contrato}</a>`;                    
+                      }
                   }
               },
               { data: 'Fecha_D.date',  
@@ -46,9 +50,14 @@
                  render: function(data, type, item) {
                     // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
                     // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
-                 
-                    return `
-                     <button type="button" title="Eliminar Pedido" class="btn btn-danger btn-sm p-0 m-0" onclick="eliminar_pedido('${data.ID}')" disabled=""><i class="bx bx-trash m-0"></i></button>`;                    
+                      if(data.TP=='N')
+                      {
+                         return `Finalizado`;
+                      }else
+                      {
+                         return `Pendiente`
+                      }
+                     // <button type="button" title="Eliminar Pedido" class="btn btn-danger btn-sm p-0 m-0" onclick="eliminar_pedido('${data.ID}')" disabled=""><i class="bx bx-trash m-0"></i></button>`;                    
                   }
               },
               
@@ -129,6 +138,27 @@ function contratistas()
         cache: true
       }
     });
+}
+
+function buscar_contratistas(contratista)
+{
+  var parametros = 
+  {
+    'contratista':contratista,
+  }
+  $.ajax({
+        type: "POST",
+        url:   '../controlador/inventario/orden_ejecucionC.php?contratistasBuscar=true',
+        data:{parametros:parametros},
+        dataType:'json',
+        success: function(data)
+        {
+          console.log(data);    
+          $('#ddl_contratista').select2();      
+          $('#ddl_contratista').append($('<option>',{value:  data[0].id, text: data[0].text,selected: true }));
+          cargar_contratos();
+        }
+    });   
 }
 
 function cargar_contratos()
@@ -555,7 +585,7 @@ function guardar_periodo()
           if(data==1)
           {
             Swal.fire("Fechas de ejecucion Asignadas","","success");
-            centrosCostocXRubro(contrato);
+            // centrosCostocXRubro(contrato);
             $('#myModal_periodo_trabajo').modal('hide');
           }       
           
@@ -568,28 +598,30 @@ function grabar_orden_trabajo()
 {
   var rubro = $('#ddl_Rubro').val()
   var contrato = $('#ddl_Contrato').val()
+  var contratista = $('#ddl_contratista').val()
+  if(contrato=="" || rubro=="")
+  {
+    Swal.fire("Seleccione contratista y rubro","","info");
+    return false;
+  }
 
   var parametros = 
   {
     'rubro':rubro,
     'contrato':contrato,
+    'contratista':contratista,
   }
    $.ajax({
         type: "POST",
-        url: '../controlador/inventario/orden_trabajo_constC.php?grabar_orden_trabajo=true',
+        url: '../controlador/inventario/orden_ejecucionC.php?finalizar_ejecucion=true',
         data:{parametros:parametros},
         dataType:'json',
         success: function(data)
-        {
-          if(data.respuesta!=1)
+        {          
+          if(data==1)
           {
-            Swal.fire("No se pudo Guardar",data.mensaje,"info");
-          }  
-
-          if(data.respuesta==1)
-          {
-            Swal.fire("Orden de trabajo generada","","success").then(function(){
-              location.reload();
+            Swal.fire("Orden de ejecucion finalizada","","success").then(function(){
+                location.href="inicio.php?mod="+ModuloActual+"&acc=orden_ejecucion";
             });
           }       
           
@@ -614,7 +646,7 @@ function calcular_ejecutado(id)
   var total = eje*pvp;
   
   $('#txt_ejecutado_pvp_'+id).val(pvp);
-  $('#txt_ejecutado_total_'+id).val(total);
+  $('#txt_ejecutado_total_'+id).val(total.toFixed(2));
   $('#txt_ejecutado_dif_'+id).val(dif);
 
 }
