@@ -1150,8 +1150,9 @@ class ingreso_descargosC
 		$datos_K = $this->modelo->cargar_pedidos_trans($orden,$area,$fechaC,$negativos,$ruc);
 		// print_r($datos_K);
 		// $comprobante = explode('.',$comprobante);
-		$comprobante = explode('-',trim($comprobante[1]));
-		$comprobante = $comprobante;
+		// print_r($comprobante);die();
+		// $comprobante = explode('-',trim($comprobante[1]));
+		// $comprobante = $comprobante;
 		$resp = 1;
 		$lista = '';
 		foreach ($datos_K as $key => $value) {
@@ -1185,6 +1186,8 @@ class ingreso_descargosC
 
 		    $where[0]['campo'] = 'ID'; 
 		    $where[0]['valor'] = $value['ID'];
+
+		    // print_r($datos);die();
 
 		    $res = update_generico($datos,'Trans_Kardex',$where);
 
