@@ -10328,10 +10328,9 @@ function Leer_Datos_Clientes2($Codigo_CIRUC_Cliente, $NoActualizaSP = false) {
     return $TBenef;
 }
 
-function Datos_Iniciales_Entidad_SP_MySQL($empresa, $usuario)
+function Datos_Iniciales_Entidad_SP_MySQL($empresa,$CadenaParcial)
 {
-  global $Fecha_CO, $Fecha_CE, $Fecha_VPN, $Fecha_DB, $Fecha_P12, $AgenteRetencion, $MicroEmpresa, $EstadoEmpresa, $DescripcionEstado, $NombreEntidad, $RepresentanteLegal, $MensajeEmpresa, $ComunicadoEntidad, $SerieFE, $Cartera, $Cant_FA, $TipoPlan, $PCActivo, $EstadoUsuario, $ConexionConMySQL;
-
+// print_r($empresa);die();
   $ConexionConMySQL = false;
   $PCActivo = true;
   $EstadoUsuario = true;
@@ -10349,100 +10348,105 @@ function Datos_Iniciales_Entidad_SP_MySQL($empresa, $usuario)
   $Cartera = 0;
   $Cant_FA = 0;
   $TipoPlan = 0;
-  
-  $CadenaParcial = "";
-  $modulos = getModulosGeneral();
-  foreach ($modulos as $key => $row) {
-        $CadenaParcial .= $row["Modulo"] . "^" . $row["Item"] . "^" . $row["Codigo"] . "^~";
-  }
-  $ItemEmpresa = $empresa["Item"];
-  $RUCEmpresa = $empresa["RUC"];
-  $CodigoUsuario = $usuario['Codigo'];
-  $NombreUsuario = $usuario['Nombre_Completo'];
-  $IDEUsuario = $usuario['Usuario'];
-  $PWRUsuario = $usuario['Clave'];
-  $NombreEmpresa = $empresa["Empresa"];
-  $RazonSocialEmpresa = $empresa["Razon_Social"];
-  $NombreCiudad = $empresa["Ciudad"];
-  $ContadorEmpresa = $empresa["Contador"];
-  $ContadorRUC = $empresa["RUC_Contador"];
-  $GerenteEmpresa = $empresa["Gerente"];
-  $NLogoTipo = $empresa["Logo_Tipo"];
-  $NMarcaAgua = $empresa["Marca_Agua"];
-  $EmailUsuario = $usuario['EmailUsuario'];
+
+
+  $CodigoUsuario = @$_SESSION['INGRESO']['CodigoU'];
+  $NombreUsuario = @$_SESSION['INGRESO']['Nombre_Completo'];
+  $IDEUsuario = @$_SESSION['INGRESO']['usuario'];
+  $PWRUsuario = @$_SESSION['INGRESO']['pass'];
+  $EmailUsuario = @$_SESSION['INGRESO']['EmailUsuario'];
   $NivelesDeAccesos = $CadenaParcial;
   $IP_Local = @$_SESSION['INGRESO']['IP_Local'];
   $IP_WAN = @$_SESSION['INGRESO']['IP_Wan'];
   $PC_Nombre = @$_SESSION['INGRESO']['HOST_NAME'];
   $PC_MAC = @$_SESSION['INGRESO']['PC_MAC'];
 
-  $conn = new db();
-  //Enviamos los parametro de solo entrada al SP
-    $parametros = array(
-      array(&$ItemEmpresa, 'IN'),
-      array(&$RUCEmpresa, 'IN'),
+
+  $parametros = array(
+      array(&$empresa["Item"], 'IN'),
+      array(&$empresa["RUC"], 'IN'),
       array(&$CodigoUsuario, 'IN'),
       array(&$NombreUsuario, 'IN'),
       array(&$IDEUsuario, 'IN'),
       array(&$PWRUsuario, 'IN'),
-      array(&$NombreEmpresa, 'IN'),
-      array(&$RazonSocialEmpresa, 'IN'),
-      array(&$NombreCiudad, 'IN'),
-      array(&$ContadorEmpresa, 'IN'),
-      array(&$ContadorRUC, 'IN'),
-      array(&$GerenteEmpresa, 'IN'),
-      array(&$NLogoTipo, 'IN'),
-      array(&$NMarcaAgua, 'IN'),
+      array(&$empresa["Empresa"], 'IN'),
+      array(&$empresa["Razon_Social"], 'IN'),
+      array(&$empresa["Ciudad"], 'IN'),
+      array(&$empresa["Contador"], 'IN'),
+      array(&$empresa["RUC_Contador"], 'IN'),
+      array(&$empresa["Gerente"], 'IN'),
+      array(&$empresa["Logo_Tipo"], 'IN'),
+      array(&$empresa["Marca_Agua"], 'IN'),
       array(&$EmailUsuario, 'IN'),
       array(&$NivelesDeAccesos, 'IN'),
       array(&$IP_Local, 'IN'),
       array(&$IP_WAN, 'IN'),
       array(&$PC_Nombre, 'IN'),
       array(&$PC_MAC, 'IN'),
-      array("FechaCO", 'OUT'),
-      array("FechaCE", 'OUT'),
-      array("FechaDB", 'OUT'),
-      array("FechaP12", 'OUT'),
-      array("AgenteRetencion", 'OUT'),
-      array("MicroEmpresa", 'OUT'),
-      array("EstadoEmpresa", 'OUT'),
-      array("DescripcionEstado", 'OUT'),
-      array("NombreEntidad", 'OUT'),
-      array("Representante", 'OUT'),
-      array("MensajeEmpresa", 'OUT'),
-      array("ComunicadoEntidad", 'OUT'),
-      array("SerieFA", 'OUT'),
-      array("TotCartera", 'OUT'),
-      array("CantFA", 'OUT'),
-      array("TipoPlan", 'OUT'),
-      array("pActivo", 'OUT'),
-      array("EstadoUsuario", 'OUT'),
-      array("TokenEmpresa", 'OUT'),
-      array("URLEmpresa", 'OUT'),
-  );
-  $sql = "Call sp_mysql_datos_iniciales_entidad";
 
-  $rsMySQL =  $conn->ejecutar_procesos_almacenados($sql,$parametros, true,$tipo='MYSQL');
-  $Fecha_CO = $rsMySQL["@FechaCO"];
-  $Fecha_CE = $rsMySQL["@FechaCE"];
-  // $Fecha_VPN = $rsMySQL["@FechaVPN"];
-  $Fecha_DB = $rsMySQL["@FechaDB"];
-  $Fecha_P12 = $rsMySQL["@FechaP12"];
-  $AgenteRetencion = $rsMySQL["@AgenteRetencion"];
-  $MicroEmpresa = $rsMySQL["@MicroEmpresa"];
-  $EstadoEmpresa = $rsMySQL["@EstadoEmpresa"];
-  $DescripcionEstado = $rsMySQL["@DescripcionEstado"];
-  $NombreEntidad = $rsMySQL["@NombreEntidad"];
-  $RepresentanteLegal = $rsMySQL["@Representante"];
-  $MensajeEmpresa = $rsMySQL["@MensajeEmpresa"];
-  $ComunicadoEntidad = $rsMySQL["@ComunicadoEntidad"];
-  $SerieFE = $rsMySQL["@SerieFA"];
-  $Cartera = $rsMySQL["@TotCartera"];
-  $Cant_FA = $rsMySQL["@CantFA"];
-  $TipoPlan = $rsMySQL["@TipoPlan"];
-  $PCActivo = $rsMySQL["@pActivo"];
-  $EstadoUsuario = $rsMySQL["@EstadoUsuario"];
-  $ConexionConMySQL = true;
+      //salida data
+      array("FechaCO","OUT"), 
+      array("FechaCE","OUT"),
+      array("FechaDB","OUT"),
+      array("FechaP12","OUT"),
+      array("AgenteRetencion","OUT"),
+      array("MicroEmpresa","OUT"),
+      array("EstadoEmpresa","OUT"),
+      array("DescripcionEstado","OUT"),
+      array("NombreEntidad","OUT"),
+      array("Representante","OUT"),
+      array("MensajeEmpresa","OUT"),
+      array("ComunicadoEntidad","OUT"),
+      array("SerieFA","OUT"),
+      array("TotCartera","OUT"),
+      array("CantFA","OUT"),
+      array("TipoPlan","OUT"),
+      array("pActivo","OUT"),
+      array("EstadoUsuario","OUT"),
+      array("TokenEmpresa","OUT"),
+      array("URLEmpresa","OUT"),
+      array("Version_Nueva","OUT"),
+      array("Archivo_Incluido","OUT"),
+      array("Link_Canal","OUT")      
+  );
+
+
+  $conn = new db();
+  $sql = "Call sp_mysql_leer_entidad";
+  try {
+      $rsMySQL =  $conn->ejecutar_procesos_almacenados($sql,$parametros, true,'MYSQL');
+      $rsMySQL['ConexionConMySQL'] = 1;
+  } catch (Exception $e) {
+
+    $rsMySQL['ConexionConMySQL'] = 0;    
+  }
+
+  return $rsMySQL;
+
+
+  // print_r($rsMySQL);die();
+
+
+  // $Fecha_CO = $rsMySQL["@FechaCO"];
+  // $Fecha_CE = $rsMySQL["@FechaCE"];
+  // // $Fecha_VPN = $rsMySQL["@FechaVPN"];
+  // $Fecha_DB = $rsMySQL["@FechaDB"];
+  // $Fecha_P12 = $rsMySQL["@FechaP12"];
+  // $AgenteRetencion = $rsMySQL["@AgenteRetencion"];
+  // $MicroEmpresa = $rsMySQL["@MicroEmpresa"];
+  // $EstadoEmpresa = $rsMySQL["@EstadoEmpresa"];
+  // $DescripcionEstado = $rsMySQL["@DescripcionEstado"];
+  // $NombreEntidad = $rsMySQL["@NombreEntidad"];
+  // $RepresentanteLegal = $rsMySQL["@Representante"];
+  // $MensajeEmpresa = $rsMySQL["@MensajeEmpresa"];
+  // $ComunicadoEntidad = $rsMySQL["@ComunicadoEntidad"];
+  // $SerieFE = $rsMySQL["@SerieFA"];
+  // $Cartera = $rsMySQL["@TotCartera"];
+  // $Cant_FA = $rsMySQL["@CantFA"];
+  // $TipoPlan = $rsMySQL["@TipoPlan"];
+  // $PCActivo = $rsMySQL["@pActivo"];
+  // $EstadoUsuario = $rsMySQL["@EstadoUsuario"];
+  // $ConexionConMySQL = true;
 }
 
 function getModulosGeneral()
@@ -10465,12 +10469,12 @@ function sp_Iniciar_Datos_Default($Item, $Periodo, $Cotizacion, $RUCEmpresa, $Co
   $PorcIVA = 0.0; //float
   $parametros = array(
     array(&$Item, SQLSRV_PARAM_IN),
-    array(&$Periodo, SQLSRV_PARAM_IN),
-    array(&$Cotizacion, SQLSRV_PARAM_IN),
     array(&$RUCEmpresa, SQLSRV_PARAM_IN),
+    array(&$Periodo, SQLSRV_PARAM_IN),
     array(&$CodigoUsuario, SQLSRV_PARAM_IN),
     array(&$FechaC, SQLSRV_PARAM_IN),
     array(&$NumModulo, SQLSRV_PARAM_IN),
+    array(&$Cotizacion, SQLSRV_PARAM_IN),
 
     array(&$No_ATS, SQLSRV_PARAM_INOUT),
     array(&$ListSucursales, SQLSRV_PARAM_INOUT),
@@ -10479,7 +10483,7 @@ function sp_Iniciar_Datos_Default($Item, $Periodo, $Cotizacion, $RUCEmpresa, $Co
     array(&$SiUnidadEducativa, SQLSRV_PARAM_INOUT),
     array(&$PorcIVA, SQLSRV_PARAM_INOUT),
   );
-  $sql = "EXEC sp_Iniciar_Datos_Default @Item=?, @Periodo=?, @Cotizacion=?, @RUCEmpresa=?, @CodigoUsuario=?, @FechaC=?, @NumModulo=? , @No_ATS=?, @ListSucursales=?, @NombreProvincia=?, @ConSucursal=?, @SiUnidadEducativa=?, @PorcIVA=?";
+  $sql = "EXEC sp_Iniciar_Datos_Default @Item=?, @RUCEmpresa=?, @Periodo=?, @CodigoUsuario=?, @FechaC=?, @NumModulo=?, @Cotizacion=?, @No_ATS=?, @ListSucursales=?, @NombreProvincia=?, @ConSucursal=?, @SiUnidadEducativa=?, @PorcIVA=?";
   $exec = $conn->ejecutar_procesos_almacenados($sql,$parametros);
 
     $_SESSION['INGRESO']['porc'] = $PorcIVA;

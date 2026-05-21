@@ -544,6 +544,190 @@ class loginM
 		return $datos;
 	}
 
+	function validacionAcceso($nombreEmpresa, $Usuario, $Clave)
+	{
+		$CadenaParcial = "";
+
+	    $sSQL = "SELECT Modulo, Item, Codigo
+        FROM Acceso_Empresa 
+        WHERE Modulo <> '00' ";
+	    $AdoAux = $this->db->datos($sSQL);
+	    if(count($AdoAux)>0)
+	    {
+	    	$CadenaParcial = $CadenaParcial.$AdoAux[0]["Modulo"]."^".$AdoAux[0]["Item"]."^".$AdoAux[0]["Codigo"]."^~";
+	    }
+
+	    if(strlen($CadenaParcial) > 65535 )
+	    {
+	     	return array('resp'=>"-1",'msj'=>"Falta ampliar los niveles de seguridad.");
+	    }
+
+	    $Minutos = time();
+	    $sSQL = "SELECT ".Full_Fields("Empresas")." 
+	         FROM Empresas 
+	         WHERE Empresa = '".$nombreEmpresa."' ";
+
+	    $AdoEmp = $this->db->datos($sSQL);
+	    // $Cadena = Format(Time - Minutos, "hh:mm:ss") & vbCrLf
+	    // Minutos = Time
+	    // // 'Leer_Variables_Sesion_Empresa DCEmpresa
+	    // Cadena = Cadena & Format(Time - Minutos, "hh:mm:ss") & vbCrLf
+	    // // 'MsgBox Cadena
+	    if(count($AdoEmp)>0)
+	    {
+		    // print_r($AdoEmp);
+		    //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+		    //Asignacion de correos automáticos para envio a procesos automatizados
+		    $Lista_De_Correos = array();
+		    for ($i = 0; $i < 7; $i++) {
+		        $Lista_De_Correos[$i] = array(
+		            'Correo_Electronico' => CorreoDiskCover,
+		            'Contraseña' => ContrasenaDiskCover
+		        );
+		    }
+
+		    if (strlen($AdoEmp[0]["Email_Conexion"]) > 1 && strlen($AdoEmp[0]["Email_Clave"]) > 1) {
+		        $Lista_De_Correos[0]['Correo_Electronico'] = $AdoEmp[0]["Email_Conexion"];
+		        $Lista_De_Correos[0]['Contraseña'] = $AdoEmp[0]["Email_Clave"];
+		    }
+
+		    if (strlen($AdoEmp[0]["Email_Conexion_CE"]) > 1 && strlen($AdoEmp[0]["Email_Clave_CE"]) > 1) {
+		        $Lista_De_Correos[4]['Correo_Electronico'] = $AdoEmp[0]["Email_Conexion_CE"];
+		        $Lista_De_Correos[4]['Contraseña'] = $AdoEmp[0]["Email_Clave_CE"];
+		    }
+
+		    $Lista_De_Correos[6]['Correo_Electronico'] = 'credenciales@diskcoversystem.com';
+		    $Lista_De_Correos[6]['Contraseña'] = 'Dlcjvl1210@Credenciales';
+		    // print_r($Lista_De_Correos);die();
+
+
+	        // '|--=:******* CONECCON A MYSQL *******:=--|
+
+			    $dataMysql = Datos_Iniciales_Entidad_SP_MySQL($AdoEmp[0],$CadenaParcial);
+
+	        // '|--=:******* --------.------- *******:=--|
+
+			    if ($dataMysql['ConexionConMySQL']) {
+			        if ($AdoEmp[0]["Estado"] != $dataMysql['@EstadoEmpresa'] || $AdoEmp[0]["Cartera"] != $dataMysql['@TotCartera'] || $AdoEmp[0]["Cant_FA"] != $dataMysql['@CantFA'] || $AdoEmp[0]["Fecha_CE"]->format("Y-m-d") != $dataMysql['@FechaCE'] || $AdoEmp[0]["Fecha_P12"]->format("Y-m-d") != $dataMysql['@FechaP12'] || $AdoEmp[0]["Tipo_Plan"] != $dataMysql['@TipoPlan'] || $AdoEmp[0]["Serie_FA"] != $dataMysql['@SerieFA']) {
+			            $sql = "UPDATE Empresas
+			                  SET Cartera = '".$dataMysql['@TotCartera']."',
+			                  Cant_FA = '".$dataMysql['@CantFA']."', 
+			                  Fecha_CE = '".$dataMysql['@FechaCE']."', 
+			                  Fecha_P12 = '".$dataMysql['@FechaP12']."', 
+			                  Tipo_Plan = '".$dataMysql['@TipoPlan']."', 
+			                  Estado = '".$dataMysql['@EstadoEmpresa']."', 
+			                  Serie_FA = '".$dataMysql['@SerieFA']."'
+			                  WHERE ID = '" . $AdoEmp[0]["ID"] . "'";
+			                  // print_r($sql);die();
+			            $this->db->String_Sql($sql);
+			        }
+			    }
+			    // print_r($dataMysql);die();
+
+			    if (!$dataMysql["@pActivo"]) {
+			        $Cadena = $_SESSION['INGRESO']['Nombre_Completo'] . "\nSu Equipo se encuentra en LISTA NEGRA, ingreso no autorizado, comuniquese con el Administrador del Sistema";
+			        unset($_SESSION['INGRESO']['IDEntidad']);
+			        unset($_SESSION['INGRESO']['empresa']);
+			        return array('rps' => false, "mensaje" => $Cadena);
+			    }
+			    if (!$dataMysql["@EstadoUsuario"]) {
+			        $Cadena = $_SESSION['INGRESO']['Nombre_Completo'] . "\nSu ingreso no esta autorizado, comuniquese con el Administrador del Sistema";
+			        unset($_SESSION['INGRESO']['IDEntidad']);
+			        unset($_SESSION['INGRESO']['empresa']);
+			        return array('rps' => false, "mensaje" => $Cadena);
+			    }
+			
+		
+			    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			    // Actualiza Datos iniciales de la Empresa
+			    $NumEmpresa = $AdoEmp[0]['Item'];
+			    $Periodo_Contable = G_NINGUNO;
+			    $Dolar = 0;
+			    $RUCEmpresa = $AdoEmp[0]['RUC'];
+			    $CodigoUsuario = $_SESSION['INGRESO']['CodigoU'];
+
+			    $EmailEmpresa = $AdoEmp[0]["Email"];
+			    $EmailContador = $AdoEmp[0]["Email_Contabilidad"];
+			    $EmailProcesos = $AdoEmp[0]["Email_Procesos"];
+			    $Email_CE_Copia = (bool) $AdoEmp[0]["Email_CE_Copia"];
+			    $NumModulo = "00";
+			    $Fecha_CE = $dataMysql['@FechaCE'];
+
+			    $data = sp_Iniciar_Datos_Default($NumEmpresa, $Periodo_Contable, $Dolar, $RUCEmpresa, $CodigoUsuario, $Fecha_CE, $NumModulo);
+
+			    // Resultado del SP del MySQL
+			    $ListaFacturas = "";
+			    $TMail = new stdClass();
+			    $TMail->Subject = "CARTERA VENCIDA";
+			    $Evaluar = false;
+			    if ($dataMysql['@TotCartera'] != 0 && $dataMysql['@CantFA'] != 0) {
+			        $ListaFacturas = "ESTIMADO " . strtoupper($dataMysql['@Nombre_Entidad']) . ", SE LE COMUNICA QUE USTED MANTIENE UNA CARTERA VENCIDA DE USD " . number_format($dataMysql['@TotCartera'], 2, '.', ',') . ", EQUIVALENTE A " . $dataMysql['@CantFA'] . " FACTURA(S) EMITIDA(S) A USTED." . PHP_EOL;
+			    }
+
+			    switch ($dataMysql['@EstadoEmpresa']) {
+			        case "VEN30":
+			            $ListaFacturas .= "<b>PRIMER COMUNICADO DE ADVERTENCIA:</b><br> SU EMPRESA ESTA POR SER BLOQUEADA POR CARTERA DE 30 DIAS DE VENCIMIENTO, ";
+			            break;
+			        case "VEN60":
+			            $ListaFacturas .= "<b>SEGUNDO COMUNICADO DE ADVERTENCIA:</b><br> SU EMPRESA ESTA POR SER BLOQUEADA POR CARTERA DE 60 DIAS DE VENCIMIENTO, ";
+			            break;
+			        case "VEN90":
+			            $ListaFacturas .= "<b>TERCER COMUNICADO DE ADVERTENCIA:</b><br> SU EMPRESA ESTA POR SER BLOQUEADA POR CARTERA DE 90 DIAS DE VENCIMIENTO, ";
+			            break;
+			        case "VEN360":
+			            $ListaFacturas .= "<b>SU EMPRESA ESTA BLOQUEADA POR CARTERA DE 360 DIAS DE VENCIMIENTO</b><br> ";
+			            $TMail->Subject = "EMPRESA BLOQUEADA POR VENCIMIENTO MAYOR A 360 DIAS";
+			            $Evaluar = true;
+			            break;
+			        case "VEN180":
+			        case "MAS360":
+			            $ListaFacturas .= "<b>LO SENTIMOS, SU EMPRESA ESTA SUSPENDIDA EN EL SISTEMA</b><br> ";
+			            $TMail->Subject = "EMPRESA SUSPENDIDA";
+			            $Evaluar = true;
+			            break;
+			        case "BLOQ":
+			            $ListaFacturas .= "<b>LO SENTIMOS, SU EMPRESA NO ESTA ACTIVA EN EL SISTEMA</b><br> ";
+			            $TMail->Subject = "BLOQUEO DEFINITIVO, COMUNIQUESE A DISKCOVER SYSTEM";
+			            $Evaluar = true;
+			            break;
+			    }
+
+			    // print_r($ListaFacturas);die();
+			    // print_r($_SESSION['INGRESO']);die();
+
+			     control_procesos(G_NORMAL,"Ingreso a ".$_SESSION['INGRESO']['noempr'], "R.U.C. ".$_SESSION['INGRESO']['RUCEnt'].", Item: ".$_SESSION['INGRESO']['item']);
+			    if (strlen($ListaFacturas) > 1) {
+			        $ListaFacturas .= "COMUNIQUESE CON SERVICIO AL CLIENTE DE DISKCOVER SYSTEM A LOS TELEFONOS: 098-910-5300/098-652-4396/099-965-4196, "
+			            . "O ENVIE UN MAIL A carteraclientes@diskcoversystem.com; CON EL COMPROBANTE DE DEPOSITO Y ASI PROCEDER A REALIZAR "
+			            . "LA ACTUALIZACION DE LA JUSTIFICACION EN EL SISTEMA." . PHP_EOL;
+
+			        $TMail->de = CorreoDiskCover;
+			        $TMail->Mensaje = $ListaFacturas;
+			        $TMail->Adjunto = "";
+			        $TMail->Credito_No = "";
+			        $TMail->para = "";
+			        $TMail->para = Insertar_Mail($TMail->para, $EmailEmpresa);
+			        $TMail->para = Insertar_Mail($TMail->para, $EmailContador);
+			        if ($Email_CE_Copia) {
+			            $TMail->para = Insertar_Mail($TMail->para, $EmailProcesos);
+			        }
+			        $email = new enviar_emails();
+			        //$email->FEnviarCorreos($TMail, $Lista_De_Correos, $empresa[0]["Item"]);
+			        control_procesos("Q", "ACCESO DENEGADO A: ".$_SESSION['INGRESO']['noempr'], "Motivo: ".$_SESSION['INGRESO']['RUCEnt']);
+
+			        return array('rps' => !$Evaluar, "mensaje" => $ListaFacturas);
+			    }
+
+
+
+			    return array('rps' => true);
+			}else
+			{
+				return  $NumEmpresa = G_NINGUNO;
+			}
+	}
+
+
 }
 
 ?>

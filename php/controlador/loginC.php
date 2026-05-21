@@ -154,7 +154,14 @@ class loginC
 		      		$_SESSION['INGRESO']['Foto'] = 'ejecutivo.png';
 		      	}
 
-		      	$this->variables_sistema($parametro['entidad'], $parametro['item']);
+		      	$resp = $this->variables_sistema($parametro['entidad'], $parametro['item']);
+		      	if($resp['rps'])
+		      	{
+		      		return 1;
+		      	}else
+		      	{
+		      		return $resp;
+		      	}
 
 				return 1;
 			}else
@@ -185,9 +192,14 @@ class loginC
 		      		$_SESSION['INGRESO']['Foto'] = 'ejecutivo.png';
 		      	}
 
-		      	$this->variables_sistema($parametro['entidad'], $parametro['item']);
-
-				return 1;
+		      	$resp = $this->variables_sistema($parametro['entidad'], $parametro['item']);
+		      	if($resp['rps'])
+		      	{
+		      		return 1;
+		      	}else
+		      	{
+		      		return $resp;
+		      	}
 			}else
 			{
 				return -1;
@@ -202,10 +214,14 @@ class loginC
 	    $_SESSION['INGRESO']['LOCAL_SQLSERVER'] = 'NO'; //quitar despues    
 	    $_SESSION['INGRESO']['Fecha_Actualizacion'] = '';
 
+
 	    $empresa = $this->modelo->getEmpresas($Entidad,$Item);
 	    // print_r($empresa);die();
 	    if (count($empresa) > 0) 
 	    {
+	        // print_r($_SESSION['INGRESO']);die();
+	        
+
 	        $empresa[0]['Servicio'] = 0;
 	        //datos base de mysql
 	        $_SESSION['INGRESO']['empresa'] = $empresa[0]['IDEm'].'-'.$empresa[0]['Item'];;
@@ -239,10 +255,7 @@ class loginC
 	        }
 	        $this->SeteosCtas();
 
-	        // print_r($empresa);die();
-
-
-
+	      
 	        $_SESSION['INGRESO']['Moneda'] = $empresa[0]['S_M'];
 	        $_SESSION['INGRESO']['OpcCoop'] = $empresa[0]['Opc'];
 	        $_SESSION['INGRESO']['NombrePais'] = $empresa[0]['Pais'];
@@ -385,9 +398,13 @@ class loginC
 	        $_SESSION['INGRESO']['NombreProvincia'] = G_NINGUNO;
 	        $_SESSION['INGRESO']['SiUnidadEducativa'] = 0;
 
-	        //INICIO VALIDAMOS SI EL USUARIO TIENE PERMISO DE ACCESO AL SISTEMA
-	        //return validacionAcceso($empresa[0]['Empresa'], $_SESSION['INGRESO']['Mail'], $_SESSION['INGRESO']['Clave']);
+	         // print_r($empresa);die();
+
+	    	//INICIO VALIDAMOS SI EL USUARIO TIENE PERMISO DE ACCESO AL SISTEMA
+	        return $this->modelo->validacionAcceso($empresa[0]['Empresa'], $_SESSION['INGRESO']['Mail'], $_SESSION['INGRESO']['Clave']);
 	        //FIN VALIDAMOS SI EL USUARIO TIENE PERMISO DE ACCESO AL SISTEMA
+
+
 
 	        // print_r($_SESSION['INGRESO']);die();
 
