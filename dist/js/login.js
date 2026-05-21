@@ -286,18 +286,23 @@ function validar_entidad()
         success:  function (response) { 
 
         	console.log(response);
-        if(response==-1)
+        if(response.rps==-1)
         {
         	Swal.fire('Clave o usuario invalidos!','No se pudo acceder. Comuniquese con la institucion para ser habilitado.','error');
         	$('#btn_ingreso').attr('disabled',false);
       		$('#loader_ingreso').css('display','none');
-        }else if(response==-2)
+        }else if(response.rps==-2)
         {        	
         	Swal.fire('Clave o usuario invalidos!','No se pudo acceder.  Comuniquese con la institucion para ser habilitado.','error');
         	$('#btn_ingreso').attr('disabled',false);
       		$('#loader_ingreso').css('display','none');
+        }else if(response.rps==-3)
+        {     	
+        	Swal.fire('',response.mensaje,'error');
+        		$('#btn_ingreso').attr('disabled',false);
+      		$('#loader_ingreso').css('display','none');
         }
-        else
+        else if(response.rps==1)
         {     	
         	// console.log(response); return false;
         	window.location.href = "modulos.php";

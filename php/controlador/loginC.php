@@ -155,18 +155,17 @@ class loginC
 		      	}
 
 		      	$resp = $this->variables_sistema($parametro['entidad'], $parametro['item']);
+		      	// print_r($resp);die();
 		      	if($resp['rps'])
 		      	{
-		      		return 1;
+		      		return array('rps'=>1,'mensaje'=>"");
 		      	}else
 		      	{
 		      		return $resp;
 		      	}
-
-				return 1;
 			}else
 			{
-				return -1;
+				return array('rps'=>-1,'mensaje'=>"");
 			}
 			
 
@@ -191,18 +190,19 @@ class loginC
 		      	}else{
 		      		$_SESSION['INGRESO']['Foto'] = 'ejecutivo.png';
 		      	}
-
+		      	// print_r($datos);die();
 		      	$resp = $this->variables_sistema($parametro['entidad'], $parametro['item']);
-		      	if($resp['rps'])
+		      	// print_r($resp);die();
+		      	if($resp['rps']==1)
 		      	{
-		      		return 1;
+		      		return array('rps'=>1,'mensaje'=>"");
 		      	}else
 		      	{
 		      		return $resp;
 		      	}
 			}else
 			{
-				return -1;
+				return array('rps'=>-1,'mensaje'=>"");
 			}
 		}
 	}
@@ -401,7 +401,11 @@ class loginC
 	         // print_r($empresa);die();
 
 	    	//INICIO VALIDAMOS SI EL USUARIO TIENE PERMISO DE ACCESO AL SISTEMA
-	        return $this->modelo->validacionAcceso($empresa[0]['Empresa'], $_SESSION['INGRESO']['Mail'], $_SESSION['INGRESO']['Clave']);
+	        $dataAcc = $this->modelo->validacionAcceso($empresa[0]['Empresa'], $_SESSION['INGRESO']['Mail'], $_SESSION['INGRESO']['Clave']);
+
+	        return $dataAcc;
+
+	        // print_r($dataAcc);die();
 	        //FIN VALIDAMOS SI EL USUARIO TIENE PERMISO DE ACCESO AL SISTEMA
 
 

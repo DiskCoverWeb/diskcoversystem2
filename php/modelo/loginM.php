@@ -607,6 +607,8 @@ class loginM
 
 	        // '|--=:******* --------.------- *******:=--|
 
+			    // print_r($dataMysql);die();
+
 			    if ($dataMysql['ConexionConMySQL']) {
 			        if ($AdoEmp[0]["Estado"] != $dataMysql['@EstadoEmpresa'] || $AdoEmp[0]["Cartera"] != $dataMysql['@TotCartera'] || $AdoEmp[0]["Cant_FA"] != $dataMysql['@CantFA'] || $AdoEmp[0]["Fecha_CE"]->format("Y-m-d") != $dataMysql['@FechaCE'] || $AdoEmp[0]["Fecha_P12"]->format("Y-m-d") != $dataMysql['@FechaP12'] || $AdoEmp[0]["Tipo_Plan"] != $dataMysql['@TipoPlan'] || $AdoEmp[0]["Serie_FA"] != $dataMysql['@SerieFA']) {
 			            $sql = "UPDATE Empresas
@@ -631,6 +633,7 @@ class loginM
 			        return array('rps' => false, "mensaje" => $Cadena);
 			    }
 			    if (!$dataMysql["@EstadoUsuario"]) {
+			    	print_r('expression');die();
 			        $Cadena = $_SESSION['INGRESO']['Nombre_Completo'] . "\nSu ingreso no esta autorizado, comuniquese con el Administrador del Sistema";
 			        unset($_SESSION['INGRESO']['IDEntidad']);
 			        unset($_SESSION['INGRESO']['empresa']);
@@ -701,6 +704,7 @@ class loginM
 			            . "O ENVIE UN MAIL A carteraclientes@diskcoversystem.com; CON EL COMPROBANTE DE DEPOSITO Y ASI PROCEDER A REALIZAR "
 			            . "LA ACTUALIZACION DE LA JUSTIFICACION EN EL SISTEMA." . PHP_EOL;
 
+
 			        $TMail->de = CorreoDiskCover;
 			        $TMail->Mensaje = $ListaFacturas;
 			        $TMail->Adjunto = "";
@@ -715,12 +719,11 @@ class loginM
 			        //$email->FEnviarCorreos($TMail, $Lista_De_Correos, $empresa[0]["Item"]);
 			        control_procesos("Q", "ACCESO DENEGADO A: ".$_SESSION['INGRESO']['noempr'], "Motivo: ".$_SESSION['INGRESO']['RUCEnt']);
 
-			        return array('rps' => !$Evaluar, "mensaje" => $ListaFacturas);
-			    }
-
-
+			        return array('rps' => -3, "mensaje" => $ListaFacturas);
+			    }else{
 
 			    return array('rps' => true);
+			}
 			}else
 			{
 				return  $NumEmpresa = G_NINGUNO;
