@@ -257,6 +257,7 @@ function contratistas()
     
     var total = parseFloat(cantidad)*parseFloat(pvp);
     $('#txt_total').val(total.toFixed(2));
+    
   }
 
 function ingresar_orden()
