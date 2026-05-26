@@ -163,7 +163,7 @@ class contrato_trabajo_detalle_constC
     function GuardarContrato($parametros)
     {
         $tipo = substr($parametros['cate_contrato_name'],0,2);
-        $numeroContrato = ReadSetDataNum(strtoupper($tipo)."_SEC_999999",true,$Incrementar = false);
+        $numeroContrato = ReadSetDataNum(strtoupper($tipo)."_SEC_999999",true,$Incrementar =true);
 
         // print_r($tipo);
         // print_r($parametros);die();
