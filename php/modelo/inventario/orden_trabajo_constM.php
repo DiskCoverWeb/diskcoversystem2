@@ -171,7 +171,7 @@ class orden_trabajo_constM
 
     function rubrosXcontratista($query,$contratistaCod=false)
     {
-        $sql="Select Orden_Trabajo,TCR.Cta,CC.Cuenta
+        $sql="Select TCR.Cta,CC.Cuenta
             From Trans_Contratistas_Rubros TCR
             INNER JOIN Trans_Contratistas TC on TCR.Orden_Trabajo = TC.No_Contrato
             INNER JOIN Catalogo_Cuentas CC ON  TCR.Cta = CC.Codigo 
@@ -189,7 +189,7 @@ class orden_trabajo_constM
             {
                 $sql.=" AND TC.Codigo = '".$contratistaCod."'";
             }
-            $sql.=" group by  Orden_Trabajo,TCR.Cta,CC.Cuenta  ";
+            $sql.=" group by TCR.Cta,CC.Cuenta  ";
 
             // print_r($sql);die();
 

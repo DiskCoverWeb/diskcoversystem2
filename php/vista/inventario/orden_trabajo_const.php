@@ -64,7 +64,8 @@
           </div>
           <div class="col-lg-4">
             <b>Contrato</b><br>
-            <select class="form-select form-select-sm" id="ddl_Contrato" name="ddl_Contrato">
+            <select class="form-select form-select-sm" id="ddl_Contrato" name="ddl_Contrato" onchange="detalleContrato(this.value);
+centrosCostocXRubro(this.value)">
               <option value="">Seleccione</option>
             </select>
           </div>

@@ -71,20 +71,49 @@
       $("#ddl_Rubro").on('select2:select', function (e) {
          var data = e.params.data.data;
          console.log(data);
-          $('#ddl_Contrato').empty();
-         $('#ddl_Contrato').append('<option value="' + data.Orden_Trabajo +'">' + data.Orden_Trabajo+ '</option>');         
+         $('#ddl_Contrato').empty();     
          $('#ddl_Contrato').val(data.Orden_Trabajo);
          $('#txt_cantidad_rela').val(data.Cantidad);
          $('#txt_costo_pvp').val(data.Costo_Unit);
 
-         detalleContrato(data.Orden_Trabajo)
-         centrosCostocXRubro(data.Orden_Trabajo)
+         contratosXrubro()
          ddl_sub_rubro();
          // console.log(data);
 
        });
 
   })
+
+
+  function contratosXrubro()
+  {
+     var parametros = 
+     {
+        'rubro':$('#ddl_Rubro').val(),
+        'contratista':$('#ddl_contratista').val(),
+     }
+      $.ajax({
+        data:  {parametros:parametros},
+        url:   '../controlador/inventario/orden_trabajo_constC.php?contratosXrubro=true',
+        type:  'post',
+        dataType: 'json',
+          success:  function (response) { 
+            console.log(response)
+
+            var op ='';
+            response.forEach(function(item,i){
+              op+='<option value="' + item.Orden_Trabajo +'">' + item.Orden_Trabajo+ '</option>';
+
+            });
+
+          $('#ddl_Contrato').append(op);   
+
+          var Orden_Trabajo = $('#ddl_Contrato').val();  
+          detalleContrato(Orden_Trabajo)
+          centrosCostocXRubro(Orden_Trabajo)
+        }
+      }); 
+  }
 
 
 

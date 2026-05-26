@@ -117,6 +117,13 @@
         echo json_encode($controlador->grabar_orden_trabajo($parametros));
     }
 
+    if(isset($_GET['contratosXrubro']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->contratosXrubro($parametros));
+    }
+
+
 
     if(isset($_GET['valores_default']))
     {
@@ -234,7 +241,7 @@
            $rubro = array();
            $data =  $this->modelo->rubrosXcontratista($query,$contratista);
            foreach ($data as $key => $value) {
-               $rubro[] = array('id'=>$value['Cta'].'-'.$value['Orden_Trabajo'],'text'=>$value['Cuenta'],'data'=>$value);
+               $rubro[] = array('id'=>$value['Cta'],'text'=>$value['Cuenta'],'data'=>$value);
            }
            return $rubro;
         }
@@ -248,8 +255,7 @@
 
         function centrosCostocXRubro($parametros)
         {
-            $rubro = explode("-", $parametros['rubro']);
-            $data = $this->modelo->centrosCostocXRubro($parametros['contrato'],$rubro[0]);
+            $data = $this->modelo->centrosCostocXRubro($parametros['contrato'],$parametros['rubro']);
 
             return $data;
             // print_r($data);die();
@@ -371,10 +377,15 @@
 
         function valores_default($parametros)
         {
-            $rubro = explode("-",$parametros['rubro']);
-            $data = $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$rubro[0],$parametros['Contrato'],$parametros['centroCostos']);
+            $data = $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$parametros['rubro'],$parametros['Contrato'],$parametros['centroCostos']);
             return $data;
             // print_r($data);die();
+        }
+
+        function contratosXrubro($parametros)
+        {
+            $data = $this->modelo->rubrosXcontratistaAll($query=false,$parametros['contratista'],$parametros['rubro'],$orden=false,$centro_costos=false);
+            return $data;
         }
     }
 
