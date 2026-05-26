@@ -64,7 +64,7 @@
           </div>
           <div class="col-lg-4">
             <b>Contrato</b><br>
-            <select class="form-select form-select-sm" id="ddl_Contrato" name="ddl_Contrato" disabled>
+            <select class="form-select form-select-sm" id="ddl_Contrato" name="ddl_Contrato">
               <option value="">Seleccione</option>
             </select>
           </div>

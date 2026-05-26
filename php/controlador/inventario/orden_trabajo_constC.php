@@ -234,7 +234,7 @@
            $rubro = array();
            $data =  $this->modelo->rubrosXcontratista($query,$contratista);
            foreach ($data as $key => $value) {
-               $rubro[] = array('id'=>$value['Cta'],'text'=>$value['Cuenta'],'data'=>$value);
+               $rubro[] = array('id'=>$value['Cta'].'-'.$value['Orden_Trabajo'],'text'=>$value['Cuenta'],'data'=>$value);
            }
            return $rubro;
         }
@@ -248,7 +248,8 @@
 
         function centrosCostocXRubro($parametros)
         {
-            $data = $this->modelo->centrosCostocXRubro($parametros['contrato'],$parametros['rubro']);
+            $rubro = explode("-", $parametros['rubro']);
+            $data = $this->modelo->centrosCostocXRubro($parametros['contrato'],$rubro[0]);
 
             return $data;
             // print_r($data);die();
@@ -257,8 +258,9 @@
 
         function subrubro($query,$rubro)
         {
-            $lista = array();
-            $data = $this->modelo->subrubro($rubro,$query);
+            $lista = array();            
+            $rubro = explode("-",$rubro);
+            $data = $this->modelo->subrubro($rubro[0],$query);
             foreach ($data as $key => $value) {
                 $lista[] = array('id'=>$value['ID'],'text'=>$value['Detalle'],'data'=>$value);
             }
@@ -369,8 +371,8 @@
 
         function valores_default($parametros)
         {
-
-            $data = $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$parametros['rubro'],$parametros['Contrato'],$parametros['centroCostos']);
+            $rubro = explode("-",$parametros['rubro']);
+            $data = $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$rubro[0],$parametros['Contrato'],$parametros['centroCostos']);
             return $data;
             // print_r($data);die();
         }

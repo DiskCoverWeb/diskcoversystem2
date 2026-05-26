@@ -71,6 +71,7 @@
       $("#ddl_Rubro").on('select2:select', function (e) {
          var data = e.params.data.data;
          console.log(data);
+          $('#ddl_Contrato').empty();
          $('#ddl_Contrato').append('<option value="' + data.Orden_Trabajo +'">' + data.Orden_Trabajo+ '</option>');         
          $('#ddl_Contrato').val(data.Orden_Trabajo);
          $('#txt_cantidad_rela').val(data.Cantidad);
