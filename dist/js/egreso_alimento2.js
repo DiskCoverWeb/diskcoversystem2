@@ -117,6 +117,7 @@ $(document).ready(function () {
 
 function eliminar_egreso(orden)
 {
+  $('#respuesta_proceso').val(1);
    Swal.fire({
       title: 'Esta seguro?',
       text: "Esta usted seguro de que quiere borrar este registro!",
@@ -136,28 +137,36 @@ function eliminar_egreso(orden)
 
 function resp_clave_ingreso()
 {
-    var parametros = {
-          'orden': $('#txt_ordenNo').val(),
-    }
-    $.ajax({
-      data:  {parametros,parametros},
-      url:   '../controlador/inventario/egreso_alimentosC.php?eliminar_egreso_check=true',
-      type:  'post',
-      dataType: 'json',
-      success:  function (response) { 
-        if(response==1)
-        {            
-            Swal.fire("Registro eliminado","","success").then(function(){
-              lista_egreso_checking();
-            });
-        }
-        console.log(response);
-        
-      }, 
-      error: function(xhr, textStatus, error){
-        $('#myModal_espera').modal('hide');           
+  var op = $('#respuesta_proceso').val();
+
+  if(op==1)
+  {
+      var parametros = {
+            'orden': $('#txt_ordenNo').val(),
       }
-  });
+      $.ajax({
+        data:  {parametros,parametros},
+        url:   '../controlador/inventario/egreso_alimentosC.php?eliminar_egreso_check=true',
+        type:  'post',
+        dataType: 'json',
+        success:  function (response) { 
+          if(response==1)
+          {            
+              Swal.fire("Registro eliminado","","success").then(function(){
+                lista_egreso_checking();
+              });
+          }
+          console.log(response);
+          
+        }, 
+        error: function(xhr, textStatus, error){
+          $('#myModal_espera').modal('hide');           
+        }
+    });
+    }else
+    {
+      $('#myModal_edit_fecha').modal('show');
+    }
 }
 
 function modal_mensaje(orden)
@@ -561,6 +570,7 @@ function lista_egreso_checking()
 
   function cambiar_fecha(id,fecha)
   {
+    $('#respuesta_proceso').val(0);
     $('#clave_supervisor').modal('show');
     $('#BuscarEn').val('SQL');
     $('#TipoSuper_MYSQL').val('Contador');
@@ -569,13 +579,13 @@ function lista_egreso_checking()
     console.log(id);
   }
 
-  function resp_clave_ingreso(response)
-  {
-    if(response.respuesta==1)
-    {
-      $('#myModal_edit_fecha').modal('show');
-    }
-  }
+  // function resp_clave_ingreso(response)
+  // {
+  //   if(response.respuesta==1)
+  //   {
+  //     $('#myModal_edit_fecha').modal('show');
+  //   }
+  // }
 
   function editarFecha()
   {

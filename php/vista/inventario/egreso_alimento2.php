@@ -62,6 +62,7 @@
 	<div class="card">
 		<div class="card-body">
 			<div class="row">
+				<input type="hidden" name="respuesta_proceso"  id="respuesta_proceso">
 				<div class="col-sm-2">
 					<b>Desde</b>
 					<input type="date" name="txt_desde" id="txt_desde" value="<?php echo date('Y-m-d'); ?>">
@@ -159,7 +160,7 @@
 
 
 <div id="myModal_motivo" class="modal fade myModalNuevoCliente" role="dialog">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-fullscreen">
         <div class="modal-content" style="background: antiquewhite;">
             <div class="modal-header bg-primary">
 				<h4 class="modal-title text-white">Motivo</h4>
