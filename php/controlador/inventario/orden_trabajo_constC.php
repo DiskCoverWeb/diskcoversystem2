@@ -350,7 +350,7 @@
 
             $centroCostos = $this->modelo->centrosCostocXRubro($parametros['contrato'],$parametros['rubro']);
             foreach ($centroCostos as $key => $value) {
-                // print_r($value);die();
+                print_r($value);die();
                 $subrubro = $this->modelo->cargar_lista_subrubros($parametros['contrato'],$parametros['rubro'],false,$value['Centro_Costos'],false);
                 if(count($subrubro)==0)
                 {

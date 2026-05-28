@@ -4,6 +4,7 @@
   $(document).ready(function () {
 		cargar_bodegas()
   	cargar_paquetes()
+  	codigo_pedidos();
   	pedidos();
 
   	 $('#txt_cod_lugar').keydown( function(e) { 
@@ -24,6 +25,13 @@
 	  setearCamposPedidos(data);
     });
 
+     $('#txt_codigo_pedido').on('select2:select', function (e) {
+     		pedidos()
+    }) .on('change', function (e) {
+        pedidos();
+    });;
+
+
 
   })
 
@@ -35,6 +43,7 @@
       $('#txt_fecha').val(formatoDate(data.Fecha.date));
       $('#txt_donante').val(data.Cliente);
       $('#txt_paquetes').val(data.Tipo_Empaque);
+      $('#txt_orden').val(data.Orden_No);
 
       var cantidad = parseFloat(data.Entrada).toFixed(2)
       $('#txt_cant').val(cantidad); // save selected id to input
@@ -148,13 +157,34 @@
   	// console.log(nombre)
   }
 
-  function pedidos(){
+  function codigo_pedidos(){
  
+  	$('#txt_codigo_pedido').select2({
+    placeholder: 'Seleccione pedido',
+    width:'100%',    
+    allowClear: true,
+    ajax: {
+      url: '../controlador/inventario/almacenamiento_bodegaC.php?search_contabilizado_pedido=true',
+       dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+        // console.log(data);
+        return {
+          results: data
+        };
+      },
+      cache: true
+    }
+  });
+}
+  function pedidos(){
+  	var pedido = $('#txt_codigo_pedido').val(); 
   	$('#txt_codigo').select2({
     placeholder: 'Seleccione una beneficiario',
-    width:'100%',
+    width:'100%',    
+    allowClear: true,
     ajax: {
-      url: '../controlador/inventario/almacenamiento_bodegaC.php?search_contabilizado=true',
+      url: '../controlador/inventario/almacenamiento_bodegaC.php?search_contabilizado=true&pedido='+pedido,
       dataType: 'json',
       delay: 250,
       processResults: function (data) {
@@ -290,20 +320,20 @@ function calcular_divicion(elemento)
 	var catidad_div = 0;
 	$("input[name='dividido']").each(function() {
 	    valor = $(this).val();
-	    canti_dividido = canti_dividido+parseInt(valor)
+	    canti_dividido = canti_dividido+parseFloat(valor)
 	    if(canti_dividido>parseInt(pedido_total))
 	    {
-	    	catidad_div = canti_dividido-parseInt(valor)
+	    	catidad_div = canti_dividido-parseFloat(valor)
 	    }
 	});
 
-	canti = parseInt(pedido_total)-parseInt(canti_dividido);
+	canti = parseFloat(pedido_total)-parseFloat(canti_dividido);
 	if(canti>=0)
 	{
-		$('#cant_div').text(canti)		
+		$('#cant_div').text(canti.toFixed(2))		
 	}else
 	{
-		var cant = parseInt(pedido_total)-catidad_div
+		var cant = parseFloat(pedido_total)-catidad_div
 		Swal.fire("El el valor total supera al del pedido","","info").then(function(){
 			$("#"+elemento.id).val(0);
 			calcular_divicion(elemento);
@@ -365,6 +395,7 @@ function cargar_paquetes()
 function validar_asignacion_bodega(linea='')
 {
 	id = $('#txt_codigo').val();
+	orden = $('#txt_orden').val();
 	console.log(id);
 	if(id=='')
 	{
@@ -389,7 +420,7 @@ function validar_asignacion_bodega(linea='')
 			Swal.fire('Seleccione un pedido','','info');
 			return false;
 		}
-		asignar_bodega(id,bodega)
+		asignar_bodega(id,bodega,orden)
 	}else{
 		var valido = 1;
 		var total = 0;
@@ -426,7 +457,7 @@ function validar_asignacion_bodega(linea='')
 		{
 			id = $('#txt_id_producto').val();
 			console.log(parametros)
-			asignar_bodega_partes(id,parametros)
+			asignar_bodega_partes(id,parametros,orden)
 
 		}else
 		{
@@ -440,12 +471,13 @@ function validar_asignacion_bodega(linea='')
 
 }
 
-function asignar_bodega(id,bodega)
+function asignar_bodega(id,bodega,orden)
 {
 	$('#myModal_espera').modal('show');
 	var parametros = {
 		'id':id,
 		'bodegas':bodega,
+		'orden':orden
 	}
 	$.ajax({
 	    type: "POST",
@@ -467,12 +499,13 @@ function asignar_bodega(id,bodega)
 	
 }
 
-function asignar_bodega_partes(id,parametros)
+function asignar_bodega_partes(id,parametros,orden)
 {
 	$('#myModal_espera').modal('show');
 	var parametros = {
 		'id':id,
 		'parametros':parametros,
+		'orden':orden
 	}
 	$.ajax({
 	    type: "POST",

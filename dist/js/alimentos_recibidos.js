@@ -731,22 +731,24 @@ function eliminar_pedido(ID)
 }
 
 function eliminar(ID)
-{
-    
-        $.ajax({
-          type: "POST",
-            url:   '../controlador/inventario/alimentos_recibidosC.php?eliminar_pedido=true',
-            data:{ID:ID},
-          dataType:'json',
-          success: function(data)
-          {
-              if(data ==1)
-              {
-                  Swal.fire('Registro eliminado','','info');
-                  cargar_datos();
-              }    	
-          }
-      });  	
+{  
+      $.ajax({
+        type: "POST",
+          url:   '../controlador/inventario/alimentos_recibidosC.php?eliminar_pedido=true',
+          data:{ID:ID},
+        dataType:'json',
+        success: function(data)
+        {
+            if(data ==1)
+            {
+                Swal.fire('Registro eliminado','','info');
+                cargar_datos();
+            }else if(data==-2)
+            {
+              Swal.fire("No se puede eliminar este registro","Este ya cuenta con producto en clasificacion","info");
+            }     
+        }
+    });   
 }
 
 function limpiar_donante()

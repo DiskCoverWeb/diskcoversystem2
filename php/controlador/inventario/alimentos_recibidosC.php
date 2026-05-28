@@ -473,6 +473,7 @@ class alimentos_recibidosC
 		}
 		SetAdoFields('SucIng',$parametros['cbx_evaluacion']);
 		SetAdoFields('Cod_B',$parametros['ddl_sucursales']);
+
 		SetAdoFieldsWhere('ID',$parametros['txt_id']);
 		return SetAdoUpdateGeneric();
 
@@ -1097,7 +1098,19 @@ class alimentos_recibidosC
 	function eliminar_pedido($data)
 	{
 		$id = $data['ID'];
-		return $this->modelo->eliminar_pedido($id);
+		$data = $this->modelo-> Trans_correos_by_id($id);
+		if(count($data)>0)
+		{
+			$trans = $this->modelo->cargar_motivo_lista(false,false,$data[0]['Envio_No']);
+			if(count($trans)==0)
+			{			
+				// print_r($trans);die();
+				return $this->modelo->eliminar_pedido($id);
+			}else
+			{
+				return -2;
+			}
+		}
 	} 
 	function eli_all_pedido($data)
 	{

@@ -724,11 +724,13 @@ function grabar_orden_trabajo()
 {
   var rubro = $('#ddl_Rubro').val()
   var contrato = $('#ddl_Contrato').val()
+  var contratista = $('#ddl_contratista').val();
 
   var parametros = 
   {
     'rubro':rubro,
     'contrato':contrato,
+    'contratista':contratista,
   }
    $.ajax({
         type: "POST",

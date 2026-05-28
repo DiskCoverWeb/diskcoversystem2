@@ -38,9 +38,17 @@
 						<b>Fecha de Ingreso:</b>
 						<input type="hidden" name="txt_id" id="txt_id">
 						<input type="date" class="form-control form-control-sm" id="txt_fecha" name="txt_fecha" readonly>		
+					</div>
+					<div class="col-lg-3 col-md-9 col-sm-6 col-xs-12">
+						<b>Codigo de pedido:</b>
+						<div class="d-flex align-items-center input-group-sm">
+							<select class="form-select form-select-sm" id="txt_codigo_pedido" name="txt_codigo_pedido">
+								<option value="">Seleccione</option>
+							</select>
+						</div>
 					</div>						
 					<div class="col-lg-3 col-md-9 col-sm-6 col-xs-12">
-						<b>Codigo de Ingreso:</b>
+						<b>Codigo de Producto:</b>
 						<input type="hidden" class="form-control form-control-sm" id="txt_codigo_p" name="txt_codigo_p" readonly>
 						<div class="d-flex align-items-center input-group-sm">
 							<select class="form-select form-select-sm" id="txt_codigo" name="txt_codigo">
@@ -65,11 +73,12 @@
 					</div>						
 				</div>
 				<div class="row">
-					<div class="col-lg-5 col-md-6 col-sm-6">
+					<div class="col-lg-4 col-md-4 col-sm-4">
 						<b>Tipo de Empaque</b>
 						<select class="form-select form-select-sm" id="txt_paquetes" name="txt_paquetes" disabled>
 							<option value="">Seleccione Empaque</option>
 						</select>
+						<input type="hidden" name="txt_orden" id="txt_orden">
 					</div>
 					<div class="col-lg-5 col-md-6 col-sm-6" id="pnl_alertas">
 						<button class="btn btn-light align-items-center justify-content-center" type="button" id="btn_alto_stock" style="display:none;">

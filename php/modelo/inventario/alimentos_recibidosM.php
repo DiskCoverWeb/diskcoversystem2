@@ -183,7 +183,7 @@ class alimentos_recibidosM
 		where TC.Item = '".$_SESSION['INGRESO']['item']."'
 		AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
 		AND TC.Item = CP.Item
-		AND TC.T = 'P' ";
+		AND TC.T = 'E' ";
 		if($cod)
 		{
 			$sql.= " AND Envio_No  like  '%".$cod."%'";
@@ -471,6 +471,16 @@ class alimentos_recibidosM
 		     WHERE Item = '".$_SESSION['INGRESO']['item']."'
 		     AND Periodo = '".$_SESSION['INGRESO']['periodo']."' AND 
 		     Envio_No = '".$pedido."'";
+		return $this->db->datos($sql);
+	}
+
+	function Trans_correos_by_id($id)
+	{
+		$sql = "SELECT Periodo, Item, CI, T, ME, Fecha, Fecha_P, Fecha_A, Fecha_An, Recibo_No, Envio_No, Giro_No, Cod_R, Cod_B, Cod_C,Cantidad, Porc_C, TOTAL, INGRESO, EGRESO, Mensaje, Cotizacion, CodigoU, CodigoA, CodigoAn,CodigoP, SucIng, SucPag, Llamadas, C,X, Mensaje2, Editado, Motivo, Motivo_Edicion, ID
+		     FROM Trans_Correos
+		     WHERE Item = '".$_SESSION['INGRESO']['item']."'
+		     AND Periodo = '".$_SESSION['INGRESO']['periodo']."' AND 
+		     ID = '".$id."'";
 		return $this->db->datos($sql);
 	}
 

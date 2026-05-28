@@ -83,24 +83,35 @@ class almacenamiento_bodegaM
 	// 	return $this->db->datos($sql);
 	// }
 
-	function Buscar_productos_ingresados($id=false,$cod=false)
+	function Buscar_productos_ingresados($id=false,$cod=false,$orden=false)
 	{
-		$sql = "SELECT TK.Periodo, TK.T, CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.TP, Numero, Entrada, Salida, Valor_Unitario, TK.Valor_Total, Existencia, TK.Costo, TK.Total, TK.Codigo_P, TK.Descuento, Descuento1, Cta_Inv, Contra_Cta, Orden_No, TK.PVP, Total_IVA, TK.Porc_C, TK.CodigoU, TK.Item, TK.X, Stock_Bod, Unit_Bod, Valor_Bod, Stock_Barra, Costo_Bod, Unit_Barr, Costo_Barr, Valor_Barr, Total_Bod, Total_Barr, Solicitud, CodigoL, Cod_Tarifa, Fecha_DUI, No_Refrendo, DUI, Precio_FOB, Comision, Trans_Unit, TK.Utilidad, Guia_No, CodMarca, Lote_No, TK.Procesado, Codigo_Dr, Codigo_Tra, Fecha_Fab, Fecha_Exp, Modelo, Procedencia, Serie_No, TK.TC, Serie, TK.Factura, TK.Detalle, Centro_Costo, Tipo_Empaque, TK.ID ,C.Cliente,CP.Cod_C,P.Producto,P.Unidad,P.TDP,Cmds 
-			FROM Trans_Kardex TK 
-			inner join Clientes C on TK.Codigo_P = C.Codigo 
-			inner join Trans_Correos CP on TK.Orden_No = CP.Envio_No 
-			inner join Catalogo_Productos P on Tk.Codigo_Inv = P.Codigo_Inv
-			WHERE 
-			TK.Periodo = P.Periodo
-			AND TK.Item = P.Item
-			AND Orden_No in(select TC.Envio_No
-						from Trans_Correos TC
-						inner join Clientes C on TC.CodigoP = C.Codigo 
-						INNER JOIN Catalogo_Proceso CP ON TC.Cod_C = CP.TP
-						where TC.Item = '".$_SESSION['INGRESO']['item']."'
-						AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
-						AND TC.T = 'N') 
-		AND CodBodega = '-1'";
+		$sql = "SELECT TK.T,TK.Orden_No,CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.TP, Numero, Entrada, Salida, Valor_Unitario, TK.Valor_Total, Existencia, TK.Costo, TK.Total,P.Producto,P.Unidad,P.TDP,Cmds,Fecha_Fab,Tipo_Empaque,Fecha_Exp,TK.ID,C.Cliente,Cta_Inv,TK.CodigoU,TK.Item,Contra_Cta,TK.Codigo_P,Codigo_Dr 
+				FROM Trans_Kardex TK
+				INNER JOIN Catalogo_Productos P on Tk.Codigo_Inv = P.Codigo_Inv AND TK.Item = P.Item AND TK.Periodo = P.Periodo
+				INNER JOIN Clientes C on TK.Codigo_P = C.Codigo 
+				WHERE Orden_No in (
+				select Envio_No from Trans_Correos
+				Where Item = '".$_SESSION['INGRESO']['item']."'
+				AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+				AND T = 'P'
+				)
+				AND CodBodega = '-1'";
+		// $sql = "SELECT TK.Periodo, TK.T, CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.TP, Numero, Entrada, Salida, Valor_Unitario, TK.Valor_Total, Existencia, TK.Costo, TK.Total, TK.Codigo_P, TK.Descuento, Descuento1, Cta_Inv, Contra_Cta, Orden_No, TK.PVP, Total_IVA, TK.Porc_C, TK.CodigoU, TK.Item, TK.X, Stock_Bod, Unit_Bod, Valor_Bod, Stock_Barra, Costo_Bod, Unit_Barr, Costo_Barr, Valor_Barr, Total_Bod, Total_Barr, Solicitud, CodigoL, Cod_Tarifa, Fecha_DUI, No_Refrendo, DUI, Precio_FOB, Comision, Trans_Unit, TK.Utilidad, Guia_No, CodMarca, Lote_No, TK.Procesado, Codigo_Dr, Codigo_Tra, Fecha_Fab, Fecha_Exp, Modelo, Procedencia, Serie_No, TK.TC, Serie, TK.Factura, TK.Detalle, Centro_Costo, Tipo_Empaque, TK.ID ,C.Cliente,CP.Cod_C,P.Producto,P.Unidad,P.TDP,Cmds 
+		// 	FROM Trans_Kardex TK 
+		// 	inner join Clientes C on TK.Codigo_P = C.Codigo 
+		// 	inner join Trans_Correos CP on TK.Orden_No = CP.Envio_No 
+		// 	inner join Catalogo_Productos P on Tk.Codigo_Inv = P.Codigo_Inv
+		// 	WHERE 
+		// 	TK.Periodo = P.Periodo
+		// 	AND TK.Item = P.Item
+		// 	AND Orden_No in(select TC.Envio_No
+		// 				from Trans_Correos TC
+		// 				inner join Clientes C on TC.CodigoP = C.Codigo 
+		// 				INNER JOIN Catalogo_Proceso CP ON TC.Cod_C = CP.TP
+		// 				where TC.Item = '".$_SESSION['INGRESO']['item']."'
+		// 				AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+		// 				AND TC.T = 'N') 
+		// AND CodBodega = '-1'";
 		if($id)
 		{
 			$sql.= " AND TK.ID  = '".$id."'";
@@ -109,9 +120,11 @@ class almacenamiento_bodegaM
 		{
 			$sql.= " AND TK.Codigo_Barra  like  '%".$cod."%'";
 		}
-		$sql.=" group by TK.Periodo, TK.T, CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.TP, Numero, Entrada, Salida, Valor_Unitario, TK.Valor_Total, Existencia, TK.Costo, TK.Total, TK.Codigo_P, TK.Descuento, Descuento1, Cta_Inv, Contra_Cta, Orden_No, TK.PVP, Total_IVA, TK.Porc_C, TK.CodigoU, TK.Item, TK.X, Stock_Bod, Unit_Bod, Valor_Bod, Stock_Barra, Costo_Bod, Unit_Barr, Costo_Barr, Valor_Barr, Total_Bod, Total_Barr, Solicitud, CodigoL, Cod_Tarifa, Fecha_DUI, No_Refrendo, DUI, Precio_FOB, Comision, Trans_Unit, TK.Utilidad, Guia_No, CodMarca, Lote_No, TK.Procesado, Codigo_Dr, Codigo_Tra, Fecha_Fab, Fecha_Exp, Modelo, Procedencia, Serie_No, TK.TC, Serie, TK.Factura, TK.Detalle, Centro_Costo, Tipo_Empaque, TK.ID ,C.Cliente,CP.Cod_C,P.Producto,P.Unidad,P.TDP,Cmds 
-		
-		ORDER BY Fecha_Exp ASC";
+		if($orden)
+		{
+			$sql.= " AND TK.Orden_No  =  '".$orden."'";
+		}
+		$sql.=" ORDER BY Fecha_Exp ASC";
 
 		// print_r($sql);die();
 		return $this->db->datos($sql);
@@ -352,6 +365,20 @@ class almacenamiento_bodegaM
 		ORDER BY Cmds, Proceso";
 			// print_r($sql);die();
 			
+		return $this->db->datos($sql);
+	}
+
+	function pedidos_a_almacenar($id=false,$query=false)
+	{
+		$sql = "select Envio_No from Trans_Correos
+				Where Item = '".$_SESSION['INGRESO']['item']."'
+				AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+				AND T = 'P'";
+				if($query)
+				{
+					$sql.=" AND Envio_No like '%".$query."%'";
+				}
+
 		return $this->db->datos($sql);
 	}
 

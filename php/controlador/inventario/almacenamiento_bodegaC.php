@@ -12,11 +12,24 @@ $controlador = new almacenamiento_bodegaC();
 if(isset($_GET['search_contabilizado']))
 {
 	$query = '';
+	$pedido = "";
 	if(isset($_GET['q']))
 	{
 		$query = $_GET['q'];
 	}
-	echo json_encode($controlador->buscar_contabilizado($query));
+	if(isset($_GET['pedido'])){	$pedido = $_GET['pedido'];	}
+	echo json_encode($controlador->buscar_contabilizado($query,$pedido));
+
+}
+
+if(isset($_GET['search_contabilizado_pedido']))
+{
+	$query = '';
+	if(isset($_GET['q']))
+	{
+		$query = $_GET['q'];
+	}
+	echo json_encode($controlador->search_contabilizado_pedido($query));
 
 }
 if(isset($_GET['asignar_bodega']))
@@ -134,9 +147,9 @@ class almacenamiento_bodegaC
 	}
 
 
-	function buscar_contabilizado($cod)
+	function buscar_contabilizado($cod,$pedido)
 	{
-		$datos = $this->modelo->Buscar_productos_ingresados(false,$cod);
+		$datos = $this->modelo->Buscar_productos_ingresados(false,$cod,$pedido);
 		$result = array();
 		$color2 = '#000000';
 		$color = '';
@@ -144,20 +157,32 @@ class almacenamiento_bodegaC
 		foreach ($datos as $key => $value) {
 			// print_r($value);die();
 
-		$fecha1 = new DateTime();
-      	$fecha2 = new DateTime($value['Fecha_Exp']->format('Y-m-d'));
-      	$diferenciaEnSegundos = $fecha2->getTimestamp() - $fecha1->getTimestamp();
+			$fecha1 = new DateTime();
+	      	$fecha2 = new DateTime($value['Fecha_Exp']->format('Y-m-d'));
+	      	$diferenciaEnSegundos = $fecha2->getTimestamp() - $fecha1->getTimestamp();
 
-		$dias = intval($diferenciaEnSegundos / 86400);
-		if($value['Cod_C']=='AR01')
-		{
-			$color2 = '#0070C0';
+			$dias = intval($diferenciaEnSegundos / 86400);
+			if($value['Cmds']=='AR01')
+			{
+				$color2 = '#0070C0';
+			}
+			if($dias<=0){$color = '#ffff00';}else if ($dias<=8 && $dias>0) { $color = '#ff0000';}
+			
+			 $result[] = array("id"=>$value['ID'],"text"=>$value['Codigo_Barra'],'data'=>$value,'fondo'=>$color,'texto'=>$color2);
+			 $color2 = '#000000';
+			 $color = '';
 		}
-		if($dias<=0){$color = '#ffff00';}else if ($dias<=8 && $dias>0) { $color = '#ff0000';}
-		
-		 $result[] = array("id"=>$value['ID'],"text"=>$value['Codigo_Barra'],'data'=>$value,'fondo'=>$color,'texto'=>$color2);
-		 $color2 = '#000000';
-		 $color = '';
+		// print_r($result);die();
+		return $result;
+	}
+
+	function search_contabilizado_pedido($cod)
+	{
+		$datos = $this->modelo->pedidos_a_almacenar(false,$cod);
+		$result = array();
+		foreach ($datos as $key => $value) {
+			// print_r($value);die();
+			 $result[] = array("id"=>$value['Envio_No'],"text"=>$value['Envio_No'],'data'=>$value);
 		}
 		// print_r($result);die();
 		return $result;
@@ -297,6 +322,8 @@ class almacenamiento_bodegaC
 				$producto = $this->modelo->Buscar_productos_ingresados($tipo[0]);
 				$lineas_pedido = $this->modelo->cargar_pedidos_trans_pedidos($producto[0]['Orden_No']);
 
+				// print_r($producto);print_r($lineas_pedido);die();
+
 				foreach ($lineas_pedido as $key => $value) {
 					SetAdoAddNew('Trans_Pedidos');
 					SetAdoFields('Codigo_Sup',$parametros['bodegas']);		
@@ -306,9 +333,9 @@ class almacenamiento_bodegaC
 				SetAdoAddNew('Trans_Kardex');
 				SetAdoFields('CodBodega',$parametros['bodegas']);	
 				SetAdoFields('Fecha_DUI',date('Y-m-d'));	
-				SetAdoFields('T',"N");		
+				SetAdoFields('T',"E");		
 				SetAdoFieldsWhere('ID',$tipo[0]);
-				return SetAdoUpdateGeneric();
+				SetAdoUpdateGeneric();
 
 				//a transpedidos
 			}else{
@@ -316,18 +343,27 @@ class almacenamiento_bodegaC
 				SetAdoAddNew('Trans_Kardex');
 				SetAdoFields('CodBodega',$parametros['bodegas']);	
 				SetAdoFields('Fecha_DUI',date('Y-m-d'));	
-				SetAdoFields('T',"N");		
+				SetAdoFields('T',"E");		
 				SetAdoFieldsWhere('ID',$id);
-				return SetAdoUpdateGeneric();
+				$respuesta = SetAdoUpdateGeneric();
 			}
-		// }
-		// return 1;
+
+			$CompletoPedido = $this->modelo->Buscar_productos_ingresados(false,false,$parametros['orden']);
+			if(count($CompletoPedido)==0)
+			{
+				SetAdoAddNew('Trans_Correos');
+				SetAdoFields('T',"E");		
+				SetAdoFieldsWhere('Envio_No',$parametros['orden']);
+				$respuesta = SetAdoUpdateGeneric();
+
+			}
+
+		return 1;
 	}
 
 	function asignar_bodega_partes($parametros)
 	{
-
-
+		// print_r($parametros);die();
 		$id = $parametros['id'];
 		// print_r($id);die();
 		$producto = $this->modelo->Buscar_productos_ingresados($id);
@@ -342,7 +378,7 @@ class almacenamiento_bodegaC
 			    SetAdoFields('Entrada',$value['cantidad']);
 			    SetAdoFields('Valor_Total',number_format($producto[0]['Valor_Unitario']*$value['cantidad'],2,'.','')); 
 			    SetAdoFields('Fecha_DUI',date('Y-m-d'));	   
-				SetAdoFields('T',"N");		
+				SetAdoFields('T',"E");		
 				SetAdoFieldsWhere('ID',$id);
 				SetAdoUpdateGeneric();
 
@@ -373,10 +409,21 @@ class almacenamiento_bodegaC
 			   SetAdoFields('Cmds',$producto[0]['Cmds']);
 			   SetAdoFields('Numero',$producto[0]['Numero']);
 			   SetAdoFields('TP',$producto[0]['TP']);
-			   SetAdoFields('T',"N");		
+			   SetAdoFields('T',"E");		
 			   SetAdoUpdate();
 			}
 		}	
+
+		$CompletoPedido = $this->modelo->Buscar_productos_ingresados(false,false,$parametros['orden']);
+		if(count($CompletoPedido)==0)
+		{
+			SetAdoAddNew('Trans_Correos');
+			SetAdoFields('T',"E");		
+			SetAdoFieldsWhere('Envio_No',$parametros['orden']);
+			SetAdoUpdateGeneric();
+
+		}
+
 		return 1;
 	}
 
