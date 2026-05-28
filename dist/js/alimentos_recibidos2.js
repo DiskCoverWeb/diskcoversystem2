@@ -409,10 +409,23 @@ function cargar_paquetes()
           dataType:'json',
 	      success: function(data)
 	      {
-	      	if(data==1)
+	      	if(data.res==1)
 	      	{
+
+            
+
 	      		Swal.fire('Registro Guardado','','success').then(function(){
-	      			location.reload();
+
+              data.lineas.forEach(function(item,i){
+
+                window.open('../controlador/inventario/alimentos_recibidosC.php?imprimir_etiqueta_ind=true&num_ped='+$('#txt_codigo').val()+'&id='+item.ID+'&trans=true', '_blank');
+
+                console.log(item);
+
+              })
+
+
+	      			// location.reload();
 	      		});
 	      	}
 	      

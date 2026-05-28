@@ -38,7 +38,7 @@ if(isset($_GET['guardar']))
 if(isset($_GET['guardar2']))
 {
 	$parametros = $_POST;
-	echo json_decode($controlador->guardar2($parametros));
+	echo json_encode($controlador->guardar2($parametros));
 }
 if(isset($_GET['guardar_pedido']))
 {
@@ -454,6 +454,7 @@ class alimentos_recibidosC
 	function guardar2($parametros)
 	{
 		// print_r($parametros);die();
+		$lineas = $this->modelo->existe_en_transKarder($parametros['txt_codigo'],false);
 		SetAdoAddNew('Trans_Correos');
 		SetAdoFields('T','P');		
 		SetAdoFields('Llamadas',$parametros['txt_comentario2']);
@@ -475,7 +476,9 @@ class alimentos_recibidosC
 		SetAdoFields('Cod_B',$parametros['ddl_sucursales']);
 
 		SetAdoFieldsWhere('ID',$parametros['txt_id']);
-		return SetAdoUpdateGeneric();
+		$resp = SetAdoUpdateGeneric();
+
+		return array('res'=>$resp,'lineas'=>$lineas);
 
 	}
 	function cta_procesos($query)
@@ -1860,9 +1863,14 @@ class alimentos_recibidosC
 
 	function imprimir_etiqueta_ind($parametros)//cambiar
 	{
+		$transitorio = 0;
+		if(isset($parametros['trans']))
+		{
+			$transitorio = 1;
+		}
 		$tbl = $this->modelo->cargar_pedidos_transHistorial($parametros['num_ped'],false, false, $parametros['id']);
 		// print_r($tbl);die();
-		$this->reportes->etiqueta_clasificacion_BAQ($tbl);
+		$this->reportes->etiqueta_clasificacion_BAQ($tbl,$transitorio);
 	}
 
 	function generarQR($codigo){

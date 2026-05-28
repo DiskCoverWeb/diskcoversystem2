@@ -48,7 +48,7 @@ class reportes_varios
 
 	}
 
-	function etiqueta_clasificacion_BAQ($datos)
+	function etiqueta_clasificacion_BAQ($datos,$transitorio=0)
 	{
 		$pdf  = new TCPDF();
 
@@ -79,7 +79,14 @@ class reportes_varios
 			// print_r($datos);die();				
 			$pdf->SetFont('times', 'B',8);
 			$pdf->SetXY(3,3);
-			$pdf->MultiCell(55, 3,$value['Producto'],0,'L');
+			if($transitorio)
+			{
+				$pdf->MultiCell(55, 3,'TRANSITORIO - '.$value['Producto'],0,'L');
+			}else
+			{
+
+				$pdf->MultiCell(55, 3,$value['Producto'],0,'L');
+			}
 			$pdf->Text(16, 10,$value['Codigo_Barra']);
 			$pdf->write2DBarcode($value['Codigo_Barra'], 'QRCODE,L', 3, 5, 14, 14, $style, 'N');
 		}
