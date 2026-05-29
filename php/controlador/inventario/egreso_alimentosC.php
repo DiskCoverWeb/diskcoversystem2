@@ -119,6 +119,12 @@ if(isset($_GET['editarFecha']))
 	echo json_encode($controlador->editarFecha($parametros));
 }
 
+if(isset($_GET['guardar_all']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->guardar_all($parametros));
+}
+
 /**
  * 
  */
@@ -813,6 +819,23 @@ class egreso_alimentosC
 			return -1;
 		}
 
+	}
+
+	function guardar_all($listado)
+	{
+		foreach ($listado as $key => $value) {
+
+			$lineas = $this->modelo->cargar_motivo_lista(false,$value['id'],false);
+			$total = number_format($lineas[0]['Salida']*$value['pvp'],2,'.','');
+			SetAdoAddNew("Trans_Kardex"); 		
+		   	SetAdoFields('Valor_Total',$total);
+		   	SetAdoFields('Valor_Unitario',number_format($value['pvp'],2,'.',''));
+		   	SetAdoFields('Total',$total);
+		   	SetAdoFieldsWhere('ID',$value['id']);
+		  	// return SetAdoUpdateGeneric();
+
+		}
+		print_r($parametros);die();
 	}
 
 

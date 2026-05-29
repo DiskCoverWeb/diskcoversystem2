@@ -169,37 +169,43 @@
                 <input type="hidden" name="txt_ordenNo" id="txt_ordenNo">
             </div>
             <div class="modal-body">
+            	<div class="row mb-2">
+            		<div class="col-sm-12">
+            			<div class="btn-group">
+            				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Cliente" onclick="modal_cliente()">
+								<img src="../../img/png/user.png">
+							</button>							
+							<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar_all()">
+								<img src="../../img/png/grabar.png">
+								Guardar masivo
+							</button>
+							
+						</div>
+            		</div>            		
+            	</div>
             	<div class="row">            		
 	            	<div class="col-sm-12">
-	            		<table class="table bg-light w-100 " id="txt_motivo_lista">
-	            			<thead class="bg-primary text-white">
-	            				<th>Item</th>
-	            				<th>Donante</th>
-	            				<th>Producto</th>
-	            				<th>Codigo</th>
-	            				<th>Stock</th>
-	            				<th>Cant Final(kg)</th>
-	            				<th>Precio / Costo</th>
-	            				<th>Total</th>
-	            				<th>Validado</th>
-	            				<th style="width:300px"></th>
-	            				<th></th>
-	            			</thead>
-	            			<tbody id="tbl_body_motivo" >
-	            				<tr>
-									<td></td>
-	            					<td></td>
-	            					<td></td>
-	            					<td></td>
-	            					<td></td>
-	            					<td></td>
-	            					<td></td>
-	            					<td></td>
-	            					<td></td>
-	            					<td></td>
-	            				</tr>
-	            			</tbody>
-	            		</table>
+	            		<!-- <div class="table-responsive"> -->
+		            		<table class="table bg-light" id="txt_motivo_lista">
+		            			<thead class="bg-primary text-white">
+		            				<th>Item</th>
+		            				<th width="200px">Donante</th>
+		            				<th>Producto</th>
+		            				<th>Codigo</th>
+		            				<th>Stock</th>
+		            				<th>Cant Final(kg)</th>
+		            				<th width="100px">Precio / Costo</th>
+		            				<th>Total</th>
+		            				<th>Validado</th>
+		            				<th width="250px"></th>
+		            				<th></th>
+		            			</thead>
+		            			<tbody id="tbl_body_motivo" >
+		            				
+		            			</tbody>
+		            		</table>
+
+	            		<!-- </div> -->
 	            	</div>
             	</div>
             </div>

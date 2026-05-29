@@ -237,16 +237,26 @@ function cambiar_a_reportado()
 }
 function modal_motivo(orden,motivo,TC)
 {
-  $('#txt_idMotivo').val(motivo);
-   cargar_motivo_lista(orden,motivo,TC);
+  // $('#txt_motivo_lista').removeData('DataTable');
+    $('#txt_idMotivo').val(motivo);
+    cargar_motivo_lista(orden,motivo,TC);
     $('#myModal_motivo').modal('show');
 }
 
 function cargar_motivo_lista(orden,motivo,TC)
 {
-   if ($.fn.DataTable.isDataTable('#txt_motivo_lista')) {
-      $('#txt_motivo_lista').DataTable().destroy();
-  }
+  // var $tabla = $('#txt_motivo_lista');
+    
+  //   // Si existe, solo limpiar datos, no destruir
+  //   if ($.fn.DataTable.isDataTable('#txt_motivo_lista')) {
+  //       var table = $tabla.DataTable();
+  //       table.clear();  // Limpia los datos
+  //       table.destroy(); // Destruye
+  //   }
+    
+  //   // Limpieza manual adicional
+  //   $tabla.find('tbody').empty();
+
   $('#tbl_body_motivo').html('<tr><td colspan="7"></td></tr>');
   var parametros = {
       'orden':orden,
@@ -261,7 +271,23 @@ function cargar_motivo_lista(orden,motivo,TC)
       success: function(data)
       {
         console.log(data);
-        var tr = '';
+        var tr = '<tr>'
+                    +'<td></td>'
+                    +'<td></td>'
+                    +'<td></td>'
+                    +'<td></td>'
+                    +'<td></td>'
+                    +'<td class="text-end">'
+                      +'<label><input type="checkbox" name="rbl_pvp_all" id="rbl_pvp_all" onclick="cambiar_pvp_all()"> Precio para todos</label>'
+                    +'</td>'
+                    +'<td>'                          
+                      +'<input type="" name="txt_pvp_all" id="txt_pvp_all" class="form-control form-control-sm" value="0">'
+                    +'</td>'
+                    +'<td></td>'
+                    +'<td></td>'
+                    +'<td></td>'
+                    +'<td></td>'
+                  +'</tr>';
         data.forEach(function(item,i){
 
           total = parseFloat(item.Valor_Unitario)*parseFloat(item.Salida);
@@ -272,7 +298,7 @@ function cargar_motivo_lista(orden,motivo,TC)
                     <td>`+item.Codigo_Barra+`</td>
                     <td>`+item.Stock+`</td>
                     <td>`+item.Salida+`</td>
-                    <td><input type="number" class="form-control form-control-sm" value="`+item.Valor_Unitario+`" id="txt_lineaEgreso_`+item.ID+`" name="txt_lineaEgreso_`+item.ID+`"></td>
+                    <td><input type="number" class="form-control form-control-sm input_pvp" value="`+item.Valor_Unitario+`" id="txt_lineaEgreso_`+item.ID+`" name="txt_lineaEgreso_`+item.ID+`"></td>
                     <td>`+total.toFixed(2)+`</td>`
                     if(item.Solicitud==1)
                     {
@@ -291,30 +317,32 @@ function cargar_motivo_lista(orden,motivo,TC)
 
         $('#tbl_body_motivo').html(tr);
        
-          $('#txt_motivo_lista').DataTable({
-              scrollX: true,
-              searching: false,
-              responsive: false,
-          // paging: false,   
-              info: false,   
-              autoWidth: false,  
-          order: [[1, 'asc']], // Ordenar por la segunda columna
-              /*autoWidth: false,
-              responsive: true,*/
-              language: {
-              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
-            },
-            columnDefs: [
-                { targets: 2, width: "200px" },
-                { targets: 3, width: "500px" },
-                { targets: 9, width: "300px" },
-            ],
-          });
+          // $('#txt_motivo_lista').DataTable({
+          //     scrollX: true,
+          //     searching: false,
+          //     responsive: false,
+          // // paging: false,   
+          //     info: false,   
+          //     autoWidth: false,  
+          // order: [[1, 'asc']], // Ordenar por la segunda columna
+          //     /*autoWidth: false,
+          //     responsive: true,*/
+          //     language: {
+          //     url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          //   },
+          //   columnDefs: [
+          //       { targets: 2, width: "200px" },
+          //       { targets: 3, width: "500px" },
+          //       { targets: 9, width: "300px" },
+          //   ],
+          //   destroy: true
+          // });
           // Ejecutar en carga y cuando cambia el tamaño de pantalla
           /*dividirTabla();
           $(window).resize(dividirTabla);*/
 
-            $( '.select2_dinamico' ).select2({dropdownParent: $('#myModal_motivo')});
+            $( '.select2_dinamico' ).select2({
+              dropdownParent: $('#myModal_motivo') });
       }
     });
   }
@@ -624,4 +652,79 @@ function lista_egreso_checking()
 
     });
 
+  }
+
+  function cambiar_pvp_all()
+  {
+     var valor = $('#txt_pvp_all').val();
+     if(valor=="" || valor==0)
+     {
+        Swal.fire("Ingrese un valor valido","","info");
+        $('#rbl_pvp_all').prop('checked',false);
+        return false;
+     }
+
+     if($('#rbl_pvp_all').prop('checked'))
+     {
+       $('.input_pvp').each(function() {
+          const input = $(this);
+          var id = input[0].id;
+          console.log(id)
+          $('#'+id).val(valor);      
+      });
+     }
+  }
+
+  function guardar_all()
+  {
+    listaPvp = []
+    $('.input_pvp').each(function() {
+          const input = $(this);
+          var id_input = input[0].id;
+
+          var id = id_input.replaceAll('txt_lineaEgreso_','');
+          var valor = $('#'+id_input).val();
+          var subcta = "";
+          if ($('#ddl_subcta_'+id).length > 0) {
+              var subcta = $('#ddl_subcta_'+id).val();
+          }
+
+          var parametro = {'id':id,'pvp':valor,'subcta':subcta}
+          listaPvp.push(parametro);
+      });
+
+      $.ajax({
+        type: "POST",
+        url:   '../controlador/inventario/egreso_alimentosC.php?guardar_all=true',
+        data:{parametros:listaPvp},
+        dataType:'json',
+        success: function(data)
+          {
+            if(data==1)
+            {
+
+              Swal.fire("Fecha Editada","","success").then(function(){
+                lista_egreso_checking();
+                $('#myModal_edit_fecha').modal('hide');
+              })
+            }
+            console.log(data);
+         
+          },error: function (error) {
+              $('#myModal_espera').modal('hide');
+              // Puedes manejar el error aquí si es necesario
+            }
+
+      });
+
+
+    console.log(listaPvp);
+
+  }
+
+  function modal_cliente()
+  {
+    var src ="../vista/modales.php?FCliente=true&proveedor=true";
+    $('#FCliente').attr('src',src).show();
+    $('#myModal').modal('show');
   }
