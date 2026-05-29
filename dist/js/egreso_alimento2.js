@@ -153,6 +153,7 @@ function resp_clave_ingreso()
           if(response==1)
           {            
               Swal.fire("Registro eliminado","","success").then(function(){
+                // cargar_motivo_lista()
                 lista_egreso_checking();
               });
           }
@@ -703,9 +704,8 @@ function lista_egreso_checking()
             if(data==1)
             {
 
-              Swal.fire("Fecha Editada","","success").then(function(){
+              Swal.fire("Precio / costo  Editada","","success").then(function(){
                 lista_egreso_checking();
-                $('#myModal_edit_fecha').modal('hide');
               })
             }
             console.log(data);
