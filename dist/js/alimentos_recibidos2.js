@@ -423,7 +423,8 @@ function cargar_paquetes()
                 // console.log(item);
 
               })
-	      			location.reload();
+
+	      			 setTimeout(function() {  location.reload();  }, 1000);
 	      		});
 	      	}
 	      
