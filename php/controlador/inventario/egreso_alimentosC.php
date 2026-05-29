@@ -832,10 +832,12 @@ class egreso_alimentosC
 		   	SetAdoFields('Valor_Unitario',number_format($value['pvp'],2,'.',''));
 		   	SetAdoFields('Total',$total);
 		   	SetAdoFieldsWhere('ID',$value['id']);
-		  	// return SetAdoUpdateGeneric();
+		  	SetAdoUpdateGeneric();
 
 		}
-		print_r($parametros);die();
+
+		return 1;
+		// print_r($parametros);die();
 	}
 
 
