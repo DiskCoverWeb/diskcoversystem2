@@ -420,12 +420,10 @@ function cargar_paquetes()
 
                 window.open('../controlador/inventario/alimentos_recibidosC.php?imprimir_etiqueta_ind=true&num_ped='+$('#txt_codigo').val()+'&id='+item.ID+'&trans=true', '_blank');
 
-                console.log(item);
+                // console.log(item);
 
               })
-
-
-	      			// location.reload();
+	      			location.reload();
 	      		});
 	      	}
 	      
