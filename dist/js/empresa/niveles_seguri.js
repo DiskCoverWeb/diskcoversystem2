@@ -1145,9 +1145,14 @@ function acceso_pagina_seteos(entidad,item,ruc)
     success:  function (response) { 
       console.log(response);
 
-      $('#myModal_espera').modal('hide');
+      // $('#myModal_espera').modal('hide');
 
-      $('#'+ruc+'_'+item).html(response);          
+      $('#'+ruc+'_'+item).html(response);        
+
+       setTimeout(()=>{
+          $('#myModal_espera').modal('hide');
+        }, 1000);
+          
       // $('#mymodal_acceso_pag').modal('show');
     }
     }); 
