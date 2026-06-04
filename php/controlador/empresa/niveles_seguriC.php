@@ -1502,7 +1502,7 @@ Emails: recepcion@diskcoversystem.com o prisma_net@hotmail.es
 				foreach ($modulos as $key => $value) {
 					$ver = '';
 					if($key==0){ $ver = 'active';}
-					$op.='<li class="'.$ver.'"><a class="nav-link" data-bs-toggle="tab" href="#'.str_replace(' ','_',$value['aplicacion']).'">'.$value['aplicacion'].'</a></li>';
+					$op.='<li class="'.$ver.'"><a class="nav-link" data-bs-toggle="tab" href="#'.str_replace(' ','_',$value['aplicacion']).'_'.$parametros['entidad'].'_'.$parametros['item'].'">'.$value['aplicacion'].'</a></li>';
 				}
 				$encontrado = 0;
 				$op.='</ul>
@@ -1510,7 +1510,7 @@ Emails: recepcion@diskcoversystem.com o prisma_net@hotmail.es
 				foreach ($modulos as $key => $value) {
 					$ver = '';
 					if($key==0){$ver = 'show ';}
-					$op.='<div id="'.str_replace(' ','_',$value['aplicacion']).'" class="tab-pane fade '.$ver.'"><br>';
+					$op.='<div id="'.str_replace(' ','_',$value['aplicacion']).'_'.$parametros['entidad'].'_'.$parametros['item'].'" class="tab-pane fade '.$ver.'"><br>';
 					$pag = $this->modelo->paginas($value['modulo']);
 					// print_r($pag);die();
 					$pag_select = pagina_acceso($value['modulo'],$parametros['usuario'],$parametros['entidad'],$parametros['item']);
