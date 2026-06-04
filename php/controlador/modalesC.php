@@ -164,7 +164,7 @@ class modalesC
 		if(count($resp)>0)
 		{
 			$veri = Digito_verificador($query);
-			if($resp[0]['TD']==''){$resp[0]['TD'] = $veri['Tipo_Beneficiario'];}
+			if($resp[0]['TD']=='' || $resp[0]['TD']=='.'){$resp[0]['TD'] = $veri['Tipo_Beneficiario'];}
 		}
 		$datos = array();
 		foreach ($resp as $key => $value) {

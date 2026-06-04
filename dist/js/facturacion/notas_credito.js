@@ -736,24 +736,28 @@ function valida_cxc()
 
 function validar_procesar()
 {
+
+    $('#ReIngNC').val('1');
+
+// de aqui para abajo hay que revisar
   // cambiar el uno opr la variable corespondiente
-   numero = $('#TextCompRet').val();
-   if(1 != null)
-   {
-     Swal.fire({
-         title: 'Desea procesar esta nota de credito?',
-         // text: "Esta usted seguro de que quiere borrar este registro!",
-         icon: 'warning',
-         showCancelButton: true,
-         confirmButtonColor: '#3085d6',
-         cancelButtonColor: '#d33',
-         confirmButtonText: 'Si!'
-       }).then((result) => {
-         if (result.value==true) {
-            $('#ReIngNC').val('1');
-         }
-       })
-   }
+   // numero = $('#TextCompRet').val();
+   // if(1 != null)
+   // {
+   //   Swal.fire({
+   //       title: 'Desea procesar esta nota de credito?',
+   //       // text: "Esta usted seguro de que quiere borrar este registro!",
+   //       icon: 'warning',
+   //       showCancelButton: true,
+   //       confirmButtonColor: '#3085d6',
+   //       cancelButtonColor: '#d33',
+   //       confirmButtonText: 'Si!'
+   //     }).then((result) => {
+   //       if (result.value==true) {
+   //          $('#ReIngNC').val('1');
+   //       }
+   //     })
+   // }
 }
 
 function eliminar(CODIGO,A_NO)

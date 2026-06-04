@@ -114,7 +114,7 @@ class notas_creditoM
 	    AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
 	    if($query)
 	    {
-	    	$sql.=" AND Codigo+' '+Cuenta like '%".$query."%'";
+	    	$sql.=" AND (Codigo like '".$query."%' OR Cuenta like '%".$query."%')";
 	    }
 	    $sql.="  ORDER BY Codigo ";
 	    // print_r($sql);die();
