@@ -8,7 +8,7 @@ $menuC = new menuC();
 
 $pagina =  isset($_GET['acc']) ? $_GET['acc'] : "";
 $modulo =  isset($_GET['mod']) ? $_GET['mod'] : "";
-if ($modulo !== ""){
+if ($modulo != ""){
 	$listaMenu = $menuC->generar_menu($modulo);
 } else {
 	$listaMenu = "";
@@ -113,7 +113,8 @@ function estado_licencia($f3)
 	<link rel="stylesheet" href="../../assets/css/jquery-ui.min.css"/>
 	<link rel="stylesheet" href="../../dist/css/style_acordeon.css"/>
 	<script type="text/javascript">
-	var ModuloActual = '<?php echo $modulo;  ?>'; 
+	var ModuloActual = '<?php echo $modulo; ?>'; 
+	console.log(ModuloActual);
 	</script>
 	<script src="../../assets/js/jquery.min.js"></script>
 	<script src="../../assets/js/jquery-ui.js"></script>

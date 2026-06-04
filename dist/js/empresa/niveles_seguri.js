@@ -30,7 +30,7 @@ let listado_empresas = [];
   function autocmpletar(){
       $('#ddl_entidad').select2({
         placeholder: 'Seleccione una Entidad',
-        width: '180px',
+        // width: '180px',
         dropdownAutoWidth: true,
         ajax: {
           url: '../controlador/empresa/niveles_seguriC.php?entidades=true',
@@ -56,7 +56,7 @@ let listado_empresas = [];
        let entidad = $('#ddl_entidad').val();	
       $('#ddl_usuarios').select2({
         placeholder: 'Seleccione un Usuario',
-        width: '200px',
+        // width: '200px',
         dropdownAutoWidth: 'true', 
         ajax: {
           url: '../controlador/empresa/niveles_seguriC.php?usuarios=true&entidad='+entidad,
@@ -123,7 +123,7 @@ let listado_empresas = [];
 
   }
 
-   function todos_modulos()
+  function todos_modulos()
   {
 
       listado_empresas_modificados = [];
@@ -146,6 +146,31 @@ let listado_empresas = [];
       });
 
   }
+
+  function todos_modulos_seteos()
+  {
+
+      listado_empresas_modificados = [];
+
+      var parametros ={
+        'entidad':$('#ddl_entidad').val(),
+        'usuario':$('#ddl_usuarios').val(),
+      }
+      $.ajax({
+         data:  {parametros:parametros},
+        url:   '../controlador/empresa/niveles_seguriC.php?todos_modulos=true',
+        type:  'post',
+        dataType: 'json',
+        // beforeSend: function () { 
+        //   $('#modu').html('<img src="../../img/gif/loader4.1.gif" width="50%">');
+        // },
+        success:  function (response) { 
+         $('#todo_modulos').html(response)
+        }
+      });
+
+  }
+
 
   function guardar_pag(entidad,empresa,usuario,pag,mod)
   {
@@ -295,6 +320,87 @@ let listado_empresas = [];
             // DoubleScroll(document.getElementById('tbl_modulos'));
     		}
     	});
+
+  }
+
+  function cargar_empresas_seteos()
+  {
+
+      listado_empresas_modificados = [];
+     style="display: flex; width: 85%;"
+     $('#ddl').css('display','flex');     
+     $('#ddl').css('width','85%');
+
+    $('#ddl_usuarios').val('');   
+    $('#tbl_modulos').html('');
+    $('#modu').html('<div>No a seleccionado ninguna empresa</div>');
+    $('#txt_empresas').val('');
+    autocmpletar_usuario();
+    let entidad = $('#ddl_entidad').val();
+    // alert(entidad);
+    // ShowModalEspera();
+    $.ajax({
+         data:  {entidad:entidad},
+        url:   '../controlador/empresa/niveles_seguriC.php?empresas=true',
+        type:  'post',
+        dataType: 'json',
+        // beforeSend: function () { 
+        //   ShowModalEspera(); 
+        // },
+        success:  function (response) { 
+          console.log(response);
+          listado_empresas = [];
+           if(response.alerta!='')
+           {
+            Swal.fire('Advertencia, item duplicado', response.alerta+'\nEsto podría causar problemas','info');
+             // Swal.fire(,'s','info');
+           }
+
+           opPuntoEmi = '<option value="">Seleccione Empresa</option>';
+           var pnl_nav_empresas = '';
+           var pnl_modulo_empresas = '';
+           $.each(response.empresas,function(i,item){
+                  console.log(item);
+                 listado_empresas.push(item)
+                 if(item.dbSQLSERVER==1)
+                 {
+                    opPuntoEmi+='<option value="'+item.id+'">'+item.text+'</option>'
+                 }
+              var nav_activo = '';
+              var content_activo = '';
+              // if(i==0){nav_activo = 'active'; content_activo = 'active show'}   
+              var server = '<p class="m-0"><i class="fa fa-circle text-success"></i> En linea</p>';
+              if(item.dbSQLSERVER==0)
+              {server = '<p  class="m-0"><i class="fa fa-circle text-danger"></i> Acceso SQLServer no configurado</p>';}
+              else if(item.dbSQLSERVER==2)
+              {
+                server = '<p  class="m-0"><i class="fa fa-circle text-yellow"></i> Base de datos o nonexion no establecida</p>';
+              }
+
+              pnl_nav_empresas+=`
+                    <li class="nav-item m-1" role="presentation" style="border: 1px solid;border-radius: 5px;">
+                      <a class="nav-link `+nav_activo+`" onclick="acceso_pagina_seteos('`+entidad+`','`+item.id+`','`+item.CI_RUC+`')" data-bs-toggle="pill" href="#`+item.CI_RUC+`_`+item.id+`" role="tab" aria-selected="true">
+                        <div class="d-flex align-items-center">
+                          </div>
+                          <div class="tab-title">`+item.text+` <br> <b>RUC:</b>`+item.CI_RUC+` - <b>Item:</b>`+item.id+` `+server+`
+                          </div>
+                        </div>
+                      </a>
+                    </li>`;
+
+              pnl_modulo_empresas+=`<div class="tab-pane fade `+content_activo+`" id="`+item.CI_RUC+`_`+item.id+`" role="tabpanel"></div>`;
+            })
+
+           $('#pnl_nav_empresas').html(pnl_nav_empresas);
+           $('#pnl_modulo_empresas').html(pnl_modulo_empresas);
+
+          
+            var enti = $('#ddl_entidad').val();
+            $('#lbl_enti').text(enti);
+            $('#usuarios_tbl').html(response.usuarios); 
+            $('#ddl_empresa_puntoEmi').html(opPuntoEmi); 
+        }
+      });
 
   }
 function guardar()
@@ -1011,6 +1117,38 @@ function acceso_pagina(entidad,item)
       console.log(response);
       $('#panel_paginas').html(response);          
       $('#mymodal_acceso_pag').modal('show');
+    }
+    }); 
+}
+
+function acceso_pagina_seteos(entidad,item,ruc)
+{
+  var usu = $('#ddl_usuarios').val();
+  console.log(usu);
+  if(usu=='' || usu==null)
+  {
+    Swal.fire('Seleccione un usuario','','info');
+    return false;
+  }
+  var parametros = 
+  {
+    'entidad':entidad,
+    'item':item,
+    'usuario':usu,
+  }
+  $('#myModal_espera').modal('show');
+  $.ajax({
+    data:  {parametros:parametros},
+    url:   '../controlador/empresa/niveles_seguriC.php?paginas_acceso=true',
+    type:  'post',
+    dataType: 'json',       
+    success:  function (response) { 
+      console.log(response);
+
+      $('#myModal_espera').modal('hide');
+
+      $('#'+ruc+'_'+item).html(response);          
+      // $('#mymodal_acceso_pag').modal('show');
     }
     }); 
 }

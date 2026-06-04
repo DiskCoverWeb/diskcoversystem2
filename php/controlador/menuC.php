@@ -17,6 +17,7 @@ class menuC
 	{
 		$menu = $this->modelo->select_menu_mysql($modulo);
        	$accesos_pag = $this->modelo->pagina_acceso_hijos($modulo,$_SESSION['INGRESO']['CodigoU'], $_SESSION['INGRESO']['IDEntidad'], $_SESSION['INGRESO']['item']);
+       	// print_r($accesos_pag);die();
        	// print_r($menu);die();
        if (count($accesos_pag) > 0) 
        {
@@ -33,25 +34,41 @@ class menuC
 
 	function menu_restringido($menu)
 	{
-		$codigo = $menu[0]['codMenu'];
-		$arbol = explode('.',$codigo);
-		$codigos_menu = "";
-		$cod = "";
-		foreach ($arbol as $key => $value) {
+		// print_r($menu);die();
+		$codigo_menu_final = "";
+		foreach ($menu as $key2 => $value2) {
+			$codigo = $value2['codMenu'];
+			$arbol = explode('.',$codigo);
+			$codigos_menu = "";
+			$cod = "";
+			$i=0;
+			foreach ($arbol as $key => $value) {
 
-			if($cod!="")
-			{ 
-				$codigos_menu.= ",'".$cod.'.'.$value."'"; 
-				$cod = $cod.'.'.$value; 
+				if($cod!="")
+				{ 
+					$codigos_menu.= ",'".$cod.'.'.$value."'"; 
+					$cod = $cod.'.'.$value; 
+				}
+				else
+				{ 
+					$codigos_menu = "'".$value."'"; 
+					$cod = $value; 
+				}
+				$i=$key;
 			}
-			else
-			{ 
-				$codigos_menu = "'".$value."'"; 
-				$cod = $value; 
+			if(count($arbol)==($i+1))
+			{
+				if($codigo_menu_final=="")
+				{
+					$codigo_menu_final.= $codigos_menu;
+				}else
+				{
+					$codigo_menu_final.=','.$codigos_menu;
+				}
 			}
 		}
-// print_r($codigos_menu);die();
-		$lista = $this->modelo->generar_menu($codigos_menu);
+// print_r($codigo_menu_final);die();
+		$lista = $this->modelo->generar_menu($codigo_menu_final);
 
 
 		return $this->menu_completo($lista);

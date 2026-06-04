@@ -13,6 +13,9 @@ if (isset($_GET['modulos'])) {
 if (isset($_GET['empresas'])) {
 	echo json_encode($controlador->empresas($_POST['entidad']));
 }
+if (isset($_GET['empresas_seteo'])) {
+	echo json_encode($controlador->empresas_seteo($_POST['entidad']));
+}
 if (isset($_GET['usuarios'])) {
 	if(!isset($_GET['q']))
 	{
@@ -886,6 +889,128 @@ class niveles_seguriC
 
 
 	function empresas($entidad)
+	{
+		$tbl2 = '';
+		$modulos = $this->modelo->modulos_todo();
+		$empresas = $this->modelo->empresas($entidad);
+		//print_r($empresas); die();
+		$empresas_unicas = filtra_datos_unico_array($empresas, 'id');
+		$usuarios_reg = $this->modelo->usuarios_registrados_entidad($entidad);
+		$mensaje = '';
+		$count_emp = 0;
+		$items_repetidos_array = [];
+		$items_repetidos = 0;
+		//validando que los items sean unicos
+		foreach ($empresas_unicas as $key => $value2) {
+			// $item_temp = $value2['id'];
+			foreach ($empresas as $key3 => $value3) {
+				if($value2['id']==$value3['id'])
+				{
+					if($value2['text']!==$value3['text']){
+						$items_repetidos_array[$items_repetidos]['id'] =  $value3['id'];
+						$items_repetidos_array[$items_repetidos]['text'] =  $value3['text'];
+						$items_repetidos++;
+
+						$items_repetidos_array[$items_repetidos]['id'] =  $value2['id'];
+						$items_repetidos_array[$items_repetidos]['text'] =  $value2['text'];
+						$items_repetidos++;
+					}
+					$count_emp++;
+				}
+			}
+			$count_emp = $count_emp-1;
+			if($count_emp>=1)
+			{
+				$mensaje = '';
+				foreach($items_repetidos_array as $key => $empresa){
+					$mensaje.= 'Empresa: '.$empresa['text'].'=> Item: '.$empresa['id']."<br>";
+				};
+				$count_emp = 0;
+			}
+		}
+		// creamos el grid de modulos y empresas
+
+			foreach ($empresas as $key1 => $value1) {
+				$server = '<p><i class="fa fa-circle text-success"></i> En linea</p>';
+				if($value1['dbSQLSERVER']==0)
+				{$server = '<p><i class="fa fa-circle text-danger"></i> Acceso SQLServer no configurado</p>';}
+				else if($value1['dbSQLSERVER']==2)
+				{
+					$server = '<p><i class="fa fa-circle text-yellow"></i> Base de datos o nonexion no establecida</p>';
+				}
+				$tbl2.='<div class="row">
+								<div class=" col-sm-3 col-lg-3" style="background-color:#e2fbff;">
+										<div class="row">
+										  <div class="col-sm-12">
+										  	<b>'.$value1['text'].'</b>
+										  </div>
+										  <div class="col-sm-6">
+										  	<b>RUC:</b>'.$value1['CI_RUC'].'<br>
+										  </div>
+										  <div class="col-sm-6">
+										  	<b>Item:</b>'.$value1['id'].'<br>
+										  </div>
+										  <div class="col-sm-12">
+										  	'.$server.'	
+										  </div>
+										  <div class="col-sm-12">
+										  	 <button type="button" class="btn btn-primary btn-xs" onclick="acceso_pagina(\''.$entidad.'\',\''.$value1['id'].'\')">Asignar acceso a paginas</button>
+										  </div>
+										</div>									
+								</div>
+            				<div class="col-lg-9" style="overflow-x:scroll;">
+              					<div class="row"><div class="col-sm-12">';
+
+
+			   $tbl2.='
+
+			   <table class="table-sm" style="margin-bottom:0px;font-size:11px;white-space: nowrap;"><tr>';
+			foreach ($modulos as $key2 => $value2) {	
+				$server = '';
+				// if($value1['dbSQLSERVER']==0){$server = 'Disabled';}
+				if($value1['ID_Empresa']!=0 && $value1['ID_Empresa']!=1 && $value1['ID_Empresa']!=''&& $value1['ID_Empresa']!=null) 
+				{
+					// print_r('diferente a prisma');
+					if($value2['modulo']<90)
+					{							
+						$tbl2.='<td class="text-center" style="border: solid 1px; width: 50px;">
+								'.$value2['aplicacion'].'</br>
+				            <input type="checkbox" class="form-check-input" name="rbl_'.$value2['modulo'].'_'.$value1['id'].'" id="rbl_'.$value2['modulo'].'_'.$value1['id'].'" title="'.$value2['aplicacion'].'" onclick="listar_empresa_modificada(\''.$value1['id'].'\')" '.$server.' >
+				        </td>';
+				    }
+				}else
+				{
+
+					$tbl2.='<td class="text-center" style="border: solid 1px; width: 50px;">
+								'.$value2['aplicacion'].'</br>
+				            <input type="checkbox" class="form-check-input" name="rbl_'.$value2['modulo'].'_'.$value1['id'].'" id="rbl_'.$value2['modulo'].'_'.$value1['id'].'" title="'.$value2['aplicacion'].'" onclick="listar_empresa_modificada(\''.$value1['id'].'\')" '.$server.' >
+				        </td>';
+
+				}
+
+				
+			}
+			$tbl2.='</tr></table></div></div></div></div>';	
+
+			// print_r($tbl2);die();
+		}
+
+
+
+		$usuarios = '';
+		foreach ($usuarios_reg as $key => $value) {
+			$usuarios.='<tr><td><b>'.$value['CI_NIC'].'</b></td><td>'.$value['Nombre_Usuario'].'</td><td>'.$value['Email'].'</td></tr>';
+		}
+		// print_r($tbl);die();
+		// return utf8_decode($tbl);
+		$tbl = array('tbl'=>$tbl2,'usuarios'=>$usuarios,'empresas'=>$empresas_unicas,'alerta'=>$mensaje);
+
+		// print_r($tbl);die();
+		return $tbl;
+	}
+
+
+	function empresas_seteo($entidad)
 	{
 		$tbl2 = '';
 		$modulos = $this->modelo->modulos_todo();

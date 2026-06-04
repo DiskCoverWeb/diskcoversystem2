@@ -608,6 +608,9 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'constructora_tiempos':
 					require_once("inventario/reporte_constructora_tiempos.php");
 					break;
+				case 'lista_orden_trabajo_const':
+					require_once("inventario/lista_ordenes_trabajo.php");
+					break;
 				case 'orden_trabajo_const':
 					require_once("inventario/orden_trabajo_const.php");
 					break;
@@ -695,6 +698,10 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 					break;
 				case 'reporte_GFN':
 					require_once('contratos/reporte_GFN.php');
+					break;
+				/************************************ SETEOS  *******************************************/
+				  case 'niveles_seguriadad_seteo':
+					require_once("seteos/niveles_seguridad.php");
 					break;
 					
 		
