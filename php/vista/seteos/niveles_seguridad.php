@@ -22,6 +22,7 @@
     $('#lbl_enti').text(entidad);
     $('#ddl_entidad').append($('<option>',{value:  entidad, text: nombre,selected: true }));
     cargar_empresas_seteos();
+   autocmpletar_usuario();
 
    })
 </script>

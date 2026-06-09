@@ -171,7 +171,11 @@ class niveles_seguriC
 	// }
 	function usuarios($parametros)
 	{
-		$parametros['entidad'] = '';
+		// print_r($_SESSION['INGRESO']);die();
+		if($_SESSION['INGRESO']['NombreModulo']==='EMPRESAS')
+		{
+			$parametros['entidad'] = '';
+		}
 		$usuarios = $this->modelo->usuarios($parametros['entidad'],$parametros['query']);
 		// print_r($usuarios);die();
 		return $usuarios;

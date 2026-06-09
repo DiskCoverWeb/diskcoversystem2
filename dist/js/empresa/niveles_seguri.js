@@ -7,7 +7,6 @@ let listado_empresas = [];
    // cargar_modulos();
    todos_modulos();
    autocmpletar();
-   autocmpletar_usuario();
 
   $('#ddl_usuarios').on('select2:select', function (e) {
         // console.log(e);
