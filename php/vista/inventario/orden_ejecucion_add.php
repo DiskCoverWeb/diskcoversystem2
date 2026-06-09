@@ -1,7 +1,10 @@
-<?php date_default_timezone_set('America/Guayaquil'); $contratista = '-1'; if(isset($_GET['contratistaDetalle']) && $_GET['contratistaDetalle']!=''){$contratista = $_GET['contratistaDetalle'];}?>
+<?php date_default_timezone_set('America/Guayaquil'); 
+$contratista = '-1'; 
+if(isset($_GET['contratistaDetalle']) && $_GET['contratistaDetalle']!=''){$contratista = $_GET['contratistaDetalle'];}?>
 
 <script type="text/javascript">
  var contratista = '<?php echo $contratista; ?>';
+ // console.log(contratista);
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
@@ -46,9 +49,9 @@
         <button type="button" class="btn btn-outline-secondary" title="Informe pdf" onclick="imprimir_pdf()">
           <img src="../../img/png/pdf.png">
         </button>
-        <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_orden_trabajo()">
+      <!--   <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_orden_trabajo()">
           <img src="../../img/png/grabar.png" >
-        </button>
+        </button> -->
       </div>
   </div>
 </div>
@@ -201,7 +204,7 @@
               </div>
             </div>
              <div class="modal-footer">
-                  <button type="button" class="btn btn-primary" id="btn_guardar_periodo" name="btn_guardar_periodo" onclick="guardar_periodo()"><i class="bx bx-save"></i>Guardar</button>        
+                  <button type="button" class="btn btn-primary" id="btn_guardar_periodo" name="btn_guardar_periodo" onclick="guardar_subrubro_ejecucion()"><i class="bx bx-save"></i>Guardar</button>        
                   <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
               </div>
         </div>

@@ -173,14 +173,8 @@ function centrosCostocXRubro(ordenNo)
             var estado_tab = '';
             var estado_cont = '';
             response.forEach(function(item,i){
-              console.log(item)
-              fechaI = ""
-              fechaF = ""
-              semana = "";
-              if(item.Fecha_Inicio!=null && item.Fecha_Inicio!='') {fechaI = formatoDate(item.Fecha_Inicio.date) }
-              if(item.Fecha_Fin!=null && item.Fecha_Fin!='') {fechaF = formatoDate(item.Fecha_Fin.date) }
-              if(item.Semana !=null  && item.Semana!='' ){semana =item.Semana; }
-
+              // console.log(item)
+            
               if(i==0){estado_tab = 'active'; estado_cont = 'show'; $('#txt_centro_costos').val(item.Centro_Costos); $('#txt_id_centro_costos').val(item.ID) }
               pnl_tab+=`<button class="nav-link `+estado_tab+`" id="tab_`+item.Centro_Costos+`" data-bs-toggle="pill" data-bs-target="#content_tab_`+item.Centro_Costos+`" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true" onclick="$('#txt_centro_costos').val('`+item.Centro_Costos+`'); $('#txt_id_centro_costos').val(`+item.ID+`);cargar_lista_subrubros();;valores_default()
 ()">`+item.Detalle+`</button>`
@@ -188,11 +182,11 @@ function centrosCostocXRubro(ordenNo)
                             <div class="row">
 
                               <div class="col-sm-3">
-                                <button class="btn btn-sm btn-primary" onclick="modal_periodo_trabajo()" ><i class="bx bx-calendar"></i>Asignar periodos</button>
+                                <button class="btn btn-sm btn-primary" disabled id="btn_periodo_`+item.Centro_Costos+`" onclick="modal_periodo_trabajo()" ><i class="bx bx-calendar"></i>Asignar periodos</button>
                               </div>
-                              <div class="col-sm-3"><b>Semana: </b><span>`+semana+`</span></div>
-                              <div class="col-sm-3"><b>Fecha Inicio: </b><span>`+fechaI+`</span></div>
-                              <div class="col-sm-3"><b>Fecha Fin: </b><span>`+fechaF+`</span></div>
+                              <div class="col-sm-3"><b>Semana: </b><span id="lbl_semana"></span></div>
+                              <div class="col-sm-3"><b>Fecha Inicio: </b><span id="lbl_fechaI"></span></div>
+                              <div class="col-sm-3"><b>Fecha Fin: </b><span id="lbl_fechaF"></span></div>
                               
 
                               <div class="col-sm-12 mt-3">
@@ -589,9 +583,31 @@ function cargar_lista_subrubros()
         dataType:'json',
         success: function(data)
         {
+          console.log(data);
+          var lineas = data.length;
+          if(lineas>0)
+          {
+            $('#btn_periodo_'+centroCostos).prop('disabled',false);
+          }else
+          {
+            $('#btn_periodo_'+centroCostos).prop('disabled',true);            
+          }
        
             table = '';
+            fechaI = ""
+            fechaF = ""
+            semana = "";
+           
+
               data.forEach(function(item,i){
+                if(semana=="")
+                {
+                  if(item.Fecha_Inicio!=null && item.Fecha_Inicio!='') {fechaI = formatoDate(item.Fecha_Inicio.date) }
+                  if(item.Fecha_Fin!=null && item.Fecha_Fin!='') {fechaF = formatoDate(item.Fecha_Fin.date) }
+                  if(item.Semana !=null  && item.Semana!='' ){semana =item.Semana; }
+                }
+
+
                 table+=`<tr> 
                             <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminar_subrubro('`+item.ID+`')"><i class="bx bx-trash me-0"></i></button></td>
                             <td>`+item.Detalle+`</td> 
@@ -601,6 +617,11 @@ function cargar_lista_subrubros()
                             <td>`+item.Total+`</td>
                         </tr>`
               })
+
+              $('#lbl_semana').text(semana);
+              $('#lbl_fechaI').text(fechaI);
+              $('#lbl_fechaF').text(fechaF);
+
               $('#tbl_'+centroCostos).html(table);
         }
     });   
@@ -725,12 +746,14 @@ function grabar_orden_trabajo()
   var rubro = $('#ddl_Rubro').val()
   var contrato = $('#ddl_Contrato').val()
   var contratista = $('#ddl_contratista').val();
+  var centroCostos = $('#txt_centro_costos').val();
 
   var parametros = 
   {
     'rubro':rubro,
     'contrato':contrato,
     'contratista':contratista,
+    'centroCostos':centroCostos,
   }
    $.ajax({
         type: "POST",

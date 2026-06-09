@@ -314,6 +314,7 @@
 
         function cargar_lista_subrubros($parametros)
         {            
+            // print_r($parametros);die();
             $data = $this->modelo->cargar_lista_subrubros($parametros['Contrato'],$parametros['rubro'],$subrubro=false,$parametros['centroCostos'],$parametros['contratista']);
 
             return $data;
@@ -330,14 +331,16 @@
         {
 
             // print_r($parametros);die();
-            SetAdoAddNew("Trans_Contratistas_Rubros");
+            SetAdoAddNew("Entidad_Rubro_Contratista");
             SetAdoFields("Semana",$parametros['semana']);
             SetAdoFields("Fecha_Inicio",$parametros['fechaInicio']);
             SetAdoFields("Fecha_Fin",$parametros['fechaFin']);
             SetAdoFields("Observacion",$parametros["observacion"]);
 
 
-            SetAdoFieldsWhere('ID',$parametros["idCentroCostos"]);
+            SetAdoFieldsWhere('Rubro',$parametros["rubro"]);
+            SetAdoFieldsWhere('No_Contrato',$parametros["contrato"]);
+            SetAdoFieldsWhere('Centro_Costo',$parametros["centroCostos"]);
             return SetAdoUpdateGeneric(); 
         }
 
@@ -348,27 +351,55 @@
             $existeSubRubroAll = 1;
             $existePeriodoAll = 1;
 
-            $centroCostos = $this->modelo->centrosCostocXRubro($parametros['contrato'],$parametros['rubro']);
-            foreach ($centroCostos as $key => $value) {
-                print_r($value);die();
-                $subrubro = $this->modelo->cargar_lista_subrubros($parametros['contrato'],$parametros['rubro'],false,$value['Centro_Costos'],false);
-                if(count($subrubro)==0)
-                {
-                    $existeSubRubroAll = 0;
-                    $mensaje.='<b>'.$value['Detalle'].':</b> no tiene Sub Rubros asignados <br>';
-                }
-                if($value['Semana']=='' || $value['Semana']==0 || $value['Fecha_Inicio']=='' || $value['Fecha_Fin']=='' || $value['Fecha_Inicio']==null || $value['Fecha_Fin']==null )
-                {                    
-                    $mensaje.='<b>'.$value['Detalle'].':</b> Periodos no asignados <br>';
-                    $existePeriodoAll = 0;
-                }
-            }
+            // print_r($parametros);die();
+             $subrubro = $this->modelo->cargar_lista_subrubros($parametros['contrato'],$parametros['rubro'],false,$parametros['centroCostos'],false);
+             if(count($subrubro)==0)
+             {
+                $existeSubRubroAll = 0;
+                $mensaje.='<b>'.$value['Detalle'].':</b> no tiene Sub Rubros asignados <br>';
+             }else
+             {
 
+                $semana = '';
+                $fechaI = '';
+                $fechaF = '';
+                $observacion = '';
+
+                $tieneFechaAlguno = 0;
+                foreach ($subrubro as $key => $value) {
+                    if($value['Semana']=='' || $value['Semana']==0 || $value['Fecha_Inicio']=='' || $value['Fecha_Fin']=='' || $value['Fecha_Inicio']==null || $value['Fecha_Fin']==null )
+                    {                    
+                        $mensaje.='Periodos no asignados <br>';
+                        $existePeriodoAll = 0;
+                    }else
+                    {
+                        $semana = $value['Semana'];
+                        $fechaI = $value['Fecha_Inicio']->format('Y-m-d');
+                        $fechaF = $value['Fecha_Fin']->format('Y-m-d');     
+                        $observacion = $value['Observacion'];
+                        $existePeriodoAll = 1;
+                        break;             
+                    }
+                }
+
+                if($existePeriodoAll==1)
+                {
+                    $parametros['semana'] = $semana;
+                    $parametros['fechaInicio'] = $fechaI ;
+                    $parametros['fechaFin'] = $fechaF;
+                    $parametros['observacion'] = $observacion;
+                    $this->guardar_periodo($parametros);
+                }
+             }
+
+             // print_r($subrubro);die();
             $resp = -1;
             if($existePeriodoAll == 1 && $existeSubRubroAll == 1)
             {
+                foreach ($subrubro as $key => $value) {
+                    $this->modelo->grabar_orden_trabajo_x_subrubro($value['ID']);
+                }
 
-                $this->modelo->grabar_orden_trabajo($parametros['contrato']);
                 $resp = 1;
             }
 
@@ -384,7 +415,7 @@
 
         function contratosXrubro($parametros)
         {
-            $data = $this->modelo->rubrosXcontratistaAll($query=false,$parametros['contratista'],$parametros['rubro'],$orden=false,$centro_costos=false);
+            $data = $this->modelo->rubrosXcontratistaAllunic($query=false,$parametros['contratista'],$parametros['rubro'],$orden=false,$centro_costos=false);
             return $data;
         }
     }

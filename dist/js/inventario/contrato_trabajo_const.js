@@ -1,4 +1,5 @@
   var tbl_pedidos_all;
+  var tbl_pedidos_ordenes_all;
   $(document).ready(function () {
 
       tbl_pedidos_all = $('#tbl_lista_solicitud').DataTable({
@@ -8,6 +9,85 @@
           },
           ajax: {
               url:   '../controlador/inventario/contrato_trabajo_detalle_constC.php?cargar_lista_contratos=true',
+              type: 'POST',  // Cambia el método a POST    
+              data: function(d) {
+                  var parametros = {                    
+                    orden:ordenNo,
+                  };
+                  return { parametros: parametros };
+              },
+              dataSrc: '',             
+          },
+          // searching: false,
+          // responsive: true,
+          // paging: false,   
+          // info: false,   
+          // autoWidth: true,
+          scrollX:true,
+          columns: [
+              { data: null, // Columna autoincremental
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1; // meta.row es el índice de la fila
+                    }
+              },
+              { data: 'Cliente' },
+              { data: null,
+                 render: function(data, type, item) {
+                    // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
+                    // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
+                    if(data.T=='.'){
+                    return `<a href="inicio.php?mod=`+ModuloActual+`&acc=contrato_trabajo_detalle_const&ordenNo=${data.No_Contrato}">${data.No_Contrato}</a>`;                    
+                    }else
+                    {
+                      return `${data.No_Contrato}`;                    
+                    }
+                  }
+              },
+              { data: 'Fecha.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: 'Fecha_V.date',  
+                  render: function(data, type, item) {
+                      return data ? new Date(data).toLocaleDateString() : '';
+                  }
+              },
+              { data: null,
+                 render: function(data, type, item) {
+                  // console.log(item);
+                  // console.log(data);
+                    // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
+                    // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
+                    if(data.T=='.')
+                    {
+                     return `
+                       <button type="button" title="Eliminar Pedido" class="btn btn-danger btn-sm p-0 m-0" onclick="eliminar_pedido('${data.ID}')"><i class="bx bx-trash m-0"></i></button>`;         
+                    }else if(data.T=='A')
+                    {
+                      return '<label class="text-primary">En orden</label>'
+                    }else if(data.T=='E')
+                    {
+                      return '<label class="text-success">En Ejecucion</label>'
+                    }           
+                  }
+              },
+              
+          ],
+          order: [
+              [1, 'desc']
+          ]
+      });
+
+
+      // esto es para la lsita de ordenes de trabajo 
+        tbl_pedidos_ordenes_all = $('#tbl_lista_solicitud_ord').DataTable({
+          // responsive: true,
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json'
+          },
+          ajax: {
+              url:   '../controlador/inventario/contrato_trabajo_detalle_constC.php?cargar_lista_contratos_ord=true',
               type: 'POST',  // Cambia el método a POST    
               data: function(d) {
                   var parametros = {                    

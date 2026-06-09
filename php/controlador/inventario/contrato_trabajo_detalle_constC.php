@@ -21,6 +21,13 @@ if(isset($_GET['cargar_lista_contratos']))
     echo json_encode($controlador->cargar_lista_contratos($parametros));
 }
 
+if(isset($_GET['cargar_lista_contratos_ord']))
+{
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->cargar_lista_contratos_ord($parametros));
+}
+
+
 if(isset($_GET['eliminar_contrato']))
 {
     $id = $_POST['id'];
@@ -198,6 +205,11 @@ class contrato_trabajo_detalle_constC
     function cargar_lista_contratos()
     {
         return $this->modelo->detalleContratoAll();
+    }  
+
+    function cargar_lista_contratos_ord()
+    {
+        return $this->modelo->detalleContratoAll(false,'A');
     }  
 
     function eliminar_contrato($id)

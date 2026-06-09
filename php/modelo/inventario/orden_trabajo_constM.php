@@ -241,22 +241,68 @@ class orden_trabajo_constM
 
     }
 
+    function rubrosXcontratistaAllunic($query=false,$contratistaCod=false,$rubro=false,$orden=false,$centro_costos=false)
+    {
+        $sql="Select Orden_Trabajo,TCR.Cta,CC.Cuenta
+            From Trans_Contratistas_Rubros TCR
+            INNER JOIN Trans_Contratistas TC on TCR.Orden_Trabajo = TC.No_Contrato
+            INNER JOIN Catalogo_Cuentas CC ON  TCR.Cta = CC.Codigo 
+            where TCR.Item = TC.Item
+            AND TCR.Periodo = TC.Periodo
+            AND TC.Item = '".$_SESSION['INGRESO']['item']."'
+            AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+            AND TC.T = 'A'";
+            if($query)
+            {
+                $sql.=" AND CC.Cuenta like '%".$query."%'";
+
+            }
+            if($contratistaCod)
+            {
+                $sql.=" AND TC.Codigo = '".$contratistaCod."'";
+            }
+
+            if($rubro)
+            {
+                $sql.=" AND TCR.Cta = '".$rubro."'";
+            }
+
+            if($orden)
+            {
+                $sql.=" AND Orden_Trabajo = '".$orden."'";  
+            }
+
+            if($centro_costos)
+            {
+                $sql.=" AND Centro_Costos = '".$centro_costos."'";  
+            }
+
+            $sql.=" group by  Orden_Trabajo,TCR.Cta,CC.Cuenta   ";
+
+            // print_r($sql);die();
+
+        return $this->db->datos($sql);
+
+    }
+
     function SemanasXcentrosCostocXRubro($proyecto=false,$rubro=false)
     {
+
         $sql ="Select Semana
-                From Trans_Contratistas_Rubros TCR
-                INNER JOIN Catalogo_SubCtas SC ON TCR.Centro_Costos = SC.Codigo
+                From Entidad_Rubro_Contratista TCR
+                INNER JOIN Catalogo_SubCtas SC ON TCR.Centro_Costo = SC.Codigo
                 where SC.Item = TCR.Item
                 AND SC.Periodo = TCR.Periodo
                 AND TCR.Item =  '".$_SESSION['INGRESO']['item']."'
-                AND TCR.Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+                AND TCR.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+                AND TCR.TC = 'E' ";
                 if($rubro)
                 {
-                    $sql.=" AND Cta = '".$rubro."' ";
+                    $sql.=" AND Rubro = '".$rubro."' ";
                 }
                 if($proyecto)
                 {
-                    $sql.=" AND Orden_Trabajo = '".$proyecto."'";
+                    $sql.=" AND No_Contrato = '".$proyecto."'";
                 }
 
                 $sql.=" group by Semana";
@@ -266,11 +312,16 @@ class orden_trabajo_constM
 
     function centrosCostocXRubro($proyecto=false,$rubro=false,$semana =false)
     {
-        $sql ="Select TCR.ID,TCR.Centro_Costos,Detalle,TCR.ID,Fecha_Inicio,Fecha_Fin,Observacion,Semana
+        $sql ="Select TCR.ID,TCR.Centro_Costos,Detalle,TCR.ID,TCR.Observacion
                 From Trans_Contratistas_Rubros TCR
+                INNER JOIN Entidad_Rubro_Contratista ERC ON TCR.Orden_Trabajo = ERC.No_Contrato
                 INNER JOIN Catalogo_SubCtas SC ON TCR.Centro_Costos = SC.Codigo
                 where SC.Item = TCR.Item
                 AND SC.Periodo = TCR.Periodo
+                AND TCR.Item = SC.Item
+                AND TCR.Periodo = SC.Periodo
+                AND TCR.Item = ERC.Item
+                AND TCR.Periodo = ERC.Periodo
                 AND TCR.Item =  '".$_SESSION['INGRESO']['item']."'
                 AND TCR.Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
                 if($rubro)
@@ -283,8 +334,9 @@ class orden_trabajo_constM
                 }
                 if($semana)
                 {
-                    $sql.=" AND Semana = '".$semana."'";
+                    $sql.=" AND ERC.Semana = '".$semana."'";
                 }
+                $sql.=" group by TCR.ID,TCR.Centro_Costos,Detalle,TCR.ID,TCR.Observacion ";
 
                 // print_r($sql);die();
         return $this->db->datos($sql);
@@ -306,21 +358,58 @@ class orden_trabajo_constM
         return $this->db->datos($sql);
     }
 
-    function cargar_lista_subrubros($contrato,$rubro,$subrubro=false,$centrocostos=false,$contratista=false)
+    function cargar_lista_subrubros($contrato,$rubro=false,$subrubro=false,$centrocostos=false,$contratista=false)
     {
-        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total,Unidad,Cant_Ejec,Diferencia,Costo_Unit_Ejec,Costo_Total_Ejec
+        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total,Unidad,Cant_Ejec,Diferencia,Costo_Unit_Ejec,Costo_Total_Ejec,Fecha_Inicio,Fecha_Fin,Semana,Observacion
                 FROM Entidad_Rubro_Contratista ERC
                 INNER JOIN Catalogo_SubCtas CS on ERC.Sub_Rubro = CS.ID
                 WHERE ERC.Item =  '".$_SESSION['INGRESO']['item']."'
-                AND ERC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+                AND ERC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+                AND ERC.TC <> 'E'";
                 if($contrato)
                 {
                     $sql.=" AND No_Contrato = '".$contrato."'";
                 }
-                // if($rubro)
-                // {
-                //     $sql.=" AND Rubro='".$rubro."'";
-                // }
+                if($rubro)
+                {
+                    $sql.=" AND Rubro='".$rubro."'";
+                }
+                if($subrubro)
+                {
+                    $sql.=" AND Sub_Rubro='".$subrubro."'";
+                }
+                if($centrocostos)
+                {
+                    $sql.=" AND Centro_Costo = '".$centrocostos."'";
+                }
+                if($contratista)
+                {
+                    $sql.=" AND Contratista = '".$contratista."'";
+                }
+               
+
+                // print_r($sql);die();
+        return $this->db->datos($sql);
+                
+    }
+
+    function cargar_lista_subrubros_procesar($contrato,$rubro=false,$subrubro=false,$centrocostos=false,$contratista=false,$semanas=false)
+    {
+        $sql = "SELECT ERC.Item, ERC.Periodo, Rubro, Sub_Rubro,CS.Detalle, Contratista, No_Contrato, CodigoU, ERC.X, ERC.ID,Cantidad,PVP,ERC.Total,Unidad,Cant_Ejec,Diferencia,Costo_Unit_Ejec,Costo_Total_Ejec,Fecha_Inicio,Fecha_Fin,Semana,Observacion
+                FROM Entidad_Rubro_Contratista ERC
+                INNER JOIN Catalogo_SubCtas CS on ERC.Sub_Rubro = CS.ID
+                WHERE ERC.Item =  '".$_SESSION['INGRESO']['item']."'
+                AND ERC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
+                AND ERC.TC = 'E'
+                AND Semana = '".$semanas."'";
+                if($contrato)
+                {
+                    $sql.=" AND No_Contrato = '".$contrato."'";
+                }
+                if($rubro)
+                {
+                    $sql.=" AND Rubro='".$rubro."'";
+                }
                 if($subrubro)
                 {
                     $sql.=" AND Sub_Rubro='".$subrubro."'";
@@ -387,6 +476,15 @@ class orden_trabajo_constM
         $sql = "UPDATE Trans_Contratistas 
                 SET T = 'E' 
                 WHERE No_Contrato = '".$orden."' ";
+        return $this->db->String_Sql($sql);
+
+    }
+
+    function grabar_orden_trabajo_x_subrubro($ID)
+    {
+        $sql = "UPDATE Entidad_Rubro_Contratista 
+                SET TC = 'E' 
+                WHERE ID = '".$ID."' ";
         return $this->db->String_Sql($sql);
 
     }

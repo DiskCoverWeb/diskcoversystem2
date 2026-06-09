@@ -42,16 +42,17 @@ class orden_ejecucionM
      function contratistas($cliente=false,$codigo=false,$TP=false)
     {
         $sql = "SELECT distinct C.Cliente AS text,TC.Codigo as id 
-        FROM Trans_Contratistas TC
+        FROM Trans_Contratistas TC        
+        INNER JOIN Entidad_Rubro_Contratista ER ON TC.No_Contrato = ER.No_Contrato AND TC.Codigo = ER.Contratista 
         INNER JOIN Clientes C on TC.Codigo = C.Codigo 
-        WHERE Item = '".$_SESSION['INGRESO']['item']."'
-        AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-        AND TC.T = 'E'";
+        WHERE TC.Item = '".$_SESSION['INGRESO']['item']."'
+        AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+        AND ER.TC = 'E'";
         if($cliente)
         {
             $sql.=" AND C.Cliente like '%".$cliente."%'";
         }
-        if($cliente)
+        if($codigo)
         {
             $sql.=" AND C.Codigo = '".$codigo."'";
         }
@@ -70,12 +71,13 @@ class orden_ejecucionM
         $sql="Select Orden_Trabajo,TCR.Cta,CC.Cuenta 
             From Trans_Contratistas_Rubros TCR
             INNER JOIN Trans_Contratistas TC on TCR.Orden_Trabajo = TC.No_Contrato
+            INNER JOIN Entidad_Rubro_Contratista ER ON TC.No_Contrato = ER.No_Contrato AND TC.Codigo = ER.Contratista 
             INNER JOIN Catalogo_Cuentas CC ON  TCR.Cta = CC.Codigo 
             where TCR.Item = TC.Item
             AND TCR.Periodo = TC.Periodo
             AND TC.Item = '".$_SESSION['INGRESO']['item']."'
             AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-            AND TC.T = 'E'";
+            AND ER.TC = 'E'";
             if($query)
             {
                 $sql.=" AND CC.Cuenta like '%".$query."%'";

@@ -73,7 +73,7 @@
          console.log(data);
          $('#ddl_Contrato').append('<option value="' + data.Orden_Trabajo +'">' + data.Orden_Trabajo+ '</option>');         
          $('#ddl_Contrato').val(data.Orden_Trabajo);
-         detalleContrato(data.Orden_Trabajo)
+         detalleContrato_ejec(data.Orden_Trabajo)
          lista_semanas();
        });
 
@@ -89,6 +89,42 @@ function detalleContrato(ordenNo)
       $.ajax({
         data:  {parametros:parametros},
         url:   '../controlador/inventario/orden_ejecucionC.php?detalleContrato=true',
+        type:  'post',
+        dataType: 'json',
+          success:  function (response) { 
+            console.log(response)
+              var mate = 'NO';
+              var mas_per = 'NO';
+              $('#lbl_proyecto').text(response[0].proyecto);
+              $('#lbl_contratista').text(response[0].Cliente)
+              if(response[0].Cargo_Mat==1){mate = 'SI';}
+              if(response[0].mas_per==1){mate = 'SI';}
+              $('#lbl_material').text(mate)
+              $('#lbl_mas_personas').text(mas_per);
+              $('#lbl_nombre_contrato').text(response[0].Nombre_Contrato)
+              $('#lbl_categoria').text(response[0].Proceso)
+              // $('#lbl_tipo_costo').text(response[0].tipo_costo)
+              // $('#lbl_cuenta_contable').text(response[0].cuenta_contable)
+              $('#lbl_fecha').text(formatoDate(response[0].Fecha.date))
+              $('#lbl_fecha_v').text(formatoDate(response[0].Fecha_V.date))
+              $('#txt_cuenta_proyecto').val(response[0].ProyectoID);
+
+              $('#pnl_detalle_proyecto').removeClass("d-none");
+
+              console.log(response);
+        }
+      });
+}
+
+function detalleContrato_ejec(ordenNo)
+{
+     var parametros = 
+     {
+        'contrato':ordenNo,
+     }
+      $.ajax({
+        data:  {parametros:parametros},
+        url:   '../controlador/inventario/orden_ejecucionC.php?detalleContratoEjec=true',
         type:  'post',
         dataType: 'json',
           success:  function (response) { 
@@ -651,13 +687,46 @@ function calcular_ejecutado(id)
 
 }
 
-function guardar_subrubro_ejecucion(id)
+
+function guardar_subrubro_ejecucion()
 {
+  Swal.fire({
+      title: 'Esta seguro de registrar este avance?',
+      text: "Al aceptar este registro se no volvera a aparecer",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si!'
+    }).then((result) => {
+      if (result.value==true) {
+          guardar_subrubro_ejecucion_avance()
+      }
+    })
+}
+
+function guardar_subrubro_ejecucion_avance()
+{
+  var id = $('#txt_rubro').val();
 
   var ejec = $('#txt_ejecucion_'+id).val();
   var pvp_ejec = $('#txt_ejecutado_pvp_'+id).val();
   var total_ejec = $('#txt_ejecutado_total_'+id).val();
   var ejec_dif = $('#txt_ejecutado_dif_'+id).val();
+  var id = $('#txt_rubro').val();
+  
+  var iniejec = $('#txt_fechaIni_eje').val();
+  var finejec = $('#txt_fechaFin_eje').val();
+  var retraso = $('#txt_retrazo').val();
+  var adelanto = $('#txt_adelanto').val();
+
+  var observacion = $('#txt_observacion').val();
+
+  if(ejec=="" || ejec==null || ejec==undefined || ejec==0)
+  {
+    Swal.fire("Valor de ejecicion invalido","","info");
+    return false;
+  }
 
   var parametros = 
   {
@@ -666,6 +735,11 @@ function guardar_subrubro_ejecucion(id)
     'pvp_ejec':pvp_ejec,
     'total_ejec':total_ejec,
     'ejec_dif':ejec_dif,
+    'iniejec':iniejec,
+    'finejec':finejec,
+    'retraso':retraso,
+    'adelanto':adelanto,
+    'observacion':observacion,
   }
    $.ajax({
         type: "POST",
@@ -677,6 +751,7 @@ function guardar_subrubro_ejecucion(id)
           if(data)
           {
             Swal.fire("Guardado",'','success').then(function(){
+              $('#myModal_periodo_trabajo').modal('hide');
                 cargar_lista_subrubros()
             })
           }        
@@ -706,6 +781,9 @@ function add_periodo(id)
             console.log(data);
             $('#lbl_fecha_ini_sub').text(formatoDate(data[0].Fecha_Inicio.date))
             $('#lbl_fecha_fin_sub').text(formatoDate(data[0].Fecha_Fin.date))
+
+            $('#txt_fechaIni_eje').val(formatoDate(data[0].Fecha_Inicio_Ejec.date))
+            $('#txt_fechaFin_eje').val(formatoDate(data[0].Fecha_Fin_Ejec.date))
 
            }
         }

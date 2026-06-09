@@ -39,6 +39,13 @@ if(isset($_GET['cargar_lista_subrubros']))
 if(isset($_GET['detalleContrato']))
 {
     $parametros = $_POST['parametros'];
+     $parametros['tipo'] = 'E';
+    echo json_encode($controlador->detalleContrato($parametros));
+}
+if(isset($_GET['detalleContratoEjec']))
+{
+    $parametros = $_POST['parametros'];
+    $parametros['tipo'] = 'A';
     echo json_encode($controlador->detalleContrato($parametros));
 }
 
@@ -131,7 +138,9 @@ class orden_ejecucionC
 
     function lista_orden_ejecucion(){
 
-        $result = $this->contratos->detalleContrato(false,'E');
+        $result = $this->contratos->detalleContrato_ejecucion(false,'E');
+
+        // $result = $this->modelo->lista_orden_ejecucion();
         // print_r($result);die();
         return $result;
     }
@@ -143,6 +152,7 @@ class orden_ejecucionC
 
     function contratistasBuscar($parametros)
     {
+        // print_r($parametros);die();
         $codigo = $parametros['contratista'];
        return $this->modelo->contratistas(false,$codigo);
     }
@@ -174,6 +184,7 @@ class orden_ejecucionC
     {            
         $tbl = '';
         $CentroCostos = $this->orden->centrosCostocXRubro($parametros['Contrato'],$parametros['rubro'],$parametros['semana']);
+        // print_r($CentroCostos);die();
         foreach ($CentroCostos as $key => $value) {
             // print_r($value);die();
             $tbl.='<div class="col-sm-12">
@@ -181,9 +192,7 @@ class orden_ejecucionC
                         <div class="col-sm-6">
                             <h5>'.$value['Detalle'].'</h5>
                         </div>
-                        <div class="col-sm-6 text-end">
-                            <button type="button" onclick="add_periodo(\''.$value['ID'].'\')" class="btn btn-primary btn-sm"><i class="bx bx-calendar"></i> Periodos</button>
-                        </div>
+                       
                         <div class="col-sm-12">
 
 
@@ -198,12 +207,13 @@ class orden_ejecucionC
                       <th>Costo unitario ejecutado</th>
                       <th>Costo total ejecutado</th>
                       <th>Diferencia</th>
+                     <!-- <th></th> -->
                     </thead><tbody>';
-            $data = $this->orden->cargar_lista_subrubros($parametros['Contrato'],$parametros['rubro'],$subrubro=false,$value['Centro_Costos'],$parametros['contratista']);
+            $data = $this->orden->cargar_lista_subrubros_procesar($parametros['Contrato'],$parametros['rubro'],$subrubro=false,$value['Centro_Costos'],$parametros['contratista'],$parametros['semana']);
             foreach ($data as $key => $value) {
                 // print_r($value);die();
                 $tbl.='<tr> 
-                            <td><button type="button" class="btn btn-primary btn-sm" onclick="guardar_subrubro_ejecucion('.$value['ID'].')"><i class="bx bx-save me-0"></i></button></td>
+                            <td><button type="button" class="btn btn-primary btn-sm" onclick="add_periodo(\''.$value['ID'].'\');"><i class="bx bx-save me-0"></i></button></td>
                             <td>'.$value['Detalle'].'</td> 
                             <td>'.$value['Unidad'].'</td>
                             <td>'.$value['No_Contrato'].'</td>
@@ -218,6 +228,7 @@ class orden_ejecucionC
                             <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_pvp_'.$value['ID'].'" value="'.$value['Costo_Unit_Ejec'].'" readonly /></td>
                             <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_total_'.$value['ID'].'" value="'.$value['Costo_Total_Ejec'].'" readonly /></td>
                             <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_dif_'.$value['ID'].'"  value="'.$value['Diferencia'].'"readonly /></td>
+                            <!-- <td> <button type="button" onclick="add_periodo(\''.$value['ID'].'\')" class="btn btn-primary btn-sm"><i class="bx bx-calendar"></i> Periodos</button></td> -->
                         </tr>';
             }
 
@@ -233,18 +244,27 @@ class orden_ejecucionC
     function detalleContrato($parametros)
     {
         $contrato = $parametros['contrato'];
-        return $this->contratos->detalleContrato($contrato,"E");
+        return $this->contratos->detalleContrato($contrato,$parametros['tipo']);
         // print_r($parametros);die();
     }
 
     function guardar_subrubro_ejecucion($parametros)
     {
+
         // print_r($parametros);die();
         SetAdoAddNew("Entidad_Rubro_Contratista");
         SetAdoFields("Cant_Ejec",$parametros['ejec']);
         SetAdoFields("Diferencia",$parametros['ejec_dif']);
         SetAdoFields("Costo_Unit_Ejec",$parametros['pvp_ejec']);
         SetAdoFields("Costo_Total_Ejec",$parametros["total_ejec"]);
+
+
+        SetAdoFields("Fecha_Inicio_Ejec",$parametros['iniejec']);
+        SetAdoFields("Fecha_Fin_Ejec",$parametros['finejec']);
+        SetAdoFields("Observacion",$parametros["observacion"]);
+
+
+        SetAdoFields("TC",'A'); //este es el identificador para que pase a control de avances
 
 
         SetAdoFieldsWhere('ID',$parametros["id"]);
@@ -262,7 +282,7 @@ class orden_ejecucionC
     {
 
         // print_r($parametros);die();
-        SetAdoAddNew("Trans_Contratistas_Rubros");
+        SetAdoAddNew("Entidad_Rubro_Contratista");
         SetAdoFields("Fecha_Inicio_Ejec",$parametros['fechaInicio']);
         SetAdoFields("Fecha_Fin_Ejec",$parametros['fechaFin']);
         SetAdoFields("Observacion",$parametros["observacion"]);

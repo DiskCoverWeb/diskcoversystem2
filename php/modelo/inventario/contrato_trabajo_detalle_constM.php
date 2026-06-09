@@ -27,9 +27,35 @@ class contrato_trabajo_detalle_constM
         AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
         if($contrato)
         {
-            $sql.=" AND No_Contrato = '".$contrato."'";
+            $sql.=" AND TC.No_Contrato = '".$contrato."'";
         }
-        $sql.=" ORDER BY TC.ID DESC";
+        $sql.=" GROUP BY TC.ID,C.Cliente,C.Codigo,CP.Proceso,CP1.Proceso,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto,TC.TP 
+        ORDER BY TC.ID DESC";
+
+        // print_r($sql);die();
+
+        return $this->db->datos($sql);
+    }
+
+    function detalleContrato_ejecucion($contrato=false,$T = '.')
+    {
+        $sql = "select TC.ID,C.Cliente as 'Cliente',C.Codigo,CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.TP  
+        FROM Trans_Contratistas TC
+        INNER JOIN Entidad_Rubro_Contratista ERC on TC.No_Contrato = ERC.No_Contrato
+        INNER JOIN Clientes C ON TC.Codigo = C.Codigo
+        INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds
+        INNER JOIN Catalogo_Proceso CP1 ON TC.Proyecto = CP1.ID
+        where ERC.TC ='".$T."'
+        AND TC.Item = CP.Item
+        AND TC.Item = CP1.Item
+        AND TC.Item = '".$_SESSION['INGRESO']['item']."'
+        AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+        if($contrato)
+        {
+            $sql.=" AND TC.No_Contrato = '".$contrato."'";
+        }
+        $sql.=" GROUP BY TC.ID,C.Cliente,C.Codigo,CP.Proceso,CP1.Proceso,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto,TC.TP 
+        ORDER BY TC.ID DESC";
 
         // print_r($sql);die();
 
@@ -50,6 +76,10 @@ class contrato_trabajo_detalle_constM
         if($contrato)
         {
             $sql.=" AND No_Contrato = '".$contrato."'";
+        }
+        if($T)
+        {
+            $sql.=" AND TC.T = '".$T."'";
         }
         $sql.=" ORDER BY TC.ID DESC";
 
@@ -299,7 +329,7 @@ class contrato_trabajo_detalle_constM
     function Trans_Contratistas($id=false,$contrato=false,$rubro=false)
     {
         $sql = "SELECT *
-                FROM Trans_Contratistas_Rubros CR 
+                FROM Entidad_Rubro_Contratista CR 
                 WHERE CR.Item = '".$_SESSION['INGRESO']['item']."'
                 AND CR.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
                 if($contrato)
