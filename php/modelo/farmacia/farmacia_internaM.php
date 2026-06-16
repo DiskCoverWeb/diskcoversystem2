@@ -193,7 +193,7 @@ class farmacia_internaM
 		FROM Trans_Kardex T
 		INNER JOIN Catalogo_Productos CP ON T.Codigo_Inv = CP.Codigo_Inv
 		INNER JOIN Clientes C ON T.Codigo_P = C.Codigo  
-		WHERE T.Item = ".$_SESSION['INGRESO']['item']." 
+		WHERE T.Item = '".$_SESSION['INGRESO']['item']."' 
 		AND T.Periodo  ='".$_SESSION['INGRESO']['periodo']."' 
 		AND Entrada = 0 
 		AND Matricula <> 0 
