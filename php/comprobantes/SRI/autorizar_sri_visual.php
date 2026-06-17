@@ -47,6 +47,19 @@ if(isset($_GET['validarRuc']))
      echo json_encode($controlador->validarRuc($parametros));
 }
 
+if(isset($_GET['VerificarOnline']))
+{
+	$parametros = $_POST;
+	// print_r($parametros);die();
+     echo json_encode($controlador->VerificarOnline($parametros));
+}
+
+if(isset($_GET['VerificarOnlineSri']))
+{
+	$parametros = $_POST;
+	// print_r($parametros);die();
+     echo json_encode($controlador->VerificarOnlineSri($parametros));
+}
 
 /**
  * 
@@ -892,6 +905,131 @@ class autoriza_sri
 		$temp_fileF = 'ftp_folder_xmls/Generados/';
 		if(!file_exists($temp_fileF)){mkdir($temp_fileF, 0777);}
 	}
+
+
+
+	function isOpen($ip, $port) {
+	    $s = @fsockopen($ip, $port, $errno, $errstr, 2); // Timeout 2 segundos
+	    if ($s) {
+	        fclose($s);
+	        return true;
+	    } else {
+	        return false;
+	    }
+	}
+
+	function url_checker($url, $amb, $comp) {
+	    try {
+	        // Inicializar cURL
+	        // Inicializar
+		    $ch = curl_init();
+		    
+		    // Configurar opciones
+		    curl_setopt($ch, CURLOPT_URL, $url);
+		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		    curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+		    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+		    curl_setopt($ch, CURLOPT_NOBODY, false);
+		    curl_setopt($ch, CURLOPT_HEADER, true);
+		    
+		    // Ejecutar
+		    $response = curl_exec($ch);
+		    $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		    $error = curl_error($ch);
+		    curl_close($ch);
+	        
+	        // Si el código es 200 (OK)
+	        if ($status_code == 200) {
+	            return array('resp'=>1,'msj'=>"SRI $amb / $comp: Esta Funcionando!");
+	        } else {
+	            return array('resp'=>-1,'msj'=>"SRI $amb / $comp: NO ESTA ACTIVO (Código: $status_code)");
+	        }
+	        
+	    } catch (Exception $e) {
+	        return array('resp'=>-2,'msj'=>"SRI $amb / $comp: NO ESTA ACTIVO");
+	    }
+	}
+
+
+	function VerificarOnline($parametros)
+	{
+		if(isset($parametros['ip']) && $parametros['ip']=="" && $parametros['ip']==null)
+		{
+			$ips = array(
+				array('ip'=>'104.237.138.52','puerto'=>8010,'nombre'=>'API DiskCover System'),
+				array('ip'=>'194.195.222.54','puerto'=>11433,'nombre'=>'DB SQL DiskCover System'),
+				array('ip'=>'69.164.192.53','puerto'=>13306,'nombre'=>'DB MySQL DiskCover System'),
+			);
+		}else
+		{
+			$ips =  array(
+				array('ip'=>$parametros['ip'],'puerto'=>$parametros['puerto'],'nombre'=>''),
+			);
+		}
+
+		$respuesta = 1;
+		$msj = "";
+		// print_r($ips);die();
+		foreach ($ips as $key => $value) {
+			if(!$this->isOpen($value['ip'],$value['puerto']))
+			{
+				$msj.=$value['nombre'].' port: '.$value['puerto'].': is Down!'.
+				$respuesta = 0;
+			}
+		}
+
+
+		return array('resp'=>$respuesta,'msj'=>$msj,'num_links'=>count($ips));
+	}
+
+
+	function VerificarOnlineSri($parametros)
+	{
+
+
+		$url_produccion_rc = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl";
+	    $url_pruebas_rc = "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl";
+	    $url_produccion_ac = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
+	    $url_pruebas_ac = "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
+
+	    if(isset($parametros['link']) && $parametros['link']=="" && $parametros['link']==null)
+		{
+		    $links = array(
+		    	array('link'=>$url_produccion_rc,'ambito'=>'PRODUCCION','concepto'=>'RECEPCION COMPROBANTES'),
+		    	array('link'=>$url_pruebas_rc,'ambito'=>'PRODUCCION','concepto'=>'AUTORIZACION COMPROBANTES'),
+		    	array('link'=>$url_produccion_ac,'ambito'=>'PRUEBAS','concepto'=>'RECEPCION COMPROBANTES'),
+		    	array('link'=>$url_pruebas_ac,'ambito'=>'PRUEBAS','concepto'=>'AUTORIZACION COMPROBANTES'),
+		    );
+		}else
+		{
+			$links = array(
+		    	array('link'=>$parametros['link'],'ambito'=>'','concepto'=>'')
+		    );
+		}
+
+	    $msj ="";
+	    $respuesta = 1;
+
+	    foreach ($links as $key => $value) {
+	    	$data = $this->url_checker($value['link'],$value['ambito'],$value['concepto']);
+			if($data['resp']==-1 || $data['resp']==-2)
+			{
+				$respuesta = $data['resp'];
+				$msj.= $data['msj'].'\n';
+			}
+		}
+
+
+		return array('resp'=>$respuesta,'msj'=>$msj);
+	   
+
+	}
+
+
 
 
 
