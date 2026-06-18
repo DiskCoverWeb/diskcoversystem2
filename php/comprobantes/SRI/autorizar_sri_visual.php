@@ -1016,7 +1016,7 @@ class autoriza_sri
 
 	    foreach ($links as $key => $value) {
 	    	$data = $this->url_checker($value['link'],$value['ambito'],$value['concepto']);
-			if($data['resp']==-1 || $data['resp']==-2)
+			if($data['resp']==0)
 			{
 				$respuesta = $data['resp'];
 				$msj.= $data['msj'].'\n';
