@@ -912,9 +912,9 @@ class autoriza_sri
 	    $s = @fsockopen($ip, $port, $errno, $errstr, 2); // Timeout 2 segundos
 	    if ($s) {
 	        fclose($s);
-	        return true;
+	        return 1;
 	    } else {
-	        return false;
+	        return 0;
 	    }
 	}
 
@@ -946,11 +946,11 @@ class autoriza_sri
 	        if ($status_code == 200) {
 	            return array('resp'=>1,'msj'=>"SRI $amb / $comp: Esta Funcionando!");
 	        } else {
-	            return array('resp'=>-1,'msj'=>"SRI $amb / $comp: NO ESTA ACTIVO (Código: $status_code)");
+	            return array('resp'=>0,'msj'=>"SRI $amb / $comp: NO ESTA ACTIVO (Código: $status_code)");
 	        }
 	        
 	    } catch (Exception $e) {
-	        return array('resp'=>-2,'msj'=>"SRI $amb / $comp: NO ESTA ACTIVO");
+	        return array('resp'=>0,'msj'=>"SRI $amb / $comp: NO ESTA ACTIVO");
 	    }
 	}
 
@@ -983,7 +983,7 @@ class autoriza_sri
 		}
 
 
-		return array('resp'=>$respuesta,'msj'=>$msj,'num_links'=>count($ips));
+		return array('resp'=>$respuesta,'msj'=>$msj);
 	}
 
 
