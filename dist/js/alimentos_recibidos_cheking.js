@@ -1254,3 +1254,50 @@ function guardar_costo_new()
     Swal.fire("Seleccione un codigo de ingreso","","info")
   }
 }
+
+function eliminar_registro()
+{
+  var codigo = $('#txt_codigo').val()
+  if(codigo=="" || codigo == null)
+  {
+    Swal.fire("Seleccione una codigo de pedido","","error");
+    return false;
+    
+  }else{
+     IngClave('Supervisor');
+    $('#clave_supervisor').modal('show');
+  }
+}
+
+
+function resp_clave_ingreso()
+{
+  var codigo = $('#txt_codigo').val()
+
+  $('myModal_espera').modal('show');
+
+      var parametros = {
+            'pedido':codigo,
+      }
+      $.ajax({
+        data:  {parametros,parametros},
+        url:   '../controlador/inventario/alimentos_recibidosC.php?eliminar_pedido_checking=true',
+        type:  'post',
+        dataType: 'json',
+        success:  function (response) { 
+
+          $('myModal_espera').modal('hide');
+          if(response==1)
+          {            
+              Swal.fire("Registro eliminado","","success").then(function(){
+                location.reload();
+              });
+          }
+          console.log(response);
+          
+        }, 
+        error: function(xhr, textStatus, error){
+          $('#myModal_espera').modal('hide');           
+        }
+    });
+}

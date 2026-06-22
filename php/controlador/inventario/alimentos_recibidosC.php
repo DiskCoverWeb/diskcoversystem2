@@ -325,6 +325,12 @@ if (isset($_GET['guardar_costo_new'])) {
 	echo json_encode($controlador->guardar_costo_new($parametros));
 }
 
+
+if (isset($_GET['eliminar_pedido_checking'])) {
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->eliminar_pedido_checking($parametros));
+}
+
 /**
  * 
  */
@@ -1928,6 +1934,11 @@ class alimentos_recibidosC
     	}
 
     	return 1;
+	}
+
+	function eliminar_pedido_checking($parametros)
+	{
+		return $this->modelo->eliminar_pedido_checking($parametros['pedido']);
 	}
 
 

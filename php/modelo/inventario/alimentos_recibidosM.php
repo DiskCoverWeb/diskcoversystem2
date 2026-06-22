@@ -783,6 +783,26 @@ class alimentos_recibidosM
 		return $this->db->datos($sql);
 	}
 
+	function eliminar_pedido_checking($pedido)
+	{
 
+		$sql = "DELETE FROM Trans_Kardex WHERE Orden_No = '".$pedido."' 
+				AND Item='".$_SESSION['INGRESO']['item']."' 
+				AND Periodo = '".$_SESSION['INGRESO']['periodo']."';";
+
+		$this->db->String_Sql($sql);
+
+		$sql = "DELETE FROM Trans_Correos WHERE Envio_No = '".$pedido."' 
+				AND Item='".$_SESSION['INGRESO']['item']."' 
+				AND Periodo = '".$_SESSION['INGRESO']['periodo']."';";
+
+		$this->db->String_Sql($sql);
+
+		$sql = "DELETE FROM Trans_Pedidos WHERE Orden_No = '".$pedido."' 
+				AND Item='".$_SESSION['INGRESO']['item']."' 
+				AND Periodo = '".$_SESSION['INGRESO']['periodo']."';";
+
+		return $this->db->String_Sql($sql);
+	}
 }
 ?>

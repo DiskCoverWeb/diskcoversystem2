@@ -32,6 +32,9 @@
 			       <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Historial de Checking" onclick="historia_checking()">
 			        <img src="../../img/png/ats.png" height="32px">
 			      </button>
+			       <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Eliminar registro" onclick="eliminar_registro()">
+			        <img src="../../img/png/close.png" height="32px">
+			      </button>
 			</div>
     </div>
 </div>
