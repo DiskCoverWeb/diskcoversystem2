@@ -70,6 +70,14 @@
 					<div class="col-lg-2 col-md-6 col-sm-6 text-right">
 						<b>FECHA EXPIRACION:</b>
 						<input type="date" class="form-control form-control-sm" id="txt_fecha_exp" name="txt_fecha_exp" readonly>	
+					</div>		
+					<div class="col-lg-3 col-md-6 col-sm-6 text-right">
+						<b>COMENTARIO RECEPCION:</b>
+						<textarea class="form-control form-control-sm" id="txt_comentario_rec" name="txt_comentario_rec" readonly></textarea>	
+					</div>		
+					<div class="col-lg-3 col-md-6 col-sm-6 text-right">
+						<b>FECHA CLASIFICACION:</b>
+						<textarea class="form-control form-control-sm" id="txt_comentario_cla" name="txt_comentario_cla" readonly></textarea>
 					</div>						
 				</div>
 				<div class="row">

@@ -22,7 +22,7 @@
   
     $('#txt_codigo').on('select2:select', function (e) {
       var data = e.params.data.data;
-	  setearCamposPedidos(data);
+	  	setearCamposPedidos(data);
     });
 
      $('#txt_codigo_pedido').on('select2:select', function (e) {
@@ -44,6 +44,9 @@
       $('#txt_donante').val(data.Cliente);
       $('#txt_paquetes').val(data.Tipo_Empaque);
       $('#txt_orden').val(data.Orden_No);
+
+      $('#txt_comentario_rec').val(data.Mensaje);
+      $('#txt_comentario_cla').val(data.Llamadas);
 
       var cantidad = parseFloat(data.Entrada).toFixed(2)
       $('#txt_cant').val(cantidad); // save selected id to input

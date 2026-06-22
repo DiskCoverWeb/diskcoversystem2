@@ -85,10 +85,11 @@ class almacenamiento_bodegaM
 
 	function Buscar_productos_ingresados($id=false,$cod=false,$orden=false)
 	{
-		$sql = "SELECT TK.T,TK.Orden_No,CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.TP, Numero, Entrada, Salida, Valor_Unitario, TK.Valor_Total, Existencia, TK.Costo, TK.Total,P.Producto,P.Unidad,P.TDP,Cmds,Fecha_Fab,Tipo_Empaque,Fecha_Exp,TK.ID,C.Cliente,Cta_Inv,TK.CodigoU,TK.Item,Contra_Cta,TK.Codigo_P,Codigo_Dr 
+		$sql = "SELECT TK.T,TK.Orden_No,CodBodega, TK.Codigo_Barra, TK.Codigo_Inv, TK.Fecha, TK.TP, Numero, Entrada, Salida, Valor_Unitario, TK.Valor_Total, Existencia, TK.Costo, TK.Total,P.Producto,P.Unidad,P.TDP,Cmds,Fecha_Fab,Tipo_Empaque,Fecha_Exp,TK.ID,C.Cliente,Cta_Inv,TK.CodigoU,TK.Item,Contra_Cta,TK.Codigo_P,Codigo_Dr,Mensaje,Llamadas  
 				FROM Trans_Kardex TK
 				INNER JOIN Catalogo_Productos P on Tk.Codigo_Inv = P.Codigo_Inv AND TK.Item = P.Item AND TK.Periodo = P.Periodo
 				INNER JOIN Clientes C on TK.Codigo_P = C.Codigo 
+				LEFT JOIN Trans_Correos TC on Tk.Orden_No = TC.Envio_No  AND TK.Item = TC.Item AND TK.Periodo = TC.Periodo 
 				WHERE Orden_No in (
 				select Envio_No from Trans_Correos
 				Where Item = '".$_SESSION['INGRESO']['item']."'
