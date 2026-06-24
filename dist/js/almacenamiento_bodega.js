@@ -553,6 +553,11 @@ function asignar_bodega(id,bodega,orden)
 				pedidos();
 				// location.reload();
 			});
+
+			 setTimeout(() => {
+       		$('#myModal_espera').modal('hide');
+    		}, 1000);
+
 	    	// lineas_pedidos()   	
 	    	// contenido_bodega();
 	    	// productos_asignados();
@@ -583,6 +588,10 @@ function asignar_bodega_partes(id,parametros,orden)
 				pedidos();
 				// location.reload();
 			});
+
+			 setTimeout(() => {
+       		$('#myModal_espera').modal('hide');
+    		}, 1000);
 	    	// lineas_pedidos()   	
 	    	// contenido_bodega();
 	    	// productos_asignados();
