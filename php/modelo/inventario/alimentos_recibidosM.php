@@ -522,7 +522,7 @@ class alimentos_recibidosM
 
 	function existe_en_transKarder($orden=false,$codigoInv=false)
 	{
-		$sql = "SELECT ID,Codigo_Barra
+		$sql = "SELECT ID,Codigo_Barra,CodBodega
 				FROM Trans_Kardex
 				WHERE Periodo = '".$_SESSION['INGRESO']['periodo']."'
 				AND Item = '".$_SESSION['INGRESO']['item']."' ";

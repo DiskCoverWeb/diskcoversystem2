@@ -465,9 +465,16 @@ class alimentos_recibidosC
 	{
 		// print_r($parametros);die();
 		$lineas = $this->modelo->existe_en_transKarder($parametros['txt_codigo'],false);
+		$existe_bodegas=1;
+		foreach ($lineas as $key => $value) {
+			if($value['CodBodega']==-1)
+			{
+				$existe_bodegas = 0;
+			}
+		}
 		SetAdoAddNew('Trans_Correos');
 		SetAdoFields('T','P');	
-		if($parametros['txt_t']=='C')
+		if($parametros['txt_t']=='C' && $existe_bodegas==1)
 		{
 			SetAdoFields('T','E');	
 		}	
