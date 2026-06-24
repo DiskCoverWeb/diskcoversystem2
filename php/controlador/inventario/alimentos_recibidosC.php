@@ -467,7 +467,7 @@ class alimentos_recibidosC
 		$lineas = $this->modelo->existe_en_transKarder($parametros['txt_codigo'],false);
 		SetAdoAddNew('Trans_Correos');
 		SetAdoFields('T','P');	
-		if($parametros['txt_t']=='I')
+		if($parametros['txt_t']=='C')
 		{
 			SetAdoFields('T','E');	
 		}	
@@ -1953,7 +1953,7 @@ class alimentos_recibidosC
 	function pasar_a_clasificacion($parametros)
 	{
 		SetAdoAddNew('Trans_Correos');
-		SetAdoFields('T','I');		
+		SetAdoFields('T','C');		
 		SetAdoFieldsWhere('Envio_No',$parametros['pedido']);
 		SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
 		SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']);
