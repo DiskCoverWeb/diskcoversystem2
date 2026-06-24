@@ -238,6 +238,7 @@
       $('#txt_comentario2').val(data.Llamadas);
 
       $('#txt_ejec').val(data.Cod_Ejec); // save selected id to input
+      $('#txt_t').val(data.T)
       
       // if(data.Giro_No!='R')
       // {

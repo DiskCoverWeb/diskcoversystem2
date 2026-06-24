@@ -88,6 +88,7 @@
             <div class="col-lg-6 col-sm-8">
               <input type="date" name="txt_fecha_cla" id="txt_fecha_cla" value="<?php echo date('Y-m-d'); ?>" class="form-control form-control-sm" readonly>
             </div>
+            <input type="hidden" name="txt_t" id="txt_t">
           </div>          
         </div>  
         <div class="col-lg-5 col-md-6">

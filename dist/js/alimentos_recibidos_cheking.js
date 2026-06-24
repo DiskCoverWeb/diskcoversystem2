@@ -1269,6 +1269,65 @@ function eliminar_registro()
   }
 }
 
+function retornar_clasificacion()
+{
+  var codigo = $('#txt_codigo').val()
+  if(codigo=="" || codigo == null)
+  {
+    Swal.fire("Seleccione una codigo de pedido","","error");
+    return false;
+    
+  }else{
+      Swal.fire({
+        title: 'Esta seguro?',
+        text: "Esta usted seguro de retroceder a clasificacion!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si!'
+      }).then((result) => {
+        if (result.value==true) {
+          pasar_a_clasificacion();
+        }
+      })
+  }
+}
+
+
+function pasar_a_clasificacion()
+{
+   var codigo = $('#txt_codigo').val()
+
+    $('myModal_espera').modal('show');
+
+      var parametros = {
+            'pedido':codigo,
+      }
+      $.ajax({
+        data:  {parametros,parametros},
+        url:   '../controlador/inventario/alimentos_recibidosC.php?pasar_a_clasificacion=true',
+        type:  'post',
+        dataType: 'json',
+        success:  function (response) { 
+
+          $('myModal_espera').modal('hide');
+          if(response==1)
+          {            
+              Swal.fire("Pasado a clasificacion","","success").then(function(){
+                location.reload();
+              });
+          }
+          console.log(response);
+          
+        }, 
+        error: function(xhr, textStatus, error){
+          $('#myModal_espera').modal('hide');           
+        }
+    });
+
+}
+
 
 function resp_clave_ingreso()
 {

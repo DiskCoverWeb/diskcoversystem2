@@ -423,7 +423,8 @@ function validar_asignacion_bodega(linea='')
 			Swal.fire('Seleccione un pedido','','info');
 			return false;
 		}
-		asignar_bodega(id,bodega,orden)
+		// asignar_bodega(id,bodega,orden)
+		validar_existencia_bodegas(partes=0,id,bodega,orden);
 	}else{
 		var valido = 1;
 		var total = 0;
@@ -436,7 +437,7 @@ function validar_asignacion_bodega(linea='')
 
 			var linea = parseInt(i)+parseInt(1);
 			valor = $(this).val();
-			total = parseInt(total)+parseInt(valor);
+			total = parseFloat(total)+parseFloat(valor);
 			cod_bodega = $('#txt_cod_lugar_div_'+li).val();
 
 			if(valor=='' || valor==0 || cod_bodega=='' || cod_bodega=='.')
@@ -450,8 +451,10 @@ function validar_asignacion_bodega(linea='')
 
 		// return false;
 
-		if(parseInt(total)!=parseInt(pedido))
+		if(parseFloat(total).toFixed(3)!=parseFloat(pedido).toFixed(3))
 		{
+			console.log(total+'-'+pedido);
+
 			Swal.fire("Las cantidades no suman el total del pedido","","error")
 			return false;
 		}
@@ -460,7 +463,9 @@ function validar_asignacion_bodega(linea='')
 		{
 			id = $('#txt_id_producto').val();
 			console.log(parametros)
-			asignar_bodega_partes(id,parametros,orden)
+			// asignar_bodega_partes(id,parametros,orden)
+
+			validar_existencia_bodegas(partes=1,id,parametros,orden);
 
 		}else
 		{
@@ -472,6 +477,58 @@ function validar_asignacion_bodega(linea='')
 	}
 
 
+}
+
+function validar_existencia_bodegas(partes,id,listabodegas,orden)
+{
+	$('#myModal_espera').modal('show');
+	var parametros = {
+		'partes':partes,
+		'bodegas':listabodegas
+	}
+	$.ajax({
+	    type: "POST",
+       url:   '../controlador/inventario/almacenamiento_bodegaC.php?validar_existencia_bodegas=true',
+	     data:{parametros:parametros},
+       dataType:'json',
+	    success: function(data)
+	    {
+	    	$('#myModal_espera').modal('hide');
+	    	if(data.resp==1)
+	    	{
+	    		if(partes==1)
+	    		{
+	    			asignar_bodega_partes(id,listabodegas,orden)
+	    		}else
+	    		{
+	    			asignar_bodega(id,bodega,orden)
+	    		}
+
+	    	}else
+	    	{
+	    		Swal.fire("Una o varias bodegas no se encontraron","Corrija la bodega:"+data.msj,"info").then(function(){
+	    				$('#myModal_espera').modal('hide');
+	    		});
+	    	}
+	    	console.log(data);
+			
+	    }
+	});
+}
+
+function limpiar()
+{
+	$("#txt_donante").val("")
+	$("#txt_cant").val("")
+	$("#txt_fecha_exp").val("")
+	$('#txt_fecha_exp').css('color', '#000000');
+	$("#txt_comentario_rec").val("")
+	$("#txt_comentario_cla").val("")
+	$("#txt_paquetes").val("")
+	$('#btn_alto_stock').css('display','none');
+	$('#btn_expired').css('display','none');
+	$('#lista_pedido').html("");
+	$('#txt_codigo').val(null).trigger('change');
 }
 
 function asignar_bodega(id,bodega,orden)
@@ -492,7 +549,9 @@ function asignar_bodega(id,bodega,orden)
 
 			$('#myModal_espera').modal('hide');
 			Swal.fire('Asignado a bodega','','success').then(function(){
-				location.reload();
+				limpiar();
+				pedidos();
+				// location.reload();
 			});
 	    	// lineas_pedidos()   	
 	    	// contenido_bodega();
@@ -520,7 +579,9 @@ function asignar_bodega_partes(id,parametros,orden)
 
 			$('#myModal_espera').modal('hide');
 			Swal.fire('Asignado a bodega','','success').then(function(){
-				location.reload();
+				limpiar();
+				pedidos();
+				// location.reload();
 			});
 	    	// lineas_pedidos()   	
 	    	// contenido_bodega();

@@ -325,10 +325,14 @@ if (isset($_GET['guardar_costo_new'])) {
 	echo json_encode($controlador->guardar_costo_new($parametros));
 }
 
-
 if (isset($_GET['eliminar_pedido_checking'])) {
 	$parametros = $_POST['parametros'];
 	echo json_encode($controlador->eliminar_pedido_checking($parametros));
+}
+
+if (isset($_GET['pasar_a_clasificacion'])) {
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->pasar_a_clasificacion($parametros));
 }
 
 /**
@@ -462,7 +466,11 @@ class alimentos_recibidosC
 		// print_r($parametros);die();
 		$lineas = $this->modelo->existe_en_transKarder($parametros['txt_codigo'],false);
 		SetAdoAddNew('Trans_Correos');
-		SetAdoFields('T','P');		
+		SetAdoFields('T','P');	
+		if($parametros['txt_t']=='I')
+		{
+			SetAdoFields('T','E');	
+		}	
 		SetAdoFields('Llamadas',$parametros['txt_comentario2']);
 		if($parametros['cbx_evaluacion']=='V')
 		{			
@@ -1939,6 +1947,29 @@ class alimentos_recibidosC
 	function eliminar_pedido_checking($parametros)
 	{
 		return $this->modelo->eliminar_pedido_checking($parametros['pedido']);
+	}
+
+
+	function pasar_a_clasificacion($parametros)
+	{
+		SetAdoAddNew('Trans_Correos');
+		SetAdoFields('T','I');		
+		SetAdoFieldsWhere('Envio_No',$parametros['pedido']);
+		SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
+		SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']);
+		SetAdoUpdateGeneric();
+
+
+		SetAdoAddNew('Trans_Kardex');
+		SetAdoFields('T','.');				
+		SetAdoFieldsWhere('Orden_No',$parametros['pedido']);
+		SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);
+		SetAdoFieldsWhere('Periodo',$_SESSION['INGRESO']['periodo']);
+		return SetAdoUpdateGeneric();
+
+
+
+		print_r($parametros);die();
 	}
 
 

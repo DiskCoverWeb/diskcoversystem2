@@ -134,6 +134,13 @@ if(isset($_GET['lista_bodegas_arbol2']))
 	echo json_encode($controlador->lista_bodegas_arbol2($parametros));
 }
 
+if(isset($_GET['validar_existencia_bodegas']))
+{
+	$parametros = $_POST['parametros'];
+	echo json_encode($controlador->validar_existencia_bodegas($parametros));
+}
+
+
 /**
  * 
  */
@@ -370,6 +377,7 @@ class almacenamiento_bodegaC
 
 		// print_r($parametros);die();
 		foreach ($parametros['parametros'] as $key => $value) {
+			// print_r($value);die();
 			if($key==0)
 			{
 				// print_r($value);die();
@@ -388,7 +396,7 @@ class almacenamiento_bodegaC
 			   SetAdoFields('Codigo_Inv',$producto[0]['Codigo_Inv']);
 			   SetAdoFields('Producto',$producto[0]['Producto']);
 			   SetAdoFields('UNIDAD',$producto[0]['Unidad']); /**/
-			   SetAdoFields('Entrada',$value['cantidad']);
+			   SetAdoFields('Entrada',number_format($value['cantidad'],2,'.',''));
 			   SetAdoFields('Cta_Inv',$producto[0]['Cta_Inv']);
 			   SetAdoFields('Fecha_Fab',$producto[0]['Fecha_Fab']);	
 			   SetAdoFields('Fecha_Exp',$producto[0]['Fecha_Exp']);	 
@@ -783,6 +791,37 @@ class almacenamiento_bodegaC
 		}
 		return $datos;
 		// print_r($datos);die();
+	}
+
+	function validar_existencia_bodegas($parametros)
+	{
+		// print_r($parametros);die();
+		$existe = 1;
+		$msj = "";
+		if($parametros['partes']==1)
+		{
+			foreach ($parametros['bodegas'] as $key => $value) {
+				$codbodega = $this->modelo->ruta_bodega_select("'".$value['codigoBod']."'");
+				if(count($codbodega)==0)
+				{
+					$existe = 0;
+					$msj.=$value['codigoBod']."\n";
+				}
+			}
+
+		}else
+		{
+			$codbodega = $this->modelo->ruta_bodega_select("'".$parametros['bodegas']."'");
+			if(count($codbodega)==0)
+			{
+				$existe = 0;
+				$msj.=$parametros['bodegas']."\n";
+			}
+
+		}
+
+		return array('resp'=>$existe,'msj'=>$msj);
+
 	}
 }
 
