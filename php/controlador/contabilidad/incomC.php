@@ -721,6 +721,11 @@ class incomC
      	// Asientos_Grabados
      	$AdoAsientos = $this->modelo->asientos();
      	$AdoAsientosSC = $this->modelo->asientos_SC();
+     	// ----------------------------------------------
+     	 SetAdoAddNew("Clientes");          
+         SetAdoFields("Email",  $parametros['email']);
+         SetAdoFieldsWhere('CI_RUC',$parametros["ruc"]);
+         SetAdoUpdateGeneric(); 
      	// ------------------------------------------------     
   		$OpcSubCtaDH = 1;
   		$TextoImprimio = "";

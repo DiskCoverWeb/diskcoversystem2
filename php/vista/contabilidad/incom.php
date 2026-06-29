@@ -412,7 +412,7 @@ function validar_comprobante()
     Swal.fire({
       title: "Esta seguro de Grabar el " + $('#num_com').text(),
       text: "con fecha: " + $('#fecha1').val(),
-      type: 'warning',
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',

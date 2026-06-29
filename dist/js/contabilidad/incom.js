@@ -1668,7 +1668,7 @@ function eliminar(codigo,tabla,ID)
   Swal.fire({
     title: 'Esta seguro de eliminar este registro',
     text: "",
-    type: 'info',
+    icon: 'info',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
