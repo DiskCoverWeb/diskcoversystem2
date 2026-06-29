@@ -29,6 +29,11 @@ $(document).ready(function () {
     $("#ddl_aux").on("focus", function() {
       $(this).autocomplete("search",'%'); 
     });
+    
+    $("#ddl_aux").on("blur", function() {
+      $('#btn_continuar').focus();
+    });
+
 
     $("#txt_factura").on("focus", function() {
       $(this).autocomplete("search", "%");
@@ -73,7 +78,7 @@ $(document).ready(function () {
       var data = e.params.data.data;
       cargar_submodulos(data.Nivel);            
       $('#Pnl_DLSubCta').css('display','block');     
-      $('#DLSubCta').select2('open');
+      // $('#DLSubCta').select2('open');
       // console.log(data);
 
     });
@@ -942,7 +947,7 @@ $(document).ready(function () {
         </div>
         <div class="row mt-4" id="pnl_guardar_proceso">
              <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="generar_asiento();">Continuar</button>
+                <button type="button" id="btn_continuar" class="btn btn-primary" onclick="generar_asiento();">Continuar</button>
                 <button type="button" class="btn btn-outline-secondary" onclick="cerrarModal();">Salir</button>           
             </div>          
         </div>
