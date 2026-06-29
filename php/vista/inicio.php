@@ -281,6 +281,10 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'listar_clientes_grupo':
 					require_once("facturacion/ListarGrupos.php");
 					break;
+
+				case 'importaciones_excel':
+					require_once("facturacion/importaciones_desde_excel.php");
+					break;
 					
 				//Inventario -> Archivo -> Registro de bodegas 
 				case 'catalogoBodega':

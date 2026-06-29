@@ -33,29 +33,34 @@
                  render: function(data, type, item) {
                     // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
                     // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
-                      if(data.TP=="N")
-                      {    
-                        return `<a href="inicio.php?mod=`+ModuloActual+`&acc=control_avance&Orden=${data.No_Contrato}">${data.No_Contrato}</a>`;                    
-                      }else{
-                         return `<a href="inicio.php?mod=`+ModuloActual+`&acc=orden_ejecucion_add&contratistaDetalle=${data.Codigo}">${data.No_Contrato}</a>`;                    
-                      }
+                      return `${data.No_Contrato}`;                    
+                      
                   }
-              },
-              { data: 'Fecha_D.date',  
+              },              
+              { data: 'Centro Costo' },
+              { data: 'Detalle rubro' },
+              { data: 'subRubro' },
+              { data: null,  
                   render: function(data, type, item) {
-                      return data ? new Date(data).toLocaleDateString() : '';
+                      return  data.porcentaje.toFixed(2) +'%';
                   }
               },
+              { data: 'Semana' },
+              { data: 'Cantidad' },
+              { data: 'ejecutado' },
               { data: null,
                  render: function(data, type, item) {
                     // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
                     // <button type="button" title="Editar Pedido" class="btn btn-primary btn-sm p-0 m-0" onclick="editar_pedido()"><i class="bx bx-pencil m-0"></i></button>
-                      if(data.TP=='N')
-                      {
-                         return `Finalizado`;
-                      }else
+                      if(parseFloat(data.ejecutado) < parseFloat(data.Cantidad))
                       {
                          return `Pendiente`
+                      }else if(data.ejecutado==data.Cantidad)
+                      {
+                         return `Completado`
+                      }else
+                      {
+                        return `excede`
                       }
                      // <button type="button" title="Eliminar Pedido" class="btn btn-danger btn-sm p-0 m-0" onclick="eliminar_pedido('${data.ID}')" disabled=""><i class="bx bx-trash m-0"></i></button>`;                    
                   }
@@ -693,7 +698,7 @@ function guardar_subrubro_ejecucion()
   Swal.fire({
       title: 'Esta seguro de registrar este avance?',
       text: "Al aceptar este registro se no volvera a aparecer",
-      type: 'warning',
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',

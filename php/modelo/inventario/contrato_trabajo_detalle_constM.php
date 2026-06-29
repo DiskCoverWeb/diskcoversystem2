@@ -39,7 +39,7 @@ class contrato_trabajo_detalle_constM
 
     function detalleContrato_ejecucion($contrato=false,$T = '.')
     {
-        $sql = "select TC.ID,C.Cliente as 'Cliente',C.Codigo,CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.TP  
+        $sql = "select TC.ID,C.Cliente as 'Cliente',C.Codigo,CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.TP,ERC.Semana,ERC.Cantidad,Cant_Ejec as ejecutado,(SUM(Cant_Ejec)*100/SUM(ERC.Cantidad)) as porcentaje
         FROM Trans_Contratistas TC
         INNER JOIN Entidad_Rubro_Contratista ERC on TC.No_Contrato = ERC.No_Contrato
         INNER JOIN Clientes C ON TC.Codigo = C.Codigo
@@ -54,7 +54,7 @@ class contrato_trabajo_detalle_constM
         {
             $sql.=" AND TC.No_Contrato = '".$contrato."'";
         }
-        $sql.=" GROUP BY TC.ID,C.Cliente,C.Codigo,CP.Proceso,CP1.Proceso,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto,TC.TP 
+        $sql.=" GROUP BY TC.ID,C.Cliente,C.Codigo,CP.Proceso,CP1.Proceso,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto,TC.TP,ERC.Semana,ERC.Cantidad,Cant_Ejec
         ORDER BY TC.ID DESC";
 
         // print_r($sql);die();
@@ -353,7 +353,7 @@ class contrato_trabajo_detalle_constM
     function Trans_Contratistas_meses($id=false,$contrato=false,$rubro=false)
     {
         $sql = "SELECT MONTH(Fecha_Inicio_Ejec) AS Mes
-                FROM Trans_Contratistas_Rubros CR 
+                FROM Entidad_Rubro_Contratista CR 
                 WHERE CR.Item = '".$_SESSION['INGRESO']['item']."'
                 AND CR.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
                 if($contrato)
@@ -366,7 +366,7 @@ class contrato_trabajo_detalle_constM
                 }
                 if($rubro)
                 {                    
-                    $sql.=" AND CR.Cta = '".$rubro."' ";
+                    $sql.=" AND CR.Rubro = '".$rubro."' ";
                 }
 
                 $sql.=" GROUP BY  MONTH(Fecha_Inicio_Ejec)";

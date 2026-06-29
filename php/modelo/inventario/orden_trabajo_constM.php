@@ -306,23 +306,20 @@ class orden_trabajo_constM
                 }
 
                 $sql.=" group by Semana";
+
+                // print_r($sql);die();
         return $this->db->datos($sql);
     }
 
 
     function centrosCostocXRubro($proyecto=false,$rubro=false,$semana =false)
     {
-        $sql ="Select TCR.ID,TCR.Centro_Costos,Detalle,TCR.ID,TCR.Observacion
-                From Trans_Contratistas_Rubros TCR
-                INNER JOIN Entidad_Rubro_Contratista ERC ON TCR.Orden_Trabajo = ERC.No_Contrato
+        $sql ="SELECT TCR.ID,TCR.Centro_Costos,Detalle,TCR.ID,TCR.Observacion
+                FROM Trans_Contratistas_Rubros TCR
                 INNER JOIN Catalogo_SubCtas SC ON TCR.Centro_Costos = SC.Codigo
-                where SC.Item = TCR.Item
-                AND SC.Periodo = TCR.Periodo
-                AND TCR.Item = SC.Item
+                WHERE TCR.Item = SC.Item
                 AND TCR.Periodo = SC.Periodo
-                AND TCR.Item = ERC.Item
-                AND TCR.Periodo = ERC.Periodo
-                AND TCR.Item =  '".$_SESSION['INGRESO']['item']."'
+                AND TCR.Item =   '".$_SESSION['INGRESO']['item']."'
                 AND TCR.Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
                 if($rubro)
                 {
@@ -365,7 +362,7 @@ class orden_trabajo_constM
                 INNER JOIN Catalogo_SubCtas CS on ERC.Sub_Rubro = CS.ID
                 WHERE ERC.Item =  '".$_SESSION['INGRESO']['item']."'
                 AND ERC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-                AND ERC.TC <> 'E'";
+                AND ERC.TC <> 'E' AND ERC.TC <> 'A' ";
                 if($contrato)
                 {
                     $sql.=" AND No_Contrato = '".$contrato."'";
@@ -392,6 +389,7 @@ class orden_trabajo_constM
         return $this->db->datos($sql);
                 
     }
+    
 
     function cargar_lista_subrubros_procesar($contrato,$rubro=false,$subrubro=false,$centrocostos=false,$contratista=false,$semanas=false)
     {
@@ -487,6 +485,32 @@ class orden_trabajo_constM
                 WHERE ID = '".$ID."' ";
         return $this->db->String_Sql($sql);
 
+    }
+
+    function detalleContratoAll($contrato=false,$T = '.')
+    {
+        $sql = "select TC.ID,C.Cliente as 'Cliente',CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.T 
+        FROM Trans_Contratistas TC
+        INNER JOIN Clientes C ON TC.Codigo = C.Codigo
+        INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds
+        INNER JOIN Catalogo_Proceso CP1 ON TC.Proyecto = CP1.ID
+        where TC.Item = CP.Item
+        AND TC.Item = CP1.Item
+        AND TC.Item = '".$_SESSION['INGRESO']['item']."'
+        AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."'";
+        if($contrato)
+        {
+            $sql.=" AND No_Contrato = '".$contrato."'";
+        }
+        if($T)
+        {
+            $sql.=" AND TC.T = '".$T."'";
+        }
+        $sql.=" ORDER BY TC.ID DESC";
+
+        // print_r($sql);die();
+
+        return $this->db->datos($sql);
     }
 
 

@@ -5,7 +5,7 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
-<script type="text/javascript" src="../../dist/js/inventario/contrato_trabajo_const.js"></script>
+<script type="text/javascript" src="../../dist/js/inventario/orden_trabajo_const.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
 

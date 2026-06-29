@@ -40,12 +40,12 @@
         <button type="button" class="btn btn-outline-secondary" title="Informe pdf" onclick="imprimir_pdf()">
           <img src="../../img/png/pdf.png">
         </button>
-        <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_solicitud_proveedor()">
+        <!-- <button title="Guardar"  class="btn btn-outline-secondary" onclick="grabar_solicitud_proveedor()">
           <img src="../../img/png/grabar.png" >
-        </button>
-        <!--  <a title="Guardar"  class="btn btn-outline-secondary" href="../vista/inicio.php?mod=<?php echo $modulo ;?>&acc=orden_ejecucion_add">
+        </button> -->
+         <a title="Guardar"  class="btn btn-outline-secondary" href="../vista/inicio.php?mod=<?php echo $modulo ;?>&acc=orden_ejecucion_add">
           <img src="../../img/png/mostrar.png" >
-        </a> -->
+        </a>
       </div>
   </div>
 </div>
@@ -60,7 +60,13 @@
                      <th>No</th>
                      <th>Contratista</th>
                      <th>Orden de trabajo</th>
+                     <th>Centro costos</th>
+                     <th>Rubro</th>
+                     <th>SubRubro</th>
                      <th>% Ejecutado</th>
+                     <th>Semana</th>
+                     <th>Cantidad</th>
+                     <th>Ejecutado</th>
                      <th></th>
                   </thead>
                   <tbody>

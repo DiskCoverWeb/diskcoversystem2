@@ -131,6 +131,12 @@
         echo json_encode($controlador->valores_default($parametros));
     }
 
+    if(isset($_GET['cargar_lista_contratos_ord']))
+    {
+        $parametros = $_POST['parametros'];
+        echo json_encode($controlador->cargar_lista_contratos_ord($parametros));
+    }
+
 
 
 
@@ -277,13 +283,16 @@
         function add_subRubro($parametros)
         {
             // print_r($parametros);die();
+            $data_contrato =  $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$parametros['rubro'],$parametros['Contrato'],$parametros['centroCostos']);
             $data = $this->modelo->cargar_lista_subrubros($parametros['Contrato'],$parametros['rubro'],$parametros['subRubro'],$parametros['centroCostos'],$parametros["contratista"]);
+            // print_r($data);die();
             if(count($data)==0)
             {
                  $dataCantidad = $this->modelo->cargar_lista_subrubros_sum($parametros['Contrato'],$parametros['rubro'],false,$parametros['centroCostos'],$parametros["contratista"]);
                  // print_r($dataCantidad);die();
                  $cantidadPedido = ($parametros['cantidad']+$dataCantidad[0]['Cantidad']);
-                if($cantidadPedido<=$parametros['cantidad_rela'])
+
+                if($cantidadPedido<=$data_contrato[0]['Cantidad'])
                 {
                     SetAdoAddNew("Entidad_Rubro_Contratista");
                     SetAdoFields("Rubro",$parametros['rubro']);
@@ -409,6 +418,15 @@
         function valores_default($parametros)
         {
             $data = $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$parametros['rubro'],$parametros['Contrato'],$parametros['centroCostos']);
+            $data_en_proceso = $this->modelo->cargar_lista_subrubros_sum($parametros['Contrato'],$parametros['rubro'],false,$parametros['centroCostos'],$parametros['contratista']);
+
+            // print_r($data);print_r($data_en_proceso);die();
+            if(count($data_en_proceso)>0)
+            {
+                $data[0]['Cantidad'] = $data[0]['Cantidad']-$data_en_proceso[0]['Cantidad'];
+            }
+
+            // print_r($data_en_proceso);die();
             return $data;
             // print_r($data);die();
         }
@@ -418,6 +436,13 @@
             $data = $this->modelo->rubrosXcontratistaAllunic($query=false,$parametros['contratista'],$parametros['rubro'],$orden=false,$centro_costos=false);
             return $data;
         }
+
+
+        function cargar_lista_contratos_ord()
+        {
+            return $this->modelo->detalleContratoAll(false,'A');
+        }  
+
     }
 
     ?>

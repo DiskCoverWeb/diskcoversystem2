@@ -122,6 +122,13 @@ if(isset($_GET['cargar_lista_subrubros_avance']))
 }
 
 
+if(isset($_GET['cargar_detalle_contratos']))
+{
+    $parametros = $_POST['parametros'];
+    echo json_encode($controlador->cargar_detalle_contratos($parametros));
+}
+
+
 
 
 
@@ -138,7 +145,7 @@ class orden_ejecucionC
 
     function lista_orden_ejecucion(){
 
-        $result = $this->contratos->detalleContrato_ejecucion(false,'E');
+        $result = $this->modelo->detalleContrato_ejecucion();
 
         // $result = $this->modelo->lista_orden_ejecucion();
         // print_r($result);die();
@@ -159,7 +166,7 @@ class orden_ejecucionC
 
     function contratistasAvances($query)
     {
-          return $this->modelo->contratistas($query,false,'N');
+          return $this->modelo->contratistas($query,false,'.');
     }
 
     function contratos($contratista,$query)
@@ -167,7 +174,7 @@ class orden_ejecucionC
        $rubro = array();
        $data =  $this->modelo->rubrosXcontratista($query,$contratista);
        foreach ($data as $key => $value) {
-           $rubro[] = array('id'=>$value['Cta'],'text'=>$value['Cuenta'],'data'=>$value);
+           $rubro[] = array('id'=>$value['Rubro'],'text'=>$value['Cuenta'],'data'=>$value);
        }
        return $rubro;
     }
@@ -183,7 +190,7 @@ class orden_ejecucionC
    function cargar_lista_subrubros($parametros)
     {            
         $tbl = '';
-        $CentroCostos = $this->orden->centrosCostocXRubro($parametros['Contrato'],$parametros['rubro'],$parametros['semana']);
+        $CentroCostos = $this->modelo->centrosCostocXRubro($parametros['Contrato'],$parametros['rubro'],$parametros['semana']);
         // print_r($CentroCostos);die();
         foreach ($CentroCostos as $key => $value) {
             // print_r($value);die();
@@ -209,7 +216,7 @@ class orden_ejecucionC
                       <th>Diferencia</th>
                      <!-- <th></th> -->
                     </thead><tbody>';
-            $data = $this->orden->cargar_lista_subrubros_procesar($parametros['Contrato'],$parametros['rubro'],$subrubro=false,$value['Centro_Costos'],$parametros['contratista'],$parametros['semana']);
+            $data = $this->orden->cargar_lista_subrubros_procesar($parametros['Contrato'],$parametros['rubro'],$subrubro=false,$value['Centro_Costo'],$parametros['contratista'],$parametros['semana']);
             foreach ($data as $key => $value) {
                 // print_r($value);die();
                 $tbl.='<tr> 
@@ -321,7 +328,7 @@ class orden_ejecucionC
     function rubrosAvances($contratista,$query)
     {
 
-       $lista =  $this->modelo->rubrosXcontratista($query,false,$contratista);
+       $lista =  $this->modelo->rubrosXcontratistaAvances($query,false,$contratista);
        $contratos = array();
 
        // print_r($lista);die();
@@ -334,7 +341,7 @@ class orden_ejecucionC
     function mesesAvances($rubrocta,$query)
     {
 
-        $lista = $this->contratos->Trans_Contratistas_meses($id=false,$contrato=false,$rubrocta);
+        $lista = $this->modelo->Trans_Contratistas_meses($id=false,$contrato=false,$rubrocta);
 
         $mesesAvances = array();
         foreach ($lista as $key => $value) {
@@ -350,10 +357,33 @@ class orden_ejecucionC
     function cargar_lista_subrubros_avance($parametros)
     {
         // print_r($parametros);die();
-        $data = $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$parametros['contrato'],$parametros['rubro'],$parametros['mes']);
+        $data = $this->modelo->rubros_contrato_general(false,$parametros['contratista'],$parametros['contrato'],$parametros['rubro'],$parametros['mes']);
 
+        $total_cont = 0;
+        foreach ($data as $key => $value) {
+            $total_cont+=$value['Cantidad'];
+        }
+        // print_r($data);die();
+
+        $registros = $this->modelo->rubrosXcontratistaAll(false,$parametros['contratista'],$parametros['contrato'],$parametros['rubro'],$parametros['mes']);
+        $total = 0;
+        foreach ($registros as $key => $value) {
+            $total+= $value['Cant_Ejec'];
+        }
+
+        $porcentaje = number_format( ($total*100)/$total_cont,2,'.','');
+        $datos = array('lineas'=>$registros,'total_rubro'=>$total_cont,'total_procesado'=>$total,'porcentaje'=>$porcentaje.'%');
+        // print_r($datos);die();
+
+        return $datos;
+
+        // print_r($data);die();
+    }
+
+    function cargar_detalle_contratos($parametros)
+    {
+        $data = $this->modelo->detalleContratoAll($parametros['contrato']);
         return $data;
-
         // print_r($data);die();
     }
 }

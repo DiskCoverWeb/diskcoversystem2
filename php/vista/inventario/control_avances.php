@@ -53,19 +53,19 @@
         <div class="row">
           <div class="col-lg-4">
             <b>Contratista </b><br>
-            <select class="form-select form-select-sm" id="ddl_contratista" name="ddl_contratista" onchange="cargar_contratos()">
+            <select class="form-select form-select-sm" id="ddl_contratista" name="ddl_contratista" onchange="cargar_contratos();cargar_lista_subrubros()">
               <option value="">Seleccione</option>
             </select>
           </div>
            <div class="col-lg-3">
             <b>Contrato</b><br>
-            <select class="form-select form-select-sm" id="ddl_Contrato" name="ddl_Contrato" onchange="cargar_rubros()">
+            <select class="form-select form-select-sm" id="ddl_Contrato" name="ddl_Contrato" onchange="cargar_rubros();cargar_lista_subrubros()">
               <option value="">Seleccione</option>
             </select>
           </div>
           <div class="col-lg-3">
             <b>Rubro </b><br>
-            <select class="form-select form-select-sm" id="ddl_Rubro" name="ddl_Rubro" onchange="cargar_meses()">
+            <select class="form-select form-select-sm" id="ddl_Rubro" name="ddl_Rubro" onchange="cargar_meses();cargar_lista_subrubros()">
               <option value="">seleccione</option>
             </select>
           </div>
@@ -87,8 +87,88 @@
     </div>
   </div>
 </div>
+<div class="row mb-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-6">
+              <h5>Resumen de Contrato</h5>
+          </div>          
+          <div class="col-sm-6 text-end">
+            <!-- <button type="button" class="btn btn-primary btn-sm" onclick="ver_resumen()">Ver Resumen</button>             -->
+          </div>
+        </div>
+      </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">              
+              <b>Proyectos: </b><br>
+              <label id="lbl_proyecto">-</label>
+              <input type="hidden" name="txt_cuenta_proyecto" id="txt_cuenta_proyecto">
+            </div>   
+            <div class="col-sm-4">
+              <b>Contratista: </b>    <br>         
+              <label id="lbl_contratista">-</label>
+            </div>
+            <div class="col-sm-4">
+                <b>Se entrega a cargo material: </b>
+                <span id="lbl_material">-</span>
+            </div>
+            <div class="col-sm-5">
+              <b>El contratista ejecuta el trabajo con marquinaria:</b>
+              <span id="lbl_mas_personas"> - </span>
+            </div>
+           <!--  <div class="col-sm-12">
+              <b>Nombre de contrato: </b><br>
+              <label id="lbl_nombre_contrato">-</label>
+            </div> -->
+           <div class="col-sm-3">
+            <b>Tipo Contrato: </b>
+            <label id="lbl_categoria">-</label>
+          </div>
+          <!-- <div class="col-sm-4">
+            <b>Tipo Costo: </b>            
+            <label id="lbl_tipo_costo">-</label>
+          </div> -->
+          <!-- <div class="col-sm-4">
+            <b>Cuenta contable: </b>            
+            <label id="lbl_cuenta_contable">-</label>
+          </div> -->
+          <div class="col-sm-2">
+            <b>Fecha inicio: </b><br>    
+            <label id="lbl_fecha">0000-00-00</label>          
+          </div>
+          <div class="col-sm-2">
+            <b>Fecha fin: </b>     <br>
+            <label id="lbl_fecha_v">0000-00-00</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-2">
+            <b>Cantidad de contrato:<h1 id="lbl_cant_contrato"></h1></b>
+          </div>
+          <div class="col-sm-2">
+            <b>Cantidad ejecutado:<h1 id="lbl_cant_procesado"></h1></b>
+          </div>  
+          <div class="col-sm-2">
+            <b>Porcentaje ejecutado:<h1 id="lbl_porcentaje"></h1></b>
+          </div>          
+        </div>
+      </div>
+    </div> 
+</div>
 <div class="row mb-2" id="pnl_detalle_proyecto">
   <div class="card">
+    <div class="card-header">
+        <div class="row">
+          <div class="col-sm-6">
+              <h5>Detalle de Ejecucion</h5>
+          </div>          
+          <div class="col-sm-6 text-end">
+            <!-- <button type="button" class="btn btn-primary btn-sm" onclick="ver_resumen()">Ver Resumen</button>             -->
+          </div>
+        </div>
+      </div>
     <div class="card-body">
        <div class="row">
           <div class="col-sm-12">

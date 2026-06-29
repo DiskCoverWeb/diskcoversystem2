@@ -647,7 +647,7 @@ class incomM
 		  return $result;
      }
 
-     function DG_asientos_SC_total($dh)
+     function DG_asientos_SC_total($dh,$cta)
     {
     	$cid = $this->conn;
        $sql = "SELECT SUM(Valor) as 'total'
@@ -655,6 +655,7 @@ class incomM
        WHERE Item = '".$_SESSION['INGRESO']['item']. "'
        AND CodigoU = '".$_SESSION['INGRESO']['CodigoU']."'
        AND T_No = ".$_SESSION['INGRESO']['modulo_']." 
+       AND Cta ='".$cta."'
        AND DH = ".$dh;
        $result = $this->conn->datos($sql);
 		  return $result;
