@@ -574,6 +574,7 @@ class asignacion_osC
         SetAdoFieldsWhere('CodigoC',$parametros['beneficiario']);  
         SetAdoFieldsWhere('Fecha',$parametros['fecha']);  
         SetAdoFieldsWhere('Orden_No',$parametros['orden']);  
+        SetAdoFieldsWhere('No_Hab',$parametros['tipo']); 
 
         return SetAdoUpdateGeneric();
     }
