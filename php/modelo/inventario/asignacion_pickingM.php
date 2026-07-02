@@ -103,7 +103,7 @@ class asignacion_pickingM
             INNER JOIN Accesos A on DF.CodigoU = A.Codigo 
             LEFT JOIN Clientes C on DF.CodigoC = C.Codigo 
             LEFT JOIN Clientes_Datos_Extras as CD ON C.Codigo = CD.Codigo 
-            LEFT JOIN Catalogo_Proceso CP7 ON DF.No_Hab= CP7.Cmds   
+            LEFT JOIN Catalogo_Proceso CP7 ON DF.No_Hab= CP7.Cmds AND DF.Item = CP7.Item
             WHERE DF.Item = '".$_SESSION['INGRESO']['item']."'
             AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
             AND LEN(CD.Dia_Ent)=3";
