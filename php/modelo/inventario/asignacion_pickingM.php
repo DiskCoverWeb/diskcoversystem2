@@ -185,8 +185,11 @@ class asignacion_pickingM
                 WHERE Item = '".$_SESSION['INGRESO']['item']."' 
                 AND Periodo='".$_SESSION['INGRESO']['periodo']."'
                 AND CodigoC = '".$beneficiario."'
-                AND Fecha =  '".$fecha."'
                 AND Factura =  '-1'";
+                if($fecha)
+                {
+                    $sql.=" AND Fecha =  '".$fecha."'";
+                }
                 if($orden)
                 {
                     $sql.=" AND Orden_No = '".$orden."'";

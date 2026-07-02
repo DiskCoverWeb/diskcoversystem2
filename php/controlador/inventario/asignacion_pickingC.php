@@ -288,7 +288,16 @@ class asignacion_pickingC
                 // $datos1 = $this->modelo->cargar_asignacion($value['Codigo'],$value['No_Hab'],'F',$fecha);
                 // if(count($datos1)==0)
                 // {
-                   $lista[] = array('id'=>$value['Codigo'].'-'.$value['No_Hab'].'-'.$value['Orden_No'],'text'=>$value['Cliente'].' ('.$value['Tipo Asignacion'].')','data'=>$value); 
+            // print_r($value);
+            $lineas = array();
+            if($value['T']=='K')
+            {
+                $lineas = $this->modelo->listaAsignacion($value['Codigo'],'K',$tipo=false,$value['No_Hab'],$fecha=false,$value['Orden_No']);
+            }
+
+
+            // print_r($lineas);die();
+                   $lista[] = array('id'=>$value['Codigo'].'-'.$value['No_Hab'].'-'.$value['Orden_No'],'text'=>$value['Cliente'].' ('.$value['Tipo Asignacion'].')','data'=>$value,'lineas'=>$lineas); 
                 // }    
             // }    
         }

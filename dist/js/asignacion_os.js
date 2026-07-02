@@ -860,7 +860,38 @@ function lista_picking_all()
             data.forEach(function(item,i){
                 console.log(item)
                 tr+=`<tr>
-                        <td>`+item.text+`</td>
+                        <td>`
+                        if(item.data.T=='K')
+                        {
+                            tr+=`<div class="accordion accordion-flush" id="accordionFlushExample">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="flush-headingOne">
+                                        <button class="accordion-button collapsed p-1" type="button" data-bs-toggle="collapse" data-bs-target="#`+item.data.Orden_No+`_`+item.data.No_Hab+`" aria-expanded="false" aria-controls="flush-collapseOne">
+                                           `+item.text+`
+                                        </button>
+                                        </h2>
+                                        <div id="`+item.data.Orden_No+`_`+item.data.No_Hab+`" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                            <div class="accordion-body">
+                                                <table class="table-hover table">
+                                                    <thead>
+                                                        <th>Producto</th>
+                                                        <th>Cantidad</th>
+                                                    </thead>
+                                                    <tbody>`;
+                                                    item.lineas.forEach(function(ln,j){
+                                                        tr+=`<tr><td>`+ln.Producto+`</td><td>`+ln.Cantidad+`</td></tr>`
+                                                    })
+                                        tr+=`</tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`
+                        }else{
+                            tr+= item.text
+                        }
+                        
+                        tr+=`</td>
                         <td>`;
                         if(item.data.T =='K')
                         {
