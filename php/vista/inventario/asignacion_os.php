@@ -18,6 +18,7 @@
             'fecha':$('#fechAten').val(),
             'comentario':$('#comeGeneAsig').val(),
             'orden':$('#txt_orden').val(),
+            'tipo':$('#tipoCompra').val()
         }
          $.ajax({
             url: '../controlador/inventario/asignacion_osC.php?GuardarAsignacion=true',
