@@ -361,6 +361,22 @@ class asignacion_pickingM
         return $this->db->String_Sql($sql);
     }
 
+    function delete_lineas_picking($bene,$tipo,$T,$orden)
+    {
+
+        $sql = "DELETE
+                FROM Trans_Comision
+                WHERE Item = '".$_SESSION['INGRESO']['item']."'
+                AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+                AND CodigoC = '".$bene."'
+                AND Cta = '".$tipo."'
+                AND T = '".$T."'
+                AND Orden_No = '".$orden."'";
+
+                // print_r($sql);die();
+        return $this->db->String_Sql($sql);
+    }
+
     function delete_lineasFam($codigoC,$tipo)
     {
         $sql = "DELETE FROM Detalle_Factura

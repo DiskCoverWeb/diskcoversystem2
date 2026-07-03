@@ -668,10 +668,12 @@ class asignacion_pickingC
 
     function eliminarPickingAsig($parametros)
     {
-
+        // print_r($parametros);die();
         $data = explode('-', $parametros['idBeneficiario']);
         $beneficiario = $data[0];
         $tipo = $data[1]; 
+        $orden = $data[2];
+        $this->modelo->delete_lineas_picking($beneficiario,$tipo,'P',$orden);
         return $this->modelo->delete_lineas($parametros['fecha'],$beneficiario,$tipo);
     }
 
