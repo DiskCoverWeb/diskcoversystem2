@@ -14,6 +14,9 @@ C =>ESTA EN CLASIFICACION
 
 E => YA ALMACENADO (APLICA A LINEAS)
 
+G => es para egresos
+S => egresos
+
 */
 
 

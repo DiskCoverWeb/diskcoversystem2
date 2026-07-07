@@ -334,7 +334,6 @@ class egreso_alimentosC
 	    SetAdoFieldsWhere('Item',$_SESSION['INGRESO']['item']);	
 	    SetAdoFieldsWhere('CodigoU',$_SESSION['INGRESO']['CodigoU']);	
 	    SetAdoFieldsWhere('T','S');				
-	    SetAdoFieldsWhere('T','S');			
 
 	   return  SetAdoUpdateGeneric();
 	}
@@ -592,6 +591,7 @@ class egreso_alimentosC
 
 		SetAdoAddNew("Trans_Kardex"); 		
 		SetAdoFields('Contra_Cta',$motivo[0]['Cta_Debe']);
+		SetAdoFields('T','N');
 
 		if($parametros['TC']!='P')
 		{
