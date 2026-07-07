@@ -98,6 +98,7 @@ class egreso_alimentosM
 			{
 				$sql.=" AND TK.ID='".$id."'";
 			}
+			// print_r($sql);die();
 		return $this->db->datos($sql);
 	}
 
