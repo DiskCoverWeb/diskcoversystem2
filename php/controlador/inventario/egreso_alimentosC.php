@@ -591,7 +591,6 @@ class egreso_alimentosC
 
 		SetAdoAddNew("Trans_Kardex"); 		
 		SetAdoFields('Contra_Cta',$motivo[0]['Cta_Debe']);
-		SetAdoFields('T','N');
 
 		if($parametros['TC']!='P')
 		{
