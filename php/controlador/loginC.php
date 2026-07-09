@@ -97,10 +97,12 @@ class loginC
 	}
 	function login($parametro)
 	{
+
 		if (isset($_SESSION['INGRESO'])) {
 			session_destroy();
 		} 
-
+		
+		$_SESSION['INGRESO'];
 		session_start();
 		if(!empty($_SERVER['HTTP_CLIENT_IP'])) {   
 	        $_SESSION['INGRESO']['IP_Wan'] = $_SERVER['HTTP_CLIENT_IP'];   
