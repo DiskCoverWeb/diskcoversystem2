@@ -176,7 +176,7 @@ class autoriza_sri
 	   		if($enviar_sri[0]==1)
 	   		{
 	   			// print_r('expression');die();
-	   			sleep(5);
+	   			sleep(8);
    		 		$resp =  $this->comprobar_xml_sri($Autorizacion,$this->linkSriAutorizacion);
    		 		// print_r($resp);die();
    		 		if($resp[0]==1)
@@ -294,7 +294,7 @@ class autoriza_sri
 				   		if($enviar_sri[0]==1)
 				   		{
 				   		 	//una vez enviado comprobamos el estado de la factura
-			   		 		sleep(7);
+			   		 		sleep(8);
 			   		 		// print_r("expression");die();
 			   		 		$resp =  $this->comprobar_xml_sri($xml,$this->linkSriAutorizacion);
 			   		 		// print_r($resp);die();
