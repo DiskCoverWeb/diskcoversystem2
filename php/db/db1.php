@@ -50,6 +50,10 @@ class db
 
 	function conexion($tipo='')
 	{
+
+ 		$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+          strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
 		if($tipo=='MYSQL' || $tipo=='My SQL')
 		{
 		  return $this->MySQL();
@@ -57,7 +61,21 @@ class db
 
 		}else
 		{
-		  return  $this->SQLServer();
+
+			if (isset($_SESSION['INGRESO'])) {
+				  return  $this->SQLServer();
+			}else{
+		  	if ($isAjax) {
+	        // Respuesta para AJAX
+	        header('Content-Type: application/json');
+	        http_response_code(401);
+	        echo json_encode([
+	            'success' => false,
+	            'session_expired' => true,
+	            'message' => 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.'
+	        ]);
+			  }
+		  }
 		}
 
 		
@@ -65,15 +83,15 @@ class db
 
 	function SQLServer($tercero=0)
 	{
-
 		if($tercero==0)
 		{
-		// print_r($_SESSION['INGRESO']);die();
-			$this->usuario = $_SESSION['INGRESO']['Usuario_DB'];
-	    $this->password = $_SESSION['INGRESO']['Password_DB'];  // en mi caso tengo contraseña pero en casa caso introducidla aquí.
-	    $this->servidor = $_SESSION['INGRESO']['IP_VPN_RUTA'];	   
-	    $this->database = $_SESSION['INGRESO']['Base_Datos'];
-	    $this->puerto = $_SESSION['INGRESO']['Puerto'];
+			// print_r($_SESSION['INGRESO']);die();
+				$this->usuario = $_SESSION['INGRESO']['Usuario_DB'];
+		    $this->password = $_SESSION['INGRESO']['Password_DB'];  // en mi caso tengo contraseña pero en casa caso introducidla aquí.
+		    $this->servidor = $_SESSION['INGRESO']['IP_VPN_RUTA'];	   
+		    $this->database = $_SESSION['INGRESO']['Base_Datos'];
+		    $this->puerto = $_SESSION['INGRESO']['Puerto'];
+		 
 		// print_r($_SESSION);die();
 	  }
 
