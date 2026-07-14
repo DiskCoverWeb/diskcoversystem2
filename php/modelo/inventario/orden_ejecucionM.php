@@ -39,7 +39,7 @@ class orden_ejecucionM
 
     }
 
-     function contratistas($cliente=false,$codigo=false,$TP=false)
+    function contratistas($cliente=false,$codigo=false,$TP=false)
     {
         $sql = "SELECT distinct C.Cliente AS text,TC.Codigo as id 
         FROM Entidad_Rubro_Contratista  ER        
@@ -48,6 +48,33 @@ class orden_ejecucionM
         WHERE TC.Item = '".$_SESSION['INGRESO']['item']."'
         AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."' 
         AND ER.TC = 'E'";
+        if($cliente)
+        {
+            $sql.=" AND C.Cliente like '%".$cliente."%'";
+        }
+        if($codigo)
+        {
+            $sql.=" AND C.Codigo = '".$codigo."'";
+        }
+        if($TP)
+        {
+            $sql.=" AND TC.TP = '".$TP."'";
+        }
+        $sql.=" ORDER BY ID DESC";
+
+            // print_r($sql);die();
+        return $this->db->datos($sql);
+    }
+
+     function contratistasAvance($cliente=false,$codigo=false,$TP=false)
+    {
+        $sql = "SELECT distinct C.Cliente AS text,TC.Codigo as id 
+        FROM Entidad_Rubro_Contratista  ER        
+        INNER JOIN  Trans_Contratistas TC ON TC.No_Contrato = ER.No_Contrato AND TC.Codigo = ER.Contratista 
+        INNER JOIN Clientes C on TC.Codigo = C.Codigo 
+        WHERE TC.Item = '".$_SESSION['INGRESO']['item']."'
+        AND TC.Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+        AND ER.TC = 'A'";
         if($cliente)
         {
             $sql.=" AND C.Cliente like '%".$cliente."%'";
@@ -266,7 +293,7 @@ class orden_ejecucionM
             }
             $sql.=" group by Centro_Costo,SC.Detalle,Observacion";
 
-                // print_r($sql);die();
+                print_r($sql);die();
         return $this->db->datos($sql);
     }
 

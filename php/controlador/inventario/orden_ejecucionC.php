@@ -166,7 +166,7 @@ class orden_ejecucionC
 
     function contratistasAvances($query)
     {
-          return $this->modelo->contratistas($query,false,'.');
+          return $this->modelo->contratistasAvance($query,false,'.');
     }
 
     function contratos($contratista,$query)
