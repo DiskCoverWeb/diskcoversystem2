@@ -114,6 +114,7 @@ function estado_licencia($f3)
 	<link rel="stylesheet" href="../../dist/css/style_acordeon.css"/>
 	<script type="text/javascript">
 	var ModuloActual = '<?php echo $modulo; ?>'; 
+	var ModuloActualNombre = '<?php echo $NombreModulo; ?>'; 
 	console.log(ModuloActual);
 	</script>
 	<script src="../../assets/js/jquery.min.js"></script>

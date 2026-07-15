@@ -439,10 +439,13 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				//**************************************INVENTARIO**************************************/
 	
 				//Facturacion -> Archivo -> Catalogo de inventario
-				case 'catalogoPro':
-					require_once("inventario/catalogo_producto.php");
+				case 'resumen_existencias':
+					require_once("inventario/resumen_existencias.php");
 					break;
 					
+				case 'catalogoPro':
+					require_once("inventario/catalogo_producto.php");
+					break;					
 				//Facturacion -> Archivo -> Catalogo de inventario
 				case 'catalogoProBaq':
 					require_once("inventario/catalogo_producto_baq.php");
