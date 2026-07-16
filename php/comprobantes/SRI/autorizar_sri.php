@@ -1708,11 +1708,25 @@ class autorizacion_sri
 		$xml_totalImpuesto = $xml->createElement( "totalImpuesto" );		 
 
 		$xml_codigo = $xml->createElement( "codigo",'2' );
-		if(($cabecera['Porc_IVA'] * 100) > 12 ){
-             $xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'3' );
-           }else{
-             $xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'2' );
-           }
+
+
+		$porceiva = (floatval($cabecera['Porc_IVA'])*100);
+	    if($porceiva>0)
+	    {
+	    	$iva = Porcentajes_IVA($cabecera['Fecha']->format('d/m/Y'),$porceiva);
+	    	if(count($iva)>0)
+	    	{
+	    		// $cabecera['codigoPorcentaje']=$iva[0]['Codigo'];
+	    		$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",$iva[0]['Codigo'] );
+	    	}
+	    }
+
+		// if(($cabecera['Porc_IVA'] * 100) > 12 ){
+        //      $xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'3' );
+        //    }else{
+        //      $xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'2' );
+        //    }
+
 
 		$xml_baseImponible = $xml->createElement( "baseImponible",$cabecera['BASEIMPONIBLE'] );
 		//$xml_tarifa = $xml->createElement( "tarifa",'0.00' );
@@ -1776,14 +1790,25 @@ class autorizacion_sri
 					}
 					else
 					{
-						if(($cabecera['Porc_IVA']*100) > 12)
-						{
-							$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'3' );
-						}
-						else
-						{
-							$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'2' );
-						}
+						$porceiva = (floatval($cabecera['Porc_IVA'])*100);
+					    if($porceiva>0)
+					    {
+					    	$iva = Porcentajes_IVA($cabecera['Fecha']->format('d/m/Y'),$porceiva);
+					    	if(count($iva)>0)
+					    	{
+					    		// $cabecera['codigoPorcentaje']=$iva[0]['Codigo'];
+					    		$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",$iva[0]['Codigo'] );
+					    	}
+					    }
+
+						// if(($cabecera['Porc_IVA']*100) > 12)
+						// {
+						// 	$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'3' );
+						// }
+						// else
+						// {
+						// 	$xml_codigoPorcentaje = $xml->createElement( "codigoPorcentaje",'2' );
+						// }
 						$xml_tarifa = $xml->createElement( "tarifa",$cabecera['Porc_IVA']*100 );
 						
 					}
