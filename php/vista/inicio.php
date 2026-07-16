@@ -131,7 +131,9 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 				case 'mapro':
 					require_once("inventario/mapro.php");
 					break;
-	
+				case 'ReIndexar':
+					require_once("inventario/reindexar.php");
+					break;	
 				case 'reportes':
 					require_once("contabilidad/resumen_retenciones.php");
 					break;
