@@ -231,15 +231,15 @@
       <div class="row">
           <div class="input-group input-group-sm"> 
             <label class="col-sm-6" style="padding:0px"><b>sub total sin iva</b></label>
-              <input type="text" name="TxtSinIVA" id="TxtSinIVA" class="form-control form-control-sm">
+              <input type="text" name="TxtSinIVA" id="TxtSinIVA" class="form-control form-control-sm text-end">
           </div>
           <div class="input-group input-group-sm"> 
             <label class="col-sm-6" style="padding:0px"><b>sub total con iva</b></label>
-              <input type="text" name="TxtConIVA" id="TxtConIVA" class="form-control form-control-sm">
+              <input type="text" name="TxtConIVA" id="TxtConIVA" class="form-control form-control-sm text-end">
           </div>
           <div class="input-group input-group-sm"> 
             <label class="col-sm-6" style="padding:0px"><b>Total descuento</b></label>
-            <input type="text" name="TxtDescuento" id="TxtDescuento" class="form-control form-control-sm">
+            <input type="text" name="TxtDescuento" id="TxtDescuento" class="form-control form-control-sm text-end">
           </div>
        </div>    
     </div>
@@ -247,15 +247,15 @@
       <div class="row">
           <div class="input-group input-group-sm"> 
             <label class="col-sm-6" style="padding:0px"><b>Sub total</b></label>
-             <input type="text" name="TxtSaldo" id="TxtSaldo" class="form-control form-control-sm">
+             <input type="text" name="TxtSaldo" id="TxtSaldo" class="form-control form-control-sm text-end">
            </div>       
           <div class="input-group input-group-sm"> 
             <label class="col-sm-6" style="padding:0px"><b>Total del I.V.A</b></label>
-            <input type="text" name="TxtIVA" id="TxtIVA" class="form-control form-control-sm">
+            <input type="text" name="TxtIVA" id="TxtIVA" class="form-control form-control-sm text-end">
           </div>
           <div class="input-group input-group-sm"> 
                 <label class="col-sm-6" style="padding:0px"><b>Total Nota Credito</b></label>
-                <input type="text" name="LblTotalDC" id="LblTotalDC" class="form-control form-control-sm">
+                <input type="text" name="LblTotalDC" id="LblTotalDC" class="form-control form-control-sm text-end">
           </div>
       </div>    
     </div>

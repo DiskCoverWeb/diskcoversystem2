@@ -51,7 +51,7 @@
              dataSrc: function(data) {
                  $('#TxtConIVA').val(data.TxtConIVA);
                  $('#TxtDescuento').val(data.TxtDescuento);
-                 $('#TxtIVA').val(data.TxtIVA);
+                 $('#TxtIVA').val(data.TxtIVA.toFixed(2));
                  $('#TxtSaldo').val(data.TxtSaldo);
                  $('#TxtSinIVA').val(data.TxtSinIVA);
                  $('#LblTotalDC').val(data.LblTotalDC);
