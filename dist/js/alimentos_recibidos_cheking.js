@@ -19,7 +19,7 @@ $(document).ready(function () {
     $('#txt_codigo').on('select2:select', function (e) {
       var data = e.params.data.data;
       // console.log(data);
-      detalle = 'Ingreso '+data.Cliente+' '+formatoDate(data.Fecha.date);
+      detalle = 'Ingreso a inventario por '+data.Cod_C+': '+data.Cliente+' '+formatoDate(data.Fecha.date)+' ('+data.Envio_No+')';
       $('#txt_concepto_comp').val(detalle);
       setearCamposPedidos(data);
     });
