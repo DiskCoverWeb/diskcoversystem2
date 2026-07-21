@@ -962,7 +962,7 @@ class autoriza_sri
 			$ips = array(
 				array('ip'=>'104.237.138.52','puerto'=>8010,'nombre'=>'API DiskCover System'),
 				array('ip'=>'194.195.222.54','puerto'=>11433,'nombre'=>'DB SQL DiskCover System'),
-				array('ip'=>'69.164.192.53','puerto'=>13306,'nombre'=>'DB MySQL DiskCover System'),
+				// array('ip'=>'69.164.192.53','puerto'=>13306,'nombre'=>'DB MySQL DiskCover System'),
 			);
 		}else
 		{
