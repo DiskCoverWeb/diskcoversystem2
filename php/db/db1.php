@@ -66,13 +66,9 @@ class db
 
 	function SQLServer($tercero=0)
 	{
-			$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-          strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
 		if($tercero==0)
 		{
-
-			if (isset($_SESSION['INGRESO'])) {
 
 			// print_r($_SESSION['INGRESO']);die();
 				$this->usuario = $_SESSION['INGRESO']['Usuario_DB'];
@@ -81,18 +77,6 @@ class db
 		    $this->database = $_SESSION['INGRESO']['Base_Datos'];
 		    $this->puerto = $_SESSION['INGRESO']['Puerto'];
 
-		  }else{
-		  	if ($isAjax) {
-	        // Respuesta para AJAX
-	        header('Content-Type: application/json');
-	        http_response_code(401);
-	        echo json_encode([
-	            'success' => false,
-	            'session_expired' => true,
-	            'message' => 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.'
-	        ]);
-			  }
-		  }
 		 
 		// print_r($_SESSION);die();
 	  }

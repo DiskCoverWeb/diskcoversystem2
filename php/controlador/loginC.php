@@ -102,7 +102,7 @@ class loginC
 			session_destroy();
 		} 
 		
-		$_SESSION['INGRESO'];
+		// $_SESSION['INGRESO'];
 		session_start();
 		if(!empty($_SERVER['HTTP_CLIENT_IP'])) {   
 	        $_SESSION['INGRESO']['IP_Wan'] = $_SERVER['HTTP_CLIENT_IP'];   
