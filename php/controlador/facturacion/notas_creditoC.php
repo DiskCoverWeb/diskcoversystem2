@@ -608,7 +608,7 @@ class notas_creditoC
 		        { 
 		        	$text = "";
 	        	  	$respuesta_NC = $this->sri->SRI_Crear_Clave_Acceso_Nota_Credito($FA); 
-	        	  	if($respuesta_NC!='1')
+	        	  	if(!isset($respuesta_NC[0])  && $respuesta_NC[0]!='1')
 	        	  	{
 	        	  		return array('resp'=>-2,'text'=>$respuesta_NC);
 	        	  	}

@@ -7,10 +7,10 @@
  */
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-if(!isset($_SESSION)) 
-	{ 		
-			@session_start();
-	}
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 //require_once("../../lib/excel/plantilla.php");
 require_once(dirname(__DIR__,2)."/lib/excel/plantilla.php");
 require_once(dirname(__DIR__,1)."/db/db1.php");
@@ -372,6 +372,26 @@ function Actualizar_Datos_ATS_SP($Items,$MBFechaI,$MBFechaF,$Numero) //---------
     // print_r($res);die();
     return $res;
 }
+
+function Importar_Contabilidad_SP($vTP)
+{
+  $conn = new db();
+    $parametros = array(
+      array(&$_SESSION['INGRESO']['item'], SQLSRV_PARAM_IN),
+      array(&$_SESSION['INGRESO']['periodo'], SQLSRV_PARAM_IN),
+      array(&$_SESSION['INGRESO']['CodigoU'], SQLSRV_PARAM_IN),
+      array(&$_SESSION['INGRESO']['modulo_'], SQLSRV_PARAM_IN),
+      array(&$vTP, SQLSRV_PARAM_IN),
+    );
+
+    // print_r($parametros);die();
+
+    $sql = "EXEC sp_Importar_Contabilidad @Item=?,@Periodo =?,@Usuario=?,@NumModulo=?,@TP=?";
+    $resultado = $conn->ejecutar_procesos_almacenados($sql,$parametros);
+    // print_r($resultado);die();
+
+}
+
 
 function Procesar_Balance_Consolidado_SP($hasta, $type){
   $hasta = str_replace('-', '', $hasta);

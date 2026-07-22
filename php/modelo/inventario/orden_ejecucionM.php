@@ -293,7 +293,7 @@ class orden_ejecucionM
             }
             $sql.=" group by Centro_Costo,SC.Detalle,Observacion";
 
-                print_r($sql);die();
+                // print_r($sql);die();
         return $this->db->datos($sql);
     }
 

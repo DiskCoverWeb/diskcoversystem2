@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<notaCredito id="comprobante" version="1.0.0">
+  <infoTributaria>
+    <ambiente>2</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>CARVACHE GUEVARA ORLANDO JAVIER</razonSocial>
+    <nombreComercial>BRANDING STUDIO</nombreComercial>
+    <ruc>1718857400001</ruc>
+    <claveAcceso>1607202604171885740000120010020000000581234567812</claveAcceso>
+    <codDoc>04</codDoc>
+    <estab>001</estab>
+    <ptoEmi>002</ptoEmi>
+    <secuencial>000000058</secuencial>
+    <dirMatriz>ISLA MARCHENA E13-21 Y AV. DE LOS GRANADOS</dirMatriz>
+  </infoTributaria>
+  <infoNotaCredito>
+    <fechaEmision>16/07/2026</fechaEmision>
+    <dirEstablecimiento>ISLA MARCHENA E13-21 Y AV. DE LOS GRANADOS</dirEstablecimiento>
+    <tipoIdentificacionComprador>04</tipoIdentificacionComprador>
+    <razonSocialComprador>COLEGIOS DE ECUADOR COLDEC S.A.S.</razonSocialComprador>
+    <identificacionComprador>1793191988001</identificacionComprador>
+    <obligadoContabilidad>NO</obligadoContabilidad>
+    <codDocModificado>01</codDocModificado>
+    <numDocModificado>001-002-000000791</numDocModificado>
+    <fechaEmisionDocSustento>06/05/2026</fechaEmisionDocSustento>
+    <totalSinImpuestos>4580.24</totalSinImpuestos>
+    <valorModificacion>5267.28</valorModificacion>
+    <moneda>DOLAR</moneda>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>4</codigoPorcentaje>
+        <baseImponible>4580.24</baseImponible>
+        <valor>687.04</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <motivo>Anulacion por Nota de Credito</motivo>
+  </infoNotaCredito>
+  <detalles>
+    <detalle>
+      <codigoInterno>01.01</codigoInterno>
+      <codigoAdicional>1</codigoAdicional>
+      <descripcion>BACKING EN TUBO CON LONA, INSTALADO EN PARED</descripcion>
+      <cantidad>8.0000</cantidad>
+      <precioUnitario>437.98</precioUnitario>
+      <descuento>.0000</descuento>
+      <precioTotalSinImpuesto>3503.84</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>4</codigoPorcentaje>
+          <tarifa>15</tarifa>
+          <baseImponible>3503.84</baseImponible>
+          <valor>525.58</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+    <detalle>
+      <codigoInterno>01.01</codigoInterno>
+      <codigoAdicional>1</codigoAdicional>
+      <descripcion>BANDERINES CON PARANTE</descripcion>
+      <cantidad>23.0000</cantidad>
+      <precioUnitario>46.80</precioUnitario>
+      <descuento>.0000</descuento>
+      <precioTotalSinImpuesto>1076.4</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>4</codigoPorcentaje>
+          <tarifa>15</tarifa>
+          <baseImponible>1076.4</baseImponible>
+          <valor>161.46</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Direccion">CALLE LA DEL ESTABLO OFICINA 405 Y CALLE E</campoAdicional>
+    <campoAdicional nombre="Telefono">0994874206</campoAdicional>
+    <campoAdicional nombre="Email">finanzas@innovaschools.com.ec</campoAdicional>
+  </infoAdicional>
+</notaCredito>

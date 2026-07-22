@@ -1,4 +1,4 @@
-<?php  @session_start(); 
+<?php  
 include("../db/chequear_seguridad.php"); 
 include("../controlador/panel.php");
 include_once("../funciones/funciones.php");

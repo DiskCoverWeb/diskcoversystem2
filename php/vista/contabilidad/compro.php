@@ -1,7 +1,15 @@
 <?php
-	 @session_start();
-	// include(dirname(__DIR__,2)."/controlador/contabilidad/contabilidad_controller.php");
- //verificacion titulo accion
+	if (session_status() === PHP_SESSION_NONE) {
+	    session_start();
+	}
+	$idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
+	$item = $_SESSION['INGRESO']['item'] ?? null;
+
+	if ($idEntidad === null || $item === null) {
+	    $_SESSION = [];
+	    return -1;
+	}
+
 	$_SESSION['INGRESO']['ti']='';
 	if(isset($_GET['ti'])) 
 	{

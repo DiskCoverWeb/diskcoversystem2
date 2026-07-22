@@ -8,8 +8,17 @@
  * DESCIPCION : Clase modelo para llenar campos y guardar registros de Agencia
  */
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
+$item = $_SESSION['INGRESO']['item'] ?? null;
+
+if ($idEntidad === null || $item === null) {
+  $_SESSION = [];
+}
+
 include (dirname(__DIR__, 2) . '/funciones/funciones.php');
-@session_start();
 
 class registro_beneficiarioM
 {

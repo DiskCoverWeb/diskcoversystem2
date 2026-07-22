@@ -1,10 +1,19 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
+$item = $_SESSION['INGRESO']['item'] ?? null;
+
+if ($idEntidad === null || $item === null) {
+    $_SESSION = [];
+}
+
 if(!class_exists('db'))
 {
 include(dirname(__DIR__,2).'/funciones/funciones.php');
 }//require(dirname(__DIR__,2).'/lib/fpdf/cabecera_pdf.php');
 include(dirname(__DIR__,3).'/lib/fpdf/reporte_de.php');
-@session_start(); 
 /**
  * 
  */

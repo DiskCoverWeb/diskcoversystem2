@@ -1,4 +1,17 @@
-<?php  @session_start();  date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION['INGRESO']);die(); ?>
+<?php  date_default_timezone_set('America/Guayaquil');  //print_r($_SESSION['INGRESO']);die(); 
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
+$item = $_SESSION['INGRESO']['item'] ?? null;
+
+if ($idEntidad === null || $item === null) {
+    $_SESSION = [];
+}
+
+
+?>
 <script type="text/javascript">
 </script>
 <script src="../../dist/js/lista_notas_credito.js"></script>

@@ -1,5 +1,4 @@
-<?php 
-@session_start();
+<?php
 /**
  * 
  */
@@ -16,6 +15,7 @@ class db
 	
 	function __construct()
 	{
+		
 		 if(!file_exists(dirname(__DIR__).'/db/ipconfigMYSQL.ini'))
 		{
 			mkdir(dirname(__DIR__).'/db/ipconfigMYSQL.ini');
@@ -66,53 +66,65 @@ class db
 
 	function SQLServer($tercero=0)
 	{
+		
+	 	if (session_status() === PHP_SESSION_NONE) 
+	 	{
+	 		 	session_start();
+	 	}
+	 		 	$usuario = $_SESSION['INGRESO']['Usuario_DB'] ?? null;
+			  $password = $_SESSION['INGRESO']['Password_DB'] ?? null; 
+			  $servidor = $_SESSION['INGRESO']['IP_VPN_RUTA'] ?? null;	   
+			  $database = $_SESSION['INGRESO']['Base_Datos'] ?? null;
+			  $puerto = $_SESSION['INGRESO']['Puerto'] ?? null;
+			 if ($usuario === null || $password === null || $servidor === null || $database === null || $puerto === null ) 
+			  {
+				    $_SESSION = [];
+				    exit;
+				}
 
-		if($tercero==0)
-		{
-
-			// print_r($_SESSION['INGRESO']);die();
-				$this->usuario = $_SESSION['INGRESO']['Usuario_DB'];
-		    $this->password = $_SESSION['INGRESO']['Password_DB'];  // en mi caso tengo contraseña pero en casa caso introducidla aquí.
-		    $this->servidor = $_SESSION['INGRESO']['IP_VPN_RUTA'];	   
-		    $this->database = $_SESSION['INGRESO']['Base_Datos'];
-		    $this->puerto = $_SESSION['INGRESO']['Puerto'];
-
-		 
-		// print_r($_SESSION);die();
-	  }
 
 
-	    // print_r($this->servidor);die();
+   			if($tercero==0)
+				{
+					// print_r($_SESSION['INGRESO']);die();
+						$this->usuario = $_SESSION['INGRESO']['Usuario_DB'];
+				    $this->password = $_SESSION['INGRESO']['Password_DB'];  // en mi caso tengo contraseña pero en casa caso introducidla aquí.
+				    $this->servidor = $_SESSION['INGRESO']['IP_VPN_RUTA'];	   
+				    $this->database = $_SESSION['INGRESO']['Base_Datos'];
+				    $this->puerto = $_SESSION['INGRESO']['Puerto'];
+			  }
 
-		$connectionInfo = array("Database"=>$this->database, "UID" => $this->usuario,"PWD" => $this->password,"CharacterSet" => "UTF-8","Encrypt" => false);
-		// print_r($connectionInfo);die();
-		$cid = sqlsrv_connect($this->servidor.', '.$this->puerto, $connectionInfo); //returns false
-		if( $cid === false )
-		   {
-				echo 'no se pudo conectar a la base de datos';
-				die( print_r( sqlsrv_errors(), true));
-		   }else{
-		    $_SESSION['INGRESO']['base_actual'] = $this->servidor;
-		   	  // print_r($this->servidor);die();
-			}
-		return $cid;
+			  
+
+				$connectionInfo = array("Database"=>$this->database, "UID" => $this->usuario,"PWD" => $this->password,"CharacterSet" => "UTF-8","Encrypt" => false);
+				// print_r($connectionInfo);die();
+				$cid = sqlsrv_connect($this->servidor.', '.$this->puerto, $connectionInfo); //returns false
+				if( $cid === false )
+				   {
+						echo 'no se pudo conectar a la base de datos';
+						die( print_r( sqlsrv_errors(), true));
+				   }else{
+				    $_SESSION['INGRESO']['base_actual'] = $this->servidor;
+				   	  // print_r($this->servidor);die();
+					}
+				return $cid;
 	}
 
 	function MySQL()
-	{
-		$this->SetearMSQL();  
-		$conn =  new mysqli($this->servidor.':'.$this->puerto, $this->usuario, $this->password,$this->database);
-		$conn->set_charset("utf8");
-		if (!$conn) 
-		{
-			echo   mysqli_error($conn);
-			return false;
-		}else
-		{
-			// echo 'conec 1';
-			$_SESSION['INGRESO']['base_actual'] =   $this->servidor;
-		}
-		return $conn;
+	{		
+				$this->SetearMSQL();  
+				$conn =  new mysqli($this->servidor.':'.$this->puerto, $this->usuario, $this->password,$this->database);
+				$conn->set_charset("utf8");
+				if (!$conn) 
+				{
+					echo   mysqli_error($conn);
+					return false;
+				}else
+				{
+					// echo 'conec 1';
+					$_SESSION['INGRESO']['base_actual'] =   $this->servidor;
+				}
+				return $conn;
 	}
 
 

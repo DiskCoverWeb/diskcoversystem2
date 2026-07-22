@@ -64,7 +64,6 @@ class loginC
 		if (is_numeric($entidad) && strlen($entidad) == 10 || is_numeric($entidad) && strlen($entidad) == 13) {
 
 			$datos = $this->modelo->empresa_cartera($entidad);
-			// print_r($datos);die();
 			$datos1 = array();
 			if (count($datos) > 0) {
 				foreach ($datos as $key => $value) {
@@ -97,13 +96,17 @@ class loginC
 	}
 	function login($parametro)
 	{
+		if (session_status() === PHP_SESSION_NONE) {
+		    session_start();
+		}
 
-		if (isset($_SESSION['INGRESO'])) {
-			session_destroy();
-		} 
-		
-		// $_SESSION['INGRESO'];
-		session_start();
+		// Regenera el ID por seguridad
+		session_regenerate_id(true);
+
+		// Limpia los datos anteriores
+		$_SESSION = [];
+
+
 		if(!empty($_SERVER['HTTP_CLIENT_IP'])) {   
 	        $_SESSION['INGRESO']['IP_Wan'] = $_SERVER['HTTP_CLIENT_IP'];   
 	    }    

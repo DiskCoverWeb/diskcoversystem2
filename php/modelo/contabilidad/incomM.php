@@ -1,6 +1,14 @@
 <?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
+$item = $_SESSION['INGRESO']['item'] ?? null;
 
-@session_start(); 
+if ($idEntidad === null || $item === null) {
+    $_SESSION = [];
+}
+
 include_once(dirname(__DIR__,2).'/db/db1.php');
 include_once(dirname(__DIR__,3).'/lib/TCPDF/Reportes/reportes_all.php');
 

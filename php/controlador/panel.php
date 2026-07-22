@@ -1,5 +1,14 @@
 <?php
-@session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
+$item = $_SESSION['INGRESO']['item'] ?? null;
+
+if ($idEntidad === null || $item === null) {
+    $_SESSION=[];
+}
+
 //Llamada al modelo
 require_once("../modelo/loginM.php");
 include_once("../funciones/funciones.php");
@@ -59,11 +68,17 @@ if (isset($_GET['validateStar'])) {
 }
 if (isset($_GET['validar_session_Activa']))
 {
+
     if(!isset($_SESSION['INGRESO']))
     {
        echo json_encode(-1);
     }else{
        echo json_encode(1);
+    }
+
+    if(session_status() === PHP_SESSION_NONE)
+    {
+       echo json_encode(-1);
     }
 }
 

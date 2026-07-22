@@ -1768,8 +1768,17 @@ class facturas_distribucion
 			SetAdoFields('Valor_Total',number_format($value['Total'],4,'.',''));
 			SetAdoFields('Total', number_format($value['Total'],4,'.',''));
 			SetAdoFields('Costo', number_format($value['Precio'],$_SESSION['INGRESO']['Dec_Costo'],'.','.'));
-			SetAdoFields('Cta_Inv', $value['Cta_Inventario']);
-			SetAdoFields('Contra_Cta', $ctaCosto);
+
+			if(strlen($value['DFCMDS'])>1)
+			{
+				SetAdoFields('Cta_Inv', $cta['Cta_Debe']);
+				SetAdoFields('Contra_Cta', $cta['Cta_Costo']);
+			}else
+			{
+				SetAdoFields('Cta_Inv', $value['Cta_Inventario']);
+				SetAdoFields('Contra_Cta', $ctaCosto);				
+			}
+
 			SetAdoFields('TC', $value['DFTC']);
 			SetAdoFields('Factura', $value['FACT']);
 			SetAdoFields('Serie',$value['Serie']);			

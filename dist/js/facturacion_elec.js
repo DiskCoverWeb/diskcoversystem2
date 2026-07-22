@@ -217,6 +217,7 @@ function autocomplete_producto() {
     var parametros = '&TC=' +TC;
     $('#DCArticulo').select2({
         placeholder: 'Seleccione un Producto',
+        allowClear: true,
         ajax: {
             url: '../controlador/facturacion/punto_ventaC.php?DCArticulo=true' + parametros,
             dataType: 'json',

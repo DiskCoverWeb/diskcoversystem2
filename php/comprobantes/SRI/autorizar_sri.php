@@ -1,10 +1,12 @@
 <?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once(dirname(__DIR__,2)."/db/db1.php");
 require_once(dirname(__DIR__,2)."/funciones/funciones.php");
 
 date_default_timezone_set('America/Guayaquil');
-
-@session_start(); 
 
 $controlador = new autorizacion_sri();
 if(isset($_GET['autorizar']))

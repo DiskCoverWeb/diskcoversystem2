@@ -1,5 +1,14 @@
 <?php 
-@session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
+$item = $_SESSION['INGRESO']['item'] ?? null;
+
+if ($idEntidad === null || $item === null) {
+    $_SESSION = [];
+}
+
 if(!class_exists('PDF_MC_Table'))
 {
 	require('PDF_MC_Table.php');

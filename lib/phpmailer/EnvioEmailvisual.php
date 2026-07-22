@@ -1,6 +1,14 @@
 <?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
+$item = $_SESSION['INGRESO']['item'] ?? null;
 
-@session_start();
+if ($idEntidad === null || $item === null) {
+   $_SESSION = [];
+}
+
 require_once(dirname(__DIR__,2)."/php/funciones/funciones.php");
 
 header("Access-Control-Allow-Origin: *"); // Permite todas las orígenes, puedes restringir a uno específico

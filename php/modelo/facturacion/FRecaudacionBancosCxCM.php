@@ -5,9 +5,17 @@
  * FECHA MODIFICACION: 29/01/2024
  * DESCIPCION : Clase que se encarga de manejar la interfaz de la pantalla de recaudacion de bancos CxC   
  */
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
+$item = $_SESSION['INGRESO']['item'] ?? null;
+
+if ($idEntidad === null || $item === null) {
+   $_SESSION = [];
+}
 require_once(dirname(__DIR__, 2) . "/db/db1.php");
 require_once(dirname(__DIR__, 2) . "/funciones/funciones.php");
-@session_start();
 
 class FRecaudacionBancosCxCM
 {
