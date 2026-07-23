@@ -1771,8 +1771,8 @@ class facturas_distribucion
 
 			if(strlen($value['DFCMDS'])>1)
 			{
-				SetAdoFields('Cta_Inv', $cta['Cta_Debe']);
-				SetAdoFields('Contra_Cta', $cta['Cta_Costo']);
+				SetAdoFields('Cta_Inv', $cta[0]['Cta_Debe']);
+				SetAdoFields('Contra_Cta', $cta[0]['Cta_Costo']);
 			}else
 			{
 				SetAdoFields('Cta_Inv', $value['Cta_Inventario']);
