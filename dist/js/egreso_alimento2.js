@@ -310,7 +310,7 @@ function cargar_motivo_lista(orden,motivo,TC)
                     }
                     tr+=`<td>`+item.SubModulo+`</td>`                    
                 tr+=`<td>
-                        <button tittle="guardar Costo" class="btn btn-primary btn-sm" onclick="guardar_linea('`+item.ID+`','`+orden+`')"><i class="bx bx-save me-0"></i></button>
+                        <button tittle="guardar Costo" class="btn btn-primary btn-sm" onclick="guardar_linea('`+item.ID+`','`+orden+`','`+TC+`')"><i class="bx bx-save me-0"></i></button>
                     </td>
                 </tr>`;
         })
@@ -567,7 +567,7 @@ function lista_egreso_checking()
     });
   }
 
-  function guardar_linea(id,orden)
+  function guardar_linea(id,orden,TC)
   {
     motivo = $('#txt_idMotivo').val();
     valor = $('#txt_lineaEgreso_'+id).val();
@@ -583,7 +583,7 @@ function lista_egreso_checking()
       dataType:'json',
       success: function(data)
       {
-        modal_motivo(orden,motivo);
+        modal_motivo(orden,motivo,TC);
         Swal.fire("Costo editado","","success");
         console.log(data);
        

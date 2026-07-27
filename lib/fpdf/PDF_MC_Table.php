@@ -57,6 +57,7 @@ class PDF_MC_Table extends FPDF
 		//Draw the cells of the row
 		for($i=0;$i<count($data);$i++)
 		{
+			$this->SetTextColor(0,0,0);
 			if(!isset($data[$i]) || is_null($data[$i])){continue;}
 			$w=$this->widths[$i];
 			$a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'L';
@@ -193,6 +194,7 @@ class PDF_MC_Table extends FPDF
 			    $this->MultiCell($w,$h1,mb_convert_encoding($data[$i],'ISO-8859-1','UTF-8'),$b1,$a);
 			  }else
 			  {
+
 			  	$this->SetFont('Arial','');
 				//str_replace('<b>','', $data[$i]);
 			    $this->MultiCell($w,$h1,mb_convert_encoding($data[$i],'ISO-8859-1','UTF-8'),$b1,$a);
@@ -208,6 +210,8 @@ class PDF_MC_Table extends FPDF
 			    $this->MultiCell($w,$h1,str_replace('<'.$estilo1[0].'>','', mb_convert_encoding($data[$i],'ISO-8859-1','UTF-8')),$b1,$a);
 			    }else
 			    {
+
+				    $this->SetTextColor(0,0,0);
 			    	$this->SetFont('Arial','');
 					//str_replace('<b>','', $data[$i]);
 				    $this->MultiCell($w,$h1,mb_convert_encoding($data[$i],'UTF-8'),$b1,$a);
