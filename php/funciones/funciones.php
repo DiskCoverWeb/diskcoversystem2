@@ -4677,11 +4677,11 @@ function dimenciones_tabl($len)
       {
         $NuevoNumero = true;
         $NumCodigo = 1;
-        if($Num_Meses_CD && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
-        if($Num_Meses_CI && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
-        if($Num_Meses_CE && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
-        if($Num_Meses_ND && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
-        if($Num_Meses_NC && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
+        if($_SESSION['INGRESO']['Num_Meses_CD']  && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
+        if($_SESSION['INGRESO']['Num_Meses_CI'] && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
+        if($_SESSION['INGRESO']['Num_Meses_CE'] && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
+        if($_SESSION['INGRESO']['Num_Meses_ND'] && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
+        if($_SESSION['INGRESO']['Num_Meses_NC'] && $Si_MesComp){$NumCodigo= $MesComp.'000001';}
       }
 
       if($NumCodigo > 0)

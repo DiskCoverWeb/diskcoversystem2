@@ -4,16 +4,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 $idEntidad = $_SESSION['INGRESO']['IDEntidad'] ?? null;
 $item = $_SESSION['INGRESO']['item'] ?? null;
-
-if ($idEntidad === null || $item === null) {
-    $_SESSION = [];
-}
-
+$fecha_session = isset($_SESSION['INGRESO']['SESSION_FECHA']) ? $_SESSION['INGRESO']['SESSION_FECHA'] :null; 
+// $fecha_session = '2026-07-26';
+$fecha_actual = date('Y-m-d');
 require_once("db1.php");
 $modulo = '';
 if(isset($_GET['mod'])){ $modulo = $_GET['mod']; }
 
-if(!isset($_SESSION['INGRESO']['IDEntidad']) || !isset($_SESSION['INGRESO']['item']))
+if(!isset($_SESSION['INGRESO']['IDEntidad']) || !isset($_SESSION['INGRESO']['item']) || $fecha_session<$fecha_actual)
 {
 	echo "<script type='text/javascript'>window.location='".((isset($tipo)&&$tipo==2)?"../":"")."../vista/login.php'</script>";
 	die();

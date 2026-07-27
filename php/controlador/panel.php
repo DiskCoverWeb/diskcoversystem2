@@ -68,6 +68,12 @@ if (isset($_GET['validateStar'])) {
 }
 if (isset($_GET['validar_session_Activa']))
 {
+    $fecha_session = isset($_SESSION['INGRESO']['SESSION_FECHA']) ? $_SESSION['INGRESO']['SESSION_FECHA'] :null; 
+    $fecha_actual = date('Y-m-d');
+    if( $fecha_session<$fecha_actual || $fecha_session==null)
+    {
+       echo json_encode(-1);
+    }
 
     if(!isset($_SESSION['INGRESO']))
     {

@@ -116,6 +116,7 @@ class loginC
 	    else{   
 	        $_SESSION['INGRESO']['IP_Wan'] = $_SERVER['REMOTE_ADDR'];   
 	    }
+	    $_SESSION['INGRESO']['SESSION_FECHA'] = date('Y-m-d');
 		$_SESSION['INGRESO']['PC_MAC'] = "00:00:00:00:00:00";
 		$_SESSION['INGRESO']['CARTERA_ITEM'] =  $parametro['item'];
 		$_SESSION['INGRESO']['usuario'] = $parametro['usuario'];

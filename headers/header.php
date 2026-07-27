@@ -102,6 +102,7 @@ function estado_licencia($f3)
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 	<link href="../../assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+
 	
 	<link href="../../assets/css/app.css" rel="stylesheet">
 	<link href="../../assets/css/icons.css" rel="stylesheet">
@@ -121,6 +122,11 @@ function estado_licencia($f3)
 	<script src="../../assets/js/jquery-ui.js"></script>
 	<script src="../../dist/js/js_globales.js"></script>	
 	<script src="../../dist/js/sweetalert2@11.js"></script>
+
+
+	<script src="../../assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+	<script src="../../dist/js/configDataTable.js"></script>
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 	<script type="text/javascript">
 		var formato = "<?php if (isset($_SESSION['INGRESO']['Formato_Cuentas'])) {
