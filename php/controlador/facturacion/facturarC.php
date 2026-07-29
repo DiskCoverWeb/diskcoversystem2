@@ -263,6 +263,13 @@ if(isset($_GET['DCPorcenIVA'])){
 
 }
 
+if(isset($_GET['placa_socio'])){
+   // $parametros = $_POST['parametros'];
+   echo json_encode($controlador->placa_socio());
+
+}
+
+
 
 class facturarC
 {
@@ -1261,6 +1268,12 @@ class facturarC
       }
       //SRI_Generar_PDF_FA($FA, True)
       return array('AU' => $respuesta, 'GR' => $respuesta2, 'pdf_guia'=>$imp_guia, 'clave_guia' => $clave_guia, 'pdf' => $imp, 'multiple' => $preguntaMultiple, 'data' => $FA);
+   }
+
+   function placa_socio()
+   {
+     $data = $this->modelo->placa_socio();
+      return $data;
    }
 
 

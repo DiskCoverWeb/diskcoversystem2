@@ -181,6 +181,10 @@ class autorizacion_sri
 				$cabecera['baseImponible'] = $datos_fac[0]['Sin_IVA']+$cabecera['Descuento'];
 				$cabecera['TDT'] = $datos_fac[0]['TDT'];
 				$cabecera['EsPorReembolso'] = false;
+
+	    	    $cabecera['Socio']=$this->quitar_carac($datos_fac[0]['Socio']);
+				$cabecera['Placa_Socio'] = $datos_fac[0]['Placa_Socio'];
+				$cabecera['Sin_Fines_Lucro'] = $datos_fac[0]['Sin_Fines_Lucro'];
 				if($cabecera['TDT']==41)
 				{
 					$cabecera['EsPorReembolso'] = true;
@@ -386,11 +390,12 @@ class autorizacion_sri
 	function datos_factura($serie,$fact,$tc,$restringirAut=true)
 	{
 		// $con = $this->conn->conexion();
-		$sql = "SELECT * From Facturas 
-		WHERE Item = '".$_SESSION['INGRESO']['item']."' 
-		AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+		$sql = "SELECT F.*,C.Socio From Facturas F 
+		LEFT JOIN Catalogo_Placas_Vehiculo C ON F.Placa_Socio = C.Placa_Socio AND F.Item = C.Item AND F.Periodo = C.Periodo 
+		WHERE F.Item = '".$_SESSION['INGRESO']['item']."' 
+		AND F.Periodo = '".$_SESSION['INGRESO']['periodo']."' 
 		AND TC = '".$tc."' 
-		AND Serie = '".$serie."' 
+		AND F.Serie = '".$serie."' 
 		AND Factura = ".$fact." "; 
 		if($restringirAut)
 		{
@@ -2220,6 +2225,9 @@ function generar_xml($cabecera,$detalle)
 		$xml_importeTotal = $xml->createElement( "importeTotal",$cabecera['Total_MN']);
 		$xml_moneda = $xml->createElement( "moneda",$cabecera['moneda'] );
 
+		$xml_moneda = $xml->createElement( "moneda",$cabecera['moneda'] );
+		
+
 		$xml_pagos = $xml->createElement("pagos");
 		$xml_pago = $xml->createElement("pago");
 		   $xml_formapago = $xml->createElement( "formaPago",$cabecera['formaPago']);
@@ -2232,6 +2240,10 @@ function generar_xml($cabecera,$detalle)
 
 		$xml_infoFactura->appendChild( $xml_importeTotal );
 		$xml_infoFactura->appendChild( $xml_moneda );
+		if(strlen($cabecera['Placa_Socio'])>0){
+			$xml_placaSocio = $xml->createElement( "placa",$cabecera['Placa_Socio'] );
+			$xml_infoFactura->appendChild( $xml_placaSocio );
+		}
 		$xml_infoFactura->appendChild( $xml_pagos );
 
 
@@ -2478,6 +2490,18 @@ function generar_xml($cabecera,$detalle)
 		{
 			$xml_campoAdicional = $xml->createElement( "campoAdicional",$cabecera['Nota'] );
 			$xml_campoAdicional->setAttribute( "nombre", "Nota" );
+			$xml_infoAdicional->appendChild( $xml_campoAdicional );
+		}
+		if(strlen($cabecera['Placa_Socio'])>1)
+		{
+			$xml_campoAdicional = $xml->createElement( "campoAdicional",$cabecera['Socio'] );
+			$xml_campoAdicional->setAttribute( "nombre", "NombreSocio" );
+			$xml_infoAdicional->appendChild( $xml_campoAdicional );
+		}
+		if($cabecera['Sin_Fines_Lucro'])
+		{
+			$xml_campoAdicional = $xml->createElement( "campoAdicional",$cabecera['nom_comercial_principal'].' Entidad sin fines de lucro');
+			$xml_campoAdicional->setAttribute( "nombre", "SinFinesLucro" );
 			$xml_infoAdicional->appendChild( $xml_campoAdicional );
 		}
 		if(count($RIMPE)>0)
@@ -4123,7 +4147,7 @@ function error_sri($clave)
 				$cabecera['Con_IVA'] = $datos_fac[0]['Con_IVA'];
 				$cabecera['Total_MN'] = $this->money_formato($datos_fac[0]['Total_MN'],2);
 				$cabecera['Observacion'] = $datos_fac[0]['Observacion'];
-				$cabecera['Nota'] = $datos_fac[0]['Nota'];
+				$cabecera['Nota'] = $datos_fac[0]['Nota'];				
 
 				$cabecera['Nota'] = $datos_fac[0]['Nota'];
 				if($datos_fac[0]['Tipo_Pago'] == '.')

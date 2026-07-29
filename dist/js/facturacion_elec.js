@@ -93,6 +93,8 @@ $(document).ready(function() {
     //     console.log(data);
     //   });
 
+    $('#DCLinea').focus();
+
 
 });
 
@@ -640,7 +642,8 @@ function generar_factura() {
         'valorBan': $('#TextCheque').val(),
         'electronico': 1,
         'tipo_pago': $('#DCTipoPago').val(),
-        'PorcIva': $('#DCPorcenIVA').val(),
+        'PorcIva': $('#DCPorcenIVA').val(),        
+        'TxtPlacaFA': $('#txt_placa').val(),
 
         //---------------datos de gia de remicion--------------///
         'MBoxFechaGRE': $('#MBoxFechaGRE').val(),
@@ -1327,4 +1330,43 @@ function enviaremail()   //funcion para enviarlo por javascript
            const params = `XML=2008202507179280254700120010020000068401234567818.xml&RUTA=BROODBOETIEK_S_A_2024_03_28_2.p12&PASS=Jurgen2024`;
 
           xhr.send(params);
+  }
+
+  function placa_socio()
+  {
+        $.ajax({
+            type: "POST",
+            url: '../controlador/facturacion/facturarC.php?placa_socio=true',
+            // data: {
+            //     parametros: parametros
+            // },
+            dataType: 'json',
+            success: function(data) {
+                if(data!=-2)
+                { 
+                    var opciones = '';
+                    data.forEach(function(item,i){
+                        opciones+='<option value="'+item.Placa+'">'+item.Placa_Del_Socio+'</option>'
+                    })
+
+                    console.log(data);
+                    $('#ddl_placas').html(opciones);
+                    $('#modal_placas').modal('show');
+                }               
+            }
+        })
+  }
+
+  function seleccionar_placa()
+  {
+    var placa = $('#ddl_placas').val();
+    if(placa!='')
+    {
+        $('#modal_placas').modal('hide');
+        $('#txt_placa').val(placa);
+
+    }else
+    {
+        Swal.fire("Este tipo de empresa el obligatorio seleccionar la placa del vehiculo del socio","","info");
+    }
   }

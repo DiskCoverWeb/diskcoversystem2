@@ -157,14 +157,14 @@ $(document).ready(function(){
                     <input type="hidden" id="Autorizacion">
                     <input type="hidden" id="Cta_CxP">
                     <b>Punto de emision</b>
-                    <select class="form-select form-select-sm" name="DCLinea" id="DCLinea" tabindex="1"
-                        onchange="numeroFactura(); tipo_documento();">
+                    <select class="form-select form-select-sm" name="DCLinea" id="DCLinea" tabindex="1" onblur="placa_socio()" 
+                        onchange="numeroFactura(); tipo_documento();placa_socio();">
                         <option value=""></option>
                     </select>       
                 </div>
                 <div class="col-lg-5 col-md-5 col-sm-9">
                     <b>Nombre del cliente</b>
-                    <div class="input-group" id="ddl">
+                    <div class="input-group d-flex" id="ddl">
                         <select class="form-select form-select-sm" id="DCCliente" name="DCCliente" onchange="select()">
                             <option value="">Seleccione Bodega</option>
                         </select>
@@ -223,6 +223,10 @@ $(document).ready(function(){
                 <select class="form-select form-select-sm" style="width: 100%;" id="DCTipoPago" onchange="$('#DCTipoPago').css('border','1px solid #d2d6de');">
                     <option value="">Seleccione tipo de pago</option>
                 </select>        
+            </div>
+             <div class="col-lg-1 col-sm-2">
+                 <b>Placa</b>
+                <input class="form-control form-control-sm" name="txt_placa" id="txt_placa" />
             </div>
         </div>
     </div>
@@ -659,6 +663,28 @@ $(document).ready(function(){
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal_placas" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Placa del socio</h4>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> -->
+            </div>
+            <div class="modal-body">
+                <b>SELECCIONE LA PLACA DEL SOCIO</b>
+                <select class="form-select form-select-sm" id="ddl_placas">
+                    <option value="">Seleccione placa del socio</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button> -->
+                <button type="button" class="btn btn-primary" onclick="seleccionar_placa()">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <script type="text/javascript">

@@ -622,6 +622,7 @@ class punto_ventaC
 		$datos = $this->modelo->catalogo_lineas($parametros['TC'], $parametros['Serie'], $FechaTexto, $FechaTexto, $electronico);
 		if (count($datos) > 0) {
 			// print_r($datos);die();
+			$FA['Placa_Socio'] = $parametros['TxtPlacaFA'];
 			$FA['Nota'] = $parametros['TxtNota'];
 			$FA['Observacion'] = $parametros['TxtObservacion'];
 			$FA['Gavetas'] = intval($parametros['TxtGavetas']);

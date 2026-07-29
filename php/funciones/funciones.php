@@ -6564,7 +6564,7 @@ function Grabar_Factura1($TFA,$VerFactura = false, $NoRegTrans = false)
     $clavesFaltantes = array_diff_key($LCxC['TFA'], $TFA);
     $TFA = array_merge($TFA, $clavesFaltantes);
   }
-
+// print_r($_SESSION['INGRESO']);
    // print_r($TFA);die();
    $FA = variables_tipo_factura();
    $TFA = array_merge($FA,$TFA);
@@ -6813,6 +6813,9 @@ function Grabar_Factura1($TFA,$VerFactura = false, $NoRegTrans = false)
           SetAdoFields("CodigoU",$_SESSION['INGRESO']['CodigoU']);
           SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
           SetAdoFields("Item",$_SESSION['INGRESO']['item']);
+
+          SetAdoFields("Placa_Socio",$TFA['Placa_Socio']);
+          SetAdoFields("Sin_Fines_Lucro",$_SESSION['INGRESO']['Sin_Fines_Lucro']);
           
          // 'MsgBox TFA.Razon_Social
           SetAdoFields("Razon_Social",$TFA['Razon_Social']);
@@ -9383,6 +9386,7 @@ function variables_tipo_factura()
     'Saldo_Pend_ME' =>'0',
     'Ret_Fuente'=>'.',
     'Ret_IVA'=>'.',
+    'Placa_Socio'=>'.',
     );
 
    return $FA;

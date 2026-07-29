@@ -25,10 +25,16 @@ $(document).ready(function() {
             
             columnDefs: [{
                 targets: '_all',
-                render: function (data, type, row) {
+                render: function (data, type, row,meta) {
+                    var nombreColumna = meta.settings.aoColumns[meta.col].data;
+                    if (nombreColumna === "RUC_CI" || nombreColumna === "Autorizacion") {
+                        return data;
+                    }
+
                     if (type === 'display' && esNumeroValido(data)) {
                         return formateadorNumero.format(Number(data));
                     }
+
                     return data;
                 },
                 createdCell: function (td, cellData, rowData, rowIndex, colIndex) {

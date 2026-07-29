@@ -949,6 +949,29 @@ class facturarM
     return $this->db->datos($sSQL);
   }
 
+  function placa_socio()
+  {
+    $SerieFAUser = isset($_SESSION['INGRESO']['Serie_FA_User'])? $_SESSION['INGRESO']['Serie_FA_User']:'.';
+
+      if($_SESSION['INGRESO']['Es_Transporte'])
+      {
+        $sql =  "SELECT Placa_Socio as Placa,Socio+' '+ Placa_Socio As Placa_Del_Socio 
+        FROM Catalogo_Placas_Vehiculo 
+        WHERE Item = '".$_SESSION['INGRESO']['item']."' 
+        AND Periodo = '".$_SESSION['INGRESO']['periodo']."'"; 
+        If(strLen($SerieFAUser) == 6){
+            $sql.=" AND Serie = '".$SerieFAUser."' 
+            AND Cedula = '".$_SESSION['INGRESO']['CodigoU']."' "; 
+        }
+        $sql.= "ORDER BY Placa_Socio "; 
+        return $this->db->datos($sql);
+      }else
+      {
+         return -2;
+      }
+
+  }
+
 }
 
 ?>

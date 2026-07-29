@@ -153,6 +153,7 @@ class loginC
 				$_SESSION['INGRESO']['Id'] = $datos[0]['CI_NIC'];
 				$_SESSION['INGRESO']['Clave'] = $datos[0]['Clave'];
 				$_SESSION['INGRESO']['Mail'] = $datos[0]['Usuario'];
+				$_SESSION['INGRESO']['Serie_FA_User'] = $datos[0]['Serie_FA'];
 				if($datos[0]['Foto']!='.')
 				{
 			      	$_SESSION['INGRESO']['Foto'] = $datos[0]['Foto'];
@@ -189,7 +190,8 @@ class loginC
 				$_SESSION['INGRESO']['Nombre'] = $datos[0]['Nombre_Usuario'];
 				$_SESSION['INGRESO']['Id'] = $datos[0]['CI_NIC'];
 				$_SESSION['INGRESO']['Clave'] = $datos[0]['Clave'];
-				$_SESSION['INGRESO']['Mail'] = $datos[0]['Usuario'];
+				$_SESSION['INGRESO']['Mail'] = $datos[0]['Usuario'];				
+				$_SESSION['INGRESO']['Serie_FA_User'] = $datos[0]['Serie_FA'];
 				if($datos[0]['Foto']!='.')
 				{
 			      	$_SESSION['INGRESO']['Foto'] = $datos[0]['Foto'];
@@ -341,6 +343,9 @@ class loginC
 
 	        if (isset($empresa[0]['Es_Transporte'])) {
 				$_SESSION['INGRESO']['Es_Transporte'] = $empresa[0]['Es_Transporte'];
+			}
+			if (isset($empresa[0]['Sin_Fines_Lucro'])) {
+				$_SESSION['INGRESO']['Sin_Fines_Lucro'] = $empresa[0]['Sin_Fines_Lucro'];
 			}
 
 	        $_SESSION['INGRESO']['paginacionIni'] = 0;

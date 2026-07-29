@@ -524,16 +524,16 @@ class punto_ventaM
   function pdf_factura_elec($cod, $ser, $ci, $nombre, $clave_acceso, $periodo = false, $aprobado = false, $descargar = false)
   {
     $res = 1;
-    $sql = "SELECT * 
-    FROM Facturas 
-    WHERE Serie='" . $ser . "' 
+    $sql = "SELECT F.*,C.Socio From Facturas F 
+    LEFT JOIN Catalogo_Placas_Vehiculo C ON F.Placa_Socio = C.Placa_Socio AND F.Item = C.Item AND F.Periodo = C.Periodo 
+    WHERE F.Serie='" . $ser . "' 
     AND Factura='" . $cod . "' 
     AND CodigoC='" . $ci . "' 
-    AND Item = '" . $_SESSION['INGRESO']['item'] . "' ";
+    AND F.Item = '" . $_SESSION['INGRESO']['item'] . "' ";
     if ($periodo == false || $periodo == '.') {
-      $sql .= " AND Periodo =  '" . $_SESSION['INGRESO']['periodo'] . "' ";
+      $sql .= " AND F.Periodo =  '" . $_SESSION['INGRESO']['periodo'] . "' ";
     } else {
-      $sql .= " AND Periodo BETWEEN '01/01/" . $periodo . "' AND '31/12" . $periodo . "'";
+      $sql .= " AND F.Periodo BETWEEN '01/01/" . $periodo . "' AND '31/12" . $periodo . "'";
     }
 
     $datos_fac = $this->db->datos($sql);

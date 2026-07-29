@@ -363,19 +363,36 @@ class reportes_all
 	$pdf->SetFont('helvetica', 'B', 7);
 	$cuardo_3_X  = $cuardo_3_X+1;
 	$pdf->SetXY($cuardo_3_X,$cuardo_3_Y);
-	$row_1 = 160;
-	$pdf->MultiCell($row_1, 3,'Razón social/nombres y apellidos:', $border, '', 0, 1, '', '', true);
+	$row_1 = 150;
+	$pdf->MultiCell($row_1, 3,'Razón social/nombres y apellidos: '.$datos[0]['Razon_Social'], $border, '', 0, 1, '', '', true);
+	
 	$pdf->SetXY($cuardo_3_X+$row_1,$cuardo_3_Y);
-	$pdf->MultiCell($medita_total_3-$row_1, 3,'Identificación:', $border, '', 0, 1, '', '', true);
+	$pdf->MultiCell(($medita_total_3-$row_1), 4,'Fecha emisión: ' .$datos[0]['Fecha']->format('Y-m-d'), $border, '', 0, 1, '', '', true);
 
+
+
+	
 	$pdf->SetX($cuardo_3_X,$cuardo_3_Y+$pdf->GetY());
 	$posicion_row  = $pdf->GetY();
-	$pdf->MultiCell($row_1, 3,$datos[0]['Razon_Social'], $border, '', 0, 1, '', '', true);
+	$pdf->MultiCell($medita_total_3-$row_1, 3,'Identificación: '.$datos[0]['RUC_CI'], $border, '', 0, 1, '', '', true);
+
+	if(isset($_SESSION['INGRESO']['Es_Transporte']))
+	{
+		$pdf->SetXY($cuardo_3_X-160,$posicion_row);
+		$pdf->MultiCell($medita_total_3-$row_1, 3,'Placa de Socio: '.$datos[0]['Placa_Socio'], $border, '', 0, 1, '', '', true);
+		// print_r($datos);die();
+	}
+
 	$pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
-	$pdf->MultiCell($medita_total_3-$row_1, 3,$datos[0]['RUC_CI'], $border, '', 0, 1, '', '', true);
+	if(isset($datos[0]['Fecha_V']))
+	{
+		$pdf->MultiCell(($medita_total_3-$row_1), 4,'Fecha de pago: ' . $datos[0]['Fecha_V']->format('Y-m-d'), $border, '', 0, 1, '', '', true);
+	}
+
+
 
 	$pdf->SetX($cuardo_3_X);
-	$row_1 = 120;
+	$row_1 = 150;
 	$posicion_row  = $pdf->GetY();
 
 	if($datos[0]['Direccion_RS']!='.')
@@ -392,18 +409,21 @@ class reportes_all
 		}	
 
 	}
-	$pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
-	$pdf->MultiCell(($medita_total_3-$row_1)/2, 4,'Fecha emisión: ' . $datos[0]['Fecha']->format('Y-m-d'), $border, '', 0, 1, '', '', true);
-	$pdf->SetXY($cuardo_3_X+$row_1+($medita_total_3-$row_1)/2,$posicion_row);
-	if(isset($datos[0]['Fecha_V']))
-	{
-		$pdf->MultiCell(($medita_total_3-$row_1)/2, 4,'Fecha pago: ' . $datos[0]['Fecha_V']->format('Y-m-d'), $border, '', 0, 1, '', '', true);
-	}
+	// $pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
+	
+	// $pdf->SetXY($cuardo_3_X+$row_1+($medita_total_3-$row_1)/2,$posicion_row);
+	
 
 
 	$pdf->SetX($cuardo_3_X);
-	$row_1 = 120;
+	// $row_1 = 120;
 	$DiasPago = strval(strtotime($datos[0]['Fecha_V']->format('Y-m-d')) - strtotime($datos[0]['Fecha']->format('Y-m-d'))) / (60 * 60 * 24);
+	$pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
+	
+	$pdf->MultiCell(($medita_total_3-$row_1), 3,'Condición de venta: ' . $DiasPago . ' días', $border, '', 0, 1, '', '', true);
+
+
+
 	$posicion_row  = $pdf->GetY();
 	$mon= '';
 	if ('DOLAR' == 'DOLAR') {
@@ -412,19 +432,18 @@ class reportes_all
 		$mon = 'USD';
 		//se busca otras monedas
 	}
-	$pdf->MultiCell($row_1, 2,'FORMA DE PAGO: ' . $datos[0]['Tipo_Pago'], $border, '', 0, 1, '', '', true);
+	$pdf->MultiCell($row_1, 2,' FORMA DE PAGO: ' . $datos[0]['Tipo_Pago'], $border, '', 0, 1, '', '', true);
 	$pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
-	$pdf->MultiCell(($medita_total_3-$row_1)/2, 3,'MONTO '.$mon.'  ' . number_format($datos[0]['Total_MN'], 2, '.', ''), $border, '', 0, 1, '', '', true);
-	$pdf->SetXY($cuardo_3_X+$row_1+($medita_total_3-$row_1)/2,$posicion_row);
-	$pdf->MultiCell(($medita_total_3-$row_1)/2, 3,'Condición de venta: ' . $DiasPago . ' días', $border, '', 0, 1, '', '', true);
+	$pdf->MultiCell(($medita_total_3-$row_1), 3,'MONTO '.$mon.'  ' . number_format($datos[0]['Total_MN'], 2, '.', ''), $border, '', 0, 1, '', '', true);
+	
 
 
-	$pdf->SetX($cuardo_3_X);
-	$row_1 = 120;
-	$posicion_row  = $pdf->GetY();
-	$pdf->MultiCell($row_1,4,'', $border, '', 0, 1, '', '', true);
-	$pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
-	$pdf->MultiCell($medita_total_3-$row_1, 4,'No. Orden de Compra: 0', $border, '', 0, 1, '', '', true);
+	// $pdf->SetX($cuardo_3_X);
+	// $row_1 = 120;
+	// $posicion_row  = $pdf->GetY();
+	// $pdf->MultiCell($row_1,4,'', $border, '', 0, 1, '', '', true);
+	// $pdf->SetXY($cuardo_3_X+$row_1,$posicion_row);
+	// $pdf->MultiCell($medita_total_3-$row_1, 4,'No. Orden de Compra: 0', $border, '', 0, 1, '', '', true);
 
 
 	//================================fin cuadro cliente========================================================= 
