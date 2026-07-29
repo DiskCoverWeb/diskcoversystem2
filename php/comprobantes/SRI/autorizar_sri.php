@@ -2514,6 +2514,11 @@ function generar_xml($cabecera,$detalle)
 			}			
 		}
 
+		$xml_campoAdicional = $xml->createElement( "campoAdicional",'0702164179001');
+		$xml_campoAdicional->setAttribute( "nombre", "RUC Proveedor" );
+		$xml_infoAdicional->appendChild( $xml_campoAdicional );
+
+
 
 		$estable = $cabecera['esta'];
 		$punto = $cabecera['pto_e'];

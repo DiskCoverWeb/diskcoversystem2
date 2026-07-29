@@ -791,6 +791,7 @@ class reportes_all
 	if (strlen($datos[0]['Observacion']) > 1) {
 		$tbl.= 'Observacion: ' . $datos[0]['Observacion'] . '<br>';
 	}
+	$tbl.= 'RUC Proveedor: 0702164179001 <br>';
 
 	$tbl.='</td><td colspan="3"  style="border:0.1px solid rgb(64,64,64);">
 		<table cellpadding="1">';
