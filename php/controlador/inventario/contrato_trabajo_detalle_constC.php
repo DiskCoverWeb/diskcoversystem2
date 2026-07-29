@@ -188,6 +188,8 @@ class contrato_trabajo_detalle_constC
         SetAdoFields("Fecha",$parametros['fecha_inicio']);
         SetAdoFields("Fecha_V",$parametros['fecha_fin']);
 
+        SetAdoFields("Nombre_Contrato",$parametros['NombreContrato']);
+
         SetAdoFields("Item",$_SESSION['INGRESO']['item']);
         SetAdoFields("Periodo",$_SESSION['INGRESO']['periodo']);
         $resp = SetAdoUpdate();

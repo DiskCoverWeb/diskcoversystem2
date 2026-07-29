@@ -147,6 +147,7 @@ function ddl_cate_contrato(){
         'cate_contrato_name':$('#ddl_cate_contrato option:selected').text(),
         'fecha_inicio':$('#txt_fecha_inicio').val(),
         'fecha_fin':$('#txt_fecha_fin').val(),
+        'NombreContrato':$('#txt_nombre_contrato').val(),
      }
         $.ajax({
           data:  {parametros:parametros},

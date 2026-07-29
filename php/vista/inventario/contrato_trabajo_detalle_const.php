@@ -225,6 +225,10 @@
               <option value="">Seleccione proyecto</option>
             </select>
           </div>
+           <div class="col-sm-6">
+            <b>Nombre Contrato</b>            
+            <input type="date" name="txt_nombre_contrato" id="txt_nombre_contrato" class="form-control form-control-sm">
+          </div>
           <div class="col-sm-12">
             <div class="row">
               <div class="col-sm-9">

@@ -15,7 +15,7 @@ class contrato_trabajo_detalle_constM
 
     function detalleContrato($contrato=false,$T = '.')
     {
-        $sql = "select TC.ID,C.Cliente as 'Cliente',C.Codigo,CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.TP  
+        $sql = "select TC.ID,C.Cliente as 'Cliente',C.Codigo,CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.TP,TC.Cargo_Mat,TC.Mas_persona  
         FROM Trans_Contratistas TC
         INNER JOIN Clientes C ON TC.Codigo = C.Codigo
         INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds
@@ -29,7 +29,7 @@ class contrato_trabajo_detalle_constM
         {
             $sql.=" AND TC.No_Contrato = '".$contrato."'";
         }
-        $sql.=" GROUP BY TC.ID,C.Cliente,C.Codigo,CP.Proceso,CP1.Proceso,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto,TC.TP 
+        $sql.=" GROUP BY TC.ID,C.Cliente,C.Codigo,CP.Proceso,CP1.Proceso,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto,TC.TP,TC.cargo_Mat,TC.Mas_persona 
         ORDER BY TC.ID DESC";
 
         // print_r($sql);die();
