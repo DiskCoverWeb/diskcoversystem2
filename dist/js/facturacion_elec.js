@@ -1349,7 +1349,7 @@ function enviaremail()   //funcion para enviarlo por javascript
             success: function(data) {
                 if(data!=-2)
                 { 
-                    const largoColumnaNombre = 40; 
+                    const largoColumnaNombre = 30; 
 
                     var opciones = '';
                     data.forEach(function(item) {

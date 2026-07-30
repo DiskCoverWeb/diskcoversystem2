@@ -963,7 +963,7 @@ class facturarM
             $sql.=" AND Serie = '".$SerieFAUser."' 
             AND Cedula = '".$_SESSION['INGRESO']['CodigoU']."' "; 
         }
-        $sql.= "ORDER BY Placa_Socio "; 
+        $sql.= "ORDER BY Cedula, Placa_Socio "; 
         return $this->db->datos($sql);
       }else
       {
