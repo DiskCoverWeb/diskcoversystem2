@@ -2514,12 +2514,6 @@ function generar_xml($cabecera,$detalle)
 			}			
 		}
 
-		$xml_campoAdicional = $xml->createElement( "campoAdicional",'0702164179001');
-		$xml_campoAdicional->setAttribute( "nombre", "RUC Proveedor" );
-		$xml_infoAdicional->appendChild( $xml_campoAdicional );
-
-
-
 		$estable = $cabecera['esta'];
 		$punto = $cabecera['pto_e'];
 
@@ -2566,14 +2560,14 @@ function generar_xml($cabecera,$detalle)
 			$xml_infoAdicional->appendChild( $xml_campoAdicional );
 		}
 
-		if(isset($cabecera['Placa_Vehiculo']))
+		if(isset($cabecera['Placa_Vehiculo']) && strlen($cabecera['Placa_Vehiculo'])>1)
 		{
 			$xml_campoAdicional = $xml->createElement( "campoAdicional",$cabecera['Placa_Vehiculo'] );
 			$xml_campoAdicional->setAttribute( "nombre", "PlacaVehiculo" );
 			$xml_infoAdicional->appendChild( $xml_campoAdicional );
 		}
 
-		if(isset($cabecera['Cta_Establecimiento']))
+		if(isset($cabecera['Cta_Establecimiento']) && strlen($cabecera['Cta_Establecimiento'])>1)
 		{
 			$xml_campoAdicional = $xml->createElement( "campoAdicional",$cabecera['Cta_Establecimiento'] );
 			$xml_campoAdicional->setAttribute( "nombre", "CtaEstablecimiento" );
@@ -2629,20 +2623,24 @@ function generar_xml($cabecera,$detalle)
 			$xml_infoAdicional->appendChild( $xml_campoAdicional );
 		}
 
-		if(isset($cabecera['Placa_Vehiculo']))
+		if(isset($cabecera['Placa_Vehiculo']) && strlen($cabecera['Placa_Vehiculo'])>1)
 		{
 			$xml_campoAdicional = $xml->createElement( "campoAdicional",$cabecera['Placa_Vehiculo'] );
 			$xml_campoAdicional->setAttribute( "nombre", "PlacaVehiculo" );
 			$xml_infoAdicional->appendChild( $xml_campoAdicional );
 		}
 
-		if(isset($cabecera['Cta_Establecimiento']))
+		if(isset($cabecera['Cta_Establecimiento'])  && strlen($cabecera['Cta_Establecimiento'])>1)
 		{
 			$xml_campoAdicional = $xml->createElement( "campoAdicional",$cabecera['Cta_Establecimiento'] );
 			$xml_campoAdicional->setAttribute( "nombre", "CtaEstablecimiento" );
 			$xml_infoAdicional->appendChild( $xml_campoAdicional );
 		}		
 	}
+		$xml_campoAdicional = $xml->createElement( "campoAdicional",'0702164179001');
+		$xml_campoAdicional->setAttribute( "nombre", "RUC Proveedor" );
+		$xml_infoAdicional->appendChild( $xml_campoAdicional );
+
 		$xml_factura->appendChild( $xml_infoTributaria );
 		$xml_factura->appendChild( $xml_infoFactura );
 		$xml_factura->appendChild( $xml_detalles );
