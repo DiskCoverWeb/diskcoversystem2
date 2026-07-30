@@ -226,7 +226,7 @@ $(document).ready(function(){
             </div>
              <div class="col-lg-1 col-sm-2">
                  <b>Placa</b>
-                <input class="form-control form-control-sm" name="txt_placa" id="txt_placa" />
+                <input class="form-control form-control-sm" name="txt_placa" id="txt_placa" readonly />
             </div>
         </div>
     </div>
@@ -665,7 +665,7 @@ $(document).ready(function(){
 </div>
 
 <div class="modal fade" id="modal_placas" role="dialog" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Placa del socio</h4>
@@ -673,7 +673,7 @@ $(document).ready(function(){
             </div>
             <div class="modal-body">
                 <b>SELECCIONE LA PLACA DEL SOCIO</b>
-                <select class="form-select form-select-sm" id="ddl_placas">
+                <select class="form-select form-select-sm" id="ddl_placas" size="5" style="font-family: monospace;width: 100%;">
                     <option value="">Seleccione placa del socio</option>
                 </select>
             </div>

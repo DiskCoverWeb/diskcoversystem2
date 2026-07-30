@@ -400,20 +400,25 @@ function calcular() {
 }
 
 function valida_Stock() {
-    var Cantidad = $('#TextCant').val();
-    if (Cantidad == '' || Cantidad == 0) {
-        Swal.fire('INGRESE UNA CANTIDAD VALIDA', 'PUNTO DE VENTA', 'info').then(function() {
-            $('#TextCant').select();
-        });
-    }
-    var DifStock = parseFloat($('#LabelStock').val()) - parseFloat(Cantidad);
-    var producto = $('#DCArticulo option:selected').text();
-    if (DifStock.toFixed(2) < 0) {
-        Swal.fire(producto + ' NO PUEDE QUEDAR EXISTENCIA NEGATIVA, SOLICITE ALIMENTACION DE STOCK', 'PUNTO DE VENTA',
-            'info').then(function() {
-            $('#TextCant').select();
-        });
-        // $('#DCArticulo').focus();
+    console.log($('#DCArticulo').val())
+    if($('#DCArticulo').val()!=null && $('#DCArticulo').val()!='' && $('#DCArticulo').val()!=undefined)
+    {
+        var Cantidad = $('#TextCant').val();
+        if (Cantidad == '' || Cantidad == 0) {
+            Swal.fire('INGRESE UNA CANTIDAD VALIDA', 'PUNTO DE VENTA', 'info').then(function() {
+                $('#TextCant').select();
+            });
+        }
+        var DifStock = parseFloat($('#LabelStock').val()) - parseFloat(Cantidad);
+        var producto = $('#DCArticulo option:selected').text();
+        if (DifStock.toFixed(2) < 0) {
+            Swal.fire(producto + ' NO PUEDE QUEDAR EXISTENCIA NEGATIVA, SOLICITE ALIMENTACION DE STOCK', 'PUNTO DE VENTA',
+                'info').then(function() {
+                $('#DCArticulo').val(null).trigger('change');
+                $('#TextCant').select();
+            });
+            // $('#DCArticulo').focus();
+        }
     }
 }
 
@@ -1344,10 +1349,19 @@ function enviaremail()   //funcion para enviarlo por javascript
             success: function(data) {
                 if(data!=-2)
                 { 
+                    const largoColumnaNombre = 40; 
+
                     var opciones = '';
-                    data.forEach(function(item,i){
-                        opciones+='<option value="'+item.Placa+'">'+item.Placa_Del_Socio+'</option>'
-                    })
+                    data.forEach(function(item) {
+                        // Rellena con espacios normales hasta alcanzar el largo fijo (ej. 30 caracteres)
+                        var nombrePad = item.Placa_Del_Socio.padEnd(largoColumnaNombre, ' ');
+                        
+                        // Convierte los espacios en &nbsp; para que HTML no los colapse
+                        var nombreConEspacios = nombrePad.replace(/ /g, '&nbsp;');
+                        
+                        // Concatena el nombre formateado directamente con la placa
+                        opciones += `<option value="${item.Placa}">${nombreConEspacios}${item.Placa}</option>`;
+                    });
 
                     console.log(data);
                     $('#ddl_placas').html(opciones);

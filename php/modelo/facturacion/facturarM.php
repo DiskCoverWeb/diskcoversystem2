@@ -955,7 +955,7 @@ class facturarM
 
       if($_SESSION['INGRESO']['Es_Transporte'])
       {
-        $sql =  "SELECT Placa_Socio as Placa,Socio+' '+ Placa_Socio As Placa_Del_Socio 
+        $sql =  "SELECT Placa_Socio as Placa,Socio As Placa_Del_Socio 
         FROM Catalogo_Placas_Vehiculo 
         WHERE Item = '".$_SESSION['INGRESO']['item']."' 
         AND Periodo = '".$_SESSION['INGRESO']['periodo']."'"; 
