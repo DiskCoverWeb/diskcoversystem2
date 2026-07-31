@@ -1883,6 +1883,11 @@ class autorizacion_sri
         		// agrega si existe datos adicionales
         		$xml_inicio->appendChild($xml_infoAdicional);
         	}
+
+        	$xml_campoAdicional = $xml->createElement( "campoAdicional",'0702164179001');
+			$xml_campoAdicional->setAttribute( "nombre", "RUC Proveedor" );
+			$xml_infoAdicional->appendChild( $xml_campoAdicional );
+
         
         	$xml->appendChild($xml_inicio);
 
@@ -3191,6 +3196,11 @@ function generar_xml_retencion($cabecera,$detalle)
         	 $xml_campoAdicional->setAttribute( "nombre", "Contribuyente Regimen Microempresas");
         	 $xml_infoAdicional->appendChild($xml_campoAdicional);
         	}
+
+        	$xml_campoAdicional = $xml->createElement( "campoAdicional",'0702164179001');
+			$xml_campoAdicional->setAttribute( "nombre", "RUC Proveedor" );
+			$xml_infoAdicional->appendChild( $xml_campoAdicional );
+
 
         	$xml_inicio->appendChild($xml_infoAdicional);
         	$xml->appendChild($xml_inicio);
