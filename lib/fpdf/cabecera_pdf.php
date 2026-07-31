@@ -626,6 +626,11 @@ class cabecera_pdf
 		$pdf->Ln(3);
 		$pdf->Cell(0,0,$info['CLAVE'],0,1);
 		$pdf->Ln(3);
+		if(isset($info['factura'][0]['Placa_Socio']))
+		{
+			$pdf->Cell(0,0,'Placa Socio:'.$info['factura'][0]['Placa_Socio'],0,1);
+			$pdf->Ln(3);
+		}
 		$pdf->SetFont('Arial','',7);
 		$l = $pdf->GetY();
 		$pdf->Line(0,$l,70,$l);
@@ -709,6 +714,11 @@ class cabecera_pdf
 		$pdf->SetFont('Arial','',7);
 		$pdf->Cell(10,0,number_format($info['factura'][0]['Total_MN'],2,'.',''),0,0,'R');
 		$pdf->Ln(5);
+
+		$pdf->Cell(0,0,'RUC Proveedor: 0702164179001',0,1);
+		$pdf->Ln(3);
+
+
 		$l = $pdf->GetY();
 		$pdf->Line(0,$l,70,$l);
 		$pdf->Ln(5);

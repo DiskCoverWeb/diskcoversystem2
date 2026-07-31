@@ -8828,8 +8828,10 @@ function  Imprimir_Punto_Venta_Grafico_datos($TFA)
            AND F.Item = '".$_SESSION['INGRESO']['item']."' 
            AND C.Codigo = F.CodigoC ";
    }else{
-         $sql = "SELECT F.*,C.Cliente,C.CI_RUC,C.Telefono,C.Direccion,C.Ciudad,C.Grupo,C.Email
-           FROM Facturas As F,Clientes As C
+         $sql = "SELECT C.Cliente,C.CI_RUC,C.Telefono,C.Direccion,C.Ciudad,C.Grupo,C.Email,F.*,CP.Socio 
+          FROM Facturas F
+          INNER JOIN Clientes C on F.CodigoC = C.Codigo
+          LEFT JOIN Catalogo_Placas_Vehiculo CP ON F.Placa_Socio = CP.Placa_Socio AND F.Item = CP.Item AND F.Periodo = CP.Periodo 
            WHERE F.Factura = ".$TFA['Factura']."
            AND F.TC = '".$TFA['TC']."'
            AND F.Serie = '".$TFA['Serie']."'
