@@ -1,6 +1,5 @@
 <?php
 require_once(dirname(__DIR__,2).'/modelo/inventario/resumen_existenciasM.php');
-require(dirname(__DIR__,3).'/lib/fpdf/cabecera_pdf.php');
 
 $controlador = new resumen_existenciasC();
 
@@ -70,22 +69,6 @@ if(isset($_GET['Stock'])){
     echo json_encode($controlador->Stock($parametros));
 }
 
-if(isset($_GET['reporte_PDF'])){
-
-    $cadenaParametros = urldecode($_GET['datos']);
-    $datosArray = array();
-    parse_str($cadenaParametros, $datosArray);
-    echo json_encode($controlador->reporte_PDF($datosArray));
-}
-
-if(isset($_GET['reporte_excel'])){
-
-    $cadenaParametros = urldecode($_GET['datos']);
-    $datosArray = array();
-    parse_str($cadenaParametros, $datosArray);
-    echo json_encode($controlador->reporte_excel($datosArray));
-}
-
 
 
 
@@ -94,14 +77,10 @@ class resumen_existenciasC
     private $modelo;
     private $sri;
     private $egresos;
-    private $pdf;  
-    
 
     function __construct()
     {
         $this->modelo = new resumen_existenciasM();
-        $this->pdf = new cabecera_pdf();    
-    
     }
 
     function Listatabla($parametros)
@@ -392,136 +371,5 @@ class resumen_existenciasC
         //  // 'MsgBox BSQL
         return $BSQL;
     }
-
-    function reporte_PDF($data)
-    {
-        $tipo_info = $data['txt_tipo_rep'];
-        $lista = array();
-        $sizetable =7;
-        $mostrar = TRUE;
-        $Fechaini = str_replace('-','',$data['txt_inicial']);
-        $Fechafin = str_replace('-','',$data['txt_final']);
-        $tablaHTML = array();
-
-
-        switch ($tipo_info) {
-            case '1':
-
-            $titulo = 'R E S U M E N   D E   E X I S T E N C I A S ';
-            
-            $CheqBod = isset($data['CheqBod']) ? $data['CheqBod']:'false';
-            $CheqProducto = isset($data['CheqProducto']) ? $data['CheqProducto']:'false';
-            $CheqMonto = isset($data['CheqMonto']) ? $data['CheqMonto']:'false';
-            $CheqExist = isset($data['CheqExist']) ? $data['CheqExist']:'false';
-            $CheqGrupo = isset($data['CheqGrupo']) ? $data['CheqGrupo']:'false';
-
-            $parametros = array(
-                'inicial'=>$data['txt_inicial'],
-                'final'=>$data['txt_final'],
-                'cbxpro'=> $data['rbx_producto'],
-                'CheqBod'=>$CheqBod,
-                'CheqProducto'=>$CheqProducto,
-                'CheqMonto'=>$CheqMonto,
-                'CheqExist'=>$CheqExist,
-                'CheqGrupo'=>$CheqGrupo,
-                'DCTipoBusqueda'=>$data['DCTipoBusqueda'],
-                'TxtMonto'=>$data['TxtMonto'],
-                'DCInv'=>$data['DCTInv'],
-                'StockSuperior'=>true,
-            );
-            $lista = $this->Stock($parametros);
-
-                $tablaHTML[0]['medidas']=array(15,80,20,25,20,20,20,25,25,25);
-                $tablaHTML[0]['alineado']=array('L','L','L','R','R','R','R','R','R','R');
-                $tablaHTML[0]['datos']=array('TC','Producto','Unidad','Stock_Anterior','Entradas','Salidas','Stock_Actual','Costo_Unit','Valor_Total','Diferencias');
-                $tablaHTML[0]['estilo']='BI';
-                $tablaHTML[0]['borde'] = '1';
-            
-            foreach ($lista['data'] as $key => $value) {
-
-                // print_r($value);die();
-                $i = $key+1;
-                $tablaHTML[$i]['medidas']=$tablaHTML[0]['medidas'];
-                $tablaHTML[$i]['alineado']=$tablaHTML[0]['alineado'];
-                $tablaHTML[$i]['datos']=array($value['TC'],$value['Producto'],$value['Unidad'],$value['Stock_Anterior'],$value['Entradas'],$value['Salidas'],$value['Stock_Actual'],$value['Costo_Unit'],$value['Valor_Total'],$value['Diferencias']);
-                // $tablaHTML[$i]['estilo']='BI';
-                $tablaHTML[$i]['borde'] = '1';
-            }
-        
-
-                break;
-            
-            default:
-                // code...
-                break;
-        }
-
-        $this->pdf->cabecera_reporte_MC($titulo,$tablaHTML,$contenido=false,$image=false,$Fechaini,$Fechafin,$sizetable,$mostrar,25,'L');
-
-    }
-
-    function reporte_excel($data)
-    {
-        $tipo_info = $data['txt_tipo_rep'];
-        $lista = array();
-        $sizetable =7;
-        $mostrar = TRUE;
-        $Fechaini = str_replace('-','',$data['txt_inicial']);
-        $Fechafin = str_replace('-','',$data['txt_final']);
-        $tablaHTML = array();
-
-
-        switch ($tipo_info) {
-            case '1':
-
-            $titulo = 'R E S U M E N   D E   E X I S T E N C I A S ';
-            
-            $CheqBod = isset($data['CheqBod']) ? $data['CheqBod']:'false';
-            $CheqProducto = isset($data['CheqProducto']) ? $data['CheqProducto']:'false';
-            $CheqMonto = isset($data['CheqMonto']) ? $data['CheqMonto']:'false';
-            $CheqExist = isset($data['CheqExist']) ? $data['CheqExist']:'false';
-            $CheqGrupo = isset($data['CheqGrupo']) ? $data['CheqGrupo']:'false';
-
-            $parametros = array(
-                'inicial'=>$data['txt_inicial'],
-                'final'=>$data['txt_final'],
-                'cbxpro'=> $data['rbx_producto'],
-                'CheqBod'=>$CheqBod,
-                'CheqProducto'=>$CheqProducto,
-                'CheqMonto'=>$CheqMonto,
-                'CheqExist'=>$CheqExist,
-                'CheqGrupo'=>$CheqGrupo,
-                'DCTipoBusqueda'=>$data['DCTipoBusqueda'],
-                'TxtMonto'=>$data['TxtMonto'],
-                'DCInv'=>$data['DCTInv'],
-                'StockSuperior'=>true,
-            );
-            $lista = $this->Stock($parametros);
-
-                $tablaHTML[0]['medidas']=array(15,80,20,25,25,25,25,25,25,25,30,30);
-                $tablaHTML[0]['alineado']=array('L','L','L','R','R','R','R','R','R','R','L','L');
-                $tablaHTML[0]['datos']=array('TC','Producto','Unidad','Stock_Anterior','Entradas','Salidas','Stock_Actual','Costo_Unit','Valor_Total','Diferencias','Ubicacion','Bodega');
-                $tablaHTML[0]['tipo']='N';
-            
-            foreach ($lista['data'] as $key => $value) {
-
-                // print_r($value);die();
-                $i = $key+1;
-                $tablaHTML[$i]['medidas']=$tablaHTML[0]['medidas'];
-                $tablaHTML[$i]['alineado']=$tablaHTML[0]['alineado'];
-                $tablaHTML[$i]['datos']=array($value['TC'],$value['Producto'],$value['Unidad'],$value['Stock_Anterior'],$value['Entradas'],$value['Salidas'],$value['Stock_Actual'],$value['Costo_Unit'],$value['Valor_Total'],$value['Diferencias'],$value['Ubicacion'],$value['Bodega']);
-            }
-        
-
-                break;
-            
-            default:
-                // code...
-                break;
-        }
-
-        excel_generico($titulo,$tablaHTML);  
-    }
-
 }
 ?>

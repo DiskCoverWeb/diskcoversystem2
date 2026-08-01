@@ -20,25 +20,25 @@
 							  print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
 					  <img src="../../img/png/salire.png">
 				</a>
-				<button type="button" class="btn btn-outline-secondary" title="Guardar" id="btn_guardar" onclick="Stock(true);$('#txt_tipo_rep').val(1)" >
+				<button type="button" class="btn btn-outline-secondary" title="Guardar" id="btn_guardar" onclick="Stock(true)" >
 				  <img src="../../img/png/list.png" height="32px">
 				</button>
-					<button type="button" class="btn btn-outline-secondary" title="Resumen de existencia agrupado" onclick="imprimir_pedido();$('#txt_tipo_rep').val(2)">
+					<button type="button" class="btn btn-outline-secondary" title="Resumen de existencia agrupado" onclick="imprimir_pedido()">
 					<img src="../../img/png/archivero2.png" height="32px">
 				</button>
-			 	<button type="button" class="btn btn-outline-secondary" title="Resumen de existencias por lotes" onclick="Resumen_Lote();$('#txt_tipo_rep').val(3)">
+			 	<button type="button" class="btn btn-outline-secondary" title="Resumen de existencias por lotes" onclick="Resumen_Lote()">
 					<img src="../../img/png/es.png" height="32px">
 				</button>
-					<button type="button" class="btn btn-outline-secondary" title="Resumen en codigo de barras" onclick="Resumen_Barras();$('#txt_tipo_rep').val(4)">
+					<button type="button" class="btn btn-outline-secondary" title="Resumen en codigo de barras" onclick="Resumen_Barras()">
 					<img src="../../img/png/barcode.png" height="32px">
 				</button>
-				<button type="button" class="btn btn-outline-secondary" title="Imprimir QR PDF" id="imprimir_pdf">
+				<button type="button" class="btn btn-outline-secondary" title="Imprimir QR PDF" onclick="imprimir_pedido_pdf()">
 					<img src="../../img/png/paper.png" height="32px">
 				</button>			
-				<button type="button" class="btn btn-outline-secondary" title="Resumen en codigo QR" onclick="Resumen_QR();$('#txt_tipo_rep').val(5)">
+				<button type="button" class="btn btn-outline-secondary" title="Resumen en codigo QR" onclick="Resumen_QR()">
 					<img src="../../img/png/qr_code.png" height="32px">
 				</button>
-				<button type="button" class="btn btn-outline-secondary" title="Imprimir QR PDF" id="reporte_excel">
+				<button type="button" class="btn btn-outline-secondary" title="Imprimir QR PDF" onclick="imprimir_pedido_pdf()">
 					<img src="../../img/png/excel2.png" height="32px">
 				</button>
 			</div>
@@ -49,23 +49,22 @@
 </div>
 <div class="row">
 	<div class="card">
-		<form id="form_filtros">
 			<div class="card-body">
 				<div class="row">
 						<div class="col-sm-2">
-							<input type="hidden" name="txt_tipo_rep" id="txt_tipo_rep" value="1">
+						
 						</div>
 						<div class="col-sm-10">
 							<div class="row">
 
 								<div class="col-sm-3">
 									<div class="input-group input-group-sm mb-3"> <span class="input-group-text" id="basic-addon3">Fecha Inicial</span>
-										<input type="date" class="form-control form-control-sm" name="txt_inicial" id="txt_inicial" value="<?php echo(date('Y-m-d')); ?>" aria-describedby="basic-addon3">
+										<input type="date" class="form-control form-control-sm" id="txt_inicial" value="<?php echo(date('Y-m-d')); ?>" aria-describedby="basic-addon3">
 									</div>	
 								</div>
 								<div class="col-sm-3">
 									<div class="input-group input-group-sm mb-3"> <span class="input-group-text" id="basic-addon3">Fecha Final</span>
-										<input type="date" class="form-control form-control-sm" name="txt_final" id="txt_final" value="<?php echo(date('Y-m-d')); ?>" aria-describedby="basic-addon3">
+										<input type="date" class="form-control form-control-sm" id="txt_final" value="<?php echo(date('Y-m-d')); ?>" aria-describedby="basic-addon3">
 									</div>	
 								</div>
 								<div class="col-sm-3">						
@@ -156,8 +155,9 @@
 			 			</div>
 			 	 </div>			 	
 			 </div>		
-			</div>	
-			</form>		
+
+
+			</div>			
 		</div>	
 </div>
 <div class="row mb-2">
