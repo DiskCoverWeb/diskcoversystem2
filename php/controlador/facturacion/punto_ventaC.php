@@ -864,9 +864,9 @@ class punto_ventaC
 					{
 						$respuesta_facturacion['Factura'] = $rep;
 						return $respuesta_facturacion;
-					}else if($res=='' || $res==null)
+					}else if($rep=='' || $rep==null)
 					{
-						return $respuesta_facturacion['Factura'] = array(-5,'sin conexion a SRI');
+						$respuesta_facturacion['Factura'] = array(-5,'Enviada pero no validado,sin conexion a SRI');
 					}
 					$clave = $this->sri->Clave_acceso($TA['Fecha'], '01', $TA['Serie'], $Factura_No);
 					$rep1 = array();
