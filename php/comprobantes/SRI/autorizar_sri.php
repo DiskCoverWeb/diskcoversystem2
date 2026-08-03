@@ -1528,10 +1528,6 @@ class autorizacion_sri
         	}
 
 
-        	$xml_campoAdicional = $xml->createElement( "campoAdicional",'0702164179001');
-			$xml_campoAdicional->setAttribute( "nombre", "RUC Proveedor" );
-			$xml_infoAdicional->appendChild( $xml_campoAdicional );
-
         	$xml_inicio->appendChild($xml_infoAdicional);
         	$xml->appendChild($xml_inicio);
 
