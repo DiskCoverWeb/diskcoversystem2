@@ -27,7 +27,7 @@ $(document).ready(function() {
                 targets: '_all',
                 render: function (data, type, row,meta) {
                     var nombreColumna = meta.settings.aoColumns[meta.col].data;
-                    if (nombreColumna === "RUC_CI" || nombreColumna === "Autorizacion") {
+                    if (nombreColumna === "RUC_CI" || nombreColumna === "Autorizacion"  || nombreColumna === "Factura") {
                         return data;
                     }
 
