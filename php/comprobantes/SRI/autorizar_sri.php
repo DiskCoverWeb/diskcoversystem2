@@ -2497,7 +2497,7 @@ function generar_xml($cabecera,$detalle)
 			$xml_campoAdicional->setAttribute( "nombre", "Nota" );
 			$xml_infoAdicional->appendChild( $xml_campoAdicional );
 		}
-		if(strlen($cabecera['Placa_Socio'])>1)
+		if(strlen($cabecera['Placa_Socio'])>1 && strlen($cabecera['Socio'])>1)
 		{
 			$xml_campoAdicional = $xml->createElement( "campoAdicional",$cabecera['Socio'] );
 			$xml_campoAdicional->setAttribute( "nombre", "NombreSocio" );
