@@ -27,9 +27,9 @@
 				print_r($ruta[0] . '#'); ?>" title="Salir de modulo" class="btn btn-outline-secondary">
 				<img src="../../img/png/salire.png">
 			</a>
-			<button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
+			<!-- <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Guardar" onclick="guardar()">
 				<img src="../../img/png/grabar.png">
-			</button>
+			</button> -->
 	  	</div>
 	</div>
 </div>
@@ -57,7 +57,13 @@
 
 						</div>
 					</div>
-					<div class="col-sm-4 text-end">
+					<div class="col-sm-2">
+						<b class="fw-semibold">No comprobante</b>
+						<div class="input-group input-group-sm">		
+							<label id="lbl_comprobante">0000000</label>
+						</div>
+					</div>
+					<div class="col-sm-2 text-end">
 						<br>
 						<button type="button" class="btn btn-primary btn-sm" onclick="lista_stock_ubicado()"><i class="fa fa-search" style="font-size:8pt;"></i> Buscar</button>
 					</div>
@@ -117,6 +123,7 @@
         			<div class="col-sm-12">
         				<div class="input-group input-group-sm mb-2">
 							<input type="hidden" name="txt_id_inv" id="txt_id_inv">
+							<input type="hidden" name="txt_codBarras" id="txt_codBarras">
         					<input type="text" id="txt_cod_lugar" name="txt_cod_lugar" class="form-control form-control-sm" placeholder="Nueva ruta" onblur="buscar_ruta2()">        				
 							<button type="button" class="btn btn-info btn-sm" onclick="abrir_modal_bodegas(2)" style="font-size:8pt"><i class="fa fa-sitemap" style="font-size:8pt"></i></button>
 							<button type="button" class="btn btn-primary btn-sm" style="font-size: 8pt;" title="Escanear QR" onclick="escanear_qr('reubi')"><i class="fa fa-qrcode" style="font-size: 8pt;"></i></button>

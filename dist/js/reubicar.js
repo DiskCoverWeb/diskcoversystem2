@@ -2,6 +2,7 @@
 var scanning = false;
 var tbl_pedidos_all;
 $(document).ready(function () {
+    numero_comprobante();
     // cargar_bodegas();
     // cargar_bodegas2();
        // lista_stock_ubicado();
@@ -63,7 +64,7 @@ $('#txt_cod_barras').keydown( function(e) {
              
               { data: null,
                  render: function(data, type, item) {
-                    botons = `<button type='button' title = 'Cambiar ubicacion' class='btn btn-sm btn-primary p-1' onclick='cambiar_bodegas("${data.ID}")'><i class='bx bx-refresh'></i></button>`;
+                    botons = `<button type='button' title = 'Cambiar ubicacion' class='btn btn-sm btn-primary p-1' onclick="cambiar_bodegas('${data.Codigo_Barra}','${data.ID}')"><i class='bx bx-refresh'></i></button>`;
                   
                     return botons;                    
                   }
@@ -238,10 +239,12 @@ function lista_stock_ubicado()
 // }); 
 }
 
-function cambiar_bodegas(id)
+function cambiar_bodegas(codBarras,id)
 {
-$('#myModal_cambiar_bodegas').modal('show');
-$('#txt_id_inv').val(id);
+    numero_comprobante()
+    $('#myModal_cambiar_bodegas').modal('show');
+    $('#txt_id_inv').val(id);
+    $('#txt_codBarras').val(codBarras);
 }
 
 
@@ -291,29 +294,83 @@ $.ajax({
 });
 }
 
+
+function numero_comprobante()
+{
+     var parametros = {
+        'tip':'CD',
+    }
+     $.ajax({
+        type: "POST",
+       url:   '../controlador/inventario/reubicarC.php?numero_comprobante=true',
+         data:{parametros:parametros},
+       dataType:'json',
+        success: function(data)
+        {
+            $('#lbl_comprobante').text(data)
+        }
+    });
+}
 function Guardar_bodega(id)
 {
-codigo = $('#txt_cod_lugar').val();
-codigo = codigo.trim();
-$('#txt_cod_lugar').val(codigo);
-var parametros = {
-    'codigo':codigo,
-    'id':$('#txt_id_inv').val(),
+    Swal.fire({
+      title: 'Esta seguro?',
+      text: "Se va a generar el comprobante "+$('#lbl_comprobante').text(),
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si!'
+    }).then((result) => {
+      if (result.value==true) {
+        Guardar_bodega_back(id);
+      }
+    })
 }
-$.ajax({
-    type: "POST",
-   url:   '../controlador/inventario/reubicarC.php?cambiar_bodega=true',
-     data:{parametros:parametros},
-   dataType:'json',
-    success: function(data)
-    {
-        $('#myModal_cambiar_bodegas').modal('hide');
-        $('#txt_bodega_title2').text('Ruta:');
-        $('#txt_cod_lugar').val('')
-        $('#txt_id_inv').val('')
-        lista_stock_ubicado();
+
+function Guardar_bodega_back(id)
+{
+    codigo = $('#txt_cod_lugar').val();
+    codigo = codigo.trim();
+    $('#txt_cod_lugar').val(codigo);
+    var parametros = {
+        'codigo':codigo,
+        'id':$('#txt_id_inv').val(),
+        'codBarra':$('#txt_codBarras').val(),
+        'newBodega':$('#txt_cod_lugar').val(),
     }
-});
+
+    $('#myModal_espera').modal('show');
+    $.ajax({
+        type: "POST",
+       url:   '../controlador/inventario/reubicarC.php?cambiar_bodega=true',
+         data:{parametros:parametros},
+       dataType:'json',
+        success: function(data)
+        {
+            setTimeout(()=>{
+              $('#myModal_espera').modal('hide');
+            }, 1000);
+            
+            if(data.resp==1)
+            {
+                Swal.fire("Comprobante :"+data.com+' Generado',"","success").then(function(){
+                    $('#myModal_cambiar_bodegas').modal('hide');
+                    $('#txt_bodega_title2').text('Ruta:');
+                    $('#txt_cod_lugar').val('')
+                    $('#txt_id_inv').val('')
+                    lista_stock_ubicado();
+                })
+               
+            }else if(data.resp==-2)
+            {
+                Swal.fire("Selecione una ubicacion distinta","","info");
+            }else
+            {
+                Swal.fire(data.com,"","error")
+            }
+        }
+    });
 } 
 
 function bodegaPorQR(codigo){

@@ -56,6 +56,24 @@ class reubicarM
         return $this->db->datos($sql);
     }
 
+    function kardexAReubicar($Codigo_Barra)
+    {
+        $sql = "SELECT        CodBodega, Codigo_Barra, Codigo_Inv, SUM(Entrada) AS EntradaTotal, SUM(Salida) AS SalidaTotal, SUM(Entrada) - SUM(Salida) AS Diff
+                FROM            Trans_Kardex
+                WHERE Item = '".$_SESSION['INGRESO']['item']."'
+                AND Periodo = '".$_SESSION['INGRESO']['periodo']."'
+                AND Codigo_Barra = '".$Codigo_Barra."'
+                GROUP BY CodBodega, Codigo_Barra, Codigo_Inv";
+                // print_r($sql);die();
+
+        return $this->db->datos($sql);
+    }
+
+    function Leer_Codigo_Inv_SP($codigo)
+    {
+        return Leer_Codigo_Inv($codigo,date('Y-m-d'));
+    }
+
 
 } 
 ?>
