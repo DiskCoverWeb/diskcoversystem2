@@ -113,8 +113,8 @@ class reubicarC
 			return array('resp'=>-2,'com'=>"Seleccione una bodega diferente");
 		}
 
-		print_r($data_ubi);
-		print_r($data);die();
+		// print_r($data_ubi);
+		// print_r($data);die();
 
 
 		// die();
