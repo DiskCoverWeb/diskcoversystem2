@@ -115,20 +115,20 @@ class resumen_existenciasC
         $lista = array();
         switch ($opcion) {
             case '1':
-            $data =  $this->modelo->Catalogo_Marcas();
+            $data =  $this->modelo->Catalogo_Marcas($query);
                 break;
             case '2':            
-            $data =  $this->modelo->Trans_Kardex_barras();
+            $data =  $this->modelo->Trans_Kardex_barras($query);
                 break;
         
             case '3':
-            $data =  $this->modelo->Trans_Kardex_lote();
+            $data =  $this->modelo->Trans_Kardex_lote($query);
                 break;
         
             case '4':
             if($dcInv=="")
             {
-               $data = $this->modelo->DCTInv($query);
+               $data = $this->modelo->DCTInv();
                $dcInv = $data[0]['Codigo_Inv'];
                // print_r($data);die();
             }
@@ -147,10 +147,10 @@ class resumen_existenciasC
     {
         if($opcion==1) 
         {
-            $data = $this->modelo->DCCtaInvOp1();
+            $data = $this->modelo->DCCtaInvOp1($query);
            
         }else{
-            $data = $this->modelo->DCCtaInvOp2();
+            $data = $this->modelo->DCCtaInvOp2($query);
         }
 
         $lista = array();
@@ -167,10 +167,10 @@ class resumen_existenciasC
     {
         if($opcion==1)
         {
-            $data = $this->modelo->DCSubModuloOp1();
+            $data = $this->modelo->DCSubModuloOp1($query);
   
         }else{
-            $data = $this->modelo->DCSubModuloOp2();
+            $data = $this->modelo->DCSubModuloOp2($query);
         }
 
         $lista = array();

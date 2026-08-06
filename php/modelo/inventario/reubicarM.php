@@ -74,6 +74,5 @@ class reubicarM
         return Leer_Codigo_Inv($codigo,date('Y-m-d'));
     }
 
-
 } 
 ?>

@@ -62,48 +62,62 @@ class resumen_existenciasM
         	$sql.=" AND (Codigo_Inv like '%".$query."%' OR Producto like '%".$query."%')";
         }
         $sql.=" ORDER BY Codigo_Inv  ";
-
+// print_r($sql);die();
 	    return $this->db->datos($sql);
 	}
 
-	function Catalogo_Marcas()
+	function Catalogo_Marcas($query=false)
 	{
 		$sql = "SELECT  TOP 50 CodMar As Codigo, Marca As Producto 
         FROM Catalogo_Marcas 
         WHERE Item =  '" . $_SESSION['INGRESO']['item'] . "' 
         AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-        AND CodMar <> '".G_NINGUNO."' 
+        AND CodMar <> '".G_NINGUNO."'  ";
+        if($query)
+        {
+        	$sql.=" AND (CodMar like '%".$query."%' OR Marca like '%".$query."%'  )";
+        }
+        $sql.=" 
         ORDER BY Marca";
 
 	    return $this->db->datos($sql);
 
 	}
 
-	function Trans_Kardex_barras()
+	function Trans_Kardex_barras($query=false)
 	{
 		$sql = "SELECT TOP 50 Codigo_Barra As Codigo, Codigo_Barra As Producto 
         FROM Trans_Kardex 
         WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
-        AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
-        GROUP BY Codigo_Barra 
+        AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+        if($query)
+        {
+        	$sql.=" AND Codigo_Barra like '%".$query."%'";
+        }
+        $sql.=" GROUP BY Codigo_Barra 
         ORDER BY Codigo_Barra ";
 
 	    return $this->db->datos($sql);
 
 	}
 
-	function Trans_Kardex_lote()
+	function Trans_Kardex_lote($query=false)
 	{
 		$sql = "SELECT Lote_No As Codigo, Lote_No As Producto 
     	FROM Trans_Kardex 
     	WHERE Item = '" . $_SESSION['INGRESO']['item'] . "' 
-    	AND Periodo = '".$_SESSION['INGRESO']['periodo']."' 
+    	AND Periodo = '".$_SESSION['INGRESO']['periodo']."' ";
+        if($query)
+        {
+        	$sql.=" AND Lote_No like '%".$query."%'";
+        }
+        $sql.=" 
    		GROUP BY Lote_No 
     	ORDER BY Lote_No ";
 
 	    return $this->db->datos($sql);
 	}
-	function Catalogo_Productos($Buscar_Grupo_Inventario)
+	function Catalogo_Productos($Buscar_Grupo_Inventario,$query=false)
 	{
 		$sql = "SELECT TOP 50 Codigo_Inv As Codigo, Producto 
         FROM Catalogo_Productos 
@@ -111,15 +125,19 @@ class resumen_existenciasM
         AND Periodo =  '".$_SESSION['INGRESO']['periodo']."' 
         AND LEN(Cta_Inventario) > 2 
         AND Codigo_Inv LIKE '".$Buscar_Grupo_Inventario."%' 
-        AND TC = 'P' 
-        ORDER BY Codigo_Inv ";
+        AND TC = 'P' ";
+        if($query)
+        {
+        	$sql.=" AND (Codigo_Inv like '%".$query."%' OR Producto like '%".$query."%')";
+        }
+        $sql.=" ORDER BY Codigo_Inv ";
 
         // print_r($sql);die();
 
 	    return $this->db->datos($sql);
 	}
 
-	function DCCtaInvOp1()
+	function DCCtaInvOp1($query=false)
 	{
 		 $sql = "SELECT CC.Cuenta,TK.Cta_Inv
          FROM Catalogo_Cuentas As CC, Trans_Kardex As TK
@@ -128,15 +146,19 @@ class resumen_existenciasM
          AND LEN(TK.Cta_Inv) > 1
          AND CC.Codigo = TK.Cta_Inv
          AND CC.Item = TK.Item
-         AND CC.Periodo = TK.Periodo
-         GROUP BY CC.Cuenta,TK.Cta_Inv
+         AND CC.Periodo = TK.Periodo";
+         if($query)
+         {
+         	$sql.=" AND CC.Cuenta like '%".$query."%'";
+         }
+        $sql.="  GROUP BY CC.Cuenta,TK.Cta_Inv
          ORDER BY CC.Cuenta,TK.Cta_Inv ";
 
 	    return $this->db->datos($sql);
 
 	}
 
-	function DCCtaInvOp2()
+	function DCCtaInvOp2($query=false)
 	{
 		$sql = "SELECT CC.Cuenta,TK.Contra_Cta as Cta_Inv
         FROM Catalogo_Cuentas As CC, Trans_Kardex As TK 
@@ -145,25 +167,33 @@ class resumen_existenciasM
         AND LEN(TK.Contra_Cta) > 1 
         AND CC.Codigo = TK.Contra_Cta 
         AND CC.Item = TK.Item 
-        AND CC.Periodo = TK.Periodo 
-        GROUP BY CC.Cuenta,TK.Contra_Cta 
+        AND CC.Periodo = TK.Periodo ";
+        if($query)
+        {
+        	$sql.=" AND CC.Cuenta like '%".$query."%'";
+        }
+        $sql.=" GROUP BY CC.Cuenta,TK.Contra_Cta 
         ORDER BY CC.Cuenta,TK.Contra_Cta";
 
 	    return $this->db->datos($sql);
 
 	}
-	function DCSubModuloOp1()
+	function DCSubModuloOp1($query=false)
 	{
 		$sql = "SELECT TC, Codigo, Detalle As SubModulo 
         FROM Catalogo_SubCtas 
         WHERE Item ='" . $_SESSION['INGRESO']['item'] . "' 
         AND Periodo =  '".$_SESSION['INGRESO']['periodo']."' 
-        AND Detalle <> '".G_NINGUNO."' 
-        ORDER BY TC,Detalle ";
+        AND Detalle <> '".G_NINGUNO."' ";
+        if($query)
+        {
+        	$sql.=" AND Detalle like '%".$query."%'";
+        }
+        $sql.=" ORDER BY TC,Detalle ";
 
 	    return $this->db->datos($sql);
 	}
-	function DCSubModuloOp2()
+	function DCSubModuloOp2($query=false)
 	{
 		$sql = "SELECT CP.TC, CP.Codigo, CP.Cta, (C.Cliente + REPLICATE(' ', 60 - LEN(C.Cliente)) + CP.Cta) As SubModulo 
         FROM Catalogo_CxCxP As CP, Clientes As C 
@@ -171,8 +201,12 @@ class resumen_existenciasM
         AND CP.Periodo = '".$_SESSION['INGRESO']['periodo']."' 
         AND C.Cliente <> '".G_NINGUNO."' 
         AND CP.TC = 'P' 
-        AND CP.Codigo = C.Codigo 
-        ORDER BY C.Cliente,CP.Cta ";
+        AND CP.Codigo = C.Codigo ";
+        if($query)
+        {
+        	$sql.=" AND (CP.Codigo like '%".$query."%' OR CP.Cta like '%".$query."%')";
+        }
+        $sql.=" ORDER BY C.Cliente,CP.Cta ";
 
 	    return $this->db->datos($sql);
 	}

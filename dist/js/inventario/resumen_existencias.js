@@ -51,6 +51,26 @@ let tablaKardex;
             [1, 'asc']
         ]
     });
+
+
+     $('#reporte_excel').click(function(){
+
+            var data = $('#form_filtros').serialize();
+            var jsonDatos = encodeURIComponent(data);
+            var url = '../controlador/inventario/resumen_existenciasC.php?reporte_excel&datos=' + jsonDatos;
+            window.open(url, '_blank');
+     });
+
+     $('#imprimir_pdf').click(function(){
+
+        var data = $('#form_filtros').serialize();
+        var jsonDatos = encodeURIComponent(data);
+        var url = '../controlador/inventario/resumen_existenciasC.php?reporte_PDF&datos=' + jsonDatos;
+               
+         window.open(url, '_blank');
+     });
+
+
   });
 
 function DCBodega(){

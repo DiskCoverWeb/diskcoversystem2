@@ -113,33 +113,12 @@ class reubicarC
 			return array('resp'=>-2,'com'=>"Seleccione una bodega diferente");
 		}
 
-		// print_r($data_ubi);
-		// print_r($data_inv);die();
+		print_r($data_ubi);
+		print_r($data);die();
 
 
 		// die();
 
-
-		// $cuenta = $this->ing_des->catalogo_cuentas($data_ubi[0]['Contra_Cta']);
-		// $sub = $this->ing_des->catalogo_subcuentas($data_ubi[0]['Codigo_P']);
-		// $parametros = array(
-        //     'be'=>$cuenta[0]['Cuenta'],
-        //     'ru'=> '',
-        //     'co'=> $data_ubi[0]['Contra_Cta'],// codigo de cuenta cc
-        //     'tip'=>$cuenta[0]['TC'],//tipo de cuenta(CE,CD,..--) biene de catalogo subcuentas TC
-        //     'tic'=> 1, //debito o credito (1 o 2);
-        //     'sub'=> $data_ubi[0]['Codigo_P'], //Codigo se trae catalogo subcuenta
-        //     'sub2'=>$cuenta[0]['Cuenta'],//nombre del beneficiario
-        //     'fecha_sc'=> date('Y-m-d'), //fecha 
-        //     'fac2'=>0,
-        //     'mes'=> 0,
-        //     'valorn'=> number_format(($data[0]['Diff']*$data_inv['Valor_Unit']),2,'.',''),//valor de sub cuenta 
-        //     'moneda'=> 1, /// moneda 1
-        //     'Trans'=>"",//detalle que se trae del asiento
-        //     'T_N'=> '99',
-        //     't'=> "",                        
-        //   );
-        //   $this->ing_des->generar_asientos_SC($parametros);
 
 		// debe
 		$cuenta = $this->ing_des->catalogo_cuentas($data_inv['Cta_Inventario']);
@@ -193,7 +172,7 @@ class reubicarC
         	        'ru'=> '000000000', //codigo del cliente que sale co el ruc del beneficiario codigo
         	        'tip'=>'CD',//tipo de cuenta contable cd, etc
         	        "fecha1"=> $fecha,// fecha actual 2020-09-21
-        	        'concepto'=>'Reubicacion de inventario para : '.$data[0]['CodBodega'].' el dia '.$fecha, //detalle de la transaccion realida
+        	        'concepto'=>'Reubicacion de la bodega : '.$data[0]['CodBodega'].' a la bodega : '.$data[0]['newBodega'].'el dia '.$fecha, //detalle de la transaccion realida
         	        'totalh'=> round($haber,2), //total del haber
         	        'num_com'=> '.'.date('Y', strtotime($fecha)).'-'.$num_comprobante, // codigo de comprobante de esta forma 2019-9000002
         	        );
@@ -241,6 +220,7 @@ class reubicarC
 	   	SetAdoFields('T','N'); 	
 	   	SetAdoFields('TP','CD'); 		
 	   	SetAdoFields('Numero',$num_comprobante); 	
+	   	SetAdoFields('Valor_Unitario',round($data_ubi[0]['Valor_Unitario'],2)); 	
 	   	SetAdoFields('Costo',round($data_ubi[0]['Valor_Unitario'],2)); 	
 	   	SetAdoFields('Total',number_format(($data['Diff']*$data_ubi[0]['Valor_Unitario']),2,'.','')); 	
 	   	SetAdoFields('Existencia',number_format($data['Diff'],2,'.','')); 
@@ -268,6 +248,7 @@ class reubicarC
 	   	SetAdoFields('TP','CD'); 		
 	   	SetAdoFields('Numero',$num_comprobante); 	
 	   	SetAdoFields('Costo',round($data_ubi[0]['Valor_Unitario'],2)); 	
+	   	SetAdoFields('Valor_Unitario',round($data_ubi[0]['Valor_Unitario'],2)); 	
 	   	SetAdoFields('Total',number_format(($data['Diff']*$data_ubi[0]['Valor_Unitario']),2,'.','')); 	
 	   	SetAdoFields('Existencia',number_format($data['Diff'],2,'.','')); 
 	   	SetAdoFields('CodBodega',$data['newBodega']); 	
