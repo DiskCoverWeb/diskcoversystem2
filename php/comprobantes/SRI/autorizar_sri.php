@@ -2245,7 +2245,7 @@ function generar_xml($cabecera,$detalle)
 
 		$xml_infoFactura->appendChild( $xml_importeTotal );
 		$xml_infoFactura->appendChild( $xml_moneda );
-		if(strlen($cabecera['Placa_Socio'])>0){
+		if(strlen($cabecera['Placa_Socio'])>1){
 			$xml_placaSocio = $xml->createElement( "placa",$cabecera['Placa_Socio'] );
 			$xml_infoFactura->appendChild( $xml_placaSocio );
 		}
