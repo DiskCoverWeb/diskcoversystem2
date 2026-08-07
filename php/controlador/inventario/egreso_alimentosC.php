@@ -576,6 +576,14 @@ class egreso_alimentosC
 		$tipo = '';
 		$orden = $this->modelo->lista_egreso_checking(false,false,false,$parametros['orden']);
 
+
+		// $lineas = $this->modelo->cargar_motivo_lista(false,false,$parametros['orden'],false);
+
+
+		// print_r($lineas);
+		// print_r($orden);
+		// die();
+
 		$detalle = "Egreso ".$orden[0]['area'].' - '.$orden[0]['Motivo'].' - '.$orden[0]['Detalle'];
 		$detalle_sc = $orden[0]['Detalle'];
 
@@ -589,20 +597,26 @@ class egreso_alimentosC
 			// print_r($cuenta);die();
 		}
 
-		SetAdoAddNew("Trans_Kardex"); 		
-		SetAdoFields('Contra_Cta',$motivo[0]['Cta_Debe']);
 
-		if($parametros['TC']!='P')
-		{
-			$datasubCuenta = explode('-',$parametros['submodulo']);
-			$cta_inv = $datasubCuenta[0];
-			$CodigoL = $datasubCuenta[1];
-			$ruc = $CodigoL;
-		   	SetAdoFields('CodigoL',$CodigoL);
-		}
-		SetAdoFieldsWhere('Orden_No',$parametros['orden']);
-	   	SetAdoFieldsWhere('T','G');
-	  	SetAdoUpdateGeneric();
+		
+
+			SetAdoAddNew("Trans_Kardex"); 		
+			SetAdoFields('Contra_Cta',$motivo[0]['Cta_Debe']);
+			if($parametros['submodulo']!='')
+			{
+				if($parametros['TC']!='P')
+				{
+					$datasubCuenta = explode('-',$parametros['submodulo']);
+					$cta_inv = $datasubCuenta[0];
+					$CodigoL = $datasubCuenta[1];
+					$ruc = $CodigoL;
+				   	SetAdoFields('CodigoL',$CodigoL);
+				}
+			}
+			SetAdoFieldsWhere('Orden_No',$parametros['orden']);
+		   	SetAdoFieldsWhere('T','G');
+		  	SetAdoUpdateGeneric();
+	  	
 
 		// die();
 
@@ -630,7 +644,9 @@ class egreso_alimentosC
 			 	$sub = $this->modelo->Catalogo_SubCtas($tipo,$value['CodigoL']);
 			 }
 
-			 // print_r($sub);die();
+			 // print_r($sub);
+			 // print_r($cuenta);
+			 // die();
 			$dataSub = array(
                     'be'=>$cuenta[0]['Cuenta'],
                     'ru'=> '',

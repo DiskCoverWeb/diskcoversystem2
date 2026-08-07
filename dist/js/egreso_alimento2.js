@@ -523,6 +523,8 @@ function lista_egreso_checking()
   function guardar(orden,TC)
   {
     subcta = '';
+
+    console.log('#ddl_subcta_'+orden);
     if(TC!='P')
     {
       subcta = $('#ddl_subcta_'+orden).val();
@@ -727,4 +729,18 @@ function lista_egreso_checking()
     var src ="../vista/modales.php?FCliente=true&proveedor=true";
     $('#FCliente').attr('src',src).show();
     $('#myModal').modal('show');
+  }
+
+  function cerrarModalMotivo()
+  {
+    $('#myModal_motivo').modal('hide');
+    var listaSubcta = [];
+    $('.select2_dinamico').each(function() {
+          const input = $(this);
+          var id = input[0].id;
+          console.log(id)
+          listaSubcta.push($('#'+id).val());      
+    });
+
+    console.log(listaSubcta)
   }

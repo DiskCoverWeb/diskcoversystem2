@@ -210,7 +210,7 @@
             	</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light border border-1" data-bs-dismiss="modal">OK</button>
+                <button type="button" class="btn btn-light border border-1" onclick="cerrarModalMotivo()" >OK</button>
             </div> 
         </div>
     </div>
