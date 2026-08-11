@@ -61,16 +61,16 @@ if(isset($_GET['contratistaDetalle']) && $_GET['contratistaDetalle']!=''){$contr
         <div class="row">
           <div class="col-lg-4">
             <b>Contratista </b><br>
-            <select class="form-select form-select-sm" id="ddl_contratista" name="ddl_contratista" onchange="cargar_contratos()">
+            <select class="form-select form-select-sm" id="ddl_contratista" name="ddl_contratista" onchange="lista_semanas()">
               <option value="">Seleccione</option>
             </select>
           </div>
-          <div class="col-lg-3">
+         <!--  <div class="col-lg-3">
             <b>Rubro </b><br>
             <select class="form-select form-select-sm" id="ddl_Rubro" name="ddl_Rubro">
               <option value="">seleccione</option>
             </select>
-          </div>
+          </div> -->
           <div class="col-lg-2">
             <b>Semana </b><br>
             <select class="form-select form-select-sm" id="ddl_semana" name="ddl_semana" onchange="cargar_lista_subrubros()">

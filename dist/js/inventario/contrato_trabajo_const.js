@@ -30,7 +30,8 @@
                         return meta.row + 1; // meta.row es el índice de la fila
                     }
               },
-              { data: 'Cliente' },
+              { data: 'Cliente' },              
+              { data: 'Proceso' },
               { data: null,
                  render: function(data, type, item) {
                     // <button type="button" title="Imprimir Etiqueta" class="btn btn-warning btn-sm p-0 m-0" onclick="imprimir_pedido_pdf()"><i class="bx bx-printer m-0"></i></button>
@@ -52,7 +53,8 @@
                   render: function(data, type, item) {
                       return data ? new Date(data).toLocaleDateString() : '';
                   }
-              },
+              },                  
+              { data: 'Nombre_Contrato' },
               { data: null,
                  render: function(data, type, item) {
                   // console.log(item);

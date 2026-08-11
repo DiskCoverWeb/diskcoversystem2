@@ -8,7 +8,7 @@ $(document).ready(function() {
 
         var columnasTexto = [
             "RUC_CI", "AUTORIZACION", "FACTURA", "CODIGO", 
-            "PRODUCTO", "ITEM", "A_NO", "ID", "NOMBRE", "DESCRIPCION",'ORDEN'
+            "PRODUCTO", "ITEM", "A_NO", "ID", "NOMBRE", "DESCRIPCION",'ORDEN','SEMANA'
         ];
 
         var palabrasClaveFecha = ["FECHA", "DATE", "FEC_", "CREATED_AT", "UPDATED_AT"];

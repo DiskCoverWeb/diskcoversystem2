@@ -352,7 +352,7 @@ class contrato_trabajo_constM
 
     function detalleContratoAll($contrato=false,$T = '.')
     {
-        $sql = "select TC.ID,C.Cliente as 'Cliente',CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.T 
+        $sql = "select TC.ID,C.Cliente as 'Cliente',CP.Proceso,CP1.Proceso as proyecto,TC.Fecha,TC.Fecha_V,TC.No_Contrato,TC.Proyecto as ProyectoID,TC.T,TC.Nombre_Contrato 
         FROM Trans_Contratistas TC
         INNER JOIN Clientes C ON TC.Codigo = C.Codigo
         INNER JOIN Catalogo_Proceso CP ON TC.Proceso = CP.Cmds

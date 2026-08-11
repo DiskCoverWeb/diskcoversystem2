@@ -254,7 +254,7 @@ class orden_ejecucionM
 
     function detalleContrato_ejecucion($contrato=false,$T = '.')
     {
-        $sql = "SELECT ERC.Semana,ERC.Cantidad,ERC.Cant_Ejec as ejecutado,ERC.No_Contrato,C.Cliente as 'Cliente',C.Codigo,CS.Detalle as 'Centro Costo',CC.Cuenta as 'Detalle rubro',(SUM(Cant_Ejec)*100/SUM(ERC.Cantidad)) as porcentaje ,SR.Detalle as subRubro
+        $sql = "SELECT ERC.Semana,ERC.Cantidad,ERC.Cant_Ejec as ejecutado,ERC.No_Contrato,C.Cliente as 'Cliente',C.Codigo,CS.Detalle as 'Centro Costo',CC.Cuenta as 'Detalle rubro',(SUM(Cant_Ejec)*100/SUM(ERC.Cantidad)) as porcentaje ,SR.Detalle as subRubro,Unidad
                 FROM Entidad_Rubro_Contratista ERC
                 INNER JOIN Clientes C ON ERC.Contratista = C.Codigo 
                 INNER JOIN Catalogo_SubCtas SR ON ERC.Sub_Rubro  = SR.ID AND ERC.Item = SR.Item AND ERC.Periodo = SR.Periodo 
@@ -263,7 +263,7 @@ class orden_ejecucionM
                 WHERE ERC.TC ='E' OR ERC.TC = 'A' 
                 AND ERC.Item = '".$_SESSION['INGRESO']['item']."'
                 AND ERC.Periodo = '".$_SESSION['INGRESO']['periodo']."'
-                GROUP BY ERC.Semana,ERC.Cantidad,ERC.Cant_Ejec,ERC.No_Contrato,C.Cliente,C.Codigo,CS.Detalle,CC.Cuenta,Cant_Ejec,ERC.Cantidad,SR.Detalle";
+                GROUP BY ERC.Semana,ERC.Cantidad,ERC.Cant_Ejec,ERC.No_Contrato,C.Cliente,C.Codigo,CS.Detalle,CC.Cuenta,Cant_Ejec,ERC.Cantidad,SR.Detalle,Unidad";
                 // print_r($sql);die();
 
         return $this->db->datos($sql);

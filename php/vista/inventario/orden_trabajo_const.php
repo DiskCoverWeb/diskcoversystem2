@@ -127,21 +127,26 @@ centrosCostocXRubro(this.value)">
         </div>   
         <div class="col-sm-1">
           <b>Unidad</b>
-          <input type="" class="form-control form-control-sm" name="txt_unidad" id="txt_unidad">
+          <input type="" class="form-control form-control-sm" name="txt_unidad" id="txt_unidad" readonly>
         </div>   
-        <div class="col-sm-2 text-end">
-           <b>Cantidad</b>
-            <div class="input-group">
-              <input type="" class="form-control form-control-sm" name="txt_cantidad_rela" id="txt_cantidad_rela" readonly>
-              <input type="" class="form-control form-control-sm" name="txt_cantidad" id="txt_cantidad" onblur="calcular_costo_total()">
+        <div class="col-sm-3">
+          <div class="row">
+            <div class="col-sm-6">   
+             <b>Cant contrato</b>
+              <input type="" class="form-control form-control-sm  text-end" name="txt_cantidad_rela" id="txt_cantidad_rela" readonly>              
             </div>
+            <div class="col-sm-6">    
+             <b>Cant orden</b>       
+              <input type="" class="form-control form-control-sm  text-end" name="txt_cantidad" id="txt_cantidad" onblur="calcular_costo_total()">
+            </div>                   
+          </div>
         </div>   
         <div class="col-sm-2">
            <b>Costo Unitario</b>
-          <input type="" class="form-control form-control-sm" name="txt_costo_pvp" id="txt_costo_pvp" onblur="calcular_costo_total()">
+          <input type="" class="form-control form-control-sm" name="txt_costo_pvp" id="txt_costo_pvp" onblur="calcular_costo_total()" readonly>
         </div>   
 
-        <div class="col-sm-2">
+        <div class="col-sm-1">
            <b>Costo total</b>
           <input type="" class="form-control form-control-sm" name="txt_costo_total" id="txt_costo_total" readonly>
         </div>   
@@ -175,17 +180,17 @@ centrosCostocXRubro(this.value)">
               <div class="row">
                 <div class="col-sm-12">
                   <b>Semana</b>
-                  <select class="form-select form-select-sm" id="ddl_semana" name="ddl_semana">
+                  <select class="form-select form-select-sm" id="ddl_semana" name="ddl_semana" onchange="obtenerFechasSemana('',this.value)">
                     <option value="">Selecione Semana</option>
                   </select>
                 </div>
                  <div class="col-sm-12">
                   <b>Fecha Inicio</b>
-                  <input type="date" name="txt_fecha_inicio" id="txt_fecha_inicio" class="form-control form-control-sm">
+                  <input type="date" name="txt_fecha_inicio" id="txt_fecha_inicio" class="form-control form-control-sm" readonly>
                 </div>
                  <div class="col-sm-12">
                   <b>Fecha Fin</b>
-                  <input type="date" name="txt_fecha_fin" id="txt_fecha_fin" class="form-control form-control-sm">
+                  <input type="date" name="txt_fecha_fin" id="txt_fecha_fin" class="form-control form-control-sm" readonly>
                 </div>
                  <div class="col-sm-12">
                   <b>Observaciones</b>

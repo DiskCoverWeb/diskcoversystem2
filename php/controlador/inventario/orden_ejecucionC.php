@@ -182,7 +182,8 @@ class orden_ejecucionC
     function lista_semanas($parametros)
     {
         // print_r($parametros);die();
-         $data = $this->orden->SemanasXcentrosCostocXRubro($parametros['contrato'],$parametros['rubro']);
+        $rubro =  !isset($parametros['rubro']) ? false : $parametros['rubro'];
+        $data = $this->orden->SemanasXcentrosCostocXRubro($parametros['contrato'],$rubro);
         // print_r($data);die();
         return $data;
     }
@@ -190,7 +191,7 @@ class orden_ejecucionC
    function cargar_lista_subrubros($parametros)
     {            
         $tbl = '';
-        $CentroCostos = $this->modelo->centrosCostocXRubro($parametros['Contrato'],$parametros['rubro'],$parametros['semana']);
+        $CentroCostos = $this->modelo->centrosCostocXRubro($parametros['Contrato'],false,$parametros['semana']);
         // print_r($CentroCostos);die();
         foreach ($CentroCostos as $key => $value) {
             // print_r($value);die();
@@ -207,34 +208,51 @@ class orden_ejecucionC
                     <thead>
                       <th></th>
                       <th>Sub Rubros</th>
-                      <th>Unidad</th>
                       <th>Orden</th>
                       <th>Costo total de Orden </th>
-                      <th>Por Ejecut - Ejecutado</th>
+                      <th>Unidad</th>
+                      <th>
+                        <div class="row">
+                            <div class="col-6">
+                                Por Ejecutar 
+                            </div>
+                            <div class="col-6">
+                                Ejecutado
+                            </div>
+                        </div> 
+                      </th>
+                      <th>% ejecutado</th>
                       <th>Costo unitario ejecutado</th>
                       <th>Costo total ejecutado</th>
-                      <th>Diferencia</th>
+                      <th>Diferencia costo</th>
                      <!-- <th></th> -->
                     </thead><tbody>';
-            $data = $this->orden->cargar_lista_subrubros_procesar($parametros['Contrato'],$parametros['rubro'],$subrubro=false,$value['Centro_Costo'],$parametros['contratista'],$parametros['semana']);
+            $data = $this->orden->cargar_lista_subrubros_procesar($parametros['Contrato'],false,$subrubro=false,$value['Centro_Costo'],$parametros['contratista'],$parametros['semana']);
             foreach ($data as $key => $value) {
                 // print_r($value);die();
                 $tbl.='<tr> 
                             <td><button type="button" class="btn btn-primary btn-sm" onclick="add_periodo(\''.$value['ID'].'\');"><i class="bx bx-save me-0"></i></button></td>
                             <td>'.$value['Detalle'].'</td> 
-                            <td>'.$value['Unidad'].'</td>
                             <td>'.$value['No_Contrato'].'</td>
                             <td>'.$value['Total'].'</td>
+                            <td>'.$value['Unidad'].'</td>
                             <td>
-                                <div class="input-group">
-                                  <input type="hidden" class="form-control form-control-sm" id="txt_pvp_'.$value['ID'].'" value="'.$value['PVP'].'" readonly />
-                                    <input type="text" class="form-control form-control-sm" id="txt_cantidad_'.$value['ID'].'" value="'.$value['Cantidad'].'" readonly />
-                                    <input type="text" class="form-control form-control-sm" id="txt_ejecucion_'.$value['ID'].'" onblur="calcular_ejecutado('.$value['ID'].')" value="'.$value['Cant_Ejec'].'" />
-                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="hidden" class="form-control form-control-sm" id="txt_pvp_'.$value['ID'].'" value="'.$value['PVP'].'" readonly />
+                                        <input type="text" class="form-control form-control-sm text-end" id="txt_cantidad_'.$value['ID'].'" value="'.$value['Cantidad'].'" readonly />
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control form-control-sm text-end" id="txt_ejecucion_'.$value['ID'].'" onblur="calcular_ejecutado('.$value['ID'].')" value="'.$value['Cant_Ejec'].'" />
+                                    </div>
+                                </div> 
                             </td>
-                            <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_pvp_'.$value['ID'].'" value="'.$value['Costo_Unit_Ejec'].'" readonly /></td>
-                            <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_total_'.$value['ID'].'" value="'.$value['Costo_Total_Ejec'].'" readonly /></td>
-                            <td><input type="text" class="form-control form-control-sm" id="txt_ejecutado_dif_'.$value['ID'].'"  value="'.$value['Diferencia'].'"readonly /></td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm text-end" id="txt_porce_ejecucion_'.$value['ID'].'" value="0%" readonly />
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm text-end" id="txt_ejecutado_pvp_'.$value['ID'].'" value="'.$value['Costo_Unit_Ejec'].'" readonly /></td>
+                            <td><input type="text" class="form-control form-control-sm text-end" id="txt_ejecutado_total_'.$value['ID'].'" value="'.$value['Costo_Total_Ejec'].'" readonly /></td>
+                            <td><input type="text" class="form-control form-control-sm text-end" id="txt_ejecutado_dif_'.$value['ID'].'"  value="'.$value['Diferencia'].'"readonly /></td>
                             <!-- <td> <button type="button" onclick="add_periodo(\''.$value['ID'].'\')" class="btn btn-primary btn-sm"><i class="bx bx-calendar"></i> Periodos</button></td> -->
                         </tr>';
             }

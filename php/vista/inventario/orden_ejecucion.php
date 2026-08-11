@@ -56,27 +56,21 @@
          <div class="col-sm-12">
               <div class="table-responsive">
                 <table class="table w-100" id="tbl_lista_solicitud">
-                  <thead>
-                     <th>No</th>
+                  <thead>                    
+                     <th>Semana</th>
                      <th>Contratista</th>
                      <th>Orden de trabajo</th>
                      <th>Centro costos</th>
                      <th>Rubro</th>
                      <th>SubRubro</th>
+                     <th>Cant Orden</th>
+                     <th>Unidad</th>
                      <th>% Ejecutado</th>
-                     <th>Semana</th>
-                     <th>Cantidad</th>
                      <th>Ejecutado</th>
                      <th></th>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
+                    
                   </tbody>
                 </table>
                 

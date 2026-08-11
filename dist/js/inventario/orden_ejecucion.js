@@ -22,12 +22,8 @@
           // info: false,   
           // autoWidth: true,
           scrollX:true,
-          columns: [
-              { data: null, // Columna autoincremental
-                    render: function (data, type, row, meta) {
-                        return meta.row + 1; // meta.row es el índice de la fila
-                    }
-              },
+          columns: [              
+              { data: 'Semana' },
               { data: 'Cliente' },
               { data: null,
                  render: function(data, type, item) {
@@ -40,13 +36,14 @@
               { data: 'Centro Costo' },
               { data: 'Detalle rubro' },
               { data: 'subRubro' },
+              
+              { data: 'Cantidad' },
               { data: null,  
                   render: function(data, type, item) {
                       return  data.porcentaje.toFixed(2) +'%';
                   }
               },
-              { data: 'Semana' },
-              { data: 'Cantidad' },
+              { data: 'Unidad' },
               { data: 'ejecutado' },
               { data: null,
                  render: function(data, type, item) {
@@ -224,7 +221,8 @@ function cargar_contratos()
           cache: true
         }
       });
-  }
+}
+
 
 function lista_semanas()
 {
@@ -232,7 +230,7 @@ function lista_semanas()
   {
     'contrato':$('#ddl_Contrato').val(),
     'contratista':$('#ddl_contratista').val(),
-    'rubro':$('#ddl_Rubro').val(),
+    // 'rubro':$('#ddl_Rubro').val(),
   }
   $.ajax({
         type: "POST",
@@ -482,7 +480,7 @@ function calcular_costo_total()
 function cargar_lista_subrubros()
 {
   var contratista = $('#ddl_contratista').val();
-  var rubro = $('#ddl_Rubro').val();
+  // var rubro = $('#ddl_Rubro').val();
   var Contrato=$('#ddl_Contrato').val();
   var semana=$('#ddl_semana').val();
 
@@ -494,7 +492,7 @@ function cargar_lista_subrubros()
   var parametros = 
   {
     'contratista': contratista,
-    'rubro': rubro,
+    // 'rubro': rubro,
     'Contrato': Contrato,
     'semana':semana,
 
@@ -689,6 +687,10 @@ function calcular_ejecutado(id)
   $('#txt_ejecutado_pvp_'+id).val(pvp);
   $('#txt_ejecutado_total_'+id).val(total.toFixed(2));
   $('#txt_ejecutado_dif_'+id).val(dif);
+
+  var porce = parseFloat((eje *100)/can).toFixed(2);
+
+  $('#txt_porce_ejecucion_'+id).val(porce+'%');
 
 }
 

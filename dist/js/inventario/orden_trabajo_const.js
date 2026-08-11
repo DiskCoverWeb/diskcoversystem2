@@ -73,7 +73,7 @@
          console.log(data);
          $('#ddl_Contrato').empty();     
          $('#ddl_Contrato').val(data.Orden_Trabajo);
-         $('#txt_cantidad_rela').val(data.Cantidad);
+         $('#txt_cantidad_rela').val( parseFloat(data.Cantidad).toFixed(2));
          $('#txt_costo_pvp').val(data.Costo_Unit);
 
          contratosXrubro()
@@ -631,8 +631,10 @@ function valores_default()
         dataType:'json',
         success: function(data)
         {
-          $('#txt_cantidad_rela').val(data[0].Cantidad);
-          $('#txt_costo_pvp').val(data[0].Costo_Unit);
+
+          $('#txt_cantidad_rela').val(parseFloat(data[0].Cantidad).toFixed(2));
+          $('#txt_costo_pvp').val(parseFloat(data[0].Costo_Unit).toFixed(2));
+          $('#txt_unidad').val(data[0].Codigo);
 
        
             console.log(data);
@@ -755,11 +757,74 @@ function modal_periodo_trabajo()
 
 function numero_semanas()
 {
+  const fecha = new Date();
+  
+  const anioActual = fecha.getFullYear();
+  const mesActual = fecha.getMonth() + 1;
+
+
+  const semanas = obtenerSemanasDelMes(anioActual, mesActual);
+
+  console.log(semanas);
+
   var option = '<option value="">Seleccione semana </option>';
   for (var i = 1; i <=52; i++) {
-      option+='<option value="'+i+'">'+i+'</option>';
+
+      if(semanas.includes(i))
+      {
+        option+='<option value="'+i+'" style="font-weight: bold;">'+i+'</option>';
+      }else
+      {
+        option+='<option value="'+i+'">'+i+'</option>';        
+      }
   }
   $('#ddl_semana').html(option);
+}
+
+function obtenerSemanasDelMes(anio, mes) {
+    const inicio = new Date(anio, mes - 1, 1);
+    const fin = new Date(anio, mes, 0);
+    const semanas = [];
+
+    for (let fecha = inicio; fecha <= fin; fecha.setDate(fecha.getDate() + 1)) {
+        const semana = obtenerNumeroSemana(fecha);
+
+        if (!semanas.includes(semana)) {
+            semanas.push(semana);
+        }
+    }
+
+    return semanas;
+}
+
+function obtenerNumeroSemana(fecha) {
+    const inicio = new Date(fecha.getFullYear(), 0, 1);
+    return Math.ceil((((fecha - inicio) / 86400000) + inicio.getDay() + 1) / 7);
+}
+
+function obtenerFechasSemana(anio='', semana) {
+    if(anio=='')
+    {
+      const fecha = new Date();
+      anio = fecha.getFullYear();
+    }
+    const fecha = new Date(anio, 0, 1 + (semana - 1) * 7);
+    const dia = fecha.getDay() || 7;
+
+    fecha.setDate(fecha.getDate() - dia + 1);
+
+    const inicio = new Date(fecha);
+    const fin = new Date(fecha);
+    fin.setDate(fin.getDate() + 6);
+
+    var desde = inicio.toLocaleDateString("en-US");
+    var hasta = fin.toLocaleDateString("en-US");
+
+
+    $('#txt_fecha_inicio').val(formatoDate(desde));
+    $('#txt_fecha_fin').val(formatoDate(hasta));
+
+      console.log(fechas);
 }
 
 function guardar_periodo()

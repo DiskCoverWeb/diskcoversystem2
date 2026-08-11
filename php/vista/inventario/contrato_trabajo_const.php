@@ -55,19 +55,15 @@
                   <thead>
                      <th>No</th>
                      <th>Contratista</th>
+                     <th>Tipo de contrato</th>
                      <th>Orden de trabajo</th>
                      <th>Fecha</th>
-                     <th>Fecha vencimiento</th>
+                     <th>Fecha vencimiento</th>                     
+                     <th>Nombre contrato</th>
                      <th>Estado</th>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
+                   
                   </tbody>
                 </table>
                 
