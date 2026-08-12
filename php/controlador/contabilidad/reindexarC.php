@@ -38,8 +38,8 @@ class reindexarC
 
 		// print_r($_SESSION['INGRESO']);die();
 		try {
-			Reindexar_Periodo_sp(); 
-			Mayorizar_Cuentas_SP();
+			// Reindexar_Periodo_sp(); 
+			Mayorizar_Cuentas_SP(true);
 			Presenta_Errores_Contabilidad_SP();	
 			$datos = $this->modelo->infoError();
 			$tr = '';

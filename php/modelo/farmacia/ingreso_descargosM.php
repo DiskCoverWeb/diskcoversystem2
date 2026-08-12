@@ -804,6 +804,7 @@ class ingreso_descargosM
 				FROM Asiento_SC
 				WHERE 
 					Item = '".$_SESSION['INGRESO']['item']."' 
+					AND T_No='".$_SESSION['INGRESO']['modulo_']."' 
 					AND CodigoU = '".$_SESSION['INGRESO']['Id']."' ";
 
 					// print_r($sql);die();
