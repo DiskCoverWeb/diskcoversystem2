@@ -5959,7 +5959,7 @@ function generar_comprobantes($parametros) //revision parece repetida
       return $respuesta;   
   }
 
-  function Mayorizar_Cuentas_SP()
+  function Mayorizar_Cuentas_SP($ReIndexar=false)
   {
       $conn = new db();
       $EsCoop = 0;
@@ -5968,9 +5968,10 @@ function generar_comprobantes($parametros) //revision parece repetida
       $parametros = array(
         array(&$_SESSION['INGRESO']['item'], SQLSRV_PARAM_IN),
         array(&$_SESSION['INGRESO']['periodo'], SQLSRV_PARAM_IN),
+        array(&$ReIndexar, SQLSRV_PARAM_IN),
       );     
      // $sql="EXEC sp_Mayorizar_Cuentas @EsCoop=?,@ConSucursal=?,@Item=?,@Periodo=?";
-     $sql="EXEC sp_Mayorizar_Cuentas @Item=?,@Periodo=?";
+     $sql="EXEC sp_Mayorizar_Cuentas @Item=?,@Periodo=?,@ReIndexar=?";
       $respuesta = $conn->ejecutar_procesos_almacenados($sql,$parametros);
       return $respuesta;   
   }
