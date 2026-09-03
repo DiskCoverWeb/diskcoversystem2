@@ -7034,10 +7034,11 @@ function Grabar_Factura1($TFA,$VerFactura = false, $NoRegTrans = false)
                     // var_dump('expression');die();
 
                     $DatInv = Leer_Codigo_Inv($AdoDBReceta[0]["Codigo_Receta"],$FechaSistema, $value["CodBod"], $value["CodMar"]);
-                    var_dump('expression2');die();                    
-                      if(count($codigo_inve)>0)
+                    // print_r($DatInv);                   
+                      if($DatInv['respueta']==1)
                       {
-                         if($DatInv['Costo'] > 0 )
+                        $DatInv = $DatInv['datos'];
+                         if(isset($DatInv['Costo']) && $DatInv['Costo'] > 0 )
                          {
                             
                             $CantidadAnt = $value["CANT"] * $valueAdo["Cantidad"];
@@ -7690,9 +7691,9 @@ function Leer_Codigo_Inv($CodigoDeInv,$FechaInventario,$CodBodega='',$CodMarca='
   if(checkdate($f[1],$f[2],$f[0]) ) { $DatInv["Fecha_Stock"] = date('Y-m-d');}
   if(strlen($DatInv["TC"]) <= 1){$DatInv["TC"] = "FA";}
   $BuscarCodigoInv = $CodigoDeInv;
-  var_dump('sss');
+  // var_dump('sss');
   $CodigoDeInv = Leer_Codigo_Inv_SP($BuscarCodigoInv,$DatInv["Fecha_Stock"],$CodBodega,$CodMarca,$DatInv["Codigo_Inv"]);
-  var_dump('asd');die();
+  // var_dump('asd');die();
 
   // print_r('expression');die();
  // '-----------------------------------------------------------------
