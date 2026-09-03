@@ -320,6 +320,7 @@ $iv = base64_decode("C9fBxl1EWtYTL1/M8jfstw==");
      return base64_encode(openssl_random_pseudo_bytes(openssl_cipher_iv_length($method)));
  };
 
+
 //----------------------------------- fin funciones en duda--------------------------- 
 
 function Eliminar_Empresa_SP($Item, $NombreEmpresa=false)
@@ -388,7 +389,7 @@ function Importar_Contabilidad_SP($vTP)
 
     $sql = "EXEC sp_Importar_Contabilidad @Item=?,@Periodo =?,@Usuario=?,@NumModulo=?,@TP=?";
     $resultado = $conn->ejecutar_procesos_almacenados($sql,$parametros);
-    // print_r($resultado);die();
+    print_r($resultado);die();
 
 }
 
@@ -415,6 +416,19 @@ function Procesar_Balance_Consolidado_SP($hasta, $type){
   }
   //return $conn->ejecutar_procesos_almacenados($sql, $parametros, $tipo=false);
 }
+
+// function Subir_Archivo_CSV_SP($Item, $NombreEmpresa=false)
+// {
+//   $conn = new db();
+//   $parametros = array(
+//     array(&$Item, SQLSRV_PARAM_IN),
+//   );
+//   // print_r('...'.$parametros);die();
+//   $sql = "EXEC sp_Eliminar_Empresa @Item= ?";
+//   $res = $conn->ejecutar_procesos_almacenados($sql,$parametros,$tipo=false);
+//   //print_r($res);die();
+//   return $res;
+// }
 
 function sp_Reporte_Cartera_Clientes($CodigoCliente,$desde,$hasta)
 {
@@ -7016,7 +7030,11 @@ function Grabar_Factura1($TFA,$VerFactura = false, $NoRegTrans = false)
                   $FechaSistema = date('Y-m-d');
                    foreach ($AdoDBReceta as $key => $valueAdo) {
 
-                     $DatInv = Leer_Codigo_Inv($AdoDBReceta[0]["Codigo_Receta"],$FechaSistema, $value("CodBod"), $value["CodMar"]);                    
+                    // print_r('expression');die();
+                    // var_dump('expression');die();
+
+                    $DatInv = Leer_Codigo_Inv($AdoDBReceta[0]["Codigo_Receta"],$FechaSistema, $value["CodBod"], $value["CodMar"]);
+                    var_dump('expression2');die();                    
                       if(count($codigo_inve)>0)
                       {
                          if($DatInv['Costo'] > 0 )
@@ -7665,14 +7683,18 @@ function Leer_Codigo_Inv($CodigoDeInv,$FechaInventario,$CodBodega='',$CodMarca='
   $DatInv['Con_Kardex'] = false;
 
   $f = explode('-',$FechaInventario);
-  // print_r($f);die();
+  // print_r($f);
+  // die();
   
  // 'Validacion de datos correctos
   if(checkdate($f[1],$f[2],$f[0]) ) { $DatInv["Fecha_Stock"] = date('Y-m-d');}
   if(strlen($DatInv["TC"]) <= 1){$DatInv["TC"] = "FA";}
   $BuscarCodigoInv = $CodigoDeInv;
+  var_dump('sss');
   $CodigoDeInv = Leer_Codigo_Inv_SP($BuscarCodigoInv,$DatInv["Fecha_Stock"],$CodBodega,$CodMarca,$DatInv["Codigo_Inv"]);
-  
+  var_dump('asd');die();
+
+  // print_r('expression');die();
  // '-----------------------------------------------------------------
  // 'Si existe el producto pasamos a recolectar los datos del producto
  // '-----------------------------------------------------------------
