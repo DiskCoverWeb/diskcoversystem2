@@ -29,6 +29,8 @@
   cartera_usu = '<?php echo $cartera_usu; ?>';
   cartera_pas = '<?php echo $cartera_pass;?>';
 </script>
+<!-- <link href="../../dist/css/multiple_email.css" rel="stylesheet"> -->
+<link href="../../dist/css/email.css" rel="stylesheet">
 <script src="../../dist/js/lista_facturas.js"></script>
 
   <script type="text/javascript">
@@ -448,7 +450,7 @@
             <div class="modal-body">
                 <div class="row"> 
                     <div class="col-sm-12">
-                        <div id="emails-input" name="emails-input" placeholder="añadir email"></div>
+                        <div id="emails-input"></div>
                         <input type="hidden" name="txt_fac" id="txt_fac">
                         <input type="hidden" name="txt_serie" id="txt_serie">
                         <input type="hidden" name="txt_codigoc" id="txt_codigoc">
