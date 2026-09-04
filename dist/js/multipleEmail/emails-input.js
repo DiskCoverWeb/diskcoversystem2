@@ -59,11 +59,12 @@ console.log(email);
   /*** Private functions - access through hoisting ***/
 
   function init(inputContainerNode, options) {
-    inputContainerNode.innerHTML = ' \
-      <div class="emails emails-input"> \
-        <input type="text" role="emails-input" placeholder="' + options.placeholder + '"> \
-      </div> \
-    '
+    inputContainerNode.innerHTML = '';
+    // inputContainerNode.innerHTML = ' \
+    //   <div class="emails emails-input"> \
+    //     <input type="text" role="emails-input" placeholder="' + options.placeholder + '"> \
+    //   </div> \
+    // '
   }
 
   function buildOptions(givenOptions) {

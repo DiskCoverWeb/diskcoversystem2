@@ -604,12 +604,15 @@ function modal_email_fac(factura,serie,codigoc,emails)
 
     var to = emails.substring(0,emails.length-1);
     var ema = to.split(',');
-    var t = ''
+    var t = '<div class="emails emails-input">'
     ema.forEach(function(item,i)
     {
-      t+='<div class="emails emails-input"><span role="email-chip" class="email-chip"><span>'+item+'</span><a href="#" class="remove">×</a></span><input type="text" role="emails-input" placeholder="añadir email ...">       </div>';
+      t+='<span role="email-chip" class="email-chip"><span>'+item+'</span><a href="#" class="remove">×</a></span>     ';
        console.log(item);
+        // t+='<span role="email-chip" class="email-chip"><span>'+item+'</span><a href="#" class="remove">×</a></span><input type="text" role="emails-input" placeholder="añadir email ...">';
     })
+
+    t+='<input type="text" role="emails-input" placeholder="añadir email ...">  </div>'
    $('#emails-input').html(t)
    $('#txt_to').val(emails);
 
