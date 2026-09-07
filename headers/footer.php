@@ -25,31 +25,24 @@
 			<button type="button" class="btn-close d-md-none" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<div class="search-list">
-				<div class="list-group">
-					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-							<i class='bx bx-building fs-4'></i>Razon Social:<br><?php echo $_SESSION['INGRESO']['Razon_Social']; ?>
-					</a>
-					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-							<i class='bx bx-buildings fs-4'></i>Nombre Comercial: <br><?php echo $_SESSION['INGRESO']['Nombre_Comercial']; ?>
-					</a>
-					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-							<i class='bx bx-caret-right fs-4'></i><b>RUC:</b> <?php echo $_SESSION['INGRESO']['RUC']; ?>
-					</a>
-					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-							<i class='bx bx-caret-right fs-4'></i><b>Item:</b> <?php echo $_SESSION['INGRESO']['item']; ?>
-					</a>
-					<a href="javascript:;" class="list-group-item list-group-item-action align-items-center d-flex gap-2 py-1">
-							<i class='bx bx-caret-right fs-4'></i><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "AMBIENTE DE PRUEBA" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "AMBIENTE EN PRODUCCION" : ""); ?>
-					</a>
-					
-	
-	
-
-	
-
-				</div>
-				
+			<div class="search-list">
+				    <div class="list-group">
+				        <div class="list-group-item align-items-center d-flex gap-2 py-1">
+				            <i class='bx bx-building fs-4'></i>Razon Social:<br><?php echo $_SESSION['INGRESO']['Razon_Social']; ?>
+				        </div>
+				        <div class="list-group-item align-items-center d-flex gap-2 py-1">
+				            <i class='bx bx-buildings fs-4'></i>Nombre Comercial: <br><?php echo $_SESSION['INGRESO']['Nombre_Comercial']; ?>
+				        </div>
+				        <div class="list-group-item align-items-center d-flex gap-2 py-1">
+				            <i class='bx bx-caret-right fs-4'></i><b>RUC:</b> <span> <?php echo $_SESSION['INGRESO']['RUC']; ?></span>
+				        </div>
+				        <div class="list-group-item align-items-center d-flex gap-2 py-1">
+				            <i class='bx bx-caret-right fs-4'></i><b>Item:</b> <?php echo $_SESSION['INGRESO']['item']; ?>
+				        </div>
+				        <div class="list-group-item align-items-center d-flex gap-2 py-1">
+				            <i class='bx bx-caret-right fs-4'></i><?php echo ($_SESSION['INGRESO']['Ambiente'] == "1") ? "AMBIENTE DE PRUEBA" : (($_SESSION['INGRESO']['Ambiente'] == "2") ? "AMBIENTE EN PRODUCCION" : ""); ?>
+				        </div>
+				    </div>
 				</div>
 			</div>
 		</div>
