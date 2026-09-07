@@ -343,10 +343,10 @@ class autorizacion_sri
 			   		 		$this->linkSriRecepcion);
 			   		 	// print_r($enviar_sri);die();
 			   		 	// die();
-			   		 	if($enviar_sri[0]==1)
+			   		 	if( isset($enviar_sri[0]) && $enviar_sri[0]==1)
 			   		 	{
 			   		 		//una vez enviado comprobamos el estado de la factura
-			   		 		sleep(3);
+			   		 		sleep(6);
 			   		 		$resp =  $this->comprobar_xml_sri($cabecera['ClaveAcceso'],$this->linkSriAutorizacion);
 			   		 		if($resp[0]==1)
 			   		 		{
@@ -358,7 +358,7 @@ class autorizacion_sri
 			   		 		// print_r($resp);die();
 			   		 	}else
 			   		 	{
-			   		 		if($enviar_sri[0]==0)
+			   		 		if(isset($enviar_sri[0])  && $enviar_sri[0]==0)
 			   		 		{
 			   		 			$resp =  $this->comprobar_xml_sri($cabecera['ClaveAcceso'],$this->linkSriAutorizacion);
 			   		 			if($resp[0]==1)
