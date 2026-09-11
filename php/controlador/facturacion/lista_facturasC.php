@@ -205,7 +205,7 @@ class lista_facturasC
 			$dataTbl['Fecha']=$fecha;
 			$botones[0] = array('boton'=>'Ver_factura', 'icono'=>'<i class="bx bx-show-alt ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=>'Factura,Serie,CodigoC,Autorizacion');
 			$botones[1] = array('boton'=>'modal_email_fac', 'icono'=>'<i class="bx bx-envelope ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=> 'Factura,Serie,CodigoC,Email');
-			$botones[2] = array('boton'=>'descargar_fac', 'icono'=>'<i class="bx bx-download ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=>'Factura,Serie,CodigoC');
+			$botones[2] = array('boton'=>'descargar_fac', 'icono'=>'<i class="bx bx-download ps-1 bx-xs"></i>', 'tipo'=>'info', 'id'=>'Factura,Serie,CodigoC,Autorizacion');
 
 			$Autorizacion_ndo = substr($_SESSION['INGRESO']['RUCEnt'], 0,-3);
 			$botones[4] = array('boton'=>'Ver_ndo', 'icono'=>'<i class="bx bx-show-alt ps-1 bx-xs"></i>', 'tipo'=>'warning', 'id'=>'Factura,Serie,CodigoC,'.$Autorizacion_ndo.',NDO');
@@ -360,15 +360,15 @@ class lista_facturasC
 		}
 		return $opcion;
 	}
-	function ver_fac_pdf($cod, $ser, $ci, $per, $auto)
+	function ver_fac_pdf($cod, $ser, $ci, $per, $auto,$descargar=false)
 	{
 		// print_r($cod);die();
 		$nombre = $ser . '-' . generaCeros($cod, 7);
 		if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 0) {
-			$this->punto_venta->pdf_factura_elec($cod, $ser, $ci, $nombre, $auto, $per, $aprobado = false);
+			$this->punto_venta->pdf_factura_elec($cod, $ser, $ci, $nombre, $auto, $per, $aprobado = false,$descargar);
 		} else {
 			// print_r('expression');die();
-			$this->punto_venta->pdf_factura_elec_rodillo($cod, $ser, $ci, $nombre, $auto, $per, $aprobado = false);
+			$this->punto_venta->pdf_factura_elec_rodillo($cod, $ser, $ci, $nombre, $auto, $per, $aprobado = false,$descargar);
 		}
 		// $this->modelo->pdf_factura($cod,$ser,$ci,$per);
 
@@ -1058,7 +1058,19 @@ QUITO - ECUADOR';
 
 	function descargar_factura($parametros)
 	{
-		$this->modelo->pdf_factura_descarga($parametros['fac'], $parametros['serie'], $parametros['codigoc']);
+		// $this->modelo->pdf_factura_descarga($parametros['fac'], $parametros['serie'], $parametros['codigoc']);
+		// $this->modelo->pdf_factura($parametros['fac'], $parametros['serie'], $parametros['codigoc'],false);
+		// print_r($parametros);die();
+
+		$nombre = $parametros['serie'] . '-' . generaCeros($parametros['fac'], 7);
+		if ($_SESSION['INGRESO']['Impresora_Rodillo'] == 0) {
+			$this->punto_venta->pdf_factura_elec($parametros['fac'], $parametros['serie'], $parametros['codigoc'],$nombre,$parametros['auto'],'.', $aprobado = false,1);
+		} else {
+			// print_r('expression');die();
+			$this->punto_venta->pdf_factura_elec_rodillo($parametros['fac'], $parametros['serie'], $parametros['codigoc'],$nombre,$parametros['auto'],'.', $aprobado = false,1);
+		}
+
+
 		return $parametros['serie'] . '-' . generaCeros($parametros['fac'], 7) . '.pdf';
 	}
 

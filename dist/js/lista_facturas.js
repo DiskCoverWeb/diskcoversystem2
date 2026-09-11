@@ -679,7 +679,7 @@ function modal_email_fac(factura,serie,codigoc,emails)
   }
 
 
-  function descargar_fac(factura,serie,codigoc)
+  function descargar_fac(factura,serie,codigoc,auto)
   {
     $('#myModal_espera').modal('show');
     var parametros = 
@@ -687,6 +687,7 @@ function modal_email_fac(factura,serie,codigoc,emails)
         'fac':factura,
         'serie':serie,
         'codigoc':codigoc,
+        'auto':auto,
     }
      $.ajax({
         data: {parametros:parametros},
