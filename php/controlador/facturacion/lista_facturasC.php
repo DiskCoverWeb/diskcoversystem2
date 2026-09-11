@@ -263,7 +263,7 @@ class lista_facturasC
 		}
 
 		$tablaHtml = '
-		<table>
+		<table class="table-hover">
 			<thead id="cabecera">
 				<tr><td></td>';
 
@@ -280,7 +280,7 @@ class lista_facturasC
 
 		foreach ($resultado as $fila) {
 			$i = '';
-			$tablaHtml .= '<tr><td><button type="button" class="btn btn-default btn-xs" onclick="Ver_factura(\''.$fila['Factura'].'\',\''.$fila['Serie'].'\',\''.$fila['Codigo'].'\',\''.$fila['Autorizacion'].'\')"><i class="fa fa-eye"></i></button></td>';
+			$tablaHtml .= '<tr><td><button type="button" class="btn btn-default btn-sm" onclick="Ver_factura(\''.$fila['Factura'].'\',\''.$fila['Serie'].'\',\''.$fila['Codigo'].'\',\''.$fila['Autorizacion'].'\')"><i class="fa fa-eye"></i></button></td>';
 			foreach ($columnas as $columna) {
 				$valor = $fila[$columna];
 				$clase = '';
